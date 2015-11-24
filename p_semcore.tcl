@@ -29,7 +29,7 @@ debug prefix marpa/semcore {} ;# eval takes large argument, keep out.
 oo::class create marpa::semcore {
     variable myactionmap ;# (rules|symbols|tokens) -> actions (cmdpfx)
 
-    constructor {semstore actionmap} {
+    constructor {semstore {actionmap {}}} {
 	debug.marpa/semcore {[debug caller] | [marpa::D {
 	    # Make a transform for sem values available, for debug
 	    # output customized by the engine.
@@ -58,6 +58,24 @@ oo::class create marpa::semcore {
 	return
     }
 
+    method add-token {id cmd} {
+	debug.marpa/semcore {[debug caller] |}
+	dict set myactionmap tok:$id $cmd
+	return
+    }
+
+    method add-rule {id cmd} {
+	debug.marpa/semcore {[debug caller] |}
+	dict set myactionmap rule:$id $cmd
+	return
+    }
+
+    method add-null {id cmd} {
+	debug.marpa/semcore {[debug caller] |}
+	dict set myactionmap sym:$id $cmd
+	return
+    }
+
     method engine: {engine} {
 	debug.marpa/semcore {[debug caller] | [marpa::D {
 	    # Access to engine using the semantics, for id conversion
@@ -74,6 +92,15 @@ oo::class create marpa::semcore {
 	    set f "STEP \[%${w}d/$n\] %-5s: %s"
 	    set i 0
 	}]}
+
+	# TODO !! stepper which has access to the id of the sem value.
+	# Needed to be able to clear out semantic values which are of
+	# no use anymore -- both lexer and parser.
+	#
+	# Or maybe: Put all the sv ids into a semstore scratch
+	# register from which the lexer/parser can pull and delete
+	# them. The defered delete ensures that deletion cannot
+	# interfere with the parse forest.
 
 	foreach {type details} $instructions {
 	    dict with details {} ;# Import into scope ...
@@ -110,14 +137,19 @@ oo::class create marpa::semcore {
 		    if {[dict exists $myactionmap tok:$id]} {
 			set cmd [dict get $myactionmap tok:$id]
 			lappend cmd $id [Store get $value]
+
+			debug.marpa/semcore {[debug caller 1] | [format $f $i $type $cmd]}
 			set v [uplevel #0 $cmd]
 
 		    } elseif {[dict exists $myactionmap tok:@default]} {
 			set cmd [dict get $myactionmap tok:@default]
 			lappend cmd $id [Store get $value]
+
+			debug.marpa/semcore {[debug caller 1] | [format $f $i $type $cmd]}
 			set v [uplevel #0 $cmd]
 
 		    } else {
+			debug.marpa/semcore {[debug caller 1] | [format $f $i $type [list Store get $value]]}
 			set v [Store get $value]
 		    }
 		}
@@ -130,16 +162,21 @@ oo::class create marpa::semcore {
 		    if {[dict exists $myactionmap rule:$id]} {
 			set cmd [dict get $myactionmap rule:$id]
 			lappend cmd $id {*}[Get* $first $last]
+
+			debug.marpa/semcore {[debug caller 1] | [format $f $i $type $cmd]}
 			set v [uplevel #0 $cmd]
 
 		    } elseif {[dict exists $myactionmap rule:@default]} {
 			set cmd [dict get $myactionmap rule:@default]
 			lappend cmd $id {*}[Get* $first $last]
+
+			debug.marpa/semcore {[debug caller 1] | [format $f $i $type $cmd]}
 			set v [uplevel #0 $cmd]
 
 		    } else {
 			# Essentially copying and aggregating token values
 			# I.e. creation of an actual AST.
+			debug.marpa/semcore {[debug caller 1] | [format $f $i $type [list Get* $first $last]]}
 			set v [list $id {*}[Get* $first $last]]
 		    }
 		}
@@ -152,14 +189,19 @@ oo::class create marpa::semcore {
 		    if {[dict exists $myactionmap sym:$id]} {
 			set cmd [dict get $myactionmap sym:$id]
 			lappend cmd $id [Get $value]
+
+			debug.marpa/semcore {[debug caller 1] | [format $f $i $type $cmd]}
 			set v [uplevel #0 $cmd]
 
 		    } elseif {[dict exists $myactionmap sym:@default]} {
 			set cmd [dict get $myactionmap sym:@default]
 			lappend cmd $id [Get $value]
+
+			debug.marpa/semcore {[debug caller 1] | [format $f $i $type $cmd]}
 			set v [uplevel #0 $cmd]
 
 		    } else {
+			debug.marpa/semcore {[debug caller 1] | [format $f $i $type "\{\}"]}
 			set v {}
 		    }
 		}
