@@ -78,6 +78,7 @@ critcl::include    marpa.h
 
 critcl::tsources p_support.tcl  ; # General Tcl level utilities
 critcl::tsources p_location.tcl ; # Location/Range utilities
+critcl::tsources p_semstd.tcl   ; # Standard behaviours for SV handling
 critcl::tsources p_semstore.tcl ; # Store for semantic values
 				  # (interning strings)
 critcl::tsources p_semcore.tcl  ; # Common core for handling of step
