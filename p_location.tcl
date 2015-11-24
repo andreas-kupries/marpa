@@ -38,7 +38,20 @@ proc marpa::location::Show {x} {
     list $s $e '[char quote cstring $str]'
 }
 
-proc marpa::location::merge {a b} {
+proc marpa::location::null {args} {
+    debug.marpa/location {}
+    return {{} {} {}}
+}
+
+proc marpa::location::merge {args} {
+    debug.marpa/location {}
+    foreach b [lassign $args a] {
+	set a [marpa::location::merge2 $a $b]
+    }
+    return $a
+}
+
+proc marpa::location::merge2 {a b} {
     debug.marpa/location {}
 
     # Assume: a before b, adjacent.
