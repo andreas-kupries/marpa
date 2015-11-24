@@ -22,6 +22,7 @@ debug on marpa/lexer
 debug on marpa/location
 debug on marpa/parser
 debug on marpa/semcore
+debug on marpa/semstd
 debug on marpa/semstore
 debug on marpa/support
 
@@ -31,11 +32,60 @@ debug on marpa/support
 ## - Spec loading is forward.
 ## - Initialization is backward again.
 
+# SV part  Meaning
+# _______  _______
+# g1length .
+# g1start  .
+# length   L0 Return length of lexeme literal
+# lhs      .
+# name     G1 Return name of lhs symbol for the rule
+# rule     .
+# start    L0 Return start of lexeme literal in the input (offset, 0-based)
+# symbol   .
+# value    L0 Return literal value, i.e. string of lexeme
+# values   G1 Return list of subordinate sematic values.
+# _______  _______
+# Add-on
+# _______  _______
+# end      L0 Return end of lexeme literal in the input (offset, 0-based)
+# _______  _______
+
+# Specifying multiple parts causes all parts to be returned, wrapped
+# in a list.
+#
+# Lexer semantics is configurable, per-lexeme and global
+
+# Defaults:
+# lexemes: [value]
+# rules:   []		(nil, undef)
+
+#lexeme default =
+#  action => [start,length,value]
+#  bless => ::name
+#  forgiving => 1                   Use LATM.
+#                             TODO: Extend lexer to allow LTM operation.
+#                             TODO: Allow LTM vs LATM on per-lexeme basis.
+#                                   Done by adding/leaving out the ACS.
+# start
+# length
+# value
+
 proc B {args} { puts [info level 0] } ;# Backend simulation - Receives
 				       # parse results (semantic values)
 
 marpa::semstore create ST         ;# Store for token values.
-marpa::semcore create  GS ST {}   ;# G1 semantics, empty, builds AST
+
+# G1 semantics, empty, builds AST
+# :default ::= action => [start,length,values]
+#              bless  => ::lhs
+marpa::semcore create  GS ST
+
+#GS add-rule @default {marpa::semstd::builtin {start length values}}
+GS add-rule @default {marpa::semstd::builtin {name values}}
+# start
+# length
+# values
+
 marpa::parser create   G1 ST GS B ;# Parser engine - Structural
 				   # symbols and rules. User
 				   # semantics.
@@ -108,6 +158,9 @@ LG def {
 ##
 # These symbols are part of the interface to G1. They actually have
 # two ids associated with them, one each for L0 and G1.
+
+L0 latm   yes
+L0 action start length value
 
 L0 export {
     @lex-(         @lex-)            @lex-*            @lex-+                
@@ -317,6 +370,7 @@ G1 symbols {
 
 # VII. Structural rules.
 
+G1 action name values
 G1 rules {
     {statements				+ statement}
     {statement				:= {start rule}}

@@ -28,6 +28,9 @@ debug prefix marpa/parser {[debug caller] | }
 oo::class create marpa::parser {
     superclass marpa::engine
 
+    # State during configuration
+    variable myparts value
+
     ##
     # API self:
     #   cons    (sem, upstream) - Create, link, attach to upstream.
@@ -65,6 +68,7 @@ oo::class create marpa::parser {
 	## superclass only (GRAMMAR)
 
 	# Static configuration
+	set myparts {}
 
 	my ToStateStart
 
@@ -96,6 +100,45 @@ oo::class create marpa::parser {
 	return
     }
 
+    method Action {args} {
+	debug.marpa/parser {[debug caller] | }
+	set myparts $args
+	return
+    }
+
+    method := {lhs args} {
+	debug.marpa/parser {}
+	set rule [next $lhs {*}$args]
+	set lhsid [my 2ID1 $lhs]
+
+	set parts [my CompleteParts $myparts $lhsid $rule]
+	set cmd [list marpa::semstd::builtin $parts]
+	Semantics add-rule $rule $cmd
+	return $rule
+    }
+
+    method * {lhs args} {
+	debug.marpa/parser {}
+	set rule [next $lhs {*}$args]
+	set lhsid [my 2ID1 $lhs]
+
+	set parts [my CompleteParts $myparts $lhsid $rule]
+	set cmd [list marpa::semstd::builtin $parts]
+	Semantics add-rule $rule $cmd
+	return $rule
+    }
+
+    method + {lhs args} {
+	debug.marpa/parser {}
+	set rule [next $lhs {*}$args]
+	set lhsid [my 2ID1 $lhs]
+
+	set parts [my CompleteParts $myparts $lhsid $rule]
+	set cmd [list marpa::semstd::builtin $parts]
+	Semantics add-rule $rule $cmd
+	return $rule
+    }
+
     method Parse {name whitespace} {
 	debug.marpa/parser {}
 	# Set a start symbol. This makes the parser a parser.
@@ -118,8 +161,8 @@ oo::class create marpa::parser {
 	return
     }
 
-    method Enter {syms value} {
-	debug.marpa/parser {See '[join [my 2Name $syms] {' '}]' ([marpa::location::Show [Store get $value]])}
+    method Enter {syms sv} {
+	debug.marpa/parser {See '[join [my 2Name $syms] {' '}]' ([marpa::location::Show [Store get $sv]])}
 
 	if {![llength $syms]} {
 	    # The input has no acceptable symbols waiting.
@@ -140,7 +183,7 @@ oo::class create marpa::parser {
 	# Drive the low-level recognizer
 	debug.marpa/parser {forward recce}
 	foreach sym $syms {
-	    RECCE alternative $sym $value 1
+	    RECCE alternative $sym $sv 1
 	}
 	RECCE earleme-complete
 
@@ -196,6 +239,30 @@ oo::class create marpa::parser {
     method FailEEof {args} {
 	debug.marpa/parser {}
 	my E "Unable to process input, expected EOF" EXPECTED-EOF
+    }
+
+
+    # # ## ### ##### ######## #############
+    ## Completion of a rule, builtin semantic value operation.
+
+    method CompleteParts {parts id rid} {
+	set result {}
+	foreach part $parts {
+	    switch -exact -- $part {
+		g1start -
+		g1end   -
+		values  -
+		start   -
+		end     -
+		value   -
+		length  -
+		rule    { lappend result $part }
+		name    { lappend result [list $part [my 2Name1 $id]] }
+		symbol  { lappend result [list $part $id] }
+		lhs     { lappend result [list $part ??] }
+	    }
+	}
+	return $result
     }
 
     # # ## ### ##### ######## #############
@@ -261,6 +328,7 @@ oo::class create marpa::parser {
 	oo::objdefine [self] forward gate:       my GateSet
 	oo::objdefine [self] forward symbols     my Symbols
 	oo::objdefine [self] forward rules       my Rules
+	oo::objdefine [self] forward action      my Action
 	oo::objdefine [self] forward parse       my Parse
 	oo::objdefine [self] forward enter       my FailStart
 	oo::objdefine [self] forward eof         my FailStart
@@ -274,6 +342,7 @@ oo::class create marpa::parser {
 	oo::objdefine [self] forward gate:       my FailSetup
 	oo::objdefine [self] forward symbols     my FailSetup
 	oo::objdefine [self] forward rules       my FailSetup
+	oo::objdefine [self] forward action      my FailSetup
 	oo::objdefine [self] forward parse       my FailSetup
 	oo::objdefine [self] forward enter       my Enter
 	oo::objdefine [self] forward eof         my Eof
@@ -287,6 +356,7 @@ oo::class create marpa::parser {
 	#oo::objdefine [self] forward gate:       my FailSetup
 	#oo::objdefine [self] forward symbols     my FailSetup
 	#oo::objdefine [self] forward rules       my FailSetup
+	#oo::objdefine [self] forward action      my FailSetup
 	#oo::objdefine [self] forward parse       my FailSetup
 	oo::objdefine [self] forward enter       my FailEEof
 	#oo::objdefine [self] forward eof         my EofParse
@@ -300,6 +370,7 @@ oo::class create marpa::parser {
 	#oo::objdefine [self] forward gate:       my FailSetup
 	#oo::objdefine [self] forward symbols     my FailSetup
 	#oo::objdefine [self] forward rules       my FailSetup
+	#oo::objdefine [self] forward action      my FailSetup
 	#oo::objdefine [self] forward parse       my FailSetup
 	oo::objdefine [self] forward enter       my FailEof
 	oo::objdefine [self] forward eof         my FailEof

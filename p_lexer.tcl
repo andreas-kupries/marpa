@@ -29,12 +29,23 @@ debug define marpa/lexer
 oo::class create marpa::lexer {
     superclass marpa::engine
 
+    # Static configuration
+    variable mypublic     ;# sym id:local    -> (id:upstream, parts)
+    variable myacs        ;# sym id:upstream -> id:acs:local
+    variable mydiscard    ;# Set of ACS for discarded lexemes
+
+    # State during configuration
+    variable myparts value
+    variable mylatm  no
+
+    # Dynamic state
     variable myacceptable ;# Remembered (last call of 'Acceptable')
 			   # set of upstream acceptable symbols.
 			   # Required for the regeneration of our
 			   # recognizer after a discarded lexeme was
 			   # found in the input.
-    variable mydiscard    ;# Set of ACS for discarded lexemes
+
+    # Static state
     variable mynull       ;# Semantic value for ACS, empty string,
 			   # floating location
 
@@ -73,10 +84,12 @@ oo::class create marpa::lexer {
 	# Dynamic state for processing
 	set myacceptable {}   ;# Upstream gating.
 
-	# Static configuration
-	set myacceptable {}
-	set mydiscard    {}
-	set mynull       [Store put [my S.Null]]
+	# Static configuration and state
+	set mypublic  {}
+	set myacs     {}
+	set myparts   {}
+	set mydiscard {}
+	set mynull    [Store put [marpa::location::null]]
 
 	my ToStateStart
 	my SetupSemantics $semstore
@@ -110,6 +123,53 @@ oo::class create marpa::lexer {
 	return
     }
 
+    method LATM {flag} {
+	debug.marpa/lexer {[debug caller] | }
+	set mylatm $flag
+	return
+    }
+
+    method Action {args} {
+	debug.marpa/lexer {[debug caller] | }
+	set myparts $args
+	return
+    }
+
+    method Exports {names} {
+	debug.marpa/lexer {[debug caller] | }
+	# Create base symbols.
+	# Create the internal acceptability controls symbols (short: ACS) for the base
+	# Get the same symbols from upstream as well, the third set.
+
+	# NOTE! the ACS are created regardless of LATM or not. The
+	# LATM choice is made later, in "Discard", by adding it to the
+	# main rule of the lexeme, or not.
+
+	# We could possibly optimize by defering the operations below
+	# until the whole grammaer is loaded. This would also force a
+	# deferal in the handling of rules.
+
+	# Might be easier to rewrite the system after the bootstrap,
+	# when the lexer/parser is wholly generated from the SLIF,
+	# instead of written manually.
+
+	set local [my Symbols $names]
+	set acs   [my Symbols [my ToACS $names]]
+	set parse [Forward symbols $names]
+
+	# Map from local to parser symbol     (id -> id)
+	# Map from parser to local ACS symbol (id -> id)
+	foreach s $local p $parse a $acs n $names {
+	    dict set mypublic $s [list $p $myparts $mylatm]
+	    dict set myacs    $p $a
+
+	    debug.marpa/lexer {[debug caller 1] | PUBLIC ($n) = local:$s --> up:$p}
+	    debug.marpa/lexer {[debug caller 1] | ACS    ($n) = up:$p --> local:$a}
+	}
+
+	return $local
+    }
+
     method Discard {discards} {
 	debug.marpa/lexer {[debug caller] | }
 	# Set of discard symbols. This makes the lexer a
@@ -119,29 +179,58 @@ oo::class create marpa::lexer {
 
 	foreach sym $discards {
 	    set id [my 2ID1 $sym]
-	    if {![my IsPublic $id]} continue
+	    if {![dict exists $mypublic $id]} continue
 	    my E "Cannot discard exported symbol $sym" DISCARD-EXPORT $sym
 	}
 
 	set start [my Symbols [list @START]]
 	GRAMMAR sym-start: $start
 
-	# NOTE - Possible redo, stick the ACS here, into the
-	#        start -> lexeme rules, instead of the lexeme
-	#        rules itself.
-	##
-	# For sequence rules this gets rid of wrapper too!
-	##
-	# Moves handling of exported symbols out of the engine class
+	# Note how the ACS is added to these internal rules from the
+	# internal start symbol to the exported and discard symbols.
+	# Doing it here avoids cluttering the engine with
+	# lexer-specific data and code. No special rules, no wrapper
+	# rules for quantified rules. Only the helper rules here.
+	#
+	# TODO: This is the point where LATM vs LTM is injected into
+	# the runtime. Main todo is the global flag, and (un)setting
+	# the flag on exported symbols. Currently we are fixed to
+	# global LATM.
 
-	foreach symid [my PublicSymbols] {
-	    GRAMMAR rule-new $start $symid
+	# Add the ACS in front of the rules of the exported symbols.
+	# TODO: map of the lexeme parts
+
+	foreach symid [dict keys $mypublic] {
+
+	    lassign [dict get $mypublic $symid] pid parts latm
+	    set acs [dict get $myacs $pid]
+
+	    if {$latm} {
+		set id [GRAMMAR rule-new $start  $acs $symid]
+	    } else {
+		set id [GRAMMAR rule-new $start  $symid]
+	    }
+	    my Rule $id $start ;# required for semantics debug narrative
+
+	    set parts [my CompleteParts $parts $symid $pid $id]
+
+	    # (:D:) Set semantic, lexeme parser symbol, and per-lexeme semantic value
+	    GetSymbol add-rule $id [list marpa::semstd::K $pid]
+	    GetString add-rule $id [list marpa::semstd::builtin $parts]
 	}
 
+	# TODO: FUTURE: Need the ability to choose per-lexeme LATM vs
+	# LTM for the discard symbols as well.
+
 	set mydiscard [my Symbols [my ToACS $discards]]
+
 	foreach sym $discards acs $mydiscard {
 	    set id [my 2ID1 $sym]
-	    GRAMMAR rule-new $start   $acs $id
+	    set id [GRAMMAR rule-new $start   $acs $id]
+	    my Rule $id $start ;# required for semantics debug narrative
+
+	    # (:D:) set semantics, discard marker. Nothing for semantic value.
+	    GetSymbol add-rule $id [list marpa::semstd::K -1]
 	}
 
 	my Freeze
@@ -149,8 +238,8 @@ oo::class create marpa::lexer {
 	return
     }
 
-    method Enter {syms value} {
-	debug.marpa/lexer {[debug caller] | See '[join [my 2Name $syms] {' '}]' ([marpa::location::Show [Store get $value]])}
+    method Enter {syms sv} {
+	debug.marpa/lexer {[debug caller] | See '[join [my 2Name $syms] {' '}]' ([marpa::location::Show [Store get $sv]])}
 
 	if {![llength $syms]} {
 	    debug.marpa/lexer {[debug caller] | no acceptable symbols, close current lexeme}
@@ -170,7 +259,7 @@ oo::class create marpa::lexer {
 	# Drive the low-level recognizer
 	debug.marpa/lexer {[debug caller] | step recce engine}
 	foreach sym $syms {
-	    RECCE alternative $sym $value 1
+	    RECCE alternative $sym $sv 1
 	}
 	RECCE earleme-complete
 
@@ -223,10 +312,11 @@ oo::class create marpa::lexer {
 
 	if {[llength $syms] || [llength $mydiscard]} {
 	    foreach s $syms {
-		RECCE alternative [my ACS $s] $mynull 1
+		debug.marpa/lexer {[debug caller 1] | U ==> $s '[my 2Name1 $s]'}
+		RECCE alternative [dict get $myacs $s] $mynull 1
 	    }
 	    foreach s $mydiscard {
-		debug.marpa/lexer {[debug caller 1] | ==> $s '[my 2Name1 $s]'}
+		debug.marpa/lexer {[debug caller 1] | D ==> $s '[my 2Name1 $s]'}
 		RECCE alternative $s $mynull 1
 	    }
 	    RECCE earleme-complete
@@ -285,6 +375,40 @@ oo::class create marpa::lexer {
     # # ## ### ##### ######## #############
     ## Lexer - Completion of a lexeme
 
+    method CompleteParts {parts id pid rid} {
+	set result {}
+	foreach part $parts {
+	    switch -exact -- $part {
+		g1start -
+		g1end   -
+		values  -
+		start   -
+		end     -
+		value   -
+		length  -
+		rule    { lappend result $part }
+		name    { lappend result [list $part [my 2Name1 $id]] }
+		symbol  { lappend result [list $part $pid] }
+		lhs     { lappend result [list $part ??] }
+	    }
+	}
+	return $result
+    }
+
+    # Helper for debug narrative. No other use.
+    method ACS {idlist} {
+	set r {}
+	foreach id $idlist { lappend r [my 2Name1 [dict get $myacs $id]] }
+	return $r
+    }
+
+    method ToACS {names} {
+	debug.marpa/engine {[debug caller] | }
+	set r {}
+	foreach name $names { lappend r ACS:$name }
+	return $r
+    }
+
     method Complete {} {
 	debug.marpa/lexer {[debug caller] | }
 
@@ -305,13 +429,13 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | Redo:          $redo}
 
 	# II. Pull all the valid parses at this location
-	set steps {}
+	set forest {}
 	while {![catch {
-	    lappend steps [FOREST get-parse]
+	    lappend forest [FOREST get-parse]
 	}]} {}
 	FOREST destroy
 
-	debug.marpa/lexer {[debug caller] | Trees:         [llength $steps]}
+	debug.marpa/lexer {[debug caller] | Trees:         [llength $forest]}
 
 	# III. Evaluate the parses with the configured semantics,
 	#      getting one symbol and semantic value per.
@@ -321,20 +445,34 @@ oo::class create marpa::lexer {
 	set first yes
 	set recognized 0
 	set discarded  0
-	foreach tree $steps {
+	foreach tree $forest {
 	    # Note, we assume that the 'sv' is the same for all
 	    # symbols and generate it only on first.
-	    my Extract $tree $first symbol sv
-	    set first no
+
+	    # NOTE! The last step is always the reduction of the lexeme to
+	    # @START.  We drop that step as we want the lexeme itself.
+	    #set tree [lrange $tree 0 end-2]
+
+	    # Calculate lexeme parser symbol. See (:D:) for where the
+	    # semantics are set to get it here. No further translation
+	    # needed!
+	    set symbol [GetSymbol eval $tree]
 
 	    incr recognized
-	    if {![my IsPublic $symbol]} {
+	    # Discarded symbols are signaled by marker -1, see (:D:)
+	    if {$symbol < 0} {
 		incr discarded
 		continue
 	    }
 
-	    # Translate the found lexer symbol into the parser symbol
-	    lappend found [my ParseSym $symbol]
+	    # Extract the semantic value iff not discarded and first.
+	    if {$first} {
+		# Calculate the string value of the lexeme.
+		set sv [Store put [GetString eval $tree]]
+	    }
+	    set first no
+
+	    lappend found $symbol
 	}
 
 	# Reduce the symbol to the unique subset. Lexing ambiguities
@@ -346,7 +484,7 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | Recognized: $recognized}
 	debug.marpa/lexer {[debug caller] | Discarded:  $discarded}
 	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] ($found)}
-	debug.marpa/lexer {[debug caller] | Semantic:   $sv ([marpa::location::Show [Store get $sv]])}
+	debug.marpa/lexer {[debug caller] | Semantic:   $sv ([expr {($sv < 0) ? "" : [marpa::location::Show [Store get $sv]]}])}
 
 	# NOTE! Due to the usage of ACS when the RECCE was initalized
 	# at this point we can have only a subset of the acceptable
@@ -358,7 +496,7 @@ oo::class create marpa::lexer {
 	# The current recognizer is done.
 	RECCE destroy
 
-	debug.marpa/lexer {[debug caller] | Have '[join [my 2Name [my ACSn $found]] {' '}]' ${sv}=([marpa::location::Show [Store get $sv]])}
+	debug.marpa/lexer {[debug caller] | Have '[join [my ACS $found] {' '}]' ${sv}=([expr {($sv < 0) ? "" : [marpa::location::Show [Store get $sv]]}])}
 
 	if {($recognized > 0) && ($recognized == $discarded)} {
 	    # We found symbols, and only discarded symbols.
@@ -376,6 +514,8 @@ oo::class create marpa::lexer {
 	    # symbols, and generate a new RECCE, see 'Acceptable'.
 
 	    debug.marpa/lexer {[debug caller] | Push ...}
+
+	    # ASSERT (sv >= 0)
 
 	    Forward enter $found $sv
 
@@ -398,19 +538,24 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | }
 
 	# Standard semantics for lexemes.
-	marpa::semcore create GetSymbol \
-	    $semstore \
-	    [dict create \
-		 rule:@default [mymethod S.Save] \
-		 null:@default [mymethod S.Nop] \
-		 tok:@default  [mymethod S.Nop]]
+	# I. Extract lexeme symbol. The exported and discarded symbols
+	#    override the rule default.
+	marpa::semcore create GetSymbol $semstore
+	GetSymbol add-rule  @default marpa::semstd::nop
+	GetSymbol add-null  @default marpa::semstd::nop
+	GetSymbol add-token @default marpa::semstd::nop
 	     
-	marpa::semcore create GetString \
-	    $semstore \
-	    [dict create \
-		 rule:@default [mymethod S.Merge] \
-		 null:@default [mymethod S.Null]  \
-		 sv            marpa::location::Show]
+	# II. Extract the semantic value. The exported override the
+	#     rule default with grammar data. The default simply
+	#     merges lexeme ranges.
+
+	marpa::semcore create GetString $semstore \
+	    {sv marpa::location::Show}
+	GetString add-rule  @default marpa::semstd::locmerge
+	GetString add-null  @default marpa::location::null
+
+	# The exported symbols will declare their own rules as per the
+	# specification in the grammar.
 
 	debug.marpa/semcore {[marpa::D {
 	    # Provide semcore with access to engine internals for use
@@ -421,50 +566,6 @@ oo::class create marpa::lexer {
 	}]}
 	debug.marpa/lexer {[debug caller] | /ok}
 	return
-    }
-
-    method Extract {steps first symv semv} {
-	debug.marpa/lexer {[debug caller 1] | }
-	upvar 1 $symv symbol $semv sv
-
-	# NOTE! The last step is always the reduction of the lexeme to
-	# @START.  We drop that step as we want the lexeme itself.
-	set steps [lrange $steps 0 end-2]
-
-	if {$first} {
-	    # Calculate the string value of the lexeme.
-	    set sv [Store put [GetString eval $steps]]
-	}
-
-	# Calculate lexeme symbol (id)
-	set symbol [my LHSid [GetSymbol eval $steps]]
-
-	debug.marpa/lexer {[debug caller 1] | symbol   = $symbol '[my 2Name1 $symbol]'}
-	debug.marpa/lexer {[debug caller 1] | semantic = $sv ([marpa::location::Show [Store get $sv]])}
-	return
-    }
-
-    method S.Null {args} {
-	debug.marpa/lexer {[debug caller] | }
-	return {{} {} {}}
-    }
-
-    method S.Merge {id args} {
-	debug.marpa/lexer {[debug caller] | }
-	foreach b [lassign $args a] {
-	    set a [marpa::location merge $a $b]
-	}
-	return $a
-    }
-
-    method S.Save {id args} {
-	debug.marpa/lexer {[debug caller] | -> '[my LHSname $id]'}
-	return $id
-    }
-
-    method S.Nop {args} {
-	debug.marpa/lexer {[debug caller] | }
-	return {}
     }
 
     # # ## ### ##### ######## #############
@@ -487,6 +588,8 @@ oo::class create marpa::lexer {
 	oo::objdefine [self] forward gate:       my GateSet
 	oo::objdefine [self] forward symbols     my Symbols
 	oo::objdefine [self] forward export      my Exports
+	oo::objdefine [self] forward action      my Action
+	oo::objdefine [self] forward latm        my LATM
 	oo::objdefine [self] forward rules       my Rules
 	oo::objdefine [self] forward discard     my Discard
 	oo::objdefine [self] forward enter       my FailStart
@@ -503,6 +606,8 @@ oo::class create marpa::lexer {
 	oo::objdefine [self] forward gate:       my FailSetup
 	oo::objdefine [self] forward symbols     my FailSetup
 	oo::objdefine [self] forward export      my FailSetup
+	oo::objdefine [self] forward action      my FailSetup
+	oo::objdefine [self] forward latm        my FailSetup
 	oo::objdefine [self] forward rules       my FailSetup
 	oo::objdefine [self] forward discard     my FailSetup
 	oo::objdefine [self] forward enter       my Enter
@@ -519,6 +624,8 @@ oo::class create marpa::lexer {
 	#oo::objdefine [self] forward gate:       my FailSetup
 	#oo::objdefine [self] forward symbols     my FailSetup
 	#oo::objdefine [self] forward export      my FailSetup
+	#oo::objdefine [self] forward action      my FailSetup
+	#oo::objdefine [self] forward latm        my FailSetup
 	#oo::objdefine [self] forward rules       my FailSetup
 	#oo::objdefine [self] forward discard     my FailSetup
 	oo::objdefine [self] forward enter       my FailEof
