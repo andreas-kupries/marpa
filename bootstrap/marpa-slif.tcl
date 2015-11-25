@@ -356,7 +356,7 @@ G1 rules {
     {{statement group}			:M {0 2} @lex-\{ statements @lex-\}}
     {{start rule}			:M {0 1} @lex-:start {op declare bnf} symbol}
     {{start rule}			:M {0 1 2} @lex-start @lex-symbol @lex-is symbol}
-    {{default rule}			:= @lex-:default {op declare bnf} {adverb list}}
+    {{default rule}			:M {0 1} @lex-:default {op declare bnf} {adverb list}}
     {{lexeme default statement}		:M {0 1 2} @lex-lexeme @lex-default @lex-= {adverb list}}
     {{discard default statement}	:M {0 1 2} @lex-discard @lex-default @lex-= {adverb list}}
     {{priority rule}			:= lhs {op declare} priorities}

@@ -40,10 +40,10 @@ statement ::= <start rule> | <empty rule>
   | <inaccessible statement>
 
 <null statement> ::= ';'
-<statement group> ::= ('{') statements '}'
+<statement group> ::= ('{') statements ('}')
 <start rule> ::= (':start' <op declare bnf>) symbol
 <start rule> ::= ('start' 'symbol' 'is') symbol
-<default rule> ::= ':default' <op declare bnf> <adverb list>
+<default rule> ::= (':default' <op declare bnf>) <adverb list>
 <lexeme default statement> ::= ('lexeme' 'default' '=') <adverb list>
 <discard default statement> ::= ('discard' 'default' '=') <adverb list>
 <priority rule> ::= lhs <op declare> priorities
