@@ -8,6 +8,11 @@
 # Common class to lexer and parser. Holds the data structures for
 # mapping symbol names to ids, and the methods to define a grammar.
 
+# TODO: strict vs easy mode.
+# TODO: In easy mode a symbol is automatically created when found in a rule and not known.
+# TODO: strict mode throws an error instead.
+# TODO: Currently we only have strict mode.
+
 # # ## ### ##### ######## #############
 ## Requisites
 

@@ -49,4 +49,18 @@ proc marpa::import {cmd {dst {}} {up 2}} {
 }
 
 # # ## ### ##### ######## #############
+## Filter a list by removing the indices found in mask.
+## ATTENTION: Assumes that the mask is sorted in decreasing order, to make it easy to perform.
+
+proc marpa::filter {values mask} {
+    debug.marpa/support {}
+    foreach pos $mask {
+	set values [lreplace [K $values [unset values]] $pos $pos]
+    }
+    return $values
+}
+
+proc marpa::K {x y} { return $x }
+
+# # ## ### ##### ######## #############
 return

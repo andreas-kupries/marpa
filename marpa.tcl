@@ -91,6 +91,7 @@ critcl::tsources p_lexer.tcl    ; # Lexer, aggregate characters to
 				  # lexemes
 critcl::tsources p_parser.tcl   ; # Parser, structure lexemes into
 				  # ASTs
+critcl::tsources p_grammar.tcl  ; # SLIF grammar container
 
 # # ## ### ##### ######## #############
 ## Main C section.

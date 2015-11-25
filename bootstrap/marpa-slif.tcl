@@ -17,6 +17,7 @@ package require char ;# quoting
 
 debug on marpa/engine
 debug on marpa/gate
+debug on marpa/grammar
 debug on marpa/inbound
 debug on marpa/lexer
 debug on marpa/location
@@ -32,46 +33,8 @@ debug on marpa/support
 ## - Spec loading is forward.
 ## - Initialization is backward again.
 
-# SV part  Meaning
-# _______  _______
-# g1length .
-# g1start  .
-# length   L0 Return length of lexeme literal
-# lhs      .
-# name     G1 Return name of lhs symbol for the rule
-# rule     .
-# start    L0 Return start of lexeme literal in the input (offset, 0-based)
-# symbol   .
-# value    L0 Return literal value, i.e. string of lexeme
-# values   G1 Return list of subordinate sematic values.
-# _______  _______
-# Add-on
-# _______  _______
-# end      L0 Return end of lexeme literal in the input (offset, 0-based)
-# _______  _______
-
-# Specifying multiple parts causes all parts to be returned, wrapped
-# in a list.
-#
-# Lexer semantics is configurable, per-lexeme and global
-
-# Defaults:
-# lexemes: [value]
-# rules:   []		(nil, undef)
-
-#lexeme default =
-#  action => [start,length,value]
-#  bless => ::name
-#  forgiving => 1                   Use LATM.
-#                             TODO: Extend lexer to allow LTM operation.
-#                             TODO: Allow LTM vs LATM on per-lexeme basis.
-#                                   Done by adding/leaving out the ACS.
-# start
-# length
-# value
-
-proc B {args} { puts [info level 0] } ;# Backend simulation - Receives
-				       # parse results (semantic values)
+# Write semantic value, parse tree
+proc B {args} { puts [info level 0] }
 
 marpa::semstore create ST         ;# Store for token values.
 
@@ -390,24 +353,24 @@ G1 rules {
     {statement				:= {current lexer statement}}
     {statement				:= {inaccessible statement}}
     {{null statement}			:= @lex-\;}
-    {{statement group}			:= @lex-\{ statements @lex-\}}
-    {{start rule}			:= @lex-:start {op declare bnf} symbol}
-    {{start rule}			:= @lex-start @lex-symbol @lex-is symbol}
+    {{statement group}			:M {0 2} @lex-\{ statements @lex-\}}
+    {{start rule}			:M {0 1} @lex-:start {op declare bnf} symbol}
+    {{start rule}			:M {0 1 2} @lex-start @lex-symbol @lex-is symbol}
     {{default rule}			:= @lex-:default {op declare bnf} {adverb list}}
-    {{lexeme default statement}		:= @lex-lexeme @lex-default @lex-= {adverb list}}
-    {{discard default statement}	:= @lex-discard @lex-default @lex-= {adverb list}}
+    {{lexeme default statement}		:M {0 1 2} @lex-lexeme @lex-default @lex-= {adverb list}}
+    {{discard default statement}	:M {0 1 2} @lex-discard @lex-default @lex-= {adverb list}}
     {{priority rule}			:= lhs {op declare} priorities}
     {{empty rule}			:= lhs {op declare} {adverb list}}
     {{quantified rule}			:= lhs {op declare} {single symbol} quantifier {adverb list}}
     {quantifier                         := @lex-*}
     {quantifier                         := @lex-+}
-    {{discard rule}			:= @lex-:discard {op declare match} {single symbol} {adverb list}}
-    {{lexeme rule}			:= @lex-:lexeme {op declare match} symbol {adverb list}}
-    {{completion event declaration}	:= @lex-event {event initialization} @lex-= @lex-completed {symbol name}}
-    {{nulled event declaration}		:= @lex-event {event initialization} @lex-= @lex-nulled {symbol name}}
-    {{prediction event declaration}	:= @lex-event {event initialization} @lex-= @lex-predicted {symbol name}}
-    {{current lexer statement}		:= @lex-current @lex-lexer @lex-is {lexer name}}
-    {{inaccessible statement}		:= @lex-inaccessible @lex-is {inaccessible treatment} @lex-by @lex-default}
+    {{discard rule}			:M {0 1} @lex-:discard {op declare match} {single symbol} {adverb list}}
+    {{lexeme rule}			:M {0 1} @lex-:lexeme {op declare match} symbol {adverb list}}
+    {{completion event declaration}	:M {0 2 3} @lex-event {event initialization} @lex-= @lex-completed {symbol name}}
+    {{nulled event declaration}		:M {0 2 3} @lex-event {event initialization} @lex-= @lex-nulled {symbol name}}
+    {{prediction event declaration}	:M {0 2 3} @lex-event {event initialization} @lex-= @lex-predicted {symbol name}}
+    {{current lexer statement}		:M {0 1 2} @lex-current @lex-lexer @lex-is {lexer name}}
+    {{inaccessible statement}		:M {0 1 3 4} @lex-inaccessible @lex-is {inaccessible treatment} @lex-by @lex-default}
     {{inaccessible treatment}		:= @lex-warn}
     {{inaccessible treatment}		:= @lex-ok}
     {{inaccessible treatment}		:= @lex-fatal}
@@ -434,29 +397,29 @@ G1 rules {
     {{adverb item}			:= naming}
     {{adverb item}			:= {null adverb}}
     {{null adverb}			:= @lex-,}
-    {action				:= @lex-action @lex-=> {action name}}
-    {{left association}			:= @lex-assoc @lex-=> @lex-left}
-    {{right association}		:= @lex-assoc @lex-=> @lex-right}
-    {{group association}		:= @lex-assoc @lex-=> @lex-group}
-    {{separator specification}		:= @lex-separator @lex-=> {single symbol}}
-    {{proper specification}		:= @lex-proper @lex-=> boolean}
-    {{rank specification}		:= @lex-rank @lex-=> {signed integer}}
-    {{null ranking specification}	:= @lex-null-ranking @lex-=> {null ranking constant}}
-    {{null ranking specification}	:= @lex-null @lex-rank @lex-=> {null ranking constant}}
+    {action				:M {0 1} @lex-action @lex-=> {action name}}
+    {{left association}			:M {0 1 2} @lex-assoc @lex-=> @lex-left}
+    {{right association}		:M {0 1 2} @lex-assoc @lex-=> @lex-right}
+    {{group association}		:M {0 1 2} @lex-assoc @lex-=> @lex-group}
+    {{separator specification}		:M {0 1} @lex-separator @lex-=> {single symbol}}
+    {{proper specification}		:M {0 1} @lex-proper @lex-=> boolean}
+    {{rank specification}		:M {0 1} @lex-rank @lex-=> {signed integer}}
+    {{null ranking specification}	:M {0 1} @lex-null-ranking @lex-=> {null ranking constant}}
+    {{null ranking specification}	:M {0 1 2} @lex-null @lex-rank @lex-=> {null ranking constant}}
     {{null ranking constant}		:= @lex-low}
     {{null ranking constant}		:= @lex-high}
-    {{priority specification}		:= @lex-priority @lex-=> {signed integer}}
-    {{pause specification}		:= @lex-pause @lex-=> {before or after}}
-    {{event specification}		:= @lex-event @lex-=> {event initialization}}
+    {{priority specification}		:M {0 1} @lex-priority @lex-=> {signed integer}}
+    {{pause specification}		:M {0 1} @lex-pause @lex-=> {before or after}}
+    {{event specification}		:M {0 1} @lex-event @lex-=> {event initialization}}
     {{event initialization}		:= {event name} {event initializer}}
-    {{event initializer}		:= @lex-= {on or off}}
+    {{event initializer}		:M {0} @lex-= {on or off}}
     {{on or off}			:= @lex-on}
     {{on or off}			:= @lex-off}
     {{event initializer}		:= }
-    {{latm specification}		:= @lex-forgiving @lex-=> boolean}
-    {{latm specification}		:= @lex-latm @lex-=> boolean}
-    {{blessing}				:= @lex-bless @lex-=> {blessing name}}
-    {{naming}				:= @lex-name @lex-=> {alternative name}}
+    {{latm specification}		:M {0 1} @lex-forgiving @lex-=> boolean}
+    {{latm specification}		:M {0 1} @lex-latm @lex-=> boolean}
+    {{blessing}				:M {0 1} @lex-bless @lex-=> {blessing name}}
+    {{naming}				:M {0 1} @lex-name @lex-=> {alternative name}}
     {{alternative name}			:= {standard name}}
     {{alternative name}			:= {single quoted name}}
     {{lexer name}			:= {standard name}}
@@ -471,7 +434,7 @@ G1 rules {
     {{rhs primary}			:= {single symbol}}
     {{rhs primary}			:= {single quoted string}}
     {{rhs primary}			:= {parenthesized rhs primary list}}
-    {{parenthesized rhs primary list}	:= @lex-( {rhs primary list} @lex-)}
+    {{parenthesized rhs primary list}	:M {0 2} @lex-( {rhs primary list} @lex-)}
     {{rhs primary list}			+ {rhs primary}}
     {{single symbol}			:= symbol}
     {{single symbol}			:= {character class}}

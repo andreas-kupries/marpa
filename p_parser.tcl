@@ -106,9 +106,25 @@ oo::class create marpa::parser {
 	return
     }
 
-    method := {lhs args} {
+    method :M {lhs __ mask args} {
 	debug.marpa/parser {}
-	set rule [next $lhs {*}$args]
+
+	# TODO: validate |mask| <= |args| |mask|
+	# TODO: validate fa.i in mask: 0 <= i <= |args|-1
+
+	# Alternate: boolean mask vector, possibly easier to filter
+	# with, faster, at expense of memory. Definitely the way to go
+	# for C.
+
+	set rule [my := $lhs __ {*}$args]
+
+	Semantics mask $rule $mask
+	return $rule
+    }
+
+    method := {lhs __ args} {
+	debug.marpa/parser {}
+	set rule [next $lhs __ {*}$args]
 	set lhsid [my 2ID1 $lhs]
 
 	set parts [my CompleteParts $myparts $lhsid $rule]

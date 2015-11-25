@@ -28,6 +28,7 @@ debug prefix marpa/semcore {} ;# eval takes large argument, keep out.
 
 oo::class create marpa::semcore {
     variable myactionmap ;# (rules|symbols|tokens) -> actions (cmdpfx)
+    variable mymask      ;# rule -> mask for sv
 
     constructor {semstore {actionmap {}}} {
 	debug.marpa/semcore {[debug caller] | [marpa::D {
@@ -49,12 +50,21 @@ oo::class create marpa::semcore {
 
 	# Configuration
 	set myactionmap $actionmap
+	set mymask      {}
 
 	link {Put   Put}
 	link {Get   Get}
 	link {Get*  Range}
 
 	debug.marpa/semcore {[debug caller 2] | }
+	return
+    }
+
+    method mask {id mask} {
+	debug.marpa/semcore {[debug caller] |}
+	# Sorted in decreasing order to match the expectations of
+	# "marpa::filter" called in "eval".
+	dict set mymask $id [lsort -integer -decreasing $mask]
 	return
     }
 
@@ -122,7 +132,10 @@ oo::class create marpa::semcore {
 			dict set details token  [Engine 2Name1 $id]
 			dict set details sv     [TSV [Store get $value]]
 		    }
-		    rule  { dict set details lhs    [Engine LHSname $id] }
+		    rule  {
+			dict set details lhs    [Engine LHSname $id]
+			dict set details filter [dict exists $mymask $id]
+		    }
 		    null  { dict set details symbol [Engine 2Name1  $id] }
 		}
 	    }][format $f $i $type $details]}
@@ -149,7 +162,7 @@ oo::class create marpa::semcore {
 			set v [uplevel #0 $cmd]
 
 		    } else {
-			debug.marpa/semcore {[debug caller 1] | [format $f $i $type [list Store get $value]]}
+			debug.marpa/semcore {[debug caller 1] | [format $f $i $type <pass>]}
 			set v [Store get $value]
 		    }
 		}
@@ -159,16 +172,22 @@ oo::class create marpa::semcore {
 		    # 2. Default action capturing any rule
 		    # 3. Hardwired action
 
+		    # But first, remove the unwanted elements
+		    set values [Get* $first $last]
+		    if {[dict exists $mymask $id]} {
+			set values [marpa::filter $values [dict get $mymask $id]]
+		    }
+
 		    if {[dict exists $myactionmap rule:$id]} {
 			set cmd [dict get $myactionmap rule:$id]
-			lappend cmd $id {*}[Get* $first $last]
+			lappend cmd $id {*}$values
 
 			debug.marpa/semcore {[debug caller 1] | [format $f $i $type $cmd]}
 			set v [uplevel #0 $cmd]
 
 		    } elseif {[dict exists $myactionmap rule:@default]} {
 			set cmd [dict get $myactionmap rule:@default]
-			lappend cmd $id {*}[Get* $first $last]
+			lappend cmd $id {*}$values
 
 			debug.marpa/semcore {[debug caller 1] | [format $f $i $type $cmd]}
 			set v [uplevel #0 $cmd]
@@ -176,8 +195,8 @@ oo::class create marpa::semcore {
 		    } else {
 			# Essentially copying and aggregating token values
 			# I.e. creation of an actual AST.
-			debug.marpa/semcore {[debug caller 1] | [format $f $i $type [list Get* $first $last]]}
-			set v [list $id {*}[Get* $first $last]]
+			debug.marpa/semcore {[debug caller 1] | [format $f $i $type <id,values>]}
+			set v [list $id {*}$values]
 		    }
 		}
 		null {
@@ -201,7 +220,7 @@ oo::class create marpa::semcore {
 			set v [uplevel #0 $cmd]
 
 		    } else {
-			debug.marpa/semcore {[debug caller 1] | [format $f $i $type "\{\}"]}
+			debug.marpa/semcore {[debug caller 1] | [format $f $i $type "<>"]}
 			set v {}
 		    }
 		}
