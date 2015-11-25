@@ -54,7 +54,11 @@ foreach s {
     {parenthesized rhs primary list}    {rhs primary list}    {single symbol}
     symbol    {symbol name}    {action name}
 } {
-    interp alias {} $s {} PR $s
+    foreach i {
+	0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+    } {
+	interp alias {} $s/$i {} PR $s/$i
+    }
 }
 
 proc unknown {args} {

@@ -29,7 +29,7 @@ oo::class create marpa::parser {
     superclass marpa::engine
 
     # State during configuration
-    variable myparts value
+    variable myparts
 
     ##
     # API self:
@@ -68,7 +68,9 @@ oo::class create marpa::parser {
 	## superclass only (GRAMMAR)
 
 	# Static configuration
-	set myparts {}
+	set myparts  value
+	set mypreviouslhs -1
+	set myplhscount   0
 
 	my ToStateStart
 
@@ -122,6 +124,8 @@ oo::class create marpa::parser {
 	return $rule
     }
 
+    variable mypreviouslhs
+    variable myplhscount
     method := {lhs __ args} {
 	debug.marpa/parser {}
 	set rule [next $lhs __ {*}$args]
@@ -130,6 +134,8 @@ oo::class create marpa::parser {
 	set parts [my CompleteParts $myparts $lhsid $rule]
 	set cmd [list marpa::semstd::builtin $parts]
 	Semantics add-rule $rule $cmd
+
+	set mypreviouslhs $lhsid
 	return $rule
     }
 
@@ -273,7 +279,17 @@ oo::class create marpa::parser {
 		value   -
 		length  -
 		rule    { lappend result $part }
-		name    { lappend result [list $part [my 2Name1 $id]] }
+		name    {
+		    if {$mypreviouslhs != $id} {
+			set myplhscount 0
+		    } else {
+			incr myplhscount
+		    }
+		    # Generate differing names for the same lhs, using a sequence number.
+		    # Allows semantics to distinguish the alternative rules
+		    # TODO: See if that is covered by the existing array descriptor semantics
+		    lappend result [list $part [my 2Name1 $id]/$myplhscount]
+		}
 		symbol  { lappend result [list $part $id] }
 		lhs     { lappend result [list $part ??] }
 	    }
