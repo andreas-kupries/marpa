@@ -2,6 +2,11 @@
 # account for Tcl's differences with regard to character classes. Both
 # in the use of such in the grammar itself, and in what is allowed by
 # the grammar.
+##
+# Annotated with information taken from the Marap POD documentation,
+# about the context-sensitive rules of processing a SLIF grammar.
+# Annotations are of the form "@@ xxx : text" where "xxx" is a unique
+# marker identifying the annotation in question.
 
 # Copyright 2015 Jeffrey Kegler
 # This file is part of Marpa::R2.  Marpa::R2 is free software: you can
@@ -43,14 +48,59 @@ statement ::= <start rule> | <empty rule>
 <statement group> ::= ('{') statements ('}')
 <start rule> ::= (':start' <op declare bnf>) symbol
 <start rule> ::= ('start' 'symbol' 'is') symbol
+
 <default rule> ::= (':default' <op declare bnf>) <adverb list>
+
+# @@ DD.0     : The adverbs set defaults for G1 rule behaviour
+# @@ DD.x     : Adverb 'bless' is allowed
+# @@ DD.x     : Adverb 'action' is allowed
+# @@ DD.x.1   : Array descriptor actions are allowed
+# @@ DD.x.1.0 : Descriptor 'name' is allowed.
+# @@ DD.x.1.1 : Descriptor 'action' is allowed.
+# @@ DD.x.1.x : No other descriptors are allowed
+# @@ DD.x     : No other adverbs are allowed
+
 <lexeme default statement> ::= ('lexeme' 'default' '=') <adverb list>
+
+# @@ LD.0   : The adverbs set defaults for L0 lexer behaviour
+# @@ LD.x   : Adverb 'latm' (== 'forgiving') is allowed
+# @@ LD.x   : Adverb 'bless' is allowed
+# @@ LD.x   : Adverb 'action' is allowed
+# @@ LD.x.1 : Array descriptor actions are allowed
+# @@ LD.x.2 : Descriptor 'value' is allowed.
+# @@ LD.x.3 : Array Descriptor 'value' is default lexeme action
+# @@ LD.x   : No other adverbs are allowed
+
+# @@ LD.x : LD is a global statement. Its location in the grammar has
+# @@        no effect on results.
+
 <discard default statement> ::= ('discard' 'default' '=') <adverb list>
+
+# @@ DD.x : DD is a global statement. Its location in the grammar has
+# @@        no effect on results.
+
 <priority rule> ::= lhs <op declare> priorities
+
+# @@ PR.0 : Duplicate rules are not allowed. A rule is a duplicate of
+# @@        another if both have the same lhs, and the same rhs (same
+# @@        length, same symbols, same order). Note that semantic
+# @@        masking is not relevant to constraint.
+
 <empty rule> ::= lhs <op declare> <adverb list>
 <quantified rule> ::= lhs <op declare> <single symbol> quantifier <adverb list>
+
+# @@ QR.0 : The lhs of a quantified rule cannot be used as the lhs of
+# @@        _any_ other rule. (Changes.pod)
+
 <discard rule> ::= (':discard' <op declare match>) <single symbol> <adverb list>
+
+# @@ DR.0 : Multiple discard rules may occur, the symbol accumulate
+# @@ DR.1 : The rule declares to ignore the symbol for structural processing
+# @@ DR.2 : The symbol must be an L0 symbol
+# @@ DR.x : [AK] The symbol must not be used as RHS in any G1 rule.
+
 <lexeme rule> ::= (':lexeme' <op declare match>) symbol <adverb list>
+
 <completion event declaration> ::= ('event') <event initialization> ('=' 'completed') <symbol name>
 <nulled event declaration> ::= ('event') <event initialization> ('=' 'nulled') <symbol name>
 <prediction event declaration> ::= ('event') <event initialization> ('=' 'predicted') <symbol name>
@@ -68,6 +118,11 @@ alternatives ::= alternative+
     separator => <op equal priority> proper => 1
 
 alternative ::= rhs <adverb list>
+
+# @@ AL.0   : Adverb 'action' is allowed
+# @@ AL.0.1 : Named actions are allowed
+# @@ AL.1   : Adverb 'assoc' is allowed
+# @@ AL.1   : Adverb 'bless' is allowed
 
 <adverb list> ::= <adverb list items>
 <adverb list items> ::= <adverb item>*
@@ -87,6 +142,10 @@ action ::= ('action' '=>') <action name>
 <separator specification> ::= ('separator' '=>') <single symbol>
 <proper specification> ::= ('proper' '=>') boolean
 <rank specification> ::= ('rank' '=>') <signed integer>
+
+# @@ RS.0 : The signed integer used for ranking must cover the range
+# @@        -(2^28-1) to 2^28-1 at minimum.
+
 <null ranking specification> ::= ('null-ranking' '=>') <null ranking constant>
 <null ranking specification> ::= ('null' 'rank' '=>') <null ranking constant>
 <null ranking constant> ::= 'low' | 'high'
@@ -99,8 +158,15 @@ action ::= ('action' '=>') <action name>
 <on or off> ::= 'on' | 'off'
 <event initializer> ::= # empty
 
+# @@ ES.0 : Events without an explicit initializer are 'on'
+# @@ EI.0 : Events without an explicit initializer are 'on'
+
 <latm specification> ::= ('forgiving' '=>') boolean
 <latm specification> ::= ('latm' '=>') boolean
+
+# @@ LS.0 : Allowed in 'lexeme default'
+# @@ LS.1 : Default setting is off (false)
+
 <blessing> ::= ('bless' '=>') <blessing name>
 <naming> ::= ('name' '=>') <alternative name>
 
@@ -112,8 +178,26 @@ action ::= ('action' '=>') <action name>
     | <reserved event name>
 <reserved event name> ~ '::' <one or more word characters>
 
+# @@ EN.SQN.0 : Whitespace in single-quoted event names is normalized
+# @@            as in BN.0
+
+# @@ REN.0 : ":symbol" is a reserved event name
+# @@ REN.1 : This is the whole set of reserved event names
+# @@ REN.2 : ":symbol" is allowed in :discard rules
+# @@ REN.3 : ":symbol" is allowed in discard default rules
+# @@ REN.4 : ":symbol" is not allowed anywhere else
+
+# @@ REN.5 : ":symbol" is substituted by the actual name of the event,
+# @@         automatically derived from the RHS.
+
+# @@ REN.5.1 : For a char class the event name is the literal of the class.
+# @@ REN.5.2 : For a symbol the event name is the name of that symbol
+
 <blessing name> ::= <standard name>
 <blessing name> ::= <reserved blessing name>
+
+# @@ BN.0 : "::name" is a valid reserved name (lexeme default)
+# @@ BN.1 : "::lhs" is a valid reserved name (:default)
 
 lhs ::= <symbol name>
 rhs ::= <rhs primary>+
@@ -128,8 +212,20 @@ rhs ::= <rhs primary>+
 symbol ::= <symbol name>
 <symbol name> ::= <bare name>
 <symbol name> ::= <bracketed name>
+
+# @@ SN.0 : The Tcl Marpa binding reserves symbol names starting with
+# @@        the character @ (ASCII \100) for its own use.
+
 <action name> ::= <Perl name>
 <action name> ::= <reserved action name>
+
+# @@ AN.0 : "::undef" is a reserved action name (Changes.pod).
+# @@        Returns <undef> as SV.
+
+# @@ AN.1 : "::first" is a reserved action name (Marpa_R2.pod).
+# @@        Returns first child SV as SV.  In case of no children the
+# @@        SV is <undef>
+
 <action name> ::= <array descriptor>
 
 :discard ~ whitespace
@@ -174,6 +270,11 @@ boolean ~ [01]
 <bracketed name> ~ '<' <bracketed name string> '>'
 <bracketed name string> ~ [\s\w]+
 
+# @@ BN.0   : Whitespace in bracketed symbol names is normalized.
+# @@ BN.0.0 : Leading and trailing whitespace is discarded.
+# @@ BN.0.1 : Any sequence of WS is reduced to a single ASCII space
+# @@          char (hex 20).
+
 <array descriptor> ~ <array descriptor left bracket> <result item descriptor list> <array descriptor right bracket>
 <array descriptor left bracket> ~ '[' 
 <array descriptor left bracket> ~ '[' whitespace
@@ -186,6 +287,17 @@ boolean ~ [01]
   | 'g1start' | 'g1length'
   | 'name' | 'lhs' | 'symbol' | 'rule' 
   | 'value' | 'values'
+
+# @@ RID.0 : Using multiple AD items causes return of list of the part
+# @@         values as semantic value.
+
+# @@ RID.1 : L0 AD 'value' returns literal string value of the lexeme
+# @@         as semantic value.
+
+# @@ RID.2 : G1 AD 'name' returns name of the rule as semantic value.
+
+# @@ RID.3 : G1 AD 'values' returns array of the chilren's semantic
+# @@         value as semantic value.
 
 # In single quoted strings and character classes
 # no escaping or internal newlines, and disallow empty string
