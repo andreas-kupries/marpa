@@ -1,0 +1,22 @@
+#!/bin/bash
+
+
+rm -f core* LOG ../ERR && \
+    clear && \
+    echo && \
+    kettle -f ./build.tcl debug-package-marpa && \
+    sleep 5 && \
+    rm -rf BUILD-marpa*
+
+parser=./bootstrap/marpa-slif.tcl
+reader=./bootstrap/marpa-slif-to-grammar.tcl
+rawparse=./GRAMMAR
+dump=./GRAMMAR_C
+
+tclsh $reader $rawparse 2> ERR > $dump
+
+ls -l ERR $dump
+echo
+cat ERR
+cat $dump
+echo

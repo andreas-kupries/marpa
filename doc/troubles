@@ -1,0 +1,157 @@
+
+Troubles found in the meta grammar and SLIF dsl documentation
+
+-	<statement group>
+
+		The closing brace lexeme is not hidden from the
+		semantics
+
+-	<default rule>
+
+		The 1st two lexeme children (:default ::=) are not
+		hidden from the semantics
+
+-	<discard rule>
+
+		The DSL.pod documentation claims that no adverbs are
+		allowed, at all.
+
+		The corresponding BNF rule of the meta grammar on the
+		other hand has an <adverb list> at the end.
+
+-	<discard default statement>
+
+		Is not documented in the DSL.pod
+
+-	<current lexer statement>
+
+		Is not documented in the DSL.pod
+
+-	<action> Adverb
+
+		For possible values and details of semantics a
+	        separate document is referenced. That document is not
+	        named.
+
+		Does not strictly mention that it is allowed for
+		quantified rules.
+
+-	<latm specification> Adverb
+
+		The documentation for this adverb (DSL.pod) claims
+	      	that it is allowed in :lexeme rules.
+
+		On the other hand, the converse documentation about
+	      	:lexeme rules in the same file does not list this
+	      	adverb as acceptable only event, pause, and priority.
+
+-	<naming> Adverb
+
+		Similarly, it claims to be allowd for rules and rule
+		alternatives. The rule docs (rules, alternates,
+		quantified) on the other hand does not list it as
+		acceptable.
+
+-	<rank specification> Adverb
+
+		Like for <naming>. Although here even the usability in
+	      	rule (alternatives) is only implied, via the example
+	      	found in that section.
+
+-	<null ranking specification> Adverb
+
+		Similar to <naming> regarding documentation
+	      	contradictions. It is further unclear if the adverb is
+	      	applicable to quantified rules
+
+-	A few things missing from the description of alternatives and
+	priority rules
+
+	(1)	I can write alternatives as
+
+			A ::= a | b
+		or
+			A ::= a
+			A ::= b
+
+		I believe that can mix both forms, i.e. write
+
+			A ::= a
+			A ::= b
+			A ::= c | d
+
+		and things are properly merged.
+
+	(2)	What happens when writing
+
+			A::= a
+			  || b
+
+		and then also
+
+		    	A ::= c
+
+		How are the priorities now calculated ?
+
+		Is this mixing of priority rules and regular
+		non-priority alternates even allowed ?
+
+		The documentation (DSL.pod) does not really say.
+
+-	My current (possibly stretched) reading of
+
+		It is a fatal error to specify the event adverb if the
+		pause adverb is not also specified.
+
+	allows
+		:lexeme ~ <c> pause => before
+		:lexeme ~ <c> event => 'before c'
+
+	and even
+		:lexeme ~ <c> event => 'before c'
+		:lexeme ~ <c> pause => before
+
+	If that is not intended it might be sensible to constrain the
+	sentence a bit more, like
+
+		It is a fatal error to specify the event adverb if the
+		pause adverb is not also specified
+		__in the same :lexeme rule__
+
+	If that is allowed on the other hand, then I would recommend
+	to show this in examples, to make the wider reading a bit more
+	obvious.
+
+-	Of the various array descriptor actions (ADA) the values
+	"g1start" and "g1length" are not documented, it seems. (I
+	found all the others in Semantics.pod).
+
+General notes
+
+-	I wonder why the restrictions on adverbs, i.e. which adverb is
+	allowed where, is left to the semantics. The eight different
+	contexts can be fully encoded in the syntax. That would make
+	at least checks for bad adverbs superfluous, as doing such
+	would have already caused a parse failure.
+
+-	I have the feeling that the actual semantic value (SV) for G1
+	rules is not simply what the user sees, but a structure which
+	carries all the information around from which Marpa can
+	assemble the requested user value, plus the user value itself.
+
+	This extended structure is visible in the binding layer
+	between libmarpa and the user, but not to the user itself, and
+	from libmarpa's POV it just is the SV.
+
+	Because I cannot see how otherwise Marpa would be able to
+	serve a request that the action for a G1 symbol X is,
+	f.ex. [start], while the children of X have a different
+	action, whether user-specified or ADA. The information for
+	[start] from the children must be carried around somewhere for
+	X to be able to select it as its SV. And the actual SV would
+	be a natural place for that.
+
+	The non-dynamic values (rule/symbol ids/names) can of course
+	be stored in a static location and accessed without having to
+	carry them around.
+

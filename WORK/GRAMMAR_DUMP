@@ -1,0 +1,2683 @@
+statements/0:
+  statement/7:
+    default rule/0:
+      adverb list/0:
+        adverb list items/0:
+          adverb item/0:
+            action/0:
+              action name/2:
+                961 21 {'[start,length,values]'}
+          adverb item/12:
+            blessing/0:
+              blessing name/1:
+                992 5 '::lhs'
+  statement/8:
+    lexeme default statement/0:
+      adverb list/0:
+        adverb list items/0:
+          adverb item/0:
+            action/0:
+              action name/2:
+                1027 20 {'[start,length,value]'}
+          adverb item/12:
+            blessing/0:
+              blessing name/1:
+                1059 6 '::name'
+          adverb item/11:
+            latm specification/0:
+              1081 1 '1'
+  statement/0:
+    start rule/0:
+      symbol/0:
+        symbol name/0:
+          1095 10 'statements'
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/0:
+          1106 10 'statements'
+      op declare/0:
+        1117 3 '::='
+      single symbol/0:
+        symbol/0:
+          symbol name/0:
+            1121 9 'statement'
+      quantifier/1:
+        1130 1 '+'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/0:
+          1132 9 'statement'
+      op declare/0:
+        1142 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1146 12 {'<start rule>'}
+          1159 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1161 12 {'<empty rule>'}
+          1176 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1178 16 {'<null statement>'}
+          1195 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1197 17 {'<statement group>'}
+          1217 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1219 15 {'<priority rule>'}
+          1235 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1237 17 {'<quantified rule>'}
+          1257 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1259 14 {'<discard rule>'}
+          1274 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1276 14 {'<default rule>'}
+          1293 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1295 26 {'<lexeme default statement>'}
+          1324 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1326 27 {'<discard default statement>'}
+          1356 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1358 13 {'<lexeme rule>'}
+          1374 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1376 30 {'<completion event declaration>'}
+          1409 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1411 26 {'<nulled event declaration>'}
+          1440 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1442 30 {'<prediction event declaration>'}
+          1475 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1477 25 {'<current lexer statement>'}
+          1505 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1507 24 {'<inaccessible statement>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          1533 16 {'<null statement>'}
+      op declare/0:
+        1550 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                1554 3 {'';''}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          1558 17 {'<statement group>'}
+      op declare/0:
+        1576 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      1581 3 {''\173''}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      1586 10 'statements'
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      1598 3 {''\175''}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          1603 12 {'<start rule>'}
+      op declare/0:
+        1616 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      1621 8 '':start''
+                    rhs primary/0:
+                      single symbol/0:
+                        symbol/0:
+                          symbol name/1:
+                            1630 16 {'<op declare bnf>'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      1648 6 'symbol'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          1655 12 {'<start rule>'}
+      op declare/0:
+        1668 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      1673 7 ''start''
+                    rhs primary/1:
+                      1681 8 ''symbol''
+                    rhs primary/1:
+                      1690 4 ''is''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      1696 6 'symbol'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          1703 14 {'<default rule>'}
+      op declare/0:
+        1718 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      1723 10 '':default''
+                    rhs primary/0:
+                      single symbol/0:
+                        symbol/0:
+                          symbol name/1:
+                            1734 16 {'<op declare bnf>'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1752 13 {'<adverb list>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          1766 26 {'<lexeme default statement>'}
+      op declare/0:
+        1793 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      1798 8 ''lexeme''
+                    rhs primary/1:
+                      1807 9 ''default''
+                    rhs primary/1:
+                      1817 3 ''=''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1822 13 {'<adverb list>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          1836 27 {'<discard default statement>'}
+      op declare/0:
+        1864 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      1869 9 ''discard''
+                    rhs primary/1:
+                      1879 9 ''default''
+                    rhs primary/1:
+                      1889 3 ''=''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1894 13 {'<adverb list>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          1908 15 {'<priority rule>'}
+      op declare/0:
+        1924 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      1928 3 'lhs'
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1932 12 {'<op declare>'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      1945 10 'priorities'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          1956 12 {'<empty rule>'}
+      op declare/0:
+        1969 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      1973 3 'lhs'
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1977 12 {'<op declare>'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      1990 13 {'<adverb list>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          2004 17 {'<quantified rule>'}
+      op declare/0:
+        2022 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      2026 3 'lhs'
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2030 12 {'<op declare>'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2043 15 {'<single symbol>'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      2059 10 'quantifier'
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2070 13 {'<adverb list>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          2084 14 {'<discard rule>'}
+      op declare/0:
+        2099 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      2104 10 '':discard''
+                    rhs primary/0:
+                      single symbol/0:
+                        symbol/0:
+                          symbol name/1:
+                            2115 18 {'<op declare match>'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2135 15 {'<single symbol>'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2151 13 {'<adverb list>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          2165 13 {'<lexeme rule>'}
+      op declare/0:
+        2179 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      2184 9 '':lexeme''
+                    rhs primary/0:
+                      single symbol/0:
+                        symbol/0:
+                          symbol name/1:
+                            2194 18 {'<op declare match>'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      2214 6 'symbol'
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2221 13 {'<adverb list>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          2235 30 {'<completion event declaration>'}
+      op declare/0:
+        2266 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      2271 7 ''event''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2280 22 {'<event initialization>'}
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      2304 3 ''=''
+                    rhs primary/1:
+                      2308 11 ''completed''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2321 13 {'<symbol name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          2335 26 {'<nulled event declaration>'}
+      op declare/0:
+        2362 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      2367 7 ''event''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2376 22 {'<event initialization>'}
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      2400 3 ''=''
+                    rhs primary/1:
+                      2404 8 ''nulled''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2414 13 {'<symbol name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          2428 30 {'<prediction event declaration>'}
+      op declare/0:
+        2459 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      2464 7 ''event''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2473 22 {'<event initialization>'}
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      2497 3 ''=''
+                    rhs primary/1:
+                      2501 11 ''predicted''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2514 13 {'<symbol name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          2528 25 {'<current lexer statement>'}
+      op declare/0:
+        2554 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      2559 9 ''current''
+                    rhs primary/1:
+                      2569 7 ''lexer''
+                    rhs primary/1:
+                      2577 4 ''is''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2583 12 {'<lexer name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          2597 24 {'<inaccessible statement>'}
+      op declare/0:
+        2622 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      2627 14 ''inaccessible''
+                    rhs primary/1:
+                      2642 4 ''is''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2648 24 {'<inaccessible treatment>'}
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      2674 4 ''by''
+                    rhs primary/1:
+                      2679 9 ''default''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          2690 24 {'<inaccessible treatment>'}
+      op declare/0:
+        2715 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                2719 6 ''warn''
+          2726 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                2728 4 ''ok''
+          2733 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                2735 7 ''fatal''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          2744 12 {'<op declare>'}
+      op declare/0:
+        2757 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2761 16 {'<op declare bnf>'}
+          2778 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2780 18 {'<op declare match>'}
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/0:
+          2800 10 'priorities'
+      op declare/0:
+        2811 3 '::='
+      single symbol/0:
+        symbol/0:
+          symbol name/0:
+            2815 12 'alternatives'
+      quantifier/1:
+        2827 1 '+'
+      adverb list/0:
+        adverb list items/0:
+          adverb item/4:
+            separator specification/0:
+              single symbol/0:
+                symbol/0:
+                  symbol name/1:
+                    2846 11 {'<op loosen>'}
+          adverb item/5:
+            proper specification/0:
+              2868 1 '1'
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/0:
+          2871 12 'alternatives'
+      op declare/0:
+        2884 3 '::='
+      single symbol/0:
+        symbol/0:
+          symbol name/0:
+            2888 11 'alternative'
+      quantifier/1:
+        2899 1 '+'
+      adverb list/0:
+        adverb list items/0:
+          adverb item/4:
+            separator specification/0:
+              single symbol/0:
+                symbol/0:
+                  symbol name/1:
+                    2918 19 {'<op equal priority>'}
+          adverb item/5:
+            proper specification/0:
+              2948 1 '1'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/0:
+          2951 11 'alternative'
+      op declare/0:
+        2963 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      2967 3 'rhs'
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      2971 13 {'<adverb list>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          2986 13 {'<adverb list>'}
+      op declare/0:
+        3000 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3004 19 {'<adverb list items>'}
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          3024 19 {'<adverb list items>'}
+      op declare/0:
+        3044 3 '::='
+      single symbol/0:
+        symbol/0:
+          symbol name/1:
+            3048 13 {'<adverb item>'}
+      quantifier/0:
+        3061 1 '*'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          3063 13 {'<adverb item>'}
+      op declare/0:
+        3077 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      3087 6 'action'
+          3098 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3100 18 {'<left association>'}
+          3119 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3121 19 {'<right association>'}
+          3141 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3143 19 {'<group association>'}
+          3167 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3169 25 {'<separator specification>'}
+          3195 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3197 22 {'<proper specification>'}
+          3224 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3226 20 {'<rank specification>'}
+          3247 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3249 28 {'<null ranking specification>'}
+          3282 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3284 24 {'<priority specification>'}
+          3309 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3311 21 {'<pause specification>'}
+          3333 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3335 21 {'<event specification>'}
+          3361 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3363 20 {'<latm specification>'}
+          3384 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      3386 8 'blessing'
+          3395 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      3397 6 'naming'
+          3404 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3406 13 {'<null adverb>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          3421 13 {'<null adverb>'}
+      op declare/0:
+        3435 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                3439 3 '',''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/0:
+          3443 6 'action'
+      op declare/0:
+        3450 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      3455 8 ''action''
+                    rhs primary/1:
+                      3464 4 ''=>''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3470 13 {'<action name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          3484 18 {'<left association>'}
+      op declare/0:
+        3503 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      3508 7 ''assoc''
+                    rhs primary/1:
+                      3516 4 ''=>''
+                    rhs primary/1:
+                      3521 6 ''left''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          3529 19 {'<right association>'}
+      op declare/0:
+        3549 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      3554 7 ''assoc''
+                    rhs primary/1:
+                      3562 4 ''=>''
+                    rhs primary/1:
+                      3567 7 ''right''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          3576 19 {'<group association>'}
+      op declare/0:
+        3596 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      3601 7 ''assoc''
+                    rhs primary/1:
+                      3609 4 ''=>''
+                    rhs primary/1:
+                      3614 7 ''group''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          3623 25 {'<separator specification>'}
+      op declare/0:
+        3649 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      3654 11 ''separator''
+                    rhs primary/1:
+                      3666 4 ''=>''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3672 15 {'<single symbol>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          3688 22 {'<proper specification>'}
+      op declare/0:
+        3711 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      3716 8 ''proper''
+                    rhs primary/1:
+                      3725 4 ''=>''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      3731 7 'boolean'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          3739 20 {'<rank specification>'}
+      op declare/0:
+        3760 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      3765 6 ''rank''
+                    rhs primary/1:
+                      3772 4 ''=>''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3778 16 {'<signed integer>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          3795 28 {'<null ranking specification>'}
+      op declare/0:
+        3824 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      3829 14 ''null-ranking''
+                    rhs primary/1:
+                      3844 4 ''=>''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3850 23 {'<null ranking constant>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          3874 28 {'<null ranking specification>'}
+      op declare/0:
+        3903 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      3908 6 ''null''
+                    rhs primary/1:
+                      3915 6 ''rank''
+                    rhs primary/1:
+                      3922 4 ''=>''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      3928 23 {'<null ranking constant>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          3952 23 {'<null ranking constant>'}
+      op declare/0:
+        3976 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                3980 5 ''low''
+          3986 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                3988 6 ''high''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          3995 24 {'<priority specification>'}
+      op declare/0:
+        4020 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      4025 10 ''priority''
+                    rhs primary/1:
+                      4036 4 ''=>''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4042 16 {'<signed integer>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4059 21 {'<pause specification>'}
+      op declare/0:
+        4081 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      4086 7 ''pause''
+                    rhs primary/1:
+                      4094 4 ''=>''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4100 17 {'<before or after>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4119 21 {'<event specification>'}
+      op declare/0:
+        4141 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      4146 7 ''event''
+                    rhs primary/1:
+                      4154 4 ''=>''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4160 22 {'<event initialization>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4183 22 {'<event initialization>'}
+      op declare/0:
+        4206 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4210 12 {'<event name>'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4223 19 {'<event initializer>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4243 19 {'<event initializer>'}
+      op declare/0:
+        4263 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      4268 3 ''=''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4273 11 {'<on or off>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4285 11 {'<on or off>'}
+      op declare/0:
+        4297 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                4301 4 ''on''
+          4306 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                4308 5 ''off''
+  statement/1:
+    empty rule/0:
+      lhs/0:
+        symbol name/1:
+          4314 19 {'<event initializer>'}
+      op declare/0:
+        4334 3 '::='
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4347 20 {'<latm specification>'}
+      op declare/0:
+        4368 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      4373 11 ''forgiving''
+                    rhs primary/1:
+                      4385 4 ''=>''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      4391 7 'boolean'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4399 20 {'<latm specification>'}
+      op declare/0:
+        4420 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      4425 6 ''latm''
+                    rhs primary/1:
+                      4432 4 ''=>''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      4438 7 'boolean'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4446 10 '<blessing>'
+      op declare/0:
+        4457 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      4462 7 ''bless''
+                    rhs primary/1:
+                      4470 4 ''=>''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4476 15 {'<blessing name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4492 8 '<naming>'
+      op declare/0:
+        4501 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      4506 6 ''name''
+                    rhs primary/1:
+                      4513 4 ''=>''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4519 18 {'<alternative name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4539 18 {'<alternative name>'}
+      op declare/0:
+        4558 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4562 15 {'<standard name>'}
+          4578 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4580 20 {'<single quoted name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4601 12 {'<lexer name>'}
+      op declare/0:
+        4614 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4618 15 {'<standard name>'}
+          4634 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4636 20 {'<single quoted name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4658 12 {'<event name>'}
+      op declare/0:
+        4671 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4675 15 {'<standard name>'}
+          4695 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4697 20 {'<single quoted name>'}
+          4722 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4724 21 {'<reserved event name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4746 21 {'<reserved event name>'}
+      op declare/1:
+        4768 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                4770 4 ''::''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4775 29 {'<one or more word characters>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4806 15 {'<blessing name>'}
+      op declare/0:
+        4822 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4826 15 {'<standard name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4842 15 {'<blessing name>'}
+      op declare/0:
+        4858 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4862 24 {'<reserved blessing name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/0:
+          4888 3 'lhs'
+      op declare/0:
+        4892 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4896 13 {'<symbol name>'}
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/0:
+          4910 3 'rhs'
+      op declare/0:
+        4914 3 '::='
+      single symbol/0:
+        symbol/0:
+          symbol name/1:
+            4918 13 {'<rhs primary>'}
+      quantifier/1:
+        4931 1 '+'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4933 13 {'<rhs primary>'}
+      op declare/0:
+        4947 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4951 15 {'<single symbol>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          4967 13 {'<rhs primary>'}
+      op declare/0:
+        4981 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      4985 22 {'<single quoted string>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5008 13 {'<rhs primary>'}
+      op declare/0:
+        5022 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      5026 32 {'<parenthesized rhs primary list>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5059 32 {'<parenthesized rhs primary list>'}
+      op declare/0:
+        5092 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      5097 3 ''(''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      5102 18 {'<rhs primary list>'}
+              rhs primary/2:
+                parenthesized rhs primary list/0:
+                  rhs primary list/0:
+                    rhs primary/1:
+                      5122 3 '')''
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          5127 18 {'<rhs primary list>'}
+      op declare/0:
+        5146 3 '::='
+      single symbol/0:
+        symbol/0:
+          symbol name/1:
+            5150 13 {'<rhs primary>'}
+      quantifier/1:
+        5163 1 '+'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5165 15 {'<single symbol>'}
+      op declare/0:
+        5181 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      5189 6 'symbol'
+          5198 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      5200 17 {'<character class>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/0:
+          5218 6 'symbol'
+      op declare/0:
+        5225 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      5229 13 {'<symbol name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5243 13 {'<symbol name>'}
+      op declare/0:
+        5257 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      5261 11 {'<bare name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5273 13 {'<symbol name>'}
+      op declare/0:
+        5287 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      5291 16 {'<bracketed name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5308 13 {'<action name>'}
+      op declare/0:
+        5322 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      5326 11 {'<Perl name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5338 13 {'<action name>'}
+      op declare/0:
+        5352 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      5356 22 {'<reserved action name>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5379 13 {'<action name>'}
+      op declare/0:
+        5393 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      5397 18 {'<array descriptor>'}
+  statement/6:
+    discard rule/0:
+      single symbol/0:
+        symbol/0:
+          symbol name/0:
+            5428 10 'whitespace'
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/0:
+          5439 10 'whitespace'
+      op declare/1:
+        5450 1 '~'
+      single symbol/1:
+        5452 4 {'[\\s]'}
+      quantifier/1:
+        5456 1 '+'
+  statement/6:
+    discard rule/0:
+      single symbol/0:
+        symbol/0:
+          symbol name/1:
+            5487 14 {'<hash comment>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5502 14 {'<hash comment>'}
+      op declare/1:
+        5517 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      5519 25 {'<terminated hash comment>'}
+          5545 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      5547 36 {'<unterminated\n   final hash comment>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5584 25 {'<terminated hash comment>'}
+      op declare/1:
+        5610 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                5612 3 ''#''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      5616 19 {'<hash comment body>'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      5636 21 {'<vertical space char>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5658 33 {'<unterminated final hash comment>'}
+      op declare/1:
+        5692 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                5694 3 ''#''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      5698 19 {'<hash comment body>'}
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          5718 19 {'<hash comment body>'}
+      op declare/1:
+        5738 1 '~'
+      single symbol/0:
+        symbol/0:
+          symbol name/1:
+            5740 19 {'<hash comment char>'}
+      quantifier/0:
+        5759 1 '*'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5761 21 {'<vertical space char>'}
+      op declare/1:
+        5783 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/1:
+                  5785 22 {'[\\n\\v\\f\\r\\u2028\\u2029]'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5808 19 {'<hash comment char>'}
+      op declare/1:
+        5828 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/1:
+                  5830 23 {'[^\\n\\v\\f\\r\\u2028\\u2029]'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5855 16 {'<op declare bnf>'}
+      op declare/1:
+        5872 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                5874 5 ''::=''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5880 18 {'<op declare match>'}
+      op declare/1:
+        5899 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                5901 3 ''~''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5905 11 {'<op loosen>'}
+      op declare/1:
+        5917 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                5919 4 ''||''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5924 19 {'<op equal priority>'}
+      op declare/1:
+        5944 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                5946 3 ''|''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/0:
+          5950 10 'quantifier'
+      op declare/0:
+        5961 3 '::='
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                5965 3 ''*''
+          5969 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                5971 3 ''+''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          5975 17 {'<before or after>'}
+      op declare/1:
+        5993 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                5995 8 ''before''
+          6004 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                6006 7 ''after''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          6015 16 {'<signed integer>'}
+      op declare/1:
+        6032 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      6034 9 '<integer>'
+          6044 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      6046 6 '<sign>'
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      6053 9 '<integer>'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          6063 6 '<sign>'
+      op declare/1:
+        6070 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/1:
+                  6072 4 {'[+-]'}
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          6077 9 '<integer>'
+      op declare/1:
+        6087 1 '~'
+      single symbol/1:
+        6089 4 {'[\\d]'}
+      quantifier/1:
+        6093 1 '+'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/0:
+          6096 7 'boolean'
+      op declare/1:
+        6104 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/1:
+                  6106 4 {'[01]'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          6112 22 {'<reserved action name>'}
+      op declare/1:
+        6135 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                6137 4 ''::''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      6142 29 {'<one or more word characters>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          6172 24 {'<reserved blessing name>'}
+      op declare/1:
+        6197 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                6199 4 ''::''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      6204 29 {'<one or more word characters>'}
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          6234 29 {'<one or more word characters>'}
+      op declare/1:
+        6264 1 '~'
+      single symbol/1:
+        6266 4 {'[\\w]'}
+      quantifier/1:
+        6270 1 '+'
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          6272 30 {'<zero or more word characters>'}
+      op declare/1:
+        6303 1 '~'
+      single symbol/1:
+        6305 4 {'[\\w]'}
+      quantifier/0:
+        6309 1 '*'
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          6459 17 {'<Perl identifier>'}
+      op declare/1:
+        6477 1 '~'
+      single symbol/1:
+        6479 4 {'[\\w]'}
+      quantifier/1:
+        6483 1 '+'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          6485 14 {'<double colon>'}
+      op declare/1:
+        6500 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                6502 4 ''::''
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          6507 11 {'<Perl name>'}
+      op declare/1:
+        6519 1 '~'
+      single symbol/0:
+        symbol/0:
+          symbol name/1:
+            6521 17 {'<Perl identifier>'}
+      quantifier/1:
+        6538 1 '+'
+      adverb list/0:
+        adverb list items/0:
+          adverb item/4:
+            separator specification/0:
+              single symbol/0:
+                symbol/0:
+                  symbol name/1:
+                    6553 14 {'<double colon>'}
+          adverb item/5:
+            proper specification/0:
+              6578 1 '1'
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          6581 11 {'<bare name>'}
+      op declare/1:
+        6593 1 '~'
+      single symbol/1:
+        6595 4 {'[\\w]'}
+      quantifier/1:
+        6599 1 '+'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          6601 15 {'<standard name>'}
+      op declare/1:
+        6617 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/1:
+                  6619 8 {'[a-zA-Z]'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      6628 30 {'<zero or more word characters>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          6659 16 {'<bracketed name>'}
+      op declare/1:
+        6676 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                6678 3 ''<''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      6682 23 {'<bracketed name string>'}
+              rhs primary/1:
+                6706 3 ''>''
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          6710 23 {'<bracketed name string>'}
+      op declare/1:
+        6734 1 '~'
+      single symbol/1:
+        6736 6 {'[\\s\\w]'}
+      quantifier/1:
+        6742 1 '+'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          6745 18 {'<array descriptor>'}
+      op declare/1:
+        6764 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      6766 31 {'<array descriptor left bracket>'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      6798 29 {'<result item descriptor list>'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      6828 32 {'<array descriptor right bracket>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          6861 31 {'<array descriptor left bracket>'}
+      op declare/1:
+        6893 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                6895 3 {''[''}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          6900 31 {'<array descriptor left bracket>'}
+      op declare/1:
+        6932 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                6934 3 {''[''}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      6938 10 'whitespace'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          6949 32 {'<array descriptor right bracket>'}
+      op declare/1:
+        6982 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                6984 3 ''\]''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          6989 32 {'<array descriptor right bracket>'}
+      op declare/1:
+        7022 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      7024 10 'whitespace'
+              rhs primary/1:
+                7035 3 ''\]''
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          7040 29 {'<result item descriptor list>'}
+      op declare/1:
+        7070 1 '~'
+      single symbol/0:
+        symbol/0:
+          symbol name/1:
+            7072 24 {'<result item descriptor>'}
+      quantifier/0:
+        7096 1 '*'
+      adverb list/0:
+        adverb list items/0:
+          adverb item/4:
+            separator specification/0:
+              single symbol/0:
+                symbol/0:
+                  symbol name/1:
+                    7111 34 {'<result item descriptor separator>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          7146 34 {'<result item descriptor separator>'}
+      op declare/1:
+        7181 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                7183 3 '',''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          7187 34 {'<result item descriptor separator>'}
+      op declare/1:
+        7222 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                7224 3 '',''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/0:
+                      7228 10 'whitespace'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          7239 24 {'<result item descriptor>'}
+      op declare/1:
+        7264 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                7266 7 ''start''
+          7274 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                7276 8 ''length''
+          7287 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                7289 9 ''g1start''
+          7299 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                7301 10 ''g1length''
+          7314 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                7316 6 ''name''
+          7323 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                7325 5 ''lhs''
+          7331 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                7333 8 ''symbol''
+          7342 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                7344 6 ''rule''
+          7354 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                7356 7 ''value''
+          7364 1 '|'
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                7366 8 ''values''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          7488 22 {'<single quoted string>'}
+      op declare/1:
+        7511 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/1:
+                  7513 55 {'['] <string without single quote or vertical space> [']'}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      7569 27 {'<character class modifiers>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          7597 20 {'<single quoted name>'}
+      op declare/1:
+        7618 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/1:
+                  7620 55 {'['] <string without single quote or vertical space> [']'}
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          7676 47 {'<string without single quote or vertical space>'}
+      op declare/1:
+        7724 1 '~'
+      single symbol/1:
+        7726 24 {'[^'\\n\\v\\f\\r\\u2028\\u2029]'}
+      quantifier/1:
+        7750 1 '+'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          7753 17 {'<character class>'}
+      op declare/1:
+        7771 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                7773 3 {''[''}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      7777 13 {'<cc elements>'}
+              rhs primary/1:
+                7791 3 ''\]''
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      7795 27 {'<character class modifiers>'}
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          7823 13 {'<cc elements>'}
+      op declare/1:
+        7837 1 '~'
+      single symbol/0:
+        symbol/0:
+          symbol name/1:
+            7839 12 {'<cc element>'}
+      quantifier/1:
+        7851 1 '+'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          7853 12 {'<cc element>'}
+      op declare/1:
+        7866 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      7868 19 {'<safe cc character>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          7945 19 {'<safe cc character>'}
+      op declare/1:
+        7965 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/1:
+                  7967 33 {'[^\\135\\n\\v\\f\\r\\u2028\\u2029\\u0085]'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          8001 12 {'<cc element>'}
+      op declare/1:
+        8014 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      8016 22 {'<escaped cc character>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          8039 22 {'<escaped cc character>'}
+      op declare/1:
+        8062 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                8064 3 {''\\''}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      8068 22 {'<horizontal character>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          8091 12 {'<cc element>'}
+      op declare/1:
+        8104 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      8106 18 {'<posix char class>'}
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          8125 12 {'<cc element>'}
+      op declare/1:
+        8138 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      8140 26 {'<negated posix char class>'}
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          8167 27 {'<character class modifiers>'}
+      op declare/1:
+        8195 1 '~'
+      single symbol/0:
+        symbol/0:
+          symbol name/1:
+            8197 26 {'<character class modifier>'}
+      quantifier/0:
+        8223 1 '*'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          8225 26 {'<character class modifier>'}
+      op declare/1:
+        8252 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                8254 5 '':ic''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          8260 26 {'<character class modifier>'}
+      op declare/1:
+        8287 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                8289 4 '':i''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          8525 18 {'<posix char class>'}
+      op declare/1:
+        8544 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                8546 4 {''[:''}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      8551 23 {'<posix char class name>'}
+              rhs primary/1:
+                8575 4 '':\]''
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          8580 26 {'<negated posix char class>'}
+      op declare/1:
+        8607 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/1:
+                8609 5 {''[:^''}
+              rhs primary/0:
+                single symbol/0:
+                  symbol/0:
+                    symbol name/1:
+                      8615 23 {'<posix char class name>'}
+              rhs primary/1:
+                8639 4 '':\]''
+  statement/5:
+    quantified rule/0:
+      lhs/0:
+        symbol name/1:
+          8644 23 {'<posix char class name>'}
+      op declare/1:
+        8668 1 '~'
+      single symbol/1:
+        8670 11 {'[[:alnum:]]'}
+      quantifier/1:
+        8681 1 '+'
+  statement/4:
+    priority rule/0:
+      lhs/0:
+        symbol name/1:
+          8753 22 {'<horizontal character>'}
+      op declare/1:
+        8776 1 '~'
+      priorities/0:
+        alternatives/0:
+          alternative/0:
+            rhs/0:
+              rhs primary/0:
+                single symbol/1:
+                  8778 23 {'[^\\n\\v\\f\\r\\u2028\\u2029]'}
+EOF {} ''

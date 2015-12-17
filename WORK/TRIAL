@@ -1,0 +1,54 @@
+#!/bin/bash
+
+function edg ()
+{
+    old=$1 ; shift
+    new=$1 ; shift
+
+    for file in $*
+    do
+	sed < $file > $$ -e "s|$old|$new|g"
+	mv $$ $file
+    done
+}
+
+parser=./bootstrap/marpa-slif.tcl
+dumper=./bootstrap/marpa-slif-backend-print-ast.tcl
+rawparse=./GRAMMAR
+dump=./GRAMMAR_DUMP
+
+rm -f core* LOG ../ERR && \
+    clear && \
+    echo && \
+    kettle -f ./build.tcl debug-package-marpa && \
+    sleep 5 && \
+    rm -rf BUILD-marpa* && \
+    clear && \
+    echo && \
+    echo parsing... && \
+    time tclsh $parser 2> ../ERR | tee $rawparse && \
+    echo ...done
+
+ls -l core $rawparse ../ERR
+echo
+
+# Fix alignments in the logs
+edg 'marpa/engine'   'marpa/engine  ' ../ERR
+edg 'marpa/gate'     'marpa/gate    ' ../ERR
+edg 'marpa/grammar'  'marpa/grammar ' ../ERR
+edg 'marpa/inbound'  'marpa/inbound ' ../ERR
+edg 'marpa/lexer'    'marpa/lexer   ' ../ERR
+edg 'marpa/location' 'marpa/location' ../ERR
+edg 'marpa/parser'   'marpa/parser  ' ../ERR
+edg 'marpa/semcore'  'marpa/semcore ' ../ERR
+edg 'marpa/semstd'   'marpa/semstd  ' ../ERR
+edg 'marpa/semstore' 'marpa/semstore' ../ERR
+edg 'marpa/support'  'marpa/support ' ../ERR
+
+#cat ../ERR
+echo
+date
+
+tclsh $dumper $rawparse > $dump
+
+echo

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+rm -f core* LOG ../ERR && \
+    clear && \
+    echo && \
+    kettle -f ./build.tcl debug-package-marpa && \
+    sleep 5 && \
+    rm -rf BUILD-marpa*
+
+echo
+#cat ../ERR
+echo
+date
+
+echo
