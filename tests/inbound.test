@@ -1,0 +1,309 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2015 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::inbound
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt require support tcl::chan::string ;# string channel for 'read' method.
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/common.tcl
+
+# # ## ### ##### ######## ############# #####################
+## constructor/2 (semstore upstream)
+## enter/1       (string)
+## read/1        (channel)
+## eof/0         ()
+
+# # ## ### ##### ######## ############# #####################
+## constructor - wrong args, initial state, calls
+
+test marpa-inbound-1.0.0 {constructor, wrong args, not enough} -body {
+    marpa::inbound new
+} -returnCodes error -result {wrong # args: should be "marpa::inbound new semstore upstream"}
+
+test marpa-inbound-1.0.1 {constructor, wrong args, not enough} -body {
+    marpa::inbound new STORE
+} -returnCodes error -result {wrong # args: should be "marpa::inbound new semstore upstream"}
+
+test marpa-inbound-1.0.2 {constructor, wrong args, too many} -body {
+    marpa::inbound new STORE UP X
+} -returnCodes error -result {wrong # args: should be "marpa::inbound new semstore upstream"}
+
+test marpa-inbound-1.1 {constructor, initial state} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+} -body {
+    list [IN location?] [logged]
+} -cleanup {
+    IN destroy
+} -result {-1 {}}
+
+# # ## ### ##### ######## ############# #####################
+## eof - wrong args, state (reject enter/read/eof after 1st call)
+
+test marpa-inbound-3.0 {eof, wrong args, too many} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+} -body {
+    IN eof X
+} -cleanup {
+    IN destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "IN eof"}
+
+test marpa-inbound-3.1 {eof, results, external calls} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+} -body {
+    # eof is reported upstream, only.
+    list [IN eof] [logged]
+} -cleanup {
+    IN destroy
+} -result {{} {
+  UP C eof
+  UP R eof = {}
+}}
+
+test marpa-inbound-3.2.0 {eof, post-forbids eof} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+    IN eof
+} -body {
+IN eof
+} -cleanup {
+    IN destroy
+    logged
+} -returnCodes error -result {Unable to process input after EOF}
+
+test marpa-inbound-3.2.1 {eof, post-forbids enter} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+    IN eof
+} -body {
+    IN enter something
+} -cleanup {
+    IN destroy
+    logged
+} -returnCodes error -result {Unable to process input after EOF}
+
+test marpa-inbound-3.2.2 {eof, post-forbids read} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+    IN eof
+} -body {
+    IN read FAKE-CHAN
+} -cleanup {
+    IN destroy
+    logged
+} -returnCodes error -result {Unable to process input after EOF}
+
+test marpa-inbound-3.2.3 {eof, post-allows location?} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+    IN eof
+} -body {
+    IN location?
+} -cleanup {
+    IN destroy
+    logged
+} -result -1
+
+# # ## ### ##### ######## ############# #####################
+## enter - wrong args, state changes, call sequences
+
+test marpa-inbound-4.0.0 {enter, wrong args, not enough} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+} -body {
+    IN enter
+} -cleanup {
+    IN destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "IN enter string"}
+
+test marpa-inbound-4.0.1 {enter, wrong args, too many} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+} -body {
+    IN enter STRING X
+} -cleanup {
+    IN destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "IN enter string"}
+
+test marpa-inbound-4.1.0 {enter, results, state changes, external calls} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+} -body {
+    list [IN enter FOO] [IN location?] [logged]
+} -cleanup {
+    IN destroy
+} -result {{} 2 {
+  STORE C {put {0 0 F}}
+  STORE R {put {0 0 F}} = {}
+  UP C {enter F {}}
+  UP R {enter F {}} = {}
+  STORE C {put {1 1 O}}
+  STORE R {put {1 1 O}} = {}
+  UP C {enter O {}}
+  UP R {enter O {}} = {}
+  STORE C {put {2 2 O}}
+  STORE R {put {2 2 O}} = {}
+  UP C {enter O {}}
+  UP R {enter O {}} = {}
+}}
+
+test marpa-inbound-4.1.1 {enter nothing, results, state changes, external calls} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+} -body {
+    list [IN enter {}] [IN location?] [logged]
+} -cleanup {
+    IN destroy
+} -result {{} -1 {}}
+
+test marpa-inbound-4.2.0 {enter, post-allows enter} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+    IN enter {}
+} -body {
+    IN enter {}
+} -cleanup {
+    IN destroy
+    logged
+} -result {}
+
+test marpa-inbound-4.2.1 {enter, post-allows location?} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+    IN enter {}
+} -body {
+    IN location?
+} -cleanup {
+    IN destroy
+    logged
+} -result -1
+
+test marpa-inbound-4.2.2 {enter, post-allows eof} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+    IN enter {}
+} -body {
+    IN eof
+} -cleanup {
+    IN destroy
+    logged
+} -result {}
+
+test marpa-inbound-4.2.3 {enter, post-allows eof} -setup {
+    set chan [tcl::chan::string {}]
+    marpa::inbound create IN [log STORE] [log UP]
+    IN enter {}
+} -body {
+    IN read $chan
+} -cleanup {
+    IN destroy
+    logged
+    close $chan
+} -result {}
+
+# # ## ### ##### ######## ############# #####################
+## read - wrong args, state changes, call sequences
+
+test marpa-inbound-5.0.0 {read, wrong args, not enough} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+} -body {
+    IN read
+} -cleanup {
+    IN destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "IN read chan"}
+
+test marpa-inbound-5.0.1 {read, wrong args, too many} -setup {
+    marpa::inbound create IN [log STORE] [log UP]
+} -body {
+    IN read CHAN X
+} -cleanup {
+    IN destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "IN read chan"}
+
+test marpa-inbound-5.1.0 {read, results, state changes, external calls} -setup {
+    set chan [tcl::chan::string FOO]
+    marpa::inbound create IN [log STORE] [log UP]
+} -body {
+    list [IN read $chan] [IN location?] [logged]
+} -cleanup {
+    IN destroy
+    close $chan
+} -result {{} 2 {
+  STORE C {put {0 0 F}}
+  STORE R {put {0 0 F}} = {}
+  UP C {enter F {}}
+  UP R {enter F {}} = {}
+  STORE C {put {1 1 O}}
+  STORE R {put {1 1 O}} = {}
+  UP C {enter O {}}
+  UP R {enter O {}} = {}
+  STORE C {put {2 2 O}}
+  STORE R {put {2 2 O}} = {}
+  UP C {enter O {}}
+  UP R {enter O {}} = {}
+}}
+
+test marpa-inbound-5.1.1 {read nothing, results, state changes, external calls} -setup {
+    set chan [tcl::chan::string {}]
+    marpa::inbound create IN [log STORE] [log UP]
+} -body {
+    list [IN read $chan] [IN location?] [logged]
+} -cleanup {
+    IN destroy
+    close $chan
+} -result {{} -1 {}}
+
+test marpa-inbound-5.2.0 {read, post-allows enter} -setup {
+    set chan [tcl::chan::string {}]
+    marpa::inbound create IN [log STORE] [log UP]
+    IN read $chan
+} -body {
+    IN enter {}
+} -cleanup {
+    IN destroy
+    logged
+    close $chan
+} -result {}
+
+test marpa-inbound-5.2.1 {read, post-allows location?} -setup {
+    set chan [tcl::chan::string {}]
+    marpa::inbound create IN [log STORE] [log UP]
+    IN read $chan
+} -body {
+    IN location?
+} -cleanup {
+    IN destroy
+    logged
+    close $chan
+} -result -1
+
+test marpa-inbound-5.2.2 {read, post-allows eof} -setup {
+    set chan [tcl::chan::string {}]
+    marpa::inbound create IN [log STORE] [log UP]
+    IN read $chan
+} -body {
+    IN eof
+} -cleanup {
+    IN destroy
+    logged
+    close $chan
+} -result {}
+
+test marpa-inbound-5.2.3 {read, post-allows enter} -setup {
+    set chan [tcl::chan::string {}]
+    marpa::inbound create IN [log STORE] [log UP]
+    IN read $chan
+} -body {
+    IN enter {}
+} -cleanup {
+    IN destroy
+    logged
+    close $chan
+} -result {}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

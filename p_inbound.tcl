@@ -36,6 +36,7 @@ oo::class create marpa::inbound {
     #   enter (string)             - Incoming characters via string
     #   read  (chan)               - Incoming characters via channel
     #   eof   ()                   - End of input signal
+    #   location? ()               - Retrieve current location
 
     constructor {semstore upstream} {
 	debug.marpa/inbound {[debug caller] | }
@@ -66,6 +67,11 @@ oo::class create marpa::inbound {
     #  Start -<Enter>-> Start
     #  Start -<Read>--> Start
 
+    method location? {} {
+	debug.marpa/inbound {[debug caller] | ==> $mylocation}
+	return $mylocation
+    }
+
     method Enter {string} {
 	debug.marpa/inbound {[debug caller] | }
 
@@ -78,7 +84,6 @@ oo::class create marpa::inbound {
 	    set sv [Store put [set loc [list $mylocation $mylocation $ch]]]
 
 	    debug.marpa/inbound {[debug caller 1] | DO '[char quote cstring $ch]' $sv ([marpa::location::Show $loc]) ______}
-
 
 	    # And push into the pipeline
 	    debug.marpa/inbound {[debug caller 1] | DO _______________________________________}
