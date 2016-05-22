@@ -69,14 +69,11 @@ proc unknown {args} {
 # # ## ### ##### ######## #############
 ## Read parse result, AST, print
 
-proc B {method args} {
-    switch -exact -- $method {
-	enter {
-	    eval [lindex $args 0]
-	}
-	eof {}
-    }
+proc B {ast} {
+    eval $ast
 }
+
+proc EOF {} {}
 
 source [lindex $argv 0]
 exit

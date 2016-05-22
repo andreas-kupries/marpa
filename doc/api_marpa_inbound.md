@@ -1,0 +1,81 @@
+# marpa::inbound
+
+## API signatures
+
+1. constructor (-> semantic-store, -> upstream)
+2. enter (string)
+3. read (chan)
+4. eof ()
+
+All but the constructor are driver methods which provide either more
+data to process (`enter`, `read`), or signal the end of the input
+(`eof`).
+
+## API call ordering
+
+Specified via regular expression: `1[23]*4`
+
+## API expectations on linked objects
+
+   * semantic-store
+     1. put (data) -> sem-value-id
+
+     Example: `marpa::tvstore`
+
+   * upstream
+     1. enter (char, sem-value-id)
+     2. eof ()
+
+     Example: `marpa::gate`
+
+# Semantic values
+
+Per character, one 3-tuple holding
+* start location
+* end location (identical to start)
+* character itself (its literal)
+
+Both start and end location are stored, despite being identical,
+because upstream will usually combine characters into larger literals
+which do have a length > 1, and this way avoids the need to special
+case literals of length 1.
+
+# Interaction sequences
+
+* Supplication of text via `enter`
+```
+Driver  Inbound SemStore        Upstream
+|               |               |
++-cons--\       |               |
+|       |       |               |
++-enter->       |               |
+|       +-put--->               |
+|       +-enter----------------->
+|       *       |               |
+|       |       |               |
++-eof--->       |               |
+|       +-eof------------------->
+|       |       |               |
+```
+
+* Supplication of text via `read`
+```
+Driver  Inbound SemStore        Upstream
+|               |               |
++-cons--\       |               |
+|       |       |               |
++-read-->       |               |
+|       --\     |               |
+|       | enter |               |
+|       <-/     |               |
+|       +-put--->               |
+|       +-enter----------------->
+|       *       |               |
+|       |       |               |
++-eof--->       |               |
+|       +-eof------------------->
+|       |       |               |
+```
+
+__Note__, both `enter` and `read` can be mixed between `constructor`
+and `eof`.

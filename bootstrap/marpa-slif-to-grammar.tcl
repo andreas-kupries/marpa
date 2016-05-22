@@ -12,7 +12,12 @@
 package require marpa
 package require char ;# quoting
 
-debug on marpa/grammar
+debug on marpa/slif/symbol
+debug on marpa/slif/grammar
+debug on marpa/slif/g1/grammar
+debug on marpa/slif/l0/grammar
+debug on marpa/slif/container
+debug on marpa/slif/semantics
 
 # # ## ### ##### ######## #############
 ## Semantic procedures based on the G1 symbols.
@@ -21,14 +26,10 @@ debug on marpa/grammar
 # # ## ### ##### ######## #############
 ## Read parse result, AST, print
 
-proc B {method args} {
-    switch -exact -- $method {
-	enter {
-	    marpa::grammar create CONTAINER [lindex $args 0]
-	    # TODO: Dump for bulk load (integrated/native generator)
-	}
-	eof {}
-    }
+proc B {ast} {
+    marpa::slif::container create CONTAINER
+    [marpa::slif::semantics new CONTAINER] enter $ast
+    # TODO: Dump for bulk load (integrated/native generator)
 }
 
 proc EOF {} {}

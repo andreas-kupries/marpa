@@ -76,22 +76,46 @@ critcl::include    marpa.h
 
 #critcl::tsources policy.tcl
 
-critcl::tsources p_support.tcl  ; # General Tcl level utilities
-critcl::tsources p_location.tcl ; # Location/Range utilities
-critcl::tsources p_semstd.tcl   ; # Standard behaviours for SV handling
-critcl::tsources p_semstore.tcl ; # Store for semantic values
-				  # (interning strings)
-critcl::tsources p_semcore.tcl  ; # Common core for handling of step
-				  # instructions.
-critcl::tsources p_inbound.tcl  ; # Character streamer.
-critcl::tsources p_gate.tcl     ; # Character translation, class
-				  # handling, symbol gating
-critcl::tsources p_engine.tcl   ; # Base class for lexer, parser
-critcl::tsources p_lexer.tcl    ; # Lexer, aggregate characters to
-				  # lexemes
-critcl::tsources p_parser.tcl   ; # Parser, structure lexemes into
-				  # ASTs
-critcl::tsources p_grammar.tcl  ; # SLIF grammar container
+# Runtime classes, low-level on top of the C-wrappers.
+##
+critcl::tsources u_sequencing.tcl ; # Utilities for method call sequence validation
+critcl::tsources p_support.tcl   ; # General Tcl level utilities
+critcl::tsources p_location.tcl  ; # Location/Range utilities
+critcl::tsources p_semstd.tcl    ; # Standard behaviours for SV
+				   # handling
+critcl::tsources p_semstore.tcl  ; # Store for semantic values
+				   # (interning strings)
+critcl::tsources p_semcore.tcl   ; # Common core for handling of step
+				   # instructions.
+critcl::tsources p_inbound.tcl   ; # Character streamer.
+critcl::tsources p_gate.tcl      ; # Character translation, class
+				   # handling, symbol gating
+critcl::tsources p_engine.tcl    ; # Base class for lexer, parser
+critcl::tsources p_lexer.tcl     ; # Lexer, aggregate characters to
+				   # lexemes
+critcl::tsources p_parser.tcl    ; # Parser, structure lexemes into
+				   # ASTs
+
+# SLIF support classes
+##
+critcl::tsources s_id.tcl         ; # Id generator
+critcl::tsources s_symbol.tcl     ; # Basic symbols
+critcl::tsources s_atom.tcl       ; # Basic atoms for L0
+critcl::tsources s_character.tcl  ; # - Character atoms
+critcl::tsources s_charclass.tcl  ; # - Charclass atoms
+critcl::tsources s_rule.tcl       ; # Basic rules
+critcl::tsources s_quantified.tcl ; # - Quantified rules, i.e. lists, sequences
+critcl::tsources s_bnf.tcl        ; # - BNF rules
+critcl::tsources s_grammar.tcl    ; # Basic grammar (symbols and rules)
+critcl::tsources s_g1grammar.tcl  ; # - G1-specific extension of the basics
+critcl::tsources s_l0grammar.tcl  ; # - L0-specific extension of the basics
+critcl::tsources s_container.tcl  ; # SLIF container
+critcl::tsources s_semantics.tcl  ; # SLIF semantics, driven by AST
+critcl::tsources s_parser.tcl     ; # Parser hardwired for SLIF
+
+# Experimental work on an alternate grammar container (vs p_grammar.tcl) ...
+#critcl::tsources g_id.tcl         ; # Id generator
+
 
 # # ## ### ##### ######## #############
 ## Main C section.

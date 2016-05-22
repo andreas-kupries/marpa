@@ -1,3 +1,3 @@
-#!/usr/bin/env kettle -f
+#!/usr/bin/env kettle
 # -*- tcl -*-
 kettle critcl3
