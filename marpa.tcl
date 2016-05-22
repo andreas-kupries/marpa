@@ -76,22 +76,23 @@ critcl::include    marpa.h
 
 #critcl::tsources policy.tcl
 
-critcl::tsources p_support.tcl  ; # General Tcl level utilities
-critcl::tsources p_location.tcl ; # Location/Range utilities
-critcl::tsources p_semstd.tcl   ; # Standard behaviours for SV handling
-critcl::tsources p_semstore.tcl ; # Store for semantic values
-				  # (interning strings)
-critcl::tsources p_semcore.tcl  ; # Common core for handling of step
-				  # instructions.
-critcl::tsources p_inbound.tcl  ; # Character streamer.
-critcl::tsources p_gate.tcl     ; # Character translation, class
-				  # handling, symbol gating
-critcl::tsources p_engine.tcl   ; # Base class for lexer, parser
-critcl::tsources p_lexer.tcl    ; # Lexer, aggregate characters to
-				  # lexemes
-critcl::tsources p_parser.tcl   ; # Parser, structure lexemes into
-				  # ASTs
-critcl::tsources p_grammar.tcl  ; # SLIF grammar container
+critcl::tsources u_sequencing.tcl ; # Sequencing utilities
+critcl::tsources p_support.tcl    ; # General Tcl level utilities
+critcl::tsources p_location.tcl   ; # Location/Range utilities
+critcl::tsources p_semstd.tcl     ; # Standard behaviours for SV handling
+critcl::tsources p_semstore.tcl   ; # Store for semantic values
+				    # (interning strings)
+critcl::tsources p_semcore.tcl    ; # Common core for handling of step
+				    # instructions.
+critcl::tsources p_inbound.tcl    ; # Character streamer.
+critcl::tsources p_gate.tcl       ; # Character translation, class
+				    # handling, symbol gating
+critcl::tsources p_engine.tcl     ; # Base class for lexer, parser
+critcl::tsources p_lexer.tcl      ; # Lexer, aggregate characters to
+				    # lexemes
+critcl::tsources p_parser.tcl     ; # Parser, structure lexemes into
+				    # ASTs
+critcl::tsources p_grammar.tcl    ; # SLIF grammar container
 
 # # ## ### ##### ######## #############
 ## Main C section.
