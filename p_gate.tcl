@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2015-2016 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -39,25 +39,85 @@ debug define marpa/gate
 # element in the chain.
 
 oo::class create marpa::gate {
+    marpa::E marpa/gate GATE
+    validate-sequencing
+
+    # # Interaction sequences
+    ##
+    # * Lifecycle
+    # ```
+    # Driver  Gate    Upstream
+    # |               |
+    # +-cons--\       |
+    # |       +-gate:->       (Internal backlinking from upstream to its gate)
+    # |       |       |
+    # ~~      ~~      ~~
+    # ~~      ~~      ~~
+    # |       |       |
+    # |       <---acc-+       Upstream, initial gate initialization
+    # |       |       |
+    # ~~      ~~      ~~      Driven from input
+    # ~~      ~~      ~~
+    # |       |       |
+    # +-eof--->       |
+    # |       +-eof--->
+    # |       <--redo-+       (Always called, even for n == 0)
+    # |       |       |
+    # ```
+    #
+    # * Operation during scanning of a lexeme
+    # ```
+    # Driver  Gate    Upstream
+    # |               |
+    # +-enter->       |
+    # |       +-enter->
+    # |       <---acc-+
+    # |       |       |
+    # ```
+    #
+    # * Operation at end of a lexeme
+    # ```
+    # Driver  Gate    Upstream
+    # |               |
+    # +-enter->       |
+    # |       +-enter->
+    # |       <---acc-+
+    # |       <--redo-+       (Always called, even for n == 0)
+    # |       |       |
+    # ```
+
+    # # -- --- ----- -------- -------------
+    ## State
+
+    variable myacceptable ;# sym -> .
+    variable myhistory    ;# Entered characters and semantic values.
+
+    # # -- --- ----- -------- -------------
+    ## Configuration
+
     variable mymap        ;# char -> set of sym id
     variable myrmap       ;# sym id -> char(class)
     variable myclass      ;# name -> Tcl regex char class + sym id
-    variable myacceptable ;# sym -> .
-    variable myhistory    ;# Entered characters and semantic values.
+
     ##
     # API self:
-    #   cons       (upstream)       - Create, link, attach to upstream
-    #   =          (chars, classes) - Configuration
-    #   enter      (char val)       - Incoming character with token value
-    #   eof        ()               - End of input signal
-    #   acceptable (syms)           - Upstream feedback, acceptable symbols
-    #   redo       (n)              - Upstream feedback, re-enter last n characters
+    # 1 cons       (upstream)       - Create, link, attach to upstream
+    # 2 def        (chars, classes) - Configuration
+    # 3 enter      (char val)       - Incoming character with token value
+    # 4 eof        ()               - End of input signal
+    # 5 acceptable (syms)           - Upstream feedback, acceptable symbols
+    # 6 redo       (n)              - Upstream feedback, re-enter last n characters
+    ##
+    # Sequence = 1(2(5(356?)*))?(46)
     ##
     # API upstream:
     #   gate:   (self)     - Attach to self as gate for upstream
     #   enter   (syms val) - Push symbol set with token value
     #   eof     ()         - Push end of input signal
     #   symbols (symlist)  - Bulk allocate symbols for char and char classes.
+
+    # # -- --- ----- -------- -------------
+    ## Lifecycle
 
     constructor {semstore upstream} {
 	debug.marpa/gate {[debug caller] | [marpa::D {
@@ -79,57 +139,29 @@ oo::class create marpa::gate {
 	# Attach ourselves to upstream, as gate.
 	Forward gate: [self]
 
-	my ToStart
-
 	debug.marpa/gate {[debug caller] | /ok}
 	return
     }
 
-    # # ## ### ##### ######## #############
-    ## State methods for API methods
-    #
-    #  API ::=    Start        Active       Done
-    ## ---        ------------ ------------ -----------
-    # def         * Setup        FailSetup    FailSetup
-    # eof         * EofStart   * Eof          FailEof
-    # enter       * EnterStart * Enter        FailEof
-    # acceptable    FailStart  * Acceptable   FailEof
-    # redo          FailStart  * Redo         FailEof
-    ## ---        ------------ ------------ -----------
+    # # -- --- ----- -------- -------------
+    ## Public API
 
-    method Setup {characters classes} {
+    method def {characters classes} {
 	debug.marpa/gate {[debug caller] | }
 
 	# Bulk definition of the whole gate.
 	my SetupCharacters   $characters
 	my SetupCharacterClasses $classes
-
-	# Setup complete, processing may begin.
-	my ToActive
 	return
     }
 
-    method EofStart {} {
-	debug.marpa/gate {[debug caller] | }
-	my ToActive
-	my Eof
-	return
-    }
-
-    method Eof {} {
+    method eof {} {
 	debug.marpa/gate {[debug caller] | }
 	Forward eof
 	return
     }
 
-    method EnterStart {char value} {
-	debug.marpa/gate {[debug caller] | }
-	my ToActive
-	my Enter $char $value
-	return
-    }
-
-    method Enter {char value} {
+    method enter {char value} {
 	debug.marpa/gate {[debug caller 1] | See '[char quote cstring $char]' ([marpa::location::Show [Store get $value]])}
 
 	# Extend the map when encountering an unknown character, check
@@ -168,7 +200,6 @@ oo::class create marpa::gate {
 		# ... collect the acceptables
 		lappend match $possible
 	    }
-
 	    if {[llength $match]} {
 		# ... remember the char now for possible rewind request.
 		##
@@ -196,14 +227,14 @@ oo::class create marpa::gate {
 
 	    incr flushed
 	    debug.marpa/gate {[debug caller 1] | push ($match)}
-	    Forward enter $match $value
 
+	    Forward enter $match $value
 	    # Loop to retry
 	}
 	return
     }
 
-    method Acceptable {syms} {
+    method acceptable {syms} {
 	debug.marpa/gate {[debug caller] | }
 	# numeric ids, dict => dict exists// list(id)
 	set myacceptable {}
@@ -214,7 +245,7 @@ oo::class create marpa::gate {
 	return
     }
 
-    method Redo {n} {
+    method redo {n} {
 	debug.marpa/gate {[debug caller] | }
 	if {$n} {
 	    # Redo/enter the last n characters
@@ -223,7 +254,7 @@ oo::class create marpa::gate {
 	    set pending [lrange $myhistory end-$n end]
 	    set myhistory {}
 	    foreach {char value} $pending {
-		my Enter $char $value
+		my enter $char $value
 	    }
 	} else {
 	    # Redo nothing
@@ -232,42 +263,19 @@ oo::class create marpa::gate {
 	return
     }
 
-    method FailStart {args} {
-	debug.marpa/gate {[debug caller] | }
-	my E "Unable to process feedback before activation" START
-    }
-
-    method FailSetup {args} {
-	debug.marpa/gate {[debug caller] | }
-	my E "Unable to accept configuration, already active" SETUP
-    }
-
-    method FailEof {args} {
-	debug.marpa/gate {[debug caller] | }
-	my E "Unable to process input after EOF" EOF
-    }
-
-    # # ## ### ##### ######## #############
-    ## Internal support - Error generation
-
-    method E {msg args} {
-	debug.marpa/inbound {}
-	return -code error \
-	    -errorcode [linsert $args 0 MARPA GATE] \
-	    $msg
-    }
-
-    # # ## ### ##### ######## #############
+    # # -- --- ----- -------- -------------
     ## Internal support - Data management (setup)
 
     method SetupCharacters {characters} {
 	debug.marpa/gate {[debug caller 1] | }
+	if {![llength $characters]} return
 	# Bulk argument check, prevent duplicates
 	foreach c $characters {
 	    if {[dict exists $mymap $c]} {
 		my E "Duplicate character \"$c\"" \
 		    CHAR DUPLICATE $c
 	    }
+	    dict set mymap  $c ?
 	}
 	# Bulk definition
 	foreach \
@@ -281,6 +289,7 @@ oo::class create marpa::gate {
 
     method SetupCharacterClasses {classes} {
 	debug.marpa/gate {[debug caller 1] | }
+	if {![dict size $classes]} return
 	# Bulk argument check, prevent duplicates
 	set names {}
 	foreach {name spec} $classes {
@@ -288,6 +297,7 @@ oo::class create marpa::gate {
 		my E "Duplicate character class \"$name\"" \
 		    CHARCLASS DUPLICATE $name
 	    }
+	    dict set myclass $name ?
 	    lappend names $name
 	}
 	# Bulk definition - Do not use 'dict keys' - must keep order!
@@ -308,42 +318,139 @@ oo::class create marpa::gate {
 	return
     }
 
+    ##
     # # ## ### ##### ######## #############
-    ## State transitions
+}
 
-    method ToStart {} {
-	debug.marpa/gate {[debug caller] | }
-	# () :: Start
-	oo::objdefine [self] forward def         my Setup
-	oo::objdefine [self] forward eof         my EofStart
-	oo::objdefine [self] forward enter       my EnterStart
-	oo::objdefine [self] forward acceptable  my FailStart
-	oo::objdefine [self] forward redo        my FailStart
-	return
+# # ## ### ##### ######## #############
+## Mixin helper class. State machine checking the method call
+## sequencing of marpa::inbound instances.
+
+## The mixin is done on user request (method in main class).
+## Uses: testing
+##       debugging in production
+
+oo::class create marpa::gate::sequencer {
+    superclass sequencer
+
+    # State machine for marpa::gate
+    ##
+    # Sequence = 1(2(5(356?)*))?(46)
+    ##
+    # Non-deterministic state machine _____
+    # Current Method --> New          Notes
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # -       <cons>     Made
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # Made    def        Config
+    #         eof        Done
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # Config  accept     Gated        [1]
+    #         eof        Done
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # Gated   enter      Data
+    #         eof        Done
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # Data    accept     Gated, Back  [2]
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # Back    redo       Gated
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # Done    redo       Complete
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # *     *            /FAIL
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # [1] initial accept, before all data, part of the setup, coming
+    #     down from upstream
+    # [2] the non-determinism is here
+
+    # Deterministic state machine. Remap state sets
+    ##
+    # made     := Made
+    # config   := Config
+    # gated    := Gated
+    # data     := Data
+    # regated  := { Gated, Back }
+    # done     := Done
+    # complete := Complete
+    ##
+    # New transition table ________________ # Table re-sorted, by method __________
+    # Current Method --> New          Notes # Method Current --> New          Notes
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # -       <cons>     made		    # <cons> -           made		   
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # made    def        config		    # def    made        config		   
+    #         eof        done		    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # accept config      gated        [1]  
+    # config  accept     gated        [1]   #        data        regated	   
+    #         eof        done		    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # enter  gated       data		   
+    # gated   enter      data		    #        regated     data		   
+    #         eof        done		    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # redo   done        complete	   
+    # data    accept     regated	    #        regated     gated		   
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # regated enter      data		    # eof    config      done		   
+    #         redo       gated		    #        gated       done		   
+    #         eof        done               #        regated     done		   
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ #        made        done		   
+    # done    redo       complete	    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ #        *     *     /FAIL		   
+    # *     *            /FAIL		    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~
+
+    # # -- --- ----- -------- -------------
+    ## Mandatory overide of virtual base class method
+
+    method __Init {} { my __States made config gated data regated done complete }
+
+    # # -- --- ----- -------- -------------
+    ## Checked API methods
+
+    method def {characters classes} {
+	my __Init
+	my __FNot made   ! "Invalid redefinition" SETUP DOUBLE
+	my __On   made --> config
+	next $characters $classes
     }
 
-    method ToActive {} {
-	debug.marpa/gate {[debug caller] | }
-	# Start :: Active
-	oo::objdefine [self] forward def         my FailSetup
-	oo::objdefine [self] forward eof         my Eof
-	oo::objdefine [self] forward enter       my Enter
-	oo::objdefine [self] forward acceptable  my Acceptable
-	oo::objdefine [self] forward redo        my Redo
-	return
+    method eof {} {
+	my __Init
+	my __FNot {made config gated regated}   ! "Unexpected EOF" EOF EARLY
+	my __On   {made config gated regated} --> done
+	next
     }
 
-    method ToDone {} {
-	debug.marpa/gate {[debug caller] | }
-	# Active :: Done
-	#oo::objdefine [self] forward def         my FailSetup
-	oo::objdefine [self] forward eof         my FailEof
-	oo::objdefine [self] forward enter       my FailEof
-	oo::objdefine [self] forward acceptable  my FailEof
-	oo::objdefine [self] forward redo        my FailEof
-	return
+    method enter {char value} {
+	my __Init
+	my __Fail made              ! "Setup missing"      SETUP MISSING
+	my __Fail {config data}     ! "Gate missing"       GATE MISSING
+	my __Fail {done complete}   ! "After end of input" EOF AFTER
+	my __On   {gated regated} --> data
+	next $char $value
     }
 
+    method acceptable {syms} {
+	my __Init
+	my __Fail made            ! "Setup missing"      SETUP MISSING
+	my __Fail {gated regated} ! "Data missing"       DATA MISSING
+	my __Fail {done complete} ! "After end of input" EOF AFTER
+	my __On   config        --> gated
+	my __On   data          --> regated
+	next $syms
+    }
+
+    method redo {n} {
+	my __Init
+	my __Fail made          ! "Setup missing"      SETUP MISSING
+	my __Fail {config data} ! "Gate missing"       GATE MISSING
+	my __Fail gated         ! "Data missing"       DATA MISSING
+	my __Fail complete      ! "After end of input" EOF AFTER
+	my __On   regated     --> gated
+	my __On   done        --> complete
+	next $n
+    }
+
+    ##
     # # ## ### ##### ######## #############
 }
 

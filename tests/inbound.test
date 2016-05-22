@@ -1,5 +1,5 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2015 Andreas Kupries
+## (c) 2016 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## marpa::inbound
 
@@ -15,14 +15,22 @@ kt require support tcl::chan::string ;# string channel for 'read' method.
 kt local   testing marpa
 
 # # ## ### ##### ######## ############# #####################
+## Activate method sequence checking for all instances
+## Instances can dynamically activate method sequence checks too
+
+oo::define marpa::inbound mixin marpa::inbound::sequencer
+
+# # ## ### ##### ######## ############# #####################
 
 kt source support/common.tcl
 
 # # ## ### ##### ######## ############# #####################
-## constructor/2 (semstore upstream)
-## enter/1       (string)
-## read/1        (channel)
-## eof/0         ()
+## 1 constructor/2 (semstore upstream)
+## 2 enter/1       (string)
+## 3 read/1        (channel)
+## 4 eof/0         ()
+##
+## Sequence = 1[23]*4
 
 # # ## ### ##### ######## ############# #####################
 ## constructor - wrong args, initial state, calls

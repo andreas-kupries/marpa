@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2015-2016 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -24,6 +24,36 @@ debug prefix marpa/support {[debug caller] | }
 proc marpa::D {script} {
     uplevel 1 $script
     return
+}
+
+proc marpa::DX {label script} {
+    uplevel 1 $script
+    # The label is what the debug code will print
+    return $label
+}
+
+# # ## ### ##### ######## #############
+## Generate an error generation method for a class
+
+proc marpa::E {label args} {
+    debug.marpa/support {}
+
+#     set class [string tolower [lindex [info level -1] 1]]
+#     set label [string map {:: /} [string trim $class :]]
+#     set args  [string toupper [split [string map {marpa/ {}} $label] /]]
+
+# puts $class
+# puts -\t$label
+# puts -\t$args
+
+    lappend map @args@  $args
+    lappend map @label@ $label
+    uplevel 1 [list method E {msg args} [string map $map {
+	debug.@label@ {}
+	return -code error \
+	    -errorcode [linsert $args 0 MARPA @args@] \
+	    $msg
+    }]]
 }
 
 # # ## ### ##### ######## #############

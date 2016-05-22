@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2015-2016 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -16,6 +16,7 @@
 
 package require Tcl 8.5
 package require TclOO ;# Implies Tcl 8.5 requirement.
+package require try   ;# Don't for 8.6+ ?
 package require debug
 package require debug::caller
 
@@ -29,14 +30,73 @@ debug define marpa/inbound
 # next element in the chain.
 
 oo::class create marpa::inbound {
+    marpa::E marpa/inbound INBOUND
+    validate-sequencing
+
+    ## Interaction sequences
+    #
+    # * Supplication of text via `enter`
+    # ```
+    # Driver  Inbound SemStore        Upstream
+    # |               |               |
+    # +-cons--\       |               |
+    # |       |       |               |
+    # /       /       /               /
+    # |       |       |               |
+    # +-enter->       |               |
+    # |       +-put--->               |
+    # |       |       |               |
+    # |       +-enter-)--------------->
+    # |       |       |               |
+    # /       /       /               /
+    # |       |       |               |
+    # +-eof--->       |               |
+    # |       +-eof------------------->
+    # |       |       |               |
+    # ```
+    #
+    # * Supplication of text via `read`
+    # ```
+    # Driver  Inbound SemStore        Upstream
+    # |               |               |
+    # +-cons--\       |               |
+    # |       |       |               |
+    # /       /       /               /
+    # |       |       |               |
+    # +-read-->       |               |
+    # |       --\     |               |
+    # |       | enter |               |
+    # |       <-/     |               |
+    # |       +-put--->               |
+    # |       |       |               |
+    # |       +-enter-)--------------->
+    # |       |       |               |
+    # /       /       /               /
+    # |       |       |               |
+    # +-eof--->       |               |
+    # |       +-eof---)--------------->
+    # |       |       |               |
+    # ```
+    #
+    # __Note__, both `enter` and `read` can be mixed between
+    # `constructor` and `eof`.
+
+    # # -- --- ----- -------- -------------
+    ## State
+
     variable mylocation ; # Input location
 
     # API:
-    #   cons  (semstore, upstream) - Create, link
-    #   enter (string)             - Incoming characters via string
-    #   read  (chan)               - Incoming characters via channel
-    #   eof   ()                   - End of input signal
+    # 1 cons  (semstore, upstream) - Create, link
+    # 2 enter (string)             - Incoming characters via string
+    # 3 read  (chan)               - Incoming characters via channel
+    # 4 eof   ()                   - End of input signal
     #   location? ()               - Retrieve current location
+    ##
+    # Sequence = 1[23]*4
+
+    # # -- --- ----- -------- -------------
+    ## Lifecycle
 
     constructor {semstore upstream} {
 	debug.marpa/inbound {[debug caller] | }
@@ -48,31 +108,19 @@ oo::class create marpa::inbound {
 			    # input, currently before the first
 			    # character
 
-	my ToStart
 	debug.marpa/inbound {[debug caller] | /ok}
 	return
     }
 
-    # # ## ### ##### ######## #############
-    ## State methods for API methods
-    #
-    #  API ::=  Start   Done
-    ## ---      ------- ------
-    #  enter    * Enter   Fail
-    #  read     * Read    Fail
-    #  eof      * Eof     Fail
-    ## ---      ------- ------
-    #
-    #  Start -<Eof>---> Done
-    #  Start -<Enter>-> Start
-    #  Start -<Read>--> Start
+    # # -- --- ----- -------- -------------
+    ## Public API
 
     method location? {} {
 	debug.marpa/inbound {[debug caller] | ==> $mylocation}
 	return $mylocation
     }
 
-    method Enter {string} {
+    method enter {string} {
 	debug.marpa/inbound {[debug caller] | }
 
 	if {$string eq {}} return
@@ -92,9 +140,10 @@ oo::class create marpa::inbound {
 	return
     }
 
-    method Read {chan} {
+    method read {chan} {
 	debug.marpa/inbound {[debug caller] | }
 
+	# Process channel in blocks
 	while {![eof $chan]} {
 	    my enter [read $chan 1024]
 	}
@@ -103,52 +152,77 @@ oo::class create marpa::inbound {
 	return
     }
 
-    method Eof {} {
+    method eof {} {
 	debug.marpa/inbound {[debug caller] | }
-
-	my ToDone
 	Forward eof
-	return
-    }
-
-    method Fail {args} {
-	debug.marpa/inbound {[debug caller] | }
-	my E "Unable to process input after EOF" EOF
-    }
-
-    # # ## ### ##### ######## #############
-    ## Internal support - Error generation
-
-    method E {msg args} {
-	debug.marpa/inbound {[debug caller] | }
-	return -code error \
-	    -errorcode [linsert $args 0 MARPA INBOUND] \
-	    $msg
-    }
-
-    # # ## ### ##### ######## #############
-    ## State transitions
-
-    method ToStart {} {
-	# () :: Start
-	debug.marpa/inbound {[debug caller] | }
-	oo::objdefine [self] forward enter my Enter
-	oo::objdefine [self] forward read  my Read
-	oo::objdefine [self] forward eof   my Eof
-	return
-    }
-
-    method ToDone {} {
-	# (Start) :: Done
-	debug.marpa/inbound {[debug caller] | }
-	oo::objdefine [self] forward enter my Fail
-	oo::objdefine [self] forward read  my Fail
-	oo::objdefine [self] forward eof   my Fail
 	return
     }
 
     ##
     # # ## ### ##### ######## #############
+}
+
+# # ## ### ##### ######## #############
+## Mixin helper class. State machine checking the method call
+## sequencing of marpa::inbound instances.
+
+## The mixin is done on user request (method in main class).
+## Uses: testing
+##       debugging in production
+
+oo::class create marpa::inbound::sequencer {
+    superclass sequencer
+
+    # State machine for marpa::inbound
+    ##
+    # Sequence = 1[23]*4
+    #
+    # *-1-> ready -2-> done|
+    #       ^ |
+    #       \-/3
+    ##                 Table By State ________   Table By Method ________
+    # 1: construction  Current  Method  New      Current  Method  New   
+    # 2: eof           ~~~~~~~  ~~~~~~  ~~~~~~   ~~~~~~~  ~~~~~~  ~~~~~~
+    # 3: enter, read   -        <cons>  ready    -        <cons>  ready 
+    ##                 ~~~~~~~  ~~~~~~  ~~~~~~   ~~~~~~~  ~~~~~~  ~~~~~~
+    #                  ready    enter   /KEEP    ready    enter   /KEEP 
+    #                           read    /KEEP    done     enter   /FAIL 
+    #                           eof     done     ~~~~~~~  ~~~~~~  ~~~~~~
+    #                  ~~~~~~~  ~~~~~~  ~~~~~~   ready    read    /KEEP 
+    #                  done     enter   /FAIL    done     read    /FAIL 
+    #                           read    /FAIL    ~~~~~~~  ~~~~~~  ~~~~~~
+    #                           eof     /FAIL    ready    eof     done	
+    #                  ~~~~~~~  ~~~~~~  ~~~~~~   done     eof     /FAIL 
+    #                  *        *       /KEEP    ~~~~~~~  ~~~~~~  ~~~~~~
+    #                  ~~~~~~~  ~~~~~~  ~~~~~~   *        *       /KEEP 
+    #		                                 ~~~~~~~  ~~~~~~  ~~~~~~
+
+    # # -- --- ----- -------- -------------
+    ## Mandatory overide of virtual base class method
+
+    method __Init {} { my __States ready done }
+
+    # # -- --- ----- -------- -------------
+    ## Checked API methods
+
+    method enter {string} {
+	my __Init
+	my __Fail done ! "Unable to process input after EOF" EOF
+	next $string
+    }
+
+    method read {chan} {
+	my __Init
+	my __Fail done ! "Unable to process input after EOF" EOF
+	next $chan
+    }
+
+    method eof {} {
+	my __Init
+	my __Fail done ! "Unable to process input after EOF" EOF
+	my __Goto done
+	next
+    }
 }
 
 # # ## ### ##### ######## #############

@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2016 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                          http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -30,6 +30,10 @@ proc __logcenter {} {
     }
     return $__logcenter
 }
+proc logclear {} {
+    [__logcenter] __clear
+    return
+}
 proc logged {} {
     global __logcenter __logs
     foreach l $__logs { $l destroy }
@@ -47,14 +51,18 @@ proc lognull {args} {}
 oo::class create Marpa::Testing::Log {
     variable mycalls
 
-    constructor {} { set mycalls {} ; return }
+    constructor {} { my __clear }
 
     method __calls {} {
 	set result $mycalls
 	my destroy
 	return $result
     }
+
+    method __clear {} { set mycalls {} ; return }
+
     export __calls
+    export __clear
 
     # # -- --- ----- -------- -------------
     ## Record all methods
