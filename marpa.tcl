@@ -104,6 +104,7 @@ critcl::tsources p_grammar.tcl    ; # SLIF grammar container
 ##       declarations, to avoid conflicts with libmarpa's public
 ##       symbols.
 
+critcl::source c_util.tcl     ; # Utilities for debug narrative - TRACE.
 critcl::source c_errors.tcl   ; # Mapping marpa error codes to strings.
 critcl::source c_events.tcl   ; # Mapping marpa event types to strings.
 critcl::source c_steps.tcl    ; # String pool for valuation-steps.

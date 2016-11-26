@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2015-2016 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -29,6 +29,8 @@ debug define marpa/engine
 ## 
 
 oo::class create marpa::engine {
+    marpa::E marpa/engine ENGINE
+
     # Map symbol name to id, for rule conversion during setup, and
     # back-conversion in debug output.
     #
@@ -84,7 +86,7 @@ oo::class create marpa::engine {
     ## Hidden methods for API methods. Subclasses integrate these into
     ## their state management
 
-    method Symbols {names} {
+    method symbols {names} {
 	debug.marpa/engine {[debug caller] | }
 	# Bulk argument check, prevent duplicates
 	foreach name $names {
@@ -110,7 +112,7 @@ oo::class create marpa::engine {
 	return $ids
     }
 
-    method Rules {rules} {
+    method rules {rules} {
 	debug.marpa/engine {[debug caller 1] | }
 	# Enter the rules. The second element of each rule is the
 	# relevant method.
@@ -118,6 +120,33 @@ oo::class create marpa::engine {
 	    my [lindex $rule 1] {*}$rule
 	}
 	return
+    }
+
+    # # ## ### ##### ######## #############
+    ## Debug support - Higher level progress report for a location.
+
+    method report {location} {
+	package require struct::matrix
+	# TODO: Consider placement of this method into a mixin
+	# That way we avoid the matrix dependency in general code.
+	struct::matrix M
+	M add columns 5
+#Cols = rule id, multiplier, origin
+	array set map {}
+
+	set n [RECCE report-start $location]
+	for {} {$n > 0} {incr n -1} {
+	    lassign [RECCE report-next] rule dot origin
+	    # TODO: Compute human readable fields
+	    # Note: Collapse identical rules into one entry.
+	    # - Use a matrix, and map from rule-ids to rows
+
+
+
+
+	}
+	RECCE report-finish
+	# TODO post-process matrix, format, and return
     }
 
     # # ## ### ##### ######## #############
@@ -142,6 +171,7 @@ oo::class create marpa::engine {
 	set rhsids [my 2ID  $args]
 
 	set id [GRAMMAR rule-new $lhsid {*}$rhsids]
+puts R($id)|$lhsid|:=|$rhsids|
 	return [my Rule $id $lhsid]
     }
 
@@ -164,6 +194,7 @@ oo::class create marpa::engine {
 
 	# lhs * loop,separator,proper
 	set id [GRAMMAR rule-sequence-new $lhsid $loopid $sepid $positive $proper]
+puts R($id)|$lhsid|$positive|$loopid|/$sepid/$proper|
 	return [my Rule $id $lhsid]
     }
 
@@ -207,19 +238,10 @@ oo::class create marpa::engine {
     }
 
     # # ## ### ##### ######## #############
-    ## Internal support - Error generation
-
-    method E {msg args} {
-	debug.marpa/engine {[debug caller] | }
-	return -code error \
-	    -errorcode [linsert $args 0 MARPA ENGINE] \
-	    $msg
-    }
-
-    # # ## ### ##### ######## #############
 
     method Events {g type value} {
 	# Show events, debugging only.
+puts XXX|[info level 0]
 	debug.marpa/engine {[debug caller] | }
 	switch -exact -- $type {
 	    e-none             {}

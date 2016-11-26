@@ -12,7 +12,7 @@
 package require marpa
 package require char ;# quoting
 
-debug on marpa/grammar
+#debug on marpa/grammar
 
 # # ## ### ##### ######## #############
 ## Semantic procedures based on the G1 symbols.

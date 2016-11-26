@@ -1,0 +1,1369 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2016 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::lexer
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+## Activate method sequence checking for all instances
+## Instances can dynamically activate method sequence checks too
+
+oo::define marpa::lexer mixin marpa::lexer::sequencer
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/common.tcl
+kt source support/fake-lex.tcl
+kt source support/lexample.tcl
+kt source support/fake-parse.tcl
+kt source support/fake-store.tcl
+
+# # ## ### ##### ######## ############# #####################
+##  1 constructor/2 (semstore, upstream)
+# # -- --- ----- -------- -------------
+##  2 gate:/1       (obj)
+##  3 symbols/1     (names)
+##  4 export/1      (names)
+##  5 rules/1       (rules)
+##  6 discard/1     (ignorelist)
+# # -- --- ----- -------- -------------
+##  7 acceptable/1  (syms)
+# # -- --- ----- -------- -------------
+##  8 enter/2       (syms semval)
+##  9 eof/0         ()
+# # -- --- ----- -------- -------------
+## 10 redo/1        (n)
+##
+## Sequence = 1([2345]*6(7(87?)*)?)?9
+
+# # ## ### ##### ######## ############# #####################
+## constructor - wrong args, initial state, calls
+
+test marpa-lexer-1.0.0 {constructor, wrong args, not enough} -body {
+    marpa::lexer new
+} -returnCodes error -result {wrong # args: should be "marpa::lexer new semstore upstream"}
+
+test marpa-lexer-1.0.1 {constructor, wrong args, not enough} -body {
+    marpa::lexer new STORE
+} -returnCodes error -result {wrong # args: should be "marpa::lexer new semstore upstream"}
+
+test marpa-lexer-1.0.1 {constructor, wrong args, too many} -body {
+    marpa::lexer new STORE UP X
+} -returnCodes error -result {wrong # args: should be "marpa::lexer new semstore upstream"}
+
+# No state to query ?! CHECK
+
+test marpa-lexer-1.1 {constructor, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result made
+
+test marpa-lexer-1.2 {constructor, externals} -body {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    logged
+} -cleanup {
+    LEXER destroy
+} -result {
+  STORE C {put {{} {} {}}}
+  STORE R {put {{} {} {}}} = {}
+  UP C {gate: ::LEXER}
+  UP R {gate: ::LEXER} = {}
+}
+
+test marpa-lexer-1.3.0 {constructor, post-forbidden: enter} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER enter C V
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Setup missing}
+
+test marpa-lexer-1.3.1 {constructor, post-forbidden: acceptable} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER acceptable {}
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Setup missing}
+
+# # ## ### ##### ######## ############# #####################
+## gate: - wrong args, state, sequencing
+
+test marpa-lexer-2.0.0 {gate:, wrong args, not enough} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER gate:
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER gate: gate"}
+
+test marpa-lexer-2.0.1 {gate:, wrong args, too many} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER gate: OBJ X
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER gate: gate"}
+
+test marpa-lexer-2.1.0 {gate:, result} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER gate: [log GATE]
+} -cleanup {
+    LEXER destroy
+    logged
+} -result {}
+
+test marpa-lexer-2.1.1 {gate:, externals} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    logclear
+} -body {
+    LEXER gate: [log GATE]
+    logged
+} -cleanup {
+    LEXER destroy
+} -result {}
+
+test marpa-lexer-2.1.2 {gate:, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER gate: [log GATE]
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result made
+
+# post-forbidden - see constructor (state: made)
+
+# # ## ### ##### ######## ############# #####################
+## export - wrong args, state, sequencing
+
+test marpa-lexer-3.0.0 {export, wrong args, not enough} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER export
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER export names"}
+
+test marpa-lexer-3.0.1 {export, wrong args, too many} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER export OBJ X
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER export names"}
+
+test marpa-lexer-3.1.0 {export, result} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER export {}
+} -cleanup {
+    LEXER destroy
+    logged
+} -result {}
+
+test marpa-lexer-3.1.1 {export, externals} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    logclear
+} -body {
+    LEXER export {}
+    logged
+} -cleanup {
+    LEXER destroy
+} -result {
+  UP C {symbols {}}
+  UP R {symbols {}} = {}
+}
+
+test marpa-lexer-3.1.2 {export, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER export {}
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result made
+
+# post-forbidden - see constructor (state: made)
+
+# # ## ### ##### ######## ############# #####################
+## action - wrong args, state, sequencing
+
+test marpa-lexer-4.1.0 {action, result} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER action [log GATE]
+} -cleanup {
+    LEXER destroy
+    logged
+} -result {}
+
+test marpa-lexer-4.1.1 {action, externals} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    logclear
+} -body {
+    LEXER action [log GATE]
+    logged
+} -cleanup {
+    LEXER destroy
+} -result {}
+
+test marpa-lexer-4.1.2 {action, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER action [log GATE]
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result made
+
+# post-forbidden - see constructor (state: made)
+
+# # ## ### ##### ######## ############# #####################
+## latm - wrong args, state, sequencing
+
+test marpa-lexer-5.0.0 {latm, wrong args, not enough} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER latm
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER latm flag"}
+
+test marpa-lexer-5.0.1 {latm, wrong args, too many} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER latm OBJ X
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER latm flag"}
+
+test marpa-lexer-5.1.0 {latm, result} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER latm [log GATE]
+} -cleanup {
+    LEXER destroy
+    logged
+} -result {}
+
+test marpa-lexer-5.1.1 {latm, externals} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    logclear
+} -body {
+    LEXER latm [log GATE]
+    logged
+} -cleanup {
+    LEXER destroy
+} -result {}
+
+test marpa-lexer-5.1.2 {latm, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER latm [log GATE]
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result made
+
+# post-forbidden - see constructor (state: made)
+
+# # ## ### ##### ######## ############# #####################
+## symbols - wrong args, state, sequencing
+
+test marpa-lexer-6.0.0 {symbols, wrong args, not enough} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER symbols
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER symbols names"}
+
+test marpa-lexer-6.0.1 {symbols, wrong args, too many} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER symbols OBJ X
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER symbols names"}
+
+test marpa-lexer-6.1.0 {symbols, result} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER symbols {a b}
+} -cleanup {
+    LEXER destroy
+    logged
+} -result {0 1}
+
+test marpa-lexer-6.1.1 {symbols, externals} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    logclear
+} -body {
+    LEXER symbols {a b}
+    logged
+} -cleanup {
+    LEXER destroy
+} -result {}
+
+test marpa-lexer-6.1.2 {symbols, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER symbols {a b}
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result made
+
+# post-forbidden - see constructor (state: made)
+
+# # ## ### ##### ######## ############# #####################
+## rules - wrong args, state, sequencing
+
+test marpa-lexer-7.0.0 {rules, wrong args, not enough} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER rules
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER rules rules"}
+
+test marpa-lexer-7.0.1 {rules, wrong args, too many} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER rules OBJ X
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER rules rules"}
+
+test marpa-lexer-7.1.0 {rules, result} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER rules {}
+} -cleanup {
+    LEXER destroy
+    logged
+} -result {}
+
+test marpa-lexer-7.1.1 {rules, externals} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    logclear
+} -body {
+    LEXER rules {}
+    logged
+} -cleanup {
+    LEXER destroy
+} -result {}
+
+test marpa-lexer-7.1.2 {rules, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER rules {}
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result made
+
+# TODO: rule commands (i.e. structure of the rules given to the method)
+
+# post-forbidden - see constructor (state: made)
+
+# # ## ### ##### ######## ############# #####################
+## discard - wrong args, state, sequencing
+
+test marpa-lexer-8.0.0 {discard, wrong args, not enough} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER discard
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER discard discards"}
+
+test marpa-lexer-8.0.1 {discard, wrong args, too many} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER discard DISCARDS X
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER discard discards"}
+
+# 8.1.x - TODO: Cannot discard exported symbol
+# TODO: Cannot discard unknown symbol
+# TODO: 'This grammar does not have any rules' -- Freeze error
+# TODO: 'Start symbol not on LHS of any rule' -- Freeze error
+# ----> export missing - No public symbols - No lexemes
+
+test marpa-lexer-8.2.0 {discard, nothing is ok} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GLBase LEXER
+} -body {
+    LEXER discard {}
+} -cleanup {
+    LEXER destroy
+    logged
+} -result {}
+
+test marpa-lexer-8.2.1 {discard, something} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GLBase LEXER W
+    logclear
+} -body {
+    LEXER discard W
+} -cleanup {
+    LEXER destroy
+} -result {}
+
+test marpa-lexer-8.3.0 {discard, nothing, externals} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GLBase LEXER
+    logclear
+} -body {
+    LEXER discard {}
+    logged
+} -cleanup {
+    LEXER destroy
+} -result {}
+
+test marpa-lexer-8.3.1 {discard, something, externals} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GLBase LEXER W
+    logclear
+} -body {
+    LEXER discard W
+    logged
+} -cleanup {
+    LEXER destroy
+} -result {}
+
+test marpa-lexer-8.4.0 {discard, sequencing, nothing} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GLBase LEXER
+} -body {
+    LEXER discard {}
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result config
+
+test marpa-lexer-8.4.1 {discard, sequencing, something} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GLBase LEXER W
+} -body {
+    LEXER discard W
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result config
+
+test marpa-lexer-8.5.0 {discard, post-forbidden: gate:} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GL LEXER
+} -body {
+    LEXER gate: X
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Lexer is frozen}
+
+test marpa-lexer-8.5.1 {discard, post-forbidden: symbols} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GL LEXER
+} -body {
+    LEXER symbols {}
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Lexer is frozen}
+
+test marpa-lexer-8.5.2 {discard, post-forbidden: export} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GL LEXER
+} -body {
+    LEXER export {}
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Lexer is frozen}
+
+test marpa-lexer-8.5.3 {discard, post-forbidden: action} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GL LEXER
+} -body {
+    LEXER action
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Lexer is frozen}
+
+test marpa-lexer-8.5.4 {discard, post-forbidden: latm} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GL LEXER
+} -body {
+    LEXER latm 0
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Lexer is frozen}
+
+test marpa-lexer-8.5.5 {discard, post-forbidden: rules} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GL LEXER
+} -body {
+    LEXER rules {}
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Lexer is frozen}
+
+test marpa-lexer-8.5.6 {discard, post-forbidden: discard} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GL LEXER
+} -body {
+    LEXER discard {}
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Lexer is frozen}
+
+test marpa-lexer-8.5.7 {discard, post-forbidden: enter} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GL LEXER
+} -body {
+    LEXER enter C V
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Gate missing}
+
+# # ## ### ##### ######## ############# #####################
+## acceptable - wrong args, state, sequencing
+
+test marpa-lexer-9.0.0 {acceptable, wrong args, not enough} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GL LEXER
+} -body {
+    LEXER acceptable
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER acceptable syms"}
+
+test marpa-lexer-9.0.1 {acceptable, wrong args, too many} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    GL LEXER
+} -body {
+    LEXER acceptable SYMS X
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER acceptable syms"}
+
+test marpa-lexer-9.1.0 {acceptable, initial} -setup {
+    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    LEXER gate: [log GATE] ; GL1 LEXER
+} -body {
+    LEXER acceptable {0 1}
+} -cleanup {
+    LEXER destroy
+    logged ; parsed ; stored
+} -result {}
+
+test marpa-lexer-9.1.1 {acceptable, initial, sequencing} -setup {
+    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    LEXER gate: [log GATE] ; GL1 LEXER
+} -body {
+    LEXER acceptable {0 1}
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged ; parsed ; stored
+} -result gated
+
+test marpa-lexer-9.1.2 {acceptable, initial, external} -setup {
+    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    LEXER gate: [log GATE] ; GL1 LEXER
+    logclear
+} -body {
+    LEXER acceptable {0 1}
+    logged
+} -cleanup {
+    LEXER destroy
+    parsed ; stored
+} -result {
+  GATE C {acceptable {0 1}}
+  GATE R {acceptable {0 1}} = {}
+}
+
+test marpa-lexer-9.2.0 {acceptable, during lexeme} -setup {
+    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    LEXER gate: [log GATE] ; GL1 LEXER
+    LEXER acceptable {0 1}
+    LEXER enter 0 0
+} -body {
+    LEXER acceptable {0 1}
+} -cleanup {
+    LEXER destroy
+    logged ; parsed ; stored
+} -result {}
+
+test marpa-lexer-9.2.1 {acceptable, during lexeme, sequencing} -setup {
+    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    LEXER gate: [log GATE] ; GL1 LEXER
+    LEXER acceptable {0 1}
+    LEXER enter 0 0
+} -body {
+    LEXER acceptable {0 1}
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged ; parsed ; stored
+} -result gated
+
+test marpa-lexer-9.2.2 {acceptable, during lexeme, external} -setup {
+    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    LEXER gate: [log GATE] ; GL1 LEXER
+    LEXER acceptable {0 1}
+    LEXER enter 0 0
+    logclear
+} -body {
+    LEXER acceptable {0 1}
+    logged
+} -cleanup {
+    LEXER destroy
+    parsed ; stored
+} -result {}
+
+test marpa-lexer-9.3.0 {acceptable, post-forbidden: gate:} -setup {
+    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    LEXER gate: [log GATE] ; GL1 LEXER
+    LEXER acceptable {0 1}
+} -body {
+    LEXER gate: X
+} -cleanup {
+    LEXER destroy
+    logged ; parsed ; stored
+} -returnCodes error -result {Lexer is frozen}
+
+test marpa-lexer-9.3.1 {acceptable, post-forbidden: symbols} -setup {
+    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    LEXER gate: [log GATE] ; GL1 LEXER
+    LEXER acceptable {0 1}
+} -body {
+    LEXER symbols {}
+} -cleanup {
+    LEXER destroy
+    logged ; parsed ; stored
+} -returnCodes error -result {Lexer is frozen}
+
+test marpa-lexer-9.3.2 {acceptable, post-forbidden: export} -setup {
+    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    LEXER gate: [log GATE] ; GL1 LEXER
+    LEXER acceptable {0 1}
+} -body {
+    LEXER export {}
+} -cleanup {
+    LEXER destroy
+    logged ; parsed ; stored
+} -returnCodes error -result {Lexer is frozen}
+
+test marpa-lexer-9.3.3 {acceptable, post-forbidden: action} -setup {
+    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    LEXER gate: [log GATE] ; GL1 LEXER
+    LEXER acceptable {0 1}
+} -body {
+    LEXER action
+} -cleanup {
+    LEXER destroy
+    logged ; parsed ; stored
+} -returnCodes error -result {Lexer is frozen}
+
+test marpa-lexer-9.3.4 {acceptable, post-forbidden: latm} -setup {
+    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    LEXER gate: [log GATE] ; GL1 LEXER
+    LEXER acceptable {0 1}
+} -body {
+    LEXER latm 0
+} -cleanup {
+    LEXER destroy
+    logged ; parsed ; stored
+} -returnCodes error -result {Lexer is frozen}
+
+test marpa-lexer-9.3.5 {acceptable, post-forbidden: rules} -setup {
+    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    LEXER gate: [log GATE] ; GL1 LEXER
+    LEXER acceptable {0 1}
+} -body {
+    LEXER rules {}
+} -cleanup {
+    LEXER destroy
+    logged ; parsed ; stored
+} -returnCodes error -result {Lexer is frozen}
+
+test marpa-lexer-9.3.6 {acceptable, post-forbidden: discard} -setup {
+    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    LEXER gate: [log GATE] ; GL1 LEXER
+    LEXER acceptable {0 1}
+} -body {
+    LEXER discard {}
+} -cleanup {
+    LEXER destroy
+    logged ; parsed ; stored
+} -returnCodes error -result {Lexer is frozen}
+
+test marpa-lexer-9.3.7 {acceptable, post-forbidden: acceptable} -setup {
+    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    LEXER gate: [log GATE] ; GL1 LEXER
+    LEXER acceptable {0 1}
+} -body {
+    LEXER acceptable {0 1}
+} -cleanup {
+    LEXER destroy
+    logged ; parsed ; stored
+} -returnCodes error -result {Data missing}
+
+
+return ;#XXX
+
+# # ## ### ##### ######## ############# #####################
+## enter - wrong args, state, sequencing
+
+test marpa-lexer-3.0.0 {enter, wrong args, not enough} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER enter
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER enter char value"}
+
+test marpa-lexer-3.0.1 {enter, wrong args, not enough} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER enter CHAR
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER enter char value"}
+
+test marpa-lexer-3.0.2 {enter, wrong args, too many} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER enter CHAR VALUE X
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER enter char value"}
+
+# TODO: unable to handle X - undefined character (class)
+
+test marpa-lexer-3.1.0 {enter, during lexing} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-in]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+} -body {
+    LEXER enter C V
+} -cleanup {
+    LEXER destroy
+    logged ; lexed
+} -result {}
+
+test marpa-lexer-3.1.1 {enter, during lexing, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-in]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+} -body {
+    LEXER enter C V
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged ; lexed
+} -result relexerd
+
+test marpa-lexer-3.1.2 {enter, during lexing, externals} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-in]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+    logclear
+} -body {
+    LEXER enter C V
+    logged
+} -cleanup {
+    LEXER destroy
+    lexed
+} -result {
+  UP C {enter 0 V}
+  UP R {enter 0 V} = {}
+}
+
+test marpa-lexer-3.1.3 {enter, during lexing, relexerd, post-forbidden: def} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-in]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+    LEXER enter C V
+} -body {
+    LEXER def {} {}
+} -cleanup {
+    LEXER destroy
+    logged ; lexed
+} -returnCodes error -result {Invalid redefinition}
+
+test marpa-lexer-3.1.4 {enter, during lexing, relexerd, post-forbidden: acceptable} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-in]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+    LEXER enter C V
+} -body {
+    LEXER acceptable {}
+} -cleanup {
+    LEXER destroy
+    logged ; lexed
+} -returnCodes error -result {Data missing}
+
+test marpa-lexer-3.2.0 {enter, end of lexeme} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-end]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+} -body {
+    LEXER enter C V
+} -cleanup {
+    LEXER destroy
+    logged ; lexed
+} -result {}
+
+test marpa-lexer-3.2.1 {enter, end of lexeme, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-end]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+} -body {
+    LEXER enter C V
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged ; lexed
+} -result lexerd
+
+test marpa-lexer-3.2.2 {enter, end of lexeme, externals} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-end]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+    logclear
+} -body {
+    LEXER enter C V
+    logged
+} -cleanup {
+    LEXER destroy
+    lexed
+} -result {
+  UP C {enter 0 V}
+  UP R {enter 0 V} = {}
+}
+
+test marpa-lexer-3.2.3 {enter, end of lexeme, lexerd, post-forbidden: def} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-end]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+    LEXER enter C V
+} -body {
+    LEXER def {} {}
+} -cleanup {
+    LEXER destroy
+    logged ; lexed
+} -returnCodes error -result {Invalid redefinition}
+
+test marpa-lexer-3.2.4 {enter, end of lexeme, lexerd, post-forbidden: acceptable} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-end]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+    LEXER enter C V
+} -body {
+    LEXER acceptable {}
+} -cleanup {
+    LEXER destroy
+    logged ; lexed
+} -returnCodes error -result {Data missing}
+
+test marpa-lexer-3.2.5 {enter, end of lexeme, lexerd, post-forbidden: redo} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-end]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+    LEXER enter C V
+} -body {
+    LEXER redo 0
+} -cleanup {
+    LEXER destroy
+    logged ; lexed
+} -returnCodes error -result {Data missing}
+
+test marpa-lexer-3.3.0 {enter, intra} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-nil]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+} -body {
+    LEXER enter C V
+} -cleanup {
+    LEXER destroy
+    logged
+} -result {}
+
+test marpa-lexer-3.3.1 {enter, intra, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-nil]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+} -body {
+    LEXER enter C V
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result data
+
+test marpa-lexer-3.3.2 {enter, intra, relexerd, post-forbidden: def} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-nil]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+    LEXER enter C V
+} -body {
+    LEXER def {} {}
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Invalid redefinition}
+
+test marpa-lexer-3.3.3 {enter, intra, relexerd, post-forbidden: enter} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-nil]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+    LEXER enter C V
+} -body {
+    LEXER enter C V
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Lexer missing}
+
+test marpa-lexer-3.3.4 {enter, intra, relexerd, post-forbidden: eof} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-nil]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+    LEXER enter C V
+} -body {
+    LEXER eof
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Unexpected EOF}
+
+test marpa-lexer-3.3.5 {enter, intra, relexerd, post-forbidden: redo} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-nil]]
+    LEXER def {C} {}
+    LEXER acceptable {0}
+    LEXER enter C V
+} -body {
+    LEXER redo 0
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Lexer missing}
+
+test marpa-lexer-3.4.0 {enter, unable to handle symbol} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-not]]
+    LEXER def {C X} {}
+    LEXER acceptable {0}
+} -body {
+    LEXER enter X V
+} -cleanup {
+    LEXER destroy
+    logged ; lexed
+} -returnCodes error -result {Unable to handle 'X'}
+
+# # ## ### ##### ######## ############# #####################
+## eof - wrong args, state, sequencing
+
+test marpa-lexer-4.0 {eof, wrong args, too many} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER eof X
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER eof"}
+
+test marpa-lexer-4.1.0 {eof, after construction} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER eof
+} -cleanup {
+    LEXER destroy
+    logged
+} -result {}
+
+test marpa-lexer-4.1.1 {eof, after construction, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER eof
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result done
+
+test marpa-lexer-4.1.2 {eof, after construction, externals} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    logclear
+} -body {
+    # eof is reported upstream, only.
+    list [LEXER eof] [logged]
+} -cleanup {
+    LEXER destroy
+} -result {{} {
+  UP C eof
+  UP R eof = {}
+}}
+
+test marpa-lexer-4.2.0 {eof, after configuration} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER def {} {}
+} -body {
+    LEXER eof
+} -cleanup {
+    LEXER destroy
+    logged
+} -result {}
+
+test marpa-lexer-4.2.1 {eof, after configuration, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER def {} {}
+} -body {
+    LEXER eof
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result done
+
+test marpa-lexer-4.2.2 {eof, after configuration, externals} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER def {} {}
+    logclear
+} -body {
+    # eof is reported upstream, only.
+    list [LEXER eof] [logged]
+} -cleanup {
+    LEXER destroy
+} -result {{} {
+  UP C eof
+  UP R eof = {}
+}}
+
+test marpa-lexer-4.3.0 {eof, after gating} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER def {} {}
+    LEXER acceptable 0
+} -body {
+    LEXER eof
+} -cleanup {
+    LEXER destroy
+    logged
+} -result {}
+
+test marpa-lexer-4.3.1 {eof, after gating, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER def {} {}
+    LEXER acceptable 0
+} -body {
+    LEXER eof
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result done
+
+test marpa-lexer-4.3.2 {eof, after gating, externals} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER def {} {}
+    LEXER acceptable 0
+    logclear
+} -body {
+    # eof is reported upstream, only.
+    list [LEXER eof] [logged]
+} -cleanup {
+    LEXER destroy
+} -result {{} {
+  UP C eof
+  UP R eof = {}
+}}
+
+test marpa-lexer-4.4.0 {eof, after data} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-in]]
+    LEXER def {C} {}
+    LEXER acceptable 0
+    LEXER enter C V
+} -body {
+    LEXER eof
+} -cleanup {
+    LEXER destroy
+    logged
+} -result {}
+
+test marpa-lexer-4.4.1 {eof, after data, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-in]]
+    LEXER def {C} {}
+    LEXER acceptable 0
+    LEXER enter C V
+} -body {
+    LEXER eof
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result done
+
+test marpa-lexer-4.4.2 {eof, after data, externals} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-in]]
+    LEXER def {C} {}
+    LEXER acceptable 0
+    LEXER enter C V
+    logclear
+} -body {
+    # eof is reported upstream, only.
+    list [LEXER eof] [logged]
+} -cleanup {
+    LEXER destroy
+} -result {{} {
+  UP C eof
+  UP R eof = {}
+}}
+
+test marpa-lexer-4.5.0 {eof, post-forbidden: def} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER eof
+} -body {
+    LEXER def {} {}
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Invalid redefinition}
+
+test marpa-lexer-4.5.1 {eof, post-forbidden: enter} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER eof
+} -body {
+    LEXER enter C V
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {After end of input}
+
+test marpa-lexer-4.5.2 {eof, post-forbidden: eof} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER eof
+} -body {
+    LEXER eof
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Unexpected EOF}
+
+test marpa-lexer-4.5.3 {eof, post-forbidden: acceptable} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER eof
+} -body {
+    LEXER acceptable 0
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {After end of input}
+
+# Note: Methods forbidden to call after 'acceptable' have been handled
+# already. See tests 3.2.[3-5] (lexerd) and 3.1.[34] (relexerd), method
+# 'enter'.
+
+# # ## ### ##### ######## ############# #####################
+## redo - wrong args, state, sequencing
+
+test marpa-lexer-6.0.0 {redo, wrong args, not enough} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER redo
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER redo n"}
+
+test marpa-lexer-6.0.1 {redo, wrong args, too many} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER redo N X
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER redo n"}
+
+test marpa-lexer-6.1.0 {redo, during lexeme} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-in]]
+    LEXER def {C} {}
+    LEXER acceptable 0
+    LEXER enter C V
+} -body {
+    LEXER redo 0
+} -cleanup {
+    LEXER destroy
+    logged ; lexed
+} -result {}
+
+test marpa-lexer-6.1.1 {redo, during lexeme, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-in]]
+    LEXER def {C} {}
+    LEXER acceptable 0
+    LEXER enter C V
+} -body {
+    LEXER redo 0
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged ; lexed
+} -result lexerd
+
+test marpa-lexer-6.1.2 {redo, during lexeme, external} -setup {
+    marpa::lexer create LEXER [log STORE] [log2 UP [fake-lex-in]]
+    LEXER def {C} {}
+    LEXER acceptable 0
+    LEXER enter C V
+    logclear
+} -body {
+    LEXER redo 0
+    logged
+} -cleanup {
+    LEXER destroy
+    lexed
+} -result {}
+
+test marpa-lexer-6.2.0 {redo, post eof} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER eof
+} -body {
+    LEXER redo 0
+} -cleanup {
+    LEXER destroy
+    logged
+} -result {}
+
+test marpa-lexer-6.2.1 {redo, post eof, sequencing} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER eof
+} -body {
+    LEXER redo 0
+    LEXER @
+} -cleanup {
+    LEXER destroy
+    logged
+} -result complete
+
+test marpa-lexer-6.2.2 {redo, post eof, external} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER eof
+    logclear
+} -body {
+    LEXER redo 0
+    logged
+} -cleanup {
+    LEXER destroy
+} -result {}
+
+# Note: Methods forbidden to call after 'redo' have been handled
+# already, in part. See tests 3.2.[3-5] (lexerd), method 'enter'.
+# It follows the handling in state 'final'.
+
+test marpa-lexer-6.3.0 {redo, post-forbidden: def} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER eof
+    LEXER redo 0
+} -body {
+    LEXER def {} {}
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Invalid redefinition}
+
+test marpa-lexer-6.3.1 {redo, post-forbidden: enter} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER eof
+    LEXER redo 0
+} -body {
+    LEXER enter C V
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {After end of input}
+
+test marpa-lexer-6.3.2 {redo, post-forbidden: eof} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER eof
+    LEXER redo 0
+} -body {
+    LEXER eof
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {Unexpected EOF}
+
+test marpa-lexer-6.3.3 {redo, post-forbidden: acceptable} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER eof
+    LEXER redo 0
+} -body {
+    LEXER acceptable 0
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {After end of input}
+
+test marpa-lexer-6.3.4 {redo, post-forbidden: redo} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+    LEXER eof
+    LEXER redo 0
+} -body {
+    LEXER redo 0
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {After end of input}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

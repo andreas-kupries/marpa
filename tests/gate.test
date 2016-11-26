@@ -79,7 +79,7 @@ test marpa-gate-1.3.0 {constructor, post-forbidden: enter} -setup {
     logged
 } -returnCodes error -result {Setup missing}
 
-test marpa-gate-1.3.2 {constructor, post-forbidden: acceptable} -setup {
+test marpa-gate-1.3.1 {constructor, post-forbidden: acceptable} -setup {
     marpa::gate create GATE [log STORE] [log UP]
 } -body {
     GATE acceptable {}

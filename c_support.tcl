@@ -39,8 +39,7 @@ critcl::ccode {
 
 	// if ((status < 0) || (status > MARPA_ERRCODE_COUNT)) Tcl_Panic ("marpa error status out of range");
 
-	/* *** TODO :: Set a detailed Tcl error code */
-	Tcl_SetErrorCode (interp, "MARPA", NULL);
+	Tcl_SetErrorCode (interp, "MARPA", Tcl_GetString(marpatcl_ecode_decode (interp, status)), NULL);
 	Tcl_SetObjResult (interp, marpatcl_error_decode (interp, status));
 	return TCL_ERROR;
     }

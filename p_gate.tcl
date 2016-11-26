@@ -373,30 +373,30 @@ oo::class create marpa::gate::sequencer {
     # done     := Done
     # complete := Complete
     ##
-    # New transition table ________________ # Table re-sorted, by method __________
-    # Current Method --> New          Notes # Method Current --> New          Notes
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # -       <cons>     made		    # <cons> -           made		   
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # made    def        config		    # def    made        config		   
-    #         eof        done		    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # accept config      gated        [1]  
-    # config  accept     gated        [1]   #        data        regated	   
-    #         eof        done		    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # enter  gated       data		   
-    # gated   enter      data		    #        regated     data		   
-    #         eof        done		    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # redo   done        complete	   
-    # data    accept     regated	    #        regated     gated		   
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # regated enter      data		    # eof    config      done		   
-    #         redo       gated		    #        gated       done		   
-    #         eof        done               #        regated     done		   
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ #        made        done		   
-    # done    redo       complete	    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ #        *     *     /FAIL		   
-    # *     *            /FAIL		    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # New transition table ____________ # Table re-sorted, by method
+    # Current Method --> New      Notes # Method Current --> New
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # -       <cons>     made	 	# <cons> -           made
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # made    def        config	 	# def    made        config
+    #         eof        done	 	# ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ # accept config      gated
+    # config  accept     gated    [1]   #        data        regated
+    #         eof        done	 	# ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ # enter  gated       data
+    # gated   enter      data	 	#        regated     data
+    #         eof        done	 	# ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ # redo   done        complete
+    # data    accept     regated 	#        regated     gated
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # regated enter      data	 	# eof    config      done
+    #         redo       gated	 	#        gated       done
+    #         eof        done           #        regated     done
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ #        made        done
+    # done    redo       complete	# ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ # *      *           /FAIL
+    # *       *          /FAIL	 	# ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~
 
     # # -- --- ----- -------- -------------
     ## Mandatory overide of virtual base class method
@@ -409,15 +409,17 @@ oo::class create marpa::gate::sequencer {
     method def {characters classes} {
 	my __Init
 	my __FNot made   ! "Invalid redefinition" SETUP DOUBLE
-	my __On   made --> config
 	next $characters $classes
+
+	my __On   made --> config
     }
 
     method eof {} {
 	my __Init
 	my __FNot {made config gated regated}   ! "Unexpected EOF" EOF EARLY
-	my __On   {made config gated regated} --> done
 	next
+
+	my __On   {made config gated regated} --> done
     }
 
     method enter {char value} {
@@ -425,6 +427,9 @@ oo::class create marpa::gate::sequencer {
 	my __Fail made              ! "Setup missing"      SETUP MISSING
 	my __Fail {config data}     ! "Gate missing"       GATE MISSING
 	my __Fail {done complete}   ! "After end of input" EOF AFTER
+	# Note: Early state change. This ensures that we are in the
+	# proper state for the callbacks from upstream
+	# (i.e. acceptable, and redo)
 	my __On   {gated regated} --> data
 	next $char $value
     }
@@ -434,9 +439,10 @@ oo::class create marpa::gate::sequencer {
 	my __Fail made            ! "Setup missing"      SETUP MISSING
 	my __Fail {gated regated} ! "Data missing"       DATA MISSING
 	my __Fail {done complete} ! "After end of input" EOF AFTER
+	next $syms
+
 	my __On   config        --> gated
 	my __On   data          --> regated
-	next $syms
     }
 
     method redo {n} {
@@ -445,9 +451,10 @@ oo::class create marpa::gate::sequencer {
 	my __Fail {config data} ! "Gate missing"       GATE MISSING
 	my __Fail gated         ! "Data missing"       DATA MISSING
 	my __Fail complete      ! "After end of input" EOF AFTER
+	next $n
+
 	my __On   regated     --> gated
 	my __On   done        --> complete
-	next $n
     }
 
     ##

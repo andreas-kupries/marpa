@@ -358,8 +358,8 @@ oo::class create marpa::parser {
 	debug.marpa/parser {}
 
 	oo::objdefine [self] forward gate:       my GateSet
-	oo::objdefine [self] forward symbols     my Symbols
-	oo::objdefine [self] forward rules       my Rules
+	#oo::objdefine [self] forward symbols     my symbols
+	#oo::objdefine [self] forward rules       my rules
 	oo::objdefine [self] forward action      my Action
 	oo::objdefine [self] forward parse       my Parse
 	oo::objdefine [self] forward enter       my FailStart

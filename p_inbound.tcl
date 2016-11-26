@@ -220,8 +220,9 @@ oo::class create marpa::inbound::sequencer {
     method eof {} {
 	my __Init
 	my __Fail done ! "Unable to process input after EOF" EOF
-	my __Goto done
 	next
+
+	my __Goto done
     }
 }
 
