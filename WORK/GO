@@ -1,0 +1,29 @@
+#!/bin/bash
+clear
+echo
+ftilde
+rtilde
+rm -rf X.* BUILD-marpa0 tests/core*
+./build.tcl test --log X
+exit
+if [ -s X.stacktrace ]
+then
+    echo
+    echo SHOWING STACK TRACES in 3,2,1 ...
+    sleep 2
+    clear
+    echo
+    less X.stacktrace
+fi
+
+if [ -s X.faildetails ]
+then
+    echo
+    echo SHOWING FAILS in 3,2,1 ...
+    sleep 2
+    clear
+    echo
+    less X.faildetails
+fi
+
+cat X.summary
