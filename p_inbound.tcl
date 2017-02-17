@@ -129,9 +129,10 @@ oo::class create marpa::inbound {
 	    incr mylocation
 
 	    # Generate semantic value for the character
-	    set sv [Store put [set loc [list $mylocation $mylocation $ch]]]
+	    set loc [marpa location atom $mylocation $ch]
+	    set sv  [Store put $loc]
 
-	    debug.marpa/inbound {[debug caller 1] | DO '[char quote cstring $ch]' $sv ([marpa::location::Show $loc]) ______}
+	    debug.marpa/inbound {[debug caller 1] | DO '[char quote cstring $ch]' $sv ([marpa location show $loc]) ______}
 
 	    # And push into the pipeline
 	    debug.marpa/inbound {[debug caller 1] | DO _______________________________________}

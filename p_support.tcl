@@ -18,6 +18,12 @@ debug define marpa/support
 debug prefix marpa/support {[debug caller] | }
 
 # # ## ### ##### ######## #############
+
+namespace eval marpa {
+    namespace export D DX E X import filter K
+}
+
+# # ## ### ##### ######## #############
 ## Wrap around commands to be run from a debug narration command,
 ## ensure that the result is empty.
 
@@ -54,6 +60,12 @@ proc marpa::E {label args} {
 	    -errorcode [linsert $args 0 MARPA @args@] \
 	    $msg
     }]]
+}
+
+proc marpa::X {msg args} {
+    return -code error \
+	-errorcode [linsert $args 0 MARPA $args] \
+	$msg
 }
 
 # # ## ### ##### ######## #############

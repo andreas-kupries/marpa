@@ -162,7 +162,7 @@ oo::class create marpa::gate {
     }
 
     method enter {char value} {
-	debug.marpa/gate {[debug caller 1] | See '[char quote cstring $char]' ([marpa::location::Show [Store get $value]])}
+	debug.marpa/gate {[debug caller 1] | See '[char quote cstring $char]' ([marpa location show [Store get $value]])}
 
 	# Extend the map when encountering an unknown character, check
 	# the char classes for one it may belong to. Note, this is the
