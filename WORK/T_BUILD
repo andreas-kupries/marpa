@@ -1,6 +1,7 @@
 #!/bin/bash
 
-rm -f core* LOG ../ERR && \
+cd ..
+rm -f core* LOG ERR && \
     clear && \
     echo && \
     kettle -f ./build.tcl debug-package-marpa && \
