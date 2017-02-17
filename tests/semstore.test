@@ -1,0 +1,370 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::semstore
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+## No method sequence checking for the store.
+## Methods can be called in any order.
+
+# # ## ### ##### ######## ############# #####################
+##/  1 constructor/0
+# ------------------------------ interning, data to ids
+##  2 put/1         (data) -> id
+##  3 get/1         (id) -> data
+##  4 drop/1        (id)
+##  5 clear/0
+##  6 reset/0  <alias: clear>
+# ------------------------------ scratchpad of named registers
+##  7 write/2       (name data)
+##  8 read/1        (name) -> data
+##  9 unset/1       (name)
+# ------------------------------ introspection
+## 10 names/0       () -> list(id...)
+## 11 registers/0   () -> list(name...)
+
+# # ## ### ##### ######## ############# #####################
+## constructor - wrong args, initial state, calls
+
+test marpa-semstore-constructor-1.0 {constructor, wrong args, not enough} -body {
+    marpa::semstore create
+} -returnCodes error -result {wrong # args: should be "marpa::semstore create objectName ?arg ...?"}
+
+test marpa-semstore-constructor-1.1 {constructor, wrong args, too many} -body {
+    marpa::semstore create STORE X
+} -returnCodes error -result {wrong # args: should be "marpa::semstore create STORE"}
+
+test marpa-semstore-constructor-2.0 {constructor, initial state} -setup {
+    marpa::semstore create STORE
+} -body {
+    list [STORE names] [STORE registers]
+} -cleanup {
+    STORE destroy
+} -result {{} {}}
+
+# # ## ### ##### ######## ############# #####################
+## put
+
+test marpa-semstore-put-1.0 {put, wrong args, not enough} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE put
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE put data"}
+
+test marpa-semstore-put-1.1 {put, wrong args, too many} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE put DATA X
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE put data"}
+
+test marpa-semstore-put-2.0 {put, return} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE put A
+} -cleanup {
+    STORE destroy
+} -result 1
+
+test marpa-semstore-put-2.1 {put, state} -setup {
+    marpa::semstore create STORE
+    STORE put A
+} -body {
+    list [STORE names] [STORE registers]
+} -cleanup {
+    STORE destroy
+} -result {1 {}}
+
+# # ## ### ##### ######## ############# #####################
+## get
+
+test marpa-semstore-get-1.0 {get, wrong args, not enough} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE get
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE get id"}
+
+test marpa-semstore-get-1.1 {get, wrong args, too many} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE get ID X
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE get id"}
+
+test marpa-semstore-get-2.0 {get, return} -setup {
+    marpa::semstore create STORE
+    STORE put A
+} -body {
+    STORE get 1
+} -cleanup {
+    STORE destroy
+} -result A
+
+test marpa-semstore-get-3.0 {get, unknown} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE get ID
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {key "ID" not known in dictionary}
+
+# # ## ### ##### ######## ############# #####################
+## clear (s.a. reset)
+
+test marpa-semstore-clear-1.0 {clear, wrong args, too many} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE clear X
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE clear"}
+
+test marpa-semstore-clear-2.0 {clear, return} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE clear
+} -cleanup {
+    STORE destroy
+} -result {}
+
+test marpa-semstore-clear-2.1 {clear, state} -setup {
+    marpa::semstore create STORE
+    STORE put A
+    STORE write * X
+} -body {
+    STORE clear
+    list [STORE names] [STORE registers]
+} -cleanup {
+    STORE destroy
+} -result {{} {}}
+
+# # ## ### ##### ######## ############# #####################
+## reset (== clear)
+
+test marpa-semstore-reset-1.0 {reset, wrong args, too many} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE reset X
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE reset"}
+
+test marpa-semstore-reset-2.0 {reset, return} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE reset
+} -cleanup {
+    STORE destroy
+} -result {}
+
+test marpa-semstore-reset-2.1 {reset, state} -setup {
+    marpa::semstore create STORE
+    STORE put A
+    STORE write * X
+} -body {
+    STORE reset
+    list [STORE names] [STORE registers]
+} -cleanup {
+    STORE destroy
+} -result {{} {}}
+
+# # ## ### ##### ######## ############# #####################
+## write
+
+test marpa-semstore-write-1.0 {write, wrong args, not enough} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE write
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE write name data"}
+
+test marpa-semstore-write-1.1 {write, wrong args, not enough} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE write NAME
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE write name data"}
+
+test marpa-semstore-write-1.2 {write, wrong args, too many} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE write NAME DATA X
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE write name data"}
+
+test marpa-semstore-write-2.0 {write, return} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE write * A
+} -cleanup {
+    STORE destroy
+} -result {}
+
+test marpa-semstore-write-2.1 {write, state} -setup {
+    marpa::semstore create STORE
+    STORE write * A
+} -body {
+    list [STORE names] [STORE registers]
+} -cleanup {
+    STORE destroy
+} -result {{} *}
+
+# # ## ### ##### ######## ############# #####################
+## read
+
+test marpa-semstore-read-1.0 {read, wrong args, not enough} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE read
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE read name"}
+
+test marpa-semstore-read-1.1 {read, wrong args, too many} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE read NAME X
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE read name"}
+
+test marpa-semstore-read-2.0 {read, return} -setup {
+    marpa::semstore create STORE
+    STORE write * A
+} -body {
+    STORE read *
+} -cleanup {
+    STORE destroy
+} -result A
+
+test marpa-semstore-read-3.0 {read, unknown} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE read ID
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {key "ID" not known in dictionary}
+
+# # ## ### ##### ######## ############# #####################
+## unset
+
+test marpa-semstore-unset-1.0 {unset, wrong args, not enough} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE unset
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE unset name"}
+
+test marpa-semstore-unset-1.1 {unset, wrong args, too many} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE unset NAME X
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE unset name"}
+
+test marpa-semstore-unset-2.0 {unset, return} -setup {
+    marpa::semstore create STORE
+    STORE write * A
+} -body {
+    STORE unset *
+} -cleanup {
+    STORE destroy
+} -result {}
+
+test marpa-semstore-unset-2.1 {unset, state} -setup {
+    marpa::semstore create STORE
+    STORE write * A
+} -body {
+    STORE unset *
+    list [STORE names] [STORE registers]
+} -cleanup {
+    STORE destroy
+} -result {{} {}}
+
+test marpa-semstore-unset-3.0 {unset, unknown, ignored} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE unset ID
+} -cleanup {
+    STORE destroy
+} -result {}
+
+# # ## ### ##### ######## ############# #####################
+## names
+
+test marpa-semstore-names-1.0 {names, wrong args, too many} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE names X
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE names"}
+
+test marpa-semstore-names-2.0 {names, empty} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE names
+} -cleanup {
+    STORE destroy
+} -result {}
+
+test marpa-semstore-names-2.1 {names, non-empty} -setup {
+    marpa::semstore create STORE
+    STORE put A
+} -body {
+    STORE names
+} -cleanup {
+    STORE destroy
+} -result 1
+
+# # ## ### ##### ######## ############# #####################
+## registers
+
+test marpa-semstore-registers-1.0 {registers, wrong args, too many} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE registers X
+} -cleanup {
+    STORE destroy
+} -returnCodes error -result {wrong # args: should be "STORE registers"}
+
+test marpa-semstore-registers-2.0 {registers, empty} -setup {
+    marpa::semstore create STORE
+} -body {
+    STORE registers
+} -cleanup {
+    STORE destroy
+} -result {}
+
+test marpa-semstore-registers-2.1 {registers, non-empty} -setup {
+    marpa::semstore create STORE
+    STORE write * A
+} -body {
+    STORE registers
+} -cleanup {
+    STORE destroy
+} -result *
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

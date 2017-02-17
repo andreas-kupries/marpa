@@ -42,6 +42,13 @@ oo::class create marpa::semstore {
 	return
     }
 
+    method names {} {
+	debug.marpa/semstore {}
+	set result [dict keys $myvalue]
+	debug.marpa/semstore {==> $result}
+	return $result
+    }
+
     method put {data} {
 	debug.marpa/semstore {}
 	dict set myvalue [incr mycounter] $data
@@ -69,6 +76,13 @@ oo::class create marpa::semstore {
     }
 
     forward reset   my clear
+
+    method registers {} {
+	debug.marpa/semstore {}
+	set result [dict keys $myscratch]
+	debug.marpa/semstore {==> $result}
+	return $result
+    }
 
     method write {name data} {
 	debug.marpa/semstore {}

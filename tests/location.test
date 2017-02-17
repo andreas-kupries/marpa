@@ -1,0 +1,148 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::location
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+## - null
+## - atom
+## - merge
+## - merge2
+## - show
+
+# # ## ### ##### ######## ############# #####################
+## null
+
+test marpa-location-null-1.0 {null, wrong args, too many} -body {
+    marpa location null X
+} -returnCodes error -result {wrong # args: should be "marpa location null"}
+
+test marpa-location-null-2.0 {null} -body {
+    marpa location null
+} -result {{} {} {}}
+
+# # ## ### ##### ######## ############# #####################
+## atom
+
+test marpa-location-atom-1.0 {atom, wrong args, not enough} -body {
+    marpa location atom
+} -returnCodes error -result {wrong # args: should be "marpa location atom pos ch"}
+
+test marpa-location-atom-1.1 {atom, wrong args, not enough} -body {
+    marpa location atom POS
+} -returnCodes error -result {wrong # args: should be "marpa location atom pos ch"}
+
+test marpa-location-atom-1.2 {atom, wrong args, too many} -body {
+    marpa location atom POS CH X
+} -returnCodes error -result {wrong # args: should be "marpa location atom pos ch"}
+
+# TODO: Assert: type(pos) == int
+# TODO: Assert: pos >= 0
+
+test marpa-location-atom-2.0 {atom} -body {
+    marpa location atom 0 a
+} -result {0 0 a}
+
+# # ## ### ##### ######## ############# #####################
+## null?
+
+test marpa-location-null?-1.0 {null?, wrong args, not enough} -body {
+    marpa location null?
+} -returnCodes error -result {wrong # args: should be "marpa location null? a"}
+
+test marpa-location-null?-1.1 {null?, wrong args, too many} -body {
+    marpa location null? POS X
+} -returnCodes error -result {wrong # args: should be "marpa location null? a"}
+
+test marpa-location-null?-2.0 {null?, null} -body {
+    marpa location null? [marpa location null]
+} -result 1
+
+test marpa-location-null?-2.1 {null?, atom} -body {
+    marpa location null? [marpa location atom 0 a]
+} -result 0
+
+# # ## ### ##### ######## ############# #####################
+## merge2
+
+test marpa-location-merge2-1.0 {merge2, wrong args, not enough} -body {
+    marpa location merge2
+} -returnCodes error -result {wrong # args: should be "marpa location merge2 a b"}
+
+test marpa-location-merge2-1.1 {merge2, wrong args, not enough} -body {
+    marpa location merge2 A
+} -returnCodes error -result {wrong # args: should be "marpa location merge2 a b"}
+
+test marpa-location-merge2-1.2 {merge2, wrong args, not enough} -body {
+    marpa location merge2 A B X
+} -returnCodes error -result {wrong # args: should be "marpa location merge2 a b"}
+
+test marpa-location-merge2-2.0 {merge2, non-adjacent} -body {
+    marpa location merge2 [marpa location atom 0 A] [marpa location atom 2 B]
+} -returnCodes error -result {Bad merge, non-adjacent locations}
+
+test marpa-location-merge2-2.1 {merge2, adjacent, out of proper order} -body {
+    marpa location merge2 [marpa location atom 1 B] [marpa location atom 0 A]
+} -returnCodes error -result {Bad merge, non-adjacent locations}
+
+test marpa-location-merge2-3.0 {merge2, null, both} -body {
+    marpa location merge2 [marpa location null] [marpa location null]
+} -result {{} {} {}}
+
+test marpa-location-merge2-3.1 {merge2, null, first only} -body {
+    marpa location merge2 [marpa location null] [marpa location atom 3 C]
+} -result {3 3 C}
+
+test marpa-location-merge2-3.2 {merge2, null, second only} -body {
+    marpa location merge2 [marpa location atom 3 C] [marpa location null]
+} -result {3 3 C}
+
+test marpa-location-merge2-3.3 {merge2} -body {
+    marpa location merge2 [marpa location atom 0 A] [marpa location atom 1 B]
+} -result {0 1 AB}
+
+# # ## ### ##### ######## ############# #####################
+## merge
+
+test marpa-location-merge-1.0 {merge, wrong args, not enough} -body {
+    marpa location merge
+} -returnCodes error -result {wrong # args: should be "marpa location merge a b ..."}
+
+test marpa-location-merge-1.1 {merge, wrong args, not enough} -body {
+    marpa location merge A
+} -returnCodes error -result {wrong # args: should be "marpa location merge a b ..."}
+
+# TODO: Same as for merge2
+
+# # ## ### ##### ######## ############# #####################
+## show
+
+test marpa-location-show-1.0 {show, wrong args, not enough} -body {
+    marpa location show
+} -returnCodes error -result {wrong # args: should be "marpa location show x"}
+
+test marpa-location-show-1.1 {show, wrong args, too many} -body {
+    marpa location show L X
+} -returnCodes error -result {wrong # args: should be "marpa location show x"}
+
+
+test marpa-location-show-2.0 {show, simple} -body {
+    marpa location show [marpa location atom 0 a]
+} -result {0 0 'a'}
+
+test marpa-location-show-2.1 {show, special} -body {
+    marpa location show [marpa location atom 0 \n]
+} -result {0 0 {'\n'}}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests
