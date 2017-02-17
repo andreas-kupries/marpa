@@ -631,35 +631,40 @@ test marpa-lexer-9.1.2 {acceptable, initial, external} -setup {
 }
 
 test marpa-lexer-9.2.0 {acceptable, during lexeme} -setup {
-    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    marpa::lexer create LEXER [log2 STORE [set s [fake-store]]] [log2 UP [fake-parse]]
+    $s put {0 0 x}
     LEXER gate: [log GATE] ; GL1 LEXER
-    LEXER acceptable {0 1}
-    LEXER enter 0 0
+    LEXER acceptable {0 1} ;# upstream A B
+    LEXER enter 0 1
 } -body {
     LEXER acceptable {0 1}
 } -cleanup {
+    unset s
     LEXER destroy
     logged ; parsed ; stored
 } -result {}
 
 test marpa-lexer-9.2.1 {acceptable, during lexeme, sequencing} -setup {
-    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    marpa::lexer create LEXER [log2 STORE [set s [fake-store]]] [log2 UP [fake-parse]]
+    $s put {0 0 x}
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1}
-    LEXER enter 0 0
+    LEXER enter 0 1
 } -body {
     LEXER acceptable {0 1}
     LEXER @
 } -cleanup {
     LEXER destroy
     logged ; parsed ; stored
+    unset s
 } -result gated
 
 test marpa-lexer-9.2.2 {acceptable, during lexeme, external} -setup {
-    marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]
+    marpa::lexer create LEXER [log2 STORE [set s [fake-store]]] [log2 UP [fake-parse]]
+    $s put {0 0 x}
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1}
-    LEXER enter 0 0
+    LEXER enter 0 1
     logclear
 } -body {
     LEXER acceptable {0 1}
@@ -667,7 +672,10 @@ test marpa-lexer-9.2.2 {acceptable, during lexeme, external} -setup {
 } -cleanup {
     LEXER destroy
     parsed ; stored
-} -result {}
+} -result {
+  GATE C {acceptable {0 1}}
+  GATE R {acceptable {0 1}} = {}
+}
 
 test marpa-lexer-9.3.0 {acceptable, post-forbidden: gate:} -setup {
     marpa::lexer create LEXER [log2 STORE [fake-store]] [log2 UP [fake-parse]]

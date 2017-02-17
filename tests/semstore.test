@@ -18,7 +18,7 @@ kt local   testing marpa
 ## Methods can be called in any order.
 
 # # ## ### ##### ######## ############# #####################
-##/  1 constructor/0
+##  1 constructor/0
 # ------------------------------ interning, data to ids
 ##  2 put/1         (data) -> id
 ##  3 get/1         (id) -> data

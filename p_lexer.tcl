@@ -110,7 +110,7 @@ oo::class create marpa::lexer {
 	set myparts   value ;# Default: lexeme literal semantics
 	set mylatm    yes   ;# Default: longest acceptable token match
 	set mydiscard {}
-	set mynull    [Store put [marpa::location::null]]
+	set mynull    [Store put [marpa location null]]
 
 	my SetupSemantics $semstore
 
@@ -193,7 +193,6 @@ oo::class create marpa::lexer {
 
 	set start [my symbols [list @START]]
 	GRAMMAR sym-start: $start
-puts start=($start)
 
 	# Note how the ACS is added to these internal rules from the
 	# internal start symbol to the exported and discard symbols.
@@ -219,11 +218,9 @@ puts start=($start)
 	    set acs [dict get $myacs $pid]
 
 	    if {$latm} {
-		set id [GRAMMAR rule-new $start  $acs $symid]
-puts "R($id)|$start|:=|$acs $symid|"
+		set id [GRAMMAR rule-new $start $acs $symid]
 	    } else {
-		set id [GRAMMAR rule-new $start  $symid]
-puts R($id)|$start|:=|$symid|
+		set id [GRAMMAR rule-new $start $symid]
 	    }
 	    my Rule $id $start ;# required for semantics debug narrative
 
@@ -250,9 +247,8 @@ puts R($id)|$start|:=|$symid|
     }
 
     method enter {syms sv} {
-	debug.marpa/lexer {[debug caller] | See '[join [my 2Name $syms] {' '}]' ([marpa::location::Show [Store get $sv]])}
+	debug.marpa/lexer {[debug caller] | See '[join [my 2Name $syms] {' '}]' ([marpa location show [Store get $sv]])}
 
-puts enter($syms)
 	if {![llength $syms]} {
 	    debug.marpa/lexer {[debug caller] | no acceptable symbols, close current lexeme}
 
@@ -261,7 +257,6 @@ puts enter($syms)
 
 	    ## TODO: Check if this happens again immediately ........
 	    ## If yes we have a more serious problem and should stop.
-
 	    my Complete
 
 	    debug.marpa/lexer {[debug caller] | /ok:close}
@@ -271,23 +266,17 @@ puts enter($syms)
 	# Drive the low-level recognizer
 	debug.marpa/lexer {[debug caller] | step recce engine}
 	foreach sym $syms {
-puts alter($sym)
 	    RECCE alternative $sym $sv 1
 	}
-puts elc
 	try {
 	    RECCE earleme-complete
 	} trap {MARPA PARSE_EXHAUSTED} {e o} {
 	    # Do nothing. Exhaustion is checked below.
-puts ex/err
 	} on error {e o} {
-puts ($o)
-return {*}$o $e
+	    return {*}$o $e
 	}
-puts elc/ok
 
 	if {[RECCE exhausted?]} {
-puts ex/q
 	    debug.marpa/lexer {[debug caller] | exhausted}
 	    my Complete
 
@@ -299,7 +288,6 @@ puts ex/q
 	# acceptable characters and classes.
 
 	debug.marpa/lexer {[debug caller] | Feedback to gate, chars and classes}
-puts expect/e=([RECCE expected-terminals])
 	Gate acceptable [RECCE expected-terminals]
 
 	debug.marpa/lexer {[debug caller] | /ok}
@@ -332,29 +320,22 @@ puts expect/e=([RECCE expected-terminals])
 	set myrecce [GRAMMAR recognizer create RECCE [mymethod Events]]
 	debug.marpa/lexer {[debug caller 1] | RECCE = [namespace which -command RECCE]}
 
-puts start
 	RECCE start-input
-puts expect/s=([RECCE expected-terminals])
 	if {[llength $syms] || [llength $mydiscard]} {
 	    foreach s $syms {
 		debug.marpa/lexer {[debug caller 1] | U ==> $s '[my 2Name1 $s]'}
-puts alt+=([dict get $myacs $s])/$s
 		RECCE alternative [dict get $myacs $s] $mynull 1
 	    }
 	    foreach s $mydiscard {
 		debug.marpa/lexer {[debug caller 1] | D ==> $s '[my 2Name1 $s]'}
-puts alt+=($s)
 		RECCE alternative $s $mynull 1
 	    }
-puts elc/acc
 	    RECCE earleme-complete
-puts elc/ok
 	    # Tcl 8.6: lmap
 	}
 
 	# Push the set of now acceptable lexer symbols down into the
 	# gate instance
-puts expect/a=([RECCE expected-terminals])
 	Gate acceptable [RECCE expected-terminals]
 	return
     }
@@ -415,14 +396,11 @@ puts expect/a=([RECCE expected-terminals])
 	#    state
 	set latest [RECCE latest-earley-set]
 	set redo   0
-puts latest=($latest)
 
 	while {[catch {
 	    debug.marpa/lexer {[debug caller] | Check at $latest}
 	    RECCE forest create FOREST $latest
 	} msg o]} {
-catch {dict unset o -errorinfo}
-puts @($latest)=|$msg|$o|
 	    incr redo
 	    incr latest -1
 	    if {$latest < 0} { my E "No lexeme found in input. Stopped." STOP }
@@ -486,7 +464,7 @@ puts @($latest)=|$msg|$o|
 	debug.marpa/lexer {[debug caller] | Recognized: $recognized}
 	debug.marpa/lexer {[debug caller] | Discarded:  $discarded}
 	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] ($found)}
-	debug.marpa/lexer {[debug caller] | Semantic:   $sv ([expr {($sv < 0) ? "" : [marpa::location::Show [Store get $sv]]}])}
+	debug.marpa/lexer {[debug caller] | Semantic:   $sv ([expr {($sv < 0) ? "" : [marpa location show [Store get $sv]]}])}
 
 	# NOTE! Due to the usage of ACS when the RECCE was initalized
 	# at this point we can have only a subset of the acceptable
@@ -498,13 +476,12 @@ puts @($latest)=|$msg|$o|
 	# The current recognizer is done.
 	RECCE destroy
 
-	debug.marpa/lexer {[debug caller] | Have '[join [my ACS $found] {' '}]' ${sv}=([expr {($sv < 0) ? "" : [marpa::location::Show [Store get $sv]]}])}
+	debug.marpa/lexer {[debug caller] | Have '[join [my ACS $found] {' '}]' ${sv}=([expr {($sv < 0) ? "" : [marpa location show [Store get $sv]]}])}
 
 	if {($recognized > 0) && ($recognized == $discarded)} {
 	    # We found symbols, and only discarded symbols.
 	    # Restart lexing without informing the parser, keeping
 	    # to the current set of acceptable symbols
-
 	    debug.marpa/lexer {[debug caller] | Discard ...}
 
 	    my acceptable $myacceptable
@@ -518,7 +495,6 @@ puts @($latest)=|$msg|$o|
 	    debug.marpa/lexer {[debug caller] | Push ...}
 
 	    # ASSERT (sv >= 0)
-
 	    Forward enter $found $sv
 
 	    debug.marpa/lexer {[debug caller] | ... Ok}
@@ -552,9 +528,9 @@ puts @($latest)=|$msg|$o|
 	#     merges lexeme ranges.
 
 	marpa::semcore create GetString $semstore \
-	    {sv marpa::location::Show}
+	    {sv marpa::location::show}
 	GetString add-rule  @default marpa::semstd::locmerge
-	GetString add-null  @default marpa::location::null
+	GetString add-null  @default marpa::location::null*
 
 	# The exported symbols will declare their own rules as per the
 	# specification in the grammar.

@@ -191,7 +191,6 @@ oo::class create marpa::semcore {
 
 			debug.marpa/semcore {[debug caller 1] | [format $f $i $type $cmd]}
 			set v [uplevel #0 $cmd]
-
 		    } else {
 			# Essentially copying and aggregating token values
 			# I.e. creation of an actual AST.

@@ -101,6 +101,7 @@ oo::class create marpa::engine {
 	foreach name $names {
 	    set id [GRAMMAR sym-new]
 	    lappend ids $id
+
 	    # We remember the mapping for rule conversion. We can drop
 	    # the mapping when the grammar is frozen, except when
 	    # debugging is active, then we need it for the conversion
@@ -171,7 +172,6 @@ oo::class create marpa::engine {
 	set rhsids [my 2ID  $args]
 
 	set id [GRAMMAR rule-new $lhsid {*}$rhsids]
-puts R($id)|$lhsid|:=|$rhsids|
 	return [my Rule $id $lhsid]
     }
 
@@ -194,7 +194,6 @@ puts R($id)|$lhsid|:=|$rhsids|
 
 	# lhs * loop,separator,proper
 	set id [GRAMMAR rule-sequence-new $lhsid $loopid $sepid $positive $proper]
-puts R($id)|$lhsid|$positive|$loopid|/$sepid/$proper|
 	return [my Rule $id $lhsid]
     }
 
@@ -241,7 +240,6 @@ puts R($id)|$lhsid|$positive|$loopid|/$sepid/$proper|
 
     method Events {g type value} {
 	# Show events, debugging only.
-puts XXX|[info level 0]
 	debug.marpa/engine {[debug caller] | }
 	switch -exact -- $type {
 	    e-none             {}

@@ -51,7 +51,7 @@ proc marpa::semstd::K {x args} {
 
 proc marpa::semstd::locmerge {id args} {
     debug.marpa/semstd {}
-    return [marpa::location merge {*}$args]
+    marpa location merge {*}$args
 }
 
 proc marpa::semstd::builtin {parts id args} {

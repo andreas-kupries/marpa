@@ -116,13 +116,9 @@ test marpa-location-merge2-3.3 {merge2} -body {
 
 test marpa-location-merge-1.0 {merge, wrong args, not enough} -body {
     marpa location merge
-} -returnCodes error -result {wrong # args: should be "marpa location merge a b ..."}
+} -returnCodes error -result {wrong # args: should be "marpa location merge a ..."}
 
-test marpa-location-merge-1.1 {merge, wrong args, not enough} -body {
-    marpa location merge A
-} -returnCodes error -result {wrong # args: should be "marpa location merge a b ..."}
-
-# TODO: Same as for merge2
+# TODO: Same as for merge2 for mere results ...
 
 # # ## ### ##### ######## ############# #####################
 ## show

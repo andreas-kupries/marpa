@@ -49,6 +49,11 @@ proc marpa::location::atom {pos ch} {
     # assert: start <= end
 }
 
+proc marpa::location::null* {args} {
+    debug.marpa/location {}
+    return {{} {} {}}
+}
+
 proc marpa::location::null {} {
     debug.marpa/location {}
     return {{} {} {}}
@@ -60,9 +65,9 @@ proc marpa::location::null? {a} {
     expr {($start eq "") && ($end eq "") && ($str eq "")}
 }
 
-proc marpa::location::merge {a b args} {
+proc marpa::location::merge {a args} {
     debug.marpa/location {}
-    foreach b [linsert $args 0 $b] {
+    foreach b $args {
 	set a [marpa::location::merge2 $a $b]
     }
     return $a

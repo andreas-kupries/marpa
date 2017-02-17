@@ -184,7 +184,7 @@ oo::class create marpa::parser {
     }
 
     method Enter {syms sv} {
-	debug.marpa/parser {See '[join [my 2Name $syms] {' '}]' ([marpa::location::Show [Store get $sv]])}
+	debug.marpa/parser {See '[join [my 2Name $syms] {' '}]' ([marpa location show [Store get $sv]])}
 
 	if {![llength $syms]} {
 	    # The input has no acceptable symbols waiting.

@@ -19,10 +19,15 @@ proc stored      {} { global __store ; $__store destroy ; unset __store }
 
 oo::class create Marpa::Testing::S {
     variable acc
-    constructor {} { set acc 0 }
+    variable sv
+    constructor {} { set acc 0 ; set sv {} }
     method put {data} {
 	incr acc
+	dict set sv $acc $data
 	return $acc
+    }
+    method get {id} {
+	dict get $sv $id
     }
 
     # # ## ### ##### ######## #############

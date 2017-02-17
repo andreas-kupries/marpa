@@ -74,8 +74,6 @@ critcl::include    marpa.h
 ## Declare the Tcl layer aggregating the C primitives / classes into
 ## useful commands and hierarchies.
 
-#critcl::tsources policy.tcl
-
 critcl::tsources u_sequencing.tcl ; # Sequencing utilities
 critcl::tsources p_support.tcl    ; # General Tcl level utilities
 critcl::tsources p_location.tcl   ; # Location/Range utilities
