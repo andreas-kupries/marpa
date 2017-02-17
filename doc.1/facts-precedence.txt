@@ -1,0 +1,125 @@
+# Precendences and rule rewriting
+
+## Precedences
+
+Precedences are integers <= 0.
+Tighest precedence is 0.
+Loosest precedence is some K <= 0 (dependent on the LHS)
+
+looser(x) = x-1 for x > K,	x in [K, 0]
+	  = K	for x = K
+
+tighter(x) = x+1 for x < 0,	x in [K, 0]
+	   = 0	 for x = 0
+
+tighest = 0
+loosest = K
+
+## Rewriting
+
+In what follows, `E` will represent the LHS symbol of the precedenced
+rule, i.e. the operator.  We will need to have a unique symbol for `E`
+at each level of precedence.  We will represent the symbol for `E` at
+level `x` as `E[x]`.
+
+### Top level
+
+The top level rule for the precedenced rule will be a rule whose LHS
+is the precedenced rule's LHS, and whose RHS is the symbol for `E`
+at the the __lowest__ precedence.  That is, the top level rule will be
+
+```
+E ::= E[K]
+```
+
+### The "spine"
+
+In many expressions, there is no logic at a given precedence level, so
+that we need to simply "fall through" to the next-tighter level of
+precedence.  Therefore, for every precedence `x`, such that `x` is
+less than `tightest`, we add the rule
+
+```
+   E[x] ::= E[tighter(x)]
+```
+
+For example, if the precedence ran from `loosest == -4` to `tightest ==
+0`, we would add the BNF rules
+
+```
+    E[-4] ::= E[-3]
+    E[-3] ::= E[-2]
+    E[-2] ::= E[-1]
+    E[-1] ::= E[0]
+```
+
+### Left association
+
+We now can deal with the RHS alternatives in the work list.
+
+Let `curr` be the precedence of the RHS alternative.
+
+If a RHS alternative has left association (the default) we rewrite the
+RHS, replacing all occurrences of `E`.
+
+We replace the *leftmost* occurrence of `E` with `E[curr]`, and the
+others with `E[tighter(curr)]`.  We then add a rule with the
+rewritten RHS, and `E[curr]` as the LHS.
+
+For example, if the RHS alternative is
+```
+    E + E
+```
+we add the BNF rule
+```
+    E[curr] ::= E[curr] + E[tighter(curr)]
+```
+
+Note that `E` may not occur on the RHS, in which case no RHS
+replacements will be necessary.
+
+### Right association
+
+Right association is handled in a way that is symmetric with left
+association.
+
+Again, let `curr` be the precedence of the RHS alternative.
+
+If a RHS alternative has right association, we rewrite the RHS,
+replacing all occurrences of `E`.
+
+We replace the *rightmost* occurrence of `E` with `E[curr]`, and
+the others with `E[tighter(curr)]`.  We then add a rule with the
+rewritten RHS, and `E[curr]` as the LHS.
+
+For example, if the RHS alternative is
+```
+    E ** E
+```
+we add the BNF rule
+```
+    E[curr] ::= E[tighter(curr)] ** E[curr]
+```
+
+### Group association
+
+The archetypal case for group association is the parenthesis operator.
+
+Intuitively, group association allows any expression to occur inside
+another "surrounding" expression.  In the case of the parentheses, of
+course, they actually surround their contents lexically.
+
+Let `curr` be the precedence of the RHS alternative.
+
+If a RHS alternative has group association, we rewrite the RHS,
+replacing all occurrences of `E` with `E[0]`, We then add a rule
+with the rewritten RHS, and `E[curr]` as the LHS.
+
+For example, if the RHS alternative is
+```
+    ( E )
+```
+we add the BNF rule
+```
+    E[curr] ::= ( E[K] )
+```

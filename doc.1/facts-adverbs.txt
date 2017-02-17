@@ -1,0 +1,56 @@
+# Adverbs
+
+* (V) action
+* (A) assoc
+* (B) bless
+* (E) event
+* (L) latm
+* (N) name
+* (0) null-ranking
+* (P) pause
+* (^) priority
+* (T) proper
+* (R) rank
+* (S) separator
+
+# Users of adverbs
+
+* (f) :default
+* (D) :discard
+* (L) :lexeme
+* (d) discard default	- No adverbs using this
+* (l) lexeme default
+* (B) rule, bnf
+* (Q) rule, quantified
+
+# Adverbs versus users
+
+```             | D L d l B Q f
+----------------+---------------
+(T) proper	|           *
+(S) separator	|           *
+(V) action	|       * * *
+(B) bless	|       * * * *
+(A) assoc	|         *
+(N) name	|         * ?
+(0) null-ranking|         1
+(R) rank	|         *
+(E) event	| * *
+(L) latm	|   *   *
+(P) pause	|   *
+(^) priority	|   *
+----------------+---------------
+```
+Transposed:
+```                 | V A B E L N 0 P ^ T R S
+--------------------+-------------------------
+(l) lexeme default  | *       *
+(B) rule, bnf	    | * *       * 1       *
+(Q) rule, quantified| *         ?       *   *
+(f) :default	    |     *
+(D) :discard	    |       *
+(L) :lexeme	    |       * *     * *
+(d) discard default | 
+--------------------+-------------------------
+```
+(1) G1 only

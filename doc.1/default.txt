@@ -1,0 +1,16 @@
+G1 :default
+	action
+	bless
+
+Standard action for G1 rules (bnf, quantified).
+Multiple settings possible.
+Ordered.
+Applies only to the rules coming after :default
+
+Unspecified adverbs revert to the implicit default.
+
+
+API
+	set (dict { action, bless })
+	get action
+	get bless

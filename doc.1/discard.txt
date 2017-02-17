@@ -1,0 +1,13 @@
+L1 :discard
+	RHS
+	event
+
+Mark a L0 top-level symbol for discard.
+Fatal if lexeme or not top-level.
+Set optional discard event for symbol
+
+API
+	l0 mark-discard
+	l0 discard-event
+
+See 'discard default' for global event settings.

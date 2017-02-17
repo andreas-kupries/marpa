@@ -1,0 +1,94 @@
+# SLIF grammar elements and properties
+
+## Processing state
+
+   1. G1 defaults (scoped, ordered)
+      * Action:	[values]
+      * Bless:	undef
+
+   1. L0 settings (lexeme default)
+      * Action:			[values]
+      * Bless:			undef
+      * Match discipline:	latm
+
+   1. Start symbol
+      * Name
+      * Status
+        1. Undefined
+        1. Weakly defined
+        1. Strongly defined
+      * Constraints
+        1. G1 symbol
+
+## Grammar information
+
+   1. Start symbol
+      * Name
+      * Constraints
+        1. G1 symbol
+
+   1. Symbols - Unified namespace.
+      * Name
+      * Level
+        1. G1
+        1. L0
+      * Rule type: undefined, bnf, quantified
+      * Precedences: min, max
+
+   1. G1 symbols
+      * Name
+      * is-toplevel	(undefined, maybe, yes, no)
+      * is-leaf		(undefined, maybe, yes, no)
+      * leaf-reason
+      * Attributes ...
+
+   1. L0 symbols
+      * Name
+      * toplevel-reason
+      * is-toplevel	(undefined, maybe, yes, no)
+      * is-leaf		(undefined, maybe, yes, no)
+      * lexeme-request
+      * discard-request
+      * discard-event
+      * match-discipline: latm, ltm
+      * pause mode: no, before, after
+      * pause event name
+      * action
+      * Constraints
+	* action          => is-toplevel (<=> is-lexeme)
+      	* discard-request => is-toplevel (<=> is-lexeme)
+	* (pause != no)   => is-toplevel (<=> is-lexeme)
+	* (pause != no) <=> (pause name != empty)
+
+   1. L0 strings, characters, charclasses
+      * Specification
+      * Name
+      * Modifier: case-insensitive yes/no
+
+   1. Rules, general
+      * Restrictions on LHS symbols
+      * Restrictions on LHS symbols
+      * LHS symbol
+      * Type: bnf, quantified
+      * Action
+      * Bless
+      * Name
+      * Null-ranking	/ignored/
+      * BNF Attributes
+      	* Precendence (<= 0, 0 = highest priority).
+	* RHS symbol list
+	* Associativity
+	* Rank		/ignored/
+      * Quantified attributes
+      	* Separator: undefined, symbol
+      	* Proper: undefined, yes, no
+      * Constraints
+      	* BNF attributes not allowed for empty rule.
+
+   1. G1 Rules
+      * LHS: G1 only
+      * RHS: any (G1, L0)
+
+   1. L0 Rules
+      * LHS: L0 only
+      * RHS: L0 only
