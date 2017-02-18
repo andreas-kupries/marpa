@@ -33,17 +33,18 @@ kt source support/fake-store.tcl
 ##  2 gate:/1       (obj)
 ##  3 symbols/1     (names)
 ##  4 export/1      (names)
-##  5 rules/1       (rules)
-##  6 discard/1     (ignorelist)
+##  5 action/*      (...)
+##  6 rules/1       (rules)
+##  7 discard/1     (ignorelist)
 # # -- --- ----- -------- -------------
-##  7 acceptable/1  (syms)
+##  8 acceptable/1  (syms)
 # # -- --- ----- -------- -------------
-##  8 enter/2       (syms semval)
-##  9 eof/0         ()
+##  9 enter/2       (syms semval)
+##  A eof/0         ()
 # # -- --- ----- -------- -------------
-## 10 redo/1        (n)
+##  B redo/1        (n)
 ##
-## Sequence = 1([2345]*6(7(87?)*)?)?9
+## Sequence = 1([23456]*7(8(98?)*)?)?A
 
 # # ## ### ##### ######## ############# #####################
 ## constructor - wrong args, initial state, calls
@@ -56,7 +57,7 @@ test marpa-lexer-1.0.1 {constructor, wrong args, not enough} -body {
     marpa::lexer new STORE
 } -returnCodes error -result {wrong # args: should be "marpa::lexer new semstore upstream"}
 
-test marpa-lexer-1.0.1 {constructor, wrong args, too many} -body {
+test marpa-lexer-1.0.2 {constructor, wrong args, too many} -body {
     marpa::lexer new STORE UP X
 } -returnCodes error -result {wrong # args: should be "marpa::lexer new semstore upstream"}
 

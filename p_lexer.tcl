@@ -71,13 +71,15 @@ oo::class create marpa::lexer {
     #                           This activates down 'acceptable' handling.
     # 3 symbols (symlist)     - (Downstream, self) bulk allocation of symbols
     # 4 export  (symlist)     - Bulk allocation of public symbols
-    # 5 rules   (rules)       - Bulk specification of grammar rules
-    # 6 discard (ignorelist)  - Complete lexer spec
-    # 7 acceptable (symlist)  - Declare set of allowed symbols
-    # 8 enter   (syms val)    - Incoming sym set with semantic value
-    # 9 eof     ()            - Incoming end of input signal
+    # 5 action  (...)         - Semantic value definition
+    # 6 rules   (rules)       - Bulk specification of grammar rules
+    # 7 discard (ignorelist)  - Complete lexer spec
+    # 8 acceptable (symlist)  - Declare set of allowed symbols
+    # 9 enter   (syms val)    - Incoming sym set with semantic value
+    # A eof     ()            - Incoming end of input signal
     ##
-    # Sequence = 1([2345]*6(7(87?)*)?)?9
+    # Sequence = 1([23456]*7(8(98?)*)?)?A
+    # See mark <<s>>
     ##
     # API gate:
     #   acceptable (symlist)  - Declare set of allowed symbols
@@ -563,7 +565,8 @@ oo::class create marpa::lexer::sequencer {
 
     # State machine for marpa::lexer
     ##
-    # Sequence = 1([2345]*6(7(87?)*)?)?9
+    # Sequence = 1([23456]*7(8(98?)*)?)?A
+    # See mark <<s>>
     ##
     # Deterministic state machine _________ # Table re-sorted, by method _
     # Current Method --> New          Notes # Method  Current --> New
@@ -645,7 +648,7 @@ oo::class create marpa::lexer::sequencer {
 	my __Init
 	my __FNot made ! "Lexer is frozen" FROZEN
 	next $discards
-	# State move after main code. Internallys calls on 'symbols'
+	# State move after main code. Internally calls on 'symbols'
 	# etc. Would be broken by an early state change
 	my __On made --> config
     }
