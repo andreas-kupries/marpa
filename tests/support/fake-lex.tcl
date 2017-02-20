@@ -9,7 +9,7 @@ package require TclOO
 
 # Test suite support.
 # # ## ### ##### ######## #############
-## Fake lex engines to use as upstream of a gate, or downstream of a
+## Fake lex engines to use downstream of a gate, or upstream of a
 ## parser engine
 
 proc fake-lex-in  {} { global __lex ; set __lex [Marpa::Testing::FLI new] }

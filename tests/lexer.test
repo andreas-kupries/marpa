@@ -28,7 +28,7 @@ kt source support/fake-parse.tcl
 kt source support/fake-store.tcl
 
 # # ## ### ##### ######## ############# #####################
-##  1 constructor/2 (semstore, upstream)
+##  1 constructor/2 (semstore, parser)
 # # -- --- ----- -------- -------------
 ##  2 gate:/1       (obj)
 ##  3 symbols/1     (names)
@@ -51,15 +51,15 @@ kt source support/fake-store.tcl
 
 test marpa-lexer-1.0.0 {constructor, wrong args, not enough} -body {
     marpa::lexer new
-} -returnCodes error -result {wrong # args: should be "marpa::lexer new semstore upstream"}
+} -returnCodes error -result {wrong # args: should be "marpa::lexer new semstore parser"}
 
 test marpa-lexer-1.0.1 {constructor, wrong args, not enough} -body {
     marpa::lexer new STORE
-} -returnCodes error -result {wrong # args: should be "marpa::lexer new semstore upstream"}
+} -returnCodes error -result {wrong # args: should be "marpa::lexer new semstore parser"}
 
 test marpa-lexer-1.0.2 {constructor, wrong args, too many} -body {
     marpa::lexer new STORE UP X
-} -returnCodes error -result {wrong # args: should be "marpa::lexer new semstore upstream"}
+} -returnCodes error -result {wrong # args: should be "marpa::lexer new semstore parser"}
 
 # No state to query ?! CHECK
 
@@ -653,7 +653,7 @@ test marpa-lexer-9.2.0 {acceptable, during lexeme} -setup {
     marpa::lexer create LEXER [log2 STORE [set s [fake-store]]] [log2 UP [fake-parse]]
     $s put {0 0 x}
     LEXER gate: [log GATE] ; GL1 LEXER
-    LEXER acceptable {0 1} ;# upstream A B
+    LEXER acceptable {0 1} ;# parser A B
     LEXER enter 0 1
 } -body {
     LEXER acceptable {0 1}
@@ -1074,7 +1074,7 @@ test marpa-lexer-4.1.2 {eof, after construction, externals} -setup {
     marpa::lexer create LEXER [log STORE] [log UP]
     logclear
 } -body {
-    # eof is reported upstream, only.
+    # eof is reported to parser, only.
     list [LEXER eof] [logged]
 } -cleanup {
     LEXER destroy
@@ -1109,7 +1109,7 @@ test marpa-lexer-4.2.2 {eof, after configuration, externals} -setup {
     LEXER def {} {}
     logclear
 } -body {
-    # eof is reported upstream, only.
+    # eof is reported to parser, only.
     list [LEXER eof] [logged]
 } -cleanup {
     LEXER destroy
@@ -1147,7 +1147,7 @@ test marpa-lexer-4.3.2 {eof, after gating, externals} -setup {
     LEXER acceptable 0
     logclear
 } -body {
-    # eof is reported upstream, only.
+    # eof is reported to parser, only.
     list [LEXER eof] [logged]
 } -cleanup {
     LEXER destroy
@@ -1188,7 +1188,7 @@ test marpa-lexer-4.4.2 {eof, after data, externals} -setup {
     LEXER enter C V
     logclear
 } -body {
-    # eof is reported upstream, only.
+    # eof is reported to parser, only.
     list [LEXER eof] [logged]
 } -cleanup {
     LEXER destroy

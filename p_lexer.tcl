@@ -85,8 +85,8 @@ oo::class create marpa::lexer {
     #   acceptable (symlist)  - Declare set of allowed symbols
     #   redo       (n)        - Force re-entry of last n symbols
     ##
-    # API upstream:
-    #   gate:   (self)     - Attach to self as gate for upstream
+    # API parser:
+    #   gate:   (self)     - Self attaching to parser for feedback on acceptables.
     #   enter   (syms val) - Push symbol set with semantic value
     #   eof     ()         - Push end of input signal
     #   symbols (symlist)  - Bulk allocate symbols for ruleschar and char classes.
@@ -94,16 +94,16 @@ oo::class create marpa::lexer {
     # # -- --- ----- -------- -------------
     ## Lifecycle
 
-    constructor {semstore upstream} {
+    constructor {semstore parser} {
 	debug.marpa/lexer {[debug caller] | }
 
-	next $upstream
+	next $parser
 
 	marpa::import $semstore Store
 	# Gate will attach during setup.
 
 	# Dynamic state for processing
-	set myacceptable {}   ;# Upstream gating.
+	set myacceptable {}   ;# Parser gating.
 	set myrecce      {}   ;# Local recce management
 
 	# Static configuration and state
@@ -116,7 +116,7 @@ oo::class create marpa::lexer {
 
 	my SetupSemantics $semstore
 
-	# Attach ourselves to upstream, as gate.
+	# Attach ourselves to parser, as gate.
 	Forward gate: [self]
 
 	debug.marpa/gate {/ok}
@@ -149,7 +149,7 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | }
 	# Create base symbols.
 	# Create the internal acceptability controls symbols (short: ACS) for the base
-	# Get the same symbols from upstream as well, the third set.
+	# Get the same symbols from parser as well, the third set.
 
 	# NOTE! the ACS are created regardless of LATM or not. The
 	# LATM choice is made later, in "Discard", by adding it to the
@@ -300,7 +300,7 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | }
 
 	# Flush everything pending in the local recognizer to the
-	# parser before signaling eof upstream.
+	# parser before signaling eof to the parser.
 	my Complete
 
 	#  Note that the flush leaves us with a just-started
@@ -314,7 +314,7 @@ oo::class create marpa::lexer {
     method acceptable {syms} {
 	debug.marpa/lexer {[debug caller] | }
 	# Lexer method, called by parser.
-	# syms is list of upstream parser symbol ids for lexemes.
+	# syms is list of parser symbol ids for lexemes.
 	# transform into acs ids, and insert into the recognizer.
 	# TODO: Handle case of LTM also, without ACS
 
@@ -405,7 +405,9 @@ oo::class create marpa::lexer {
 	} msg o]} {
 	    incr redo
 	    incr latest -1
-	    if {$latest < 0} { my E "No lexeme found in input. Stopped." STOP }
+	    if {$latest < 0} {
+		my E "No lexeme found in input. Stopped." STOP
+	    }
 	}
 	debug.marpa/lexer {[debug caller] | Lexeme length: $latest}
 	debug.marpa/lexer {[debug caller] | Redo:          $redo}
@@ -597,8 +599,8 @@ oo::class create marpa::lexer::sequencer {
     # *       *          /FAIL		    # ~~~~~~  ~~~~~~~     ~~~~~~~~
     # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ #
     # [0] Gate declaration, coming from downstream gate.
-    # [1] initial accept, before all data, part of the setup, coming
-    #     down from upstream
+    # [1] initial accept, before all data, part of the setup, coming from
+    #     the parser
 
     # # -- --- ----- -------- -------------
     ## Mandatory overide of virtual base class method
