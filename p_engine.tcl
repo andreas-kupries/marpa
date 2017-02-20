@@ -34,11 +34,11 @@ oo::class create marpa::engine {
     # Map symbol name to id, for rule conversion during setup, and
     # back-conversion in debug output.
     #
-    # Map of the public symbol id to the associated upstream symbol
-    # id.  These are the full set of symbols accepted by upstream and
-    # are be gated by this engine.
+    # Map of the public symbol id to the associated postprocessor
+    # symbol id.  These are the full set of symbols accepted by the
+    # postprocessor and are gated by this engine.
     #
-    # Map from upstream symbol id for a public symbol to the
+    # Map from postprocessor symbol id for a public symbol to the
     # associated local ACS id.
     #
     # Map from rules (ids) to their lhs, for debugging output
@@ -49,18 +49,18 @@ oo::class create marpa::engine {
 
     ##
     # API self:
-    #   cons    (upstream) - Create, link, attach to upstream.
-    #   Symbols (symlist)  - (Downstream, self) bulk allocation of symbols
-    #   Export  (symlist)  - Bulk allocation of public symbols
-    #   Rules   (rules)    - Bulk specification of grammar rules
+    #   cons    (postprocessor) - Create, link, attach to postprocessor.
+    #   Symbols (symlist)       - (preprocessor, self) bulk allocation of symbols
+    #   Export  (symlist)       - Bulk allocation of public symbols
+    #   Rules   (rules)         - Bulk specification of grammar rules
     ##
-    # API upstream:
+    # API postprocessor:
     #   symbols (symlist)  - Bulk allocate symbols for lexemes, chars and char classes.
 
-    constructor {upstream} {
+    constructor {postprocessor} {
 	debug.marpa/engine {[debug caller] | }
 
-	marpa::import $upstream Forward
+	marpa::import $postprocessor Forward
 
 	# Dynamic state for processing
 	##
@@ -170,7 +170,6 @@ oo::class create marpa::engine {
 	debug.marpa/engine {[debug caller] | }
 	set lhsid  [my 2ID1 $lhs]
 	set rhsids [my 2ID  $args]
-
 	set id [GRAMMAR rule-new $lhsid {*}$rhsids]
 	return [my Rule $id $lhsid]
     }
@@ -214,6 +213,9 @@ oo::class create marpa::engine {
 	return $ids
     }
     method 2ID1 {name} {
+	if {![dict exists $mymap $name]} {
+	    my E "Unknown symbol \"$name\"" UNKNOWN SYMBOL
+	}
 	return [dict get $mymap $name]
     }
 
@@ -226,6 +228,9 @@ oo::class create marpa::engine {
 	return $names
     }
     method 2Name1 {id} {
+	if {![dict exists $myrmap $id]} {
+	    my E "Bad id \"$id\"" BAD ID
+	}
 	return [dict get $myrmap $id]
     }
 
