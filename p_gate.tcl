@@ -109,6 +109,7 @@ oo::class create marpa::gate {
     # 6 redo       (n)              - Postprocessor feedback, re-enter last n characters
     ##
     # Sequence = 1(2(5(356?)*))?(46)
+    # See mark <<s>>
     ##
     # API postprocessor:
     #   gate:   (self)     - Attach ourselves as the gate of the postprocessor (lexer),
@@ -337,6 +338,7 @@ oo::class create marpa::gate::sequencer {
     # State machine for marpa::gate
     ##
     # Sequence = 1(2(5(356?)*))?(46)
+    # See mark <<s>>
     ##
     # Non-deterministic state machine _____
     # Current Method --> New          Notes
@@ -399,6 +401,24 @@ oo::class create marpa::gate::sequencer {
     # *       *          /FAIL	 	# ~~~~~~ ~~~~~~~     ~~~~~~~~
     # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~
 
+    # Notes
+    ##
+    # - During the scanning of a lexeme 'enter' triggers 'accept' from
+    #   the post-processor. This means:
+    #
+    #     gated   -> regated,
+    #     regated -> regated
+    #
+    #   The state 'data' is only temporary, visible only to 'accept'.
+    ##
+    # - At the end of a lexeme 'enter' triggers 'accept' and 'redo'
+    #   from the post-processor. This means:
+    #
+    #     gated   -> gated,
+    #     regated -> gated
+    #
+    #   The state 'data' is only temporary, visible only to 'accept'.
+    ##
     # # -- --- ----- -------- -------------
     ## Mandatory overide of virtual base class method
 

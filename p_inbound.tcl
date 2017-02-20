@@ -94,7 +94,8 @@ oo::class create marpa::inbound {
     #   location? ()                    - Retrieve current location
     ##
     # Sequence = 1[23]*4
-
+    # See mark <<s>>
+    ##
     # # -- --- ----- -------- -------------
     ## Lifecycle
 
@@ -176,27 +177,29 @@ oo::class create marpa::inbound::sequencer {
 
     # State machine for marpa::inbound
     ##
-    # Sequence = 1[23]*4
+    # Sequence = 1[23]*4      # 1: construction
+    # See mark <<s>>	      # 2: eof         
+    #			      # 3: enter, read 
+    # *-1-> ready -2-> done|  #
+    #       ^ |               #
+    #       \-/3              #
     #
-    # *-1-> ready -2-> done|
-    #       ^ |
-    #       \-/3
-    ##                 Table By State ________   Table By Method ________
-    # 1: construction  Current  Method  New      Current  Method  New   
-    # 2: eof           ~~~~~~~  ~~~~~~  ~~~~~~   ~~~~~~~  ~~~~~~  ~~~~~~
-    # 3: enter, read   -        <cons>  ready    -        <cons>  ready 
-    ##                 ~~~~~~~  ~~~~~~  ~~~~~~   ~~~~~~~  ~~~~~~  ~~~~~~
-    #                  ready    enter   /KEEP    ready    enter   /KEEP 
-    #                           read    /KEEP    done     enter   /FAIL 
-    #                           eof     done     ~~~~~~~  ~~~~~~  ~~~~~~
-    #                  ~~~~~~~  ~~~~~~  ~~~~~~   ready    read    /KEEP 
-    #                  done     enter   /FAIL    done     read    /FAIL 
-    #                           read    /FAIL    ~~~~~~~  ~~~~~~  ~~~~~~
-    #                           eof     /FAIL    ready    eof     done	
-    #                  ~~~~~~~  ~~~~~~  ~~~~~~   done     eof     /FAIL 
-    #                  *        *       /KEEP    ~~~~~~~  ~~~~~~  ~~~~~~
-    #                  ~~~~~~~  ~~~~~~  ~~~~~~   *        *       /KEEP 
-    #		                                 ~~~~~~~  ~~~~~~  ~~~~~~
+    # Determin. state machine # Table re-sorted, by method _=
+    # Current  Method  New    # Current  Method  New   
+    # ~~~~~~~  ~~~~~~  ~~~~~~ # ~~~~~~~  ~~~~~~  ~~~~~~
+    # -        <cons>  ready  # -        <cons>  ready 
+    # ~~~~~~~  ~~~~~~  ~~~~~~ # ~~~~~~~  ~~~~~~  ~~~~~~
+    # ready    enter   /KEEP  # ready    enter   /KEEP 
+    #          read    /KEEP  # done     enter   /FAIL 
+    #          eof     done   # ~~~~~~~  ~~~~~~  ~~~~~~
+    # ~~~~~~~  ~~~~~~  ~~~~~~ # ready    read    /KEEP 
+    # done     enter   /FAIL  # done     read    /FAIL 
+    #          read    /FAIL  # ~~~~~~~  ~~~~~~  ~~~~~~
+    #          eof     /FAIL  # ready    eof     done	
+    # ~~~~~~~  ~~~~~~  ~~~~~~ # done     eof     /FAIL 
+    # *        *       /KEEP  # ~~~~~~~  ~~~~~~  ~~~~~~
+    # ~~~~~~~  ~~~~~~  ~~~~~~ # *        *       /KEEP 
+    #                         # ~~~~~~~  ~~~~~~  ~~~~~~
 
     # # -- --- ----- -------- -------------
     ## Mandatory overide of virtual base class method
