@@ -23,6 +23,8 @@ oo::class create Marpa::Testing::S {
     constructor {} { set acc 0 ; set sv {} }
     method put {data} {
 	incr acc
+	# Never return 0 as an id for semantic values.
+	# More information in p_semstore.tcl, method put.
 	dict set sv $acc $data
 	return $acc
     }
