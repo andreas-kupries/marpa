@@ -37,7 +37,7 @@ oo::class create marpa::inbound {
     #
     # * Supplication of text via `enter`
     # ```
-    # Driver  Inbound SemStore        Upstream
+    # Driver  Inbound SemStore        Postprocessor
     # |               |               |
     # +-cons--\       |               |
     # |       |       |               |
@@ -57,7 +57,7 @@ oo::class create marpa::inbound {
     #
     # * Supplication of text via `read`
     # ```
-    # Driver  Inbound SemStore        Upstream
+    # Driver  Inbound SemStore        Postprocessor
     # |               |               |
     # +-cons--\       |               |
     # |       |       |               |
@@ -87,22 +87,22 @@ oo::class create marpa::inbound {
     variable mylocation ; # Input location
 
     # API:
-    # 1 cons  (semstore, upstream) - Create, link
-    # 2 enter (string)             - Incoming characters via string
-    # 3 read  (chan)               - Incoming characters via channel
-    # 4 eof   ()                   - End of input signal
-    #   location? ()               - Retrieve current location
+    # 1 cons  (semstore, postprocessor) - Create, link
+    # 2 enter (string)                  - Incoming characters via string
+    # 3 read  (chan)                    - Incoming characters via channel
+    # 4 eof   ()                        - End of input signal
+    #   location? ()                    - Retrieve current location
     ##
     # Sequence = 1[23]*4
 
     # # -- --- ----- -------- -------------
     ## Lifecycle
 
-    constructor {semstore upstream} {
+    constructor {semstore postprocessor} {
 	debug.marpa/inbound {[debug caller] | }
 
-	marpa::import $semstore Store
-	marpa::import $upstream Forward
+	marpa::import $semstore      Store
+	marpa::import $postprocessor Forward
 
 	set mylocation -1 ; # location (of current character) in
 			    # input, currently before the first

@@ -25,7 +25,7 @@ kt source support/common.tcl
 kt source support/fake-lex.tcl
 
 # # ## ### ##### ######## ############# #####################
-## 1 constructor/1 (upstream)
+## 1 constructor/1 (postprocessor)
 ## 2 def/2         (chars classes)
 ## 3 enter/2       (char semval)
 ## 4 eof/0         ()
@@ -39,15 +39,15 @@ kt source support/fake-lex.tcl
 
 test marpa-gate-1.0.0 {constructor, wrong args, not enough} -body {
     marpa::gate new
-} -returnCodes error -result {wrong # args: should be "marpa::gate new semstore upstream"}
+} -returnCodes error -result {wrong # args: should be "marpa::gate new semstore postprocessor"}
 
 test marpa-gate-1.0.1 {constructor, wrong args, not enough} -body {
     marpa::gate new STORE
-} -returnCodes error -result {wrong # args: should be "marpa::gate new semstore upstream"}
+} -returnCodes error -result {wrong # args: should be "marpa::gate new semstore postprocessor"}
 
 test marpa-gate-1.0.1 {constructor, wrong args, too many} -body {
     marpa::gate new STORE UP X
-} -returnCodes error -result {wrong # args: should be "marpa::gate new semstore upstream"}
+} -returnCodes error -result {wrong # args: should be "marpa::gate new semstore postprocessor"}
 
 # No state to query (Hidden: myacceptable, myhistory)
 
@@ -523,7 +523,7 @@ test marpa-gate-4.1.2 {eof, after construction, externals} -setup {
     marpa::gate create GATE [log STORE] [log UP]
     logclear
 } -body {
-    # eof is reported upstream, only.
+    # eof is reported to the postprocessor, only.
     list [GATE eof] [logged]
 } -cleanup {
     GATE destroy
@@ -558,7 +558,7 @@ test marpa-gate-4.2.2 {eof, after configuration, externals} -setup {
     GATE def {} {}
     logclear
 } -body {
-    # eof is reported upstream, only.
+    # eof is reported to the postprocessor, only.
     list [GATE eof] [logged]
 } -cleanup {
     GATE destroy
@@ -596,7 +596,7 @@ test marpa-gate-4.3.2 {eof, after gating, externals} -setup {
     GATE acceptable 0
     logclear
 } -body {
-    # eof is reported upstream, only.
+    # eof is reported to the postprocessor, only.
     list [GATE eof] [logged]
 } -cleanup {
     GATE destroy
@@ -637,7 +637,7 @@ test marpa-gate-4.4.2 {eof, after data, externals} -setup {
     GATE enter C V
     logclear
 } -body {
-    # eof is reported upstream, only.
+    # eof is reported to the postprocessor, only.
     list [GATE eof] [logged]
 } -cleanup {
     GATE destroy
