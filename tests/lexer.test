@@ -212,10 +212,28 @@ test marpa-lexer-3.1.2 {export, sequencing} -setup {
 # # ## ### ##### ######## ############# #####################
 ## action - wrong args, state, sequencing
 
+test marpa-lexer-4.0.0 {action, wrong args, not enough} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER action
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER action names"}
+
+test marpa-lexer-4.0.1 {action, wrong args, too many} -setup {
+    marpa::lexer create LEXER [log STORE] [log UP]
+} -body {
+    LEXER action NAMES X
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER action names"}
+
 test marpa-lexer-4.1.0 {action, result} -setup {
     marpa::lexer create LEXER [log STORE] [log UP]
 } -body {
-    LEXER action [log GATE]
+    LEXER action {}
 } -cleanup {
     LEXER destroy
     logged
@@ -225,7 +243,7 @@ test marpa-lexer-4.1.1 {action, externals} -setup {
     marpa::lexer create LEXER [log STORE] [log UP]
     logclear
 } -body {
-    LEXER action [log GATE]
+    LEXER action {}
     logged
 } -cleanup {
     LEXER destroy
@@ -234,7 +252,7 @@ test marpa-lexer-4.1.1 {action, externals} -setup {
 test marpa-lexer-4.1.2 {action, sequencing} -setup {
     marpa::lexer create LEXER [log STORE] [log UP]
 } -body {
-    LEXER action [log GATE]
+    LEXER action {}
     LEXER @
 } -cleanup {
     LEXER destroy
@@ -526,7 +544,7 @@ test marpa-lexer-8.5.3 {discard, post-forbidden: action} -setup {
     marpa::lexer create LEXER [log STORE] [log UP]
     GL LEXER
 } -body {
-    LEXER action
+    LEXER action {}
 } -cleanup {
     LEXER destroy
     logged
@@ -716,7 +734,7 @@ test marpa-lexer-9.3.3 {acceptable, post-forbidden: action} -setup {
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1}
 } -body {
-    LEXER action
+    LEXER action {}
 } -cleanup {
     LEXER destroy
     logged ; parsed ; stored

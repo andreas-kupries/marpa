@@ -5,7 +5,9 @@ ftilde
 rtilde
 rm -rf X.* BUILD-marpa0 tests/core*
 ./build.tcl test --log X
-exit
+#exit
+
+show=0
 if [ -s X.stacktrace ]
 then
     echo
@@ -14,6 +16,7 @@ then
     clear
     echo
     less X.stacktrace
+    show=1
 fi
 
 if [ -s X.faildetails ]
@@ -24,6 +27,13 @@ then
     clear
     echo
     less X.faildetails
+    show=1
 fi
 
-cat X.summary
+if [ $show -gt 1 ]
+then
+    clear
+    echo
+echo xxxx
+    cat X.summary
+fi

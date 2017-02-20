@@ -139,9 +139,9 @@ oo::class create marpa::lexer {
 	return
     }
 
-    method action {args} {
+    method action {names} {
 	debug.marpa/lexer {[debug caller] | }
-	set myparts $args
+	set myparts $names
 	return
     }
 
@@ -626,10 +626,10 @@ oo::class create marpa::lexer::sequencer {
 	next $names
     }
 
-    method action {args} {
+    method action {names} {
 	my __Init
 	my __FNot made ! "Lexer is frozen" FROZEN
-	next {*}$args
+	next $names
     }
 
     method latm {flag} {
