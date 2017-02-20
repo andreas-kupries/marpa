@@ -39,15 +39,15 @@ oo::class create marpa::parser {
 
     ##
     # API self:
-    # 1 cons    (sem, upstream) - Create, link, attach to upstream.
-    # 2 gate:   (lexer)         - Downstream lexer attaching for feedback.
-    #                             This activates down 'acceptable' handling.
-    # 3 symbols (symlist)       - (Downstream, self) bulk allocation of symbols
-    # 4 action  (...)           - Semantic value definition
-    # 5 rules   (rules)         - Bulk specification of grammar rules
-    # 6 parse   (start-sym)     - Complete parser spec
-    # 7 enter   (syms val)      - Incoming sym set with semantic value
-    # 8 eof     ()              - Incoming end of input signal
+    # 1 cons    (sem, asthandler) - Create, link, attach to asthandler.
+    # 2 gate:   (lexer)           - Lexer driving the parser attaching to
+    #                               it for feedback on acceptables.
+    # 3 symbols (symlist)         - (lexer, self) bulk allocation of symbols
+    # 4 action  (...)             - Semantic value definition
+    # 5 rules   (rules)           - Bulk specification of grammar rules
+    # 6 parse   (start-sym)       - Complete parser spec
+    # 7 enter   (syms val)        - Incoming sym set with semantic value
+    # 8 eof     ()                - Incoming end of input signal
     ##
     # Sequence = 1([345]*2[345]*67*)?8
     # See mark <<s>>
@@ -57,21 +57,22 @@ oo::class create marpa::parser {
     #   acceptable (symlist)    - Declare set of allowed symbols
     ##
     # API semantics:
-    #   eval (treeinsn)         - Eval list of valuator instructions
+    #   eval (treeinsn)         - Process list of valuator instructions, generate semantic value
     ##
-    # API upstream:
-    #   enter   (semval) - Push semantic value
+    # API asthandler:
+    #   enter   (semval) - Push semantic value of completed parse
+    #   fail    ()       - Parse failed (TODO: error information)
     #   eof     ()       - Push end of input signal
 
     # # -- --- ----- -------- -------------
     ## Lifecycle
 
-    constructor {semstore semantics upstream} {
+    constructor {semstore semantics asthandler} {
 	debug.marpa/parser {[marpa::D {
 	    marpa::import $semstore Store ;# Debugging only.
 	}]}
 
-	next $upstream
+	next $asthandler
 
 	marpa::import $semantics Semantics
 	# Lexer will attach during setup.
@@ -115,9 +116,8 @@ oo::class create marpa::parser {
 
 	my Freeze
 
-	# Pass whitespace upstream, to the lexer. Then create our
-	# recognizer and push the first feedback about acceptable
-	# symbols up.
+	# Pass whitespace to the lexer. Then create our recognizer and
+	# push the first feedback about acceptable symbols up.
 	Lexer discard $whitespace
 
 	GRAMMAR recognizer create RECCE [mymethod Events]
@@ -153,7 +153,13 @@ oo::class create marpa::parser {
 	foreach sym $syms {
 	    RECCE alternative $sym $sv 1
 	}
-	RECCE earleme-complete
+	try {
+	    RECCE earleme-complete
+	} trap {MARPA PARSE_EXHAUSTED} {e o} {
+	    # Do nothing. Exhaustion is checked below.
+	} on error {e o} {
+	    return {*}$o $e
+	}
 
 	if {[RECCE exhausted?]} {
 	    debug.marpa/parser {exhausted}
@@ -176,10 +182,10 @@ oo::class create marpa::parser {
 	debug.marpa/parser {}
 
 	# Flush everything pending in the local recognizer to the
-	# backend before signaling eof upstream.
+	# backend before signaling eof to the asthandler.
 	my Complete
 
-	# Note as the backend does not call us with 'acceptable' we
+	# Note, as the backend does not call us with 'acceptable' we
 	# have no left-over RECCE to destroy, contrary to the lexer's
 	# situation.
 
@@ -281,17 +287,34 @@ oo::class create marpa::parser {
     method Complete {} {
 	debug.marpa/parser {}
 
+	# No RECCE implies that either the parser never got fully off
+	# the ground yet, or that it already did all the completion
+	# work. In either case, nothing has to be done.
+
+	if {![llength [info commands RECCE]]} return
+
 	# For a parse we (must?) assume (for now?) that it must end at
 	# the latest earleme. If not we generate suitable parse error
 	# messages. (report ?)
 
 	set latest [RECCE latest-earley-set]
-
-	debug.marpa/parser {Check at $latest}
-	if {[catch {
+	while {[catch {
+	    debug.marpa/parser {Check at $latest}
 	    RECCE forest create FOREST $latest
 	}]} {
-	    TODO proper syntax error report
+	    incr latest -1
+	    if {$latest < 0} {
+		Forward fail
+		# TODO: Here more information can be provided, i.e.
+		#       where in the input we got stopped, and such.
+		#       This could/should be made a method for every
+		#       processor in the pipeline, to forward a problem
+		#       and each stage adding its own information.
+
+		# The parser is done.
+		RECCE destroy
+		return
+	    }
 	}
 
 	# Pull all the valid parses
@@ -314,7 +337,6 @@ oo::class create marpa::parser {
 	}
 
 	# From here on only an eof signal may come from the input.
-	my ToStateEof
 	return
     }
 
@@ -322,7 +344,8 @@ oo::class create marpa::parser {
     ## Helper for determination of dynamic destination state (enter).
 
     method exhausted {} {
-	RECCE exhausted?
+	# 'enter' destroys RECCE when it is exhausted.
+	string equal [info commands RECCE] {}
     }
 
     # # ## ### ##### ######## #############

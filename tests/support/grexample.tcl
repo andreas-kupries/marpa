@@ -45,7 +45,7 @@ proc GGBase {parser args} {
     $parser symbols {NAME A B a b w}
     $parser symbols $args
     $parser rules {
-	{A := a}
+	{A := a w}
 	{B := b}
 	{NAME := A}
 	{NAME := B}
