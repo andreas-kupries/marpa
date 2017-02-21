@@ -29,8 +29,14 @@ debug prefix marpa/semcore {} ;# eval takes large argument, keep out.
 oo::class create marpa::semcore {
     marpa::E marpa/semcore SEMCORE
 
+    # # ## ### ##### ######## #############
+    ## State
+
     variable myactionmap ;# (rules|symbols|tokens) -> actions (cmdpfx)
     variable mymask      ;# rule -> mask for sv
+
+    # # ## ### ##### ######## #############
+    ## Lifecycle
 
     constructor {semstore {actionmap {}}} {
 	debug.marpa/semcore {[debug caller] | [marpa::D {
@@ -62,7 +68,10 @@ oo::class create marpa::semcore {
 	return
     }
 
-    method mask {id mask} {
+    # # ## ### ##### ######## #############
+    ## Configuration
+
+    method add-mask {id mask} {
 	debug.marpa/semcore {[debug caller] |}
 	# Sorted in decreasing order to match the expectations of
 	# "marpa::filter" called in "eval".
@@ -96,6 +105,22 @@ oo::class create marpa::semcore {
 	}]}
 	return
     }
+
+    # # ## ### ##### ######## #############
+    ## Inspection
+
+    method map {} {
+	debug.marpa/semcore {[debug caller] |}
+	return $myactionmap
+    }
+
+    method mask {} {
+	debug.marpa/semcore {[debug caller] |}
+	return $mymask
+    }
+
+    # # ## ### ##### ######## #############
+    ## Use
 
     method eval {instructions} {
 	debug.marpa/semcore {[debug caller 1] | [marpa::D {

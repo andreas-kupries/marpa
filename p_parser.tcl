@@ -207,7 +207,7 @@ oo::class create marpa::parser {
 
 	set rule [my := $lhs __ {*}$args]
 
-	Semantics mask $rule $mask
+	Semantics add-mask $rule $mask
 	return $rule
     }
 
