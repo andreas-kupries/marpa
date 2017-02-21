@@ -27,6 +27,8 @@ debug prefix marpa/semcore {} ;# eval takes large argument, keep out.
 ## Semantic core. 
 
 oo::class create marpa::semcore {
+    marpa::E marpa/semcore SEMCORE
+
     variable myactionmap ;# (rules|symbols|tokens) -> actions (cmdpfx)
     variable mymask      ;# rule -> mask for sv
 
@@ -269,18 +271,8 @@ oo::class create marpa::semcore {
 	return $r
     }
 
-    # Debug support, std sem value transform - no op
+    # Debug support, std semantic value transform - no op / identity
     method ID {x} { return $x }
-
-    # # ## ### ##### ######## #############
-    ## Internal support - Error generation
-
-    method E {msg args} {
-	debug.marpa/semcore {[debug caller] | }
-	return -code error \
-	    -errorcode [linsert $args 0 MARPA SEMCORE] \
-	    $msg
-    }
 
     # # ## ### ##### ######## #############
 }
