@@ -15,5 +15,9 @@ kt local   testing marpa
 
 # # ## ### ##### ######## ############# #####################
 
+## The grammar container in this branch is outdated.
+## For the new work please see the branch "new-slif-semantics".
+## Any tests should be written on that branch for that work.
+
 # # ## ### ##### ######## ############# #####################
 cleanupTests
