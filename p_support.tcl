@@ -64,7 +64,7 @@ proc marpa::E {label args} {
 
 proc marpa::X {msg args} {
     return -code error \
-	-errorcode [linsert $args 0 MARPA $args] \
+	-errorcode [linsert $args 0 MARPA] \
 	$msg
 }
 

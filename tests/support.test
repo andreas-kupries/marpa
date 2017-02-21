@@ -1,0 +1,106 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::location
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+## - D
+## - DX
+## - X
+## - filter
+
+# # ## ### ##### ######## ############# #####################
+## D
+
+test marpa-support-d-1.0 {D, wrong args, not enough} -body {
+    marpa D
+} -returnCodes error -result {wrong # args: should be "marpa D script"}
+
+test marpa-support-d-1.1 {D, wrong args, not enough} -body {
+    marpa D SCRIPT X
+} -returnCodes error -result {wrong # args: should be "marpa D script"}
+
+test marpa-support-d-2.0 {D run} -body {
+    marpa D {set B 1}
+} -cleanup {
+    unset B
+} -result {}
+
+# # ## ### ##### ######## ############# #####################
+## DX
+
+test marpa-support-dx-1.0 {DX, wrong args, not enough} -body {
+    marpa DX
+} -returnCodes error -result {wrong # args: should be "marpa DX label script"}
+
+test marpa-support-dx-1.1 {DX, wrong args, not enough} -body {
+    marpa DX LABEL
+} -returnCodes error -result {wrong # args: should be "marpa DX label script"}
+
+test marpa-support-dx-1.2 {DX, wrong args, not enough} -body {
+    marpa DX LABEL SCRIPT X
+} -returnCodes error -result {wrong # args: should be "marpa DX label script"}
+
+test marpa-support-dx-2.0 {DX run} -body {
+    marpa DX foo {set B 1}
+} -cleanup {
+    unset B
+} -result foo
+
+# # ## ### ##### ######## ############# #####################
+## X
+
+test marpa-support-x-1.0 {X, wrong args, not enough} -body {
+    marpa X
+} -returnCodes error -result {wrong # args: should be "marpa X msg ..."}
+
+test marpa-support-x-2.0 {X, message} -body {
+    marpa X message
+} -returnCodes error -result message
+
+test marpa-support-x-2.1 {X, message} -body {
+    catch {
+	marpa X message FOO
+    } code options
+    dict get $options -errorcode
+} -cleanup {
+    unset code options
+} -result {MARPA FOO}
+
+# # ## ### ##### ######## ############# #####################
+## filter
+
+test marpa-support-filter-1.0 {filter, wrong args, not enough} -body {
+    marpa filter
+} -returnCodes error -result {wrong # args: should be "marpa filter values mask"}
+
+test marpa-support-filter-1.1 {filter, wrong args, not enough} -body {
+    marpa filter VALUES
+} -returnCodes error -result {wrong # args: should be "marpa filter values mask"}
+
+test marpa-support-filter-1.2 {filter, wrong args, not enough} -body {
+    marpa filter VALUES MASK X
+} -returnCodes error -result {wrong # args: should be "marpa filter values mask"}
+
+
+test marpa-support-filter-2.0 {filter} -body {
+    marpa filter {a b c d e f g} {4 2}
+} -result {a b d f g}
+
+test marpa-support-filter-2.1 {filter, badly ordered mask} -body {
+    string equal [marpa filter {a b c d e f g} {2 4}] {a b d f g}
+    # No error, however a bogus result
+} -result 0
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests
