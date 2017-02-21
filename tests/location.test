@@ -87,6 +87,8 @@ test marpa-location-merge2-1.2 {merge2, wrong args, not enough} -body {
     marpa location merge2 A B X
 } -returnCodes error -result {wrong # args: should be "marpa location merge2 a b"}
 
+# See also semstd.test, locmerge
+
 test marpa-location-merge2-2.0 {merge2, non-adjacent} -body {
     marpa location merge2 [marpa location atom 0 A] [marpa location atom 2 B]
 } -returnCodes error -result {Bad merge, non-adjacent locations}

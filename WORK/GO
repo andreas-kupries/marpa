@@ -7,6 +7,8 @@ rm -rf X.* BUILD-marpa0 tests/core*
 ./build.tcl test --log X
 #exit
 
+rm -rf BUILD-marpa0
+
 show=0
 if [ -s X.stacktrace ]
 then

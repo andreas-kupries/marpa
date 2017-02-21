@@ -7,8 +7,9 @@
 
 # Semantics, standard functionality for actions.
 
-## See also method "CompleteParts" in lexer and parser.
-## This is where some of the parts get their details.
+## See also the methods "CompleteParts" in marpa::lexer and
+## marpa::parser. This is where some of the parts get their detail
+## information from.
 
 ## FUTURE: Consider 'compiling' the builtin into partially evaluated
 ## code, i.e. specialized to the parts + detail information. More
@@ -31,6 +32,10 @@ debug prefix marpa/semstd {} ;# eval takes large argument, keep out.
 
 # # ## ### ##### ######## #############
 
+namespace eval marpa {
+    namespace export semstd
+    namespace ensemble create
+}
 namespace eval marpa::semstd {
     namespace export {[a-z]*}
     namespace ensemble create
