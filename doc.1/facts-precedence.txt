@@ -1,4 +1,4 @@
-# Precendences and rule rewriting
+# Precedences and rule rewriting
 
 ## Precedences
 

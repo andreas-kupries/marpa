@@ -32,7 +32,7 @@ oo::class create marpa::semcore {
     # # ## ### ##### ######## #############
     ## State
 
-    variable myactionmap ;# (rules|symbols|tokens) -> actions (cmdpfx)
+    variable myactionmap ;# (rules|symbols|tokens) -> actions (cmdprefix)
     variable mymask      ;# rule -> mask for sv
 
     # # ## ### ##### ######## #############
