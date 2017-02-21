@@ -36,8 +36,8 @@ oo::class create marpa::lexer {
     ## Configuration
 
     # Static
-    variable mypublic     ;# sym id:local    -> (id:upstream, parts)
-    variable myacs        ;# sym id:upstream -> id:acs:local
+    variable mypublic     ;# sym id:local  -> (id:parser, parts)
+    variable myacs        ;# sym id:parser -> id:acs:local
     variable mydiscard    ;# Set of ACS for discarded lexemes
 
     # Dynamic
@@ -49,7 +49,7 @@ oo::class create marpa::lexer {
 
     # Dynamic
     variable myacceptable ;# Remembered (last call of 'Acceptable')
-			   # set of upstream acceptable symbols.
+			   # set of parser acceptable symbols.
 			   # Required for the regeneration of our
 			   # recognizer after a discarded lexeme was
 			   # found in the input.
@@ -66,10 +66,9 @@ oo::class create marpa::lexer {
 
     ##
     # API self:
-    # 1 cons    (semstore, upstream) - Create, link, attach to upstream.
-    # 2 gate:   (gate)        - Downstream gate attaching for feedback.
-    #                           This activates down 'acceptable' handling.
-    # 3 symbols (symlist)     - (Downstream, self) bulk allocation of symbols
+    # 1 cons    (semstore, parser) - Create, link, attach to parser.
+    # 2 gate:   (gate)        - gate attaching to us for feedback on acceptables.
+    # 3 symbols (symlist)     - (inbound/gate, self) bulk allocation of symbols
     # 4 export  (symlist)     - Bulk allocation of public symbols
     # 5 action  (...)         - Semantic value definition
     # 6 rules   (rules)       - Bulk specification of grammar rules
@@ -88,6 +87,7 @@ oo::class create marpa::lexer {
     # API parser:
     #   gate:   (self)     - Self attaching to parser for feedback on acceptables.
     #   enter   (syms val) - Push symbol set with semantic value
+    #   fail    ()         - Lexer failed (TODO: error information)
     #   eof     ()         - Push end of input signal
     #   symbols (symlist)  - Bulk allocate symbols for ruleschar and char classes.
 
@@ -305,7 +305,10 @@ oo::class create marpa::lexer {
 
 	#  Note that the flush leaves us with a just-started
 	# recognizer, which we have to remove again.
-	if {$myrecce ne {}} { RECCE destroy }
+	if {$myrecce ne {}} {
+	    RECCE destroy
+	    set myrecce {}
+	}
 
 	Forward eof
 	return
@@ -406,7 +409,17 @@ oo::class create marpa::lexer {
 	    incr redo
 	    incr latest -1
 	    if {$latest < 0} {
-		my E "No lexeme found in input. Stopped." STOP
+		Forward fail
+		# TODO: Here more information can be provided, i.e.
+		#       where in the input we got stopped, and such.
+		#       This could/should be made a method for every
+		#       processor in the pipeline, to forward a problem
+		#       and each stage adding its own information.
+
+		# The current recognizer is done.
+		RECCE destroy
+		set myrecce {}
+		return
 	    }
 	}
 	debug.marpa/lexer {[debug caller] | Lexeme length: $latest}
@@ -479,6 +492,7 @@ oo::class create marpa::lexer {
 
 	# The current recognizer is done.
 	RECCE destroy
+	set myrecce {}
 
 	debug.marpa/lexer {[debug caller] | Have '[join [my ACS $found] {' '}]' ${sv}=([expr {($sv < 0) ? "" : [marpa location show [Store get $sv]]}])}
 
@@ -598,9 +612,24 @@ oo::class create marpa::lexer::sequencer {
     # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # *       *           /FAIL
     # *       *          /FAIL		    # ~~~~~~  ~~~~~~~     ~~~~~~~~
     # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ #
-    # [0] Gate declaration, coming from downstream gate.
+    # [0] Gate declaration, coming from the gate.
     # [1] initial accept, before all data, part of the setup, coming from
     #     the parser
+
+    # Notes
+    ##
+    # - At the end of a lexeme 'enter' triggers 'accept' from the
+    #   post-processor (parser). This means:
+    #
+    #     gated -> gated
+    #     data  -> gated
+    #
+    #   whereas during the scanning of a lexeme
+    #
+    #     gated -> data
+    #     data  -> data
+    #
+    # - An 'eof' triggers a last 'accept' from the post-processor (parser).
 
     # # -- --- ----- -------- -------------
     ## Mandatory overide of virtual base class method
@@ -683,9 +712,11 @@ oo::class create marpa::lexer::sequencer {
 	my __Fail made            ! "Setup missing" MISSING SETUP
 	my __Fail config          ! "Gate missing" MISSING GATE
 	my __Fail {done complete} ! "After end of input" EOF
-	next $syms $sv
-
+	# Note: Early state change. This ensures that we are in the
+	# proper state for the callback from the postprocessor
+	# (i.e. acceptable)
 	my __On {gated data} --> data
+	next $syms $sv
     }
 
     ##

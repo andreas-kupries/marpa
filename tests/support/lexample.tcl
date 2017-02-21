@@ -45,7 +45,7 @@ proc GLBase {lexer args} {
     $lexer export  {A B}
     $lexer rules {
 	{A := a}
-	{B := b}
+	{B := b w}
     }
     return
 }

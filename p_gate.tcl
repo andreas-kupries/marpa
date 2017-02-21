@@ -404,7 +404,7 @@ oo::class create marpa::gate::sequencer {
     # Notes
     ##
     # - During the scanning of a lexeme 'enter' triggers 'accept' from
-    #   the post-processor. This means:
+    #   the post-processor (lexer). This means:
     #
     #     gated   -> regated,
     #     regated -> regated
@@ -412,7 +412,7 @@ oo::class create marpa::gate::sequencer {
     #   The state 'data' is only temporary, visible only to 'accept'.
     ##
     # - At the end of a lexeme 'enter' triggers 'accept' and 'redo'
-    #   from the post-processor. This means:
+    #   from the post-processor (lexer). This means:
     #
     #     gated   -> gated,
     #     regated -> gated
