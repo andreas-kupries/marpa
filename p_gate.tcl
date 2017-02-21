@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2016 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -18,8 +18,8 @@
 # acceptable symbols and keep a history of processed characters, in
 # case a rewind is called.
 
-# The symbol maps are build in cooperation with the upstream chain,
-# with upstream actually delivering the relevant integer ids.
+# The symbol maps are build in cooperation with the postprocessor,
+# with the postprocessor actually delivering the relevant integer ids.
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -46,15 +46,15 @@ oo::class create marpa::gate {
     ##
     # * Lifecycle
     # ```
-    # Driver  Gate    Upstream
+    # Driver  Gate    Postprocessor
     # |               |
     # +-cons--\       |
-    # |       +-gate:->       (Internal backlinking from upstream to its gate)
+    # |       +-gate:->       (Internal backlinking from postprocessor to its gate)
     # |       |       |
     # ~~      ~~      ~~
     # ~~      ~~      ~~
     # |       |       |
-    # |       <---acc-+       Upstream, initial gate initialization
+    # |       <---acc-+       Postprocessor, initial gate initialization
     # |       |       |
     # ~~      ~~      ~~      Driven from input
     # ~~      ~~      ~~
@@ -67,7 +67,7 @@ oo::class create marpa::gate {
     #
     # * Operation during scanning of a lexeme
     # ```
-    # Driver  Gate    Upstream
+    # Driver  Gate    Postprocessor
     # |               |
     # +-enter->       |
     # |       +-enter->
@@ -77,7 +77,7 @@ oo::class create marpa::gate {
     #
     # * Operation at end of a lexeme
     # ```
-    # Driver  Gate    Upstream
+    # Driver  Gate    Postprocessor
     # |               |
     # +-enter->       |
     # |       +-enter->
@@ -101,17 +101,19 @@ oo::class create marpa::gate {
 
     ##
     # API self:
-    # 1 cons       (upstream)       - Create, link, attach to upstream
+    # 1 cons       (postprocessor)  - Create, link, attach to postprocessor
     # 2 def        (chars, classes) - Configuration
     # 3 enter      (char val)       - Incoming character with token value
     # 4 eof        ()               - End of input signal
-    # 5 acceptable (syms)           - Upstream feedback, acceptable symbols
-    # 6 redo       (n)              - Upstream feedback, re-enter last n characters
+    # 5 acceptable (syms)           - Postprocessor feedback, acceptable symbols
+    # 6 redo       (n)              - Postprocessor feedback, re-enter last n characters
     ##
     # Sequence = 1(2(5(356?)*))?(46)
+    # See mark <<s>>
     ##
-    # API upstream:
-    #   gate:   (self)     - Attach to self as gate for upstream
+    # API postprocessor:
+    #   gate:   (self)     - Attach ourselves as the gate of the postprocessor (lexer),
+    #                        for feedback on acceptables.
     #   enter   (syms val) - Push symbol set with token value
     #   eof     ()         - Push end of input signal
     #   symbols (symlist)  - Bulk allocate symbols for char and char classes.
@@ -119,12 +121,12 @@ oo::class create marpa::gate {
     # # -- --- ----- -------- -------------
     ## Lifecycle
 
-    constructor {semstore upstream} {
+    constructor {semstore postprocessor} {
 	debug.marpa/gate {[debug caller] | [marpa::D {
 	    marpa::import $semstore Store ;# Debugging only.
 	}]}
 
-	marpa::import $upstream Forward
+	marpa::import $postprocessor Forward
 
 	# Dynamic state for processing
 	set myhistory    {} ;# queue of processed characters
@@ -136,7 +138,7 @@ oo::class create marpa::gate {
 	set myrmap       {}
 	set myclass      {}
 
-	# Attach ourselves to upstream, as gate.
+	# Attach ourselves to the postprocessor, as its gate.
 	Forward gate: [self]
 
 	debug.marpa/gate {[debug caller] | /ok}
@@ -162,7 +164,7 @@ oo::class create marpa::gate {
     }
 
     method enter {char value} {
-	debug.marpa/gate {[debug caller 1] | See '[char quote cstring $char]' ([marpa::location::Show [Store get $value]])}
+	debug.marpa/gate {[debug caller 1] | See '[char quote cstring $char]' ([marpa location show [Store get $value]])}
 
 	# Extend the map when encountering an unknown character, check
 	# the char classes for one it may belong to. Note, this is the
@@ -182,8 +184,8 @@ oo::class create marpa::gate {
 	}
 
 	# Map the character to all its symbols, if any ...  Do a loop
-	# here, allow for _one_ re-try after a flush was forced
-	# upstream.
+	# here, allow for _one_ re-try after a flush was forced to the
+	# postprocessor.
 
 	set flushed 0
 	while {1} {
@@ -209,7 +211,7 @@ oo::class create marpa::gate {
 		#     later via 'redo'.
 		lappend myhistory $char $value
 
-		# ... Let upstream deal with any ambiguity
+		# ... Let the postprocessor deal with any ambiguity
 		debug.marpa/gate {[debug caller 1] | push ($match)}
 		Forward enter $match $value
 
@@ -217,9 +219,9 @@ oo::class create marpa::gate {
 		return
 	    }
 
-	    # character is not acceptable. Flush upstream, except if
-	    # we did it already, then we have to stop, the input
-	    # completely bogus.
+	    # character is not acceptable. Flush to the postprocessor,
+	    # except if we did it already, then we have to stop, the
+	    # input completely bogus.
 	    if {$flushed} {
 		my E "Unable to handle '[char quote cstring $char]'" \
 		    FLUSH $char
@@ -336,6 +338,7 @@ oo::class create marpa::gate::sequencer {
     # State machine for marpa::gate
     ##
     # Sequence = 1(2(5(356?)*))?(46)
+    # See mark <<s>>
     ##
     # Non-deterministic state machine _____
     # Current Method --> New          Notes
@@ -360,7 +363,7 @@ oo::class create marpa::gate::sequencer {
     # *     *            /FAIL
     # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~
     # [1] initial accept, before all data, part of the setup, coming
-    #     down from upstream
+    #     from the postprocessor
     # [2] the non-determinism is here
 
     # Deterministic state machine. Remap state sets
@@ -373,31 +376,49 @@ oo::class create marpa::gate::sequencer {
     # done     := Done
     # complete := Complete
     ##
-    # New transition table ________________ # Table re-sorted, by method __________
-    # Current Method --> New          Notes # Method Current --> New          Notes
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # -       <cons>     made		    # <cons> -           made		   
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # made    def        config		    # def    made        config		   
-    #         eof        done		    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # accept config      gated        [1]  
-    # config  accept     gated        [1]   #        data        regated	   
-    #         eof        done		    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # enter  gated       data		   
-    # gated   enter      data		    #        regated     data		   
-    #         eof        done		    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # redo   done        complete	   
-    # data    accept     regated	    #        regated     gated		   
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # regated enter      data		    # eof    config      done		   
-    #         redo       gated		    #        gated       done		   
-    #         eof        done               #        regated     done		   
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ #        made        done		   
-    # done    redo       complete	    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ #        *     *     /FAIL		   
-    # *     *            /FAIL		    # ~~~~~~ ~~~~~~~     ~~~~~~~~~~~~ ~~~~~
-    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~
+    # New transition table ____________ # Table re-sorted, by method
+    # Current Method --> New      Notes # Method Current --> New
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # -       <cons>     made	 	# <cons> -           made
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # made    def        config	 	# def    made        config
+    #         eof        done	 	# ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ # accept config      gated
+    # config  accept     gated    [1]   #        data        regated
+    #         eof        done	 	# ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ # enter  gated       data
+    # gated   enter      data	 	#        regated     data
+    #         eof        done	 	# ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ # redo   done        complete
+    # data    accept     regated 	#        regated     gated
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ # ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # regated enter      data	 	# eof    config      done
+    #         redo       gated	 	#        gated       done
+    #         eof        done           #        regated     done
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ #        made        done
+    # done    redo       complete	# ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~ # *      *           /FAIL
+    # *       *          /FAIL	 	# ~~~~~~ ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~ ~~~~~
 
+    # Notes
+    ##
+    # - During the scanning of a lexeme 'enter' triggers 'accept' from
+    #   the post-processor (lexer). This means:
+    #
+    #     gated   -> regated,
+    #     regated -> regated
+    #
+    #   The state 'data' is only temporary, visible only to 'accept'.
+    ##
+    # - At the end of a lexeme 'enter' triggers 'accept' and 'redo'
+    #   from the post-processor (lexer). This means:
+    #
+    #     gated   -> gated,
+    #     regated -> gated
+    #
+    #   The state 'data' is only temporary, visible only to 'accept'.
+    ##
     # # -- --- ----- -------- -------------
     ## Mandatory overide of virtual base class method
 
@@ -409,15 +430,17 @@ oo::class create marpa::gate::sequencer {
     method def {characters classes} {
 	my __Init
 	my __FNot made   ! "Invalid redefinition" SETUP DOUBLE
-	my __On   made --> config
 	next $characters $classes
+
+	my __On   made --> config
     }
 
     method eof {} {
 	my __Init
 	my __FNot {made config gated regated}   ! "Unexpected EOF" EOF EARLY
-	my __On   {made config gated regated} --> done
 	next
+
+	my __On   {made config gated regated} --> done
     }
 
     method enter {char value} {
@@ -425,6 +448,9 @@ oo::class create marpa::gate::sequencer {
 	my __Fail made              ! "Setup missing"      SETUP MISSING
 	my __Fail {config data}     ! "Gate missing"       GATE MISSING
 	my __Fail {done complete}   ! "After end of input" EOF AFTER
+	# Note: Early state change. This ensures that we are in the
+	# proper state for the callbacks from the postprocessor
+	# (i.e. acceptable, and redo)
 	my __On   {gated regated} --> data
 	next $char $value
     }
@@ -434,9 +460,10 @@ oo::class create marpa::gate::sequencer {
 	my __Fail made            ! "Setup missing"      SETUP MISSING
 	my __Fail {gated regated} ! "Data missing"       DATA MISSING
 	my __Fail {done complete} ! "After end of input" EOF AFTER
+	next $syms
+
 	my __On   config        --> gated
 	my __On   data          --> regated
-	next $syms
     }
 
     method redo {n} {
@@ -445,9 +472,10 @@ oo::class create marpa::gate::sequencer {
 	my __Fail {config data} ! "Gate missing"       GATE MISSING
 	my __Fail gated         ! "Data missing"       DATA MISSING
 	my __Fail complete      ! "After end of input" EOF AFTER
+	next $n
+
 	my __On   regated     --> gated
 	my __On   done        --> complete
-	next $n
     }
 
     ##

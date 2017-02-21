@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -29,14 +29,16 @@ debug define marpa/engine
 ## 
 
 oo::class create marpa::engine {
+    marpa::E marpa/engine ENGINE
+
     # Map symbol name to id, for rule conversion during setup, and
     # back-conversion in debug output.
     #
-    # Map of the public symbol id to the associated upstream symbol
-    # id.  These are the full set of symbols accepted by upstream and
-    # are be gated by this engine.
+    # Map of the public symbol id to the associated postprocessor
+    # symbol id.  These are the full set of symbols accepted by the
+    # postprocessor and are gated by this engine.
     #
-    # Map from upstream symbol id for a public symbol to the
+    # Map from postprocessor symbol id for a public symbol to the
     # associated local ACS id.
     #
     # Map from rules (ids) to their lhs, for debugging output
@@ -47,18 +49,18 @@ oo::class create marpa::engine {
 
     ##
     # API self:
-    #   cons    (upstream) - Create, link, attach to upstream.
-    #   Symbols (symlist)  - (Downstream, self) bulk allocation of symbols
-    #   Export  (symlist)  - Bulk allocation of public symbols
-    #   Rules   (rules)    - Bulk specification of grammar rules
+    #   cons    (postprocessor) - Create, link, attach to postprocessor.
+    #   Symbols (symlist)       - (preprocessor, self) bulk allocation of symbols
+    #   Export  (symlist)       - Bulk allocation of public symbols
+    #   Rules   (rules)         - Bulk specification of grammar rules
     ##
-    # API upstream:
+    # API postprocessor:
     #   symbols (symlist)  - Bulk allocate symbols for lexemes, chars and char classes.
 
-    constructor {upstream} {
+    constructor {postprocessor} {
 	debug.marpa/engine {[debug caller] | }
 
-	marpa::import $upstream Forward
+	marpa::import $postprocessor Forward
 
 	# Dynamic state for processing
 	##
@@ -84,7 +86,7 @@ oo::class create marpa::engine {
     ## Hidden methods for API methods. Subclasses integrate these into
     ## their state management
 
-    method Symbols {names} {
+    method symbols {names} {
 	debug.marpa/engine {[debug caller] | }
 	# Bulk argument check, prevent duplicates
 	foreach name $names {
@@ -99,6 +101,7 @@ oo::class create marpa::engine {
 	foreach name $names {
 	    set id [GRAMMAR sym-new]
 	    lappend ids $id
+
 	    # We remember the mapping for rule conversion. We can drop
 	    # the mapping when the grammar is frozen, except when
 	    # debugging is active, then we need it for the conversion
@@ -110,7 +113,7 @@ oo::class create marpa::engine {
 	return $ids
     }
 
-    method Rules {rules} {
+    method rules {rules} {
 	debug.marpa/engine {[debug caller 1] | }
 	# Enter the rules. The second element of each rule is the
 	# relevant method.
@@ -118,6 +121,33 @@ oo::class create marpa::engine {
 	    my [lindex $rule 1] {*}$rule
 	}
 	return
+    }
+
+    # # ## ### ##### ######## #############
+    ## Debug support - Higher level progress report for a location.
+
+    method report {location} {
+	package require struct::matrix
+	# TODO: Consider placement of this method into a mixin
+	# That way we avoid the matrix dependency in general code.
+	struct::matrix M
+	M add columns 5
+#Cols = rule id, multiplier, origin
+	array set map {}
+
+	set n [RECCE report-start $location]
+	for {} {$n > 0} {incr n -1} {
+	    lassign [RECCE report-next] rule dot origin
+	    # TODO: Compute human readable fields
+	    # Note: Collapse identical rules into one entry.
+	    # - Use a matrix, and map from rule-ids to rows
+
+
+
+
+	}
+	RECCE report-finish
+	# TODO post-process matrix, format, and return
     }
 
     # # ## ### ##### ######## #############
@@ -140,7 +170,6 @@ oo::class create marpa::engine {
 	debug.marpa/engine {[debug caller] | }
 	set lhsid  [my 2ID1 $lhs]
 	set rhsids [my 2ID  $args]
-
 	set id [GRAMMAR rule-new $lhsid {*}$rhsids]
 	return [my Rule $id $lhsid]
     }
@@ -184,6 +213,9 @@ oo::class create marpa::engine {
 	return $ids
     }
     method 2ID1 {name} {
+	if {![dict exists $mymap $name]} {
+	    my E "Unknown symbol \"$name\"" UNKNOWN SYMBOL
+	}
 	return [dict get $mymap $name]
     }
 
@@ -196,6 +228,9 @@ oo::class create marpa::engine {
 	return $names
     }
     method 2Name1 {id} {
+	if {![dict exists $myrmap $id]} {
+	    my E "Bad id \"$id\"" BAD ID
+	}
 	return [dict get $myrmap $id]
     }
 
@@ -204,16 +239,6 @@ oo::class create marpa::engine {
 	# Freeze grammar, prevent further editing
 	GRAMMAR freeze
 	return
-    }
-
-    # # ## ### ##### ######## #############
-    ## Internal support - Error generation
-
-    method E {msg args} {
-	debug.marpa/engine {[debug caller] | }
-	return -code error \
-	    -errorcode [linsert $args 0 MARPA ENGINE] \
-	    $msg
     }
 
     # # ## ### ##### ######## #############

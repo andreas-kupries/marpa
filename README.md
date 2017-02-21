@@ -1,7 +1,7 @@
 # Setup
 
 The main file is "marpa.tcl", which includes all the other
-marpa-related files in one way or other.
+"[cps]_*.tcl" files in one way or other.
 
 # File groups
 

@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2016 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2016-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -55,6 +55,11 @@ oo::class create sequencer {
     export @
 
     # # -- --- ----- -------- -------------
+    ## Public API for triggering debug narrative in the DFA
+
+    method debug {} { debug on util/sequencing }
+
+    # # -- --- ----- -------- -------------
     ## DFA state
 
     variable __state
@@ -77,11 +82,14 @@ oo::class create sequencer {
     method __States {initial args} {
 	my variable __state
 	if {[info exists __state]} {
-	    #puts @$__state:[info level -2]
+	    debug.util/sequencing {@:$__state:[info level -2]}
+	    #puts @:$__state:[info level -2]
 	    if {$__state in [linsert $args 0 $initial]} return
 	    my E "" SEQUENCER INVALID STATE $__state 
 	}
 	set __state $initial
+	#puts I:$__state:[info level -2]
+	debug.util/sequencing {I:$__state:[info level -2]}
 	return
     }
 

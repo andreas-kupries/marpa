@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2016 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -37,7 +37,7 @@ oo::class create marpa::inbound {
     #
     # * Supplication of text via `enter`
     # ```
-    # Driver  Inbound SemStore        Upstream
+    # Driver  Inbound SemStore        Postprocessor
     # |               |               |
     # +-cons--\       |               |
     # |       |       |               |
@@ -57,7 +57,7 @@ oo::class create marpa::inbound {
     #
     # * Supplication of text via `read`
     # ```
-    # Driver  Inbound SemStore        Upstream
+    # Driver  Inbound SemStore        Postprocessor
     # |               |               |
     # +-cons--\       |               |
     # |       |       |               |
@@ -87,22 +87,23 @@ oo::class create marpa::inbound {
     variable mylocation ; # Input location
 
     # API:
-    # 1 cons  (semstore, upstream) - Create, link
-    # 2 enter (string)             - Incoming characters via string
-    # 3 read  (chan)               - Incoming characters via channel
-    # 4 eof   ()                   - End of input signal
-    #   location? ()               - Retrieve current location
+    # 1 cons  (semstore, postprocessor) - Create, link
+    # 2 enter (string)                  - Incoming characters via string
+    # 3 read  (chan)                    - Incoming characters via channel
+    # 4 eof   ()                        - End of input signal
+    #   location? ()                    - Retrieve current location
     ##
     # Sequence = 1[23]*4
-
+    # See mark <<s>>
+    ##
     # # -- --- ----- -------- -------------
     ## Lifecycle
 
-    constructor {semstore upstream} {
+    constructor {semstore postprocessor} {
 	debug.marpa/inbound {[debug caller] | }
 
-	marpa::import $semstore Store
-	marpa::import $upstream Forward
+	marpa::import $semstore      Store
+	marpa::import $postprocessor Forward
 
 	set mylocation -1 ; # location (of current character) in
 			    # input, currently before the first
@@ -129,9 +130,10 @@ oo::class create marpa::inbound {
 	    incr mylocation
 
 	    # Generate semantic value for the character
-	    set sv [Store put [set loc [list $mylocation $mylocation $ch]]]
+	    set loc [marpa location atom $mylocation $ch]
+	    set sv  [Store put $loc]
 
-	    debug.marpa/inbound {[debug caller 1] | DO '[char quote cstring $ch]' $sv ([marpa::location::Show $loc]) ______}
+	    debug.marpa/inbound {[debug caller 1] | DO '[char quote cstring $ch]' $sv ([marpa location show $loc]) ______}
 
 	    # And push into the pipeline
 	    debug.marpa/inbound {[debug caller 1] | DO _______________________________________}
@@ -175,27 +177,29 @@ oo::class create marpa::inbound::sequencer {
 
     # State machine for marpa::inbound
     ##
-    # Sequence = 1[23]*4
+    # Sequence = 1[23]*4      # 1: construction
+    # See mark <<s>>	      # 2: eof         
+    #			      # 3: enter, read 
+    # *-1-> ready -2-> done|  #
+    #       ^ |               #
+    #       \-/3              #
     #
-    # *-1-> ready -2-> done|
-    #       ^ |
-    #       \-/3
-    ##                 Table By State ________   Table By Method ________
-    # 1: construction  Current  Method  New      Current  Method  New   
-    # 2: eof           ~~~~~~~  ~~~~~~  ~~~~~~   ~~~~~~~  ~~~~~~  ~~~~~~
-    # 3: enter, read   -        <cons>  ready    -        <cons>  ready 
-    ##                 ~~~~~~~  ~~~~~~  ~~~~~~   ~~~~~~~  ~~~~~~  ~~~~~~
-    #                  ready    enter   /KEEP    ready    enter   /KEEP 
-    #                           read    /KEEP    done     enter   /FAIL 
-    #                           eof     done     ~~~~~~~  ~~~~~~  ~~~~~~
-    #                  ~~~~~~~  ~~~~~~  ~~~~~~   ready    read    /KEEP 
-    #                  done     enter   /FAIL    done     read    /FAIL 
-    #                           read    /FAIL    ~~~~~~~  ~~~~~~  ~~~~~~
-    #                           eof     /FAIL    ready    eof     done	
-    #                  ~~~~~~~  ~~~~~~  ~~~~~~   done     eof     /FAIL 
-    #                  *        *       /KEEP    ~~~~~~~  ~~~~~~  ~~~~~~
-    #                  ~~~~~~~  ~~~~~~  ~~~~~~   *        *       /KEEP 
-    #		                                 ~~~~~~~  ~~~~~~  ~~~~~~
+    # Determin. state machine # Table re-sorted, by method _=
+    # Current  Method  New    # Current  Method  New   
+    # ~~~~~~~  ~~~~~~  ~~~~~~ # ~~~~~~~  ~~~~~~  ~~~~~~
+    # -        <cons>  ready  # -        <cons>  ready 
+    # ~~~~~~~  ~~~~~~  ~~~~~~ # ~~~~~~~  ~~~~~~  ~~~~~~
+    # ready    enter   /KEEP  # ready    enter   /KEEP 
+    #          read    /KEEP  # done     enter   /FAIL 
+    #          eof     done   # ~~~~~~~  ~~~~~~  ~~~~~~
+    # ~~~~~~~  ~~~~~~  ~~~~~~ # ready    read    /KEEP 
+    # done     enter   /FAIL  # done     read    /FAIL 
+    #          read    /FAIL  # ~~~~~~~  ~~~~~~  ~~~~~~
+    #          eof     /FAIL  # ready    eof     done	
+    # ~~~~~~~  ~~~~~~  ~~~~~~ # done     eof     /FAIL 
+    # *        *       /KEEP  # ~~~~~~~  ~~~~~~  ~~~~~~
+    # ~~~~~~~  ~~~~~~  ~~~~~~ # *        *       /KEEP 
+    #                         # ~~~~~~~  ~~~~~~  ~~~~~~
 
     # # -- --- ----- -------- -------------
     ## Mandatory overide of virtual base class method
@@ -220,8 +224,9 @@ oo::class create marpa::inbound::sequencer {
     method eof {} {
 	my __Init
 	my __Fail done ! "Unable to process input after EOF" EOF
-	my __Goto done
 	next
+
+	my __Goto done
     }
 }
 

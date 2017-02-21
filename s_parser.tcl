@@ -142,7 +142,7 @@ oo::class create marpa::slif::parser {
 	# two ids associated with them, one each for L0 and G1.
 
 	L0 latm   yes
-	L0 action start length value
+	L0 action {start length value}
 
 	L0 export {
 	    @lex-(         @lex-)            @lex-*            @lex-+                
@@ -354,7 +354,7 @@ oo::class create marpa::slif::parser {
 
 	# VII. Structural rules.
 
-	G1 action name values
+	G1 action {name values}
 	G1 rules {
 	    {statements				+ statement}
 	    {statement				:= {start rule}}

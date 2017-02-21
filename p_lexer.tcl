@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -29,117 +29,127 @@ debug define marpa/lexer
 oo::class create marpa::lexer {
     superclass marpa::engine
 
-    # Static configuration
-    variable mypublic     ;# sym id:local    -> (id:upstream, parts)
-    variable myacs        ;# sym id:upstream -> id:acs:local
+    marpa::E marpa/lexer LEXER
+    validate-sequencing
+
+    # # -- --- ----- -------- -------------
+    ## Configuration
+
+    # Static
+    variable mypublic     ;# sym id:local  -> (id:parser, parts)
+    variable myacs        ;# sym id:parser -> id:acs:local
     variable mydiscard    ;# Set of ACS for discarded lexemes
 
-    # State during configuration
-    variable myparts value
-    variable mylatm  no
+    # Dynamic
+    variable myparts      ;# Sem value definition for the following exports
+    variable mylatm       ;# Match discipline for the following exports
 
-    # Dynamic state
+    # # -- --- ----- -------- -------------
+    ## State
+
+    # Dynamic
     variable myacceptable ;# Remembered (last call of 'Acceptable')
-			   # set of upstream acceptable symbols.
+			   # set of parser acceptable symbols.
 			   # Required for the regeneration of our
 			   # recognizer after a discarded lexeme was
 			   # found in the input.
 
-    # Static state
+    # Constant
     variable mynull       ;# Semantic value for ACS, empty string,
 			   # floating location
 
+    # RECCE - Local recognizer object.
+    # - Created in acceptable.
+    # - Destroyed in either eof or enter
+    #   eof may encounter state where RECCE does not exist.
+    variable myrecce ;# Store RECCE handle, for easier querying.
+
     ##
     # API self:
-    #   cons    (semstore, upstream)    - Create, link, attach to upstream.
-    #   gate:   (gate)        - Downstream gate attaching for feedback.
-    #                           This activates down 'acceptable' handling.
-    #   symbols (symlist)     - (Downstream, self) bulk allocation of symbols
-    #   export  (symlist)     - Bulk allocation of public symbols
-    #   rules   (rules)       - Bulk specification of grammar rules
-    #   discard (ignorelist)  - Complete lexer spec
-    #   acceptable (symlist)  - Declare set of allowed symbols
-    #   enter   (syms val)    - Incoming sym set with semantic value
-    #   eof     ()            - Incoming end of input signal
+    # 1 cons    (semstore, parser) - Create, link, attach to parser.
+    # 2 gate:   (gate)        - gate attaching to us for feedback on acceptables.
+    # 3 symbols (symlist)     - (inbound/gate, self) bulk allocation of symbols
+    # 4 export  (symlist)     - Bulk allocation of public symbols
+    # 5 action  (...)         - Semantic value definition
+    # 6 rules   (rules)       - Bulk specification of grammar rules
+    # 7 discard (ignorelist)  - Complete lexer spec
+    # 8 acceptable (symlist)  - Declare set of allowed symbols
+    # 9 enter   (syms val)    - Incoming sym set with semantic value
+    # A eof     ()            - Incoming end of input signal
+    ##
+    # Sequence = 1([23456]*7(8(98?)*)?)?A
+    # See mark <<s>>
     ##
     # API gate:
-    #   lex        (discards) - Declare set of discarded lexemes
     #   acceptable (symlist)  - Declare set of allowed symbols
     #   redo       (n)        - Force re-entry of last n symbols
     ##
-    # API upstream:
-    #   gate:   (self)     - Attach to self as gate for upstream
+    # API parser:
+    #   gate:   (self)     - Self attaching to parser for feedback on acceptables.
     #   enter   (syms val) - Push symbol set with semantic value
+    #   fail    ()         - Lexer failed (TODO: error information)
     #   eof     ()         - Push end of input signal
     #   symbols (symlist)  - Bulk allocate symbols for ruleschar and char classes.
 
-    constructor {semstore upstream} {
+    # # -- --- ----- -------- -------------
+    ## Lifecycle
+
+    constructor {semstore parser} {
 	debug.marpa/lexer {[debug caller] | }
 
-	next $upstream
+	next $parser
 
 	marpa::import $semstore Store
 	# Gate will attach during setup.
 
 	# Dynamic state for processing
-	set myacceptable {}   ;# Upstream gating.
+	set myacceptable {}   ;# Parser gating.
+	set myrecce      {}   ;# Local recce management
 
 	# Static configuration and state
 	set mypublic  {}
 	set myacs     {}
-	set myparts   {}
+	set myparts   value ;# Default: lexeme literal semantics
+	set mylatm    yes   ;# Default: longest acceptable token match
 	set mydiscard {}
-	set mynull    [Store put [marpa::location::null]]
+	set mynull    [Store put [marpa location null]]
 
-	my ToStateStart
 	my SetupSemantics $semstore
 
-	# Attach ourselves to upstream, as gate.
+	# Attach ourselves to parser, as gate.
 	Forward gate: [self]
 
 	debug.marpa/gate {/ok}
 	return
     }
 
-    # # ## ### ##### ######## #############
-    ## State methods for API methods
-    #
-    #  API ::=    Start       Active       Done	   
-    ## ---        ----------- ------------ -----------
-    #  gate:      * GateSet     FailSetup    FailSetup
-    #  symbols    * Symbols     FailSetup    FailSetup
-    #  export     * Exports     FailSetup    FailSetup
-    #  rules      * Rules       FailSetup    FailSetup
-    #  discard    * Discard !   FailSetup    FailSetup
-    #  enter        FailStart * Enter        FailEof  
-    #  eof          FailStart * Eof          FailEof  
-    #  acceptable   FailStart * Acceptable   FailFeed
-    #  redo         FailStart * Redo         FailFeed
-    ## ---        ----------- ------------ -----------
+    # # -- --- ----- -------- -------------
+    ## Public API
 
-    method GateSet {gate} {
+    method gate: {gate} {
 	debug.marpa/lexer {[debug caller] | }
 	marpa::import $gate Gate
 	return
     }
 
-    method LATM {flag} {
+    method latm {flag} {
 	debug.marpa/lexer {[debug caller] | }
+	# TODO: validate as boolean
 	set mylatm $flag
 	return
     }
 
-    method Action {args} {
+    method action {names} {
 	debug.marpa/lexer {[debug caller] | }
-	set myparts $args
+	set myparts $names
 	return
     }
 
-    method Exports {names} {
+    method export {names} {
 	debug.marpa/lexer {[debug caller] | }
 	# Create base symbols.
 	# Create the internal acceptability controls symbols (short: ACS) for the base
-	# Get the same symbols from upstream as well, the third set.
+	# Get the same symbols from parser as well, the third set.
 
 	# NOTE! the ACS are created regardless of LATM or not. The
 	# LATM choice is made later, in "Discard", by adding it to the
@@ -153,8 +163,8 @@ oo::class create marpa::lexer {
 	# when the lexer/parser is wholly generated from the SLIF,
 	# instead of written manually.
 
-	set local [my Symbols $names]
-	set acs   [my Symbols [my ToACS $names]]
+	set local [my symbols $names]
+	set acs   [my symbols [my ToACS $names]]
 	set parse [Forward symbols $names]
 
 	# Map from local to parser symbol     (id -> id)
@@ -170,7 +180,7 @@ oo::class create marpa::lexer {
 	return $local
     }
 
-    method Discard {discards} {
+    method discard {discards} {
 	debug.marpa/lexer {[debug caller] | }
 	# Set of discard symbols. This makes the lexer a
 	# lexer. Creates an internal start symbol with rules mapping
@@ -183,7 +193,7 @@ oo::class create marpa::lexer {
 	    my E "Cannot discard exported symbol $sym" DISCARD-EXPORT $sym
 	}
 
-	set start [my Symbols [list @START]]
+	set start [my symbols [list @START]]
 	GRAMMAR sym-start: $start
 
 	# Note how the ACS is added to these internal rules from the
@@ -191,14 +201,18 @@ oo::class create marpa::lexer {
 	# Doing it here avoids cluttering the engine with
 	# lexer-specific data and code. No special rules, no wrapper
 	# rules for quantified rules. Only the helper rules here.
-	#
-	# TODO: This is the point where LATM vs LTM is injected into
-	# the runtime. Main todo is the global flag, and (un)setting
-	# the flag on exported symbols. Currently we are fixed to
-	# global LATM.
+
+	# NOTE: This is the point where the difference between the
+	# LATM and LTM match disciplines is injected into the runtime.
+
+	# TODO: Get rid of the global flag and make it per-lexeme.
+	# Currently we are fixed to a global LATM vs LTM setting.
 
 	# Add the ACS in front of the rules of the exported symbols.
-	# TODO: map of the lexeme parts
+	# TODO: map of the lexemes
+
+	# TODO: FUTURE: Need the ability to choose per-lexeme LATM vs
+	# LTM for the discard symbols as well.
 
 	foreach symid [dict keys $mypublic] {
 
@@ -206,9 +220,9 @@ oo::class create marpa::lexer {
 	    set acs [dict get $myacs $pid]
 
 	    if {$latm} {
-		set id [GRAMMAR rule-new $start  $acs $symid]
+		set id [GRAMMAR rule-new $start $acs $symid]
 	    } else {
-		set id [GRAMMAR rule-new $start  $symid]
+		set id [GRAMMAR rule-new $start $symid]
 	    }
 	    my Rule $id $start ;# required for semantics debug narrative
 
@@ -219,10 +233,7 @@ oo::class create marpa::lexer {
 	    GetString add-rule $id [list marpa::semstd::builtin $parts]
 	}
 
-	# TODO: FUTURE: Need the ability to choose per-lexeme LATM vs
-	# LTM for the discard symbols as well.
-
-	set mydiscard [my Symbols [my ToACS $discards]]
+	set mydiscard [my symbols [my ToACS $discards]]
 
 	foreach sym $discards acs $mydiscard {
 	    set id [my 2ID1 $sym]
@@ -234,12 +245,11 @@ oo::class create marpa::lexer {
 	}
 
 	my Freeze
-	my ToStateActive
 	return
     }
 
-    method Enter {syms sv} {
-	debug.marpa/lexer {[debug caller] | See '[join [my 2Name $syms] {' '}]' ([marpa::location::Show [Store get $sv]])}
+    method enter {syms sv} {
+	debug.marpa/lexer {[debug caller] | See '[join [my 2Name $syms] {' '}]' ([marpa location show [Store get $sv]])}
 
 	if {![llength $syms]} {
 	    debug.marpa/lexer {[debug caller] | no acceptable symbols, close current lexeme}
@@ -249,7 +259,6 @@ oo::class create marpa::lexer {
 
 	    ## TODO: Check if this happens again immediately ........
 	    ## If yes we have a more serious problem and should stop.
-
 	    my Complete
 
 	    debug.marpa/lexer {[debug caller] | /ok:close}
@@ -261,7 +270,13 @@ oo::class create marpa::lexer {
 	foreach sym $syms {
 	    RECCE alternative $sym $sv 1
 	}
-	RECCE earleme-complete
+	try {
+	    RECCE earleme-complete
+	} trap {MARPA PARSE_EXHAUSTED} {e o} {
+	    # Do nothing. Exhaustion is checked below.
+	} on error {e o} {
+	    return {*}$o $e
+	}
 
 	if {[RECCE exhausted?]} {
 	    debug.marpa/lexer {[debug caller] | exhausted}
@@ -281,35 +296,36 @@ oo::class create marpa::lexer {
 	return
     }
 
-    method Eof {} {
+    method eof {} {
 	debug.marpa/lexer {[debug caller] | }
 
 	# Flush everything pending in the local recognizer to the
-	# parser before signaling eof upstream.
+	# parser before signaling eof to the parser.
 	my Complete
 
 	#  Note that the flush leaves us with a just-started
 	# recognizer, which we have to remove again.
-	RECCE destroy
+	if {$myrecce ne {}} {
+	    RECCE destroy
+	    set myrecce {}
+	}
 
-	my ToStateDone
 	Forward eof
 	return
     }
 
-    method Acceptable {syms} {
+    method acceptable {syms} {
 	debug.marpa/lexer {[debug caller] | }
 	# Lexer method, called by parser.
-	# syms is list of parser symbol ids.
+	# syms is list of parser symbol ids for lexemes.
 	# transform into acs ids, and insert into the recognizer.
+	# TODO: Handle case of LTM also, without ACS
 
 	set myacceptable $syms
-
-	GRAMMAR recognizer create RECCE [mymethod Events]
+	set myrecce [GRAMMAR recognizer create RECCE [mymethod Events]]
 	debug.marpa/lexer {[debug caller 1] | RECCE = [namespace which -command RECCE]}
 
 	RECCE start-input
-
 	if {[llength $syms] || [llength $mydiscard]} {
 	    foreach s $syms {
 		debug.marpa/lexer {[debug caller 1] | U ==> $s '[my 2Name1 $s]'}
@@ -329,47 +345,11 @@ oo::class create marpa::lexer {
 	return
     }
 
-    method Redo {n} {
+    method redo {n} {
 	debug.marpa/lexer {[debug caller] | }
 	# Lexer method, called by parser.
-
 	my E "Lexer cannot redo symbols" REDO
-
-	if {$n} {
-	    # Redo/enter the last n symbols
-	    incr n $n
-	    incr n -1
-	    set pending [lrange $myhistory end-$n end]
-	    set myhistory {}
-	    foreach {syms value} $pending {
-		my enter $syms $value
-	    }
-	} else {
-	    # Redo nothing
-	    set myhistory {}
-	}
 	return
-    }
-
-    method FailStart {args} {
-	debug.marpa/lexer {[debug caller] | }
-	my E "Unable to process input before setup" START
-    }
-
-    method FailSetup {args} {
-	debug.marpa/lexer {[debug caller] | }
-	my E "Grammar is frozen, unable to add further symbols or rules" \
-	    SETUP
-    }
-
-    method FailEof {args} {
-	debug.marpa/lexer {[debug caller] | }
-	my E "Unable to process input after EOF" EOF
-    }
-
-    method FailFeed {args} {
-	debug.marpa/lexer {[debug caller] | }
-	my E "Unable to process feedback after EOF" FEEDBACK EOF
     }
 
     # # ## ### ##### ######## #############
@@ -412,6 +392,11 @@ oo::class create marpa::lexer {
     method Complete {} {
 	debug.marpa/lexer {[debug caller] | }
 
+	if {$myrecce eq {}} {
+	    debug.marpa/lexer {[debug caller] | Bail out. No recce available}
+	    return
+	}
+
 	# I. Pull the location of longest lexeme out of the recognizer
 	#    state
 	set latest [RECCE latest-earley-set]
@@ -420,10 +405,22 @@ oo::class create marpa::lexer {
 	while {[catch {
 	    debug.marpa/lexer {[debug caller] | Check at $latest}
 	    RECCE forest create FOREST $latest
-	} msg]} {
+	} msg o]} {
 	    incr redo
 	    incr latest -1
-	    if {!$latest} { my E "No lexeme found in input. Stopped." STOP }
+	    if {$latest < 0} {
+		Forward fail
+		# TODO: Here more information can be provided, i.e.
+		#       where in the input we got stopped, and such.
+		#       This could/should be made a method for every
+		#       processor in the pipeline, to forward a problem
+		#       and each stage adding its own information.
+
+		# The current recognizer is done.
+		RECCE destroy
+		set myrecce {}
+		return
+	    }
 	}
 	debug.marpa/lexer {[debug caller] | Lexeme length: $latest}
 	debug.marpa/lexer {[debug caller] | Redo:          $redo}
@@ -484,7 +481,7 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | Recognized: $recognized}
 	debug.marpa/lexer {[debug caller] | Discarded:  $discarded}
 	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] ($found)}
-	debug.marpa/lexer {[debug caller] | Semantic:   $sv ([expr {($sv < 0) ? "" : [marpa::location::Show [Store get $sv]]}])}
+	debug.marpa/lexer {[debug caller] | Semantic:   $sv ([expr {($sv < 0) ? "" : [marpa location show [Store get $sv]]}])}
 
 	# NOTE! Due to the usage of ACS when the RECCE was initalized
 	# at this point we can have only a subset of the acceptable
@@ -495,17 +492,17 @@ oo::class create marpa::lexer {
 
 	# The current recognizer is done.
 	RECCE destroy
+	set myrecce {}
 
-	debug.marpa/lexer {[debug caller] | Have '[join [my ACS $found] {' '}]' ${sv}=([expr {($sv < 0) ? "" : [marpa::location::Show [Store get $sv]]}])}
+	debug.marpa/lexer {[debug caller] | Have '[join [my ACS $found] {' '}]' ${sv}=([expr {($sv < 0) ? "" : [marpa location show [Store get $sv]]}])}
 
 	if {($recognized > 0) && ($recognized == $discarded)} {
 	    # We found symbols, and only discarded symbols.
 	    # Restart lexing without informing the parser, keeping
 	    # to the current set of acceptable symbols
-
 	    debug.marpa/lexer {[debug caller] | Discard ...}
 
-	    my Acceptable $myacceptable
+	    my acceptable $myacceptable
 
 	    debug.marpa/lexer {[debug caller] | ... Ok}
 	} else {
@@ -516,7 +513,6 @@ oo::class create marpa::lexer {
 	    debug.marpa/lexer {[debug caller] | Push ...}
 
 	    # ASSERT (sv >= 0)
-
 	    Forward enter $found $sv
 
 	    debug.marpa/lexer {[debug caller] | ... Ok}
@@ -544,15 +540,15 @@ oo::class create marpa::lexer {
 	GetSymbol add-rule  @default marpa::semstd::nop
 	GetSymbol add-null  @default marpa::semstd::nop
 	GetSymbol add-token @default marpa::semstd::nop
-	     
+
 	# II. Extract the semantic value. The exported override the
 	#     rule default with grammar data. The default simply
 	#     merges lexeme ranges.
 
 	marpa::semcore create GetString $semstore \
-	    {sv marpa::location::Show}
+	    {sv marpa::location::show}
 	GetString add-rule  @default marpa::semstd::locmerge
-	GetString add-null  @default marpa::location::null
+	GetString add-null  @default marpa::location::null*
 
 	# The exported symbols will declare their own rules as per the
 	# specification in the grammar.
@@ -569,72 +565,161 @@ oo::class create marpa::lexer {
     }
 
     # # ## ### ##### ######## #############
-    ## Internal support - Error generation
+}
 
-    method E {msg args} {
-	debug.marpa/lexer {[debug caller] | }
-	return -code error \
-	    -errorcode [linsert $args 0 MARPA LEXER] \
-	    $msg
+
+# # ## ### ##### ######## #############
+## Mixin helper class. State machine checking the method call
+## sequencing of marpa::lexer instances.
+
+## The mixin is done on user request (method in main class).
+## Uses: testing
+##       debugging in production
+
+oo::class create marpa::lexer::sequencer {
+    superclass sequencer
+
+    # State machine for marpa::lexer
+    ##
+    # Sequence = 1([23456]*7(8(98?)*)?)?A
+    # See mark <<s>>
+    ##
+    # Deterministic state machine _________ # Table re-sorted, by method _
+    # Current Method --> New          Notes # Method  Current --> New
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~  ~~~~~~~     ~~~~~~~~
+    # -       <cons>     made		    # <cons>  -           made
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~  ~~~~~~~     ~~~~~~~~
+    # made    gate:      made         [0]   # gate:   made        made
+    #         symbols    made		    # symbols made        made
+    #         export     made		    # export  made        made
+    #         action     made		    # action  made        made
+    #         latm       made		    # latm    made        made
+    #         rules      made		    # rules   made        made
+    #         discard    config		    # discard made        config
+    #         eof        done		    # ~~~~~~  ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # accept  config      gated
+    # config  accept     gated        [1]   #         data        gated
+    #         eof        done		    #         done        complete
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~  ~~~~~~~     ~~~~~~~~
+    # gated   enter      data		    # enter   gated       data
+    #         eof        done		    #         data        data
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~  ~~~~~~~     ~~~~~~~~
+    # data    accept     gated		    # eof     made        done
+    #         enter      data		    #         config      done
+    #         eof        done		    #         gated       done
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ #         data        done
+    # done    accept     complete	    # ~~~~~~  ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # *       *           /FAIL
+    # *       *          /FAIL		    # ~~~~~~  ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ #
+    # [0] Gate declaration, coming from the gate.
+    # [1] initial accept, before all data, part of the setup, coming from
+    #     the parser
+
+    # Notes
+    ##
+    # - At the end of a lexeme 'enter' triggers 'accept' from the
+    #   post-processor (parser). This means:
+    #
+    #     gated -> gated
+    #     data  -> gated
+    #
+    #   whereas during the scanning of a lexeme
+    #
+    #     gated -> data
+    #     data  -> data
+    #
+    # - An 'eof' triggers a last 'accept' from the post-processor (parser).
+
+    # # -- --- ----- -------- -------------
+    ## Mandatory overide of virtual base class method
+
+    method __Init {} { my __States made config gated data done complete }
+
+    # # -- --- ----- -------- -------------
+    ## Checked API methods
+
+    method gate: {gate} {
+	my __Init
+	my __FNot made ! "Lexer is frozen" FROZEN
+	next $gate
     }
 
-    # # ## ### ##### ######## #############
-    ## State transitions
-
-    method ToStateStart {} {
-	# () :: Start
-	debug.marpa/lexer {[debug caller] | }
-
-	oo::objdefine [self] forward gate:       my GateSet
-	oo::objdefine [self] forward symbols     my Symbols
-	oo::objdefine [self] forward export      my Exports
-	oo::objdefine [self] forward action      my Action
-	oo::objdefine [self] forward latm        my LATM
-	oo::objdefine [self] forward rules       my Rules
-	oo::objdefine [self] forward discard     my Discard
-	oo::objdefine [self] forward enter       my FailStart
-	oo::objdefine [self] forward eof         my FailStart
-	oo::objdefine [self] forward acceptable  my FailStart
-	oo::objdefine [self] forward redo        my FailStart
-	return
+    method symbols {names} {
+	my __Init
+	my __FNot made ! "Lexer is frozen" FROZEN
+	next $names
     }
 
-    method ToStateActive {} {
-	# Start :: Active
-	debug.marpa/lexer {[debug caller] | }
-
-	oo::objdefine [self] forward gate:       my FailSetup
-	oo::objdefine [self] forward symbols     my FailSetup
-	oo::objdefine [self] forward export      my FailSetup
-	oo::objdefine [self] forward action      my FailSetup
-	oo::objdefine [self] forward latm        my FailSetup
-	oo::objdefine [self] forward rules       my FailSetup
-	oo::objdefine [self] forward discard     my FailSetup
-	oo::objdefine [self] forward enter       my Enter
-	oo::objdefine [self] forward eof         my Eof
-	oo::objdefine [self] forward acceptable  my Acceptable
-	oo::objdefine [self] forward redo        my Redo
-	return
+    method export {names} {
+	my __Init
+	my __FNot made ! "Lexer is frozen" FROZEN
+	next $names
     }
 
-    method ToStateDone {} {
-	# Active :: Done
-	debug.marpa/lexer {[debug caller] | }
-
-	#oo::objdefine [self] forward gate:       my FailSetup
-	#oo::objdefine [self] forward symbols     my FailSetup
-	#oo::objdefine [self] forward export      my FailSetup
-	#oo::objdefine [self] forward action      my FailSetup
-	#oo::objdefine [self] forward latm        my FailSetup
-	#oo::objdefine [self] forward rules       my FailSetup
-	#oo::objdefine [self] forward discard     my FailSetup
-	oo::objdefine [self] forward enter       my FailEof
-	oo::objdefine [self] forward eof         my FailEof
-	oo::objdefine [self] forward acceptable  my FailFeed
-	oo::objdefine [self] forward redo        my FailFeed
-	return
+    method action {names} {
+	my __Init
+	my __FNot made ! "Lexer is frozen" FROZEN
+	next $names
     }
 
+    method latm {flag} {
+	my __Init
+	my __FNot made ! "Lexer is frozen" FROZEN
+	next $flag
+    }
+
+    method rules {rules} {
+	my __Init
+	my __FNot made ! "Lexer is frozen" FROZEN
+	next $rules
+    }
+
+    method discard {discards} {
+	my __Init
+	my __FNot made ! "Lexer is frozen" FROZEN
+	next $discards
+	# State move after main code. Internally calls on 'symbols'
+	# etc. Would be broken by an early state change
+	my __On made --> config
+    }
+
+    method eof {} {
+	my __Init
+	my __Fail {done complete} ! "After end of input" EOF
+	next
+
+	my __On {made config gated data} --> done
+    }
+
+    method acceptable {syms} {
+	my __Init
+	my __Fail made     ! "Setup missing" MISSING SETUP
+	# XXX Remove above, induce seg.fault - marpa-lexer-1.3.1
+	# acceptable ... RECCE start-input ... NULL recognizer ptr
+	# ... incomplete/bad recce construction ...
+	# ... Empty grammar ?!
+	my __Fail gated    ! "Data missing" MISSING DATA
+	my __Fail complete ! "After end of input" EOF
+	next $syms
+
+	my __On {config data} --> gated
+	my __On done          --> complete
+    }
+
+    method enter {syms sv} {
+	my __Init
+	my __Fail made            ! "Setup missing" MISSING SETUP
+	my __Fail config          ! "Gate missing" MISSING GATE
+	my __Fail {done complete} ! "After end of input" EOF
+	# Note: Early state change. This ensures that we are in the
+	# proper state for the callback from the postprocessor
+	# (i.e. acceptable)
+	my __On {gated data} --> data
+	next $syms $sv
+    }
+
+    ##
     # # ## ### ##### ######## #############
 }
 

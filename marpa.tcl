@@ -4,8 +4,8 @@
 #
 #          Roughly equivalent to the Marpa::R2 perl binding (I hope).
 ##
-# (c) 2015 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -74,8 +74,6 @@ critcl::include    marpa.h
 ## Declare the Tcl layer aggregating the C primitives / classes into
 ## useful commands and hierarchies.
 
-#critcl::tsources policy.tcl
-
 # Runtime classes, low-level on top of the C-wrappers.
 ##
 critcl::tsources u_sequencing.tcl ; # Utilities for method call sequence validation
@@ -116,7 +114,6 @@ critcl::tsources s_parser.tcl     ; # Parser hardwired for SLIF
 # Experimental work on an alternate grammar container (vs p_grammar.tcl) ...
 #critcl::tsources g_id.tcl         ; # Id generator
 
-
 # # ## ### ##### ######## #############
 ## Main C section.
 
@@ -127,6 +124,7 @@ critcl::tsources s_parser.tcl     ; # Parser hardwired for SLIF
 ##       declarations, to avoid conflicts with libmarpa's public
 ##       symbols.
 
+critcl::source c_util.tcl     ; # Utilities for debug narrative - TRACE.
 critcl::source c_errors.tcl   ; # Mapping marpa error codes to strings.
 critcl::source c_events.tcl   ; # Mapping marpa event types to strings.
 critcl::source c_steps.tcl    ; # String pool for valuation-steps.

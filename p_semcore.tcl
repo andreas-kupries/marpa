@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -27,8 +27,16 @@ debug prefix marpa/semcore {} ;# eval takes large argument, keep out.
 ## Semantic core. 
 
 oo::class create marpa::semcore {
-    variable myactionmap ;# (rules|symbols|tokens) -> actions (cmdpfx)
+    marpa::E marpa/semcore SEMCORE
+
+    # # ## ### ##### ######## #############
+    ## State
+
+    variable myactionmap ;# (rules|symbols|tokens) -> actions (cmdprefix)
     variable mymask      ;# rule -> mask for sv
+
+    # # ## ### ##### ######## #############
+    ## Lifecycle
 
     constructor {semstore {actionmap {}}} {
 	debug.marpa/semcore {[debug caller] | [marpa::D {
@@ -60,7 +68,10 @@ oo::class create marpa::semcore {
 	return
     }
 
-    method mask {id mask} {
+    # # ## ### ##### ######## #############
+    ## Configuration
+
+    method add-mask {id mask} {
 	debug.marpa/semcore {[debug caller] |}
 	# Sorted in decreasing order to match the expectations of
 	# "marpa::filter" called in "eval".
@@ -94,6 +105,22 @@ oo::class create marpa::semcore {
 	}]}
 	return
     }
+
+    # # ## ### ##### ######## #############
+    ## Inspection
+
+    method map {} {
+	debug.marpa/semcore {[debug caller] |}
+	return $myactionmap
+    }
+
+    method mask {} {
+	debug.marpa/semcore {[debug caller] |}
+	return $mymask
+    }
+
+    # # ## ### ##### ######## #############
+    ## Use
 
     method eval {instructions} {
 	debug.marpa/semcore {[debug caller 1] | [marpa::D {
@@ -191,7 +218,6 @@ oo::class create marpa::semcore {
 
 			debug.marpa/semcore {[debug caller 1] | [format $f $i $type $cmd]}
 			set v [uplevel #0 $cmd]
-
 		    } else {
 			# Essentially copying and aggregating token values
 			# I.e. creation of an actual AST.
@@ -270,18 +296,8 @@ oo::class create marpa::semcore {
 	return $r
     }
 
-    # Debug support, std sem value transform - no op
+    # Debug support, std semantic value transform - no op / identity
     method ID {x} { return $x }
-
-    # # ## ### ##### ######## #############
-    ## Internal support - Error generation
-
-    method E {msg args} {
-	debug.marpa/semcore {[debug caller] | }
-	return -code error \
-	    -errorcode [linsert $args 0 MARPA SEMCORE] \
-	    $msg
-    }
 
     # # ## ### ##### ######## #############
 }

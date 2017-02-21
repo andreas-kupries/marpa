@@ -1,0 +1,160 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::semstd
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################\
+## - nop
+## - K
+## - locmerge
+## - builtin
+
+# # ## ### ##### ######## ############# #####################
+## nop
+
+test marpa-semstd-nop-1.0 {nop} -body {
+    marpa semstd nop
+} -result {}
+
+test marpa-semstd-nop-1.1 {nop} -body {
+    marpa semstd nop foo bar snafu
+} -result {}
+
+# # ## ### ##### ######## ############# #####################
+## K
+
+test marpa-semstd-k-1.0 {K, wrong args, not enough} -body {
+    marpa::semstd::K
+} -returnCodes error -result {wrong # args: should be "marpa::semstd::K x ..."}
+
+test marpa-semstd-k-2.0 {K} -body {
+    marpa::semstd::K x
+} -result x
+
+test marpa-semstd-k-2.1 {K} -body {
+    marpa::semstd::K x foo snafu bar
+} -result x
+
+# # ## ### ##### ######## ############# #####################
+## locmerge
+
+test marpa-semstd-locmerge-1.0 {locmerge, wrong args, not enough} -body {
+    marpa semstd locmerge
+} -returnCodes error -result {wrong # args: should be "marpa semstd locmerge id ..."}
+
+# Taken from location.test, merge2
+
+test marpa-semdstd-locmerge-2.0 {locmerge, non-adjacent} -body {
+    marpa semstd locmerge ID [marpa location atom 0 A] [marpa location atom 2 B]
+} -returnCodes error -result {Bad merge, non-adjacent locations}
+
+test marpa-semdstd-locmerge-2.1 {locmerge, adjacent, out of proper order} -body {
+    marpa semstd locmerge ID [marpa location atom 1 B] [marpa location atom 0 A]
+} -returnCodes error -result {Bad merge, non-adjacent locations}
+
+test marpa-semdstd-locmerge-3.0 {locmerge, null, both} -body {
+    marpa semstd locmerge ID [marpa location null] [marpa location null]
+} -result {{} {} {}}
+
+test marpa-semdstd-locmerge-3.1 {locmerge, null, first only} -body {
+    marpa semstd locmerge ID [marpa location null] [marpa location atom 3 C]
+} -result {3 3 C}
+
+test marpa-semdstd-locmerge-3.2 {locmerge, null, second only} -body {
+    marpa semstd locmerge ID [marpa location atom 3 C] [marpa location null]
+} -result {3 3 C}
+
+test marpa-semdstd-locmerge-3.3 {merge2} -body {
+    marpa semstd locmerge ID [marpa location atom 0 A] [marpa location atom 1 B]
+} -result {0 1 AB}
+
+
+# # ## ### ##### ######## ############# #####################
+## builtin
+
+test marpa-semstd-builtin-1.0 {builtin, wrong args, not enough} -body {
+    marpa semstd builtin
+} -returnCodes error -result {wrong # args: should be "marpa semstd builtin parts id ..."}
+
+test marpa-semstd-builtin-1.1 {builtin, wrong args, not enough} -body {
+    marpa semstd builtin PARTS
+} -returnCodes error -result {wrong # args: should be "marpa semstd builtin parts id ..."}
+
+# args = locations
+
+# Possible part keys, and their details
+##
+# - g1start n/a
+# - g1end   n/a
+# - start   n/a
+# - end     n/a
+# - value   n/a
+# - values  n/a
+# - length  n/a
+# - rule    n/a
+# - name    NAME
+# - symbol  ID
+# - lhs     ??
+
+test marpa-semstd-builtin-2.0 {builtin, part: g1start} -body {
+    marpa semstd builtin {g1start} ID {0 1 AB}
+} -result {}
+
+test marpa-semstd-builtin-2.1 {builtin, part: g1end} -body {
+    marpa semstd builtin {g1end} ID {0 1 AB}
+} -result {}
+
+test marpa-semstd-builtin-2.2 {builtin, part: start} -body {
+    marpa semstd builtin {start} ID {0 1 AB}
+} -result 0
+
+test marpa-semstd-builtin-2.3 {builtin, part: end} -body {
+    marpa semstd builtin {end} ID {0 1 AB}
+} -result 1
+
+test marpa-semstd-builtin-2.4 {builtin, part: value} -body {
+    marpa semstd builtin {value} ID {0 1 AB}
+} -result AB
+
+test marpa-semstd-builtin-2.5 {builtin, part: values} -body {
+    marpa semstd builtin {values} ID {0 1 AB}
+} -result {{0 1 AB}}
+
+test marpa-semstd-builtin-2.6 {builtin, part: length} -body {
+    marpa semstd builtin {length} ID {0 1 AB}
+} -result 2
+
+test marpa-semstd-builtin-2.7 {builtin, part: rule} -body {
+    marpa semstd builtin {rule} ID {0 1 AB}
+} -result ID
+
+test marpa-semstd-builtin-2.8 {builtin, part: name} -body {
+    marpa semstd builtin {
+	{name NAME}
+    } ID {0 1 AB}
+} -result NAME
+
+test marpa-semstd-builtin-2.9 {builtin, part: symbol} -body {
+    marpa semstd builtin {
+	{symbol SYM}
+    } ID {0 1 AB}
+} -result SYM
+
+test marpa-semstd-builtin-2.10 {builtin, part: lhs} -body {
+    marpa semstd builtin {
+	{lhs ??}
+    } ID {0 1 AB}
+} -result ??
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

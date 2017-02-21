@@ -1,0 +1,17 @@
+L0 lexeme default settings - global
+
+   latm	  	  global match discipline default
+   action	  global match action default - See also :lexeme
+   bless	  global match blessing
+
+once only.
+order irrelevant.
+
+set-latm
+set-bless
+set-action
+fixup
+nofixup
+get-latm
+get-bless
+get-action

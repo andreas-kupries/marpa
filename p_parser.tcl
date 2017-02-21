@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -28,38 +28,51 @@ debug prefix marpa/parser {[debug caller] | }
 oo::class create marpa::parser {
     superclass marpa::engine
 
-    # State during configuration
+    marpa::E marpa/parser PARSER
+    validate-sequencing
+
+    # # -- --- ----- -------- -------------
+    ## Configuration
+
+    # Static
     variable myparts
 
     ##
     # API self:
-    #   cons    (sem, upstream) - Create, link, attach to upstream.
-    #   gate:   (lexer)         - Downstream lexer attaching for feedback.
-    #                             This activates down 'acceptable' handling.
-    #   symbols (symlist)       - (Downstream, self) bulk allocation of symbols
-    #   export  (symlist)       - Bulk allocation of public symbols
-    #   rules   (rules)         - Bulk specification of grammar rules
-    #   parse   (start-sym)     - Complete parser spec
-    #   enter   (syms val)      - Incoming sym set with semantic value
-    #   eof     ()              - Incoming end of input signal
+    # 1 cons    (sem, asthandler) - Create, link, attach to asthandler.
+    # 2 gate:   (lexer)           - Lexer driving the parser attaching to
+    #                               it for feedback on acceptables.
+    # 3 symbols (symlist)         - (lexer, self) bulk allocation of symbols
+    # 4 action  (...)             - Semantic value definition
+    # 5 rules   (rules)           - Bulk specification of grammar rules
+    # 6 parse   (start-sym)       - Complete parser spec
+    # 7 enter   (syms val)        - Incoming sym set with semantic value
+    # 8 eof     ()                - Incoming end of input signal
+    ##
+    # Sequence = 1([345]*2[345]*67*)?8
+    # See mark <<s>>
     ##
     # API lexer:
     #   discard    (discards)   - Declare set of discarded lexemes
     #   acceptable (symlist)    - Declare set of allowed symbols
     ##
     # API semantics:
-    #   eval (treeinsn)         - Eval list of valuator instructions
+    #   eval (treeinsn)         - Process list of valuator instructions, generate semantic value
     ##
-    # API upstream:
-    #   enter   (semval) - Push semantic value
+    # API asthandler:
+    #   enter   (semval) - Push semantic value of completed parse
+    #   fail    ()       - Parse failed (TODO: error information)
     #   eof     ()       - Push end of input signal
 
-    constructor {semstore semantics upstream} {
+    # # -- --- ----- -------- -------------
+    ## Lifecycle
+
+    constructor {semstore semantics asthandler} {
 	debug.marpa/parser {[marpa::D {
 	    marpa::import $semstore Store ;# Debugging only.
 	}]}
 
-	next $upstream
+	next $asthandler
 
 	marpa::import $semantics Semantics
 	# Lexer will attach during setup.
@@ -68,11 +81,9 @@ oo::class create marpa::parser {
 	## superclass only (GRAMMAR)
 
 	# Static configuration
-	set myparts  value
+	set myparts       value
 	set mypreviouslhs -1
 	set myplhscount   0
-
-	my ToStateStart
 
 	debug.marpa/semcore {[marpa::D {
 	    # Provide semcore with access to engine internals for use
@@ -83,34 +94,110 @@ oo::class create marpa::parser {
 	return
     }
 
-    # # ## ### ##### ######## #############
-    ## State methods for API methods
-    #
-    #  API ::=    Start       Parse        Eof        Done	   
-    ## ---        ----------- ------------ ----------- -----------
-    #  gate:      * GateSet     FailSetup    FailSetup   FailSetup
-    #  symbols    * Symbols     FailSetup    FailSetup   FailSetup
-    #  rules      * Rules       FailSetup    FailSetup   FailSetup
-    #  parse      * Parse !     FailSetup    FailSetup   FailSetup
-    #  enter        FailStart * Enter        FailEEof    FailEof  
-    #  eof          FailStart * Eof        * Eof         FailEof  
-    ## ---        ----------- ------------ ----------- -----------
+    # # -- --- ----- -------- -------------
+    ## Public API
 
-    method GateSet {lexer} {
+    method gate: {lexer} {
 	debug.marpa/parser {}
 	marpa::import $lexer Lexer
 	return
     }
 
-    method Action {args} {
+    method action {names} {
 	debug.marpa/parser {[debug caller] | }
-	set myparts $args
+	set myparts $names
 	return
     }
 
-    method :M {lhs __ mask args} {
+    method parse {name whitespace} {
+	debug.marpa/parser {}
+	# Set a start symbol. This makes the parser a parser.
+	GRAMMAR sym-start: [my 2ID1 $name]
+
+	my Freeze
+
+	# Pass whitespace to the lexer. Then create our recognizer and
+	# push the first feedback about acceptable symbols up.
+	Lexer discard $whitespace
+
+	GRAMMAR recognizer create RECCE [mymethod Events]
+	debug.marpa/parser {RECCE = [namespace which -command RECCE]}
+
+	RECCE start-input
+
+	Lexer acceptable [RECCE expected-terminals]
+	return
+    }
+
+    method enter {syms sv} {
+	debug.marpa/parser {See '[join [my 2Name $syms] {' '}]' ([marpa location show [Store get $sv]])}
+
+	if {![llength $syms]} {
+	    # The input has no acceptable symbols waiting.
+	    # Complete the current parse tree and stop.
+
+	    # TODO: FUTURE: This here is where the ruby slippers can
+	    # take over instead and drive the machine until the input
+	    # is suitable again, or nothing works anymore.
+	    ##
+	    # Note, when implementing ruby slippers support carefully
+	    # check the whole feedback path for correctness, like with
+	    # regard to lexeme redo, and/or character redo.
+
+	    my Complete
+	    return
+	}
+
+	# Drive the low-level recognizer
+	debug.marpa/parser {forward recce}
+	foreach sym $syms {
+	    RECCE alternative $sym $sv 1
+	}
+	try {
+	    RECCE earleme-complete
+	} trap {MARPA PARSE_EXHAUSTED} {e o} {
+	    # Do nothing. Exhaustion is checked below.
+	} on error {e o} {
+	    return {*}$o $e
+	}
+
+	if {[RECCE exhausted?]} {
+	    debug.marpa/parser {exhausted}
+	    my Complete
+	    return
+	}
+
+	# Not exhausted. Generate feedback for our lexer on the now
+	# acceptable lexemes. This creates the new lexer RECCE (see
+	# p_lexer.tcl 'acceptable').
+
+	debug.marpa/parser {Feedback, lexemes}
+	Lexer acceptable [RECCE expected-terminals]
+
+	debug.marpa/parser {}
+	return
+    }
+
+    method eof {} {
 	debug.marpa/parser {}
 
+	# Flush everything pending in the local recognizer to the
+	# backend before signaling eof to the asthandler.
+	my Complete
+
+	# Note, as the backend does not call us with 'acceptable' we
+	# have no left-over RECCE to destroy, contrary to the lexer's
+	# situation.
+
+	Forward eof
+	return
+    }
+
+    # # -- --- ----- -------- -------------
+    ## Rule support
+
+    method :M {lhs __ mask args} {
+	debug.marpa/parser {}
 	# TODO: validate |mask| <= |args| |mask|
 	# TODO: validate fa.i in mask: 0 <= i <= |args|-1
 
@@ -120,7 +207,7 @@ oo::class create marpa::parser {
 
 	set rule [my := $lhs __ {*}$args]
 
-	Semantics mask $rule $mask
+	Semantics add-mask $rule $mask
 	return $rule
     }
 
@@ -161,111 +248,8 @@ oo::class create marpa::parser {
 	return $rule
     }
 
-    method Parse {name whitespace} {
-	debug.marpa/parser {}
-	# Set a start symbol. This makes the parser a parser.
-	GRAMMAR sym-start: [my 2ID1 $name]
-
-	my Freeze
-	my ToStateParse
-
-	# Pass whitespace downstream, convert that parser into a
-	# lexer. Then create our recognizer and push the first
-	# feedback about acceptable symbols down.
-	Lexer discard $whitespace
-
-	GRAMMAR recognizer create RECCE [mymethod Events]
-	debug.marpa/parser {RECCE = [namespace which -command RECCE]}
-
-	RECCE start-input
-
-	Lexer acceptable [RECCE expected-terminals]
-	return
-    }
-
-    method Enter {syms sv} {
-	debug.marpa/parser {See '[join [my 2Name $syms] {' '}]' ([marpa::location::Show [Store get $sv]])}
-
-	if {![llength $syms]} {
-	    # The input has no acceptable symbols waiting.
-	    # Complete the current parse tree and stop.
-
-	    # TODO: FUTURE: This here is where the ruby slippers can
-	    # take over instead and drive the machine until the input
-	    # is suitable again, or nothing works anymore.
-	    ##
-	    # Note, when implementing ruby slippers support carefully
-	    # check the whole feedback path for correctness, like with
-	    # regard to lexeme redo, and/or character redo.
-
-	    my Complete
-	    return
-	}
-
-	# Drive the low-level recognizer
-	debug.marpa/parser {forward recce}
-	foreach sym $syms {
-	    RECCE alternative $sym $sv 1
-	}
-	RECCE earleme-complete
-
-	if {[RECCE exhausted?]} {
-	    debug.marpa/parser {exhausted}
-	    my Complete
-	    return
-	}
-
-	# Not exhausted. Generate feedback for our lexer on the now
-	# acceptable lexemes. This creates the new lexer RECCE (see
-	# 'Acceptable').
-
-	debug.marpa/parser {Feedback, lexemes}
-	Lexer acceptable [RECCE expected-terminals]
-
-	debug.marpa/parser {}
-	return
-    }
-
-    method Eof {} {
-	debug.marpa/parser {}
-
-	# Flush everything pending in the local recognizer to the
-	# backend before signaling eof upstream.
-	my Complete
-
-	# Note as the backend does not call us with 'acceptable' we
-	# have no left-over RECCE to destroy, contrary to the lexer's
-	# situation.
-
-	my ToStateDone
-	Forward eof
-	return
-    }
-
-    method FailStart {args} {
-	debug.marpa/parser {}
-	my E "Unable to process input before setup" START
-    }
-
-    method FailSetup {args} {
-	debug.marpa/parser {}
-	my E "Grammar is frozen, unable to add further symbols or rules" \
-	    SETUP
-    }
-
-    method FailEof {args} {
-	debug.marpa/parser {}
-	my E "Unable to process input after EOF" EOF
-    }
-
-    method FailEEof {args} {
-	debug.marpa/parser {}
-	my E "Unable to process input, expected EOF" EXPECTED-EOF
-    }
-
-
-    # # ## ### ##### ######## #############
-    ## Completion of a rule, builtin semantic value operation.
+    # # -- --- ----- -------- -------------
+    ## Rule runtime support - builtin construction of semantic value
 
     method CompleteParts {parts id rid} {
 	set result {}
@@ -297,23 +281,40 @@ oo::class create marpa::parser {
 	return $result
     }
 
-    # # ## ### ##### ######## #############
+    # # -- --- ----- -------- -------------
     ## Parse completion
 
     method Complete {} {
 	debug.marpa/parser {}
+
+	# No RECCE implies that either the parser never got fully off
+	# the ground yet, or that it already did all the completion
+	# work. In either case, nothing has to be done.
+
+	if {![llength [info commands RECCE]]} return
 
 	# For a parse we (must?) assume (for now?) that it must end at
 	# the latest earleme. If not we generate suitable parse error
 	# messages. (report ?)
 
 	set latest [RECCE latest-earley-set]
-
-	debug.marpa/parser {Check at $latest}
-	if {[catch {
+	while {[catch {
+	    debug.marpa/parser {Check at $latest}
 	    RECCE forest create FOREST $latest
 	}]} {
-	    TODO proper syntax error report
+	    incr latest -1
+	    if {$latest < 0} {
+		Forward fail
+		# TODO: Here more information can be provided, i.e.
+		#       where in the input we got stopped, and such.
+		#       This could/should be made a method for every
+		#       processor in the pipeline, to forward a problem
+		#       and each stage adding its own information.
+
+		# The parser is done.
+		RECCE destroy
+		return
+	    }
 	}
 
 	# Pull all the valid parses
@@ -336,80 +337,130 @@ oo::class create marpa::parser {
 	}
 
 	# From here on only an eof signal may come from the input.
-	my ToStateEof
 	return
+    }
+
+    # # -- --- ----- -------- -------------
+    ## Helper for determination of dynamic destination state (enter).
+
+    method exhausted {} {
+	# 'enter' destroys RECCE when it is exhausted.
+	string equal [info commands RECCE] {}
     }
 
     # # ## ### ##### ######## #############
-    ## Internal support - Error generation
+}
 
-    method E {msg args} {
-	debug.marpa/parser {}
-	return -code error \
-	    -errorcode [linsert $args 0 MARPA PARSER] \
-	    $msg
+
+# # ## ### ##### ######## #############
+## Mixin helper class. State machine checking the method call
+## sequencing of marpa::parser instances.
+
+## The mixin is done on user request (method in main class).
+## Uses: testing
+##       debugging in production
+
+oo::class create marpa::parser::sequencer {
+    superclass sequencer
+
+    # State machine for marpa::parser
+    ##
+    # Sequence = 1([345]*2[345]*67*)?8
+    # See mark <<s>>
+    ##
+    # Deterministic state machine _________ # Table re-sorted, by method _
+    # Current Method --> New          Notes # Method  Current --> New
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~~ ~~~~~~~     ~~~~~~~~
+    # -       <cons>     made               # -       <cons>      made
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~~ ~~~~~~~     ~~~~~~~~
+    # made    gate:      gated              # gate:   made        gated
+    #         symbols    made               # ~~~~~~~ ~~~~~~~     ~~~~~~~~
+    #         action     made               # symbols made        made
+    #         rules      made               #         gated       gated
+    #         eof        done               # ~~~~~~~ ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # action  made        made
+    # gated   symbols    gated              #         gated       gated
+    #         action     gated              # ~~~~~~~ ~~~~~~~     ~~~~~~~~
+    #         rules      gated              # rules   made        made
+    #         parse      active             #         gated       gated
+    #         eof        done               # ~~~~~~~ ~~~~~~~     ~~~~~~~~
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # parse   gated       active
+    # active  enter      active       [1]   # ~~~~~~~ ~~~~~~~     ~~~~~~~~
+    #         enter      exhausted    [1]   # enter   active/!ex  active
+    #         eof        done               #         active/ex   exhausted
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ # ~~~~~~~ ~~~~~~~     ~~~~~~~~
+    # exhausted eof      done               # eof     made        done
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ #         gated       done
+    # *       *          /FAIL		    #         active      done
+    # ~~~~~~~ ~~~~~~     ~~~~~~~~~~~~ ~~~~~ #         exhausted   done
+    #                                       # ~~~~~~~ ~~~~~~~     ~~~~~~~~
+    #                                       # *       *           /FAIL
+    #                                       # ~~~~~~~ ~~~~~~~     ~~~~~~~~
+    # [1] Destination state depends on recognizer state ((not) exhausted)
+
+    # # -- --- ----- -------- -------------
+    ## Mandatory overide of virtual base class method
+
+    method __Init {} { my __States made gated active exhausted done }
+
+    # # -- --- ----- -------- -------------
+    ## Checked API methods
+
+    method gate: {gate} {
+	my __Init
+	my __FNot {made gated} ! "Parser is frozen" FROZEN
+	next $gate
+
+	my __Goto gated
     }
 
-    # # ## ### ##### ######## #############
-    ## State transitions
-
-    method ToStateStart {} {
-	# () :: Start
-	debug.marpa/parser {}
-
-	oo::objdefine [self] forward gate:       my GateSet
-	oo::objdefine [self] forward symbols     my Symbols
-	oo::objdefine [self] forward rules       my Rules
-	oo::objdefine [self] forward action      my Action
-	oo::objdefine [self] forward parse       my Parse
-	oo::objdefine [self] forward enter       my FailStart
-	oo::objdefine [self] forward eof         my FailStart
-	return
+    method symbols {names} {
+	my __Init
+	my __FNot {made gated} ! "Parser is frozen" FROZEN
+	next $names
     }
 
-    method ToStateParse {} {
-	# Start :: Parse
-	debug.marpa/parser {}
-
-	oo::objdefine [self] forward gate:       my FailSetup
-	oo::objdefine [self] forward symbols     my FailSetup
-	oo::objdefine [self] forward rules       my FailSetup
-	oo::objdefine [self] forward action      my FailSetup
-	oo::objdefine [self] forward parse       my FailSetup
-	oo::objdefine [self] forward enter       my Enter
-	oo::objdefine [self] forward eof         my Eof
-	return
+    method action {names} {
+	my __Init
+	my __FNot {made gated} ! "Parser is frozen" FROZEN
+	next $names
     }
 
-    method ToStateEof {} {
-	# Parse :: Eof
-	debug.marpa/parser {}
-
-	#oo::objdefine [self] forward gate:       my FailSetup
-	#oo::objdefine [self] forward symbols     my FailSetup
-	#oo::objdefine [self] forward rules       my FailSetup
-	#oo::objdefine [self] forward action      my FailSetup
-	#oo::objdefine [self] forward parse       my FailSetup
-	oo::objdefine [self] forward enter       my FailEEof
-	#oo::objdefine [self] forward eof         my EofParse
-	return
+    method rules {rules} {
+	my __Init
+	my __FNot {made gated} ! "Parser is frozen" FROZEN
+	next $rules
     }
 
-    method ToStateDone {} {
-	# Eof :: Done
-	debug.marpa/parser {}
-
-	#oo::objdefine [self] forward gate:       my FailSetup
-	#oo::objdefine [self] forward symbols     my FailSetup
-	#oo::objdefine [self] forward rules       my FailSetup
-	#oo::objdefine [self] forward action      my FailSetup
-	#oo::objdefine [self] forward parse       my FailSetup
-	oo::objdefine [self] forward enter       my FailEof
-	oo::objdefine [self] forward eof         my FailEof
-	return
+    method parse {name whitespace} {
+	my __Init
+	my __FNot {made gated} ! "Parser is frozen" FROZEN
+	my __Fail made         ! "Lexer missing" MISSING LEXER
+	next $name $whitespace
+	# State move after main code. Internally calls on 'symbols'
+	# etc. Would be broken by an early state change.
+	my __On gated --> active
     }
 
-    # # ## ### ##### ######## #############
+    method eof {} {
+	my __Init
+	my __Fail done ! "After end of input" EOF
+	next
+
+	my __Goto done
+    }
+
+    method enter {syms sv} {
+	my __Init
+	my __Fail made             ! "Setup missing" MISSING SETUP
+	my __Fail gated            ! "Lexer missing" MISSING LEXER
+	my __Fail {exhausted done} ! "After end of input" EOF
+	next $syms $sv
+
+	my __On active --> [expr {[my exhausted]
+				  ? "exhausted"
+				  : "active"}]
+    }
 }
 
 # # ## ### ##### ######## #############

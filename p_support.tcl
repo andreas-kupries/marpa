@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2016 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -16,6 +16,12 @@ package require debug::caller
 
 debug define marpa/support
 debug prefix marpa/support {[debug caller] | }
+
+# # ## ### ##### ######## #############
+
+namespace eval marpa {
+    namespace export D DX E X import filter K
+}
 
 # # ## ### ##### ######## #############
 ## Wrap around commands to be run from a debug narration command,
@@ -54,6 +60,12 @@ proc marpa::E {label args} {
 	    -errorcode [linsert $args 0 MARPA @args@] \
 	    $msg
     }]]
+}
+
+proc marpa::X {msg args} {
+    return -code error \
+	-errorcode [linsert $args 0 MARPA] \
+	$msg
 }
 
 # # ## ### ##### ######## #############

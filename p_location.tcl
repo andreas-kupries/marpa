@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -28,24 +28,46 @@ debug prefix marpa/location {[debug caller] | }
 # * The identity/null element for location merging is a tuple
 #   containing the empty string and offsets.
 
-namespace eval marpa::location {
-    namespace export merge
+namespace eval marpa {
+    namespace export location
     namespace ensemble create
 }
+namespace eval marpa::location {
+    namespace export merge merge2 show atom null null?
+    namespace ensemble create
+    namespace import ::marpa::X
+}
 
-proc marpa::location::Show {x} {
+proc marpa::location::show {x} {
     lassign $x s e str
     list $s $e '[char quote cstring $str]'
 }
 
-proc marpa::location::null {args} {
+proc marpa::location::atom {pos ch} {
+    debug.marpa/location {}
+    return [list $pos $pos $ch]
+    # assert: start <= end
+}
+
+proc marpa::location::null* {args} {
     debug.marpa/location {}
     return {{} {} {}}
 }
 
-proc marpa::location::merge {args} {
+proc marpa::location::null {} {
     debug.marpa/location {}
-    foreach b [lassign $args a] {
+    return {{} {} {}}
+}
+
+proc marpa::location::null? {a} {
+    debug.marpa/location {}
+    lassign $a start end str
+    expr {($start eq "") && ($end eq "") && ($str eq "")}
+}
+
+proc marpa::location::merge {a args} {
+    debug.marpa/location {}
+    foreach b $args {
 	set a [marpa::location::merge2 $a $b]
     }
     return $a
@@ -54,31 +76,31 @@ proc marpa::location::merge {args} {
 proc marpa::location::merge2 {a b} {
     debug.marpa/location {}
 
-    # Assume: a before b, adjacent.
+    # Null's are special, adjacent to everything, and unity element
+    if {[null? $a]} { return $b }
+    if {[null? $b]} { return $a }
+    # now: a, b not null
+
+    # assert: as <= ae, bs <= be
     lassign $a as ae astr
     lassign $b bs be bstr
 
-    set zs   [Min $as $bs]
-    set ze   [Max $be $ae]
+    # tets: a before b, adjacent.
+    if {($ae + 1) != $bs} {
+	X "Bad merge, non-adjacent locations" LOCATION MERGE NON-ADJACENT
+    }
+
+    # due: as <= ae < bs <= be
+    # now: as < bs => as = Min (as, bs)
+    # now: ae < be => be = Max (ae, be)
+
+    set zs $as
+    set ze $be
     set zstr $astr$bstr
 
     set z [list $zs $ze $zstr]
     debug.marpa/location {==> $z}
     return $z
-}
-
-proc marpa::location::Max {a b} {
-    if {$a eq {}} { return $b }
-    if {$b eq {}} { return $a }
-    if {$a < $b}  { return $b }
-    return $a
-}
-
-proc marpa::location::Min {a b} {
-    if {$a eq {}} { return $b }
-    if {$b eq {}} { return $a }
-    if {$a < $b}  { return $a }
-    return $b
 }
 
 # # ## ### ##### ######## #############

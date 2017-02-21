@@ -1,6 +1,10 @@
 Marpa lexer tricks
 ====
 
+This trick is implemented, see p_lexer.tcl's __acceptability control
+symbols__ (short: `ACS`).
+
+
 Jeffrey:
 
 	Currently uses zero-width assertions (ZWA) to conditionally

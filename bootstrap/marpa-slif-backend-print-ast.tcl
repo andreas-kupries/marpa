@@ -63,7 +63,7 @@ foreach s {
 
 proc unknown {args} {
     global indent
-    puts $indent[marpa::location::Show $args]
+    puts $indent[marpa::location::show $args]
 }
 
 # # ## ### ##### ######## #############

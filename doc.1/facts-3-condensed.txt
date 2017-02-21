@@ -1,0 +1,322 @@
+# SLIF grammar elements and properties
+
+## Processing state
+
+   1. G1 defaults (scoped, ordered)
+      * Action:	[values]
+      * Bless:	undef
+
+   1. L0 settings (lexeme default)
+      * Action:			[values]
+      * Bless:			undef
+      * Match discipline:	latm
+
+   1. Start symbol
+      * Name
+      * Status
+        1. Undefined
+        1. Weakly defined
+        1. Strongly defined
+      * Constraints
+        1. G1 symbol
+
+## Grammar information
+
+   1. Start symbol
+      * Name
+      * Constraints
+        1. G1 symbol
+
+   1. Symbols - Unified namespace.
+      * Name
+      * Level
+        1. G1
+        1. L0
+      * Rule type: undefined, bnf, quantified
+      * Priorities: min, max
+
+   1. G1 symbols
+      * Name
+      * is-toplevel	(undefined, maybe, yes, no)
+      * is-leaf		(undefined, maybe, yes, no)
+      * leaf-reason
+      * Attributes ...
+
+   1. L0 symbols
+      * Name
+      * toplevel-reason
+      * is-toplevel	(undefined, maybe, yes, no)
+      * is-leaf		(undefined, maybe, yes, no)
+      * lexeme-request
+      * discard-request
+      * discard-event
+      * match-discipline: latm, ltm
+      * pause mode: no, before, after
+      * pause event name
+      * Constraints
+      	* discard-request => is-toplevel (<=> is-lexeme)
+	* (pause != no)   => is-toplevel (<=> is-lexeme)
+	* (pause != no) <=> (pause name != empty)
+
+   1. L0 strings, characters, charclasses
+      * Specification
+      * Name
+      * Modifier: case-insensitive yes/no
+
+   1. Rules, general
+      * Restrictions on LHS symbols
+      * Restrictions on LHS symbols
+      * LHS symbol
+      * Type: bnf, quantified
+      * Action
+      * Bless
+      * Name
+      * Null-ranking	/ignored/
+      * BNF Attributes
+      	* Priority (<= 0, 0 = highest priority).
+	* RHS symbol list
+	* Associativity
+	* Rank		/ignored/
+      * Quantified attributes
+      	* Separator: undefined, symbol
+      	* Proper: undefined, yes, no
+      * Constraints
+      	* BNF attributes not allowed for empty rule.
+
+   1. G1 Rules
+      * LHS: G1 only
+      * RHS: any (G1, L0)
+
+   1. L0 Rules
+      * LHS: L0 only
+      * RHS: L0 only
+
+
+
+
+ID	GROUP		ENTITY		DETAILS		NOTES
+
+.	:default			     		G1
+.	:discard					L0
+
+
+.	G1		parse events	non-lexemes
+
+
+.	G1    		event		decl: parse event, non-lex event
+.	G1    		event		nulled		named event
+
+
+.	L0		discard default	DSL.pod  mismatch 'discard default' / 'lexeme default'
+.	L0		discard default	adverb: event
+.	L0		discard default	allowed once only
+.	L0		discard default	global
+
+.	L0		event pseudo	:symbol		0 Name is RHS of the discard rule (symbol or class)
+.	L0		event pseudo	:symbol		1 Symbol: Name of symbol
+.	L0		event pseudo	:symbol		2 Class: String specifying the class
+.	L0		event pseudo	:symbol		3 Class: Equivalent class with different literals
+.	L0		event pseudo	:symbol		4 Class: have different names
+.	L0		event pseudo	:symbol		Only	:discard, discard default
+
+.	L0		events		activation default: on
+
+.	L0		quoted string	:i, :ic modifer => case-insensitive matching
+
+.	L0		rules		adverb: action	forbidden
+
+.	L0    		:discard	adverb: event,	discard event
+
+.	L0		:lexeme		decl: lexeme event
+.	L0    		:lexeme		adverb: pause	post-lexeme event
+.	L0    		:lexeme		adverb: pause	pre-lexeme event
+
+.	L0    		parse events	lexeme
+
+.	L0 rule				~	Effect may depend on order
+
+.	SLIF		pseudo-rule
+.	SLIF		rule
+.	SLIF		statement
+
+
+.	adverbs				Associated with rule alternatives, not rule in toto
+.	adverbs		!action,!bless	user: G1 empty rule FORBIDDEN
+
+.	adverbs		action		::first
+.	adverbs		action		<user command>
+.	adverbs		action		G1 rules: Allowed, only place
+.	adverbs		action		L0 rules: Forbidden
+.	adverbs		action		[...] 'SV array[]'
+.	adverbs		action		user:	    :default	X-CHECK
+.	adverbs		action		user: :default
+.	adverbs		action		user: G1 BNF
+.	adverbs		action		user: G1 BNF		X-CHECK
+.	adverbs		action		user: G1 empty rule ok
+.	adverbs		action		user: G1 quantified	X-CHECK
+.	adverbs		action		user: lexeme default
+.	adverbs		action 		L0 rules forbidden
+.	adverbs		action 		user: lexeme default	X-CHECK
+.	adverbs 	action		user: :default	X-CHECK
+
+.	adverbs		assoc		user: G1 GNF prioritized
+
+.	adverbs		bless		1 Specify package where to search for the action commands.
+.	adverbs		bless		2 Maybe treat as a command prefix for Tcl ? (object instance command ...)
+.	adverbs		bless		::lhs	 Best for :default
+.	adverbs		bless		::lhs	 Search class based on LHS symbol name (whitespace to underscore)
+.	adverbs		bless		::lhs	 Symbol name restricted to alphanumerics and whitespace. Fatal if not.
+.	adverbs		bless		::lhs	 Symbol name whitespace to underscore
+.	adverbs		bless		::name	 Best for lexeme default
+.	adverbs		bless		::name	 G1 BNF - Forbidden
+.	adverbs		bless		::name	 Search based on name of lexeme. G1 BNF forbidden ?
+.	adverbs		bless		::name	 Symbol name restricted to alphanumerics and whitespace. Fatal if not.
+.	adverbs		bless		::name	 Symbol name whitespace to underscore
+.	adverbs		bless		::undef	 Search global ?
+.	adverbs		bless		Implicit default:  ::undef
+.	adverbs		bless		user:	    :default	X-CHECK
+.	adverbs		bless		user: G1 empty rule ok
+.	adverbs		bless		user: G1 quantified	X-CHECK
+.	adverbs		bless		user: None listed
+.	adverbs		bless		user: lexeme default	X-CHECK
+
+.	adverbs		event		FATAL if 'pause' is not specified as well
+.	adverbs		event		user: :lexeme		X-CHECK
+.	adverbs		event		user: :lexeme, only
+.	adverbs		event		user: discard
+.	adverbs		event		user: discard default	X-CHECK
+.	adverbs		event		user: discard,	discard event
+
+.	adverbs		forgiving	Synonym: latm
+
+.	adverbs		latm		?able to change at runtime?
+.	adverbs		latm		?global, or per token?
+.	adverbs		latm		Set per lexeme.
+.	adverbs		latm		default false	(historical reason, true is better)
+.	adverbs		latm		off = longest token matching (most systems, standard)
+.	adverbs		latm		off for a lexeme - lexer does no checks
+.	adverbs		latm		on  = longest _acceptable_ token matching
+.	adverbs		latm		on  for a lexeme - lexer checks for acceptability (0-length guard symbol)
+.	adverbs		latm		type	bool
+.	adverbs		latm		user: :lexeme
+.	adverbs		latm		user: No other user
+.	adverbs		latm		user: lexeme default
+.	adverbs		latm		user: lexeme default	X-CHECK	!per lexeme
+.	adverbs		latm   		user: lexeme default	X-CHECK
+
+.	adverbs		name		Explicitly name the alternative in question.
+.	adverbs		name		user: G1 BNF
+.	adverbs		name		user: L0 BNF
+
+.	adverbs		null-ranking	G1 only
+.	adverbs		null-ranking	L0 forbidden (no semantic actions)
+.	adverbs		null-ranking	user: G1 BNF
+
+.	adverbs		pause		No adverb 'event' --> event is unnamed
+.	adverbs		pause		user: :lexeme		X-CHECK
+.	adverbs		pause		user: :lexeme, only
+
+.	adverbs		priority	default priority 0
+.	adverbs		priority	higher numeric <=> higher priority
+.	adverbs		priority	integer, can be < 0, higher numeric <=> higher priority
+.	adverbs		priority	user: :lexeme		X-CHECK
+.	adverbs		priority	user: :lexeme, only
+
+.	adverbs		proper		Boolean
+.	adverbs		proper		Ignored for !separator
+.	adverbs		proper		user: G1 quantified
+.	adverbs		proper		user: G1 quantified	X-CHECK
+.	adverbs		proper		user: L0 quantified
+
+.	adverbs		rank		user: G1 BNF
+.	adverbs		rank		user: L0 BNF
+
+.	adverbs		separator	user: G1 quantified
+.	adverbs		separator	user: G1 quantified	X-CHECK
+.	adverbs		separator	user: L0 quantified
+
+.	bracket symbol	whitespace	normalized: 1. squash all sequences to single space (0x32)
+.	bracket symbol	whitespace	normalized: 2. leading removed
+.	bracket symbol	whitespace	normalized: 3. trailing removed
+
+.	global				=	Order is not relevant!
+.	global		discard default
+.	global		lexeme default
+
+.	lexeme default			      	     	L0
+
+.	parse events
+.	parse events	lexeme event	L0
+.	parse events	lexeme event	L0 :lexeme
+
+.	parse events	lexeme event	post-lexeme	AKA 'after'
+.	parse events	lexeme event	post-lexeme	Triggers when lexeme is already read	
+.	parse events	lexeme event	post-lexeme	Triggers when lexeme would be accepted by G1
+.	parse events	lexeme event	post-lexeme	Triggers when no pre-lexeme event triggered at the location
+.	parse events	lexeme event	post-lexeme	Triggers when of higher or equal priority than other lexemes which could trigger
+.	parse events	lexeme event	post-lexeme	current location = end of the lexeme
+.	parse events	lexeme event	post-lexeme	descriptor:	 name of event
+.	parse events	lexeme event	post-lexeme	event location = current
+.	parse events	lexeme event	post-lexeme	knows	pause lexeme - lexeme symbol
+.	parse events	lexeme event	post-lexeme	knows	pause span   - start/length 
+.	parse events	lexeme event	post-lexeme	trigger location = current
+.	parse events	lexeme event	post-lexeme	via :lexeme, adverb: pause
+
+.	parse events	lexeme event	pre-lexeme	1 Triggers at beginning of lexeme.
+.	parse events	lexeme event	pre-lexeme	2 Actually: Triggers at end and 'rewinds'
+.	parse events	lexeme event	pre-lexeme	3 !! Lexeme is not predicted, but recognized already
+.	parse events	lexeme event	pre-lexeme	4 Triggers when lexeme would be accepted by G1
+.	parse events	lexeme event	pre-lexeme	AKA 'before'
+.	parse events	lexeme event	pre-lexeme	current location = end of the lexeme
+.	parse events	lexeme event	pre-lexeme	descriptor:	 name of event
+.	parse events	lexeme event	pre-lexeme	event location = current
+.	parse events	lexeme event	pre-lexeme	knows	pause lexeme - lexeme symbol
+.	parse events	lexeme event	pre-lexeme	knows	pause span   - start/length
+.	parse events	lexeme event	pre-lexeme	trigger location = start of lexeme
+.	parse events	lexeme event	pre-lexeme	via :lexeme, adverb: pause
+
+.	parse events	non-lex	event	exhaustion	IGNORED, later
+.	parse events	non-lex event	G1
+.	parse events	non-lex event	G1 event, named event
+
+.	parse events	non-lex event	completed	Symbol found, and completed here
+.	parse events	non-lex event	completed	current location = instance end location
+.	parse events	non-lex event	completed	descriptor:	 name of event
+.	parse events	non-lex event	completed	event location = current
+.	parse events	non-lex event	completed	trigger location = current
+
+.	parse events	non-lex event	discard		1 impl. note: completion event on
+.	parse events	non-lex event	discard		2 impl. note: non-lexeme toplevel
+.	parse events	non-lex event	discard		3 impl. note: LHS for L0 grammar
+.	parse events	non-lex event	discard		:discard, adverb: event
+.	parse events	non-lex event	discard		current location = instance end location (end of discarded text)
+.	parse events	non-lex event	discard		descriptor:	 end location
+.	parse events	non-lex event	discard		descriptor:	 g1 location of last _lexeme_
+.	parse events	non-lex event	discard		descriptor:	 name of event
+.	parse events	non-lex event	discard		descriptor:	 start location
+.	parse events	non-lex event	discard		event location = current
+.	parse events	non-lex event	discard		trigger location = current
+
+.	parse events	non-lex event	nulled		G1 event
+.	parse events	non-lex event	nulled		Nulled symbol completed/recognized
+.	parse events	non-lex event	nulled		current location = instance start/end location
+.	parse events	non-lex event	nulled		descriptor:	 name of event
+.	parse events	non-lex event	nulled		event location = current
+.	parse events	non-lex event	nulled		trigger location = current
+
+.	parse events	non-lex event	predicted	Symbol may start here
+.	parse events	non-lex event	predicted	any symbol, even lexeme -- Even sub-lexeme L0 symbols ?	
+.	parse events	non-lex event	predicted	descriptor:	 name of event
+.	parse events	non-lex event	predicted	event location = current
+.	parse events	non-lex event	predicted	trigger location = current
+
+.	parse events	non-lex event	rejection	IGNORED, later
+
+.	parse events	order		1 lexeme	arbitrary within the type
+.	parse events	order		2 completed	arbitrary within the type
+.	parse events	order		3 nulling	arbitrary within the type
+.	parse events	order		4 predicted	arbitrary within the type
+
+.	statement	G1 rule
+.	statement	L0 rule
+.	statement	global
