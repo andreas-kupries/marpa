@@ -59,7 +59,7 @@ test marpa-semcore-2.0.2 {constructor, initial map} -body {
 	sym:0  {null symbol command}
 	rule:0 {rule command}
     }
-    dictsort [SC map]
+    kt dictsort [SC map]
 } -cleanup {
     SC destroy
     logged
@@ -285,7 +285,7 @@ test marpa-semcore-12.0.0 {mask, result} -setup {
     SC add-mask 2 {3 1 6}
     SC add-mask 1 {7 2 9}
     SC add-mask 3 {4 0 7 1}
-    dictsort [SC mask]
+    kt dictsort [SC mask]
 } -cleanup {
     SC destroy
     logged
@@ -309,7 +309,7 @@ test marpa-semcore-14.0.0 {map, result} -setup {
     SC add-token 0 {token command}    
     SC add-null  0 {null symbol command}
     SC add-rule  0 {rule command}
-    dictsort [SC map]
+    kt dictsort [SC map]
 } -cleanup {
     SC destroy
     logged
