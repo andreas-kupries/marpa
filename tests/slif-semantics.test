@@ -1,0 +1,118 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::slif::semantics
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+kt require support fileutil ;# cat
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+## TODO: Sequence checking (constructor, enter|fail, eof)
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/common.tcl
+kt source support/ast.tcl
+
+# # ## ### ##### ######## ############# #####################
+##  1 constructor/0
+##  2 enter/1		(ast)
+##  3 fail/0
+##  4 eof/0
+
+# # ## ### ##### ######## ############# #####################
+## constructor - wrong args, initial state, calls
+
+test marpa-slif-semantics-constructor-1.0 {constructor, wrong args, not enough} -body {
+    marpa::slif::semantics new
+} -returnCodes error -result {wrong # args: should be "marpa::slif::semantics new container"}
+
+test marpa-slif-semantics-constructor-1.1 {constructor, wrong args, too many} -body {
+    marpa::slif::semantics new CONTAINER X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::semantics new container"}
+
+# # ## ### ##### ######## ############# #####################
+## enter
+
+test marpa-slif-semantics-enter-1.0 {enter, wrong args, not enough} -setup {
+    marpa::slif::semantics create SE [log CONTAINER]
+} -body {
+    SE enter
+} -cleanup {
+    SE destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "SE enter ast"}
+
+test marpa-slif-semantics-enter-1.1 {enter, wrong args, too many} -setup {
+    marpa::slif::semantics create SE [log CONTAINER]
+} -body {
+    SE enter AST X
+} -cleanup {
+    SE destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "SE enter ast"}
+
+# # ## ### ##### ######## ############# #####################
+## eof
+
+test marpa-slif-semantics-eof-1.0 {eof, wrong args, too many} -setup {
+    marpa::slif::semantics create SE [log CONTAINER]
+} -body {
+    SE eof X
+} -cleanup {
+    SE destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "SE eof"}
+
+# # ## ### ##### ######## ############# #####################
+## fail
+
+test marpa-slif-semantics-fail-1.0 {fail, wrong args, too many} -setup {
+    marpa::slif::semantics create SE [log CONTAINER]
+} -body {
+    SE fail X
+} -cleanup {
+    SE destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "SE fail"}
+
+# # ## ### ##### ######## ############# #####################
+## enter
+
+incr k
+foreach slif [lsort -dict [kt find grammars/*.slif]] {
+    set caseid   [file tail [file rootname $slif]]
+    set slifstr  [fileutil::cat $slif]
+    set expected [string trimright [fileutil::cat [file rootname $slif].ctrace]]
+
+    test marpa-slif-semantics-enter-${caseid}-2.$k "enter $slif, trace" -setup {
+	marpa::slif::semantics create SE [log GC] ; trace GC
+	marpa::slif::parser    create SP
+    } -body {
+	if {[catch {
+	    SE enter [SP process $slifstr]
+	} msg]} {
+	    #puts $::errorInfo
+	    log-add GC error $msg
+	}
+	string trim [logged "\n"]
+    } -cleanup {
+	unset msg
+	SP destroy
+	catch { SE destroy } ;# auto-destroyed in enter, or not if previous test failed.
+	# Thus, try to destroy, ignore error if already gone
+    } -result $expected
+
+    incr k
+}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

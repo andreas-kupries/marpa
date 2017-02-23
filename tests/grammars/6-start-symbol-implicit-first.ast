@@ -1,0 +1,35 @@
+statements/0
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @0 1 'A'
+      op declare/0
+        @2 3 '::='
+      priorities/0
+        alternatives/0
+          alternative/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @6 1 'B'
+            @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @8 1 'B'
+      op declare/0
+        @10 3 '::='
+      priorities/0
+        alternatives/0
+          alternative/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @14 1 'C'
+            @{} {} ''

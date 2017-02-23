@@ -485,15 +485,33 @@ oo::class create marpa::slif::parser {
 	return [B result]
     }
 
+    method process {string} {
+	# Drive the pipeline from the string
+	IN enter $string
+	IN eof
+	return [B result]
+    }
+
     # # ## ### ##### ######## #############
 }
 
 # Capture final AST, internal class.
 oo::class create marpa::slif::parser::Capture {
     variable myresult
-    method result {} { return $myresult }
-    method enter {ast} { set myresult $ast }
+    variable mycode
+    method result {} {
+	return -code $mycode $myresult
+    }
+    method enter {ast} {
+	set mycode ok
+	set myresult $ast
+    }
     method eof {} {}
+    method fail {msg} {
+	set mycode error
+	set myresult $msg
+    }
+    # TODO: Extend fail to provide more information, and capture this here.
 }
 
 # # ## ### ##### ######## #############

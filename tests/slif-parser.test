@@ -1,0 +1,110 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::slif::parser
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+kt require support fileutil ;# cat
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+## No method sequence checking for the parser.
+## Methods can be called in any order.
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/ast.tcl
+
+# # ## ### ##### ######## ############# #####################
+##  1 constructor/0
+##  2 process/1		(string)
+##  3 process-file/1	(path-to-file)
+
+# # ## ### ##### ######## ############# #####################
+## constructor - wrong args, initial state, calls
+
+test marpa-slif-parser-constructor-1.0 {constructor, wrong args, too many} -body {
+    marpa::slif::parser new X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::parser new"}
+
+# # ## ### ##### ######## ############# #####################
+## process
+
+test marpa-slif-parser-process-1.0 {process, wrong args, not enough} -setup {
+    marpa::slif::parser create SP
+} -body {
+    SP process
+} -cleanup {
+    SP destroy
+} -returnCodes error -result {wrong # args: should be "SP process string"}
+
+test marpa-slif-parser-process-1.1 {process, wrong args, too many} -setup {
+    marpa::slif::parser create SP
+} -body {
+    SP process DATA X
+} -cleanup {
+    SP destroy
+} -returnCodes error -result {wrong # args: should be "SP process string"}
+
+# # ## ### ##### ######## ############# #####################
+## process-file
+
+test marpa-slif-parser-process-file-1.0 {process-file, wrong args, not enough} -setup {
+    marpa::slif::parser create SP
+} -body {
+    SP process-file
+} -cleanup {
+    SP destroy
+} -returnCodes error -result {wrong # args: should be "SP process-file path"}
+
+test marpa-slif-parser-process-file-1.1 {process-file, wrong args, too many} -setup {
+    marpa::slif::parser create SP
+} -body {
+    SP process-file DATA X
+} -cleanup {
+    SP destroy
+} -returnCodes error -result {wrong # args: should be "SP process-file path"}
+
+# # ## ### ##### ######## ############# #####################
+## process, process-file
+
+incr k
+foreach slif [lsort -dict [kt find grammars/*.slif]] {
+    set caseid   [file tail [file rootname $slif]]
+    set slifstr  [fileutil::cat $slif]
+    set expected [string trimright [fileutil::cat [file rootname $slif].ast]]
+
+    test marpa-slif-parser-process-${caseid}-2.$k "process $slif" -setup {
+	marpa::slif::parser create SP
+    } -body {
+	catch {
+	    pretty-ast [SP process $slifstr]
+	} msg ; set msg
+    } -cleanup {
+	SP destroy
+	unset msg
+    } -result $expected
+
+    test marpa-slif-parser-process-file-${caseid}-2.$k "process-file $slif" -setup {
+	marpa::slif::parser create SP
+    } -body {
+	catch {
+	    pretty-ast [SP process-file $slif]
+	} msg ; set msg
+    } -cleanup {
+	SP destroy
+	unset msg
+    } -result $expected
+
+    incr k
+}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests
