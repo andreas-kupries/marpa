@@ -1,0 +1,49 @@
+GC l0 symbol E
+GC l0 symbol-def E 0 1
+GC l0 symbol N
+GC l0 symbol-use N 4 1
+GC l0 add-bnf E N 0
+GC l0 symbol PO
+GC l0 symbol-use PO 12 2
+GC l0 symbol E
+GC l0 symbol-use E 15 1
+GC l0 symbol PC
+GC l0 symbol-use PC 17 2
+GC l0 add-bnf E {PO E PC} 0
+GC l0 last-rule set-assoc group
+GC l0 symbol E
+GC l0 symbol-use E 41 1
+GC l0 symbol POW
+GC l0 symbol-use POW 43 3
+GC l0 symbol E
+GC l0 symbol-use E 47 1
+GC l0 add-bnf E {E POW E} -1
+GC l0 last-rule set-assoc right
+GC l0 symbol E
+GC l0 symbol-use E 70 1
+GC l0 symbol MUL
+GC l0 symbol-use MUL 72 3
+GC l0 symbol E
+GC l0 symbol-use E 76 1
+GC l0 add-bnf E {E MUL E} -2
+GC l0 symbol E
+GC l0 symbol-use E 84 1
+GC l0 symbol DIV
+GC l0 symbol-use DIV 86 3
+GC l0 symbol E
+GC l0 symbol-use E 90 1
+GC l0 add-bnf E {E DIV E} -2
+GC l0 symbol E
+GC l0 symbol-use E 98 1
+GC l0 symbol ADD
+GC l0 symbol-use ADD 100 3
+GC l0 symbol E
+GC l0 symbol-use E 104 1
+GC l0 add-bnf E {E ADD E} -3
+GC l0 symbol E
+GC l0 symbol-use E 112 1
+GC l0 symbol SUB
+GC l0 symbol-use SUB 114 3
+GC l0 symbol E
+GC l0 symbol-use E 118 1
+GC l0 add-bnf E {E SUB E} -3

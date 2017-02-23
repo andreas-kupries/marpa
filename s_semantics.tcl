@@ -75,7 +75,7 @@ oo::class create marpa::slif::semantics {
 	link {SINGLE  SINGLE}  ;# Get sem value of chosen child, recursively eval'd
 	link {LITERAL LITERAL} ;# Get literal string for chosen AST node
 	link {LITLOC  LITLOC}  ;# Get literal location for chosen AST node
-	link {ADV     ADV}     ;# Generate singular adverb sem value, for literal
+	link {ADVL    ADVL}    ;# Generate singular adverb sem value, for literal
 	link {ADVS    ADVS}    ;# Generate singular adverb sem value, for symbol
 	link {ADVP    ADVP}    ;# Process adverbs for a context
 	link {SYMBOL  SYMBOL}  ;# Get symbol instance for chosen AST node
@@ -346,7 +346,7 @@ oo::class create marpa::slif::semantics {
 
     # # -- --- ----- -------- -------------
 
-    method {proper specification/0}    {children} { ADV  proper    [LITERAL]        }
+    method {proper specification/0}    {children} { ADVL proper    [LITERAL]        }
     method {separator specification/0} {children} { ADVS separator [UNMASK [FIRST]] }
 
     # # -- --- ----- -------- -------------
@@ -360,9 +360,9 @@ oo::class create marpa::slif::semantics {
 
     # # -- --- ----- -------- -------------
 
-    method {left association/0}  {children} { ADV assoc [LITERAL] }
-    method {right association/0} {children} { ADV assoc [LITERAL] }
-    method {group association/0} {children} { ADV assoc [LITERAL] }
+    method {left association/0}  {children} { ADVL assoc left  }
+    method {right association/0} {children} { ADVL assoc right }
+    method {group association/0} {children} { ADVL assoc group }
 
     # # -- --- ----- -------- -------------
 
@@ -648,10 +648,11 @@ oo::class create marpa::slif::semantics {
 	return $args
     }
 
-    method ADV {key value} {
+    method ADVL {key value} {
 	debug.marpa/slif/semantics {[debug caller] | [AT]}
 	# location is done automatically by
-	set value [list $key [list [uplevel 1 LITLOC] $value]]
+	#set value [list $key [list [uplevel 1 LITLOC] $value]]
+	set value [list $key $value]
 	debug.marpa/slif/semantics {[debug caller] | [AT] ==> ($value)}
 	return $value
     }
@@ -659,13 +660,16 @@ oo::class create marpa::slif::semantics {
     method ADVS {key symbol} {
 	debug.marpa/slif/semantics {[debug caller] | [AT]}
 	# location is done automatically by
-	set value [list $key [list [$symbol last-use] $symbol]]
+	#set value [list $key [list [$symbol last-use] $symbol]]
+	#TODO last-use -- Container (layer) last-use $symbol
+	set value [list $key $symbol]
 	debug.marpa/slif/semantics {[debug caller] | [AT] ==> ($value)}
 	return $value
     }
 
     method ADVP {context adverbs accepted destination} {
 	debug.marpa/slif/semantics {[debug caller] | [AT]}
+	set layer [SymCo layer?] 
 	foreach key $accepted {
 	    if {![dict exists $adverbs $key]} {
 		debug.marpa/slif/semantics {[debug caller] | [AT] $key SKIP}
@@ -675,7 +679,7 @@ oo::class create marpa::slif::semantics {
 	    dict unset adverbs $key
 
 	    debug.marpa/slif/semantics {[AT] $key = ($value)}
-	    Container ${destination} set-$key $value
+	    Container $layer ${destination} set-$key $value
 	}
 	if {[dict size $adverbs]} {
 	    E "Invalid adverbs [dict keys $adverbs] in $context" \

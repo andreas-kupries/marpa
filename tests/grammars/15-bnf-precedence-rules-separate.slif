@@ -1,0 +1,7 @@
+E ::= N
+E ::= PO E PC assoc => group
+   || E POW E assoc => right
+   || E MUL E
+    | E DIV E
+   || E ADD E
+    | E SUB E
