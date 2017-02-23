@@ -53,6 +53,7 @@ oo::class create marpa::lexer {
 			   # Required for the regeneration of our
 			   # recognizer after a discarded lexeme was
 			   # found in the input.
+    variable mystart      ;# start offset for the current lexeme
 
     # Constant
     variable mynull       ;# Semantic value for ACS, empty string,
@@ -113,6 +114,7 @@ oo::class create marpa::lexer {
 	set mylatm    yes   ;# Default: longest acceptable token match
 	set mydiscard {}
 	set mynull    [Store put [marpa location null]]
+	set mystart   {}
 
 	my SetupSemantics $semstore
 
@@ -251,6 +253,10 @@ oo::class create marpa::lexer {
     method enter {syms sv} {
 	debug.marpa/lexer {[debug caller] | See '[join [my 2Name $syms] {' '}]' ([marpa location show [Store get $sv]])}
 
+	if {$mystart eq {}} {
+	    lassign [Store get $sv] mystart __ __
+	}
+
 	if {![llength $syms]} {
 	    debug.marpa/lexer {[debug caller] | no acceptable symbols, close current lexeme}
 
@@ -324,6 +330,7 @@ oo::class create marpa::lexer {
 	set myacceptable $syms
 	set myrecce [GRAMMAR recognizer create RECCE [mymethod Events]]
 	debug.marpa/lexer {[debug caller 1] | RECCE = [namespace which -command RECCE]}
+	set mystart {}
 
 	RECCE start-input
 	if {[llength $syms] || [llength $mydiscard]} {
@@ -409,7 +416,10 @@ oo::class create marpa::lexer {
 	    incr redo
 	    incr latest -1
 	    if {$latest < 0} {
-		Forward fail
+		Forward fail [dict create \
+				  msg "No lexeme found at $mystart" \
+				  at  $mystart]
+
 		# TODO: Here more information can be provided, i.e.
 		#       where in the input we got stopped, and such.
 		#       This could/should be made a method for every

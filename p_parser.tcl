@@ -193,6 +193,12 @@ oo::class create marpa::parser {
 	return
     }
 
+    # TODO: fail - integrate into sequencing
+    method fail {dict} {
+	debug.marpa/parser {}
+	Forward fail $dict
+    }
+
     # # -- --- ----- -------- -------------
     ## Rule support
 
@@ -304,7 +310,9 @@ oo::class create marpa::parser {
 	}]} {
 	    incr latest -1
 	    if {$latest < 0} {
-		Forward fail
+		Forward fail [dict create \
+				  msg "Parsing failed"]
+
 		# TODO: Here more information can be provided, i.e.
 		#       where in the input we got stopped, and such.
 		#       This could/should be made a method for every

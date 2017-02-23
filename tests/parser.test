@@ -833,8 +833,8 @@ test marpa-parser-8.3.2 {eof, after configuration, externals} -setup {
 } -cleanup {
     PARSER destroy
 } -result {{} {
-  AST C fail
-  AST R fail = {}
+  AST C {fail {msg {Parsing failed}}}
+  AST R {fail {msg {Parsing failed}}} = {}
   AST C eof
   AST R eof = {}
 }}
@@ -873,8 +873,8 @@ test marpa-parser-8.4.2 {eof, active, externals} -setup {
 } -cleanup {
     PARSER destroy
 } -result {{} {
-  AST C fail
-  AST R fail = {}
+  AST C {fail {msg {Parsing failed}}}
+  AST R {fail {msg {Parsing failed}}} = {}
   AST C eof
   AST R eof = {}
 }}
