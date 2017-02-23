@@ -122,10 +122,9 @@ oo::class create marpa::gate {
     ## Lifecycle
 
     constructor {semstore postprocessor} {
-	debug.marpa/gate {[debug caller] | [marpa::D {
-	    marpa::import $semstore Store ;# Debugging only.
-	}]}
+	debug.marpa/gate {[debug caller] | ]}
 
+	marpa::import $semstore      Store ;# Failure handling and debugging.
 	marpa::import $postprocessor Forward
 
 	# Dynamic state for processing
@@ -223,8 +222,23 @@ oo::class create marpa::gate {
 	    # except if we did it already, then we have to stop, the
 	    # input completely bogus.
 	    if {$flushed} {
-		my E "Unable to handle '[char quote cstring $char]'" \
-		    FLUSH $char
+		lassign [Store get $value] so eo __
+		if {$so eq {}} { set so <indeterminate> }
+
+		foreach s [dict keys $myacceptable] {
+		    set e [dict get $myrmap $s]
+		    lappend exlist $e
+		    lappend eclist '[char quote cstring $e]'
+		}
+		if {[llength $eclist] > 1} {
+		    set eclist "one of [join [linsert [join $eclist {, }] end-1 or] { }]"
+		}
+
+		# TODO: Convert this into a 'Forward fail' so that
+		# lexer and parser can put their own oars in with
+		# regard to the context (Expected lexemes).
+		my E "Stopped reading at offset $so. Expected $eclist. Having '[char quote cstring $char]' instead" \
+		    FLUSH $char OFFSET $so EXPECTING $exlist
 	    }
 
 	    incr flushed

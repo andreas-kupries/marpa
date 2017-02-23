@@ -163,9 +163,9 @@ oo::class create marpa::slif::semantics {
     ## Quantified rules (repetitions, lists, sequences)
 
     method {quantified rule/0} {children} {
-	#    0     1         2     3            4
-	# OK <lhs> <op decl> <rhs> <quantifier> <adverbs>
-	#     |     g1/l0     |     */+          /
+	#    0             1     2            3
+	# OK <lhs>         <rhs> <quantifier> <adverbs>
+	#     |              \   */+             /
 	#     \- symbol name  \- single symbol  /
 	#                                      /
 	# Accepted adverbs (see statement/5) -/
@@ -177,19 +177,64 @@ oo::class create marpa::slif::semantics {
 	# - rank      -- <rank specification>         | IGNORED. WARN
 	# - null rank -- <null ranking specification> |
 
-	SymCo [SINGLE 1] ;# match operator specifies grammar layer
+	SymCo g1
 	SymCo def ; set lhs [FIRST]
-	SymCo use ; set rhs [UNMASK [SINGLE 2]]
+	SymCo use ; set rhs [UNMASK [SINGLE 1]]
 
-	if {[SymCo g1?]} { Start maybe: $lhs }
+	Start maybe: $lhs
 
-	set positive [SINGLE 3]
-	set adverbs  [SINGLE 4]
+	set positive [SINGLE 2]
+	set adverbs  [SINGLE 3]
 
-	Container [SymCo layer?] add-quantified $lhs $rhs $positive
+	Container g1 add-quantified $lhs $rhs $positive
 
 	set accepted {separator proper action bless name rank}
-	if {[SymCo g1?]} { lappend accepted 0rank }
+        lappend accepted 0rank
+
+	# Custom check for related attributes 'separator' and 'proper'
+	# TODO XXX separator/proper - Merge into a single adverb/attribute.
+	if {[dict exists $adverbs separator]} {
+	    # Ensure existence of a default for 'proper' when a
+	    # 'separator' is specified.
+	    if {![dict exists $adverbs proper]} {
+		dict set adverbs proper 0
+	    }
+	} else {
+	    # Ignore 'proper' if there is no 'separator'. XXX: Warning ?
+	    if {[dict exists $adverbs proper]} {
+		dict unset adverbs proper
+	    }
+	}
+
+	ADVP {quantified rule} $adverbs $accepted last-rule
+	return
+    }
+
+    method {quantified rule/1} {children} {
+	#    0             1     2            3
+	# OK <lhs>         <rhs> <quantifier> <adverbs>
+	#     |              \      */+          /
+	#     \- symbol name  \- single symbol  /
+	#                                      /
+	# Accepted adverbs (see statement/5) -/
+	# - action    -- <action>
+	# - bless     -- <blessing>                   | IGNORED. WARN
+	# - proper    -- <proper specification>
+	# - separator -- <separator specification>
+	# - name      -- <naming>
+	# - rank      -- <rank specification>         | IGNORED. WARN
+	# - null rank -- <null ranking specification> |
+
+	SymCo l0
+	SymCo def ; set lhs [FIRST]
+	SymCo use ; set rhs [UNMASK [SINGLE 1]]
+
+	set positive [SINGLE 2]
+	set adverbs  [SINGLE 3]
+
+	Container l0 add-quantified $lhs $rhs $positive
+
+	set accepted {separator proper action bless name rank}
 
 	# Custom check for related attributes 'separator' and 'proper'
 	# TODO XXX separator/proper - Merge into a single adverb/attribute.
@@ -215,22 +260,44 @@ oo::class create marpa::slif::semantics {
     ## limited set of adverbs.
 
     method {empty rule/0} {children} { # OK <lhs> <op declare> <adverb list>
-	# <lhs> <op declare> <adverb list>
+	# <lhs> <adverb list bnf empty>
 	#  \- symbol name     |
 	#                     |
 	# Accepted adverbs (see statement/1):
 	# - action    -- <action>
 	# - bless     -- <blessing>
 
-	SymCo [SINGLE 1] ;# match operator specifies grammar layer
-	SymCo def ; set lhs [FIRST]
+	SymCo g1
+	SymCo def
 
-	if {[SymCo g1?]} { Start maybe: $lhs }
+	set lhs [FIRST]
+	Start maybe: $lhs
 
-	Container [SymCo layer?] add-bnf {} 0
+	Container g1 add-bnf $lhs {} 0
 
 	# TODO XXX empty rule - adverb checking if ok for l0, or g1 only
-	set adverbs  [SINGLE 2] ;# dict. Optional, possibly empty.
+	set adverbs  [SINGLE 1] ;# dict. Optional, possibly empty.
+	set accepted {action bless}
+	ADVP {empty rule} $adverbs $accepted last-rule
+	return
+    }
+
+    method {empty rule/1} {children} { # OK <lhs> <op declare> <adverb list>
+	# <lhs> <adverb list match empty>
+	#  \- symbol name     |
+	#                     |
+	# Accepted adverbs (see statement/1):
+	# - action    -- <action>
+	# - bless     -- <blessing>
+
+	SymCo l0
+	SymCo def
+
+	set lhs [FIRST]
+	Container l0 add-bnf $lhs {} 0
+
+	# TODO XXX empty rule - adverb checking if ok for l0, or g1 only
+	set adverbs  [SINGLE 1] ;# dict. Optional, possibly empty.
 	set accepted {action bless}
 	ADVP {empty rule} $adverbs $accepted last-rule
 	return
@@ -240,51 +307,94 @@ oo::class create marpa::slif::semantics {
     ## Priority rules. BNF rules, alternatives, prioritized
 
     method {priority rule/0} {children} {
-	# 0     1            2...
-	# <lhs> <op declare> <priorities>
-	#  \- symbol name    \- alternatives each with adverb information
+	# 0     1
+	# <lhs> <priorities bnf>
+	#  \- symbol name     \- alternatives each with adverb information
 	#
 	# Push information (lhs, decl) down to the <alternative>, do
 	# adverb and precedence processing there, not here.
 
-	SymCo [SINGLE 1] ;# match operator specifies grammar layer
-	SymCo def ; set lhs [FIRST]
+	SymCo g1
+	SymCo def
 
-	if {[SymCo g1?]} { Start maybe: $lhs }
+	set lhs [FIRST]
+        Start maybe: $lhs
 
 	SymCo lhs $lhs
 	SymCo use
 	SymCo precedence/reset
 
-	EVALR 2 end
+	EVALR 1 end
     }
 
-    method priorities/0 {children} {
+    method {priority rule/1} {children} {
+	# 0     1
+	# <lhs> <priorities match>
+	#  \- symbol name       \- alternatives each with adverb information
+	#
+	# Push information (lhs, decl) down to the <alternative>, do
+	# adverb and precedence processing there, not here.
+
+	SymCo l0
+	SymCo def
+	SymCo lhs [FIRST]
+	SymCo use
+	SymCo precedence/reset
+
+	EVALR 1 end
+    }
+
+    method {priorities bnf/0} {children} {
 	DESEQ ; EVALS { SymCo precedence/loosen }
-    } ; # OK <alternatives> <op loosen> ...
+    } ; # OK <alternatives bnf> <op loosen> ...
 
-    method alternatives/0 {children} {
+    method {priorities match/0} {children} {
+	DESEQ ; EVALS { SymCo precedence/loosen }
+    } ; # OK <alternatives match> <op loosen> ...
+
+    method {alternatives bnf/0} {children} {
 	DESEQ ; EVAL
-    } ; # OK <alternative> <op equal priority> ...
+    } ; # OK <alternative bnf> <op equal priority> ...
 
-    method alternative/0  {children} {
-	# <rhs> <adverb list>
+    method {alternatives match/0} {children} {
+	DESEQ ; EVAL
+    } ; # OK <alternative match> <op equal priority> ...
+
+    method {alternative bnf/0}  {children} {
+	# <rhs> <adverb list bnf alternative>
+	# G1 implied
 
 	set lhs   [SymCo lhs?]
 	set rhs   [FIRST]
 	set prec  [SymCo precedence?]
-	set layer [SymCo layer?]
 
 	lassign $rhs rhsmask rhssymbols
-	Container $layer add-bnf $lhs $rhssymbols $prec
-	if {[SymCo g1?]} { 
-	    Container $layer last-rule set-mask $rhsmask
-	}
+	Container g1 add-bnf $lhs $rhssymbols $prec
+	Container g1 last-rule set-mask $rhsmask
 
 	# TODO XXX bnf rule - adverb checking if ok for l0, or g1 only
 	set adverbs  [SINGLE 1] ;# dict. Optional, possibly empty.
 	set accepted {action bless name rank assoc}
-	if {[SymCo g1?]} { lappend accepted 0rank }
+        lappend accepted 0rank
+
+	ADVP {bnf rule} $adverbs $accepted last-rule
+	return
+    }
+
+    method {alternative match/0} {children} {
+	# <rhs> <adverb list match alternative>
+	# L0 implied
+
+	set lhs   [SymCo lhs?]
+	set rhs   [FIRST]
+	set prec  [SymCo precedence?]
+
+	lassign $rhs rhsmask rhssymbols
+	Container l0 add-bnf $lhs $rhssymbols $prec
+
+	# TODO XXX bnf rule - adverb checking if ok for l0, or g1 only
+	set adverbs  [SINGLE 1] ;# dict. Optional, possibly empty.
+	set accepted {action bless name rank assoc}
 
 	ADVP {bnf rule} $adverbs $accepted last-rule
 	return
@@ -298,12 +408,6 @@ oo::class create marpa::slif::semantics {
     method {rhs primary/2} {children} { FIRST }          ; # OK <parenthesized rhs primary list>
 
     method {parenthesized rhs primary list/0} {children} { HIDE [FIRST] } ; # OK <rhs primary list>
-
-    # # -- --- ----- -------- -------------
-    ## Match operators (:=, ~)
-
-    method {op declare/0} {children} { CONST g1 }
-    method {op declare/1} {children} { CONST l0 }
 
     # # -- --- ----- -------- -------------
     ## Quantifiers
@@ -321,28 +425,104 @@ oo::class create marpa::slif::semantics {
 
     # # -- --- ----- -------- -------------
     ## Adverb processing. The semantic value coming out of the top of
-    ## that sub tree is a dict mapping from adverb names to pairs,
-    ## with each pair the adverb's value and location in the input.
+    ## that sub tree is a dictionary mapping from adverb names to values.
+    ## Note: Location information is currently not available.
 
-    method {adverb list/0}       {children} { FIRST }
-    method {adverb list items/0} {children} { FLATTEN } ;# Squash parts into single dict
+    method {adverb list default/0}           {children} { FIRST }
+    method {adverb list discard/0}           {children} { FIRST }
+    method {adverb list lexeme/0}            {children} { FIRST }
+    method {adverb list discard default/0}   {children} { FIRST }
+    method {adverb list lexeme default/0}    {children} { FIRST }
+    method {adverb list bnf alternative/0}   {children} { FIRST }
+    method {adverb list bnf empty/0}         {children} { FIRST }
+    method {adverb list bnf quantified/0}    {children} { FIRST }
+    method {adverb list match alternative/0} {children} { FIRST }
+    method {adverb list match empty/0}       {children} { FIRST }
+    method {adverb list match quantified/0}  {children} { FIRST }
 
-    #                                                           Defaults
-    method {adverb item/0}  {children} { FIRST } ;# action      l0 [values] g1 undef
-    method {adverb item/1}  {children} { FIRST } ;# left  assoc \* left
-    method {adverb item/2}  {children} { FIRST } ;# right assoc |
-    method {adverb item/3}  {children} { FIRST } ;# group assoc /
-    method {adverb item/4}  {children} { FIRST } ;# separator   undef
-    method {adverb item/5}  {children} { FIRST } ;# proper      no
-    method {adverb item/6}  {children} { FIRST } ;# rank        ?
-    method {adverb item/7}  {children} { FIRST } ;# null rank   ?
-    method {adverb item/8}  {children} { FIRST } ;# priority    0
-    method {adverb item/9}  {children} { FIRST } ;# pause       undef
-    method {adverb item/10} {children} { FIRST } ;# event       undef
-    method {adverb item/11} {children} { FIRST } ;# latm        no
-    method {adverb item/12} {children} { FIRST } ;# bless       undef
-    method {adverb item/13} {children} { FIRST } ;# name        undef
-    method {adverb item/14} {children} { FIRST } ;# null        N/A
+    # Squash the list of separate parts (each a single-key dict) into
+    # a single (multi-key) dict
+    method {adverb list items default/0}           {children} { FLATTEN }
+    method {adverb list items discard/0}           {children} { FLATTEN }
+    method {adverb list items lexeme/0}            {children} { FLATTEN }
+    method {adverb list items discard default/0}   {children} { FLATTEN }
+    method {adverb list items lexeme default/0}    {children} { FLATTEN }
+    method {adverb list items bnf alternative/0}   {children} { FLATTEN }
+    method {adverb list items bnf empty/0}         {children} { FLATTEN }
+    method {adverb list items bnf quantified/0}    {children} { FLATTEN }
+    method {adverb list items match alternative/0} {children} { FLATTEN }
+    method {adverb list items match empty/0}       {children} { FLATTEN }
+    method {adverb list items match quantified/0}  {children} { FLATTEN }
+
+    method {adverb item default/0} {children} { FIRST } ;# action
+    method {adverb item default/1} {children} { FIRST } ;# blessing
+    method {adverb item default/2} {children} { FIRST } ;# null
+
+    method {adverb item discard/0} {children} { FIRST } ;# event
+    method {adverb item discard/1} {children} { FIRST } ;# null
+
+    method {adverb item lexeme/0} {children} { FIRST } ;# event
+    method {adverb item lexeme/1} {children} { FIRST } ;# latm
+    method {adverb item lexeme/2} {children} { FIRST } ;# priority
+    method {adverb item lexeme/3} {children} { FIRST } ;# pause
+    method {adverb item lexeme/4} {children} { FIRST } ;# null
+
+    method {adverb item discard default/0} {children} { FIRST } ;# event
+    method {adverb item discard default/1} {children} { FIRST } ;# null
+
+    method {adverb item lexeme default/0} {children} { FIRST } ;# action
+    method {adverb item lexeme default/1} {children} { FIRST } ;# blessing
+    method {adverb item lexeme default/2} {children} { FIRST } ;# latm
+    method {adverb item lexeme default/3} {children} { FIRST } ;# null
+
+    method {adverb item bnf alternative/0} {children} { FIRST } ;# action
+    method {adverb item bnf alternative/1} {children} { FIRST } ;# blessing
+    method {adverb item bnf alternative/2} {children} { FIRST } ;# left
+    method {adverb item bnf alternative/3} {children} { FIRST } ;# right
+    method {adverb item bnf alternative/4} {children} { FIRST } ;# group
+    method {adverb item bnf alternative/5} {children} { FIRST } ;# naming
+    method {adverb item bnf alternative/6} {children} { FIRST } ;# null
+
+    method {adverb item bnf empty/0} {children} { FIRST } ;# action
+    method {adverb item bnf empty/1} {children} { FIRST } ;# blessing
+    method {adverb item bnf empty/2} {children} { FIRST } ;# left
+    method {adverb item bnf empty/3} {children} { FIRST } ;# right
+    method {adverb item bnf empty/4} {children} { FIRST } ;# group
+    method {adverb item bnf empty/5} {children} { FIRST } ;# naming
+    method {adverb item bnf empty/6} {children} { FIRST } ;# null
+
+    method {adverb item bnf quantified/0} {children} { FIRST } ;# action
+    method {adverb item bnf quantified/1} {children} { FIRST } ;# blessing
+    method {adverb item bnf quantified/2} {children} { FIRST } ;# separator
+    method {adverb item bnf quantified/3} {children} { FIRST } ;# proper
+    method {adverb item bnf quantified/4} {children} { FIRST } ;# null
+
+    method {adverb item match alternative/0} {children} { FIRST } ;# naming
+    method {adverb item match alternative/1} {children} { FIRST } ;# null
+
+    method {adverb item match empty/0} {children} { FIRST } ;# naming
+    method {adverb item match empty/1} {children} { FIRST } ;# null
+
+    method {adverb item match quantified/0} {children} { FIRST } ;# separator
+    method {adverb item match quantified/1} {children} { FIRST } ;# proper
+    method {adverb item match quantified/2} {children} { FIRST } ;# null
+
+    #             Defaults
+    # action      l0 [values] g1 undef
+    # left  assoc \* left
+    # right assoc |
+    # group assoc /
+    # separator   undef
+    # proper      no
+    # rank        ?
+    # null rank   ?
+    # priority    0
+    # pause       undef
+    # event       undef
+    # latm        no
+    # bless       undef
+    # name        undef
+    # null        N/A
 
     # # -- --- ----- -------- -------------
 
@@ -697,6 +877,7 @@ oo::class create marpa::slif::semantics {
 
     method unknown {m args} {
 	debug.marpa/slif/semantics {[AT] IGNORING ($m)}
+error "Unknown rule: $m"
 	return
     }
 
@@ -826,11 +1007,11 @@ oo::class create marpa::slif::semantics::SymContext {
 	return $ok
     }
 
-    method g1? {} {
+    if 0 {method g1? {} {
 	set ok [expr {$mylayer eq "g1"}]
 	debug.marpa/slif/semantics {[debug caller] | ==> $ok}
 	return $ok
-    }
+    }}
 
     method def? {} {
 	set ok [expr {$mytype eq "def"}]

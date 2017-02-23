@@ -4,11 +4,9 @@ statements/0
       lhs/0
         symbol name/0
           @0 1 'E'
-      op declare/0
-        @2 3 '::='
-      priorities/0
-        alternatives/0
-          alternative/0
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
@@ -17,7 +15,7 @@ statements/0
                       @6 1 'N'
             @{} {} ''
           @12 1 '|'
-          alternative/0
+          alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
@@ -34,13 +32,13 @@ statements/0
                   symbol/0
                     symbol name/0
                       @19 2 'PC'
-            adverb list/0
-              adverb list items/0
-                adverb item/3
+            adverb list bnf alternative/0
+              adverb list items bnf alternative/0
+                adverb item bnf alternative/4
                   group association/0
         @40 2 '||'
-        alternatives/0
-          alternative/0
+        alternatives bnf/0
+          alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
@@ -57,13 +55,13 @@ statements/0
                   symbol/0
                     symbol name/0
                       @49 1 'E'
-            adverb list/0
-              adverb list items/0
-                adverb item/2
+            adverb list bnf alternative/0
+              adverb list items bnf alternative/0
+                adverb item bnf alternative/3
                   right association/0
         @69 2 '||'
-        alternatives/0
-          alternative/0
+        alternatives bnf/0
+          alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
@@ -82,7 +80,7 @@ statements/0
                       @78 1 'E'
             @{} {} ''
           @84 1 '|'
-          alternative/0
+          alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
@@ -101,8 +99,8 @@ statements/0
                       @92 1 'E'
             @{} {} ''
         @97 2 '||'
-        alternatives/0
-          alternative/0
+        alternatives bnf/0
+          alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
@@ -121,7 +119,7 @@ statements/0
                       @106 1 'E'
             @{} {} ''
           @112 1 '|'
-          alternative/0
+          alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0

@@ -1,11 +1,9 @@
 statements/0
   statement/5
-    quantified rule/0
+    quantified rule/1
       lhs/0
         symbol name/0
           @0 1 'A'
-      op declare/1
-        @2 1 '~'
       single symbol/0
         symbol/0
           symbol name/0

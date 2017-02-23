@@ -330,10 +330,23 @@ oo::class create marpa::slif::parser {
 	    {lexeme rule}    {completion event declaration}
 	    {nulled event declaration}    {prediction event declaration}
 	    {current lexer statement}    {inaccessible statement}    {inaccessible treatment}
-	    {op declare}    priorities
-	    alternatives    alternative
-	    {adverb list}    {adverb list items}
-	    {adverb item}    {null adverb}
+	    {priorities bnf} {priorities match}
+	    {alternatives bnf}    {alternative bnf}
+	    {alternatives match}    {alternative match}
+
+	    {adverb list default}		{adverb list items default}		{adverb item default}
+	    {adverb list discard}		{adverb list items discard}		{adverb item discard}
+	    {adverb list lexeme}		{adverb list items lexeme}		{adverb item lexeme}
+	    {adverb list discard default}	{adverb list items discard default}	{adverb item discard default}
+	    {adverb list lexeme default}	{adverb list items lexeme default}	{adverb item lexeme default}
+	    {adverb list bnf alternative}	{adverb list items bnf alternative}	{adverb item bnf alternative}
+	    {adverb list bnf empty}		{adverb list items bnf empty}		{adverb item bnf empty}
+	    {adverb list bnf quantified}	{adverb list items bnf quantified}	{adverb item bnf quantified}
+	    {adverb list match alternative}	{adverb list items match alternative}	{adverb item match alternative}
+	    {adverb list match empty}		{adverb list items match empty}		{adverb item match empty}
+	    {adverb list match quantified}	{adverb list items match quantified}	{adverb item match quantified}
+
+	    {null adverb}
 	    action    {left association}
 	    {right association}    {group association}
 	    {separator specification}    {proper specification}
@@ -377,16 +390,19 @@ oo::class create marpa::slif::parser {
 	    {{statement group}			:M {0 2} @lex-\{ statements @lex-\}}
 	    {{start rule}			:M {0 1} @lex-:start {op declare bnf} symbol}
 	    {{start rule}			:M {0 1 2} @lex-start @lex-symbol @lex-is symbol}
-	    {{default rule}			:M {0 1} @lex-:default {op declare bnf} {adverb list}}
-	    {{lexeme default statement}		:M {0 1 2} @lex-lexeme @lex-default @lex-= {adverb list}}
-	    {{discard default statement}	:M {0 1 2} @lex-discard @lex-default @lex-= {adverb list}}
-	    {{priority rule}			:= lhs {op declare} priorities}
-	    {{empty rule}			:= lhs {op declare} {adverb list}}
-	    {{quantified rule}			:= lhs {op declare} {single symbol} quantifier {adverb list}}
+	    {{default rule}			:M {0 1} @lex-:default {op declare bnf} {adverb list default}}
+	    {{lexeme default statement}		:M {0 1 2} @lex-lexeme @lex-default @lex-= {adverb list lexeme default}}
+	    {{discard default statement}	:M {0 1 2} @lex-discard @lex-default @lex-= {adverb list discard default}}
+	    {{priority rule}			:M {1} lhs {op declare bnf} {priorities bnf}}
+	    {{priority rule}			:M {1} lhs {op declare match} {priorities match}}
+	    {{empty rule}			:M {1} lhs {op declare bnf} {adverb list bnf empty}}
+	    {{empty rule}			:M {1} lhs {op declare match} {adverb list match empty}}
+	    {{quantified rule}			:M {1} lhs {op declare bnf} {single symbol} quantifier {adverb list bnf quantified}}
+	    {{quantified rule}			:M {1} lhs {op declare match} {single symbol} quantifier {adverb list match quantified}}
 	    {quantifier                         := @lex-*}
 	    {quantifier                         := @lex-+}
-	    {{discard rule}			:M {0 1} @lex-:discard {op declare match} {single symbol} {adverb list}}
-	    {{lexeme rule}			:M {0 1} @lex-:lexeme {op declare match} symbol {adverb list}}
+	    {{discard rule}			:M {0 1} @lex-:discard {op declare match} {single symbol} {adverb list discard}}
+	    {{lexeme rule}			:M {0 1} @lex-:lexeme {op declare match} symbol {adverb list lexeme}}
 	    {{completion event declaration}	:M {0 2 3} @lex-event {event initialization} @lex-= @lex-completed {symbol name}}
 	    {{nulled event declaration}		:M {0 2 3} @lex-event {event initialization} @lex-= @lex-nulled {symbol name}}
 	    {{prediction event declaration}	:M {0 2 3} @lex-event {event initialization} @lex-= @lex-predicted {symbol name}}
@@ -395,28 +411,93 @@ oo::class create marpa::slif::parser {
 	    {{inaccessible treatment}		:= @lex-warn}
 	    {{inaccessible treatment}		:= @lex-ok}
 	    {{inaccessible treatment}		:= @lex-fatal}
-	    {{op declare}			:= {op declare bnf}}
-	    {{op declare}			:= {op declare match}}
-	    {priorities				+ alternatives {op loosen} yes}
-	    {alternatives			+ alternative  {op equal priority} yes}
-	    {alternative			:= rhs {adverb list}}
-	    {{adverb list}			:= {adverb list items}}
-	    {{adverb list items}		* {adverb item}}
-	    {{adverb item}			:= action}
-	    {{adverb item}			:= {left association}}
-	    {{adverb item}			:= {right association}}
-	    {{adverb item}			:= {group association}}
-	    {{adverb item}			:= {separator specification}}
-	    {{adverb item}			:= {proper specification}}
-	    {{adverb item}			:= {rank specification}}
-	    {{adverb item}			:= {null ranking specification}}
-	    {{adverb item}			:= {priority specification}}
-	    {{adverb item}			:= {pause specification}}
-	    {{adverb item}			:= {event specification}}
-	    {{adverb item}			:= {latm specification}}
-	    {{adverb item}			:= blessing}
-	    {{adverb item}			:= naming}
-	    {{adverb item}			:= {null adverb}}
+
+	    {{priorities bnf}			+ {alternatives bnf}   {op loosen} yes}
+	    {{priorities match}			+ {alternatives match} {op loosen} yes}
+
+	    {{alternatives bnf}			+ {alternative bnf}   {op equal priority} yes}
+	    {{alternatives match}		+ {alternative match} {op equal priority} yes}
+
+	    {{alternative bnf}			:= rhs {adverb list bnf alternative}}
+	    {{alternative match}		:= rhs {adverb list match alternative}}
+
+	    {{adverb list default}		:= {adverb list items default}}
+	    {{adverb list discard}		:= {adverb list items discard}}	    
+	    {{adverb list lexeme}		:= {adverb list items lexeme}}	    
+	    {{adverb list discard default}	:= {adverb list items discard default}}
+	    {{adverb list lexeme default}	:= {adverb list items lexeme default}}
+	    {{adverb list bnf alternative}	:= {adverb list items bnf alternative}}
+	    {{adverb list bnf empty}		:= {adverb list items bnf empty}}
+	    {{adverb list bnf quantified}	:= {adverb list items bnf quantified}}
+	    {{adverb list match alternative}	:= {adverb list items match alternative}}
+	    {{adverb list match empty}		:= {adverb list items match empty}}
+	    {{adverb list match quantified}	:= {adverb list items match quantified}}
+
+	    {{adverb list items default}		* {adverb item default}}
+	    {{adverb list items discard}		* {adverb item discard}}
+	    {{adverb list items lexeme}			* {adverb item lexeme}}
+	    {{adverb list items discard default}	* {adverb item discard default}}
+	    {{adverb list items lexeme default}		* {adverb item lexeme default}}
+	    {{adverb list items bnf alternative}	* {adverb item bnf alternative}}
+	    {{adverb list items bnf empty}		* {adverb item bnf empty}}
+	    {{adverb list items bnf quantified}		* {adverb item bnf quantified}}
+	    {{adverb list items match alternative}	* {adverb item match alternative}}
+	    {{adverb list items match empty}		* {adverb item match empty}}
+	    {{adverb list items match quantified}	* {adverb item match quantified}}
+
+	    {{adverb item default}		:= action}
+	    {{adverb item default}		:= blessing}
+	    {{adverb item default}		:= {null adverb}}
+
+	    {{adverb item discard}		:= {event specification}}
+	    {{adverb item discard}		:= {null adverb}}
+
+	    {{adverb item lexeme}		:= {event specification}}
+	    {{adverb item lexeme}		:= {latm specification}}
+	    {{adverb item lexeme}		:= {priority specification}}
+	    {{adverb item lexeme}		:= {pause specification}}
+	    {{adverb item lexeme}		:= {null adverb}}
+
+	    {{adverb item discard default}	:= {event specification}}
+	    {{adverb item discard default}	:= {null adverb}}
+
+	    {{adverb item lexeme default}	:= action}
+	    {{adverb item lexeme default}	:= blessing}
+	    {{adverb item lexeme default}	:= {latm specification}}
+	    {{adverb item lexeme default}	:= {null adverb}}
+
+	    {{adverb item bnf alternative}	:= action}
+	    {{adverb item bnf alternative}	:= blessing}
+	    {{adverb item bnf alternative}	:= {left association}}
+	    {{adverb item bnf alternative}	:= {right association}}
+	    {{adverb item bnf alternative}	:= {group association}}
+	    {{adverb item bnf alternative}	:= naming}
+	    {{adverb item bnf alternative}	:= {null adverb}}
+
+	    {{adverb item bnf empty}		:= action}
+	    {{adverb item bnf empty}		:= blessing}
+	    {{adverb item bnf empty}		:= {left association}}
+	    {{adverb item bnf empty}		:= {right association}}
+	    {{adverb item bnf empty}		:= {group association}}
+	    {{adverb item bnf empty}		:= naming}
+	    {{adverb item bnf empty}		:= {null adverb}}
+
+	    {{adverb item bnf quantified}	:= action}
+	    {{adverb item bnf quantified}	:= blessing}
+	    {{adverb item bnf quantified}	:= {separator specification}}
+	    {{adverb item bnf quantified}	:= {proper specification}}
+	    {{adverb item bnf quantified}	:= {null adverb}}
+
+	    {{adverb item match alternative}	:= naming}
+	    {{adverb item match alternative}	:= {null adverb}}
+
+	    {{adverb item match empty}		:= naming}
+	    {{adverb item match empty}		:= {null adverb}}
+
+	    {{adverb item match quantified}	:= {separator specification}}
+	    {{adverb item match quantified}	:= {proper specification}}
+	    {{adverb item match quantified}	:= {null adverb}}
+
 	    {{null adverb}			:= @lex-,}
 	    {action				:M {0 1} @lex-action @lex-=> {action name}}
 	    {{left association}			:M {0 1 2} @lex-assoc @lex-=> @lex-left}
