@@ -1,0 +1,12 @@
+statements/0
+  statement/1
+    empty rule/0
+      lhs/0
+        symbol name/0
+          @0 1 'A'
+      adverb list bnf empty/0
+        adverb list items bnf empty/0
+          adverb item bnf empty/5
+            naming/0
+              alternative name/1
+                @14 15 {''a/b reduction''}

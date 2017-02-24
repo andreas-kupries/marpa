@@ -1,0 +1,12 @@
+statements/0
+  statement/1
+    empty rule/0
+      lhs/0
+        symbol name/0
+          @0 1 'A'
+      adverb list bnf empty/0
+        adverb list items bnf empty/0
+          adverb item bnf empty/1
+            blessing/0
+              blessing name/1
+                @15 5 '::bar'
