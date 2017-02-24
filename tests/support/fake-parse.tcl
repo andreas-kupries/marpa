@@ -29,12 +29,15 @@ oo::class create Marpa::Testing::FP {
 	return
     }
     method eof {} {}
-    method fail {dict} {}
     method symbols {syms} {
 	foreach s $syms { lappend acc $id ; incr id }
 	return $acc
     }
-
+    method fail {cv} {
+	upvar 1 $cv context
+	return -code error -errorcode {FAKE FAIL} \
+	    "FAIL ($context)"
+    }
     # # ## ### ##### ######## #############
 }
 
@@ -51,12 +54,15 @@ oo::class create Marpa::Testing::FPN {
 	return
     }
     method eof {} {}
-    method fail {dict} {}
     method symbols {syms} {
 	foreach s $syms { lappend acc $id ; incr id }
 	return $acc
     }
-
+    method fail {cv} {
+	upvar 1 $cv context
+	return -code error -errorcode {FAKE FAIL} \
+	    "FAIL ($context)"
+    }
     # # ## ### ##### ######## #############
 }
 

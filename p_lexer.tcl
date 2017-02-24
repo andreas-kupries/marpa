@@ -302,6 +302,31 @@ oo::class create marpa::lexer {
 	return
     }
 
+    method fail {cv} {
+	debug.marpa/lexer {[debug caller] | }
+	upvar 1 $cv context
+
+	my ExtendContext context
+	Forward fail context
+
+	# Note: This method must not return, but throw an error at
+	# some point. If it returns we have an internal problem at
+	# hand as well. In that case we report that now, together with
+	# the context.
+
+	my E "Unexpected return without error for problem: $context" \
+	    INTERNAL ILLEGAL RETURN $context
+    }
+
+    method get-context {cv} {
+	debug.marpa/lexer {[debug caller] | }
+	upvar 1 $cv context
+
+	Gate get-context context
+	my ExtendContext context
+	return
+    }
+
     method eof {} {
 	debug.marpa/lexer {[debug caller] | }
 
@@ -416,20 +441,22 @@ oo::class create marpa::lexer {
 	    incr redo
 	    incr latest -1
 	    if {$latest < 0} {
-		Forward fail [dict create \
-				  msg "No lexeme found at $mystart" \
-				  at  $mystart]
 
-		# TODO: Here more information can be provided, i.e.
-		#       where in the input we got stopped, and such.
-		#       This could/should be made a method for every
-		#       processor in the pipeline, to forward a problem
-		#       and each stage adding its own information.
+		my get-context context
 
 		# The current recognizer is done.
 		RECCE destroy
 		set myrecce {}
-		return
+
+		Forward fail context
+
+		# Note: This method must not return, but throw an
+		# error at some point. If it returns we have an
+		# internal problem at hand as well. In that case we
+		# report that now, together with the context.
+
+		my E "Unexpected return without error for problem: $context" \
+		    INTERNAL ILLEGAL RETURN $context
 	    }
 	}
 	debug.marpa/lexer {[debug caller] | Lexeme length: $latest}
@@ -534,6 +561,26 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | Re-process $redo ...}
 	Gate redo $redo
 	debug.marpa/lexer {[debug caller] | ... Reprocessed}
+	return
+    }
+
+    method ExtendContext {cv} {
+	debug.marpa/lexer {[debug caller] | }
+	upvar 1 $cv context
+
+	# Extend the context we got from the gate with lexeme
+	# information, i.e. which were acceptable to the parser.
+	# Then forward to the parser for his take.
+
+	foreach s $myacceptable {
+	    lappend acceptable [string range [my 2Name1 [dict get $myacs $s]] 4 end]
+	}
+	foreach s $mydiscard {
+	    lappend acceptable [string range [my 2Name1 $s] 4 end]
+	}
+	# Note: The string range strips the 'ACS:' prefix from the symbol names.
+
+	dict set context g1 acceptable [lsort -dict $acceptable]
 	return
     }
 

@@ -193,10 +193,23 @@ oo::class create marpa::parser {
 	return
     }
 
-    # TODO: fail - integrate into sequencing
-    method fail {dict} {
+    # TODO: XXX fail - integrate into sequencing
+    method fail {cv} {
 	debug.marpa/parser {}
-	Forward fail $dict
+	upvar 1 $cv context
+
+	# The parser has nothing to say at the moment regarding the
+	# failure context. Pass forward to the AST handler.
+
+	Forward fail context
+
+	# Note: This method must not return, but throw an error at
+	# some point. If it returns we have an internal problem at
+	# hand as well. In that case we report that now, together with
+	# the context.
+
+	my E "Unexpected return without error for problem: $context" \
+	    INTERNAL ILLEGAL RETURN $context
     }
 
     # # -- --- ----- -------- -------------
@@ -310,17 +323,18 @@ oo::class create marpa::parser {
 	}]} {
 	    incr latest -1
 	    if {$latest < 0} {
-		Forward fail [dict create \
-				  msg "Parsing failed"]
+		# Generate a context for the parse failure.  Get as
+		# much information as we can from the lexer (and the
+		# gate before it). Note that this may be called
+		# before the lexer is known.
 
-		# TODO: Here more information can be provided, i.e.
-		#       where in the input we got stopped, and such.
-		#       This could/should be made a method for every
-		#       processor in the pipeline, to forward a problem
-		#       and each stage adding its own information.
+		set context {}
+		catch { Lexer get-context context }
 
 		# The parser is done.
 		RECCE destroy
+
+		Forward fail context
 		return
 	    }
 	}

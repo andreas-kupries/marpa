@@ -29,6 +29,7 @@ debug prefix marpa/slif/parser {[debug caller] | }
 
 oo::class create marpa::slif::parser {
     # # ## ### ##### ######## #############
+    marpa::E marpa/slif/parser SLIF PARSER
 
     constructor {} {
 	# Build the processing pipeline, and configure the various
@@ -578,21 +579,72 @@ oo::class create marpa::slif::parser {
 
 # Capture final AST, internal class.
 oo::class create marpa::slif::parser::Capture {
+    marpa::E marpa/slif/parser SLIF PARSER
+
     variable myresult
-    variable mycode
+
     method result {} {
-	return -code $mycode $myresult
+	return $myresult
     }
+
     method enter {ast} {
-	set mycode ok
 	set myresult $ast
+	return
     }
+
     method eof {} {}
-    method fail {msg} {
-	set mycode error
-	set myresult $msg
+
+    method fail {cv} {
+	upvar 1 $cv context
+
+	# Expected keys
+	# - l0 at         : current location (offset from start of input)
+	# - l0 char       : current character
+	# - l0 acceptable : list of characters the lexer gate looked for
+	# - g1 acceptable : list of lexemes the lexer/parser looked for
+
+	append msg "Parsing failed."
+
+	if {[dict exists $context l0 at]} {
+	    set at [dict get $context l0 at]
+	    if {$at eq {}} {
+		append msg " Unable to determine location in the input"
+	    } else {
+		if {$at < 0} {
+		    append msg " No input"
+		} else {
+		    append msg " Stopped at offset " $at
+		}
+	    }
+
+	    if {[dict exists $context l0 char]} {
+		append msg " after reading '" [char quote cstring [dict get $context l0 char]] "'"
+	    }
+	    append msg "."
+	} elseif {[dict exists $context l0 char]} {
+	    append msg "Stopped after reading '" [char quote cstring [dict get $context l0 char]] "'."
+	}
+
+	set chars 0
+	if {[dict exists $context l0 acceptable]} {
+	    append msg " Expected any character in \["
+	    append msg [char quote cstring [join [dict get $context l0 acceptable] {}]] "\]"
+	    set chars 1
+	}
+
+	if {[dict exists $context g1 acceptable]} {
+	    if {$chars} {
+		append msg " while looking"
+	    } else {
+		append msg " Looking"
+	    }
+	    append msg " for any of (" [join [dict get $context g1 acceptable] {, }] ")."
+	} elseif {$chars} {
+	    append msg "."
+	}
+
+	my E $msg SYNTAX $context
     }
-    # TODO: Extend fail to provide more information, and capture this here.
 }
 
 # # ## ### ##### ######## #############

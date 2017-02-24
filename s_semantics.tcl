@@ -96,7 +96,7 @@ oo::class create marpa::slif::semantics {
 	link {E       ERR}
     }
 
-    method enter {ast} {
+    method process {ast} {
 	debug.marpa/slif/semantics {[debug caller 1] |}
 
 	# Execute the AST, and in doing so fill the slif grammar
@@ -109,16 +109,6 @@ oo::class create marpa::slif::semantics {
 	debug.marpa/slif/semantics {[debug caller 1] | /ok}
 	my destroy
 	return
-    }
-
-    method eof {} {
-	puts /eof
-	# Nothing to do.
-    }
-
-    method fail {} {
-	puts /fail
-	# Report incoming error.
     }
 
     # # ## ### ##### ######## #############

@@ -40,52 +40,28 @@ test marpa-slif-semantics-constructor-1.1 {constructor, wrong args, too many} -b
 } -returnCodes error -result {wrong # args: should be "marpa::slif::semantics new container"}
 
 # # ## ### ##### ######## ############# #####################
-## enter
+## process
 
-test marpa-slif-semantics-enter-1.0 {enter, wrong args, not enough} -setup {
+test marpa-slif-semantics-process-1.0 {process, wrong args, not enough} -setup {
     marpa::slif::semantics create SE [log CONTAINER]
 } -body {
-    SE enter
+    SE process
 } -cleanup {
     SE destroy
     logged
-} -returnCodes error -result {wrong # args: should be "SE enter ast"}
+} -returnCodes error -result {wrong # args: should be "SE process ast"}
 
-test marpa-slif-semantics-enter-1.1 {enter, wrong args, too many} -setup {
+test marpa-slif-semantics-process-1.1 {process, wrong args, too many} -setup {
     marpa::slif::semantics create SE [log CONTAINER]
 } -body {
-    SE enter AST X
+    SE process AST X
 } -cleanup {
     SE destroy
     logged
-} -returnCodes error -result {wrong # args: should be "SE enter ast"}
+} -returnCodes error -result {wrong # args: should be "SE process ast"}
 
 # # ## ### ##### ######## ############# #####################
-## eof
-
-test marpa-slif-semantics-eof-1.0 {eof, wrong args, too many} -setup {
-    marpa::slif::semantics create SE [log CONTAINER]
-} -body {
-    SE eof X
-} -cleanup {
-    SE destroy
-    logged
-} -returnCodes error -result {wrong # args: should be "SE eof"}
-
-# # ## ### ##### ######## ############# #####################
-## fail
-
-test marpa-slif-semantics-fail-1.0 {fail, wrong args, too many} -setup {
-    marpa::slif::semantics create SE [log CONTAINER]
-} -body {
-    SE fail X
-} -cleanup {
-    SE destroy
-    logged
-} -returnCodes error -result {wrong # args: should be "SE fail"}
-
-# # ## ### ##### ######## ############# #####################
-## enter
+## process
 
 incr k
 foreach slif [lsort -dict [kt find grammars/*/slif]] {
@@ -93,12 +69,12 @@ foreach slif [lsort -dict [kt find grammars/*/slif]] {
     set slifstr  [fileutil::cat $slif]
     set expected [string trimright [fileutil::cat [file dirname $slif]/ctrace]]
 
-    test marpa-slif-semantics-enter-${caseid}-2.$k "enter $slif, trace" -setup {
+    test marpa-slif-semantics-process-${caseid}-2.$k "process $slif, trace" -setup {
 	marpa::slif::semantics create SE [log GC] ; trace GC
 	marpa::slif::parser    create SP
     } -body {
 	if {[catch {
-	    SE enter [SP process $slifstr]
+	    SE process [SP process $slifstr]
 	} msg]} {
 	    #puts $::errorInfo
 	    log-add GC error $msg
@@ -107,7 +83,7 @@ foreach slif [lsort -dict [kt find grammars/*/slif]] {
     } -cleanup {
 	unset msg
 	SP destroy
-	catch { SE destroy } ;# auto-destroyed in enter, or not if previous test failed.
+	catch { SE destroy } ;# auto-destroyed in process, or not if previous test failed.
 	# Thus, try to destroy, ignore error if already gone
     } -result $expected
 

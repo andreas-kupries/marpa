@@ -126,6 +126,8 @@ test marpa-gate-1.2 {constructor, externals} -body {
 } -cleanup {
     GATE destroy
 } -result {
+  STORE C {put {-1 -1 {}}}
+  STORE R {put {-1 -1 {}}} = {}
   LEX C {gate: ::GATE}
   LEX R {gate: ::GATE} = {}
 }
@@ -562,7 +564,7 @@ test marpa-gate-3.4.0 {enter, unable to handle symbol} -setup {
 } -cleanup {
     GATE destroy
     logged ; lexed
-} -returnCodes error -result {Stopped reading at offset <indeterminate>. Expected 'C'. Having 'X' instead}
+} -returnCodes error -result {FAIL (l0 {at {} char X acceptable C})}
 
 test marpa-gate-3.5.0 {enter, during lexing, regated} -setup {
     marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]

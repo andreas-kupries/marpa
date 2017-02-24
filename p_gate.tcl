@@ -92,12 +92,16 @@ oo::class create marpa::gate {
     variable myacceptable ;# sym -> .
     variable myhistory    ;# Entered characters and semantic values.
 
+    variable mylastchar   ;# last character "enter"ed into the gate
+    variable mylastvalue  ;# Sem value for last character, effectively its lcoation
+
     # # -- --- ----- -------- -------------
     ## Configuration
 
-    variable mymap        ;# char -> set of sym id
-    variable myrmap       ;# sym id -> char(class)
-    variable myclass      ;# name -> Tcl regex char class + sym id
+    variable mymap        ;# char   -> set of sym-id
+    variable myrmap       ;# sym-id -> char(class)
+    variable myclass      ;# name   -> list (spec sym-id)
+    # where                            spec = Tcl regex char class
 
     ##
     # API self:
@@ -122,12 +126,14 @@ oo::class create marpa::gate {
     ## Lifecycle
 
     constructor {semstore postprocessor} {
-	debug.marpa/gate {[debug caller] | ]}
+	debug.marpa/gate {[debug caller] | }
 
 	marpa::import $semstore      Store ;# Failure handling and debugging.
 	marpa::import $postprocessor Forward
 
 	# Dynamic state for processing
+	set mylastchar   {} ;# char/loc before anything was entered
+	set mylastvalue  [Store put {-1 -1 {}}]
 	set myhistory    {} ;# queue of processed characters
 	set myacceptable {} ;# set of expected/allowed symbols,
 			     # initially none
@@ -151,7 +157,7 @@ oo::class create marpa::gate {
 	debug.marpa/gate {[debug caller] | }
 
 	# Bulk definition of the whole gate.
-	my SetupCharacters   $characters
+	my SetupCharacters       $characters
 	my SetupCharacterClasses $classes
 	return
     }
@@ -162,9 +168,36 @@ oo::class create marpa::gate {
 	return
     }
 
+    method get-context {cv} {
+	debug.marpa/gate {[debug caller] | }
+	upvar 1 $cv context
+
+	if {[llength $myhistory]} {
+	    # Pull location information out of the history.
+	    lassign [lrange $myhistory end-1 end] char value
+	} else {
+	    # When history is not available try to pull information
+	    # from the last character which went into the gate
+	    # instead, as a last fallback.
+	    set char $mylastchar
+	    set value $mylastvalue
+	}
+
+	my ExtendContext context $char $value
+	return
+    }
+
     method enter {char value} {
 	debug.marpa/gate {[debug caller 1] | See '[char quote cstring $char]' ([marpa location show [Store get $value]])}
 
+	set mylastchar  $char
+	set mylastvalue $value
+
+	# Trick for lazy setup of the gate datastructures in the face
+	# of unknown characters. These can only exist as part of some
+	# character class. As a standalone they would have been
+	# declared already and be known.
+	##
 	# Extend the map when encountering an unknown character, check
 	# the char classes for one it may belong to. Note, this is the
 	# only way an unknown character can appear in later stages.
@@ -218,27 +251,22 @@ oo::class create marpa::gate {
 		return
 	    }
 
-	    # character is not acceptable. Flush to the postprocessor,
-	    # except if we did it already, then we have to stop, the
-	    # input completely bogus.
+	    # The character we have is not acceptable. If we just
+	    # reached it we flush our state to the postprocessor, so
+	    # that it may check if it is has a lexeme, after which the
+	    # character may be accepted. If we flushed already, then
+	    # we have to error out, there is no forward from here.
 	    if {$flushed} {
-		lassign [Store get $value] so eo __
-		if {$so eq {}} { set so <indeterminate> }
+		my ExtendContext context $char $value
+		Forward fail context
 
-		foreach s [dict keys $myacceptable] {
-		    set e [dict get $myrmap $s]
-		    lappend exlist $e
-		    lappend eclist '[char quote cstring $e]'
-		}
-		if {[llength $eclist] > 1} {
-		    set eclist "one of [join [linsert [join $eclist {, }] end-1 or] { }]"
-		}
+		# Note: This method must not return, but throw an
+		# error at some point. If it returns we have an
+		# internal problem at hand as well. In that case we
+		# report that now, together with the context.
 
-		# TODO: Convert this into a 'Forward fail' so that
-		# lexer and parser can put their own oars in with
-		# regard to the context (Expected lexemes).
-		my E "Stopped reading at offset $so. Expected $eclist. Having '[char quote cstring $char]' instead" \
-		    FLUSH $char OFFSET $so EXPECTING $exlist
+		my E "Unexpected return without error for problem: $context" \
+		    INTERNAL ILLEGAL RETURN $context
 	    }
 
 	    incr flushed
@@ -276,6 +304,40 @@ oo::class create marpa::gate {
 	    # Redo nothing
 	    set myhistory {}
 	}
+	return
+    }
+
+    method ExtendContext {cv char value} {
+	debug.marpa/gate {[debug caller] | }
+	upvar 1 $cv context
+
+	if {$value ne {}} {
+	    lassign [Store get $value] startoffset __ __
+	    dict set context l0 at $startoffset
+	}
+	if {$char ne {}} {
+	    dict set context l0 char $char
+	}
+
+	foreach sym [dict keys $myacceptable] {
+	    set cname [dict get $myrmap $sym] ;# char or name of charclass
+	    if {[dict exists $myclass $cname]} {
+		# map charclass to the set of characters it contains.
+		lassign [dict get $myclass $cname] cname __
+		set cname [string range $cname 1 end-1]
+
+		# TODO: Need package and commands to manipulate char
+		# ranges and char classes.  (include, exclude, union,
+		# intersect, merge, ...)
+
+		# TODO: The above can be handled as a package to
+		# handle integer sets, ranges, with characters mapped
+		# in and out via their 'codepoints'.
+	    }
+	    lappend acceptable $cname
+	}
+
+	dict set context l0 acceptable [lsort -dict $acceptable]
 	return
     }
 

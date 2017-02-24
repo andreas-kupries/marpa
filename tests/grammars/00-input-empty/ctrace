@@ -1,1 +1,1 @@
-GC error {msg {Parsing failed}}
+GC error Parsing\ failed.\ No\ input.\ Expected\ any\ character\ in\ \[#:\;<\\\\s\\\\wcdeils\\173\]\ while\ looking\ for\ any\ of\ (@lex-:default,\ @lex-:discard,\ @lex-:lexeme,\ @lex-:start,\ @lex-\;,\ @lex-current,\ @lex-discard,\ @lex-event,\ @lex-inaccessible,\ @lex-lexeme,\ @lex-start,\ @lex-\{,\ bare\ name,\ bracketed\ name,\ hash\ comment,\ whitespace).

@@ -84,9 +84,12 @@ foreach slif [lsort -dict [kt find grammars/*/slif]] {
     test marpa-slif-parser-process-${caseid}-2.$k "process $slif" -setup {
 	marpa::slif::parser create SP
     } -body {
-	catch {
+	if {[catch {
 	    pretty-ast [SP process $slifstr]
-	} msg ; set msg
+	} msg]} {
+	    #puts ZZZ:$::errorInfo
+	}
+	set msg
     } -cleanup {
 	SP destroy
 	unset msg
@@ -95,9 +98,12 @@ foreach slif [lsort -dict [kt find grammars/*/slif]] {
     test marpa-slif-parser-process-file-${caseid}-2.$k "process-file $slif" -setup {
 	marpa::slif::parser create SP
     } -body {
-	catch {
+	if {[catch {
 	    pretty-ast [SP process-file $slif]
-	} msg ; set msg
+	} msg]} {
+	    #puts ZZZ:$::errorInfo
+	}
+	set msg
     } -cleanup {
 	SP destroy
 	unset msg

@@ -32,7 +32,11 @@ oo::class create Marpa::Testing::FLN {
 	foreach s $syms { lappend acc $i ; incr i }
 	return $acc
     }
-
+    method fail {cv} {
+	upvar 1 $cv context
+	return -code error -errorcode {FAKE FAIL} \
+	    "FAIL ($context)"
+    }
     # # ## ### ##### ######## #############
 }
 
@@ -53,7 +57,11 @@ oo::class create Marpa::Testing::FLI {
 	foreach s $syms { lappend acc $i ; incr i }
 	return $acc
     }
-
+    method fail {cv} {
+	upvar 1 $cv context
+	return -code error -errorcode {FAKE FAIL} \
+	    "FAIL ($context)"
+    }
     # # ## ### ##### ######## #############
 }
 
@@ -75,7 +83,11 @@ oo::class create Marpa::Testing::FLE {
 	foreach s $syms { lappend acc $i ; incr i }
 	return $acc
     }
-
+    method fail {cv} {
+	upvar 1 $cv context
+	return -code error -errorcode {FAKE FAIL} \
+	    "FAIL ($context)"
+    }
     # # ## ### ##### ######## #############
 }
 
@@ -97,7 +109,11 @@ oo::class create Marpa::Testing::FLX {
 	set acc 0
 	return $r
     }
-
+    method fail {cv} {
+	upvar 1 $cv context
+	return -code error -errorcode {FAKE FAIL} \
+	    "FAIL ($context)"
+    }
     # # ## ### ##### ######## #############
 }
 

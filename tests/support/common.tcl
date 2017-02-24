@@ -107,7 +107,7 @@ oo::class create Marpa::Testing::Intercept {
 
     method unknown {args} {
 	lappend mycalls C $args
-	set result [{*}$mytarget {*}$args]
+	set result [uplevel 1 [list {*}$mytarget {*}$args]]
 	lappend mycalls $result
 	return $result
     }
@@ -147,10 +147,10 @@ oo::class create Marpa::Testing::Divert {
 	if {$mytrace} {
 	    # Tracing is a shorter log. Want to see only calls, return values irrelevant.
 	    $mylogger $mylabel {*}$args
-	    return [{*}$mytarget {*}$args]
+	    return [uplevel 1 [list {*}$mytarget {*}$args]]
 	}
 	$mylogger $mylabel C $args
-	set result [{*}$mytarget {*}$args]
+	set result [uplevel 1 [list {*}$mytarget {*}$args]]
 	$mylogger $mylabel R $args = $result
 	return $result
     }

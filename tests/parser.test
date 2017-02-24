@@ -833,8 +833,10 @@ test marpa-parser-8.3.2 {eof, after configuration, externals} -setup {
 } -cleanup {
     PARSER destroy
 } -result {{} {
-  AST C {fail {msg {Parsing failed}}}
-  AST R {fail {msg {Parsing failed}}} = {}
+  GATE C {get-context context}
+  GATE R {get-context context} = {}
+  AST C {fail context}
+  AST R {fail context} = {}
   AST C eof
   AST R eof = {}
 }}
@@ -873,8 +875,10 @@ test marpa-parser-8.4.2 {eof, active, externals} -setup {
 } -cleanup {
     PARSER destroy
 } -result {{} {
-  AST C {fail {msg {Parsing failed}}}
-  AST R {fail {msg {Parsing failed}}} = {}
+  GATE C {get-context context}
+  GATE R {get-context context} = {}
+  AST C {fail context}
+  AST R {fail context} = {}
   AST C eof
   AST R eof = {}
 }}
