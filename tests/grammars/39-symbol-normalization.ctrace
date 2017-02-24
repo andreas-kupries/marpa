@@ -1,7 +1,6 @@
-GC g1 symbol {op comma}
+GC g1 new-symbol {op comma}
 GC g1 symbol-def {op comma} 0 12
 GC start! {op comma}
-GC g1 symbol {op comma}
+GC g1 new-symbol {op comma}
 GC g1 symbol-use {op comma} 17 13
-GC g1 add-bnf {op comma} {{op comma}} 0
-GC g1 last-rule set-mask 0
+GC g1 add-bnf {op comma} {{op comma}} 0 mask 0

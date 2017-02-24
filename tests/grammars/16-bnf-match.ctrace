@@ -1,5 +1,5 @@
-GC l0 symbol A
+GC l0 new-symbol A
 GC l0 symbol-def A 0 1
-GC l0 symbol B
+GC l0 new-symbol B
 GC l0 symbol-use B 4 1
 GC l0 add-bnf A B 0

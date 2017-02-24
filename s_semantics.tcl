@@ -77,7 +77,6 @@ oo::class create marpa::slif::semantics {
 	link {LITLOC  LITLOC}  ;# Get literal location for chosen AST node
 	link {ADVL    ADVL}    ;# Generate singular adverb sem value, for literal
 	link {ADVS    ADVS}    ;# Generate singular adverb sem value, for symbol
-	link {ADVP    ADVP}    ;# Process the collected adverbs
 	link {ADVQ    ADVQ}    ;# Quantified rule adverb special handling
 	link {SYMBOL  SYMBOL}  ;# Get symbol instance for chosen AST node
 	link {CONST   CONST}   ;# Sem value is fixed.
@@ -186,11 +185,9 @@ oo::class create marpa::slif::semantics {
 
 	set positive [SINGLE 2]
 	set adverbs  [SINGLE 3]
-
-	Container g1 add-quantified $lhs $rhs $positive
-
 	ADVQ adverbs
-	ADVP g1 last-rule $adverbs
+
+	Container g1 add-quantified $lhs $rhs $positive {*}$adverbs
 	return
     }
 
@@ -215,11 +212,9 @@ oo::class create marpa::slif::semantics {
 
 	set positive [SINGLE 2]
 	set adverbs  [SINGLE 3]
-
-	Container l0 add-quantified $lhs $rhs $positive
-
 	ADVQ adverbs
-	ADVP l0 last-rule $adverbs
+
+	Container l0 add-quantified $lhs $rhs $positive {*}$adverbs
 	return
     }
 
@@ -243,8 +238,7 @@ oo::class create marpa::slif::semantics {
 
 	Start maybe: $lhs
 
-	Container g1 add-bnf $lhs {} 0
-	ADVP g1 last-rule $adverbs 
+	Container g1 add-bnf $lhs {} 0 {*}$adverbs
 	return
     }
 
@@ -262,8 +256,7 @@ oo::class create marpa::slif::semantics {
 	set lhs     [FIRST]
 	set adverbs [SINGLE 1]
 
-	Container l0 add-bnf $lhs {} 0
-	ADVP l0 last-rule $adverbs
+	Container l0 add-bnf $lhs {} 0 {*}$adverbs
 	return
     }
 
@@ -334,9 +327,9 @@ oo::class create marpa::slif::semantics {
 	set adverbs [SINGLE 1]
 
 	lassign $rhs rhsmask rhssymbols
-	Container g1 add-bnf $lhs $rhssymbols $prec
-	Container g1 last-rule set-mask $rhsmask
-	ADVP      g1 last-rule $adverbs
+	dict set adverbs mask $rhsmask
+
+	Container g1 add-bnf $lhs $rhssymbols $prec {*}$adverbs
 	return
     }
 
@@ -350,8 +343,7 @@ oo::class create marpa::slif::semantics {
 	set adverbs [SINGLE 1]
 
 	lassign $rhs __ rhssymbols
-	Container l0 add-bnf $lhs $rhssymbols $prec
-	ADVP      l0 last-rule $adverbs
+	Container l0 add-bnf $lhs $rhssymbols $prec {*}$adverbs
 	return
     }
 
@@ -819,7 +811,7 @@ oo::class create marpa::slif::semantics {
 	    regsub -all {\s+} [string trim [string range $literal 1 end-1]] { } literal
 	}
 
-	Container ${layer} symbol         $literal
+	Container ${layer} new-symbol     $literal
 	Container ${layer} symbol-${type} $literal $start $length
 
 	# TODO: @end assert (All L0 symbols have a def (rule, atomic))
@@ -874,19 +866,6 @@ oo::class create marpa::slif::semantics {
 	if {[dict exists $adverbs proper]} {
 	    dict unset adverbs proper
 	}
-	return
-    }
-
-    method ADVP {layer reference adverbs} {
-	debug.marpa/slif/semantics {[debug caller] | [AT]}
-
-	set layer [SymCo layer?] 
-	dict for {adverb value} $adverbs {
-	    debug.marpa/slif/semantics {[AT] $adverb = ($value)}
-	    Container $layer $reference set-$adverb $value
-	}
-
-	debug.marpa/slif/semantics {[debug caller] | [AT] /ok}
 	return
     }
 

@@ -1,3 +1,3 @@
-GC g1 symbol A
+GC g1 new-symbol A
 GC g1 symbol-use A 16 1
 GC start! A

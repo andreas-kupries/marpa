@@ -1,59 +1,50 @@
-GC g1 symbol E
+GC g1 new-symbol E
 GC g1 symbol-def E 0 1
 GC start! E
-GC g1 symbol N
+GC g1 new-symbol N
 GC g1 symbol-use N 6 1
-GC g1 add-bnf E N 0
-GC g1 last-rule set-mask 0
-GC g1 symbol E
+GC g1 add-bnf E N 0 mask 0
+GC g1 new-symbol E
 GC g1 symbol-def E 8 1
-GC g1 symbol PO
+GC g1 new-symbol PO
 GC g1 symbol-use PO 14 2
-GC g1 symbol E
+GC g1 new-symbol E
 GC g1 symbol-use E 17 1
-GC g1 symbol PC
+GC g1 new-symbol PC
 GC g1 symbol-use PC 19 2
-GC g1 add-bnf E {PO E PC} 0
-GC g1 last-rule set-mask {0 0 0}
-GC g1 last-rule set-assoc group
-GC g1 symbol E
+GC g1 add-bnf E {PO E PC} 0 assoc group mask {0 0 0}
+GC g1 new-symbol E
 GC g1 symbol-use E 43 1
-GC g1 symbol POW
+GC g1 new-symbol POW
 GC g1 symbol-use POW 45 3
-GC g1 symbol E
+GC g1 new-symbol E
 GC g1 symbol-use E 49 1
-GC g1 add-bnf E {E POW E} -1
-GC g1 last-rule set-mask {0 0 0}
-GC g1 last-rule set-assoc right
-GC g1 symbol E
+GC g1 add-bnf E {E POW E} -1 assoc right mask {0 0 0}
+GC g1 new-symbol E
 GC g1 symbol-use E 72 1
-GC g1 symbol MUL
+GC g1 new-symbol MUL
 GC g1 symbol-use MUL 74 3
-GC g1 symbol E
+GC g1 new-symbol E
 GC g1 symbol-use E 78 1
-GC g1 add-bnf E {E MUL E} -2
-GC g1 last-rule set-mask {0 0 0}
-GC g1 symbol E
+GC g1 add-bnf E {E MUL E} -2 mask {0 0 0}
+GC g1 new-symbol E
 GC g1 symbol-use E 86 1
-GC g1 symbol DIV
+GC g1 new-symbol DIV
 GC g1 symbol-use DIV 88 3
-GC g1 symbol E
+GC g1 new-symbol E
 GC g1 symbol-use E 92 1
-GC g1 add-bnf E {E DIV E} -2
-GC g1 last-rule set-mask {0 0 0}
-GC g1 symbol E
+GC g1 add-bnf E {E DIV E} -2 mask {0 0 0}
+GC g1 new-symbol E
 GC g1 symbol-use E 100 1
-GC g1 symbol ADD
+GC g1 new-symbol ADD
 GC g1 symbol-use ADD 102 3
-GC g1 symbol E
+GC g1 new-symbol E
 GC g1 symbol-use E 106 1
-GC g1 add-bnf E {E ADD E} -3
-GC g1 last-rule set-mask {0 0 0}
-GC g1 symbol E
+GC g1 add-bnf E {E ADD E} -3 mask {0 0 0}
+GC g1 new-symbol E
 GC g1 symbol-use E 114 1
-GC g1 symbol SUB
+GC g1 new-symbol SUB
 GC g1 symbol-use SUB 116 3
-GC g1 symbol E
+GC g1 new-symbol E
 GC g1 symbol-use E 120 1
-GC g1 add-bnf E {E SUB E} -3
-GC g1 last-rule set-mask {0 0 0}
+GC g1 add-bnf E {E SUB E} -3 mask {0 0 0}
