@@ -54,6 +54,12 @@ oo::class create marpa::slif::semantics {
 	# Semantic state, start symbol.
 	marpa::slif::semantics::Start create Start $container
 
+	# Semantic state, symbols
+	marpa::slif::semantics::Declare create Symbols/l0 $container l0 new-symbol
+	marpa::slif::semantics::Declare create Symbols/g1 $container g1 new-symbol
+	marpa::slif::semantics::Declare create CharClass  $container new-charclass
+	marpa::slif::semantics::Declare create Strings    $container new-string
+
 	# Semantic state, symbol context
 	marpa::slif::semantics::SymContext create SymCo
 
@@ -597,7 +603,7 @@ oo::class create marpa::slif::semantics {
 	SymCo assert use
 	# Expect RHS
 
-	Container new-charclass $literal $start $length
+	CharClass ensure $literal
 	Container charclass-use $literal $start $length
 
 	if {[SymCo l0?]} {
@@ -626,7 +632,7 @@ oo::class create marpa::slif::semantics {
 	SymCo assert use
 	# Expect RHS
 
-	Container new-string $literal $start $length
+	Strings ensure $literal
 	Container string-use $literal $start $length
 
 	if {[SymCo l0?]} {
@@ -802,8 +808,6 @@ oo::class create marpa::slif::semantics {
 	# child structure = (start-offset length literal)
 	debug.marpa/slif/semantics {[debug caller] | [AT]: $layer $type @${start}(${length})="$literal"}
 
-	# TODO XXX symbol name from literal - normalization !!
-
 	if {$bracketed} {
 	    # Normalize the string - Remove brackets, leading/trailing
 	    # whitespace, convert all inner whitespace to single
@@ -811,7 +815,7 @@ oo::class create marpa::slif::semantics {
 	    regsub -all {\s+} [string trim [string range $literal 1 end-1]] { } literal
 	}
 
-	Container ${layer} new-symbol     $literal
+	Symbols/$layer ensure $literal
 	Container ${layer} symbol-${type} $literal $start $length
 
 	# TODO: @end assert (All L0 symbols have a def (rule, atomic))
@@ -1093,6 +1097,37 @@ oo::class create marpa::slif::semantics::Start {
 	set ok [expr {$mystate ne "undef"}]
 	debug.marpa/slif/semantics {[debug caller] | ==> $ok}
 	return $ok
+    }
+}
+
+# # ## ### ##### ######## #############
+## Semantic state - Symbols (strings, char classes, ...)
+
+oo::class create marpa::slif::semantics::Declare {
+    variable mysymbols
+    variable mycmd
+
+    constructor {container args} {
+	debug.marpa/slif/semantics {[debug caller] | }
+	marpa::import $container Container
+	set mycmd $args
+	set mysymbols {}
+	return
+    }
+
+    # # -- --- ----- -------- -------------
+    ## Declare a symbol. Declared in the container iff it is now known yet.
+
+    method ensure {string} {
+	debug.marpa/slif/semantics {[debug caller] | $string}
+
+	if {[dict exists $mysymbols $string]} return
+
+	debug.marpa/slif/semantics {[debug caller] | pass}
+
+	dict set mysymbols $string .
+	Container {*}$mycmd $string
+	return
     }
 }
 

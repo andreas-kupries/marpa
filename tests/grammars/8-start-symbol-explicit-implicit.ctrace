@@ -3,6 +3,5 @@ GC g1 symbol-use B 11 1
 GC start! B
 GC g1 new-symbol A
 GC g1 symbol-def A 13 1
-GC g1 new-symbol B
 GC g1 symbol-use B 19 1
 GC g1 add-bnf A B 0 mask 0
