@@ -88,10 +88,10 @@ test marpa-slif-semantics-fail-1.0 {fail, wrong args, too many} -setup {
 ## enter
 
 incr k
-foreach slif [lsort -dict [kt find grammars/*.slif]] {
-    set caseid   [file tail [file rootname $slif]]
+foreach slif [lsort -dict [kt find grammars/*/slif]] {
+    set caseid   [file tail [file dirname $slif]]
     set slifstr  [fileutil::cat $slif]
-    set expected [string trimright [fileutil::cat [file rootname $slif].ctrace]]
+    set expected [string trimright [fileutil::cat [file dirname $slif]/ctrace]]
 
     test marpa-slif-semantics-enter-${caseid}-2.$k "enter $slif, trace" -setup {
 	marpa::slif::semantics create SE [log GC] ; trace GC

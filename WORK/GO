@@ -7,10 +7,10 @@ rm -rf X.* BUILD-marpa0 tests/core*
 
 # Create all missing result files for new .slif test cases.
 (   cd tests/grammars
-    for i in *.slif
+    for i in */slif
     do
-	touch $(basename $i .slif).ctrace
-	touch $(basename $i .slif).ast
+	touch $(dirname $i)/ctrace
+	touch $(dirname $i)/ast
     done
 )
 

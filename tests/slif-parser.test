@@ -76,10 +76,10 @@ test marpa-slif-parser-process-file-1.1 {process-file, wrong args, too many} -se
 ## process, process-file
 
 incr k
-foreach slif [lsort -dict [kt find grammars/*.slif]] {
-    set caseid   [file tail [file rootname $slif]]
+foreach slif [lsort -dict [kt find grammars/*/slif]] {
+    set caseid   [file tail [file dirname $slif]]
     set slifstr  [fileutil::cat $slif]
-    set expected [string trimright [fileutil::cat [file rootname $slif].ast]]
+    set expected [string trimright [fileutil::cat [file dirname $slif]/ast]]
 
     test marpa-slif-parser-process-${caseid}-2.$k "process $slif" -setup {
 	marpa::slif::parser create SP
