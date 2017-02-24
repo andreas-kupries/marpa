@@ -1,0 +1,4 @@
+GC g1 symbol A
+GC g1 symbol-def A 0 1
+GC start! A
+GC g1 add-bnf A {} 0

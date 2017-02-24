@@ -1,0 +1,1 @@
+A ::= A OP A assoc => left

@@ -1,0 +1,29 @@
+statements/0
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @0 1 'A'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @6 2 'PO'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @9 1 'A'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @11 2 'PC'
+            adverb list bnf alternative/0
+              adverb list items bnf alternative/0
+                adverb item bnf alternative/4
+                  group association/0

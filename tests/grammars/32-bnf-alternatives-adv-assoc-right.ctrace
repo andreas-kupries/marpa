@@ -1,0 +1,12 @@
+GC g1 symbol A
+GC g1 symbol-def A 0 1
+GC start! A
+GC g1 symbol A
+GC g1 symbol-use A 6 1
+GC g1 symbol OP
+GC g1 symbol-use OP 8 2
+GC g1 symbol A
+GC g1 symbol-use A 11 1
+GC g1 add-bnf A {A OP A} 0
+GC g1 last-rule set-mask {0 0 0}
+GC g1 last-rule set-assoc right

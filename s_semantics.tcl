@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -77,7 +77,8 @@ oo::class create marpa::slif::semantics {
 	link {LITLOC  LITLOC}  ;# Get literal location for chosen AST node
 	link {ADVL    ADVL}    ;# Generate singular adverb sem value, for literal
 	link {ADVS    ADVS}    ;# Generate singular adverb sem value, for symbol
-	link {ADVP    ADVP}    ;# Process adverbs for a context
+	link {ADVP    ADVP}    ;# Process the collected adverbs
+	link {ADVQ    ADVQ}    ;# Quantified rule adverb special handling
 	link {SYMBOL  SYMBOL}  ;# Get symbol instance for chosen AST node
 	link {CONST   CONST}   ;# Sem value is fixed.
 	link {LEAF    LEAF}    ;# Leaf rhs sem value from symbol
@@ -188,25 +189,8 @@ oo::class create marpa::slif::semantics {
 
 	Container g1 add-quantified $lhs $rhs $positive
 
-	set accepted {separator proper action bless name rank}
-        lappend accepted 0rank
-
-	# Custom check for related attributes 'separator' and 'proper'
-	# TODO XXX separator/proper - Merge into a single adverb/attribute.
-	if {[dict exists $adverbs separator]} {
-	    # Ensure existence of a default for 'proper' when a
-	    # 'separator' is specified.
-	    if {![dict exists $adverbs proper]} {
-		dict set adverbs proper 0
-	    }
-	} else {
-	    # Ignore 'proper' if there is no 'separator'. XXX: Warning ?
-	    if {[dict exists $adverbs proper]} {
-		dict unset adverbs proper
-	    }
-	}
-
-	ADVP {quantified rule} $adverbs $accepted last-rule
+	ADVQ adverbs
+	ADVP g1 last-rule $adverbs
 	return
     }
 
@@ -234,24 +218,8 @@ oo::class create marpa::slif::semantics {
 
 	Container l0 add-quantified $lhs $rhs $positive
 
-	set accepted {separator proper action bless name rank}
-
-	# Custom check for related attributes 'separator' and 'proper'
-	# TODO XXX separator/proper - Merge into a single adverb/attribute.
-	if {[dict exists $adverbs separator]} {
-	    # Ensure existence of a default for 'proper' when a
-	    # 'separator' is specified.
-	    if {![dict exists $adverbs proper]} {
-		dict set adverbs proper 0
-	    }
-	} else {
-	    # Ignore 'proper' if there is no 'separator'. XXX: Warning ?
-	    if {[dict exists $adverbs proper]} {
-		dict unset adverbs proper
-	    }
-	}
-
-	ADVP {quantified rule} $adverbs $accepted last-rule
+	ADVQ adverbs
+	ADVP l0 last-rule $adverbs
 	return
     }
 
@@ -270,15 +238,13 @@ oo::class create marpa::slif::semantics {
 	SymCo g1
 	SymCo def
 
-	set lhs [FIRST]
+	set lhs     [FIRST]
+	set adverbs [SINGLE 1]
+
 	Start maybe: $lhs
 
 	Container g1 add-bnf $lhs {} 0
-
-	# TODO XXX empty rule - adverb checking if ok for l0, or g1 only
-	set adverbs  [SINGLE 1] ;# dict. Optional, possibly empty.
-	set accepted {action bless}
-	ADVP {empty rule} $adverbs $accepted last-rule
+	ADVP g1 last-rule $adverbs 
 	return
     }
 
@@ -293,13 +259,11 @@ oo::class create marpa::slif::semantics {
 	SymCo l0
 	SymCo def
 
-	set lhs [FIRST]
-	Container l0 add-bnf $lhs {} 0
+	set lhs     [FIRST]
+	set adverbs [SINGLE 1]
 
-	# TODO XXX empty rule - adverb checking if ok for l0, or g1 only
-	set adverbs  [SINGLE 1] ;# dict. Optional, possibly empty.
-	set accepted {action bless}
-	ADVP {empty rule} $adverbs $accepted last-rule
+	Container l0 add-bnf $lhs {} 0
+	ADVP l0 last-rule $adverbs
 	return
     }
 
@@ -364,20 +328,15 @@ oo::class create marpa::slif::semantics {
 	# <rhs> <adverb list bnf alternative>
 	# G1 implied
 
-	set lhs   [SymCo lhs?]
-	set rhs   [FIRST]
-	set prec  [SymCo precedence?]
+	set prec    [SymCo precedence?]
+	set lhs     [SymCo lhs?]
+	set rhs     [FIRST]
+	set adverbs [SINGLE 1]
 
 	lassign $rhs rhsmask rhssymbols
 	Container g1 add-bnf $lhs $rhssymbols $prec
 	Container g1 last-rule set-mask $rhsmask
-
-	# TODO XXX bnf rule - adverb checking if ok for l0, or g1 only
-	set adverbs  [SINGLE 1] ;# dict. Optional, possibly empty.
-	set accepted {action bless name rank assoc}
-        lappend accepted 0rank
-
-	ADVP {bnf rule} $adverbs $accepted last-rule
+	ADVP      g1 last-rule $adverbs
 	return
     }
 
@@ -385,18 +344,14 @@ oo::class create marpa::slif::semantics {
 	# <rhs> <adverb list match alternative>
 	# L0 implied
 
-	set lhs   [SymCo lhs?]
-	set rhs   [FIRST]
-	set prec  [SymCo precedence?]
+	set prec    [SymCo precedence?]
+	set lhs     [SymCo lhs?]
+	set rhs     [FIRST]
+	set adverbs [SINGLE 1]
 
-	lassign $rhs rhsmask rhssymbols
+	lassign $rhs __ rhssymbols
 	Container l0 add-bnf $lhs $rhssymbols $prec
-
-	# TODO XXX bnf rule - adverb checking if ok for l0, or g1 only
-	set adverbs  [SINGLE 1] ;# dict. Optional, possibly empty.
-	set accepted {action bless name rank assoc}
-
-	ADVP {bnf rule} $adverbs $accepted last-rule
+	ADVP      l0 last-rule $adverbs
 	return
     }
 
@@ -552,12 +507,58 @@ oo::class create marpa::slif::semantics {
     method lhs/0           {children} { FIRST    } ; # OK
 
     method symbol/0        {children} { FIRST    } ; # OK
-    method {symbol name/0} {children} { SYMBOL 0 } ; # OK
-    method {symbol name/1} {children} { SYMBOL 0 } ; # OK
+    method {symbol name/0} {children} { SYMBOL 0 0 } ; # OK bare
+    method {symbol name/1} {children} { SYMBOL 0 1 } ; # OK bracketed
 
     # users: quantified rule, discard rule, separator spec, rhs primary/0
     method {single symbol/0} {children} { LEAF [FIRST]  } ; # OK <symbol>
     method {single symbol/1} {children} { LEAF [CCLASS] } ; # OK <character class>
+
+    # # -- --- ----- -------- -------------
+    ## Action forms
+
+    method action/0 {children} { ADVL action [FIRST] }
+
+    method {action name/0} {children} {
+	# perl name (id ('::' id)+)
+	list cmd [LITERAL]
+    }
+    method {action name/1} {children} {
+	# reserved name ::....
+	list special [string range [LITERAL] 2 end]
+    }
+    method {action name/2} {children} {
+	# array descriptor [xxx, ...]
+	list array [split [string range [LITERAL] 1 end-1] ,]
+    }
+
+    # # -- --- ----- -------- -------------
+    ## Blessings
+
+    method blessing/0 {children} { ADVL bless [FIRST] }
+
+    method {blessing name/0} {children} {
+	# standard name - identifier
+	list standard [LITERAL]
+    }
+    method {blessing name/1} {children} {
+	# reserved name ::...
+	list special [string range [LITERAL] 2 end]
+    }
+
+    # # -- --- ----- -------- -------------
+    ## Rule naming
+
+    method naming/0 {children} { ADVL name [FIRST] }
+
+    method {alternative name/0} {children} {
+	# standard name - identifier
+	LITERAL
+    }
+    method {alternative name/1} {children} {
+	# single quoted name
+	string range [LITERAL] 1 end-1
+    }
 
     # # ## ### ##### ######## #############
     ## AST helpers
@@ -604,7 +605,7 @@ oo::class create marpa::slif::semantics {
 	SymCo assert use
 	# Expect RHS
 
-	Container new-charclass $literal $start $length]
+	Container new-charclass $literal $start $length
 	Container charclass-use $literal $start $length
 
 	if {[SymCo l0?]} {
@@ -797,7 +798,7 @@ oo::class create marpa::slif::semantics {
 	return $location
     }
 
-    method SYMBOL {index} {
+    method SYMBOL {index bracketed} {
 	debug.marpa/slif/semantics {[debug caller] | [AT]}
 	upvar 1 children children
 
@@ -810,6 +811,13 @@ oo::class create marpa::slif::semantics {
 	debug.marpa/slif/semantics {[debug caller] | [AT]: $layer $type @${start}(${length})="$literal"}
 
 	# TODO XXX symbol name from literal - normalization !!
+
+	if {$bracketed} {
+	    # Normalize the string - Remove brackets, leading/trailing
+	    # whitespace, convert all inner whitespace to single
+	    # spaces.
+	    regsub -all {\s+} [string trim [string range $literal 1 end-1]] { } literal
+	}
 
 	Container ${layer} symbol         $literal
 	Container ${layer} symbol-${type} $literal $start $length
@@ -847,24 +855,37 @@ oo::class create marpa::slif::semantics {
 	return $value
     }
 
-    method ADVP {context adverbs accepted destination} {
-	debug.marpa/slif/semantics {[debug caller] | [AT]}
-	set layer [SymCo layer?] 
-	foreach key $accepted {
-	    if {![dict exists $adverbs $key]} {
-		debug.marpa/slif/semantics {[debug caller] | [AT] $key SKIP}
-		continue
-	    }
-	    set value [dict get $adverbs $key]
-	    dict unset adverbs $key
+    method ADVQ {avar} {
+	# Custom check for related attributes 'separator' and 'proper'
+	# TODO XXX separator/proper - Merge into a single adverb/attribute.
 
-	    debug.marpa/slif/semantics {[AT] $key = ($value)}
-	    Container $layer ${destination} set-$key $value
+	upvar 1 $avar adverbs
+
+	if {[dict exists $adverbs separator]} {
+	    # Ensure the existence of a default for adverb 'proper'
+	    # when a 'separator' was specified. XXX: Error instead ?
+	    if {![dict exists $adverbs proper]} {
+		dict set adverbs proper 0
+	    }
+	    return
 	}
-	if {[dict size $adverbs]} {
-	    E "Invalid adverbs [dict keys $adverbs] in $context" \
-		INVALID ADVERB $context
+
+	# Remove 'proper' if 'separator' is not specified. XXX: Warning ?
+	if {[dict exists $adverbs proper]} {
+	    dict unset adverbs proper
 	}
+	return
+    }
+
+    method ADVP {layer reference adverbs} {
+	debug.marpa/slif/semantics {[debug caller] | [AT]}
+
+	set layer [SymCo layer?] 
+	dict for {adverb value} $adverbs {
+	    debug.marpa/slif/semantics {[AT] $adverb = ($value)}
+	    Container $layer $reference set-$adverb $value
+	}
+
 	debug.marpa/slif/semantics {[debug caller] | [AT] /ok}
 	return
     }
@@ -877,7 +898,7 @@ oo::class create marpa::slif::semantics {
 
     method unknown {m args} {
 	debug.marpa/slif/semantics {[AT] IGNORING ($m)}
-error "Unknown rule: $m"
+	error "Unknown rule: $m"
 	return
     }
 

@@ -1,0 +1,12 @@
+GC g1 symbol A
+GC g1 symbol-def A 0 1
+GC start! A
+GC g1 symbol PO
+GC g1 symbol-use PO 6 2
+GC g1 symbol A
+GC g1 symbol-use A 9 1
+GC g1 symbol PC
+GC g1 symbol-use PC 11 2
+GC g1 add-bnf A {PO A PC} 0
+GC g1 last-rule set-mask {0 0 0}
+GC g1 last-rule set-assoc group
