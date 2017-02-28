@@ -17,10 +17,10 @@ proc iota {n} {
     return $res
 }
 
-proc lmap {f list} {
+proc listmap {f list} {
     set res {}
     foreach x $list {
-        lappend res [{*}$f $x]
+	lappend res [{*}$f $x]
     }
     return $res
 }

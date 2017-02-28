@@ -78,6 +78,7 @@ critcl::include    marpa.h
 ##
 critcl::tsources u_sequencing.tcl ; # Utilities for method call sequence validation
 critcl::tsources p_support.tcl   ; # General Tcl level utilities
+critcl::tsources p_unicode.tcl   ; # Unicode / UTF-8 utilities
 critcl::tsources p_location.tcl  ; # Location/Range utilities
 critcl::tsources p_semstd.tcl    ; # Standard behaviours for SV
 				   # handling

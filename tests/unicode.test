@@ -1,0 +1,132 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::unicode
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+## - norm
+## - 2utf
+## - 2grammar
+## - pretty
+
+# # ## ### ##### ######## ############# #####################
+## 2utf
+
+test marpa-unicode-2utf-1.0 {2utf, wrong args, not enough} -body {
+    marpa unicode 2utf
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2utf code"}
+
+test marpa-unicode-2utf-1.1 {2utf, wrong args, too many} -body {
+    marpa unicode 2utf CODE X
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2utf code"}
+
+set k 0
+foreach {code utf} {
+    0        {0}
+    127      {127}
+    128      {194 128}
+    2047     {223 191}
+    2048     {224 160 128}
+    65535    {239 191 191}
+    65536    {240 144 128 128}
+    0x10FFFE {244 143 191 190}
+    0x10FFFF {244 143 191 191}
+} {
+    incr k
+    test marpa-unicode-2utf-2.$k "2utf, $code" -body {
+	marpa unicode 2utf $code
+    } -result $utf
+}
+
+# # ## ### ##### ######## ############# #####################
+## norm
+
+test marpa-unicode-norm-1.0 {norm, wrong args, not enough} -body {
+    marpa unicode norm
+} -returnCodes error -result {wrong # args: should be "marpa unicode norm items"}
+
+test marpa-unicode-norm-1.1 {norm, wrong args, too many} -body {
+    marpa unicode norm ITEMS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode norm items"}
+
+set k 0
+foreach {items normalized notes} {
+    {6 3}         {3 6}    {sort ascending}
+    {4 3}         {{3 4}}  {merge adjacent}
+    {{1 5} {6 8}} {{1 8}}  {ditto}
+    {{1 5} {0 8}} {{0 8}}  {cover}
+    {{1 5} {3 8}} {{1 8}}  {overlap & extend}
+    {3}           {3}      {single item}
+    {{4 7}}       {{4 7}}  {ditto}
+} {
+    incr k
+    test marpa-unicode-norm-2.$k "norm, $items" -body {
+	marpa unicode norm $items
+    } -result $normalized
+}
+
+# # ## ### ##### ######## ############# #####################
+## 2grammar
+
+test marpa-unicode-2grammar-1.0 {2grammar, wrong args, not enough} -body {
+    marpa unicode 2grammar
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2grammar items"}
+
+test marpa-unicode-2grammar-1.1 {2grammar, wrong args, too many} -body {
+    marpa unicode 2grammar ITEMS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2grammar items"}
+
+set k 0
+foreach {cclass grammar pretty} {
+    {{0 16}}
+    {{{0 16}}}
+    " [00-10]\n"
+    {{0 16} {33 45}}
+    {{{0 16}} {{33 45}}}
+    " [00-10]\n|[21-2d]\n"
+    {{0 127}}
+    {{{0 127}}}
+    " [00-7f]\n"
+    {{0 2047}}
+    {{{0 127}} {{194 223} {128 191}}}
+    " [00-7f]\n|[c2-df][80-bf]\n"
+    {{0 65535}}
+    {{{0 127}} {{194 223} {128 191}} {{224 224} {160 191} {128 191}} {{225 236} {128 191} {128 191}} {{237 237} {128 159} {128 191}} {{238 239} {128 191} {128 191}}}
+    " [00-7f]\n|[c2-df][80-bf]\n|[e0]   [a0-bf][80-bf]\n|[e1-ec][80-bf][80-bf]\n|[ed]   [80-9f][80-bf]\n|[ee-ef][80-bf][80-bf]\n"
+    {{0 0x10ffff}}
+    {{{0 127}} {{194 223} {128 191}} {{224 224} {160 191} {128 191}} {{225 236} {128 191} {128 191}} {{237 237} {128 159} {128 191}} {{238 239} {128 191} {128 191}} {{240 240} {144 191} {128 191} {128 191}} {{241 243} {128 191} {128 191} {128 191}} {{244 244} {128 143} {128 191} {128 191}}}
+    " [00-7f]\n|[c2-df][80-bf]\n|[e0]   [a0-bf][80-bf]\n|[e1-ec][80-bf][80-bf]\n|[ed]   [80-9f][80-bf]\n|[ee-ef][80-bf][80-bf]\n|[f0]   [90-bf][80-bf][80-bf]\n|[f1-f3][80-bf][80-bf][80-bf]\n|[f4]   [80-8f][80-bf][80-bf]\n"
+} {
+    incr k
+    test marpa-unicode-2grammar-2.$k "2grammar, $cclass" -body {
+	marpa unicode 2grammar $cclass
+    } -result $grammar
+
+    test marpa-unicode-pretty-2.$k "pretty, $cclass" -body {
+	marpa unicode pretty $grammar
+    } -result $pretty
+}
+
+# # ## ### ##### ######## ############# #####################
+## pretty
+
+test marpa-unicode-pretty-1.0 {pretty, wrong args, not enough} -body {
+    marpa unicode pretty
+} -returnCodes error -result {wrong # args: should be "marpa unicode pretty utf8class"}
+
+test marpa-unicode-pretty-1.1 {pretty, wrong args, too many} -body {
+    marpa unicode pretty CLASS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode pretty utf8class"}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests
