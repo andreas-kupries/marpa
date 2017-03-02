@@ -6,11 +6,12 @@
 # This code is BSD-licensed.
 
 # Utilites to handle conversion of unicode classes into utf-8
-# automaton/grammar.  On the unicode side a class can be represented
-# as a list of codepoints, or as a list of codepoint ranges.  On the
-# utf-8 side the same class is represented as a list of alternatives,
-# with each alternative a sequence of byte-ranges, and each byte-range
-# given by start- and end-value, inclusive.
+# ASBRs. On the unicode side a class can be represented as a list of
+# codepoints, or as a list of codepoint ranges.  On the utf-8 side the
+# same class is represented as a list of alternatives, with each
+# alternative a sequence of byte-ranges, and each byte-range given by
+# start- and end-value, inclusive. Hence ASBR, for "Alternatives of
+# Sequences of Byte-Ranges".
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -30,22 +31,26 @@ namespace eval marpa {
     namespace ensemble create
 }
 namespace eval marpa::unicode {
-    namespace export norm 2utf 2grammar pretty
+    namespace export norm 2utf 2asbr pretty-asbr
     namespace ensemble create
 }
 
 # # ## ### ##### ######## #############
 ## Public API
 ##
-## - 2utf     - Convert codepoint to sequence of bytes
-## - 2grammar - Convert unicode class to utf8 grammar.
-## - pretty   - Pretty print the result of 2grammar.
-## - norm     - normalize a series of ranges and code points.
+## - 2utf        - Convert unicode point to sequence of bytes
+## - 2asbr       - Convert unicode class to utf8 asbr
+## - pretty-asbr - Pretty print the result of 2asbr.
+## - norm        - normalize a series of ranges and code points.
 
 proc marpa::unicode::2utf {code} {
     debug.marpa/unicode {}
     if {$code < 128} {
-	return [list $code]
+	return [list [expr {$code & 0x7f}]]
+	# The expression does not change the value. It does normalize
+	# the string representation to decimal however. As that
+	# happens in all the fllowing branches as well having it
+	# happen here makes things cleaner, more the same.
     }
     if {$code < 2048} {
 	set a [expr {(($code >> 6) & 0x1f) | 0b11000000 }]
@@ -136,7 +141,7 @@ proc marpa::unicode::NA {range} {
     return
 }
 
-proc marpa::unicode::2grammar {items} {
+proc marpa::unicode::2asbr {items} {
     debug.marpa/unicode {}
     set c [u8class new]
     $c add-items $items
@@ -146,11 +151,11 @@ proc marpa::unicode::2grammar {items} {
     return $utf
 }
 
-proc marpa::unicode::pretty {utf8class} {
+proc marpa::unicode::pretty-asbr {asbr {compact 0}} {
     debug.marpa/unicode {}
     set r {}
     set prefix " "
-    foreach alternative $utf8class {
+    foreach alternative $asbr {
 	append r $prefix
 	foreach range $alternative {
 	    lassign $range s e
@@ -158,6 +163,8 @@ proc marpa::unicode::pretty {utf8class} {
 	    append r [format %02x $s]
 	    if {$s != $e} {
 		append r - [format %02x $e] \]
+	    } elseif {$compact} {
+		append r \]
 	    } else {
 		append r \] {   }
 	    }
@@ -166,6 +173,68 @@ proc marpa::unicode::pretty {utf8class} {
 	set prefix |
     }
     return $r
+}
+
+# # ## ### ##### ######## #############
+## Public API -- Access to the tables in "p_unidata.tcl"
+##
+## - data cc ranges
+## - data cc asbr
+## - data cc grammar
+## - data range
+## - data fold
+
+namespace eval marpa::unicode::data {
+    namespace export cc range fold
+    namespace ensemble create
+    namespace import ::marpa::X
+}
+namespace eval marpa::unicode::data::cc {
+    namespace export ranges asbr grammar
+    namespace ensemble create
+    namespace import ::marpa::X
+}
+
+proc marpa::unicode::data::cc::ranges {cclass} {
+    variable marpa::unicode::cc
+    if {![dict exists $cc $cclass]} {
+	X "Bad character class $cclass" UNICODE BAD CLASS
+    }
+    return [dict get $cc $cclass]
+}
+
+proc marpa::unicode::data::cc::asbr {cclass} {
+    variable marpa::unicode::asbr
+    if {![dict exists $cc $cclass]} {
+	X "Bad character class $cclass" UNICODE BAD CLASS
+    }
+    return [dict get $asbr $cclass]
+}
+
+proc marpa::unicode::data::cc::grammar {cclass} {
+    variable marpa::unicode::gr
+    if {![dict exists $cc $cclass]} {
+	X "Bad character class $cclass" UNICODE BAD CLASS
+    }
+    return [dict get $gr $cclass]
+}
+
+proc marpa::unicode::data::range {id} {
+    variable marpa::unicode::range
+    # TODO: validate argument
+    return [dict get $range $id]
+}
+
+proc marpa::unicode::data::fold {codepoint} {
+    variable marpa::unicode::foldmap
+    variable marpa::unicode::foldset
+    # normalize codepoint to decimal integer
+    incr codepoint 0
+    if {![dict exists $foldmap $codepoint]} {
+	# Return character as its own fold class
+	return [list $codepoint]
+    }
+    return [dict get $foldset [dict get $foldmap $codepoint]]
 }
 
 # # ## ### ##### ######## #############

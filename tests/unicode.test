@@ -16,8 +16,8 @@ kt local   testing marpa
 # # ## ### ##### ######## ############# #####################
 ## - norm
 ## - 2utf
-## - 2grammar
-## - pretty
+## - 2asbr
+## - pretty-asbr
 
 # # ## ### ##### ######## ############# #####################
 ## 2utf
@@ -76,18 +76,18 @@ foreach {items normalized notes} {
 }
 
 # # ## ### ##### ######## ############# #####################
-## 2grammar
+## 2asbr
 
-test marpa-unicode-2grammar-1.0 {2grammar, wrong args, not enough} -body {
-    marpa unicode 2grammar
-} -returnCodes error -result {wrong # args: should be "marpa unicode 2grammar items"}
+test marpa-unicode-2asbr-1.0 {2asbr, wrong args, not enough} -body {
+    marpa unicode 2asbr
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2asbr items"}
 
-test marpa-unicode-2grammar-1.1 {2grammar, wrong args, too many} -body {
-    marpa unicode 2grammar ITEMS X
-} -returnCodes error -result {wrong # args: should be "marpa unicode 2grammar items"}
+test marpa-unicode-2asbr-1.1 {2asbr, wrong args, too many} -body {
+    marpa unicode 2asbr ITEMS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2asbr items"}
 
 set k 0
-foreach {cclass grammar pretty} {
+foreach {cclass asbr pretty} {
     {{0 16}}
     {{{0 16}}}
     " [00-10]\n"
@@ -108,25 +108,25 @@ foreach {cclass grammar pretty} {
     " [00-7f]\n|[c2-df][80-bf]\n|[e0]   [a0-bf][80-bf]\n|[e1-ec][80-bf][80-bf]\n|[ed]   [80-9f][80-bf]\n|[ee-ef][80-bf][80-bf]\n|[f0]   [90-bf][80-bf][80-bf]\n|[f1-f3][80-bf][80-bf][80-bf]\n|[f4]   [80-8f][80-bf][80-bf]\n"
 } {
     incr k
-    test marpa-unicode-2grammar-2.$k "2grammar, $cclass" -body {
-	marpa unicode 2grammar $cclass
-    } -result $grammar
+    test marpa-unicode-2asbr-2.$k "2asbr, $cclass" -body {
+	marpa unicode 2asbr $cclass
+    } -result $asbr
 
-    test marpa-unicode-pretty-2.$k "pretty, $cclass" -body {
-	marpa unicode pretty $grammar
+    test marpa-unicode-pretty-asbr-2.$k "pretty-asbr, $cclass" -body {
+	marpa unicode pretty-asbr $asbr
     } -result $pretty
 }
 
 # # ## ### ##### ######## ############# #####################
-## pretty
+## pretty-asbr
 
-test marpa-unicode-pretty-1.0 {pretty, wrong args, not enough} -body {
-    marpa unicode pretty
-} -returnCodes error -result {wrong # args: should be "marpa unicode pretty utf8class"}
+test marpa-unicode-pretty-asbr-1.0 {pretty-asbr, wrong args, not enough} -body {
+    marpa unicode pretty-asbr
+} -returnCodes error -result {wrong # args: should be "marpa unicode pretty-asbr asbr ?compact?"}
 
-test marpa-unicode-pretty-1.1 {pretty, wrong args, too many} -body {
-    marpa unicode pretty CLASS X
-} -returnCodes error -result {wrong # args: should be "marpa unicode pretty utf8class"}
+test marpa-unicode-pretty-asbr-1.1 {pretty-asbr, wrong args, too many} -body {
+    marpa unicode pretty-asbr CLASS COMPACT X
+} -returnCodes error -result {wrong # args: should be "marpa unicode pretty-asbr asbr ?compact?"}
 
 # # ## ### ##### ######## ############# #####################
 cleanupTests

@@ -27,6 +27,37 @@ if {![critcl::compiling]} {
 }
 
 # # ## ### ##### ######## #############
+## Generate unicode data tables.
+
+set selfdir [file dirname [file normalize [info script]]]
+set dud $selfdir/p_unidata.tcl
+set tud $selfdir/tools/unidata.tcl
+
+if {![file exists $dud] ||
+    ([file mtime $dud] < [file mtime $tud]) ||
+    ([file mtime $dud] < [file mtime $selfdir/unidata/UnicodeData.txt]) ||
+    ([file mtime $dud] < [file mtime $selfdir/unidata/Scripts.txt])} {
+
+    critcl::msg -nonewline { (Generating unicode data tables, please wait (about 2min) ...}
+    # It usually takes about two minutes and change to process the
+    # unidata files.  The majority of that time is taken by the
+    # conversion of unicode char classes to ASBR form, with the
+    # majority of that centered on a few but large categories like the
+    # various type of Letters (Ll, Lo, Lu), and derived categories
+    # including them.
+
+    set start [clock seconds]
+    exec {*}[info nameofexecutable] $tud $dud 0
+    set delta [expr { [clock seconds] - $start}]
+    critcl::msg -nonewline " Done in $delta seconds: [file size $dud] bytes)"
+    unset start delta
+} else {
+    critcl::msg -nonewline { (Up-to-date unicode data tables available, skipping generation)}
+}
+
+unset selfdir tud dud
+
+# # ## ### ##### ######## #############
 ## Administrivia
 
 critcl::config lines 1
@@ -79,6 +110,8 @@ critcl::include    marpa.h
 critcl::tsources u_sequencing.tcl ; # Utilities for method call sequence validation
 critcl::tsources p_support.tcl   ; # General Tcl level utilities
 critcl::tsources p_unicode.tcl   ; # Unicode / UTF-8 utilities
+critcl::tsources p_unidata.tcl   ; # Unicode Tables (char classes in various forms, folding)
+#                                ; # This is a generated file (via tools/unidata.tcl)
 critcl::tsources p_location.tcl  ; # Location/Range utilities
 critcl::tsources p_semstd.tcl    ; # Standard behaviours for SV
 				   # handling
