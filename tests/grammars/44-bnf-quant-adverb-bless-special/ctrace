@@ -1,6 +1,4 @@
-GC g1 new-symbol A
-GC g1 symbol-def A 0 1
-GC g1 new-symbol B
-GC g1 symbol-use B 6 1
-GC start! A
-GC g1 add-quantified A B 1 bless {special bar}
+GC g1 definition A 0 1
+GC g1 usage B 6 1
+GC g1 quantified-rule A B 1 bless {special bar}
+GC g1 start! A

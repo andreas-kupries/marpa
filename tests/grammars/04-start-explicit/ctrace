@@ -1,3 +1,2 @@
-GC g1 new-symbol A
-GC g1 symbol-use A 16 1
-GC start! A
+GC g1 usage A 16 1
+GC g1 start! A

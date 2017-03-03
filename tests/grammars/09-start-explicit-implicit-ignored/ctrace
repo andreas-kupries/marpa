@@ -1,7 +1,5 @@
-GC g1 new-symbol B
-GC g1 symbol-use B 11 1
-GC start! B
-GC g1 new-symbol A
-GC g1 symbol-def A 13 1
-GC g1 symbol-use B 19 1
-GC g1 add-bnf A B 0 mask 0
+GC g1 usage B 11 1
+GC g1 start! B
+GC g1 definition A 13 1
+GC g1 usage B 19 1
+GC g1 priority-rule A B 0 mask 0

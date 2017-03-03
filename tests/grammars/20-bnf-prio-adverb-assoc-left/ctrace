@@ -1,8 +1,6 @@
-GC g1 new-symbol A
-GC g1 symbol-def A 0 1
-GC start! A
-GC g1 symbol-use A 6 1
-GC g1 new-symbol OP
-GC g1 symbol-use OP 8 2
-GC g1 symbol-use A 11 1
-GC g1 add-bnf A {A OP A} 0 assoc left mask {0 0 0}
+GC g1 definition A 0 1
+GC g1 usage A 6 1
+GC g1 usage OP 8 2
+GC g1 usage A 11 1
+GC g1 priority-rule A {A OP A} 0 assoc left mask {0 0 0}
+GC g1 start! A

@@ -1,11 +1,7 @@
-GC l0 new-symbol A
-GC l0 symbol-def A 0 1
-GC l0 new-symbol B
-GC l0 symbol-use B 4 1
-GC l0 new-symbol C
-GC l0 symbol-use C 6 1
-GC l0 new-symbol D
-GC l0 symbol-use D 8 1
-GC l0 new-symbol E
-GC l0 symbol-use E 10 1
-GC l0 add-bnf A {B C D E} 0
+GC l0 definition A 0 1
+GC l0 usage B 4 1
+GC l0 usage C 6 1
+GC l0 usage D 8 1
+GC l0 usage E 10 1
+GC l0 priority-rule A {B C D E} 0
+GC error {Grammar error. Start symbol not defined}

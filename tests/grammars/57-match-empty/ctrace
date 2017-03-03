@@ -1,3 +1,3 @@
-GC l0 new-symbol A
-GC l0 symbol-def A 0 1
-GC l0 add-bnf A {} 0
+GC l0 definition A 0 1
+GC l0 priority-rule A {} 0
+GC error {Grammar error. Start symbol not defined}

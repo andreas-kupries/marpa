@@ -20,7 +20,7 @@ debug prefix marpa/support {[debug caller] | }
 # # ## ### ##### ######## #############
 
 namespace eval marpa {
-    namespace export D DX E X import filter K
+    namespace export D DX E EP X import filter K
 }
 
 # # ## ### ##### ######## #############
@@ -43,22 +43,31 @@ proc marpa::DX {label script} {
 
 proc marpa::E {label args} {
     debug.marpa/support {}
+    uplevel 1 [list marpa::EP $label {} {*}$args]
+}
+
+proc marpa::EP {label prefix args} {
+    debug.marpa/support {}
 
 #     set class [string tolower [lindex [info level -1] 1]]
 #     set label [string map {:: /} [string trim $class :]]
 #     set args  [string toupper [split [string map {marpa/ {}} $label] /]]
 
 # puts $class
-# puts -\t$label
+# puts -\tL($label)
+# puts -\tP($prefix)
 # puts -\t$args
+
+    if {$prefix ne {}} { append prefix { } }
 
     lappend map @args@  $args
     lappend map @label@ $label
+    lappend map @prefix@ $prefix
     uplevel 1 [list method E {msg args} [string map $map {
 	debug.@label@ {}
 	return -code error \
 	    -errorcode [linsert $args 0 MARPA @args@] \
-	    $msg
+	    "@prefix@${msg}"
     }]]
 }
 

@@ -54,12 +54,6 @@ oo::class create marpa::slif::semantics {
 	# Semantic state, start symbol.
 	marpa::slif::semantics::Start create Start $container
 
-	# Semantic state, symbols
-	marpa::slif::semantics::Declare create Symbols/l0 $container l0 new-symbol
-	marpa::slif::semantics::Declare create Symbols/g1 $container g1 new-symbol
-	marpa::slif::semantics::Declare create CharClass  $container new-charclass
-	marpa::slif::semantics::Declare create Strings    $container new-string
-
 	# Semantic state, symbol context
 	marpa::slif::semantics::SymContext create SymCo
 
@@ -105,6 +99,13 @@ oo::class create marpa::slif::semantics {
 	# called.
 	my {*}$ast
 
+	# Complete anything still waiting (fixups and the like)
+	Start complete
+
+	# TODO: @end assert (All L0 symbols have a def (rule, atomic))
+	# TODO: @end assert (All G1 symbols, but start have a use)
+	# TODO: @end assert (L0 without use == G1 without a def == lexeme == terminal)
+
 	# Done. Auto-destroy
 	debug.marpa/slif/semantics {[debug caller 1] | /ok}
 	my destroy
@@ -143,8 +144,6 @@ oo::class create marpa::slif::semantics {
     method {start rule/0} {children} { SymCo g1 use ; Start with: [FIRST] } ; # OK <symbol>
     method {start rule/1} {children} { SymCo g1 use ; Start with: [FIRST] } ; # OK <symbol>
 
-    # TODO: @ end assert (Start ok?)
-
     # # -- --- ----- -------- -------------
     ## Null statement - Not reachable, see statement/2
 
@@ -174,16 +173,15 @@ oo::class create marpa::slif::semantics {
 	# - null rank -- <null ranking specification> |
 
 	SymCo g1
-	SymCo def ; set lhs [FIRST]
-	SymCo use ; set rhs [UNMASK [SINGLE 1]]
-
-	Start maybe: $lhs
+	SymCo definition ; set lhs [FIRST]
+	SymCo usage      ; set rhs [UNMASK [SINGLE 1]]
 
 	set positive [SINGLE 2]
-	set adverbs  [SINGLE 3]
+	set adverbs  [SINGLE 3] ;# still /usage
 	ADVQ adverbs
 
-	Container g1 add-quantified $lhs $rhs $positive {*}$adverbs
+	Container g1 quantified-rule $lhs $rhs $positive {*}$adverbs
+	Start maybe: $lhs
 	return
     }
 
@@ -203,14 +201,14 @@ oo::class create marpa::slif::semantics {
 	# - null rank -- <null ranking specification> |
 
 	SymCo l0
-	SymCo def ; set lhs [FIRST]
-	SymCo use ; set rhs [UNMASK [SINGLE 1]]
+	SymCo definition ; set lhs [FIRST]
+	SymCo usage      ; set rhs [UNMASK [SINGLE 1]]
 
 	set positive [SINGLE 2]
-	set adverbs  [SINGLE 3]
+	set adverbs  [SINGLE 3] ;# still /usage
 	ADVQ adverbs
 
-	Container l0 add-quantified $lhs $rhs $positive {*}$adverbs
+	Container l0 quantified-rule $lhs $rhs $positive {*}$adverbs
 	return
     }
 
@@ -227,14 +225,13 @@ oo::class create marpa::slif::semantics {
 	# - bless     -- <blessing>
 
 	SymCo g1
-	SymCo def
+	SymCo definition
 
 	set lhs     [FIRST]
 	set adverbs [SINGLE 1]
 
+	Container g1 priority-rule $lhs {} 0 {*}$adverbs
 	Start maybe: $lhs
-
-	Container g1 add-bnf $lhs {} 0 {*}$adverbs
 	return
     }
 
@@ -247,12 +244,12 @@ oo::class create marpa::slif::semantics {
 	# - bless     -- <blessing>
 
 	SymCo l0
-	SymCo def
+	SymCo definition
 
 	set lhs     [FIRST]
 	set adverbs [SINGLE 1]
 
-	Container l0 add-bnf $lhs {} 0 {*}$adverbs
+	Container l0 priority-rule $lhs {} 0 {*}$adverbs
 	return
     }
 
@@ -268,16 +265,17 @@ oo::class create marpa::slif::semantics {
 	# adverb and precedence processing there, not here.
 
 	SymCo g1
-	SymCo def
+	SymCo definition
 
 	set lhs [FIRST]
-        Start maybe: $lhs
 
 	SymCo lhs $lhs
-	SymCo use
+	SymCo usage
 	SymCo precedence/reset
 
 	EVALR 1 end
+        Start maybe: $lhs
+	return
     }
 
     method {priority rule/1} {children} {
@@ -289,12 +287,13 @@ oo::class create marpa::slif::semantics {
 	# adverb and precedence processing there, not here.
 
 	SymCo l0
-	SymCo def
+	SymCo definition
 	SymCo lhs [FIRST]
-	SymCo use
+	SymCo usage
 	SymCo precedence/reset
 
 	EVALR 1 end
+	return
     }
 
     method {priorities bnf/0} {children} {
@@ -325,7 +324,7 @@ oo::class create marpa::slif::semantics {
 	lassign $rhs rhsmask rhssymbols
 	dict set adverbs mask $rhsmask
 
-	Container g1 add-bnf $lhs $rhssymbols $prec {*}$adverbs
+	Container g1 priority-rule $lhs $rhssymbols $prec {*}$adverbs
 	return
     }
 
@@ -339,7 +338,7 @@ oo::class create marpa::slif::semantics {
 	set adverbs [SINGLE 1]
 
 	lassign $rhs __ rhssymbols
-	Container l0 add-bnf $lhs $rhssymbols $prec {*}$adverbs
+	Container l0 priority-rule $lhs $rhssymbols $prec {*}$adverbs
 	return
     }
 
@@ -590,25 +589,12 @@ oo::class create marpa::slif::semantics {
 	upvar 1 children children
 	lassign [lindex $children 0] start length literal
 
-	SymCo assert use
+	SymCo assert usage
 	# Expect RHS
 
-	CharClass ensure $literal
-	Container charclass-use $literal $start $length
-
-	if {[SymCo l0?]} {
-	    # L0 rule - The value is a string atom, (auto)marked leaf,
-	    # possibly defined here, used here. Nothing else
-	} else {
-	    # This L0 symbol is a lexeme, needs a G1 symbol
-	    Container charclass-to-g1 $literal ; # TODO
-	    # Generate the associated G1 symbol - Leaf
-	    # TODO: Set def if this is a new symbol
-	    #set name [$symbol name?]
-	    #set symbol [Container g1-symbol $name]
-	    #$symbol is-leaf!
-	    #$symbol use $start $length
-	}
+	set layer [SymCo layer]
+	Container $layer charclass $literal
+	Container $layer usage     $literal $start $length
 
 	debug.marpa/slif/semantics {[UNDENT][debug caller] | [AT] ==> $literal}
 	return $literal
@@ -619,25 +605,12 @@ oo::class create marpa::slif::semantics {
 	upvar 1 children children
 	lassign [lindex $children 0] start length literal
 
-	SymCo assert use
+	SymCo assert usage
 	# Expect RHS
 
-	Strings ensure $literal
-	Container string-use $literal $start $length
-
-	if {[SymCo l0?]} {
-	    # L0 rule - The value is a string symbol, (auto)marked leaf,
-	    # possibly defined here, used here. Nothing else
-	} else {
-	    # This L0 symbol is lexeme, needs a G1 symbol
-	    Container string-to-g1 $literal ; # TODO
-	    # Generate the associated G1 symbol - Leaf
-	    # TODO: Set def if this is a new symbol
-	    #set name [$symbol name?]
-	    #set symbol [Container g1-symbol $name]
-	    #$symbol is-leaf!
-	    #$symbol use $start $length
-	}
+	set layer [SymCo layer]
+	Container $layer string $literal
+	Container $layer usage  $literal $start $length
 
 	debug.marpa/slif/semantics {[UNDENT][debug caller] | [AT] ==> $literal}
 	return $literal
@@ -792,7 +765,7 @@ oo::class create marpa::slif::semantics {
 
 	# Context:
 	set layer [SymCo layer?] ;# g1/l0
-	set type  [SymCo type?]  ;# def/use
+	set type  [SymCo type?]  ;# definition/usage
 
 	lassign [lindex $children $index] start length literal
 	# child structure = (start-offset length literal)
@@ -805,12 +778,7 @@ oo::class create marpa::slif::semantics {
 	    regsub -all {\s+} [string trim [string range $literal 1 end-1]] { } literal
 	}
 
-	Symbols/$layer ensure $literal
-	Container ${layer} symbol-${type} $literal $start $length
-
-	# TODO: @end assert (All L0 symbols have a def (rule, atomic))
-	# TODO: @end assert (All G1 symbols, but start have a use)
-	# TODO: @end assert (L0 without use == G1 without a def == lexeme == terminal)
+	Container $layer $type $literal $start $length
 
 	debug.marpa/slif/semantics {[debug caller] | [AT] ==> $literal}
 	return $literal
@@ -884,7 +852,7 @@ oo::class create marpa::slif::semantics {
 ## - Type:  def/use
 
 oo::class create marpa::slif::semantics::SymContext {
-    variable mytype       ;# def/use
+    variable mytype       ;# definition/usage
     variable mylayer      ;# L0/G1
     variable mylhs        ;# Symbol for upcoming alternatives
     variable myprecedence ;# Precedence level for alternatives
@@ -944,18 +912,20 @@ oo::class create marpa::slif::semantics::SymContext {
 
     # # -- --- ----- -------- -------------
 
-    method def {args} {
+    forward def my definition
+    method definition {args} {
 	debug.marpa/slif/semantics {[debug caller] | }
-	set mytype def
+	set mytype definition
 	# Process additional attributes
 	if {![llength $args]} return
 	my {*}$args
 	return
     }
 
-    method use {args} {
+    forward use my usage
+    method usage {args} {
 	debug.marpa/slif/semantics {[debug caller] | }
-	set mytype use
+	set mytype usage
 	# Process additional attributes
 	if {![llength $args]} return
 	my {*}$args
@@ -995,26 +965,14 @@ oo::class create marpa::slif::semantics::SymContext {
 
     # # -- --- ----- -------- -------------
 
-    method l0? {} {
-	set ok [expr {$mylayer eq "l0"}]
+    method definition? {} {
+	set ok [expr {$mytype eq "definition"}]
 	debug.marpa/slif/semantics {[debug caller] | ==> $ok}
 	return $ok
     }
 
-    if 0 {method g1? {} {
-	set ok [expr {$mylayer eq "g1"}]
-	debug.marpa/slif/semantics {[debug caller] | ==> $ok}
-	return $ok
-    }}
-
-    method def? {} {
-	set ok [expr {$mytype eq "def"}]
-	debug.marpa/slif/semantics {[debug caller] | ==> $ok}
-	return $ok
-    }
-
-    method use? {} {
-	set ok [expr {$mytype eq "use"}]
+    method usage? {} {
+	set ok [expr {$mytype eq "usage"}]
 	debug.marpa/slif/semantics {[debug caller] | ==> $ok}
 	return $ok
     }
@@ -1024,41 +982,54 @@ oo::class create marpa::slif::semantics::SymContext {
 ## Semantic state - Start symbol
 
 oo::class create marpa::slif::semantics::Start {
-    variable mystate
+    marpa::EP marpa/slif/semantics \
+	{Grammar error. Start symbol} \
+	SLIF SEMANTICS START
 
     # Start symbol handling
-    # Method State --> New State Action
-    # ------ -----     --------- ------
-    # with:  undef     yes       set
-    #        maybe     yes       set
-    #        yes       yes       set
-    # ------ -----     --------- ------
-    # maybe: undef     maybe     set
-    #        maybe     maybe     -
-    #        yes       yes       -
-    # ------ -----     --------- ------
+    # Method   State --> New State Action
+    # ------   -----     --------- ------
+    # with:    undef     done      set
+    #          maybe     done      set
+    #          done      -          FAIL
+    # ------   -----     --------- ------
+    # maybe:   undef     maybe     save
+    #          maybe     -         ignore
+    #          done      done      ignore
+    # ------   -----     --------- ------
+    # complete undef     -          FAIL (INTERNAL?)
+    #          maybe     -         set
+    #          done      -         ignore
+    # ------   -----     --------- ------
     ##
     # Order by state
     # State Method --> New State Action
     # ----- ------     --------- ------
-    # undef with:      yes       set
-    #       maybe:     maybe     set
+    # undef with:      done      set
+    #       maybe:     maybe     saved
+    #       complete   -          FAIL
     # ----- ------     --------- ------
-    # maybe with:      yes       set
-    #       maybe:     maybe     -
+    # maybe with:      done      set
+    #       maybe:     -         ignore
+    #       complete   -         set
     # ----- ------     --------- ------
-    # yes   with:      yes       set
-    #       maybe:     yes       -
+    # done  with:      -          FAIL
+    #       maybe:     done      ignore
+    #       complete   -         ignore
     # ----- ------     --------- ------
 
     # "maybe:" is used by the LHS of rules. It will pass its value
     # only on the 1st call, and even then only if no explicit setting
     # was made via "with:". "with:" always passes its value.
 
+    variable mystate
+    variable mysym
+
     constructor {container} {
 	debug.marpa/slif/semantics {[debug caller] | }
 	marpa::import $container Container
 	set mystate undef
+	set mysym   {}
 	return
     }
 
@@ -1066,57 +1037,48 @@ oo::class create marpa::slif::semantics::Start {
 
     method maybe: {symbol} {
 	debug.marpa/slif/semantics {[debug caller] | state=$mystate}
-	if {$mystate ne "undef"} return
-
-	debug.marpa/slif/semantics {[debug caller] | pass}
-	set mystate maybe
-	Container start! $symbol
+	switch -exact -- $mystate {
+	    undef {
+		set mysym   $symbol
+		set mystate maybe
+	    }
+	    maybe -
+	    done {}
+	}
+	debug.marpa/slif/semantics {[debug caller] | /done}
 	return
     }
 
     method with: {symbol} {
 	debug.marpa/slif/semantics {[debug caller] | state=$mystate}
-	set mystate yes
-
-	debug.marpa/slif/semantics {[debug caller] | pass always}
-	Container start! $symbol
+	switch -exact -- $mystate {
+	    undef -
+	    maybe {
+		set mystate done
+		Container g1 start! $symbol
+	    }
+	    done {
+		# TODO: Get location information from somewhere.
+		my E "illegally declared for a second time" \
+		    WITH TWICE
+	    }
+	}
+	debug.marpa/slif/semantics {[debug caller] | /done}
 	return
     }
 
-    method ok? {} {
-	set ok [expr {$mystate ne "undef"}]
-	debug.marpa/slif/semantics {[debug caller] | ==> $ok}
-	return $ok
-    }
-}
-
-# # ## ### ##### ######## #############
-## Semantic state - Symbols (strings, char classes, ...)
-
-oo::class create marpa::slif::semantics::Declare {
-    variable mysymbols
-    variable mycmd
-
-    constructor {container args} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	marpa::import $container Container
-	set mycmd $args
-	set mysymbols {}
-	return
-    }
-
-    # # -- --- ----- -------- -------------
-    ## Declare a symbol. Declared in the container iff it is now known yet.
-
-    method ensure {string} {
-	debug.marpa/slif/semantics {[debug caller] | $string}
-
-	if {[dict exists $mysymbols $string]} return
-
-	debug.marpa/slif/semantics {[debug caller] | pass}
-
-	dict set mysymbols $string .
-	Container {*}$mycmd $string
+    method complete {} {
+	debug.marpa/slif/semantics {[debug caller] | state=$mystate}
+	switch -exact -- $mystate {
+	    undef {
+		my E "not defined" UNDEFINED
+	    }
+	    maybe {
+		Container g1 start! $mysym
+	    }
+	    done {}
+	}
+	debug.marpa/slif/semantics {[debug caller] | /done}
 	return
     }
 }
