@@ -21,6 +21,7 @@ kt local   testing marpa
 
 kt source support/common.tcl
 kt source support/ast.tcl
+kt source support/grammars.tcl
 
 # # ## ### ##### ######## ############# #####################
 ##  1 constructor/0
@@ -63,18 +64,25 @@ test marpa-slif-semantics-process-1.1 {process, wrong args, too many} -setup {
 # # ## ### ##### ######## ############# #####################
 ## process
 
-incr k
-foreach slif [lsort -dict [kt find grammars/*/slif]] {
-    set caseid   [file tail [file dirname $slif]]
-    set slifstr  [fileutil::cat $slif]
-    set expected [string trimright [fileutil::cat [file dirname $slif]/ctrace]]
+incr max
+test-grammars id slif ast __ctrace_ignored__ {
+    incr max
+}
+set format %0[string length $max]d
+unset max
 
-    test marpa-slif-semantics-process-${caseid}-2.$k "process $slif, trace" -setup {
-	marpa::slif::semantics create SE [log GC] ; trace GC
+incr k
+test-grammars id slif __ast_ignored__ ctrace {
+    set input    [fileutil::cat $slif]
+    set expected [gr-expected $ctrace]
+    set kd       [format $format $k]
+
+    test marpa-slif-semantics-process-2.${kd}---${id} "process $id /trace" -setup {
+	marpa::slif::semantics create SE [log GC] ; /trace GC
 	marpa::slif::parser    create SP
     } -body {
 	if {[catch {
-	    SE process [SP process $slifstr]
+	    SE process [SP process $input]
 	} msg]} {
 	    #puts $::errorInfo
 	    log-add GC error $msg
@@ -83,8 +91,10 @@ foreach slif [lsort -dict [kt find grammars/*/slif]] {
     } -cleanup {
 	unset msg
 	SP destroy
-	catch { SE destroy } ;# auto-destroyed in process, or not if previous test failed.
-	# Thus, try to destroy, ignore error if already gone
+	catch { SE destroy }
+	# Normally auto-destroyed by "process". However if the
+	# previous test failed it may not be.  Thus, try to destroy,
+	# and the ignore error when it was already gone.
     } -result $expected
 
     incr k

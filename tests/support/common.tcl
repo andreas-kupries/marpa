@@ -23,7 +23,7 @@ proc log2 {label args} {
     dict set __logs $label [set l [Marpa::Testing::Divert new $label [__logcenter] {*}$args]]
     return $l
 }
-proc trace {label} {
+proc /trace {label} {
     global  __logs
     [dict get $__logs $label] /trace
 }

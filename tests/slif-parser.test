@@ -21,6 +21,7 @@ kt local   testing marpa
 # # ## ### ##### ######## ############# #####################
 
 kt source support/ast.tcl
+kt source support/grammars.tcl
 
 # # ## ### ##### ######## ############# #####################
 ##  1 constructor/0
@@ -75,34 +76,56 @@ test marpa-slif-parser-process-file-1.1 {process-file, wrong args, too many} -se
 # # ## ### ##### ######## ############# #####################
 ## process, process-file
 
-incr k
-foreach slif [lsort -dict [kt find grammars/*/slif]] {
-    set caseid   [file tail [file dirname $slif]]
-    set slifstr  [fileutil::cat $slif]
-    set expected [string trimright [fileutil::cat [file dirname $slif]/ast]]
+incr max
+test-grammars id slif ast __ctrace_ignored__ {
+    incr max
+}
+set format %0[string length $max]d
+unset max
 
-    test marpa-slif-parser-process-${caseid}-2.$k "process $slif" -setup {
+incr k
+test-grammars id slif ast __ctrace_ignored__ {
+    set input    [fileutil::cat $slif]
+    set expected [string trimright [fileutil::cat $ast]]
+    set kd       [format $format $k]
+
+    if {0} {
+	test marpa-slif-parser-debug-911.${kd}---${id} "process $id" -setup {
+	    marpa::slif::parser create SP
+	} -body {
+	    if {[catch {
+		pretty-ast [SP process $input]
+	    } msg]} {
+		puts ZZZ:$::errorInfo
+	    }
+	    set msg
+	} -cleanup {
+	    SP destroy
+	    unset msg
+	} -result $expected
+
+	incr k
+	continue
+    }
+
+    test marpa-slif-parser-process-2.${kd}---${id} "process $id" -setup {
 	marpa::slif::parser create SP
     } -body {
-	if {[catch {
-	    pretty-ast [SP process $slifstr]
-	} msg]} {
-	    #puts ZZZ:$::errorInfo
-	}
+	catch {
+	    pretty-ast [SP process $input]
+	} msg
 	set msg
     } -cleanup {
 	SP destroy
 	unset msg
     } -result $expected
 
-    test marpa-slif-parser-process-file-${caseid}-2.$k "process-file $slif" -setup {
+    test marpa-slif-parser-process-file-3.${kd}---${id} "process-file $id" -setup {
 	marpa::slif::parser create SP
     } -body {
-	if {[catch {
+	catch {
 	    pretty-ast [SP process-file $slif]
-	} msg]} {
-	    #puts ZZZ:$::errorInfo
-	}
+	} msg
 	set msg
     } -cleanup {
 	SP destroy
