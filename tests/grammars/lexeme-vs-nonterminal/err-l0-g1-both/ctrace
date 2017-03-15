@@ -1,0 +1,22 @@
+GC g1 definition A 0 1
+GC g1 usage B 6 1
+
+	GC g1 priority-rule A B 0 mask 0
+
+GC l0 definition A 8 1
+GC l0 string 'a'
+GC l0 usage 'a' 12 3
+
+	GC l0 priority-rule A 'a' 0
+
+GC g1 usage A 63 1
+GC l0 definition B 65 1
+GC l0 string 'b'
+GC l0 usage 'b' 69 3
+GC l0 priority-rule B 'b' 0
+GC comment Semantics completion processing
+GC start! A
+GC comment LATM fixup A
+GC comment LATM fixup B
+
+	GC error {Lexeme 'A' also defined as G1 non-terminal}

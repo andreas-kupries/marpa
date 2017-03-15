@@ -1,0 +1,6 @@
+A ::= B
+A ~ 'a'
+# Defined as both L0 and G1 symbol
+
+:start ::= A
+B ~ 'b'

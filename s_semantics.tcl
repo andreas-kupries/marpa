@@ -143,8 +143,36 @@ oo::class create marpa::slif::semantics {
 	# The left-over maybes must be terminals
 	Terminal complete 1 _ {}
 
-	# TODO: Validate that terminal and lexeme are the same set.
-	# TODO: If not report the differences appropriately.
+	# Validate that terminal and lexeme are the same set.
+	# Appropriately report any differences.
+
+	Lexeme foreach sym {
+	    if {[Lexeme set? $sym] && [Terminal unset? $sym]} {
+		# Lexeme and non-Terminal
+		my E "Lexeme '$sym' also defined as G1 non-terminal" \
+		    MISMATCH L0/G1 BOTH $sym
+		# # ##
+		## A ~   'a' -- A lexeme definition
+		## A ::= 'x' -- A non-terminal definition
+		# # ##
+	    }
+	}
+
+	Terminal foreach sym {
+	    if {[Terminal set? $sym] && [Lexeme unset? $sym]} {
+		# Terminal and non-Lexeme
+		my E "Terminal '$sym' also used as L0 non-lexeme" \
+		    MISMATCH G1/L0 BOTH $sym
+		# # ##
+		## A ::= B -- B terminal use
+		## C ~   B -- B non-lexeme use
+		# # ##
+	    }
+	}
+
+	# Lexeme not used in G1
+
+	# Terminal not exported from L0
 
 	# TODO: Have to track all L0 symbols, report undefined (no rule).
 
@@ -1286,6 +1314,19 @@ oo::class create marpa::slif::semantics::Flag {
 	    if {[my known? $sym]} continue
 	    dict set myflag $sym $x
 	    # Run the script on the completed symbol
+	    uplevel 1 $script
+	}
+	return
+    }
+
+    method foreach {vs script} {
+	debug.marpa/slif/semantics {}
+	upvar 1 $vs sym
+
+	#Container comment [self] complete _S_($mysym)__
+	#Container comment [self] complete _F_($myflag)__
+
+	dict for {sym _} $mysym {
 	    uplevel 1 $script
 	}
 	return

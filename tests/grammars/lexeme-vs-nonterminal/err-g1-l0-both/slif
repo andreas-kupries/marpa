@@ -1,0 +1,7 @@
+A ::= B
+C ~ B
+# Used as both L0 and G1 symbol, not an L0 lexeme
+
+:start ::= D
+B ~ 'b'
+D ::= A C
