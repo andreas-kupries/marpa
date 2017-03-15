@@ -51,11 +51,32 @@ oo::class create marpa::slif::semantics {
 	}]}
 	marpa::import $container Container
 
+	# Track LATM flag handling for lexemes
+	marpa::slif::semantics::LATM create LATM $container
+
+	# Track knowledge of which L0 symbols are lexemes or not.
+	marpa::slif::semantics::Flag create \
+	    Lexeme $container "Lexeme" LEXEME
+
+	# Track knowledge of which G1 symbols are terminals or not.
+	set terminal [marpa::slif::semantics::Flag create \
+			  Terminal $container "Terminal" TERMINAL]
+
+	# Track lexeme default singleton
+	marpa::slif::semantics::Singleton create \
+	    LD "Illegal second use of 'lexeme default'" LEXEME-DEFAULT
+
 	# Semantic state, start symbol.
-	marpa::slif::semantics::Start create Start $container
+	marpa::slif::semantics::Start create \
+	    Start $container $terminal
 
 	# Semantic state, symbol context
-	marpa::slif::semantics::SymContext create SymCo
+	marpa::slif::semantics::SymContext create \
+	    SymCo
+
+	# The lexeme and terminal data is complementary.
+	# G1 terminals are L0 lexemes and vice versa.
+	# At the end both sets have to agree.
 
 	# Shortcut access to all AST processing methods (implicit "my")
 	# Format: <name>/<number>
@@ -78,6 +99,7 @@ oo::class create marpa::slif::semantics {
 	link {ADVL    ADVL}    ;# Generate singular adverb sem value, for literal
 	link {ADVS    ADVS}    ;# Generate singular adverb sem value, for symbol
 	link {ADVQ    ADVQ}    ;# Quantified rule adverb special handling
+	link {ADVE    ADVE}    ;# :lexeme adverb special handling
 	link {SYMBOL  SYMBOL}  ;# Get symbol instance for chosen AST node
 	link {CONST   CONST}   ;# Sem value is fixed.
 	link {LEAF    LEAF}    ;# Leaf rhs sem value from symbol
@@ -100,7 +122,31 @@ oo::class create marpa::slif::semantics {
 	my {*}$ast
 
 	# Complete anything still waiting (fixups and the like)
+	Container comment Semantics completion processing
+
+	# Check that we have a start symbol. This also checks that the
+	# start symbol is known as non-Terminal symbol, i.e. had a G1
+	# rule with it as the LHS.
 	Start complete
+
+	# Known flags are for non-lexemes (RHS => unset!, LHS - maybe)
+	# And some lexemes (via :lexeme statements).
+	# The left-over maybes must be lexemes.
+	# As they had no :lexeme these are without latm configuration,
+	# fix that now.
+	Lexeme complete 1 sym {
+	    Container comment LATM fixup $sym
+	    LATM fixup $sym
+	}
+
+	# Known flags are for non-terminals (LHS => unset!, RHS - maybe)
+	# The left-over maybes must be terminals
+	Terminal complete 1 _ {}
+
+	# TODO: Validate that terminal and lexeme are the same set.
+	# TODO: If not report the differences appropriately.
+
+	# TODO: Have to track all L0 symbols, report undefined (no rule).
 
 	# TODO: @end assert (All L0 symbols have a def (rule, atomic))
 	# TODO: @end assert (All G1 symbols, but start have a use)
@@ -180,6 +226,10 @@ oo::class create marpa::slif::semantics {
 	set adverbs  [SINGLE 3] ;# still /usage
 	ADVQ adverbs
 
+	# lhs - definitely not a terminal - unset!
+	# rhs - possibly terminals, not known, don't do anything
+	Terminal unset! $lhs
+	Terminal def $rhs
 	Container g1 quantified-rule $lhs $rhs $positive {*}$adverbs
 	Start maybe: $lhs
 	return
@@ -208,6 +258,10 @@ oo::class create marpa::slif::semantics {
 	set adverbs  [SINGLE 3] ;# still /usage
 	ADVQ adverbs
 
+	# lhs - maybe toplevel - cannot set!
+	# rhs - definitely not toplevel - unset!
+	Lexeme def    $lhs
+	Lexeme unset! $rhs
 	Container l0 quantified-rule $lhs $rhs $positive {*}$adverbs
 	return
     }
@@ -230,6 +284,9 @@ oo::class create marpa::slif::semantics {
 	set lhs     [FIRST]
 	set adverbs [SINGLE 1]
 
+	# lhs - definitely not a terminal - unset!
+	# rhs - possibly terminals, not known, don't do anything
+	Terminal unset! $lhs
 	Container g1 priority-rule $lhs {} 0 {*}$adverbs
 	Start maybe: $lhs
 	return
@@ -249,6 +306,8 @@ oo::class create marpa::slif::semantics {
 	set lhs     [FIRST]
 	set adverbs [SINGLE 1]
 
+	# lhs - maybe toplevel - cannot set!
+	# rhs - none available
 	Container l0 priority-rule $lhs {} 0 {*}$adverbs
 	return
     }
@@ -324,6 +383,10 @@ oo::class create marpa::slif::semantics {
 	lassign $rhs rhsmask rhssymbols
 	dict set adverbs mask $rhsmask
 
+	# lhs - definitely not a terminal - unset!
+	# rhs - possibly terminals, not known, don't do anything
+	Terminal unset! $lhs
+	Terminal def {*}$rhssymbols
 	Container g1 priority-rule $lhs $rhssymbols $prec {*}$adverbs
 	return
     }
@@ -338,6 +401,10 @@ oo::class create marpa::slif::semantics {
 	set adverbs [SINGLE 1]
 
 	lassign $rhs __ rhssymbols
+	# lhs - maybe toplevel - cannot set!
+	# rhssymbols - definitely not toplevel - unset!
+	Lexeme def    $lhs
+	Lexeme unset! {*}$rhssymbols
 	Container l0 priority-rule $lhs $rhssymbols $prec {*}$adverbs
 	return
     }
@@ -358,6 +425,71 @@ oo::class create marpa::slif::semantics {
     method quantifier/1 {children} { CONST 1 }
 
     # # -- --- ----- -------- -------------
+    ## Handle lexeme default and :lexeme
+
+    method {lexeme default statement/0} {children} {
+	# <adverb list lexeme default>
+	# 0
+	##
+	# Note: May only be used ONCE
+	# Adverbs
+	# - action \ These go into the grammar (container)
+	# - bless  /
+	# - latm   | This goes into LATM handling with the :lexeme's
+	LD pass
+
+	set adverbs [SINGLE 0]
+
+	# TODO: Should possibly register warning if there are no adverbs.
+	if {![dict size $adverbs]} return
+
+	set action $adverbs
+	dict unset action latm
+	if {[dict size $action]} {
+	    # Have at least one of action, bless
+	    Container lexeme-semantics {*}$action
+	}
+
+	dict unset adverbs action
+	dict unset adverbs bless
+	# latm only at this point, at most.
+
+	if {![dict size $adverbs]} return
+	# latm definitely present.
+	Container comment LATM global! [dict get $adverbs latm]
+	LATM global! [dict get $adverbs latm]
+	return
+    }
+
+    method {lexeme rule/0} {children} {
+	# <symbol> <adverb list lexeme>
+	# 0        1
+	# Adverbs
+	# - event    \ Check before
+	# - pause    /
+	# - priority
+	# - latm     | This goes into LATM handling with the :lexeme's
+
+	SymCo l0
+	SymCo use
+
+	set symbol  [FIRST]
+	set adverbs [SINGLE 1]
+
+	Lexeme set! $symbol
+	ADVE adverbs
+
+	if {[dict size $adverbs]} {
+	    Container l0 configure $symbol {*}$adverbs
+	}
+
+	if {![dict exists $adverbs latm]} {
+	    Container comment LATM fixup $symbol
+	    LATM fixup $symbol
+	}
+	return
+    }
+
     # # -- --- ----- -------- -------------
     # # -- --- ----- -------- -------------
     # # -- --- ----- -------- -------------
@@ -397,7 +529,7 @@ oo::class create marpa::slif::semantics {
     method {adverb list items match quantified/0}  {children} { FLATTEN }
 
     method {adverb item default/0} {children} { FIRST } ;# action
-    method {adverb item default/1} {children} { FIRST } ;# blessing
+    method {adverb item default/1} {children} { FIRST } ;# bless
     method {adverb item default/2} {children} { FIRST } ;# null
 
     method {adverb item discard/0} {children} { FIRST } ;# event
@@ -413,12 +545,12 @@ oo::class create marpa::slif::semantics {
     method {adverb item discard default/1} {children} { FIRST } ;# null
 
     method {adverb item lexeme default/0} {children} { FIRST } ;# action
-    method {adverb item lexeme default/1} {children} { FIRST } ;# blessing
+    method {adverb item lexeme default/1} {children} { FIRST } ;# bless
     method {adverb item lexeme default/2} {children} { FIRST } ;# latm
     method {adverb item lexeme default/3} {children} { FIRST } ;# null
 
     method {adverb item bnf alternative/0} {children} { FIRST } ;# action
-    method {adverb item bnf alternative/1} {children} { FIRST } ;# blessing
+    method {adverb item bnf alternative/1} {children} { FIRST } ;# bless
     method {adverb item bnf alternative/2} {children} { FIRST } ;# left
     method {adverb item bnf alternative/3} {children} { FIRST } ;# right
     method {adverb item bnf alternative/4} {children} { FIRST } ;# group
@@ -426,7 +558,7 @@ oo::class create marpa::slif::semantics {
     method {adverb item bnf alternative/6} {children} { FIRST } ;# null
 
     method {adverb item bnf empty/0} {children} { FIRST } ;# action
-    method {adverb item bnf empty/1} {children} { FIRST } ;# blessing
+    method {adverb item bnf empty/1} {children} { FIRST } ;# bless
     method {adverb item bnf empty/2} {children} { FIRST } ;# left
     method {adverb item bnf empty/3} {children} { FIRST } ;# right
     method {adverb item bnf empty/4} {children} { FIRST } ;# group
@@ -434,7 +566,7 @@ oo::class create marpa::slif::semantics {
     method {adverb item bnf empty/6} {children} { FIRST } ;# null
 
     method {adverb item bnf quantified/0} {children} { FIRST } ;# action
-    method {adverb item bnf quantified/1} {children} { FIRST } ;# blessing
+    method {adverb item bnf quantified/1} {children} { FIRST } ;# bless
     method {adverb item bnf quantified/2} {children} { FIRST } ;# separator
     method {adverb item bnf quantified/3} {children} { FIRST } ;# proper
     method {adverb item bnf quantified/4} {children} { FIRST } ;# null
@@ -487,6 +619,9 @@ oo::class create marpa::slif::semantics {
     method {group association/0} {children} { ADVL assoc group }
 
     # # -- --- ----- -------- -------------
+
+    method {latm specification/0} {children} { ADVL latm [LITERAL] }
+    method {latm specification/1} {children} { ADVL latm [LITERAL] }
 
     # # -- --- ----- -------- -------------
     ## Symbol processing
@@ -592,9 +727,17 @@ oo::class create marpa::slif::semantics {
 	SymCo assert usage
 	# Expect RHS
 
-	set layer [SymCo layer]
+	set layer [SymCo layer?]
 	Container $layer charclass $literal
 	Container $layer usage     $literal $start $length
+
+	if {$layer eq "g1"} {
+	    # Mark the literal as a terminal (for G1), and a lexeme (for L0).
+	    # Further include it into LATM tracking
+	    Terminal set!  $literal
+	    Lexeme   set!  $literal
+	    LATM     fixup $literal
+	}
 
 	debug.marpa/slif/semantics {[UNDENT][debug caller] | [AT] ==> $literal}
 	return $literal
@@ -608,9 +751,17 @@ oo::class create marpa::slif::semantics {
 	SymCo assert usage
 	# Expect RHS
 
-	set layer [SymCo layer]
+	set layer [SymCo layer?]
 	Container $layer string $literal
 	Container $layer usage  $literal $start $length
+
+	if {$layer eq "g1"} {
+	    # Mark the literal as a terminal (for G1), and a lexeme (for L0).
+	    # Further include it into LATM tracking
+	    Terminal set!  $literal
+	    Lexeme   set!  $literal
+	    LATM     fixup $literal
+	}
 
 	debug.marpa/slif/semantics {[UNDENT][debug caller] | [AT] ==> $literal}
 	return $literal
@@ -831,6 +982,29 @@ oo::class create marpa::slif::semantics {
 	return
     }
 
+    method ADVE {avar} {
+	# Custom check for related attributes 'event' and 'pause'
+	# TODO XXX event/pause - Merge into a single adverb/attribute.
+
+	upvar 1 $avar adverbs
+
+	if {[dict exists $adverbs event]} {
+	    # When an event is specified, we also need 'pause'.
+	    # Not having it is a fatal error
+
+	    if {![dict exists $adverbs pause]} {
+		my E "Required 'pause' is missing." ADVERB PAUSE
+	    }
+	    return
+	} elseif {[dict exists $adverbs pause]} {
+	    # We have 'pause', but not 'event'. This is ok, it "just"
+	    # causes the engine to use an unnamed event. Such are
+	    # however strongly disrecommended. TODO: Register a
+	    # warning.
+	}
+	return
+    }
+
     # # ## ### ##### ######## #############
     ## Semantic state
 
@@ -844,6 +1018,53 @@ oo::class create marpa::slif::semantics {
     }
 
     # # ## ### ##### ######## #############
+}
+
+# # ## ### ##### ######## #############
+## Semantic state - LATM management
+
+oo::class create marpa::slif::semantics::LATM {
+    marpa::E marpa/slif/semantics SLIF SEMANTICS LATM
+
+    variable myglobal  ;# global setting, if any.
+    variable mypending ;# symbols waiting for fixup by global setting
+
+    variable mytype       ;# definition/usage
+    variable mylayer      ;# L0/G1
+    variable mylhs        ;# Symbol for upcoming alternatives
+    variable myprecedence ;# Precedence level for alternatives
+
+    constructor {container} {
+	debug.marpa/slif/semantics {[debug caller] | }
+	marpa::import $container Container
+	set myglobal  {}
+	set mypending {}
+	return
+    }
+
+    method global! {x} {
+	debug.marpa/slif/semantics {[debug caller] | }
+	# Set global state, handle pending fixup
+	# Note! Caller makes sure to call this only once.
+	set myglobal $x
+	foreach symbol $mypending {
+	    Container l0 configure $symbol latm $myglobal
+	}
+	set mypending {}
+	return
+    }
+
+    method fixup {sym} {
+	debug.marpa/slif/semantics {[debug caller] | }
+
+	if {$myglobal ne {}} {
+	    Container l0 configure $sym latm $myglobal
+	    return
+	}
+
+	lappend mypending $sym
+	return
+    }
 }
 
 # # ## ### ##### ######## #############
@@ -979,6 +1200,140 @@ oo::class create marpa::slif::semantics::SymContext {
 }
 
 # # ## ### ##### ######## #############
+## Semantic state - Singletons
+
+oo::class create marpa::slif::semantics::Singleton {
+    marpa::EP marpa/slif/semantics \
+	{Grammar error.} \
+	SLIF SEMANTICS SINGLETON
+
+    variable mymsg  ;# error message
+    variable mycode ;# error code
+    variable myok   ;# flag tracking calls
+
+    constructor {msg args} {
+	debug.marpa/slif/semantics {}
+	set mymsg  $msg
+	set mycode $args
+	set myok   1
+	return
+    }
+
+    method pass {} {
+	debug.marpa/slif/semantics {}
+	if {!$myok} {
+	    my E $mymsg {*}$mycode
+	}
+	set myok 0
+	return
+    }
+}
+
+# # ## ### ##### ######## #############
+## Semantic state - Flag management
+## Flags are per symbol or similar.
+## A flag can be set, or unset, but not both.
+## A flags state may be unknown however.
+## This means
+## - Setting a flag already known as unset fails
+## - Unsetting a flag already known as set fails
+## - Both set? and unset? may return false
+## - If either set? or unset? returns true the
+##   other predicate will return false.
+##
+## The semantics use instances of this class to track toplevel, use,
+## and other state for grammar symbols.
+##
+
+oo::class create marpa::slif::semantics::Flag {
+    marpa::EP marpa/slif/semantics \
+	{Grammar error.} \
+	SLIF SEMANTICS FLAG
+
+    variable mymsg  ;# error message prefix
+    variable mycode ;# error code prefix
+    variable myflag ;# flag dictionary (known information)
+    variable mysym  ;# symbol dictionary (superset of myflag, (*))
+    #               ;# (*) I.e. includes the maybes
+
+    constructor {container msg args} {
+	marpa::import $container Container
+
+	debug.marpa/slif/semantics {}
+	if {$msg ne {}} { append msg { } }
+	set mymsg  $msg
+	set mycode $args
+	set myflag {}
+	set mysym  {}
+	return
+    }
+
+    method def {args} {
+	debug.marpa/slif/semantics {}
+	foreach key $args { dict set mysym $key . }
+	return
+    }
+
+    method complete {x v script} {
+	debug.marpa/slif/semantics {}
+	upvar 1 $v sym
+
+	#Container comment [self] complete _S_($mysym)__
+	#Container comment [self] complete _F_($myflag)__
+
+	# all maybes become 'x'
+	dict for {sym _} $mysym {
+	    if {[my known? $sym]} continue
+	    dict set myflag $sym $x
+	    # Run the script on the completed symbol
+	    uplevel 1 $script
+	}
+	return
+    }
+
+    method set! {args} {
+	debug.marpa/slif/semantics {}
+	foreach key $args {
+	    if {![my unset? $key]} continue
+	    my E "!$mymsg already, cannot be one" {*}$mycode ALREADY UNSET
+	}
+	foreach key $args {
+	    dict set mysym  $key .
+	    dict set myflag $key 1
+	}
+	return
+    }
+
+    method unset! {args} {
+	debug.marpa/slif/semantics {}
+	foreach key $args {
+	    if {![my set? $key]} continue
+	    my E "$mymsg already, cannot be not" {*}$mycode ALREADY SET
+	}
+	foreach key $args {
+	    dict set mysym  $key .
+	    dict set myflag $key 0
+	}
+	return
+    }
+
+    method known? {key} {
+	debug.marpa/slif/semantics {}
+	return [dict exists $myflag $key]
+    }
+
+    method set? {key} {
+	debug.marpa/slif/semantics {}
+	return [expr {[dict exists $myflag $key] && [dict get $myflag $key]}]
+    }
+
+    method unset? {key} {
+	debug.marpa/slif/semantics {}
+	return [expr {[dict exists $myflag $key] && ![dict get $myflag $key]}]
+    }
+}
+
+# # ## ### ##### ######## #############
 ## Semantic state - Start symbol
 
 oo::class create marpa::slif::semantics::Start {
@@ -1025,9 +1380,10 @@ oo::class create marpa::slif::semantics::Start {
     variable mystate
     variable mysym
 
-    constructor {container} {
+    constructor {container terminal} {
 	debug.marpa/slif/semantics {[debug caller] | }
 	marpa::import $container Container
+	marpa::import $terminal  Terminal
 	set mystate undef
 	set mysym   {}
 	return
@@ -1055,7 +1411,10 @@ oo::class create marpa::slif::semantics::Start {
 	    undef -
 	    maybe {
 		set mystate done
-		Container g1 start! $symbol
+		set mysym   $symbol
+		# We defer passing even and explicitly defined start
+		# symbol to the completion phase. Because then we can
+		# check if it has a definition or not (Terminal flags).
 	    }
 	    done {
 		# TODO: Get location information from somewhere.
@@ -1071,10 +1430,19 @@ oo::class create marpa::slif::semantics::Start {
 	debug.marpa/slif/semantics {[debug caller] | state=$mystate}
 	switch -exact -- $mystate {
 	    undef {
-		my E "not defined" UNDEFINED
+		my E "not known" UNKNOWN
 	    }
+	    done -
 	    maybe {
-		Container g1 start! $mysym
+		# While the start symbol cannot be a terminal there is
+		# still the possibility that there is no rule defining
+		# it either.
+		# IOW instead of simply trying unset! we explictly check
+		# that it is a non-terminal and bail if not.
+		if {![Terminal unset? $mysym]} {
+		    my E "has no G1 rule" UNDEFINED
+		}
+		Container start! $mysym
 	    }
 	    done {}
 	}
