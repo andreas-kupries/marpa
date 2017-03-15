@@ -1405,7 +1405,7 @@ test marpa-lexer-11.2.2 {eof, after config, externals} -setup {
   PAR R eof = {}
 }}
 
-test marpa-lexer-11.3.0 {eof, after accept, parse failure for incomplete} -setup {
+test marpa-lexer-11.3.0 {eof, after accept, no enter, result} -setup {
     marpa::lexer create LEXER [log2 STO [fake-store]] [log2 PAR [fake-parse]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1}
@@ -1414,9 +1414,9 @@ test marpa-lexer-11.3.0 {eof, after accept, parse failure for incomplete} -setup
 } -cleanup {
     LEXER destroy
     logged
-} -returnCodes error -result {FAIL (g1 {acceptable {A B}})}
+} -result {}
 
-test marpa-lexer-11.3.1 {eof, after accept, sequencing n/a, parse failure for incomplete} -setup {
+test marpa-lexer-11.3.1 {eof, after accept, no enter, sequencing} -setup {
     marpa::lexer create LEXER [log2 STO [fake-store]] [log2 PAR [fake-parse]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1}
@@ -1426,9 +1426,9 @@ test marpa-lexer-11.3.1 {eof, after accept, sequencing n/a, parse failure for in
 } -cleanup {
     LEXER destroy
     logged
-} -returnCodes error -result {FAIL (g1 {acceptable {A B}})}
+} -result done
 
-test marpa-lexer-11.3.2 {eof, after accept, externals} -setup {
+test marpa-lexer-11.3.2 {eof, after accept, no enter, externals} -setup {
     marpa::lexer create LEXER [log2 STO [fake-store]] [log2 PAR [fake-parse]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1}
@@ -1440,9 +1440,8 @@ test marpa-lexer-11.3.2 {eof, after accept, externals} -setup {
 } -cleanup {
     LEXER destroy
 } -result {
-  GATE C {get-context context}
-  GATE R {get-context context} = {}
-  PAR C {fail context}
+  PAR C eof
+  PAR R eof = {}
 }
 
 test marpa-lexer-11.4.0 {eof, after enter} -setup {

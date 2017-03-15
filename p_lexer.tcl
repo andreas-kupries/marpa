@@ -331,8 +331,11 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | }
 
 	# Flush everything pending in the local recognizer to the
-	# parser before signaling eof to the parser.
-	my Complete
+	# parser before signaling eof to the parser. Do this only if
+	# we actually have seen something and thus pending.
+	if {$mystart ne {}} {
+	    my Complete
+	}
 
 	#  Note that the flush leaves us with a just-started
 	# recognizer, which we have to remove again.
