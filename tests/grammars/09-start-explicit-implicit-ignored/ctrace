@@ -1,5 +1,0 @@
-GC g1 usage B 11 1
-GC g1 start! B
-GC g1 definition A 13 1
-GC g1 usage B 19 1
-GC g1 priority-rule A B 0 mask 0

@@ -1,3 +1,0 @@
-GC g1 definition A 0 1
-GC g1 priority-rule A {} 0 action {cmd dobeta}
-GC g1 start! A

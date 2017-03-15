@@ -1,0 +1,5 @@
+GC g1 definition A 0 1
+GC g1 usage B 6 1
+GC g1 quantified-rule A B 1 action {cmd cmd}
+GC comment Semantics completion processing
+GC start! A

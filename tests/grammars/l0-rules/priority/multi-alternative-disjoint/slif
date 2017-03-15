@@ -1,0 +1,7 @@
+A ~ B
+A ~ C
+
+:start ::= D
+D ::= A
+B ~ 'b'
+C ~ 'c'

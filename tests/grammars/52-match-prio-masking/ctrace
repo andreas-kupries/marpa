@@ -1,7 +1,0 @@
-GC l0 definition A 0 1
-GC l0 usage B 4 1
-GC l0 usage C 8 1
-GC l0 usage D 10 1
-GC l0 usage E 14 1
-GC l0 priority-rule A {B C D E} 0
-GC error {Grammar error. Start symbol not defined}

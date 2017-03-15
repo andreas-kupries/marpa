@@ -1,0 +1,69 @@
+statements/0
+  statement/10
+    lexeme rule/0
+      symbol/0
+        symbol name/0
+          @10 3 'foo'
+      @{} {} ''
+  statement/8
+    lexeme default statement/0
+      adverb list lexeme default/0
+        adverb list items lexeme default/0
+          adverb item lexeme default/2
+            latm specification/1
+              @39 1 '0'
+  statement/10
+    lexeme rule/0
+      symbol/0
+        symbol name/0
+          @51 3 'bar'
+      @{} {} ''
+  statement/0
+    start rule/0
+      symbol/0
+        symbol name/0
+          @67 1 'A'
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @69 1 'A'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @75 3 'foo'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @79 3 'bar'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @83 3 'foo'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @89 3 ''a''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @93 3 'bar'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @99 3 ''b''
+            @{} {} ''

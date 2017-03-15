@@ -1,0 +1,3 @@
+A ::= 'a'
+:start ::= A
+# Ending in a comment should not generate an error

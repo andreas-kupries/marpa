@@ -1,0 +1,4 @@
+GC g1 definition A 0 1
+GC g1 priority-rule A {} 0 assoc group
+GC comment Semantics completion processing
+GC start! A

@@ -1,0 +1,16 @@
+GC l0 definition A 0 1
+GC l0 usage B 4 1
+
+	GC l0 priority-rule A B 0 name reduction
+
+GC g1 usage F 36 1
+GC g1 definition F 38 1
+GC g1 usage A 44 1
+GC g1 priority-rule F A 0 mask 0
+GC l0 definition B 46 1
+GC l0 string 'b'
+GC l0 usage 'b' 50 3
+GC l0 priority-rule B 'b' 0
+GC comment Semantics completion processing
+GC start! F
+GC comment LATM fixup A

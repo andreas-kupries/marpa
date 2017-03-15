@@ -1,0 +1,4 @@
+A ~ name => 'a/b reduction'
+
+:start ::= F
+F ::= A

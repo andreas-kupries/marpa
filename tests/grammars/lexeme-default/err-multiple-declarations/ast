@@ -1,0 +1,11 @@
+statements/0
+  statement/8
+    lexeme default statement/0
+      @{} {} ''
+  statement/8
+    lexeme default statement/0
+      adverb list lexeme default/0
+        adverb list items lexeme default/0
+          adverb item lexeme default/2
+            latm specification/0
+              @47 1 '0'

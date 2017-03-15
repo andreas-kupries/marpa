@@ -1,0 +1,5 @@
+A ~ B name => reduction
+
+:start ::= F
+F ::= A
+B ~ 'b'

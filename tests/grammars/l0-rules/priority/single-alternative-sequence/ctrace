@@ -1,0 +1,31 @@
+GC l0 definition A 0 1
+GC l0 usage B 4 1
+GC l0 usage C 6 1
+GC l0 usage D 8 1
+GC l0 usage E 10 1
+
+	GC l0 priority-rule A {B C D E} 0
+
+GC g1 usage F 24 1
+GC g1 definition F 26 1
+GC g1 usage A 32 1
+GC g1 priority-rule F A 0 mask 0
+GC l0 definition B 34 1
+GC l0 string 'b'
+GC l0 usage 'b' 38 3
+GC l0 priority-rule B 'b' 0
+GC l0 definition C 42 1
+GC l0 string 'c'
+GC l0 usage 'c' 46 3
+GC l0 priority-rule C 'c' 0
+GC l0 definition D 50 1
+GC l0 string 'd'
+GC l0 usage 'd' 54 3
+GC l0 priority-rule D 'd' 0
+GC l0 definition E 58 1
+GC l0 string 'e'
+GC l0 usage 'e' 62 3
+GC l0 priority-rule E 'e' 0
+GC comment Semantics completion processing
+GC start! F
+GC comment LATM fixup A

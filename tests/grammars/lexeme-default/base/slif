@@ -1,0 +1,4 @@
+lexeme default =
+
+start ::= A
+A ::= 'a'

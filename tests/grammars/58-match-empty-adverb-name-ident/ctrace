@@ -1,3 +1,0 @@
-GC l0 definition A 0 1
-GC l0 priority-rule A {} 0 name reduction
-GC error {Grammar error. Start symbol not defined}

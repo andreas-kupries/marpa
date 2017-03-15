@@ -1,4 +1,0 @@
-GC l0 definition A 0 1
-GC l0 usage B 4 1
-GC l0 priority-rule A B 0 name {a/b reduction}
-GC error {Grammar error. Start symbol not defined}

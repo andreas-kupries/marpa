@@ -1,0 +1,99 @@
+statements/0
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @0 1 'A'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @4 1 'B'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @6 1 'C'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @8 1 'D'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @10 1 'E'
+            @{} {} ''
+  statement/0
+    start rule/0
+      symbol/0
+        symbol name/0
+          @24 1 'F'
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @26 1 'F'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @32 1 'A'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @34 1 'B'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @38 3 ''b''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @42 1 'C'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @46 3 ''c''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @50 1 'D'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @54 3 ''d''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @58 1 'E'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @62 3 ''e''
+            @{} {} ''

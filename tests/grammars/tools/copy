@@ -1,0 +1,9 @@
+#!/bin/sh
+
+fcp ()
+{
+    cp -rf    $1 $2
+    fossil add   $2
+}
+
+fcp "$1" "$2"

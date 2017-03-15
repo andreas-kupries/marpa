@@ -1,0 +1,11 @@
+#!/bin/sh
+
+mak()
+{
+    mkdir $1
+    touch $1/slif
+    touch $1/ast
+    touch $1/ctrace
+}
+
+mak "$1"

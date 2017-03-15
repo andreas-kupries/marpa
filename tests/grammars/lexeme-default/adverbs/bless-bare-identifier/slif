@@ -1,0 +1,6 @@
+lexeme default =
+	bless => bar
+
+# Avoid errors, complete grammar
+:start ::= A
+A ::= 'a'

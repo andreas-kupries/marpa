@@ -1,0 +1,2 @@
+start symbol is A
+A ::= 'a'

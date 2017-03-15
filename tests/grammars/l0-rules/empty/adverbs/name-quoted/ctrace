@@ -1,0 +1,10 @@
+GC l0 definition A 0 1
+
+	GC l0 priority-rule A {} 0 name {a/b reduction}
+
+GC g1 usage F 40 1
+GC g1 definition F 42 1
+GC g1 usage A 48 1
+GC g1 priority-rule F A 0 mask 0
+GC comment Semantics completion processing
+GC start! F

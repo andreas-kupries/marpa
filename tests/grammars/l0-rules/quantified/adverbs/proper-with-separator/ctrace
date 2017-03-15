@@ -1,0 +1,22 @@
+GC l0 definition A 0 1
+GC l0 usage B 4 1
+GC l0 usage C 20 1
+
+	GC l0 quantified-rule A B 1 separator C proper 0
+
+GC g1 usage D 46 1
+GC g1 definition D 48 1
+GC g1 usage A 54 1
+GC g1 priority-rule D A 0 mask 0
+GC l0 definition B 56 1
+GC l0 string 'b'
+GC l0 usage 'b' 60 3
+GC l0 priority-rule B 'b' 0
+GC l0 definition C 64 1
+GC l0 string 'c'
+GC l0 usage 'c' 68 3
+GC l0 priority-rule C 'c' 0
+GC comment Semantics completion processing
+GC start! D
+GC comment LATM fixup A
+GC comment LATM fixup C

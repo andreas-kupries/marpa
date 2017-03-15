@@ -1,0 +1,9 @@
+#!/bin/sh
+
+fmx ()
+{
+    mv        $1 $2
+    fossil mv $1 $2
+}
+
+fmx "$1" "$2"

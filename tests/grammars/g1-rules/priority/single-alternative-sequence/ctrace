@@ -1,0 +1,8 @@
+GC g1 definition A 0 1
+GC g1 usage B 6 1
+GC g1 usage C 8 1
+GC g1 usage D 10 1
+GC g1 usage E 12 1
+GC g1 priority-rule A {B C D E} 0 mask {0 0 0 0}
+GC comment Semantics completion processing
+GC start! A

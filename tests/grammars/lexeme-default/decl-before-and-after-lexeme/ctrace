@@ -1,0 +1,26 @@
+GC l0 usage foo 10 3
+
+	GC comment LATM fixup foo
+	GC comment LATM global! 0
+	GC l0 configure foo latm 0
+
+GC l0 usage bar 51 3
+
+	GC comment LATM fixup bar
+	GC l0 configure bar latm 0
+
+GC g1 usage A 67 1
+GC g1 definition A 69 1
+GC g1 usage foo 75 3
+GC g1 usage bar 79 3
+GC g1 priority-rule A {foo bar} 0 mask {0 0}
+GC l0 definition foo 83 3
+GC l0 string 'a'
+GC l0 usage 'a' 89 3
+GC l0 priority-rule foo 'a' 0
+GC l0 definition bar 93 3
+GC l0 string 'b'
+GC l0 usage 'b' 99 3
+GC l0 priority-rule bar 'b' 0
+GC comment Semantics completion processing
+GC start! A

@@ -1,0 +1,30 @@
+GC g1 definition E 0 1
+GC g1 usage N 6 1
+GC g1 priority-rule E N 0 mask 0
+GC g1 definition E 8 1
+GC g1 usage PO 14 2
+GC g1 usage E 17 1
+GC g1 usage PC 19 2
+GC g1 priority-rule E {PO E PC} 0 assoc group mask {0 0 0}
+GC g1 usage E 43 1
+GC g1 usage POW 45 3
+GC g1 usage E 49 1
+GC g1 priority-rule E {E POW E} -1 assoc right mask {0 0 0}
+GC g1 usage E 72 1
+GC g1 usage MUL 74 3
+GC g1 usage E 78 1
+GC g1 priority-rule E {E MUL E} -2 mask {0 0 0}
+GC g1 usage E 86 1
+GC g1 usage DIV 88 3
+GC g1 usage E 92 1
+GC g1 priority-rule E {E DIV E} -2 mask {0 0 0}
+GC g1 usage E 100 1
+GC g1 usage ADD 102 3
+GC g1 usage E 106 1
+GC g1 priority-rule E {E ADD E} -3 mask {0 0 0}
+GC g1 usage E 114 1
+GC g1 usage SUB 116 3
+GC g1 usage E 120 1
+GC g1 priority-rule E {E SUB E} -3 mask {0 0 0}
+GC comment Semantics completion processing
+GC start! E
