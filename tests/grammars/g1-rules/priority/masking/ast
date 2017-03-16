@@ -32,3 +32,51 @@ statements/0
                     symbol name/0
                       @16 1 'E'
             @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @19 1 'B'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @23 3 ''b''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @27 1 'C'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @31 3 ''c''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @35 1 'D'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @39 3 ''d''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @43 1 'E'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @47 3 ''e''
+            @{} {} ''

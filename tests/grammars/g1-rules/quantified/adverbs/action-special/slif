@@ -1,1 +1,3 @@
 A ::= B+ action => ::first
+
+B ~ 'b'

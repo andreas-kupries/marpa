@@ -1,1 +1,4 @@
 A ::= PO A PC assoc => group
+
+PO ~ '('
+PC ~ ')'

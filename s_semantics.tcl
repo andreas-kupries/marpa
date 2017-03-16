@@ -55,16 +55,20 @@ oo::class create marpa::slif::semantics {
 	marpa::slif::semantics::LATM create LATM $container
 
 	# Track knowledge of which L0 symbols are lexemes or not.
-	marpa::slif::semantics::Flag create \
-	    Lexeme $container "Lexeme" LEXEME
+	marpa::slif::semantics::Flag create Lexeme \
+	    $container "Lexeme" LEXEME
 
 	# Track knowledge of which G1 symbols are terminals or not.
-	set terminal [marpa::slif::semantics::Flag create \
-			  Terminal $container "Terminal" TERMINAL]
+	set terminal [marpa::slif::semantics::Flag create Terminal \
+			  $container "Terminal" TERMINAL]
+
+	# Track knowledge of defined L0 symbols, lexeme or not (i.e. defs)
+	marpa::slif::semantics::Flag create L0Def \
+	    $container "L0 symbol" L0SYMBOL
 
 	# Track lexeme default singleton
-	marpa::slif::semantics::Singleton create \
-	    LD "Illegal second use of 'lexeme default'" LEXEME-DEFAULT
+	marpa::slif::semantics::Singleton create LD \
+	    "Illegal second use of 'lexeme default'" LEXEME-DEFAULT
 
 	# Semantic state, start symbol.
 	marpa::slif::semantics::Start create \
@@ -143,12 +147,22 @@ oo::class create marpa::slif::semantics {
 	# The left-over maybes must be terminals
 	Terminal complete 1 _ {}
 
+	# Show the final Lexeme/Terminal flagging.
+	if 0 {
+	    Lexeme foreach sym {
+		Container comment Lk[Lexeme known? $sym],s[Lexeme set? $sym],u[Lexeme unset? $sym]:$sym
+	    }
+	    Terminal foreach sym {
+		Container comment Tk[Terminal known? $sym],s[Terminal set? $sym],u[Terminal unset? $sym]:$sym
+	    }
+	}
+
 	# Validate that terminal and lexeme are the same set.
 	# Appropriately report any differences.
 
+	# Definition: Lexeme and non-Terminal
 	Lexeme foreach sym {
 	    if {[Lexeme set? $sym] && [Terminal unset? $sym]} {
-		# Lexeme and non-Terminal
 		my E "Lexeme '$sym' also defined as G1 non-terminal" \
 		    MISMATCH L0/G1 BOTH $sym
 		# # ##
@@ -158,9 +172,9 @@ oo::class create marpa::slif::semantics {
 	    }
 	}
 
+	# Use: Terminal and non-Lexeme
 	Terminal foreach sym {
 	    if {[Terminal set? $sym] && [Lexeme unset? $sym]} {
-		# Terminal and non-Lexeme
 		my E "Terminal '$sym' also used as L0 non-lexeme" \
 		    MISMATCH G1/L0 BOTH $sym
 		# # ##
@@ -171,13 +185,42 @@ oo::class create marpa::slif::semantics {
 	}
 
 	# Lexeme not used in G1
+	Lexeme foreach sym {
+	    if {[Lexeme set? $sym] && ![Terminal set? $sym]} {
+		# Lexeme and not used in G1
+		my E "Lexeme '$sym' not used as terminal" \
+		    MISMATCH L0/G1 LEXEME $sym
+		# # ##
+		## A ~   'a' -- A lexeme definition
+		##           -- A not used in a ::= RHS
+		# # ##
+	    }
+	}
 
-	# Terminal not exported from L0
+	# Terminal not defined in L0
+	Terminal foreach sym {
+	    if {[Terminal set? $sym] && ![Lexeme set? $sym]} {
+		my E "Terminal '$sym' not defined as lexeme" \
+		    MISMATCH G1/L0 TERMINAL $sym
+		# # ##
+		## A ::= B -- Terminal B usage
+		##         -- Terminal B is not a ~ LHS
+		# # ##
+	    }
+	}
+
+	# 
+	L0Def foreach sym {
+	    if {![L0Def set? $sym]} {
+		my E "L0 symbol '$sym' used, not defined" \
+		    L0 MISSING $sym
+	    }
+	}
 
 	# TODO: Have to track all L0 symbols, report undefined (no rule).
 
-	# TODO: @end assert (All L0 symbols have a def (rule, atomic))
-	# TODO: @end assert (All G1 symbols, but start have a use)
+	# TODO: @end assert (All L0 symbols have a def location (rule, atomic))
+	# TODO: @end assert (All G1 symbols, but start have a use location)
 	# TODO: @end assert (L0 without use == G1 without a def == lexeme == terminal)
 
 	# Done. Auto-destroy
@@ -248,7 +291,7 @@ oo::class create marpa::slif::semantics {
 
 	SymCo g1
 	SymCo definition ; set lhs [FIRST]
-	SymCo usage      ; set rhs [UNMASK [SINGLE 1]]
+	SymCo usage      ; set rhs [lindex [UNMASK [SINGLE 1]] 0]
 
 	set positive [SINGLE 2]
 	set adverbs  [SINGLE 3] ;# still /usage
@@ -258,6 +301,12 @@ oo::class create marpa::slif::semantics {
 	# rhs - possibly terminals, not known, don't do anything
 	Terminal unset! $lhs
 	Terminal def $rhs
+
+	if {[dict exists $adverbs separator]} {
+	    # The separator symbol is a possible terminal too.
+	    Terminal def [dict get $adverbs separator]
+	}
+
 	Container g1 quantified-rule $lhs $rhs $positive {*}$adverbs
 	Start maybe: $lhs
 	return
@@ -280,7 +329,7 @@ oo::class create marpa::slif::semantics {
 
 	SymCo l0
 	SymCo definition ; set lhs [FIRST]
-	SymCo usage      ; set rhs [UNMASK [SINGLE 1]]
+	SymCo usage      ; set rhs [lindex [UNMASK [SINGLE 1]] 0]
 
 	set positive [SINGLE 2]
 	set adverbs  [SINGLE 3] ;# still /usage
@@ -288,8 +337,16 @@ oo::class create marpa::slif::semantics {
 
 	# lhs - maybe toplevel - cannot set!
 	# rhs - definitely not toplevel - unset!
-	Lexeme def    $lhs
-	Lexeme unset! $rhs
+	Lexeme def    $lhs ; L0Def set! $lhs
+	Lexeme unset! $rhs ; L0Def def  $rhs
+
+	if {[dict exists $adverbs separator]} {
+	    # The separator symbol is definitely not a lexeme
+	    set sep [dict get $adverbs separator]
+	    Lexeme unset! $sep
+	    L0Def def     $sep
+	}
+
 	Container l0 quantified-rule $lhs $rhs $positive {*}$adverbs
 	return
     }
@@ -335,7 +392,9 @@ oo::class create marpa::slif::semantics {
 	set adverbs [SINGLE 1]
 
 	# lhs - maybe toplevel - cannot set!
-	# rhs - none available
+	# rhssymbols - none available
+	Lexeme def  $lhs
+	L0Def  set! $lhs
 	Container l0 priority-rule $lhs {} 0 {*}$adverbs
 	return
     }
@@ -429,10 +488,12 @@ oo::class create marpa::slif::semantics {
 	set adverbs [SINGLE 1]
 
 	lassign $rhs __ rhssymbols
+	# Ignore masking, irrelevant at L0 level.
+
 	# lhs - maybe toplevel - cannot set!
 	# rhssymbols - definitely not toplevel - unset!
-	Lexeme def    $lhs
-	Lexeme unset! {*}$rhssymbols
+	Lexeme def    $lhs           ; L0Def set! $lhs
+	Lexeme unset! {*}$rhssymbols ; L0Def def  {*}$rhssymbols
 	Container l0 priority-rule $lhs $rhssymbols $prec {*}$adverbs
 	return
     }
@@ -490,8 +551,8 @@ oo::class create marpa::slif::semantics {
     }
 
     method {lexeme rule/0} {children} {
-	# <symbol> <adverb list lexeme>
-	# 0        1
+	# <single symbol> <adverb list lexeme>
+	# 0               1
 	# Adverbs
 	# - event    \ Check before
 	# - pause    /
@@ -759,6 +820,9 @@ oo::class create marpa::slif::semantics {
 	Container $layer charclass $literal
 	Container $layer usage     $literal $start $length
 
+	L0Def set! $literal ;# self-defined L0 symbol
+	# Yes, we set for L0 and G1
+
 	if {$layer eq "g1"} {
 	    # Mark the literal as a terminal (for G1), and a lexeme (for L0).
 	    # Further include it into LATM tracking
@@ -782,6 +846,9 @@ oo::class create marpa::slif::semantics {
 	set layer [SymCo layer?]
 	Container $layer string $literal
 	Container $layer usage  $literal $start $length
+
+	L0Def set! $literal ;# self-defined L0 symbol
+	# Yes, we set for L0 and G1
 
 	if {$layer eq "g1"} {
 	    # Mark the literal as a terminal (for G1), and a lexeme (for L0).

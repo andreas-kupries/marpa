@@ -8,3 +8,4 @@ GC g1 usage A 24 1
 GC g1 priority-rule F A 0 mask 0
 GC comment Semantics completion processing
 GC start! F
+GC comment LATM fixup A

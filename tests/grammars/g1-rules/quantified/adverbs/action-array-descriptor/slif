@@ -1,1 +1,3 @@
 A ::= B+ action => [start,length]
+
+B ~ 'b'

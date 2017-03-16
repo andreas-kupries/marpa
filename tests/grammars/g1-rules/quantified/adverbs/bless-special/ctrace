@@ -1,5 +1,12 @@
 GC g1 definition A 0 1
 GC g1 usage B 6 1
-GC g1 quantified-rule A B 1 bless {special bar}
+
+	GC g1 quantified-rule A B 1 bless {special bar}
+
+GC l0 definition B 25 1
+GC l0 string 'b'
+GC l0 usage 'b' 29 3
+GC l0 priority-rule B 'b' 0
 GC comment Semantics completion processing
 GC start! A
+GC comment LATM fixup B

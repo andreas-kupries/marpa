@@ -1,7 +1,21 @@
 GC g1 definition A 0 1
 GC g1 usage B 6 1
-GC g1 priority-rule A B 0 mask 0
+
+	GC g1 priority-rule A B 0 mask 0
+
 GC g1 usage C 10 1
-GC g1 priority-rule A C 0 mask 0
+
+	GC g1 priority-rule A C 0 mask 0
+
+GC l0 definition B 13 1
+GC l0 string 'b'
+GC l0 usage 'b' 17 3
+GC l0 priority-rule B 'b' 0
+GC l0 definition C 21 1
+GC l0 string 'c'
+GC l0 usage 'c' 25 3
+GC l0 priority-rule C 'c' 0
 GC comment Semantics completion processing
 GC start! A
+GC comment LATM fixup B
+GC comment LATM fixup C

@@ -3,6 +3,28 @@ GC g1 usage B 6 1
 GC g1 usage C 8 1
 GC g1 usage D 10 1
 GC g1 usage E 12 1
-GC g1 priority-rule A {B C D E} 0 mask {0 0 0 0}
+
+	GC g1 priority-rule A {B C D E} 0 mask {0 0 0 0}
+
+GC l0 definition B 15 1
+GC l0 string 'b'
+GC l0 usage 'b' 19 3
+GC l0 priority-rule B 'b' 0
+GC l0 definition C 23 1
+GC l0 string 'b'
+GC l0 usage 'b' 27 3
+GC l0 priority-rule C 'b' 0
+GC l0 definition D 31 1
+GC l0 string 'b'
+GC l0 usage 'b' 35 3
+GC l0 priority-rule D 'b' 0
+GC l0 definition E 39 1
+GC l0 string 'b'
+GC l0 usage 'b' 43 3
+GC l0 priority-rule E 'b' 0
 GC comment Semantics completion processing
 GC start! A
+GC comment LATM fixup B
+GC comment LATM fixup C
+GC comment LATM fixup D
+GC comment LATM fixup E

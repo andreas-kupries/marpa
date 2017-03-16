@@ -143,3 +143,97 @@ statements/0
                     symbol name/0
                       @120 1 'E'
             @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @123 2 'PO'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @129 3 ''(''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @133 2 'PC'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @139 3 '')''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @143 3 'POW'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @149 4 ''**''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @154 3 'MUL'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @160 3 ''*''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @164 3 'DIV'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @170 3 ''/''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @174 3 'ADD'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @180 3 ''+''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @184 3 'SUB'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @190 3 ''-''
+            @{} {} ''
+  statement/5
+    quantified rule/1
+      lhs/0
+        symbol name/0
+          @194 1 'N'
+      single symbol/1
+        @200 5 {'[0-9]'}
+      quantifier/1
+        @205 1 '+'
+      @{} {} ''

@@ -2,3 +2,4 @@ A ~ B *
 
 :start ::= C
 C ::= A
+B ~ 'b'

@@ -8,4 +8,7 @@ mak()
     touch $1/ctrace
 }
 
-mak "$1"
+for p in "$@"
+do
+    mak "$p"
+done

@@ -1,0 +1,5 @@
+B ~ C
+# C is left undefined
+
+:start ::= A
+A ::= B

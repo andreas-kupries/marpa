@@ -19,4 +19,3 @@ GC l0 priority-rule C 'c' 0
 GC comment Semantics completion processing
 GC start! D
 GC comment LATM fixup A
-GC comment LATM fixup C

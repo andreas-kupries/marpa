@@ -1,1 +1,3 @@
 A ::= A OP A assoc => right
+
+OP ~ 'b'

@@ -1,1 +1,4 @@
 A ::= B+ separator => C
+
+B ~ 'b'
+C ~ 'c'

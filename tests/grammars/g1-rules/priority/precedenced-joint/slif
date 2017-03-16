@@ -5,3 +5,12 @@ E ::= N
     | E DIV E
    || E ADD E
     | E SUB E
+
+PO  ~ '('
+PC  ~ ')'
+POW ~ '**'
+MUL ~ '*'
+DIV ~ '/'
+ADD ~ '+'
+SUB ~ '-'
+N   ~ [0-9]+
