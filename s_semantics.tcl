@@ -145,7 +145,11 @@ oo::class create marpa::slif::semantics {
 
 	# Known flags are for non-terminals (LHS => unset!, RHS - maybe)
 	# The left-over maybes must be terminals
-	Terminal complete 1 _ {}
+	Terminal complete 1 _ {
+	    # TODO: Finalize terminals in G1.
+	    # Defer actual operation until after checks.
+	    # Only collect the symbols to process.
+	}
 
 	# Show the final Lexeme/Terminal flagging.
 	if 0 {
@@ -216,8 +220,6 @@ oo::class create marpa::slif::semantics {
 		    L0 MISSING $sym
 	    }
 	}
-
-	# TODO: Have to track all L0 symbols, report undefined (no rule).
 
 	# TODO: @end assert (All L0 symbols have a def location (rule, atomic))
 	# TODO: @end assert (All G1 symbols, but start have a use location)
@@ -551,8 +553,8 @@ oo::class create marpa::slif::semantics {
     }
 
     method {lexeme rule/0} {children} {
-	# <single symbol> <adverb list lexeme>
-	# 0               1
+	# <symbol> <adverb list lexeme>
+	# 0        1
 	# Adverbs
 	# - event    \ Check before
 	# - pause    /
@@ -690,7 +692,7 @@ oo::class create marpa::slif::semantics {
     # # -- --- ----- -------- -------------
 
     method {proper specification/0}    {children} { ADVL proper    [LITERAL]        }
-    method {separator specification/0} {children} { ADVS separator [UNMASK [FIRST]] }
+    method {separator specification/0} {children} { ADVS separator [lindex [UNMASK [FIRST]] 0] }
 
     # # -- --- ----- -------- -------------
     ## TODO XXX null ranking - check sem value propriety
@@ -919,7 +921,7 @@ oo::class create marpa::slif::semantics {
     }
 
     method FIRST {} {
-	# <==> SINGLE 0
+	# nearly-<==> SINGLE 0 (SINGLE ignores missing/empty child)
 	debug.marpa/slif/semantics {[debug caller] | [AT][INDENT]}
 	upvar 1 children children
 	#debug.marpa/slif/semantics {[debug caller] | [AT]: ([join $children )\n(])}
@@ -1542,7 +1544,9 @@ oo::class create marpa::slif::semantics::Start {
 	    }
 	    done -
 	    maybe {
-		# While the start symbol cannot be a terminal there is
+		# While the start symbol cannot be a terminal
+		# << Why not? >>
+		# there is
 		# still the possibility that there is no rule defining
 		# it either.
 		# IOW instead of simply trying unset! we explictly check

@@ -1,0 +1,8 @@
+GC g1 definition A 0 1
+
+	GC g1 string {'case-insensitive string':i}
+
+GC g1 usage {'case-insensitive string':i} 6 27
+GC g1 priority-rule A {{'case-insensitive string':i}} 0 mask 0
+GC comment Semantics completion processing
+GC start! A
