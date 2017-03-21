@@ -1,0 +1,3 @@
+:lexeme ~ A priority => 1
+
+B ::= A

@@ -1,0 +1,3 @@
+:lexeme ~ A event => snafu pause => before
+
+B ::= A

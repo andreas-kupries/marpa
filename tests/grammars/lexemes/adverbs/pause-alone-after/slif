@@ -1,0 +1,3 @@
+:lexeme ~ A pause => after
+
+B ::= A

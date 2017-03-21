@@ -1,0 +1,10 @@
+# Note: Nothing goes to the container
+# Note: Kept in the semantics, defaults
+
+GC l0 usage A 10 1
+GC comment LATM fixup A
+GC g1 definition B 13 1
+GC g1 usage A 19 1
+GC g1 priority-rule B A 0 mask 0
+GC comment Semantics completion processing
+GC start! B

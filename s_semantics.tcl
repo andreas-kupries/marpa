@@ -566,6 +566,7 @@ oo::class create marpa::slif::semantics {
 
 	set symbol  [FIRST]
 	set adverbs [SINGLE 1]
+	#Container comment :lexeme adverbs = $adverbs ;#debug
 
 	Lexeme set! $symbol
 	ADVE adverbs
@@ -713,6 +714,35 @@ oo::class create marpa::slif::semantics {
 
     method {latm specification/0} {children} { ADVL latm [LITERAL] }
     method {latm specification/1} {children} { ADVL latm [LITERAL] }
+
+    # # -- --- ----- -------- -------------
+
+    method {priority specification/0} {children} { ADVL priority [LITERAL] }
+
+    # # -- --- ----- -------- -------------
+
+    method {pause specification/0}  {children} { ADVL pause [LITERAL] }
+    method {event specification/0}  {children} { ADVS event [FIRST] }
+
+    method {event initialization/0} {children} { list [FIRST] [SINGLE 1] }
+
+    method {event name/0} {children} {
+	# standard name - identifier
+	list standard [LITERAL]
+    }
+    method {event name/1} {children} {
+	# single quoted
+	list standard [string range [LITERAL] 1 end-1]
+    }
+    method {event name/2} {children} {
+	# reserved name ::...
+	list special [string range [LITERAL] 2 end]
+    }
+
+    method {event initializer/0} {children} { FIRST }
+
+    method {on or off/0} {children} { CONST on  }
+    method {on or off/1} {children} { CONST off }
 
     # # -- --- ----- -------- -------------
     ## Symbol processing
@@ -1092,6 +1122,13 @@ oo::class create marpa::slif::semantics {
 	    if {![dict exists $adverbs pause]} {
 		my E "Required 'pause' is missing." ADVERB PAUSE
 	    }
+
+	    # Normalize the value for event (flatten, defaults)
+	    # => 3-tuple (name-type name state)
+	    lassign [dict get $adverbs event] tn state
+	    lassign $tn type name
+	    if {$state eq {}} { set state on }
+	    dict set adverbs event [list $type $name $state]
 	    return
 	} elseif {[dict exists $adverbs pause]} {
 	    # We have 'pause', but not 'event'. This is ok, it "just"

@@ -1,0 +1,3 @@
+:lexeme ~ A event => ::symbol pause => before
+
+B ::= A

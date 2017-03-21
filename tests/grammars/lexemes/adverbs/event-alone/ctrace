@@ -1,0 +1,2 @@
+GC l0 usage A 10 1
+GC error {Required 'pause' is missing.}
