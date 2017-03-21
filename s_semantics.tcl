@@ -306,7 +306,7 @@ oo::class create marpa::slif::semantics {
 
 	if {[dict exists $adverbs separator]} {
 	    # The separator symbol is a possible terminal too.
-	    Terminal def [dict get $adverbs separator]
+	    Terminal def [lindex [dict get $adverbs separator] 0]
 	}
 
 	Container g1 quantified-rule $lhs $rhs $positive {*}$adverbs
@@ -344,7 +344,7 @@ oo::class create marpa::slif::semantics {
 
 	if {[dict exists $adverbs separator]} {
 	    # The separator symbol is definitely not a lexeme
-	    set sep [dict get $adverbs separator]
+	    set sep [lindex [dict get $adverbs separator] 0]
 	    Lexeme unset! $sep
 	    L0Def def     $sep
 	}
@@ -732,7 +732,7 @@ oo::class create marpa::slif::semantics {
     }
     method {event name/1} {children} {
 	# single quoted
-	list standard [string range [LITERAL] 1 end-1]
+	list standard [my NORM [LITERAL]]
     }
     method {event name/2} {children} {
 	# reserved name ::...
@@ -1053,12 +1053,17 @@ oo::class create marpa::slif::semantics {
 	    # Normalize the string - Remove brackets, leading/trailing
 	    # whitespace, convert all inner whitespace to single
 	    # spaces.
-	    regsub -all {\s+} [string trim [string range $literal 1 end-1]] { } literal
+	    set literal [my NORM $literal]
 	}
 
 	Container $layer $type $literal $start $length
 
 	debug.marpa/slif/semantics {[debug caller] | [AT] ==> $literal}
+	return $literal
+    }
+
+    method NORM {literal} {
+	regsub -all {\s+} [string trim [string range $literal 1 end-1]] { } literal
 	return $literal
     }
 
@@ -1089,16 +1094,24 @@ oo::class create marpa::slif::semantics {
 
     method ADVQ {avar} {
 	# Custom check for related attributes 'separator' and 'proper'
-	# TODO XXX separator/proper - Merge into a single adverb/attribute.
 
 	upvar 1 $avar adverbs
 
 	if {[dict exists $adverbs separator]} {
 	    # Ensure the existence of a default for adverb 'proper'
 	    # when a 'separator' was specified. XXX: Error instead ?
+
+	    # Normalize (defaults, aggregation)
+	    # => pair (symbol proper)
+
 	    if {![dict exists $adverbs proper]} {
-		dict set adverbs proper 0
+		set proper 0
+	    } else {
+		set proper [dict get $adverbs proper]
+		dict unset adverbs proper
 	    }
+
+	    dict lappend adverbs separator $proper
 	    return
 	}
 
@@ -1110,9 +1123,10 @@ oo::class create marpa::slif::semantics {
     }
 
     method ADVE {avar} {
-	# Custom check for related attributes 'event' and 'pause'
-	# TODO XXX event/pause - Merge into a single adverb/attribute.
-
+	# Custom check for related attributes 'event' and 'pause'.
+	# Note that after checking both are merged into a single
+	# 'event' adverb with a structured value capturing all the
+	# info.
 	upvar 1 $avar adverbs
 
 	if {[dict exists $adverbs event]} {
@@ -1123,18 +1137,37 @@ oo::class create marpa::slif::semantics {
 		my E "Required 'pause' is missing." ADVERB PAUSE
 	    }
 
-	    # Normalize the value for event (flatten, defaults)
+	    # Normalize the value for event (flatten, defaults, specials)
 	    # => 3-tuple (name-type name state)
 	    lassign [dict get $adverbs event] tn state
 	    lassign $tn type name
+
+	    if {$type eq "special"} {
+		if {$name eq "symbol"} {
+		    my E "Reserved event name ::$name illegal for :lexeme" \
+			ADVERB EVENT NAME SPECIAL ILLEGAL
+		} else {
+		    my E "Unknown reserved name ::$name" \
+			ADVERB EVENT NAME SPECIAL UNKNOWN $name
+		}
+	    }
+	    # assert (type eq "standard")
+
+	    set when [dict get $adverbs pause]
 	    if {$state eq {}} { set state on }
-	    dict set adverbs event [list $type $name $state]
+	    dict set adverbs event [list $name $state $when]
+	    dict unset adverbs pause
 	    return
 	} elseif {[dict exists $adverbs pause]} {
 	    # We have 'pause', but not 'event'. This is ok, it "just"
-	    # causes the engine to use an unnamed event. Such are
-	    # however strongly disrecommended. TODO: Register a
-	    # warning.
+	    # causes the engine to use an _unnamed_ event. Note
+	    # however that such are strongly disrecommended.
+	    #
+	    # TODO: Register a warning.
+
+	    set when [dict get $adverbs pause]
+	    dict set adverbs event [list {} on $when]
+	    dict unset adverbs pause
 	}
 	return
     }

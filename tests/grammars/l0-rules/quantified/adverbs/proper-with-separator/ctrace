@@ -2,7 +2,7 @@ GC l0 definition A 0 1
 GC l0 usage B 4 1
 GC l0 usage C 20 1
 
-	GC l0 quantified-rule A B 1 separator C proper 0
+	GC l0 quantified-rule A B 1 separator {C 0}
 
 GC g1 usage D 46 1
 GC g1 definition D 48 1

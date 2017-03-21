@@ -1,6 +1,6 @@
 GC l0 usage A 10 1
 
-	GC l0 configure A pause after
+	GC l0 configure A event {{} on after}
 
 GC comment LATM fixup A
 GC g1 definition B 28 1

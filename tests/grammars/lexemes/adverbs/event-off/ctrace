@@ -1,6 +1,6 @@
 GC l0 usage A 10 1
 
-	GC l0 configure A event {standard snafu off} pause before
+	GC l0 configure A event {snafu off before}
 
 GC comment LATM fixup A
 GC g1 definition B 50 1

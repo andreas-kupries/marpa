@@ -2,7 +2,7 @@ GC g1 definition A 0 1
 GC g1 usage B 6 1
 GC g1 usage C 22 1
 
-	GC g1 quantified-rule A B 1 separator C proper 1
+	GC g1 quantified-rule A B 1 separator {C 1}
 
 GC l0 definition B 37 1
 GC l0 string 'b'
