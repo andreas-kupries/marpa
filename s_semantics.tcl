@@ -52,7 +52,12 @@ oo::class create marpa::slif::semantics {
 	marpa::import $container Container
 
 	# Track LATM flag handling for lexemes
-	marpa::slif::semantics::LATM create LATM $container
+	marpa::slif::semantics::Fixup create LATM \
+	    $container [mymethod FixLATM]
+
+	# Track event handling for discards
+	marpa::slif::semantics::Fixup create DDE \
+	    $container [mymethod FixDiscard]
 
 	# Track knowledge of which L0 symbols are lexemes or not.
 	marpa::slif::semantics::Flag create Lexeme \
@@ -69,6 +74,10 @@ oo::class create marpa::slif::semantics {
 	# Track lexeme default singleton
 	marpa::slif::semantics::Singleton create LD \
 	    "Illegal second use of 'lexeme default'" LEXEME-DEFAULT
+
+	# Track discard default singleton
+	marpa::slif::semantics::Singleton create DD \
+	    "Illegal second use of 'discard default'" LEXEME-DEFAULT
 
 	# Semantic state, start symbol.
 	marpa::slif::semantics::Start create \
@@ -104,6 +113,7 @@ oo::class create marpa::slif::semantics {
 	link {ADVS    ADVS}    ;# Generate singular adverb sem value, for symbol
 	link {ADVQ    ADVQ}    ;# Quantified rule adverb special handling
 	link {ADVE    ADVE}    ;# :lexeme adverb special handling
+	link {ADVE1   ADVE1}   ;# :discard adverb special handling
 	link {SYMBOL  SYMBOL}  ;# Get symbol instance for chosen AST node
 	link {CONST   CONST}   ;# Sem value is fixed.
 	link {LEAF    LEAF}    ;# Leaf rhs sem value from symbol
@@ -224,6 +234,12 @@ oo::class create marpa::slif::semantics {
 	# TODO: @end assert (All L0 symbols have a def location (rule, atomic))
 	# TODO: @end assert (All G1 symbols, but start have a use location)
 	# TODO: @end assert (L0 without use == G1 without a def == lexeme == terminal)
+
+	# Note: If global! was invoked before any furhter fixup's were
+	# immediate, keeping the list empty. This means that the dup
+	# call here is nop. If global! was not invoked, then this one
+	# processes the waiting definitions.
+	DDE global! {}
 
 	# Done. Auto-destroy
 	debug.marpa/slif/semantics {[debug caller 1] | /ok}
@@ -582,7 +598,62 @@ oo::class create marpa::slif::semantics {
 	return
     }
 
+    method FixLATM {symbol latm immediate} {
+	Container l0 configure $symbol latm $latm
+	return
+    }
+
     # # -- --- ----- -------- -------------
+    ## Handle discard default and :discard
+
+    method {discard default statement/0} {children} {
+	# <adverb list discard default>
+	# 0
+	##
+	# Note: May only be used ONCE
+	# Adverbs
+	# - event
+	DD pass
+
+	set adverbs [SINGLE 0]
+	if {![dict size $adverbs]} return
+
+	# event definitely present.
+	Container comment DDE global! [dict get $adverbs event]
+	DDE global! $adverbs
+	return
+    }
+
+    method {discard rule/0} {children} {
+	# <single symbol> <adverb list discard>
+	# 0        1
+	# Adverbs
+	# - event
+
+	SymCo l0
+	SymCo use
+
+	set symbol  [lindex [UNMASK [FIRST]] 0]
+	set adverbs [SINGLE 1]
+	#Container comment :discard adverbs = $adverbs ;#debug
+
+	# Discards are not lexemes
+	Lexeme unset! $symbol
+
+	if {![dict exists $adverbs event]} {
+	    Container comment DDE fixup $symbol
+	    DDE fixup $symbol
+	} else {
+	    Container l0 discard $symbol {*}[ADVE1 $adverbs $symbol]
+	}
+	return
+    }
+
+    method FixDiscard {sym adverbs immediate} {
+	Container l0 discard $sym {*}[ADVE1 $adverbs $symbol]
+	return
+    }
+
     # # -- --- ----- -------- -------------
     # # -- --- ----- -------- -------------
     # # -- --- ----- -------- -------------
@@ -1138,7 +1209,7 @@ oo::class create marpa::slif::semantics {
 	    }
 
 	    # Normalize the value for event (flatten, defaults, specials)
-	    # => 3-tuple (name-type name state)
+	    # => 3-tuple (name state when)
 	    lassign [dict get $adverbs event] tn state
 	    lassign $tn type name
 
@@ -1172,6 +1243,33 @@ oo::class create marpa::slif::semantics {
 	return
     }
 
+    method ADVE1 {adverbs symbol} {
+	# Custom check of attribute 'event'. Resolves specials.
+	# 'pause' not required. Implied as 'discard'.
+
+	if {![dict exists $adverbs event]} { return $adverbs }
+
+	# Normalize the value for event (flatten, defaults, specials)
+	# => 3-tuple (name state when)
+	lassign [dict get $adverbs event] tn state
+	lassign $tn type name
+
+	if {$type eq "special"} {
+	    if {$name ne "symbol"} {
+		my E "Unknown reserved name ::$name" \
+		    ADVERB EVENT NAME SPECIAL UNKNOWN $name
+	    } else {
+		# Resolve ::symbol
+		set name $symbol
+	    }
+	}
+	# assert (type eq "standard")
+	if {$state eq {}} { set state on }
+	dict set adverbs event [list $name $state discard]
+
+	return $adverbs
+    }
+
     # # ## ### ##### ######## #############
     ## Semantic state
 
@@ -1188,22 +1286,19 @@ oo::class create marpa::slif::semantics {
 }
 
 # # ## ### ##### ######## #############
-## Semantic state - LATM management
+## Semantic state - Generic management of fixups
 
-oo::class create marpa::slif::semantics::LATM {
-    marpa::E marpa/slif/semantics SLIF SEMANTICS LATM
+oo::class create marpa::slif::semantics::Fixup {
+    marpa::E marpa/slif/semantics SLIF SEMANTICS DE
 
+    variable mycmd     ;# command invoked to perform actual fixup.
     variable myglobal  ;# global setting, if any.
     variable mypending ;# symbols waiting for fixup by global setting
 
-    variable mytype       ;# definition/usage
-    variable mylayer      ;# L0/G1
-    variable mylhs        ;# Symbol for upcoming alternatives
-    variable myprecedence ;# Precedence level for alternatives
-
-    constructor {container} {
+    constructor {container cmd} {
 	debug.marpa/slif/semantics {[debug caller] | }
 	marpa::import $container Container
+	set mycmd     $cmd
 	set myglobal  {}
 	set mypending {}
 	return
@@ -1211,24 +1306,21 @@ oo::class create marpa::slif::semantics::LATM {
 
     method global! {x} {
 	debug.marpa/slif/semantics {[debug caller] | }
-	# Set global state, handle pending fixup
+	# Set global state, handle all pending fixup
 	# Note! Caller makes sure to call this only once.
 	set myglobal $x
-	foreach symbol $mypending {
-	    Container l0 configure $symbol latm $myglobal
-	}
+	foreach symbol $mypending { my fixup $symbol 0 }
 	set mypending {}
 	return
     }
 
-    method fixup {sym} {
+    method fixup {sym {immediate 1}} {
 	debug.marpa/slif/semantics {[debug caller] | }
-
+	# Run fixup immediate if we have state, else defer
 	if {$myglobal ne {}} {
-	    Container l0 configure $sym latm $myglobal
+	    {*}$mycmd $sym $myglobal $immediate
 	    return
 	}
-
 	lappend mypending $sym
 	return
     }
