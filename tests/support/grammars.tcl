@@ -21,14 +21,17 @@ proc test-grammars {iv sv av cv script} {
     fileutil::traverse T $gdir -filter [lambda path {
 	string equal "slif" [file tail $path]
     }]
-    T foreach slif {
+    set sliflist [lreverse [T files]]
+    # Reversal because T returns files in reverse lexicographical order.
+    # This also the reason for not using (T foreach).
+    T destroy
+    foreach slif $sliflist {
 	set stem   [file dirname $slif]
 	set id     [string map {/ ,} [fileutil::stripPath $gdir $stem]]
 	set ast    [file join $stem ast]
 	set ctrace [file join $stem ctrace]
 	uplevel 1 $script
     }
-    T destroy
     return
 }
 

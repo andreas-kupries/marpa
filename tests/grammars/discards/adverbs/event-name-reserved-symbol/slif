@@ -1,0 +1,6 @@
+:discard ~ A event => ::symbol
+
+B ::= C
+C ~ 'c'
+A ~ 'a'
+

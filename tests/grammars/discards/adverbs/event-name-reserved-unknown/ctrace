@@ -1,0 +1,4 @@
+GC l0 usage A 11 1
+
+	GC l0 discard A
+	GC error {Unknown reserved name ::bogus}

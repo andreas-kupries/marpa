@@ -1,0 +1,4 @@
+discard default =
+
+start ::= A
+A ::= 'a'

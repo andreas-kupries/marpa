@@ -235,12 +235,6 @@ oo::class create marpa::slif::semantics {
 	# TODO: @end assert (All G1 symbols, but start have a use location)
 	# TODO: @end assert (L0 without use == G1 without a def == lexeme == terminal)
 
-	# Note: If global! was invoked before any furhter fixup's were
-	# immediate, keeping the list empty. This means that the dup
-	# call here is nop. If global! was not invoked, then this one
-	# processes the waiting definitions.
-	DDE global! {}
-
 	# Done. Auto-destroy
 	debug.marpa/slif/semantics {[debug caller 1] | /ok}
 	my destroy
@@ -264,7 +258,7 @@ oo::class create marpa::slif::semantics {
     method statement/6  {children} { EVAL } ; # OK <discard rule>
     method statement/7  {children} { EVAL } ; # OK <default rule>
     method statement/8  {children} { EVAL } ; # OK <lexeme default statement>
-    #method statement/9  {children} { EVAL } ; # FAIL NODOC <discard default statement>
+    method statement/9  {children} { EVAL } ; # OK <discard default statement>
     method statement/10 {children} { EVAL } ; # OK <lexeme rule>
     method statement/11 {children} { EVAL } ; # OK <completion event declaration>
     method statement/12 {children} { EVAL } ; # OK <nulled event declaration>
@@ -619,6 +613,8 @@ oo::class create marpa::slif::semantics {
 	if {![dict size $adverbs]} return
 
 	# event definitely present.
+	# force check (fail bad specials early)
+	ADVE1 $adverbs dummy
 	Container comment DDE global! [dict get $adverbs event]
 	DDE global! $adverbs
 	return
@@ -637,20 +633,22 @@ oo::class create marpa::slif::semantics {
 	set adverbs [SINGLE 1]
 	#Container comment :discard adverbs = $adverbs ;#debug
 
-	# Discards are not lexemes
-	Lexeme unset! $symbol
+	# Discards are not lexemes. But must be defined
+	Lexeme unset!        $symbol
+	L0Def def            $symbol
+	Container l0 discard $symbol
 
 	if {![dict exists $adverbs event]} {
 	    Container comment DDE fixup $symbol
 	    DDE fixup $symbol
 	} else {
-	    Container l0 discard $symbol {*}[ADVE1 $adverbs $symbol]
+	    Container l0 configure $symbol {*}[ADVE1 $adverbs $symbol]
 	}
 	return
     }
 
-    method FixDiscard {sym adverbs immediate} {
-	Container l0 discard $sym {*}[ADVE1 $adverbs $symbol]
+    method FixDiscard {symbol adverbs immediate} {
+	Container l0 configure $symbol {*}[ADVE1 $adverbs $symbol]
 	return
     }
 
@@ -1567,7 +1565,8 @@ oo::class create marpa::slif::semantics::Flag {
 	debug.marpa/slif/semantics {}
 	foreach key $args {
 	    if {![my unset? $key]} continue
-	    my E "!$mymsg already, cannot be one" {*}$mycode ALREADY UNSET
+	    my E "Not a ${mymsg}already, cannot be made one" \
+		{*}$mycode ALREADY UNSET
 	}
 	foreach key $args {
 	    dict set mysym  $key .
@@ -1580,7 +1579,8 @@ oo::class create marpa::slif::semantics::Flag {
 	debug.marpa/slif/semantics {}
 	foreach key $args {
 	    if {![my set? $key]} continue
-	    my E "$mymsg already, cannot be not" {*}$mycode ALREADY SET
+	    my E "Already a [string trimright ${mymsg}], cannot be undone" \
+		{*}$mycode ALREADY SET
 	}
 	foreach key $args {
 	    dict set mysym  $key .

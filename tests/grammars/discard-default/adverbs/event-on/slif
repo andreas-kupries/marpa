@@ -1,0 +1,4 @@
+discard default = event => snafu = on
+
+B ::= A
+A ~ 'a'

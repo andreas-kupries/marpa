@@ -1,0 +1,12 @@
+	GC comment DDE global! {{standard snafu} {}}
+
+GC g1 definition B 34 1
+GC g1 usage A 40 1
+GC g1 priority-rule B A 0 mask 0
+GC l0 definition A 42 1
+GC l0 string 'a'
+GC l0 usage 'a' 46 3
+GC l0 priority-rule A 'a' 0
+GC comment Semantics completion processing
+GC start! B
+GC comment LATM fixup A

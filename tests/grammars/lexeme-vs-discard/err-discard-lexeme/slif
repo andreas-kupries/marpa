@@ -1,0 +1,4 @@
+# A discarded piece cannot be made a lexeme
+A ~ 'a'
+:discard ~ A
+:lexeme  ~ A

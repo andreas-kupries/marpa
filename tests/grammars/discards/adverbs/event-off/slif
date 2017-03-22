@@ -1,0 +1,5 @@
+:discard ~ A event => snafu = off
+
+B ::= C
+C ~ 'c'
+A ~ 'a'

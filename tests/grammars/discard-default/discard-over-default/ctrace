@@ -1,0 +1,30 @@
+GC l0 usage foo 11 3
+
+	GC l0 discard foo
+	GC l0 configure foo event {fox on discard}
+	GC comment DDE global! {{special symbol} {}}
+
+GC l0 usage bar 75 3
+
+	GC l0 discard bar
+	GC l0 configure bar event {wolf on discard}
+
+GC g1 usage A 105 1
+GC g1 definition A 107 1
+GC g1 usage fox 113 3
+GC g1 priority-rule A fox 0 mask 0
+GC l0 definition foo 117 3
+GC l0 string 'a'
+GC l0 usage 'a' 123 3
+GC l0 priority-rule foo 'a' 0
+GC l0 definition bar 127 3
+GC l0 string 'b'
+GC l0 usage 'b' 133 3
+GC l0 priority-rule bar 'b' 0
+GC l0 definition fox 137 3
+GC l0 string 'x'
+GC l0 usage 'x' 143 3
+GC l0 priority-rule fox 'x' 0
+GC comment Semantics completion processing
+GC start! A
+GC comment LATM fixup fox

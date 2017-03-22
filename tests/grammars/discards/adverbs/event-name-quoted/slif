@@ -1,0 +1,5 @@
+:discard ~ A event => '  fu 	 bar  '
+
+B ::= C
+C ~ 'c'
+A ~ 'a'

@@ -1,0 +1,7 @@
+:discard ~ fox
+discard default = event => ::symbol
+fox ~ 'b'
+
+start ::= A
+A ::= foo
+foo ~ 'a'

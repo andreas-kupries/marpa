@@ -1,0 +1,19 @@
+GC l0 usage A 11 1
+
+	GC l0 discard A
+	GC l0 configure A event {A on discard}
+
+GC g1 definition B 32 1
+GC g1 usage C 38 1
+GC g1 priority-rule B C 0 mask 0
+GC l0 definition C 40 1
+GC l0 string 'c'
+GC l0 usage 'c' 44 3
+GC l0 priority-rule C 'c' 0
+GC l0 definition A 48 1
+GC l0 string 'a'
+GC l0 usage 'a' 52 3
+GC l0 priority-rule A 'a' 0
+GC comment Semantics completion processing
+GC start! B
+GC comment LATM fixup C

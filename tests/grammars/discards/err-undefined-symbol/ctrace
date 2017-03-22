@@ -1,0 +1,17 @@
+GC l0 usage A 11 1
+
+	GC l0 discard A
+	GC comment DDE fixup A
+
+GC g1 definition C 14 1
+GC g1 usage B 20 1
+GC g1 priority-rule C B 0 mask 0
+GC l0 definition B 22 1
+GC l0 string 'b'
+GC l0 usage 'b' 26 3
+GC l0 priority-rule B 'b' 0
+GC comment Semantics completion processing
+GC start! C
+GC comment LATM fixup B
+
+	GC error {L0 symbol 'A' used, not defined}

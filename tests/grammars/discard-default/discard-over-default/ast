@@ -1,0 +1,95 @@
+statements/0
+  statement/6
+    discard rule/0
+      single symbol/0
+        symbol/0
+          symbol name/0
+            @11 3 'foo'
+      adverb list discard/0
+        adverb list items discard/0
+          adverb item discard/0
+            event specification/0
+              event initialization/0
+                event name/0
+                  @24 3 'fox'
+                @{} {} ''
+  statement/9
+    discard default statement/0
+      adverb list discard default/0
+        adverb list items discard default/0
+          adverb item discard default/0
+            event specification/0
+              event initialization/0
+                event name/2
+                  @55 8 '::symbol'
+                @{} {} ''
+  statement/6
+    discard rule/0
+      single symbol/0
+        symbol/0
+          symbol name/0
+            @75 3 'bar'
+      adverb list discard/0
+        adverb list items discard/0
+          adverb item discard/0
+            event specification/0
+              event initialization/0
+                event name/0
+                  @88 4 'wolf'
+                @{} {} ''
+  statement/0
+    start rule/0
+      symbol/0
+        symbol name/0
+          @105 1 'A'
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @107 1 'A'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @113 3 'fox'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @117 3 'foo'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @123 3 ''a''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @127 3 'bar'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @133 3 ''b''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @137 3 'fox'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @143 3 ''x''
+            @{} {} ''
