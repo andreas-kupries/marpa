@@ -7,6 +7,6 @@ GC g1 usage 'a' 85 3
 
 	GC l0 configure 'a' latm 0
 
-GC g1 priority-rule A 'a' 0 mask 0
+GC g1 priority-rule A 'a' 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! A

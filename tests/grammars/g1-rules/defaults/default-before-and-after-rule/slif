@@ -1,0 +1,4 @@
+:default ::= action => this
+A ::= 'a'
+:default ::= action => that
+B ::= 'b'

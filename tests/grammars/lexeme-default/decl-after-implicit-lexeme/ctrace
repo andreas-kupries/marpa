@@ -7,10 +7,10 @@ GC l0 priority-rule foo 'ab' 0
 
 GC g1 definition start 38 5
 GC g1 usage A 48 1
-GC g1 priority-rule start A 0 mask 0
+GC g1 priority-rule start A 0 action {array values} bless {special undef} mask 0
 GC g1 definition A 50 1
 GC g1 usage foo 56 3
-GC g1 priority-rule A foo 0 mask 0
+GC g1 priority-rule A foo 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! start
 

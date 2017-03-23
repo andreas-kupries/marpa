@@ -11,11 +11,11 @@ GC l0 usage {[a]} 44 3
 GC l0 priority-rule bar {{[a]}} 0
 GC g1 definition start 48 5
 GC g1 usage A 58 1
-GC g1 priority-rule start A 0 mask 0
+GC g1 priority-rule start A 0 action {array values} bless {special undef} mask 0
 GC g1 definition A 60 1
 GC g1 usage foo 66 3
 GC g1 usage bar 70 3
-GC g1 priority-rule A {foo bar} 0 mask {0 0}
+GC g1 priority-rule A {foo bar} 0 action {array values} bless {special undef} mask {0 0}
 GC comment Semantics completion processing
 GC start! start
 

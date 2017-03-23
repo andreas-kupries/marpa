@@ -6,10 +6,10 @@ GC l0 usage foo 10 3
 
 GC g1 definition start 42 5
 GC g1 usage A 52 1
-GC g1 priority-rule start A 0 mask 0
+GC g1 priority-rule start A 0 action {array values} bless {special undef} mask 0
 GC g1 definition A 54 1
 GC g1 usage foo 60 3
-GC g1 priority-rule A foo 0 mask 0
+GC g1 priority-rule A foo 0 action {array values} bless {special undef} mask 0
 GC l0 definition foo 64 3
 GC l0 string 'a'
 GC l0 usage 'a' 70 3

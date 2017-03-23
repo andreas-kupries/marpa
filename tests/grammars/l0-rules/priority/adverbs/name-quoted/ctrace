@@ -6,7 +6,7 @@ GC l0 usage B 4 1
 GC g1 usage F 42 1
 GC g1 definition F 44 1
 GC g1 usage A 50 1
-GC g1 priority-rule F A 0 mask 0
+GC g1 priority-rule F A 0 action {array values} bless {special undef} mask 0
 GC l0 definition B 52 1
 GC l0 string 'b'
 GC l0 usage 'b' 56 3

@@ -5,12 +5,12 @@ GC l0 usage D 10 1
 GC l0 usage E 14 1
 
 	GC l0 priority-rule A {B C D E} 0
-	# No mask applied
+	# No action {array values} bless {special undef} mask applied
 
 GC g1 usage F 28 1
 GC g1 definition F 30 1
 GC g1 usage A 36 1
-GC g1 priority-rule F A 0 mask 0
+GC g1 priority-rule F A 0 action {array values} bless {special undef} mask 0
 GC l0 definition B 38 1
 GC l0 string 'b'
 GC l0 usage 'b' 42 3

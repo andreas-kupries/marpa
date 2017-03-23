@@ -14,7 +14,7 @@ GC l0 usage bar 62 3
 GC g1 usage A 78 1
 GC g1 definition A 80 1
 GC g1 usage fox 86 3
-GC g1 priority-rule A fox 0 mask 0
+GC g1 priority-rule A fox 0 action {array values} bless {special undef} mask 0
 GC l0 definition fox 90 3
 GC l0 string 'x'
 GC l0 usage 'x' 96 3

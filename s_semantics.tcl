@@ -51,6 +51,13 @@ oo::class create marpa::slif::semantics {
 	}]}
 	marpa::import $container Container
 
+	# Track G1 action/bless defaults
+	marpa::slif::semantics::Defaults create G1 \
+	    $container {
+		action {array values}
+		bless  {special undef}
+	    }
+
 	# Track LATM flag handling for lexemes
 	marpa::slif::semantics::Fixup create LATM \
 	    $container [mymethod FixLATM]
@@ -306,7 +313,7 @@ oo::class create marpa::slif::semantics {
 	SymCo usage      ; set rhs [lindex [UNMASK [SINGLE 1]] 0]
 
 	set positive [SINGLE 2]
-	set adverbs  [SINGLE 3] ;# still /usage
+	set adverbs  [G1 defaults [SINGLE 3]] ;# still /usage
 	ADVQ adverbs
 
 	# lhs - definitely not a terminal - unset!
@@ -331,13 +338,8 @@ oo::class create marpa::slif::semantics {
 	#     \- symbol name  \- single symbol  /
 	#                                      /
 	# Accepted adverbs (see statement/5) -/
-	# - action    -- <action>
-	# - bless     -- <blessing>                   | IGNORED. WARN
 	# - proper    -- <proper specification>
 	# - separator -- <separator specification>
-	# - name      -- <naming>
-	# - rank      -- <rank specification>         | IGNORED. WARN
-	# - null rank -- <null ranking specification> |
 
 	SymCo l0
 	SymCo definition ; set lhs [FIRST]
@@ -367,7 +369,7 @@ oo::class create marpa::slif::semantics {
     ## Empty rules. Like prioritized rules below, except with a more
     ## limited set of adverbs.
 
-    method {empty rule/0} {children} { # OK <lhs> <op declare> <adverb list>
+    method {empty rule/0} {children} { # OK <lhs> <op declare bnf> <adverb list>
 	# <lhs> <adverb list bnf empty>
 	#  \- symbol name     |
 	#                     |
@@ -379,7 +381,7 @@ oo::class create marpa::slif::semantics {
 	SymCo definition
 
 	set lhs     [FIRST]
-	set adverbs [SINGLE 1]
+	set adverbs [G1 defaults [SINGLE 1]]
 
 	# lhs - definitely not a terminal - unset!
 	# rhs - possibly terminals, not known, don't do anything
@@ -389,13 +391,13 @@ oo::class create marpa::slif::semantics {
 	return
     }
 
-    method {empty rule/1} {children} { # OK <lhs> <op declare> <adverb list>
+    method {empty rule/1} {children} { # OK <lhs> <op declare match> <adverb list>
 	# <lhs> <adverb list match empty>
 	#  \- symbol name     |
 	#                     |
 	# Accepted adverbs (see statement/1):
-	# - action    -- <action>
-	# - bless     -- <blessing>
+	# - name
+	# - null
 
 	SymCo l0
 	SymCo definition
@@ -477,7 +479,7 @@ oo::class create marpa::slif::semantics {
 	set prec    [SymCo precedence?]
 	set lhs     [SymCo lhs?]
 	set rhs     [FIRST]
-	set adverbs [SINGLE 1]
+	set adverbs [G1 defaults [SINGLE 1]]
 
 	lassign $rhs rhsmask rhssymbols
 	dict set adverbs mask $rhsmask
@@ -653,6 +655,20 @@ oo::class create marpa::slif::semantics {
     }
 
     # # -- --- ----- -------- -------------
+    ## G1 action/bless defaults
+
+    method {default rule/0} {children} {
+	# <adverb list default>
+	# 0
+	# Adverbs
+	# - action
+	# - bless
+	set adverbs [FIRST]
+	Container comment g1 defaults = $adverbs
+	G1 defaults: $adverbs
+	return
+    }
+
     # # -- --- ----- -------- -------------
     # # -- --- ----- -------- -------------
     # # -- --- ----- -------- -------------
@@ -1281,6 +1297,37 @@ oo::class create marpa::slif::semantics {
     }
 
     # # ## ### ##### ######## #############
+}
+
+# # ## ### ##### ######## #############
+## Semantic state - Generic management of defaults
+
+oo::class create marpa::slif::semantics::Defaults {
+    marpa::E marpa/slif/semantics SLIF SEMANTICS DEFAULTS
+
+    variable mybase     ;# dictionary of the last defaults
+    variable mydefaults ;# dictionary of current defaults
+
+    constructor {container base} {
+	debug.marpa/slif/semantics {[debug caller] | }
+	marpa::import $container Container
+	set mybase     $base
+	set mydefaults $base
+	return
+    }
+
+    method defaults: {defaults} {
+	debug.marpa/slif/semantics {[debug caller] | }
+	# Set new defaults. Missing parts are filled from the base.
+	set mydefaults [dict merge $mybase $defaults]
+	return
+    }
+
+    method defaults {dict} {
+	debug.marpa/slif/semantics {[debug caller] | }
+	# Fill missing pieces in the incoming dict with the current defaults.
+	return [dict merge $mydefaults $dict]
+    }
 }
 
 # # ## ### ##### ######## #############

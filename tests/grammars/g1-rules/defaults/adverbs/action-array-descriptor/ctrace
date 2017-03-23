@@ -1,0 +1,10 @@
+	GC comment g1 defaults = {action {array {values start}}}
+
+GC g1 definition B 39 1
+GC g1 string 'b'
+GC g1 usage 'b' 45 3
+
+	GC g1 priority-rule B 'b' 0 action {array {values start}} bless {special undef} mask 0
+
+GC comment Semantics completion processing
+GC start! B

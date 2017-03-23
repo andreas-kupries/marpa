@@ -6,7 +6,7 @@ GC l0 usage {'case-insensitive string':ic} 4 28
 GC l0 priority-rule A {{'case-insensitive string':ic}} 0
 GC g1 definition Language 34 8
 GC g1 usage A 47 1
-GC g1 priority-rule Language A 0 mask 0
+GC g1 priority-rule Language A 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! Language
 GC comment LATM fixup A

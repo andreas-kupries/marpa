@@ -1,7 +1,7 @@
 GC g1 definition A 0 1
 GC g1 usage B 6 1
 
-	GC g1 quantified-rule A B 1 action {special first}
+	GC g1 quantified-rule A B 1 action {special first} bless {special undef}
 
 GC l0 definition B 28 1
 GC l0 string 'b'

@@ -1,7 +1,7 @@
 GC g1 definition A 0 1
 GC g1 usage B 6 1
 
-	GC g1 priority-rule A B 0 action {special first} mask 0
+	GC g1 priority-rule A B 0 action {special first} bless {special undef} mask 0
 
 GC l0 definition B 27 1
 GC l0 string 'b'

@@ -1,0 +1,3 @@
+:default ::= action => dobeta
+
+B ::= 'b'

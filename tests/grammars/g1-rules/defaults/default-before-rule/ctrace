@@ -1,0 +1,10 @@
+	GC comment g1 defaults = {action {cmd this}}
+
+GC g1 definition A 28 1
+GC g1 string 'a'
+GC g1 usage 'a' 34 3
+
+	GC g1 priority-rule A 'a' 0 action {cmd this} bless {special undef} mask 0
+
+GC comment Semantics completion processing
+GC start! A

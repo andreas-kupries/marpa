@@ -1,0 +1,10 @@
+	GC comment g1 defaults = {bless {special bar}}
+
+GC g1 definition B 29 1
+GC g1 string 'b'
+GC g1 usage 'b' 35 3
+
+	GC g1 priority-rule B 'b' 0 action {array values} bless {special bar} mask 0
+
+GC comment Semantics completion processing
+GC start! B
