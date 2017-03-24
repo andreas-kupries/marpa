@@ -1,0 +1,12 @@
+GC g1 usage A 27 1
+
+	GC g1 event A {bar on completed}
+
+GC g1 definition X 30 1
+GC g1 string 'a'
+GC g1 usage 'a' 36 3
+GC g1 priority-rule X 'a' 0 action {array values} bless {special undef} mask 0
+GC comment Semantics completion processing
+GC start! X
+
+	GC error {G1 symbol 'A' used, not defined}

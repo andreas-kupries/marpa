@@ -1,0 +1,3 @@
+event foo = nulled A
+
+A ::= 'a'

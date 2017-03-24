@@ -43,7 +43,7 @@ oo::class create marpa::slif::semantics {
 	    # processing methods into the instance, to generate the
 	    # complex debugging output (indenting, etc.)
 	    oo::objdefine [self] mixin marpa::slif::semantics::Debug
-	    # XXX Multi-method link fails, links oly the first XXX
+	    # XXX Multi-method link fails, links only the first XXX
 	    link {AT     AT}
 	    link {DEDENT DEDENT}
 	    link {INDENT INDENT}
@@ -77,6 +77,10 @@ oo::class create marpa::slif::semantics {
 	# Track knowledge of defined L0 symbols, lexeme or not (i.e. defs)
 	marpa::slif::semantics::Flag create L0Def \
 	    $container "L0 symbol" L0SYMBOL
+
+	# Track knowledge of defined G1 symbols, terminals or not
+	marpa::slif::semantics::Flag create G1Def \
+	    $container "G1 symbol" G1SYMBOL
 
 	# Track lexeme default singleton
 	marpa::slif::semantics::Singleton create LD \
@@ -179,7 +183,7 @@ oo::class create marpa::slif::semantics {
 	}
 
 	# Validate that terminal and lexeme are the same set.
-	# Appropriately report any differences.
+	# Report any differences.
 
 	# Definition: Lexeme and non-Terminal
 	Lexeme foreach sym {
@@ -232,10 +236,15 @@ oo::class create marpa::slif::semantics {
 
 	# 
 	L0Def foreach sym {
-	    if {![L0Def set? $sym]} {
-		my E "L0 symbol '$sym' used, not defined" \
-		    L0 MISSING $sym
-	    }
+	    if {[L0Def set? $sym]} continue
+	    my E "L0 symbol '$sym' used, not defined" \
+		L0 MISSING $sym
+	}
+
+	G1Def foreach sym {
+	    if {[G1Def set? $sym] || [Terminal set? $sym]} continue
+	    my E "G1 symbol '$sym' used, not defined" \
+		G1 MISSING $sym
 	}
 
 	# TODO: @end assert (All L0 symbols have a def location (rule, atomic))
@@ -269,7 +278,7 @@ oo::class create marpa::slif::semantics {
     method statement/10 {children} { EVAL } ; # OK <lexeme rule>
     method statement/11 {children} { EVAL } ; # OK <completion event declaration>
     method statement/12 {children} { EVAL } ; # OK <nulled event declaration>
-    method statement/13 {children} { EVAL } ; # OK <predicted event declaration>
+    method statement/13 {children} { EVAL } ; # OK <prediction event declaration>
     #method statement/14 {children} { EVAL } ; # FAIL NODOC <current lexer statement>
     method statement/15 {children} { EVAL } ; # OK <inaccessible statement>
 
@@ -318,12 +327,14 @@ oo::class create marpa::slif::semantics {
 
 	# lhs - definitely not a terminal - unset!
 	# rhs - possibly terminals, not known, don't do anything
-	Terminal unset! $lhs
-	Terminal def $rhs
+	Terminal unset! $lhs ; G1Def set! $lhs
+	Terminal def    $rhs ; G1Def def  {*}$rhs
 
 	if {[dict exists $adverbs separator]} {
 	    # The separator symbol is a possible terminal too.
-	    Terminal def [lindex [dict get $adverbs separator] 0]
+	    set sep [lindex [dict get $adverbs separator] 0]
+	    Terminal def $sep
+	    G1Def def    $sep
 	}
 
 	Container g1 quantified-rule $lhs $rhs $positive {*}$adverbs
@@ -386,6 +397,7 @@ oo::class create marpa::slif::semantics {
 	# lhs - definitely not a terminal - unset!
 	# rhs - possibly terminals, not known, don't do anything
 	Terminal unset! $lhs
+	G1Def    set!   $lhs
 	Container g1 priority-rule $lhs {} 0 {*}$adverbs
 	Start maybe: $lhs
 	return
@@ -486,8 +498,8 @@ oo::class create marpa::slif::semantics {
 
 	# lhs - definitely not a terminal - unset!
 	# rhs - possibly terminals, not known, don't do anything
-	Terminal unset! $lhs
-	Terminal def {*}$rhssymbols
+	Terminal unset! $lhs           ; G1Def set! $lhs
+	Terminal def    {*}$rhssymbols ; G1Def def  {*}$rhssymbols
 	Container g1 priority-rule $lhs $rhssymbols $prec {*}$adverbs
 	return
     }
@@ -669,6 +681,70 @@ oo::class create marpa::slif::semantics {
 	return
     }
 
+    # # -- --- ----- -------- -------------
+    ## G1 parse event declarations
+
+    method {completion event declaration/0} {children} {
+	# <event initialization> <symbol name>
+	SymCo g1 ; SymCo usage
+
+	set spec [FIRST]
+	set sym  [SINGLE 1]
+
+	G1Def def $sym ;# Must be defined, check at end.
+
+	# Run through common event post-processing. This needs boxing
+	# it up as adverb, and unboxing the result
+	# TODO - Rewrite to work on unboxed value instead of adverb.
+	set spec [dict get [ADVE1 [dict create event $spec] $sym] event]
+
+	# Fix event type, and record
+	lset spec 2 completed
+	Container g1 event $sym $spec
+	return
+    }
+
+    method {nulled event declaration/0} {children} {
+	# <event initialization> <symbol name>
+	SymCo g1 ; SymCo usage
+
+	set spec [FIRST]
+	set sym  [SINGLE 1]
+
+	G1Def def $sym ;# Must be defined, check at end.
+
+	# Run through common event post-processing. This needs boxing
+	# it up as adverb, and unboxing the result
+	# TODO - Rewrite to work on unboxed value instead of adverb.
+	set spec [dict get [ADVE1 [dict create event $spec] $sym] event]
+
+	# Fix event type, and record
+	lset spec 2 nulled
+	Container g1 event $sym $spec
+	return
+    }
+
+    method {prediction event declaration/0} {children} {
+	# <event initialization> <symbol name>
+	SymCo g1 ; SymCo usage
+
+	set spec [FIRST]
+	set sym  [SINGLE 1]
+
+	G1Def def $sym ;# Must be defined, check at end.
+
+	# Run through common event post-processing. This needs boxing
+	# it up as adverb, and unboxing the result
+	# TODO - Rewrite to work on unboxed value instead of adverb.
+	set spec [dict get [ADVE1 [dict create event $spec] $sym] event]
+
+	# Fix event type, and record
+	lset spec 2 predicted
+	Container g1 event $sym $spec
+	return
+    }
+
+    # # -- --- ----- -------- ------------- BOTTOM
     # # -- --- ----- -------- -------------
     # # -- --- ----- -------- -------------
     # # -- --- ----- -------- -------------
@@ -943,7 +1019,7 @@ oo::class create marpa::slif::semantics {
 	if {$layer eq "g1"} {
 	    # Mark the literal as a terminal (for G1), and a lexeme (for L0).
 	    # Further include it into LATM tracking
-	    Terminal set!  $literal
+	    Terminal set!  $literal ; G1Def set! $literal
 	    Lexeme   set!  $literal
 	    LATM     fixup $literal
 	}
@@ -970,7 +1046,7 @@ oo::class create marpa::slif::semantics {
 	if {$layer eq "g1"} {
 	    # Mark the literal as a terminal (for G1), and a lexeme (for L0).
 	    # Further include it into LATM tracking
-	    Terminal set!  $literal
+	    Terminal set!  $literal ; G1Def set! $literal
 	    Lexeme   set!  $literal
 	    LATM     fixup $literal
 	}

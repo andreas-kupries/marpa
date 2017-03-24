@@ -1,0 +1,3 @@
+event foo = off = predicted A
+
+A ::= 'a'

@@ -1,0 +1,3 @@
+event foo = completed A
+
+A ::= 'a'
