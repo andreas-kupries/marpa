@@ -82,6 +82,10 @@ oo::class create marpa::slif::semantics {
 	marpa::slif::semantics::Flag create G1Def \
 	    $container "G1 symbol" G1SYMBOL
 
+	# Track inacessible singleton
+	marpa::slif::semantics::Singleton create IA \
+	    "Illegal second use of 'inacessible'" INACCESSIBLE
+
 	# Track lexeme default singleton
 	marpa::slif::semantics::Singleton create LD \
 	    "Illegal second use of 'lexeme default'" LEXEME-DEFAULT
@@ -743,6 +747,20 @@ oo::class create marpa::slif::semantics {
 	Container g1 event $sym $spec
 	return
     }
+
+    # # -- --- ----- -------- -------------
+    ##
+
+    method {inaccessible statement/0} {children} {
+	# <inaccessible treatment>
+	IA pass
+	Container inaccessible [FIRST]
+	return
+    }
+
+    method {inaccessible treatment/0} {children} { CONST warn  }
+    method {inaccessible treatment/1} {children} { CONST ok    }
+    method {inaccessible treatment/2} {children} { CONST fatal }
 
     # # -- --- ----- -------- ------------- BOTTOM
     # # -- --- ----- -------- -------------
