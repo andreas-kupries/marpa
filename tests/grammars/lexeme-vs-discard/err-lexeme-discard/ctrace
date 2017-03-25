@@ -5,4 +5,5 @@ GC l0 priority-rule A 'a' 0
 GC l0 usage A 50 1
 GC comment LATM fixup A
 GC l0 usage A 63 1
-GC error {Grammar error. Already a Lexeme, cannot be undone}
+
+	GC error {Grammar error. <A> already a lexeme, cannot be undone}

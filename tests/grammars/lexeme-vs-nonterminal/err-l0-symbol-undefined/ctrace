@@ -11,4 +11,4 @@ GC comment Semantics completion processing
 GC start! A
 GC comment LATM fixup B
 
-	GC error {L0 symbol 'C' used, not defined}
+	GC error {L0 symbol <C> used, but not defined}

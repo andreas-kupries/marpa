@@ -68,11 +68,11 @@ oo::class create marpa::slif::semantics {
 
 	# Track knowledge of which L0 symbols are lexemes or not.
 	marpa::slif::semantics::Flag create Lexeme \
-	    $container "Lexeme" LEXEME
+	    $container "lexeme" LEXEME
 
 	# Track knowledge of which G1 symbols are terminals or not.
 	set terminal [marpa::slif::semantics::Flag create Terminal \
-			  $container "Terminal" TERMINAL]
+			  $container "terminal" TERMINAL]
 
 	# Track knowledge of defined L0 symbols, lexeme or not (i.e. defs)
 	marpa::slif::semantics::Flag create L0Def \
@@ -192,7 +192,7 @@ oo::class create marpa::slif::semantics {
 	# Definition: Lexeme and non-Terminal
 	Lexeme foreach sym {
 	    if {[Lexeme set? $sym] && [Terminal unset? $sym]} {
-		my E "Lexeme '$sym' also defined as G1 non-terminal" \
+		my E "Lexeme <$sym> also defined as G1 non-terminal" \
 		    MISMATCH L0/G1 BOTH $sym
 		# # ##
 		## A ~   'a' -- A lexeme definition
@@ -204,7 +204,7 @@ oo::class create marpa::slif::semantics {
 	# Use: Terminal and non-Lexeme
 	Terminal foreach sym {
 	    if {[Terminal set? $sym] && [Lexeme unset? $sym]} {
-		my E "Terminal '$sym' also used as L0 non-lexeme" \
+		my E "Terminal <$sym> also used as L0 non-lexeme" \
 		    MISMATCH G1/L0 BOTH $sym
 		# # ##
 		## A ::= B -- B terminal use
@@ -217,7 +217,7 @@ oo::class create marpa::slif::semantics {
 	Lexeme foreach sym {
 	    if {[Lexeme set? $sym] && ![Terminal set? $sym]} {
 		# Lexeme and not used in G1
-		my E "Lexeme '$sym' not used as terminal" \
+		my E "Lexeme <$sym> not used as terminal" \
 		    MISMATCH L0/G1 LEXEME $sym
 		# # ##
 		## A ~   'a' -- A lexeme definition
@@ -229,7 +229,7 @@ oo::class create marpa::slif::semantics {
 	# Terminal not defined in L0
 	Terminal foreach sym {
 	    if {[Terminal set? $sym] && ![Lexeme set? $sym]} {
-		my E "Terminal '$sym' not defined as lexeme" \
+		my E "Terminal <$sym> not defined as lexeme" \
 		    MISMATCH G1/L0 TERMINAL $sym
 		# # ##
 		## A ::= B -- Terminal B usage
@@ -241,13 +241,13 @@ oo::class create marpa::slif::semantics {
 	# 
 	L0Def foreach sym {
 	    if {[L0Def set? $sym]} continue
-	    my E "L0 symbol '$sym' used, not defined" \
+	    my E "L0 symbol <$sym> used, but not defined" \
 		L0 MISSING $sym
 	}
 
 	G1Def foreach sym {
 	    if {[G1Def set? $sym] || [Terminal set? $sym]} continue
-	    my E "G1 symbol '$sym' used, not defined" \
+	    my E "G1 symbol <$sym> used, but not defined" \
 		G1 MISSING $sym
 	}
 
@@ -1313,7 +1313,7 @@ oo::class create marpa::slif::semantics {
 	    # Not having it is a fatal error
 
 	    if {![dict exists $adverbs pause]} {
-		my E "Required 'pause' is missing." ADVERB PAUSE
+		my E "Required adverb 'pause' is missing." ADVERB PAUSE
 	    }
 
 	    # Normalize the value for event (flatten, defaults, specials)
@@ -1326,7 +1326,7 @@ oo::class create marpa::slif::semantics {
 		    my E "Reserved event name ::$name illegal for :lexeme" \
 			ADVERB EVENT NAME SPECIAL ILLEGAL
 		} else {
-		    my E "Unknown reserved name ::$name" \
+		    my E "Unknown reserved name ::$name for :lexeme" \
 			ADVERB EVENT NAME SPECIAL UNKNOWN $name
 		}
 	    }
@@ -1391,519 +1391,6 @@ oo::class create marpa::slif::semantics {
     }
 
     # # ## ### ##### ######## #############
-}
-
-# # ## ### ##### ######## #############
-## Semantic state - Generic management of defaults
-
-oo::class create marpa::slif::semantics::Defaults {
-    marpa::E marpa/slif/semantics SLIF SEMANTICS DEFAULTS
-
-    variable mybase     ;# dictionary of the last defaults
-    variable mydefaults ;# dictionary of current defaults
-
-    constructor {container base} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	marpa::import $container Container
-	set mybase     $base
-	set mydefaults $base
-	return
-    }
-
-    method defaults: {defaults} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	# Set new defaults. Missing parts are filled from the base.
-	set mydefaults [dict merge $mybase $defaults]
-	return
-    }
-
-    method defaults {dict} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	# Fill missing pieces in the incoming dict with the current defaults.
-	return [dict merge $mydefaults $dict]
-    }
-}
-
-# # ## ### ##### ######## #############
-## Semantic state - Generic management of fixups
-
-oo::class create marpa::slif::semantics::Fixup {
-    marpa::E marpa/slif/semantics SLIF SEMANTICS DE
-
-    variable mycmd     ;# command invoked to perform actual fixup.
-    variable myglobal  ;# global setting, if any.
-    variable mypending ;# symbols waiting for fixup by global setting
-
-    constructor {container cmd} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	marpa::import $container Container
-	set mycmd     $cmd
-	set myglobal  {}
-	set mypending {}
-	return
-    }
-
-    method global! {x} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	# Set global state, handle all pending fixup
-	# Note! Caller makes sure to call this only once.
-	set myglobal $x
-	foreach symbol $mypending { my fixup $symbol 0 }
-	set mypending {}
-	return
-    }
-
-    method fixup {sym {immediate 1}} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	# Run fixup immediate if we have state, else defer
-	if {$myglobal ne {}} {
-	    {*}$mycmd $sym $myglobal $immediate
-	    return
-	}
-	lappend mypending $sym
-	return
-    }
-}
-
-# # ## ### ##### ######## #############
-## Semantic state - Symbol context
-## - Layer: g1/l0
-## - Type:  def/use
-
-oo::class create marpa::slif::semantics::SymContext {
-    variable mytype       ;# definition/usage
-    variable mylayer      ;# L0/G1
-    variable mylhs        ;# Symbol for upcoming alternatives
-    variable myprecedence ;# Precedence level for alternatives
-
-    marpa::E marpa/slif/semantics SLIF SEMANTICS SYMBOLCONTEXT
-
-    constructor {} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	set mytype       {}
-	set mylayer      {}
-	set mylhs        {}
-	set myprecedence {}
-	return
-    }
-
-    # # -- --- ----- -------- -------------
-
-    method precedence/reset {} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	set myprecedence 0
-	return
-    }
-
-    method precedence/loosen {} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	incr myprecedence -1
-	return
-    }
-
-    # # -- --- ----- -------- -------------
-
-    method lhs {symbol} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	set mylhs $symbol
-	return
-    }
-
-    # # -- --- ----- -------- -------------
-
-    method g1 {args} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	set mylayer g1
-	# Process additional attributes
-	if {![llength $args]} return
-	my {*}$args
-	return
-    }
-
-    method l0 {args} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	set mylayer l0
-	# Process additional attributes
-	if {![llength $args]} return
-	my {*}$args
-	return
-    }
-
-    # # -- --- ----- -------- -------------
-
-    forward def my definition
-    method definition {args} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	set mytype definition
-	# Process additional attributes
-	if {![llength $args]} return
-	my {*}$args
-	return
-    }
-
-    forward use my usage
-    method usage {args} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	set mytype usage
-	# Process additional attributes
-	if {![llength $args]} return
-	my {*}$args
-	return
-    }
-
-    # # -- --- ----- -------- -------------
-
-    method assert {args} {
-	foreach property $args {
-	    if {[my ${property}?]} continue
-	    my E "Unexpected non-$property context" $property
-	}
-    }
-
-    # # -- --- ----- -------- -------------
-
-    method layer? {} {
-	debug.marpa/slif/semantics {[debug caller] | ==> $mylayer}
-	return $mylayer
-    }
-
-    method type? {} {
-	debug.marpa/slif/semantics {[debug caller] | ==> $mytype}
-	return $mytype
-    }
-
-    method lhs? {} {
-	debug.marpa/slif/semantics {[debug caller] | ==> $mylhs}
-	return $mylhs
-    }
-
-    method precedence? {} {
-	debug.marpa/slif/semantics {[debug caller] | ==> $myprecedence}
-	return $myprecedence
-    }
-
-    # # -- --- ----- -------- -------------
-
-    method definition? {} {
-	set ok [expr {$mytype eq "definition"}]
-	debug.marpa/slif/semantics {[debug caller] | ==> $ok}
-	return $ok
-    }
-
-    method usage? {} {
-	set ok [expr {$mytype eq "usage"}]
-	debug.marpa/slif/semantics {[debug caller] | ==> $ok}
-	return $ok
-    }
-}
-
-# # ## ### ##### ######## #############
-## Semantic state - Singletons
-
-oo::class create marpa::slif::semantics::Singleton {
-    marpa::EP marpa/slif/semantics \
-	{Grammar error.} \
-	SLIF SEMANTICS SINGLETON
-
-    variable mymsg  ;# error message
-    variable mycode ;# error code
-    variable myok   ;# flag tracking calls
-
-    constructor {msg args} {
-	debug.marpa/slif/semantics {}
-	set mymsg  $msg
-	set mycode $args
-	set myok   1
-	return
-    }
-
-    method pass {} {
-	debug.marpa/slif/semantics {}
-	if {!$myok} {
-	    my E $mymsg {*}$mycode
-	}
-	set myok 0
-	return
-    }
-}
-
-# # ## ### ##### ######## #############
-## Semantic state - Flag management
-## Flags are per symbol or similar.
-## A flag can be set, or unset, but not both.
-## A flags state may be unknown however.
-## This means
-## - Setting a flag already known as unset fails
-## - Unsetting a flag already known as set fails
-## - Both set? and unset? may return false
-## - If either set? or unset? returns true the
-##   other predicate will return false.
-##
-## The semantics use instances of this class to track toplevel, use,
-## and other state for grammar symbols.
-##
-
-oo::class create marpa::slif::semantics::Flag {
-    marpa::EP marpa/slif/semantics \
-	{Grammar error.} \
-	SLIF SEMANTICS FLAG
-
-    variable mymsg  ;# error message prefix
-    variable mycode ;# error code prefix
-    variable myflag ;# flag dictionary (known information)
-    variable mysym  ;# symbol dictionary (superset of myflag, (*))
-    #               ;# (*) I.e. includes the maybes
-
-    constructor {container msg args} {
-	marpa::import $container Container
-
-	debug.marpa/slif/semantics {}
-	if {$msg ne {}} { append msg { } }
-	set mymsg  $msg
-	set mycode $args
-	set myflag {}
-	set mysym  {}
-	return
-    }
-
-    method def {args} {
-	debug.marpa/slif/semantics {}
-	foreach key $args { dict set mysym $key . }
-	return
-    }
-
-    method complete {x v script} {
-	debug.marpa/slif/semantics {}
-	upvar 1 $v sym
-
-	#Container comment [self] complete _S_($mysym)__
-	#Container comment [self] complete _F_($myflag)__
-
-	# all maybes become 'x'
-	dict for {sym _} $mysym {
-	    if {[my known? $sym]} continue
-	    dict set myflag $sym $x
-	    # Run the script on the completed symbol
-	    uplevel 1 $script
-	}
-	return
-    }
-
-    method foreach {vs script} {
-	debug.marpa/slif/semantics {}
-	upvar 1 $vs sym
-
-	#Container comment [self] complete _S_($mysym)__
-	#Container comment [self] complete _F_($myflag)__
-
-	dict for {sym _} $mysym {
-	    uplevel 1 $script
-	}
-	return
-    }
-
-    method set! {args} {
-	debug.marpa/slif/semantics {}
-	foreach key $args {
-	    if {![my unset? $key]} continue
-	    my E "Not a ${mymsg}already, cannot be made one" \
-		{*}$mycode ALREADY UNSET
-	}
-	foreach key $args {
-	    dict set mysym  $key .
-	    dict set myflag $key 1
-	}
-	return
-    }
-
-    method unset! {args} {
-	debug.marpa/slif/semantics {}
-	foreach key $args {
-	    if {![my set? $key]} continue
-	    my E "Already a [string trimright ${mymsg}], cannot be undone" \
-		{*}$mycode ALREADY SET
-	}
-	foreach key $args {
-	    dict set mysym  $key .
-	    dict set myflag $key 0
-	}
-	return
-    }
-
-    method known? {key} {
-	debug.marpa/slif/semantics {}
-	return [dict exists $myflag $key]
-    }
-
-    method set? {key} {
-	debug.marpa/slif/semantics {}
-	return [expr {[dict exists $myflag $key] && [dict get $myflag $key]}]
-    }
-
-    method unset? {key} {
-	debug.marpa/slif/semantics {}
-	return [expr {[dict exists $myflag $key] && ![dict get $myflag $key]}]
-    }
-}
-
-# # ## ### ##### ######## #############
-## Semantic state - Start symbol
-
-oo::class create marpa::slif::semantics::Start {
-    marpa::EP marpa/slif/semantics \
-	{Grammar error. Start symbol} \
-	SLIF SEMANTICS START
-
-    # Start symbol handling
-    # Method   State --> New State Action
-    # ------   -----     --------- ------
-    # with:    undef     done      set
-    #          maybe     done      set
-    #          done      -          FAIL
-    # ------   -----     --------- ------
-    # maybe:   undef     maybe     save
-    #          maybe     -         ignore
-    #          done      done      ignore
-    # ------   -----     --------- ------
-    # complete undef     -          FAIL (INTERNAL?)
-    #          maybe     -         set
-    #          done      -         ignore
-    # ------   -----     --------- ------
-    ##
-    # Order by state
-    # State Method --> New State Action
-    # ----- ------     --------- ------
-    # undef with:      done      set
-    #       maybe:     maybe     saved
-    #       complete   -          FAIL
-    # ----- ------     --------- ------
-    # maybe with:      done      set
-    #       maybe:     -         ignore
-    #       complete   -         set
-    # ----- ------     --------- ------
-    # done  with:      -          FAIL
-    #       maybe:     done      ignore
-    #       complete   -         ignore
-    # ----- ------     --------- ------
-
-    # "maybe:" is used by the LHS of rules. It will pass its value
-    # only on the 1st call, and even then only if no explicit setting
-    # was made via "with:". "with:" always passes its value.
-
-    variable mystate
-    variable mysym
-
-    constructor {container terminal} {
-	debug.marpa/slif/semantics {[debug caller] | }
-	marpa::import $container Container
-	marpa::import $terminal  Terminal
-	set mystate undef
-	set mysym   {}
-	return
-    }
-
-    # # -- --- ----- -------- -------------
-
-    method maybe: {symbol} {
-	debug.marpa/slif/semantics {[debug caller] | state=$mystate}
-	switch -exact -- $mystate {
-	    undef {
-		set mysym   $symbol
-		set mystate maybe
-	    }
-	    maybe -
-	    done {}
-	}
-	debug.marpa/slif/semantics {[debug caller] | /done}
-	return
-    }
-
-    method with: {symbol} {
-	debug.marpa/slif/semantics {[debug caller] | state=$mystate}
-	switch -exact -- $mystate {
-	    undef -
-	    maybe {
-		set mystate done
-		set mysym   $symbol
-		# We defer passing even and explicitly defined start
-		# symbol to the completion phase. Because then we can
-		# check if it has a definition or not (Terminal flags).
-	    }
-	    done {
-		# TODO: Get location information from somewhere.
-		my E "illegally declared for a second time" \
-		    WITH TWICE
-	    }
-	}
-	debug.marpa/slif/semantics {[debug caller] | /done}
-	return
-    }
-
-    method complete {} {
-	debug.marpa/slif/semantics {[debug caller] | state=$mystate}
-	switch -exact -- $mystate {
-	    undef {
-		my E "not known" UNKNOWN
-	    }
-	    done -
-	    maybe {
-		# While the start symbol cannot be a terminal
-		# << Why not? >>
-		# there is
-		# still the possibility that there is no rule defining
-		# it either.
-		# IOW instead of simply trying unset! we explictly check
-		# that it is a non-terminal and bail if not.
-		if {![Terminal unset? $mysym]} {
-		    my E "has no G1 rule" UNDEFINED
-		}
-		Container start! $mysym
-	    }
-	    done {}
-	}
-	debug.marpa/slif/semantics {[debug caller] | /done}
-	return
-    }
-}
-
-# # ## ### ##### ######## #############
-## Debugging helper class for the semantics.
-## Only mixed into the class when needed.
-## Provides supporting methods, and a filter adding debug narrative.
-
-oo::class create marpa::slif::semantics::Debug {
-
-    method AT {} {
-	return [my DEDENT]<[lindex [info level -2] 1]>
-    }
-
-    method DEDENT {} {
-	my variable __indent
-	if {[info exist __indent]} {
-	    return $__indent
-	} else {
-	    return {}
-	}
-    }
-
-    method INDENT {} {
-	my variable __indent
-	upvar 1 __predent save
-	if {[info exist __indent]} {
-	    set save $__indent
-	} else {
-	    set save {}
-	}
-	append __indent {  }
-	return
-    }
-
-    method UNDENT {} {
-	my variable __indent
-	upvar 1 __predent save
-	set __indent $save
-	return
-    }
 }
 
 # # ## ### ##### ######## #############

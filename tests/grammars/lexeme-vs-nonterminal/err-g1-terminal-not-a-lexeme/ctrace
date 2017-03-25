@@ -5,4 +5,4 @@ GC g1 usage A 54 1
 GC comment Semantics completion processing
 GC start! A
 
-	GC error {Terminal 'B' not defined as lexeme}
+	GC error {Terminal <B> not defined as lexeme}

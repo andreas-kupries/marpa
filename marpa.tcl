@@ -142,10 +142,22 @@ critcl::tsources s_grammar.tcl    ; # Basic grammar (symbols and rules)
 critcl::tsources s_g1grammar.tcl  ; # - G1-specific extension of the basics
 critcl::tsources s_l0grammar.tcl  ; # - L0-specific extension of the basics
 critcl::tsources s_container.tcl  ; # SLIF container
-critcl::tsources s_semantics.tcl  ; # SLIF semantics, driven by AST
-critcl::tsources s_parser.tcl     ; # Parser hardwired for SLIF
 
-# Experimental work on an alternate grammar container (vs p_grammar.tcl) ...
+critcl::tsources s_semantics.tcl     ; # SLIF semantics, driven by AST
+critcl::tsources s_sem_debug.tcl     ; # - Debug support
+critcl::tsources s_sem_start.tcl     ; # - Start symbol handling
+critcl::tsources s_sem_fixup.tcl     ; # - Defered adverb handling
+critcl::tsources s_sem_defaults.tcl  ; # - Defaults, generic
+critcl::tsources s_sem_context.tcl   ; # - Symbol context
+critcl::tsources s_sem_flags.tcl     ; # - Flags, generic
+critcl::tsources s_sem_singleton.tcl ; # - Singleton, generic
+critcl::tsources s_sem_locations.tcl ; # - Locations for items.
+critcl::tsources s_sem_state.tcl     ; # - Item state machine.
+
+critcl::tsources s_parser.tcl ; # Parser hardwired for SLIF
+
+# Experimental work on an alternate grammar container (vs
+# p_grammar.tcl) ...
 #critcl::tsources g_id.tcl         ; # Id generator
 
 # # ## ### ##### ######## #############

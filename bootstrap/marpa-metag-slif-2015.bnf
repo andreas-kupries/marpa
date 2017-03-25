@@ -78,7 +78,7 @@ statement ::= <start rule> | <empty rule>
 <adverb list bnf alternative>	::= <adverb list items bnf alternative> 
 <adverb list bnf empty>		::= <adverb list items bnf empty>	    
 <adverb list bnf quantified>	::= <adverb list items bnf quantified>  
-<adverb list match alternative>	::= <adverb list items match alternative
+<adverb list match alternative>	::= <adverb list items match alternative>
 <adverb list match empty> 	::= <adverb list items match empty>	    
 <adverb list match quantified>	::= <adverb list items match quantified>
 

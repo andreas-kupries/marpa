@@ -21,4 +21,4 @@ GC comment Semantics completion processing
 GC start! D
 GC comment LATM fixup C
 
-	GC error {Terminal 'B' also used as L0 non-lexeme}
+	GC error {Terminal <B> also used as L0 non-lexeme}

@@ -14,4 +14,5 @@ GC comment Semantics completion processing
 GC start! A
 GC comment LATM fixup B
 GC comment LATM fixup C
-GC error {Lexeme 'B' not used as terminal}
+
+	GC error {Lexeme <B> not used as terminal}

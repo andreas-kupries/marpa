@@ -6,4 +6,5 @@ GC l0 usage A 63 1
 GC l0 discard A
 GC comment DDE fixup A
 GC l0 usage A 76 1
-GC error {Grammar error. Not a Lexeme already, cannot be made one}
+
+	GC error {Grammar error. Unable to make <A> a lexeme, already other}

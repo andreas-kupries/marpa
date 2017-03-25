@@ -19,4 +19,4 @@ GC start! A
 GC comment LATM fixup A
 GC comment LATM fixup B
 
-	GC error {Lexeme 'A' also defined as G1 non-terminal}
+	GC error {Lexeme <A> also defined as G1 non-terminal}
