@@ -1,11 +1,11 @@
-GC g1 definition A 0 1
-GC g1 usage B 6 1
+GC comment definition A 0 1
+GC comment usage B 6 1
 
 	GC g1 quantified-rule A B 1 action {array {start length}} bless {special undef}
 
-GC l0 definition B 35 1
+GC comment definition B 35 1
 GC l0 string 'b'
-GC l0 usage 'b' 39 3
+GC comment usage 'b' 39 3
 GC l0 priority-rule B 'b' 0
 GC comment Semantics completion processing
 GC start! A

@@ -1,26 +1,26 @@
-GC g1 definition A 0 1
-GC g1 usage B 6 1
-GC g1 usage C 10 1
-GC g1 usage D 12 1
-GC g1 usage E 16 1
+GC comment definition A 0 1
+GC comment usage B 6 1
+GC comment usage C 10 1
+GC comment usage D 12 1
+GC comment usage E 16 1
 
 	GC g1 priority-rule A {B C D E} 0 action {array values} bless {special undef} mask {0 1 1 0}
 
-GC l0 definition B 19 1
+GC comment definition B 19 1
 GC l0 string 'b'
-GC l0 usage 'b' 23 3
+GC comment usage 'b' 23 3
 GC l0 priority-rule B 'b' 0
-GC l0 definition C 27 1
+GC comment definition C 27 1
 GC l0 string 'c'
-GC l0 usage 'c' 31 3
+GC comment usage 'c' 31 3
 GC l0 priority-rule C 'c' 0
-GC l0 definition D 35 1
+GC comment definition D 35 1
 GC l0 string 'd'
-GC l0 usage 'd' 39 3
+GC comment usage 'd' 39 3
 GC l0 priority-rule D 'd' 0
-GC l0 definition E 43 1
+GC comment definition E 43 1
 GC l0 string 'e'
-GC l0 usage 'e' 47 3
+GC comment usage 'e' 47 3
 GC l0 priority-rule E 'e' 0
 GC comment Semantics completion processing
 GC start! A

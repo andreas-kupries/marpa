@@ -1,9 +1,9 @@
 	GC comment LATM global! 0
 
-GC g1 usage A 39 1
-GC g1 definition A 41 1
+GC comment usage A 39 1
+GC comment definition A 41 1
 GC g1 string 'a'
-GC g1 usage 'a' 47 3
+GC comment usage 'a' 47 3
 
 	GC l0 configure 'a' latm 0
 

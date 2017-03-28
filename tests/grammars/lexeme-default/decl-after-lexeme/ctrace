@@ -1,18 +1,18 @@
-GC l0 usage foo 10 3
+GC comment usage foo 10 3
 
 	GC comment LATM fixup foo
 	GC comment LATM global! 0
 	GC l0 configure foo latm 0
 
-GC g1 definition start 42 5
-GC g1 usage A 52 1
+GC comment definition start 42 5
+GC comment usage A 52 1
 GC g1 priority-rule start A 0 action {array values} bless {special undef} mask 0
-GC g1 definition A 54 1
-GC g1 usage foo 60 3
+GC comment definition A 54 1
+GC comment usage foo 60 3
 GC g1 priority-rule A foo 0 action {array values} bless {special undef} mask 0
-GC l0 definition foo 64 3
+GC comment definition foo 64 3
 GC l0 string 'a'
-GC l0 usage 'a' 70 3
+GC comment usage 'a' 70 3
 GC l0 priority-rule foo 'a' 0
 GC comment Semantics completion processing
 GC start! start

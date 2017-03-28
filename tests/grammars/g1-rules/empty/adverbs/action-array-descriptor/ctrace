@@ -1,4 +1,4 @@
-GC g1 definition A 0 1
+GC comment definition A 0 1
 GC g1 priority-rule A {} 0 action {array {values start}} bless {special undef}
 GC comment Semantics completion processing
 GC start! A

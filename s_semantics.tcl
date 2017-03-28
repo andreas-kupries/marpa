@@ -51,6 +51,13 @@ oo::class create marpa::slif::semantics {
 	}]}
 	marpa::import $container Container
 
+	# Track the def and use locations for all pieces of rules
+	marpa::slif::semantics::Locations create definition $container
+	marpa::slif::semantics::Locations create usage      $container
+	# TODO: Make use of this information in other places, in
+	#       particular in error messages.
+
+
 	# Track G1 action/bless defaults
 	marpa::slif::semantics::Defaults create G1 \
 	    $container {
@@ -1029,7 +1036,8 @@ oo::class create marpa::slif::semantics {
 
 	set layer [SymCo layer?]
 	Container $layer charclass $literal
-	Container $layer usage     $literal $start $length
+	#Container $layer usage     $literal $start $length
+	usage add $literal $start $length
 
 	L0Def set! $literal ;# self-defined L0 symbol
 	# Yes, we set for L0 and G1
@@ -1056,7 +1064,8 @@ oo::class create marpa::slif::semantics {
 
 	set layer [SymCo layer?]
 	Container $layer string $literal
-	Container $layer usage  $literal $start $length
+	#Container $layer usage  $literal $start $length
+	usage add $literal $start $length
 
 	L0Def set! $literal ;# self-defined L0 symbol
 	# Yes, we set for L0 and G1
@@ -1235,7 +1244,8 @@ oo::class create marpa::slif::semantics {
 	    set literal [my NORM $literal]
 	}
 
-	Container $layer $type $literal $start $length
+	#Container $layer $type $literal $start $length
+	$type add $literal $start $length
 
 	debug.marpa/slif/semantics {[debug caller] | [AT] ==> $literal}
 	return $literal

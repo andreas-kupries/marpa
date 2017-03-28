@@ -1,9 +1,9 @@
-GC l0 usage A 10 1
+GC comment usage A 10 1
 
 	GC l0 configure A latm 0
 
-GC g1 definition B 28 1
-GC g1 usage A 34 1
+GC comment definition B 28 1
+GC comment usage A 34 1
 GC g1 priority-rule B A 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! B

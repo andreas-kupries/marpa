@@ -1,18 +1,18 @@
-GC l0 usage A 11 1
+GC comment usage A 11 1
 
 	GC l0 discard A
 	GC comment DDE fixup A
 
-GC g1 definition C 14 1
-GC g1 usage B 20 1
+GC comment definition C 14 1
+GC comment usage B 20 1
 GC g1 priority-rule C B 0 action {array values} bless {special undef} mask 0
-GC l0 definition B 22 1
+GC comment definition B 22 1
 GC l0 string 'b'
-GC l0 usage 'b' 26 3
+GC comment usage 'b' 26 3
 GC l0 priority-rule B 'b' 0
-GC l0 definition A 30 1
+GC comment definition A 30 1
 GC l0 string 'a'
-GC l0 usage 'a' 34 3
+GC comment usage 'a' 34 3
 GC l0 priority-rule A 'a' 0
 GC comment Semantics completion processing
 GC start! C

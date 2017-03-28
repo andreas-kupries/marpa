@@ -1,8 +1,8 @@
-GC g1 definition A 0 1
+GC comment definition A 0 1
 
 	GC g1 string 'string'
 
-GC g1 usage 'string' 6 8
+GC comment usage 'string' 6 8
 GC g1 priority-rule A 'string' 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! A

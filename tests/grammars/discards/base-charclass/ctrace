@@ -1,15 +1,15 @@
 GC l0 charclass {[0-9]}
-GC l0 usage {[0-9]} 11 5
+GC comment usage {[0-9]} 11 5
 
 	GC l0 discard {[0-9]}
 	GC comment DDE fixup {[0-9]}
 
-GC l0 definition A 18 1
+GC comment definition A 18 1
 GC l0 string 'a'
-GC l0 usage 'a' 22 3
+GC comment usage 'a' 22 3
 GC l0 priority-rule A 'a' 0
-GC g1 definition B 26 1
-GC g1 usage A 32 1
+GC comment definition B 26 1
+GC comment usage A 32 1
 GC g1 priority-rule B A 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! B

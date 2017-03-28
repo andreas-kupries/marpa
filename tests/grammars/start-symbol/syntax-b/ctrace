@@ -1,7 +1,7 @@
-GC g1 usage A 16 1
-GC g1 definition A 18 1
+GC comment usage A 16 1
+GC comment definition A 18 1
 GC g1 string 'a'
-GC g1 usage 'a' 24 3
+GC comment usage 'a' 24 3
 GC g1 priority-rule A 'a' 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! A

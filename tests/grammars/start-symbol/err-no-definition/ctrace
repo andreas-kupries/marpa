@@ -1,4 +1,4 @@
-GC g1 usage A 51 1
+GC comment usage A 51 1
 GC comment Semantics completion processing
 
 	GC error {Grammar error. Start symbol <A> has no G1 rule}

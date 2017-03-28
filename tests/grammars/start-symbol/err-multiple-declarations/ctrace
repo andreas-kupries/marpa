@@ -1,3 +1,3 @@
-GC g1 usage A 16 1
-GC g1 usage B 34 1
+GC comment usage A 16 1
+GC comment usage B 34 1
 GC error {Grammar error. Start symbol illegally declared for a second time}

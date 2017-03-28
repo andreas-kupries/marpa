@@ -1,10 +1,10 @@
-GC l0 definition A 44 1
+GC comment definition A 44 1
 GC l0 string 'a'
-GC l0 usage 'a' 48 3
+GC comment usage 'a' 48 3
 GC l0 priority-rule A 'a' 0
-GC l0 usage A 63 1
+GC comment usage A 63 1
 GC l0 discard A
 GC comment DDE fixup A
-GC l0 usage A 76 1
+GC comment usage A 76 1
 
 	GC error {Grammar error. Unable to make <A> a lexeme, already other}

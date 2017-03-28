@@ -1,10 +1,10 @@
-GC g1 usage A 28 1
+GC comment usage A 28 1
 
 	GC g1 event A {foo off completed}
 
-GC g1 definition A 31 1
+GC comment definition A 31 1
 GC g1 string 'a'
-GC g1 usage 'a' 37 3
+GC comment usage 'a' 37 3
 GC g1 priority-rule A 'a' 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! A

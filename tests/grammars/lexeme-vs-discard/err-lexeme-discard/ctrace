@@ -1,9 +1,9 @@
-GC l0 definition A 31 1
+GC comment definition A 31 1
 GC l0 string 'a'
-GC l0 usage 'a' 35 3
+GC comment usage 'a' 35 3
 GC l0 priority-rule A 'a' 0
-GC l0 usage A 50 1
+GC comment usage A 50 1
 GC comment LATM fixup A
-GC l0 usage A 63 1
+GC comment usage A 63 1
 
 	GC error {Grammar error. <A> already a lexeme, cannot be undone}

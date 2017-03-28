@@ -1,15 +1,15 @@
 	GC comment g1 defaults = {action {cmd this}}
 
-GC g1 definition A 28 1
+GC comment definition A 28 1
 GC g1 string 'a'
-GC g1 usage 'a' 34 3
+GC comment usage 'a' 34 3
 
 	GC g1 priority-rule A 'a' 0 action {cmd this} bless {special undef} mask 0
 	GC comment g1 defaults = {action {cmd that}}
 
-GC g1 definition B 66 1
+GC comment definition B 66 1
 GC g1 string 'b'
-GC g1 usage 'b' 72 3
+GC comment usage 'b' 72 3
 
 	GC g1 priority-rule B 'b' 0 action {cmd that} bless {special undef} mask 0
 

@@ -1,12 +1,12 @@
-GC l0 usage foo 10 3
+GC comment usage foo 10 3
 GC l0 configure foo latm 1
 GC comment LATM global! 0
-GC l0 usage bar 61 3
+GC comment usage bar 61 3
 GC l0 configure bar latm 0
-GC g1 usage A 86 1
-GC g1 definition A 88 1
-GC g1 usage foo 94 3
-GC g1 usage bar 98 3
+GC comment usage A 86 1
+GC comment definition A 88 1
+GC comment usage foo 94 3
+GC comment usage bar 98 3
 GC g1 priority-rule A {foo bar} 0 action {array values} bless {special undef} mask {0 0}
 GC comment Semantics completion processing
 GC start! A

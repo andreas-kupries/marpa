@@ -1,11 +1,11 @@
-GC l0 definition A 0 1
+GC comment definition A 0 1
 
 	GC l0 string {'case-insensitive string':i}
 
-GC l0 usage {'case-insensitive string':i} 4 27
+GC comment usage {'case-insensitive string':i} 4 27
 GC l0 priority-rule A {{'case-insensitive string':i}} 0
-GC g1 definition Language 33 8
-GC g1 usage A 46 1
+GC comment definition Language 33 8
+GC comment usage A 46 1
 GC g1 priority-rule Language A 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! Language

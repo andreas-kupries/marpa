@@ -1,13 +1,13 @@
 
 	GC comment LATM global! 0
 
-GC l0 definition foo 27 3
+GC comment definition foo 27 3
 GC l0 string 'ab'
-GC l0 usage 'ab' 33 4
+GC comment usage 'ab' 33 4
 GC l0 priority-rule foo 'ab' 0
-GC g1 usage A 49 1
-GC g1 definition A 51 1
-GC g1 usage foo 57 3
+GC comment usage A 49 1
+GC comment definition A 51 1
+GC comment usage foo 57 3
 GC g1 priority-rule A foo 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! A

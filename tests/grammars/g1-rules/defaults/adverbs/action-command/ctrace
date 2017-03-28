@@ -1,8 +1,8 @@
 	GC comment g1 defaults = {action {cmd dobeta}}
 
-GC g1 definition B 31 1
+GC comment definition B 31 1
 GC g1 string 'b'
-GC g1 usage 'b' 37 3
+GC comment usage 'b' 37 3
 
 	GC g1 priority-rule B 'b' 0 action {cmd dobeta} bless {special undef} mask 0
 
