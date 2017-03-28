@@ -146,6 +146,7 @@ oo::class create marpa::slif::semantics {
 	link {CCLASS  CCLASS}  ;# Character class to translate
 	link {CSTRING CSTRING} ;# Character string to translate
 	link {E       ERR}
+	link {LOCFMT  LOCFMT}
     }
 
     method process {ast} {
@@ -199,8 +200,10 @@ oo::class create marpa::slif::semantics {
 	# Definition: Lexeme and non-Terminal
 	Lexeme foreach sym {
 	    if {[Lexeme set? $sym] && [Terminal unset? $sym]} {
-		my E "Lexeme <$sym> also defined as G1 non-terminal" \
-		    MISMATCH L0/G1 BOTH $sym
+		set dw  [definition where $sym]
+		set ddw [LOCFMT $dw]
+		my E "Lexeme <$sym> also defined as G1 non-terminal.\n$ddw" \
+		    MISMATCH L0/G1 BOTH $sym $dw
 		# # ##
 		## A ~   'a' -- A lexeme definition
 		## A ::= 'x' -- A non-terminal definition
@@ -211,8 +214,10 @@ oo::class create marpa::slif::semantics {
 	# Use: Terminal and non-Lexeme
 	Terminal foreach sym {
 	    if {[Terminal set? $sym] && [Lexeme unset? $sym]} {
-		my E "Terminal <$sym> also used as L0 non-lexeme" \
-		    MISMATCH G1/L0 BOTH $sym
+		set uw  [usage where $sym]
+		set duw [LOCFMT $uw]
+		my E "Terminal <$sym> also used as L0 non-lexeme\n$duw" \
+		    MISMATCH G1/L0 BOTH $sym $uw
 		# # ##
 		## A ::= B -- B terminal use
 		## C ~   B -- B non-lexeme use
@@ -224,8 +229,10 @@ oo::class create marpa::slif::semantics {
 	Lexeme foreach sym {
 	    if {[Lexeme set? $sym] && ![Terminal set? $sym]} {
 		# Lexeme and not used in G1
-		my E "Lexeme <$sym> not used as terminal" \
-		    MISMATCH L0/G1 LEXEME $sym
+		set dw  [definition where $sym]
+		set ddw [LOCFMT $dw]
+		my E "Lexeme <$sym> not used as terminal\n$ddw" \
+		    MISMATCH L0/G1 LEXEME $sym $dw
 		# # ##
 		## A ~   'a' -- A lexeme definition
 		##           -- A not used in a ::= RHS
@@ -236,8 +243,10 @@ oo::class create marpa::slif::semantics {
 	# Terminal not defined in L0
 	Terminal foreach sym {
 	    if {[Terminal set? $sym] && ![Lexeme set? $sym]} {
-		my E "Terminal <$sym> not defined as lexeme" \
-		    MISMATCH G1/L0 TERMINAL $sym
+		set uw  [usage where $sym]
+		set duw [LOCFMT $uw]
+		my E "Terminal <$sym> not defined as lexeme\n$duw" \
+		    MISMATCH G1/L0 TERMINAL $sym $uw
 		# # ##
 		## A ::= B -- Terminal B usage
 		##         -- Terminal B is not a ~ LHS
@@ -248,14 +257,18 @@ oo::class create marpa::slif::semantics {
 	# 
 	L0Def foreach sym {
 	    if {[L0Def set? $sym]} continue
-	    my E "L0 symbol <$sym> used, but not defined" \
-		L0 MISSING $sym
+	    set uw  [usage where $sym]
+	    set duw [LOCFMT $uw]
+	    my E "L0 symbol <$sym> used, but not defined\n$duw" \
+		L0 MISSING $sym $uw
 	}
 
 	G1Def foreach sym {
 	    if {[G1Def set? $sym] || [Terminal set? $sym]} continue
-	    my E "G1 symbol <$sym> used, but not defined" \
-		G1 MISSING $sym
+	    set uw  [usage where $sym]
+	    set duw [LOCFMT $uw]
+	    my E "G1 symbol <$sym> used, but not defined\n$duw" \
+		G1 MISSING $sym $uw
 	}
 
 	# TODO: @end assert (All L0 symbols have a def location (rule, atomic))
@@ -1389,7 +1402,16 @@ oo::class create marpa::slif::semantics {
     }
 
     # # ## ### ##### ######## #############
-    ## Semantic state
+    ##
+
+    method LOCFMT {locations} {
+	set result {}
+	foreach loc $locations {
+	    lassign $loc location span
+	    lappend result @${location}..[expr {$location + $span - 1}]
+	}
+	return "- [join $result "\n- "]"
+    }
 
     # # ## ### ##### ######## #############
     ## Helper - XXX - Remove when class is complete

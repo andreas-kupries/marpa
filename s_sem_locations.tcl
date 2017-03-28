@@ -29,6 +29,6 @@ oo::class create marpa::slif::semantics::Locations {
 
     method where {symbol} {
 	debug.marpa/slif/semantics {[debug caller] | }
-	return [lsort -unique -dict [dict get $mydata $smybol]]
+	return [lsort -unique -dict [dict get $mydata $symbol]]
     }
 }
