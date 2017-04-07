@@ -10,5 +10,5 @@ statements/0
             rhs/0
               rhs primary/0
                 single symbol/1
-                  @6 16 {'[0-9A]:ic:i:ic:i'}
+                  @6 16 {'[a-z4]:ic:i:ic:i'}
             @{} {} ''

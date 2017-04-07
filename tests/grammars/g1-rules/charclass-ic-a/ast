@@ -10,5 +10,5 @@ statements/0
             rhs/0
               rhs primary/0
                 single symbol/1
-                  @6 7 {'[0-9]:i'}
+                  @6 7 {'[a-z]:i'}
             @{} {} ''

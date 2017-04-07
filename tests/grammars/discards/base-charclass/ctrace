@@ -1,17 +1,19 @@
 GC comment usage {[0-9]} 11 5
-GC comment usage @LCC:<-09> 11 5
+GC comment usage @LCC:<0-9> 11 5
 GC comment definition {[0-9]} 11 5
-GC comment definition @LCC:<-09> 11 5
-GC comment <literal> @LCC:<-09> undef --> {JMP literal}
+GC comment definition @LCC:<0-9> 11 5
+GC comment <literal> @LCC:<0-9> undef --> {JMP literal}
 
-	GC l0 charclass @LCC:<-09> {{CH 45} {CH 48} {CH 57}} 0
-	GC comment definition @DIS:@LCC:<-09> 11 5
-	GC comment l0-definition @DIS:@LCC:<-09> undef --> {JMP match     l0-new}
-	GC l0 symbol @DIS:@LCC:<-09>
-	GC comment :discard @DIS:@LCC:<-09> match --> {JMP discard make-discard}
-	GC l0 discard @DIS:@LCC:<-09>
-	GC l0 priority-rule @DIS:@LCC:<-09> @LCC:<-09> 0
+	GC l0 charclass @LCC:<0-9> {{RN {48 57}}} 0
 
+	GC comment definition @DIS:@LCC:<0-9> 11 5
+	GC comment l0-definition @DIS:@LCC:<0-9> undef --> {JMP match     l0-new}
+	GC l0 symbol @DIS:@LCC:<0-9>
+
+	GC comment :discard @DIS:@LCC:<0-9> match --> {JMP discard make-discard}
+	GC l0 discard @DIS:@LCC:<0-9>
+
+GC l0 priority-rule @DIS:@LCC:<0-9> @LCC:<0-9> 0
 GC comment definition A 18 1
 GC comment l0-definition A undef --> {JMP match     l0-new}
 GC l0 symbol A

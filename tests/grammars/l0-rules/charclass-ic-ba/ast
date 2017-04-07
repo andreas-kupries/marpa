@@ -10,7 +10,7 @@ statements/0
             rhs/0
               rhs primary/0
                 single symbol/1
-                  @4 16 {'[0-9A]:ic:ic:i:i'}
+                  @4 16 {'[a-z4]:ic:ic:i:i'}
             @{} {} ''
   statement/4
     priority rule/0

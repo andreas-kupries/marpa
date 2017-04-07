@@ -2,17 +2,17 @@ GC comment definition A 0 1
 GC comment l0-definition A undef --> {JMP match     l0-new}
 GC l0 symbol A
 
-	GC comment usage {[0-9A]:ic:ic:i:i} 4 16
-	GC comment usage @LCC:<-09A>:i 4 16
-	GC comment definition {[0-9A]:ic:ic:i:i} 4 16
-	GC comment definition @LCC:<-09A>:i 4 16
-	GC comment <literal> @LCC:<-09A>:i undef --> {JMP literal}
+	GC comment usage {[a-z4]:ic:ic:i:i} 4 16
+	GC comment usage @LCC:<4A-Z>:i 4 16
+	GC comment definition {[a-z4]:ic:ic:i:i} 4 16
+	GC comment definition @LCC:<4A-Z>:i 4 16
 
-	GC l0 charclass @LCC:<-09A>:i {{CH 45} {CH 48} {CH 57} {CH 65}} 1
-	# TODO BUGFIX: fold char(range)s down
+	GC comment <literal> @LCC:<4A-Z>:i undef --> {JMP literal}
+	GC l0 charclass @LCC:<4A-Z>:i {{CH 52} {RN {65 90}}} 1
 
-GC comment l0-usage @LCC:<-09A>:i literal --> NOP
-GC l0 priority-rule A @LCC:<-09A>:i 0
+	GC comment l0-usage @LCC:<4A-Z>:i literal --> NOP
+
+GC l0 priority-rule A @LCC:<4A-Z>:i 0
 GC comment definition Language 22 8
 GC comment g1-definition Language undef --> {JMP brick     g1-new}
 GC g1 symbol Language

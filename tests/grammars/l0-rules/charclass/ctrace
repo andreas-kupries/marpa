@@ -3,16 +3,16 @@ GC comment l0-definition A undef --> {JMP match     l0-new}
 GC l0 symbol A
 
 	GC comment usage {[0-9]} 4 5
-	GC comment usage @LCC:<-09> 4 5
+	GC comment usage @LCC:<0-9> 4 5
 	GC comment definition {[0-9]} 4 5
-	GC comment definition @LCC:<-09> 4 5
-	GC comment <literal> @LCC:<-09> undef --> {JMP literal}
+	GC comment definition @LCC:<0-9> 4 5
+	GC comment <literal> @LCC:<0-9> undef --> {JMP literal}
 
-	GC l0 charclass @LCC:<-09> {{CH 45} {CH 48} {CH 57}} 0
+	GC l0 charclass @LCC:<0-9> {{RN {48 57}}} 0
 
-	GC comment l0-usage @LCC:<-09> literal --> NOP
+	GC comment l0-usage @LCC:<0-9> literal --> NOP
 
-GC l0 priority-rule A @LCC:<-09> 0
+GC l0 priority-rule A @LCC:<0-9> 0
 GC comment definition Language 11 8
 GC comment g1-definition Language undef --> {JMP brick     g1-new}
 GC g1 symbol Language

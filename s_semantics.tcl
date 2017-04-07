@@ -129,10 +129,13 @@ oo::class create marpa::slif::semantics {
 	link {MERGE   MERGE}   ;# Merge multiple rhs sem values
 	link {MERGE2  MERGE2}  ;# Merge 2 rhs sem values
 	link {HIDE    HIDE}    ;# Set mask in rhs sem value to "all hidden"
-	link {CCLASS  CCLASS}  ;# Character class to translate
-	link {CSTRING CSTRING} ;# Character string to translate
-	link {CHAR    CHAR}    ;# Character normalization
-	link {UNESCAPE UNESCAPE} ;# Char normalization. Handle escape sequences.
+	link {CCLASS  CCLASS}  ;# Character class translation
+	link {CSTRING CSTRING} ;# Character string translation
+	link {CHAR    CHAR}    ;# Character normalization. Determine codepoint, wrap.
+	link {CCODE   CCODE}   ;# Char codepoint, raw.
+	link {CWRAP   CWRAP}   ;# Char boxing
+	link {UNESC   UNESC}   ;# Char normalization. Handle escape sequences.
+	link {RANGES  RANGES}  ;# Recompression of adjacent chars into ranges.
 	link {G1Event G1Event} ;# Adverb processing for g1 parse events
 	link {E       ERR}
 	link {LOCFMT  LOCFMT}
@@ -959,44 +962,55 @@ oo::class create marpa::slif::semantics {
 
 	lassign [my NOCASE $literal] literal nocase
 
-	# TODO: BUGFIX Extend spec with folded character(range)s for 'nocase'
+	# Handle escapes (Tcl syntax), afterward we have a simple
+	# sequence of characters and ranges.
+	set literal [UNESC $literal]
 
 	# Process class elements.
 	set spec {}
 	while {[string length $literal]} {
 	    #puts NCC|$literal|
+
 	    # negated posix char class
-	    if {[regexp "^\\\[:^(\[alnum\]+):\\\](.*)$" $literal -> name remainder]} {
+	    if {[regexp -- "^\\\[:^(\[alnum\]+):\\\](.*)$" $literal -> name remainder]} {
 		lappend spec [list CC- $name]
 		set literal $remainder
 		continue
 	    }
 	    # posix char class
-	    if {[regexp "^\\\[:(\[alnum\]+):\\\](.*)$" $literal -> name remainder]} {
+	    if {[regexp -- "^\\\[:(\[alnum\]+):\\\](.*)$" $literal -> name remainder]} {
 		lappend spec [list CC $name]
 		set literal $remainder
 		continue
 	    }
-	    # safe character
-	    if {[regexp {^([^\n\11\12\r\u2028\u2029])(.*)$} $literal -> char remainder]} {
+
+	    if {[regexp -- {^(.)-(.)(.*)$} $literal -> start end remainder]} {
+		# Expand the range into the individual characters
+		# (We cannot assume that folding preverses continuity, or order)
+		set start [CCODE $start]
+		set end   [CCODE $end]
+		for {set codepoint $start} {$codepoint <= $end} {incr codepoint} {
+		    lappend spec [CWRAP $codepoint $nocase]
+		}
+		set literal $remainder
+		continue
+	    }
+
+	    if {[regexp -- {^(.)(.*)$} $literal -> char remainder]} {
 		# Remember characters as codepoints, possibly up/downcased
 		lappend spec [CHAR $char $nocase]
 		set literal $remainder
 		continue
 	    }
-	    # TODO: Handle various forms of escapement.
-	    # \a, \b, \t, \r, \n, \f, \v, \nnn (octal), \xFF (hex), \uXXXX, \UXXXXXXXX (unicode)
-
-	    # escaped cc character
-	    # '\' horiz, where horiz = NV = not-vert
-	    # NV = [^\n\11\12\r\u2028\u2029]
 
 	    my E "" ... ;# internal error semantic/syntax mismatch
 	    break
 	}
 
-	# Canonical sort order, and removal of obvious duplicates.
-	set spec [lsort -unique $spec]
+	# Canonical sort order, removal of obvious duplicates, and
+	# compression to ranges where possible.
+
+	set spec [RANGES [lsort -unique $spec]]
 
 	# Generate a symbol from the normalized spec.  This symbol
 	# represents the char class itself.  There may come more
@@ -1051,7 +1065,7 @@ oo::class create marpa::slif::semantics {
 
 	# Handle escapes (Tcl syntax), afterward we have a simple
 	# sequence of characters.
-	set literal [UNESCAPE $literal]
+	set literal [UNESC $literal]
 
 	# Process the string elements.
 	set spec {}
@@ -1071,19 +1085,63 @@ oo::class create marpa::slif::semantics {
 
     }
 
+    method RANGES {spec} {
+	set result {}
+	set buf {}
+	foreach el $spec {
+	    lassign $el type value
+	    switch -exact -- $type {
+		CC - CC- { lappend result $el }
+		CH {
+		    if {![llength $buf]} {
+			lappend buf $value
+			continue
+		    }
+		    if {([lindex $buf end] + 1) == $value} {
+			lappend buf $value
+			continue
+		    }
+		    # gap, flush buffer
+		    if {[llength $buf] > 1} {
+			set s [lindex $buf 0]
+			set e [lindex $buf end]
+			lappend result [list RN [list $s $e]]
+		    } else {
+			lappend result [list CH [lindex $buf 0]]
+		    }
+		    # restart accumulation
+		    set buf [list $value]
+		}
+	    }
+	}
+	if {[llength $buf]} {
+	    if {[llength $buf] > 1} {
+		set s [lindex $buf 0]
+		set e [lindex $buf end]
+		lappend result [list RN [list $s $e]]
+	    } else {
+		lappend result [list CH [lindex $buf 0]]
+	    }
+	}
+	return $result
+    }
+
     method CHAR {char nocase} {
-	set codepoint [my CODE $char]
+	return [CWRAP [CCODE $char] $nocase]
+    }
+
+    method CWRAP {codepoint nocase} {
 	if {$nocase} {
 	    set codepoint [marpa unicode data fold/c $codepoint]
 	}
-	list CH $codepoint
+	return [list CH $codepoint]
     }
 
-    method UNESCAPE {x} {
+    method UNESC {x} {
 	return [subst -nocommands -novariables $x]
     }
 
-    method CODE {char} {
+    method CCODE {char} {
 	# Input is unescaped tcl character.
 	# Determine the decimal codepoint.
 	scan $char %c char
@@ -1121,6 +1179,12 @@ oo::class create marpa::slif::semantics {
 		CC  { append symbol \[:${value}:\]  }
 		CC- { append symbol \[:^${value}:\] }
 		CH  { append symbol [char quote tcl [format %c $value]] }
+		RN  {
+		    lassign $value s e
+		    append symbol \
+			[char quote tcl [format %c $s]] - \
+			[char quote tcl [format %c $e]]
+		}
 	    }
 	}
 	append symbol [string index $base end]
