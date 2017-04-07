@@ -242,7 +242,7 @@ oo::class create marpa::slif::semantics {
 	Symbol context1 g1-usage      $rhs
 
 	# SymCo usage, still
-	set adverbs [G1 defaults [SINGLE 3]] ;
+	set adverbs [G1 defaults [SINGLE 3]]
 	ADVQ adverbs
 
 	if {[dict exists $adverbs separator]} {
@@ -960,6 +960,8 @@ oo::class create marpa::slif::semantics {
 	#       range = X-Y
 	#       collation-element = [.X.]
 
+	#puts NCC:I:|$literal|
+
 	lassign [my NOCASE $literal] literal nocase
 
 	# Handle escapes (Tcl syntax), afterward we have a simple
@@ -1010,7 +1012,9 @@ oo::class create marpa::slif::semantics {
 	# Canonical sort order, removal of obvious duplicates, and
 	# compression to ranges where possible.
 
+	#puts NCC:E:($spec)
 	set spec [RANGES [lsort -unique $spec]]
+	#puts NCC:C:($spec)
 
 	# Generate a symbol from the normalized spec.  This symbol
 	# represents the char class itself.  There may come more
@@ -1107,7 +1111,7 @@ oo::class create marpa::slif::semantics {
 		    if {[llength $buf] > 1} {
 			set s [lindex $buf 0]
 			set e [lindex $buf end]
-			lappend result [list $s $e]]
+			lappend result [list $s $e]
 		    } else {
 			lappend result [lindex $buf 0]
 		    }
@@ -1413,7 +1417,14 @@ oo::class create marpa::slif::semantics {
 		dict unset adverbs proper
 	    }
 
-	    dict lappend adverbs separator $proper
+	    # Note: Before normalization our separator value is a
+	    # single string.  We cannot lappend directly because it
+	    # may look like a list and get misinterpreted. The list we
+	    # want requires explicit construction.
+	    # Example: 'op loosen'.
+
+	    dict set adverbs separator \
+		[list [dict get $adverbs separator] $proper]
 	    return
 	}
 

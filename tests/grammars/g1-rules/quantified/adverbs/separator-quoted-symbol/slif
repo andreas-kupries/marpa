@@ -1,0 +1,4 @@
+A ::= B+ separator => <C X>
+
+B ~ 'b'
+<C X> ~ 'c'
