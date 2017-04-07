@@ -18,7 +18,7 @@ GC comment usage 'b' 33 3
 GC comment usage @LIT:<b> 33 3
 GC comment definition 'b' 33 3
 GC comment definition @LIT:<b> 33 3
-GC l0 string @LIT:<b> {{CH 98}} 0
+GC l0 string @LIT:<b> 98 0
 GC comment <literal> @LIT:<b> undef --> {JMP literal}
 GC comment l0-usage @LIT:<b> literal --> NOP
 GC l0 priority-rule OP @LIT:<b> 0

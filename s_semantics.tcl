@@ -972,14 +972,14 @@ oo::class create marpa::slif::semantics {
 	    #puts NCC|$literal|
 
 	    # negated posix char class
-	    if {[regexp -- "^\\\[:^(\[alnum\]+):\\\](.*)$" $literal -> name remainder]} {
-		lappend spec [list CC- $name]
+	    if {[regexp -- "^\\\[:\[\[.^.\]\](\\w+):\\\](.*)$" $literal -> name remainder]} {
+		lappend spec ^$name
 		set literal $remainder
 		continue
 	    }
 	    # posix char class
-	    if {[regexp -- "^\\\[:(\[alnum\]+):\\\](.*)$" $literal -> name remainder]} {
-		lappend spec [list CC $name]
+	    if {[regexp -- "^\\\[:(\\w+):\\\](.*)$" $literal -> name remainder]} {
+		lappend spec :$name
 		set literal $remainder
 		continue
 	    }
@@ -1088,11 +1088,13 @@ oo::class create marpa::slif::semantics {
     method RANGES {spec} {
 	set result {}
 	set buf {}
-	foreach el $spec {
-	    lassign $el type value
-	    switch -exact -- $type {
-		CC - CC- { lappend result $el }
-		CH {
+	foreach value $spec {
+	    switch -glob -- $value {
+		:* - ^* {
+		    lappend result $value
+		}
+		* {
+		    # char class calls ranges without ranges, only codepoints.
 		    if {![llength $buf]} {
 			lappend buf $value
 			continue
@@ -1105,9 +1107,9 @@ oo::class create marpa::slif::semantics {
 		    if {[llength $buf] > 1} {
 			set s [lindex $buf 0]
 			set e [lindex $buf end]
-			lappend result [list RN [list $s $e]]
+			lappend result [list $s $e]]
 		    } else {
-			lappend result [list CH [lindex $buf 0]]
+			lappend result [lindex $buf 0]
 		    }
 		    # restart accumulation
 		    set buf [list $value]
@@ -1118,9 +1120,9 @@ oo::class create marpa::slif::semantics {
 	    if {[llength $buf] > 1} {
 		set s [lindex $buf 0]
 		set e [lindex $buf end]
-		lappend result [list RN [list $s $e]]
+		lappend result [list $s $e]
 	    } else {
-		lappend result [list CH [lindex $buf 0]]
+		lappend result [lindex $buf 0]
 	    }
 	}
 	return $result
@@ -1134,7 +1136,7 @@ oo::class create marpa::slif::semantics {
 	if {$nocase} {
 	    set codepoint [marpa unicode data fold/c $codepoint]
 	}
-	return [list CH $codepoint]
+	return $codepoint
     }
 
     method UNESC {x} {
@@ -1173,17 +1175,19 @@ oo::class create marpa::slif::semantics {
 
     method SYM {base nocase spec} {
 	set symbol [string range $base 0 end-1]
-	foreach el $spec {
-	    lassign $el type value
-	    switch -exact -- $type {
-		CC  { append symbol \[:${value}:\]  }
-		CC- { append symbol \[:^${value}:\] }
-		CH  { append symbol [char quote tcl [format %c $value]] }
-		RN  {
-		    lassign $value s e
-		    append symbol \
-			[char quote tcl [format %c $s]] - \
-			[char quote tcl [format %c $e]]
+	foreach value $spec {
+	    switch -glob -- $value {
+		:* { append symbol \[${value}:\]  }
+		^* { append symbol \[:${value}:\] }
+		*  {
+		    if {[string is int -strict $value]} {
+			append symbol [char quote tcl [format %c $value]]
+		    } else {
+			lassign $value s e
+			append symbol \
+			    [char quote tcl [format %c $s]] - \
+			    [char quote tcl [format %c $e]]
+		    }
 		}
 	    }
 	}

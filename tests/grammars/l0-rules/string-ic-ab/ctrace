@@ -7,7 +7,7 @@ GC l0 symbol A
 	GC comment definition 'fOXy':i:ic:ic:i 4 16
 	GC comment definition @LIT:<FOXY>:i 4 16
 
-	GC l0 string @LIT:<FOXY>:i {{CH 70} {CH 79} {CH 88} {CH 89}} 1
+	GC l0 string @LIT:<FOXY>:i {70 79 88 89} 1
 
 	GC comment <literal> @LIT:<FOXY>:i undef --> {JMP literal}
 

@@ -7,7 +7,7 @@ GC l0 symbol A
 	GC comment definition 'string' 4 8
 	GC comment definition @LIT:<string> 4 8
 
-	GC l0 string @LIT:<string> {{CH 115} {CH 116} {CH 114} {CH 105} {CH 110} {CH 103}} 0
+	GC l0 string @LIT:<string> {115 116 114 105 110 103} 0
 
 	GC comment <literal> @LIT:<string> undef --> {JMP literal}
 

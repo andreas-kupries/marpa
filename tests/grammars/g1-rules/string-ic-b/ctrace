@@ -7,7 +7,7 @@ GC g1 symbol A
 	GC comment definition {'case-insensitive string':ic} 6 28
 	GC comment definition {@LIT:<CASE-INSENSITIVE\40STRING>:i} 6 28
 
-	GC l0 string {@LIT:<CASE-INSENSITIVE\40STRING>:i} {{CH 67} {CH 65} {CH 83} {CH 69} {CH 45} {CH 73} {CH 78} {CH 83} {CH 69} {CH 78} {CH 83} {CH 73} {CH 84} {CH 73} {CH 86} {CH 69} {CH 32} {CH 83} {CH 84} {CH 82} {CH 73} {CH 78} {CH 71}} 1
+	GC l0 string {@LIT:<CASE-INSENSITIVE\40STRING>:i} {67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71} 1
 
 	GC comment <literal> {@LIT:<CASE-INSENSITIVE\40STRING>:i} undef --> {JMP literal}
 	GC comment definition {@LEX:@LIT:<CASE-INSENSITIVE\40STRING>:i} 6 28

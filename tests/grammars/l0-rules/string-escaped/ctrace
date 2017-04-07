@@ -7,7 +7,7 @@ GC g1 symbol A
 	GC comment definition {'\a\b\t\n\v\f\r\\a\5\67\377\xab\u3456|'} 6 39
 	GC comment definition {@LIT:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39
 
-	GC l0 string {@LIT:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} {{CH 7} {CH 8} {CH 9} {CH 10} {CH 11} {CH 12} {CH 13} {CH 92} {CH 97} {CH 5} {CH 55} {CH 255} {CH 171} {CH 13398} {CH 124}} 0
+	GC l0 string {@LIT:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} {7 8 9 10 11 12 13 92 97 5 55 255 171 13398 124} 0
 
 	GC comment <literal> {@LIT:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} undef --> {JMP literal}
 

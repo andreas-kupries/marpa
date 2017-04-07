@@ -5,7 +5,7 @@ GC comment usage 'ab' 6 4
 GC comment usage @LIT:<ab> 6 4
 GC comment definition 'ab' 6 4
 GC comment definition @LIT:<ab> 6 4
-GC l0 string @LIT:<ab> {{CH 97} {CH 98}} 0
+GC l0 string @LIT:<ab> {97 98} 0
 GC comment <literal> @LIT:<ab> undef --> {JMP literal}
 GC comment l0-usage @LIT:<ab> literal --> NOP
 GC l0 priority-rule foo @LIT:<ab> 0

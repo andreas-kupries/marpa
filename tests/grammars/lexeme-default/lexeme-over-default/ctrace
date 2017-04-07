@@ -33,7 +33,7 @@ GC comment usage 'f' 108 3
 GC comment usage @LIT:<f> 108 3
 GC comment definition 'f' 108 3
 GC comment definition @LIT:<f> 108 3
-GC l0 string @LIT:<f> {{CH 102}} 0
+GC l0 string @LIT:<f> 102 0
 GC comment <literal> @LIT:<f> undef --> {JMP literal}
 GC comment l0-usage @LIT:<f> literal --> NOP
 GC l0 priority-rule foo @LIT:<f> 0
@@ -43,7 +43,7 @@ GC comment usage 'b' 118 3
 GC comment usage @LIT:<b> 118 3
 GC comment definition 'b' 118 3
 GC comment definition @LIT:<b> 118 3
-GC l0 string @LIT:<b> {{CH 98}} 0
+GC l0 string @LIT:<b> 98 0
 GC comment <literal> @LIT:<b> undef --> {JMP literal}
 GC comment l0-usage @LIT:<b> literal --> NOP
 GC l0 priority-rule bar @LIT:<b> 0

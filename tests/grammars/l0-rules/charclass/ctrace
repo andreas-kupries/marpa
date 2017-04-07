@@ -8,7 +8,7 @@ GC l0 symbol A
 	GC comment definition @LCC:<0-9> 4 5
 	GC comment <literal> @LCC:<0-9> undef --> {JMP literal}
 
-	GC l0 charclass @LCC:<0-9> {{RN {48 57}}} 0
+	GC l0 charclass @LCC:<0-9> {{48 57}} 0
 
 	GC comment l0-usage @LCC:<0-9> literal --> NOP
 
