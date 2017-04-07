@@ -19,7 +19,7 @@ GC comment usage 'c' 44 3
 GC comment usage @LIT:<c> 44 3
 GC comment definition 'c' 44 3
 GC comment definition @LIT:<c> 44 3
-GC l0 string @LIT:<c> {{CH 63}} 0
+GC l0 string @LIT:<c> {{CH 99}} 0
 GC comment <literal> @LIT:<c> undef --> {JMP literal}
 GC comment l0-usage @LIT:<c> literal --> NOP
 GC l0 priority-rule C @LIT:<c> 0
@@ -29,7 +29,7 @@ GC comment usage 'a' 52 3
 GC comment usage @LIT:<a> 52 3
 GC comment definition 'a' 52 3
 GC comment definition @LIT:<a> 52 3
-GC l0 string @LIT:<a> {{CH 61}} 0
+GC l0 string @LIT:<a> {{CH 97}} 0
 GC comment <literal> @LIT:<a> undef --> {JMP literal}
 GC comment l0-usage @LIT:<a> literal --> NOP
 GC l0 priority-rule A @LIT:<a> 0

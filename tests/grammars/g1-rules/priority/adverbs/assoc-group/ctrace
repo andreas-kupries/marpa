@@ -18,7 +18,7 @@ GC comment usage '(' 35 3
 GC comment usage @LIT:<(> 35 3
 GC comment definition '(' 35 3
 GC comment definition @LIT:<(> 35 3
-GC l0 string @LIT:<(> {{CH 28}} 0
+GC l0 string @LIT:<(> {{CH 40}} 0
 GC comment <literal> @LIT:<(> undef --> {JMP literal}
 GC comment l0-usage @LIT:<(> literal --> NOP
 GC l0 priority-rule PO @LIT:<(> 0
@@ -30,7 +30,7 @@ GC comment usage ')' 44 3
 GC comment usage @LIT:<)> 44 3
 GC comment definition ')' 44 3
 GC comment definition @LIT:<)> 44 3
-GC l0 string @LIT:<)> {{CH 29}} 0
+GC l0 string @LIT:<)> {{CH 41}} 0
 GC comment <literal> @LIT:<)> undef --> {JMP literal}
 GC comment l0-usage @LIT:<)> literal --> NOP
 GC l0 priority-rule PC @LIT:<)> 0

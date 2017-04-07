@@ -130,6 +130,7 @@ oo::class create marpa::slif::semantics {
 	link {HIDE    HIDE}    ;# Set mask in rhs sem value to "all hidden"
 	link {CCLASS  CCLASS}  ;# Character class to translate
 	link {CSTRING CSTRING} ;# Character string to translate
+	link {CHAR    CHAR}    ;# Character normalization
 	link {G1Event G1Event} ;# Adverb processing for g1 parse events
 	link {E       ERR}
 	link {LOCFMT  LOCFMT}
@@ -976,9 +977,8 @@ oo::class create marpa::slif::semantics {
 	    }
 	    # safe character
 	    if {[regexp {^([^\n\11\12\r\u2028\u2029])(.*)$} $literal -> char remainder]} {
-		# Convert char to codepoint (uni-hex)
-		scan $char %c char
-		lappend spec [list CH [format %0x $char]]
+		# Remember characters as codepoints, possibly up/downcased
+		lappend spec [CHAR $char $nocase]
 		set literal $remainder
 		continue
 	    }
@@ -1055,12 +1055,13 @@ oo::class create marpa::slif::semantics {
 	    #puts NLI|$literal|$spec|
 	    # various forms of escaped character
 
+
+
 	    # safe character
 
 	    if {[regexp -- {^(.)(.*)$} $literal --> char remainder]} {
-		# Convert char to codepoint (uni-hex)
-		scan $char %c char
-		lappend spec [list CH [format %0x $char]]
+		# Remember characters as code points, possibly downcased for nocase.
+		lappend spec [CHAR $char $nocase]
 		set literal $remainder
 		continue
 	    }
@@ -1078,6 +1079,22 @@ oo::class create marpa::slif::semantics {
 
 	return [list $spec $nocase $symbol]
 
+    }
+
+    method CHAR {char nocase} {
+	set codepoint [my CODE $char]
+	if {$nocase} {
+	    set codepoint [marpa unicode data fold/c $codepoint]
+	}
+	list CH $codepoint
+    }
+
+    method CODE {char} {
+	# char IN = Tcl character, possibly backslash-escaped.
+	# subst to deal with the escapes, then scan to determine the
+	# decimal codepoint.
+	scan [subst -nocommands -novariables $char] %c char
+	return $char
     }
 
     method NOCASE {literal} {
@@ -1110,7 +1127,7 @@ oo::class create marpa::slif::semantics {
 	    switch -exact -- $type {
 		CC  { append symbol \[:${value}:\]  }
 		CC- { append symbol \[:^${value}:\] }
-		CH  { append symbol [char quote cstring [format %c 0x$value]] }
+		CH  { append symbol [char quote cstring [format %c $value]] }
 	    }
 	}
 	append symbol [string index $base end]

@@ -30,7 +30,7 @@ GC comment usage 'b' 42 3
 GC comment usage @LIT:<b> 42 3
 GC comment definition 'b' 42 3
 GC comment definition @LIT:<b> 42 3
-GC l0 string @LIT:<b> {{CH 62}} 0
+GC l0 string @LIT:<b> {{CH 98}} 0
 GC comment <literal> @LIT:<b> undef --> {JMP literal}
 GC comment l0-usage @LIT:<b> literal --> NOP
 GC l0 priority-rule B @LIT:<b> 0
@@ -40,7 +40,7 @@ GC comment usage 'c' 50 3
 GC comment usage @LIT:<c> 50 3
 GC comment definition 'c' 50 3
 GC comment definition @LIT:<c> 50 3
-GC l0 string @LIT:<c> {{CH 63}} 0
+GC l0 string @LIT:<c> {{CH 99}} 0
 GC comment <literal> @LIT:<c> undef --> {JMP literal}
 GC comment l0-usage @LIT:<c> literal --> NOP
 GC l0 priority-rule C @LIT:<c> 0
@@ -50,7 +50,7 @@ GC comment usage 'd' 58 3
 GC comment usage @LIT:<d> 58 3
 GC comment definition 'd' 58 3
 GC comment definition @LIT:<d> 58 3
-GC l0 string @LIT:<d> {{CH 64}} 0
+GC l0 string @LIT:<d> {{CH 100}} 0
 GC comment <literal> @LIT:<d> undef --> {JMP literal}
 GC comment l0-usage @LIT:<d> literal --> NOP
 GC l0 priority-rule D @LIT:<d> 0
@@ -60,7 +60,7 @@ GC comment usage 'e' 66 3
 GC comment usage @LIT:<e> 66 3
 GC comment definition 'e' 66 3
 GC comment definition @LIT:<e> 66 3
-GC l0 string @LIT:<e> {{CH 65}} 0
+GC l0 string @LIT:<e> {{CH 101}} 0
 GC comment <literal> @LIT:<e> undef --> {JMP literal}
 GC comment l0-usage @LIT:<e> literal --> NOP
 GC l0 priority-rule E @LIT:<e> 0

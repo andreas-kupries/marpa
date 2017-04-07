@@ -3,27 +3,27 @@ GC comment g1-definition A undef --> {JMP brick     g1-new}
 GC g1 symbol A
 
 	GC comment usage {'case-insensitive string':i} 6 27
-	GC comment usage {@LIT:<case-insensitive string>:i} 6 27
+	GC comment usage {@LIT:<CASE-INSENSITIVE STRING>:i} 6 27
 	GC comment definition {'case-insensitive string':i} 6 27
-	GC comment definition {@LIT:<case-insensitive string>:i} 6 27
+	GC comment definition {@LIT:<CASE-INSENSITIVE STRING>:i} 6 27
 
-	GC l0 string {@LIT:<case-insensitive string>:i} {{CH 63} {CH 61} {CH 73} {CH 65} {CH 2d} {CH 69} {CH 6e} {CH 73} {CH 65} {CH 6e} {CH 73} {CH 69} {CH 74} {CH 69} {CH 76} {CH 65} {CH 20} {CH 73} {CH 74} {CH 72} {CH 69} {CH 6e} {CH 67}} 1
+	GC l0 string {@LIT:<CASE-INSENSITIVE STRING>:i} {{CH 67} {CH 65} {CH 83} {CH 69} {CH 45} {CH 73} {CH 78} {CH 83} {CH 69} {CH 78} {CH 83} {CH 73} {CH 84} {CH 73} {CH 86} {CH 69} {CH 32} {CH 83} {CH 84} {CH 82} {CH 73} {CH 78} {CH 71}} 1
 
-	GC comment <literal> {@LIT:<case-insensitive string>:i} undef --> {JMP literal}
-	GC comment definition {@LEX:@LIT:<case-insensitive string>:i} 6 27
-	GC comment l0-definition {@LEX:@LIT:<case-insensitive string>:i} undef --> {JMP match     l0-new}
-	GC l0 symbol {@LEX:@LIT:<case-insensitive string>:i}
+	GC comment <literal> {@LIT:<CASE-INSENSITIVE STRING>:i} undef --> {JMP literal}
+	GC comment definition {@LEX:@LIT:<CASE-INSENSITIVE STRING>:i} 6 27
+	GC comment l0-definition {@LEX:@LIT:<CASE-INSENSITIVE STRING>:i} undef --> {JMP match     l0-new}
+	GC l0 symbol {@LEX:@LIT:<CASE-INSENSITIVE STRING>:i}
 
-	GC comment :lexeme {@LEX:@LIT:<case-insensitive string>:i} match --> {JMP lexeme  make-lexeme}
-	GC l0 lexeme {@LEX:@LIT:<case-insensitive string>:i}
-	GC g1 terminal {@LEX:@LIT:<case-insensitive string>:i}
+	GC comment :lexeme {@LEX:@LIT:<CASE-INSENSITIVE STRING>:i} match --> {JMP lexeme  make-lexeme}
+	GC l0 lexeme {@LEX:@LIT:<CASE-INSENSITIVE STRING>:i}
+	GC g1 terminal {@LEX:@LIT:<CASE-INSENSITIVE STRING>:i}
 
-	GC l0 priority-rule {@LEX:@LIT:<case-insensitive string>:i} {@LIT:<case-insensitive string>:i} 0
-	GC comment g1-usage {@LEX:@LIT:<case-insensitive string>:i} lexeme --> NOP
+	GC l0 priority-rule {@LEX:@LIT:<CASE-INSENSITIVE STRING>:i} {@LIT:<CASE-INSENSITIVE STRING>:i} 0
+	GC comment g1-usage {@LEX:@LIT:<CASE-INSENSITIVE STRING>:i} lexeme --> NOP
 
-GC g1 priority-rule A {{@LEX:@LIT:<case-insensitive string>:i}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule A {{@LEX:@LIT:<CASE-INSENSITIVE STRING>:i}} 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! A
 GC comment LATM fix 1
-GC l0 configure {@LEX:@LIT:<case-insensitive string>:i} latm 1
+GC l0 configure {@LEX:@LIT:<CASE-INSENSITIVE STRING>:i} latm 1
 GC comment DDE fix {}

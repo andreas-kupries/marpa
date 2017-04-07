@@ -16,7 +16,7 @@ GC comment usage 'a' 27 3
 GC comment usage @LIT:<a> 27 3
 GC comment definition 'a' 27 3
 GC comment definition @LIT:<a> 27 3
-GC l0 string @LIT:<a> {{CH 61}} 0
+GC l0 string @LIT:<a> {{CH 97}} 0
 GC comment <literal> @LIT:<a> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<a> 27 3
 GC comment l0-definition @LEX:@LIT:<a> undef --> {JMP match     l0-new}

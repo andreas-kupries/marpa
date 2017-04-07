@@ -3,16 +3,16 @@ GC comment l0-definition A undef --> {JMP match     l0-new}
 GC l0 symbol A
 
 	GC comment usage 'fOXy':i:ic:ic:i 4 16
-	GC comment usage @LIT:<fOXy>:i 4 16
+	GC comment usage @LIT:<FOXY>:i 4 16
 	GC comment definition 'fOXy':i:ic:ic:i 4 16
-	GC comment definition @LIT:<fOXy>:i 4 16
+	GC comment definition @LIT:<FOXY>:i 4 16
 
-	GC l0 string @LIT:<fOXy>:i {{CH 66} {CH 4f} {CH 58} {CH 79}} 1
-	# TODO BUGFIX fold string down
+	GC l0 string @LIT:<FOXY>:i {{CH 70} {CH 79} {CH 88} {CH 89}} 1
 
-GC comment <literal> @LIT:<fOXy>:i undef --> {JMP literal}
-GC comment l0-usage @LIT:<fOXy>:i literal --> NOP
-GC l0 priority-rule A @LIT:<fOXy>:i 0
+	GC comment <literal> @LIT:<FOXY>:i undef --> {JMP literal}
+
+GC comment l0-usage @LIT:<FOXY>:i literal --> NOP
+GC l0 priority-rule A @LIT:<FOXY>:i 0
 GC comment definition Language 22 8
 GC comment g1-definition Language undef --> {JMP brick     g1-new}
 GC g1 symbol Language

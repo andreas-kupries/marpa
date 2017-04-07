@@ -8,7 +8,7 @@ GC g1 symbol A
 	GC comment definition @LCC:<-09> 6 5
 
 	GC comment <literal> @LCC:<-09> undef --> {JMP literal}
-	GC l0 charclass @LCC:<-09> {{CH 2d} {CH 30} {CH 39}} 0
+	GC l0 charclass @LCC:<-09> {{CH 45} {CH 48} {CH 57}} 0
 
 	GC comment definition @LEX:@LCC:<-09> 6 5
 	GC comment l0-definition @LEX:@LCC:<-09> undef --> {JMP match     l0-new}

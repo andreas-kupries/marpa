@@ -4,7 +4,7 @@ GC comment definition {[0-9]} 11 5
 GC comment definition @LCC:<-09> 11 5
 GC comment <literal> @LCC:<-09> undef --> {JMP literal}
 
-	GC l0 charclass @LCC:<-09> {{CH 2d} {CH 30} {CH 39}} 0
+	GC l0 charclass @LCC:<-09> {{CH 45} {CH 48} {CH 57}} 0
 	GC comment definition @DIS:@LCC:<-09> 11 5
 	GC comment l0-definition @DIS:@LCC:<-09> undef --> {JMP match     l0-new}
 	GC l0 symbol @DIS:@LCC:<-09>
@@ -19,7 +19,7 @@ GC comment usage 'a' 22 3
 GC comment usage @LIT:<a> 22 3
 GC comment definition 'a' 22 3
 GC comment definition @LIT:<a> 22 3
-GC l0 string @LIT:<a> {{CH 61}} 0
+GC l0 string @LIT:<a> {{CH 97}} 0
 GC comment <literal> @LIT:<a> undef --> {JMP literal}
 GC comment l0-usage @LIT:<a> literal --> NOP
 GC l0 priority-rule A @LIT:<a> 0

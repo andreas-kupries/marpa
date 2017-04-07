@@ -15,7 +15,7 @@ GC comment usage 'a' 46 3
 GC comment usage @LIT:<a> 46 3
 GC comment definition 'a' 46 3
 GC comment definition @LIT:<a> 46 3
-GC l0 string @LIT:<a> {{CH 61}} 0
+GC l0 string @LIT:<a> {{CH 97}} 0
 GC comment <literal> @LIT:<a> undef --> {JMP literal}
 GC comment l0-usage @LIT:<a> literal --> NOP
 GC l0 priority-rule A @LIT:<a> 0

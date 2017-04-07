@@ -5,7 +5,7 @@
 ##
 # This code is BSD-licensed.
 
-# Utilites to handle conversion of unicode classes into utf-8
+# Utilities to handle conversion of unicode classes into utf-8
 # ASBRs. On the unicode side a class can be represented as a list of
 # codepoints, or as a list of codepoint ranges.  On the utf-8 side the
 # same class is represented as a list of alternatives, with each
@@ -31,7 +31,7 @@ namespace eval marpa {
     namespace ensemble create
 }
 namespace eval marpa::unicode {
-    namespace export norm 2utf 2asbr pretty-asbr
+    namespace export norm 2utf 2asbr pretty-asbr data
     namespace ensemble create
 }
 
@@ -183,9 +183,10 @@ proc marpa::unicode::pretty-asbr {asbr {compact 0}} {
 ## - data cc grammar
 ## - data range
 ## - data fold
+## - data fold/c
 
 namespace eval marpa::unicode::data {
-    namespace export cc range fold
+    namespace export cc range fold fold/c
     namespace ensemble create
     namespace import ::marpa::X
 }
@@ -196,7 +197,7 @@ namespace eval marpa::unicode::data::cc {
 }
 
 proc marpa::unicode::data::cc::ranges {cclass} {
-    variable marpa::unicode::cc
+    variable ::marpa::unicode::cc
     if {![dict exists $cc $cclass]} {
 	X "Bad character class $cclass" UNICODE BAD CLASS
     }
@@ -204,7 +205,7 @@ proc marpa::unicode::data::cc::ranges {cclass} {
 }
 
 proc marpa::unicode::data::cc::asbr {cclass} {
-    variable marpa::unicode::asbr
+    variable ::marpa::unicode::asbr
     if {![dict exists $cc $cclass]} {
 	X "Bad character class $cclass" UNICODE BAD CLASS
     }
@@ -212,7 +213,7 @@ proc marpa::unicode::data::cc::asbr {cclass} {
 }
 
 proc marpa::unicode::data::cc::grammar {cclass} {
-    variable marpa::unicode::gr
+    variable ::marpa::unicode::gr
     if {![dict exists $cc $cclass]} {
 	X "Bad character class $cclass" UNICODE BAD CLASS
     }
@@ -226,8 +227,8 @@ proc marpa::unicode::data::range {id} {
 }
 
 proc marpa::unicode::data::fold {codepoint} {
-    variable marpa::unicode::foldmap
-    variable marpa::unicode::foldset
+    variable ::marpa::unicode::foldmap
+    variable ::marpa::unicode::foldset
     # normalize codepoint to decimal integer
     incr codepoint 0
     if {![dict exists $foldmap $codepoint]} {
@@ -235,6 +236,12 @@ proc marpa::unicode::data::fold {codepoint} {
 	return [list $codepoint]
     }
     return [dict get $foldset [dict get $foldmap $codepoint]]
+}
+
+proc marpa::unicode::data::fold/c {codepoint} {
+    # Locate the smallest entry in the fold set as the canonical form
+    # of the codepoint under folding.
+    return [lindex [fold $codepoint] 0]
 }
 
 # # ## ### ##### ######## #############
