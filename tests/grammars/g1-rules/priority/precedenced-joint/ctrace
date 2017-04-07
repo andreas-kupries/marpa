@@ -71,25 +71,25 @@ GC comment l0-definition PO floater --> {JMP lexeme   make-lexeme}
 GC l0 lexeme PO
 GC g1 terminal PO
 GC comment usage '(' 129 3
-GC comment usage @LIT:<(> 129 3
+GC comment usage {@LIT:<\50>} 129 3
 GC comment definition '(' 129 3
-GC comment definition @LIT:<(> 129 3
-GC l0 string @LIT:<(> {{CH 40}} 0
-GC comment <literal> @LIT:<(> undef --> {JMP literal}
-GC comment l0-usage @LIT:<(> literal --> NOP
-GC l0 priority-rule PO @LIT:<(> 0
+GC comment definition {@LIT:<\50>} 129 3
+GC l0 string {@LIT:<\50>} {{CH 40}} 0
+GC comment <literal> {@LIT:<\50>} undef --> {JMP literal}
+GC comment l0-usage {@LIT:<\50>} literal --> NOP
+GC l0 priority-rule PO {{@LIT:<\50>}} 0
 GC comment definition PC 133 2
 GC comment l0-definition PC floater --> {JMP lexeme   make-lexeme}
 GC l0 lexeme PC
 GC g1 terminal PC
 GC comment usage ')' 139 3
-GC comment usage @LIT:<)> 139 3
+GC comment usage {@LIT:<\51>} 139 3
 GC comment definition ')' 139 3
-GC comment definition @LIT:<)> 139 3
-GC l0 string @LIT:<)> {{CH 41}} 0
-GC comment <literal> @LIT:<)> undef --> {JMP literal}
-GC comment l0-usage @LIT:<)> literal --> NOP
-GC l0 priority-rule PC @LIT:<)> 0
+GC comment definition {@LIT:<\51>} 139 3
+GC l0 string {@LIT:<\51>} {{CH 41}} 0
+GC comment <literal> {@LIT:<\51>} undef --> {JMP literal}
+GC comment l0-usage {@LIT:<\51>} literal --> NOP
+GC l0 priority-rule PC {{@LIT:<\51>}} 0
 GC comment definition POW 143 3
 GC comment l0-definition POW floater --> {JMP lexeme   make-lexeme}
 GC l0 lexeme POW

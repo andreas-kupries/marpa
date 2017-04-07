@@ -26,6 +26,7 @@ package require Tcl 8.5
 package require TclOO         ;# Implies Tcl 8.5 requirement.
 package require debug
 package require debug::caller
+package require char          ;# quoting cstring - debugging narrative
 package require oo::util      ;# mymethod
 
 debug define marpa/slif/semantics
@@ -131,6 +132,7 @@ oo::class create marpa::slif::semantics {
 	link {CCLASS  CCLASS}  ;# Character class to translate
 	link {CSTRING CSTRING} ;# Character string to translate
 	link {CHAR    CHAR}    ;# Character normalization
+	link {UNESCAPE UNESCAPE} ;# Char normalization. Handle escape sequences.
 	link {G1Event G1Event} ;# Adverb processing for g1 parse events
 	link {E       ERR}
 	link {LOCFMT  LOCFMT}
@@ -1047,27 +1049,15 @@ oo::class create marpa::slif::semantics {
     method NORMSTR {literal} {
 	lassign [my NOCASE $literal] literal nocase
 
-	# TODO: BUGFIX Extend spec with folded character(range)s for 'nocase'
+	# Handle escapes (Tcl syntax), afterward we have a simple
+	# sequence of characters.
+	set literal [UNESCAPE $literal]
 
-	# Process string elements.
+	# Process the string elements.
 	set spec {}
-	while {[string length $literal]} {
-	    #puts NLI|$literal|$spec|
-	    # various forms of escaped character
-
-
-
-	    # safe character
-
-	    if {[regexp -- {^(.)(.*)$} $literal --> char remainder]} {
-		# Remember characters as code points, possibly downcased for nocase.
-		lappend spec [CHAR $char $nocase]
-		set literal $remainder
-		continue
-	    }
-
-	    my E "" ... ;# internal error semantic/syntax mismatch
-	    break
+	foreach char [split $literal {}] {
+	    # Remember characters as code points, possibly downcased for nocase.
+	    lappend spec [CHAR $char $nocase]
 	}
 
 	# Generate a symbol from the normalized spec.  This symbol
@@ -1089,11 +1079,14 @@ oo::class create marpa::slif::semantics {
 	list CH $codepoint
     }
 
+    method UNESCAPE {x} {
+	return [subst -nocommands -novariables $x]
+    }
+
     method CODE {char} {
-	# char IN = Tcl character, possibly backslash-escaped.
-	# subst to deal with the escapes, then scan to determine the
-	# decimal codepoint.
-	scan [subst -nocommands -novariables $char] %c char
+	# Input is unescaped tcl character.
+	# Determine the decimal codepoint.
+	scan $char %c char
 	return $char
     }
 
@@ -1127,7 +1120,7 @@ oo::class create marpa::slif::semantics {
 	    switch -exact -- $type {
 		CC  { append symbol \[:${value}:\]  }
 		CC- { append symbol \[:^${value}:\] }
-		CH  { append symbol [char quote cstring [format %c $value]] }
+		CH  { append symbol [char quote tcl [format %c $value]] }
 	    }
 	}
 	append symbol [string index $base end]
