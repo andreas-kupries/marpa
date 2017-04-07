@@ -41,8 +41,10 @@ proc gr-expected {path} {
     set r {}
     # Strip comment lines, and empty lines
     foreach line [split $content \n] {
+	set line [string trim $line]
 	if {![string match *failed* $line]} {
-	    regsub "#.*\$" $line {} line
+	    regsub "^#.*\$"     $line {} line
+	    regsub "\\s+#.*\$"  $line {} line
 	}
 	set line [string trim $line]
 	if {$line eq {}} continue
