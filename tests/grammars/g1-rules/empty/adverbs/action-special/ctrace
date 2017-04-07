@@ -1,4 +1,10 @@
 GC comment definition A 0 1
-GC g1 priority-rule A {} 0 action {special first} bless {special undef}
+GC comment g1-definition A undef --> {JMP brick     g1-new}
+GC g1 symbol A
+
+	GC g1 priority-rule A {} 0 action {special first} bless {special undef}
+
 GC comment Semantics completion processing
 GC start! A
+GC comment LATM fix 1
+GC comment DDE fix {}

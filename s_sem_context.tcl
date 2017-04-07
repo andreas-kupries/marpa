@@ -135,4 +135,18 @@ oo::class create marpa::slif::semantics::SymContext {
 	debug.marpa/slif/semantics {[debug caller] | ==> $ok}
 	return $ok
     }
+
+    method g1? {} {
+	set ok [expr {$mylayer eq "g1"}]
+	debug.marpa/slif/semantics {[debug caller] | ==> $ok}
+	return $ok
+    }
+
+    method l0? {} {
+	set ok [expr {$mylayer eq "l0"}]
+	debug.marpa/slif/semantics {[debug caller] | ==> $ok}
+	return $ok
+    }
+
+    # # -- --- ----- -------- -------------
 }

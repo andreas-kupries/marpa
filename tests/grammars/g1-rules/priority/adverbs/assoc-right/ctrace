@@ -1,14 +1,29 @@
 GC comment definition A 0 1
+GC comment g1-definition A undef --> {JMP brick     g1-new}
+GC g1 symbol A
 GC comment usage A 6 1
 GC comment usage OP 8 2
 GC comment usage A 11 1
+GC comment g1-usage A brick --> NOP
+GC comment g1-usage OP undef --> {JMP floater}
+GC comment g1-usage A brick --> NOP
 
 	GC g1 priority-rule A {A OP A} 0 action {array values} bless {special undef} assoc right mask {0 0 0}
 
 GC comment definition OP 29 2
-GC l0 string 'b'
+GC comment l0-definition OP floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme OP
+GC g1 terminal OP
 GC comment usage 'b' 34 3
-GC l0 priority-rule OP 'b' 0
+GC comment usage @LIT:<b> 34 3
+GC comment definition 'b' 34 3
+GC comment definition @LIT:<b> 34 3
+GC l0 string @LIT:<b> {{CH 62}} 0
+GC comment <literal> @LIT:<b> undef --> {JMP literal}
+GC comment l0-usage @LIT:<b> literal --> NOP
+GC l0 priority-rule OP @LIT:<b> 0
 GC comment Semantics completion processing
 GC start! A
-GC comment LATM fixup OP
+GC comment LATM fix 1
+GC l0 configure OP latm 1
+GC comment DDE fix {}

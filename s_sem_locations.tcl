@@ -20,15 +20,27 @@ oo::class create marpa::slif::semantics::Locations {
 	return
     }
 
-    method add {symbol location span} {
+    method add {location span args} {
 	debug.marpa/slif/semantics {[debug caller] | }
-	Container comment [namespace tail [self]] $symbol $location $span
-	dict lappend mydata $symbol [list $location $span]
+	set self [namespace tail [self]]
+	foreach symbol $args {
+	    Container comment $self $symbol $location $span
+	    #if {![string is integer $location]} {error XXX}
+	    #if {![string is integer $span]}     {error XXX}
+	    dict lappend mydata $symbol [list $location $span]
+	}
 	return
     }
 
     method where {symbol} {
 	debug.marpa/slif/semantics {[debug caller] | }
+	if {![dict exists $mydata $symbol]} { return {} }
 	return [lsort -unique -dict [dict get $mydata $symbol]]
+    }
+
+    method last {symbol} {
+	debug.marpa/slif/semantics {[debug caller] | }
+	#if {![dict exists $mydata $symbol]} { return {} }
+	return [lindex [dict get $mydata $symbol] end]
     }
 }

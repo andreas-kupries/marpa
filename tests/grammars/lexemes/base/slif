@@ -1,3 +1,4 @@
 :lexeme ~ A
 
 B ::= A
+A ~ 'a'

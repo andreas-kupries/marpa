@@ -1,10 +1,28 @@
 GC comment usage A 25 1
+GC comment g1-usage A undef --> {JMP floater}
 
 	GC g1 event A {foo off nulled}
 
 GC comment definition A 28 1
-GC g1 string 'a'
+GC comment g1-definition A floater --> {JMP brick    g1-new}
+GC g1 symbol A
 GC comment usage 'a' 34 3
-GC g1 priority-rule A 'a' 0 action {array values} bless {special undef} mask 0
+GC comment usage @LIT:<a> 34 3
+GC comment definition 'a' 34 3
+GC comment definition @LIT:<a> 34 3
+GC l0 string @LIT:<a> {{CH 61}} 0
+GC comment <literal> @LIT:<a> undef --> {JMP literal}
+GC comment definition @LEX:@LIT:<a> 34 3
+GC comment l0-definition @LEX:@LIT:<a> undef --> {JMP match     l0-new}
+GC l0 symbol @LEX:@LIT:<a>
+GC comment :lexeme @LEX:@LIT:<a> match --> {JMP lexeme  make-lexeme}
+GC l0 lexeme @LEX:@LIT:<a>
+GC g1 terminal @LEX:@LIT:<a>
+GC l0 priority-rule @LEX:@LIT:<a> @LIT:<a> 0
+GC comment g1-usage @LEX:@LIT:<a> lexeme --> NOP
+GC g1 priority-rule A @LEX:@LIT:<a> 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! A
+GC comment LATM fix 1
+GC l0 configure @LEX:@LIT:<a> latm 1
+GC comment DDE fix {}

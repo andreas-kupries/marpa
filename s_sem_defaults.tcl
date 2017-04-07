@@ -24,6 +24,7 @@ oo::class create marpa::slif::semantics::Defaults {
 
     method defaults: {defaults} {
 	debug.marpa/slif/semantics {[debug caller] | }
+	Container comment g1 defaults = $defaults
 	# Set new defaults. Missing parts are filled from the base.
 	set mydefaults [dict merge $mybase $defaults]
 	return

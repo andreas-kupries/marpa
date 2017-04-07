@@ -1,3 +1,6 @@
 GC comment usage A 16 1
+GC comment g1-usage A undef --> {JMP floater}
+GC start! A
 GC comment usage B 34 1
-GC error {Grammar error. Start symbol illegally declared for a second time}
+
+	GC error {Grammar error. Start symbol illegally declared for a second time}

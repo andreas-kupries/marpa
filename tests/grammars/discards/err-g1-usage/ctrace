@@ -1,0 +1,14 @@
+GC comment usage A 11 1
+GC comment :discard A undef --> {JMP discard:u make-discard}
+GC l0 discard A
+GC comment definition C 13 1
+GC comment g1-definition C undef --> {JMP brick     g1-new}
+GC g1 symbol C
+GC comment usage A 19 1
+GC comment g1-usage A discard:u --> {ERR discard/g1use}
+
+	GC error {Grammar error. Forbidden use of L0 discard <A> as G1 symbol
+	Definitions:
+	Uses:
+	- @11..11
+	- @19..19}

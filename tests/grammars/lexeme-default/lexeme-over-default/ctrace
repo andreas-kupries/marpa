@@ -1,12 +1,54 @@
 GC comment usage foo 10 3
-GC l0 configure foo latm 1
-GC comment LATM global! 0
+GC comment :lexeme foo undef --> {JMP lexeme:u  make-lexeme}
+GC l0 lexeme foo
+GC g1 terminal foo
+
+	GC l0 configure foo latm 1
+	GC comment LATM skip foo
+
+	GC comment LATM default: 0
+
 GC comment usage bar 61 3
-GC l0 configure bar latm 0
+GC comment :lexeme bar undef --> {JMP lexeme:u  make-lexeme}
+GC l0 lexeme bar
+GC g1 terminal bar
+
+	GC l0 configure bar latm 0
+	GC comment LATM skip bar
+
 GC comment usage A 86 1
+GC comment g1-usage A undef --> {JMP floater}
+GC start! A
 GC comment definition A 88 1
+GC comment g1-definition A floater --> {JMP brick    g1-new}
+GC g1 symbol A
 GC comment usage foo 94 3
 GC comment usage bar 98 3
+GC comment g1-usage foo lexeme:u --> NOP
+GC comment g1-usage bar lexeme:u --> NOP
 GC g1 priority-rule A {foo bar} 0 action {array values} bless {special undef} mask {0 0}
+GC comment definition foo 102 3
+GC comment l0-definition foo lexeme:u --> {JMP lexeme}
+GC comment usage 'f' 108 3
+GC comment usage @LIT:<f> 108 3
+GC comment definition 'f' 108 3
+GC comment definition @LIT:<f> 108 3
+GC l0 string @LIT:<f> {{CH 66}} 0
+GC comment <literal> @LIT:<f> undef --> {JMP literal}
+GC comment l0-usage @LIT:<f> literal --> NOP
+GC l0 priority-rule foo @LIT:<f> 0
+GC comment definition bar 112 3
+GC comment l0-definition bar lexeme:u --> {JMP lexeme}
+GC comment usage 'b' 118 3
+GC comment usage @LIT:<b> 118 3
+GC comment definition 'b' 118 3
+GC comment definition @LIT:<b> 118 3
+GC l0 string @LIT:<b> {{CH 62}} 0
+GC comment <literal> @LIT:<b> undef --> {JMP literal}
+GC comment l0-usage @LIT:<b> literal --> NOP
+GC l0 priority-rule bar @LIT:<b> 0
 GC comment Semantics completion processing
-GC start! A
+
+	GC comment LATM fix 0
+
+GC comment DDE fix {}

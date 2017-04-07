@@ -1,32 +1,59 @@
 GC comment usage foo 11 3
+GC comment :discard foo undef --> {JMP discard:u make-discard}
 
 	GC l0 discard foo
-	GC comment DDE fixup foo
-	GC comment DDE global! {{special symbol} {}}
-	GC l0 configure foo event {foo on discard}
+	GC comment DDE default: {event {{special symbol} {}}}
 
 GC comment usage bar 62 3
+GC comment :discard bar undef --> {JMP discard:u make-discard}
 
 	GC l0 discard bar
-	GC comment DDE fixup bar
-	GC l0 configure bar event {bar on discard}
 
 GC comment usage A 78 1
+GC comment g1-usage A undef --> {JMP floater}
+GC start! A
 GC comment definition A 80 1
+GC comment g1-definition A floater --> {JMP brick    g1-new}
+GC g1 symbol A
 GC comment usage fox 86 3
+GC comment g1-usage fox undef --> {JMP floater}
 GC g1 priority-rule A fox 0 action {array values} bless {special undef} mask 0
 GC comment definition fox 90 3
-GC l0 string 'x'
+GC comment l0-definition fox floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme fox
+GC g1 terminal fox
 GC comment usage 'x' 96 3
-GC l0 priority-rule fox 'x' 0
+GC comment usage @LIT:<x> 96 3
+GC comment definition 'x' 96 3
+GC comment definition @LIT:<x> 96 3
+GC l0 string @LIT:<x> {{CH 78}} 0
+GC comment <literal> @LIT:<x> undef --> {JMP literal}
+GC comment l0-usage @LIT:<x> literal --> NOP
+GC l0 priority-rule fox @LIT:<x> 0
 GC comment definition foo 100 3
-GC l0 string 'a'
+GC comment l0-definition foo discard:u --> {JMP discard}
 GC comment usage 'a' 106 3
-GC l0 priority-rule foo 'a' 0
+GC comment usage @LIT:<a> 106 3
+GC comment definition 'a' 106 3
+GC comment definition @LIT:<a> 106 3
+GC l0 string @LIT:<a> {{CH 61}} 0
+GC comment <literal> @LIT:<a> undef --> {JMP literal}
+GC comment l0-usage @LIT:<a> literal --> NOP
+GC l0 priority-rule foo @LIT:<a> 0
 GC comment definition bar 110 3
-GC l0 string 'b'
+GC comment l0-definition bar discard:u --> {JMP discard}
 GC comment usage 'b' 116 3
-GC l0 priority-rule bar 'b' 0
+GC comment usage @LIT:<b> 116 3
+GC comment definition 'b' 116 3
+GC comment definition @LIT:<b> 116 3
+GC l0 string @LIT:<b> {{CH 62}} 0
+GC comment <literal> @LIT:<b> undef --> {JMP literal}
+GC comment l0-usage @LIT:<b> literal --> NOP
+GC l0 priority-rule bar @LIT:<b> 0
 GC comment Semantics completion processing
-GC start! A
-GC comment LATM fixup fox
+GC comment LATM fix 1
+GC l0 configure fox latm 1
+
+	GC comment DDE fix {event {{special symbol} {}}}
+	GC l0 configure foo event {foo on discard}
+	GC l0 configure bar event {bar on discard}

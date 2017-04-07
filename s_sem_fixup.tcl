@@ -6,42 +6,55 @@
 # This code is BSD-licensed.
 ##
 # # ## ### ##### ######## #############
-## Semantic state - Generic management of fixups
+## Semantic state - Generic management of defaults vs user choice.
+## The object remembers the symbols which were set by the user.
+## Fixup is then for all the symbols not in the set.
 
 oo::class create marpa::slif::semantics::Fixup {
     marpa::E marpa/slif/semantics SLIF SEMANTICS DE
 
-    variable mycmd     ;# command invoked to perform actual fixup.
-    variable myglobal  ;# global setting, if any.
-    variable mypending ;# symbols waiting for fixup by global setting
+    variable myignore ;# Set of symbols to ignore on account of being
+		       # handled by the user.
+		       # Stored as: dict (symbol -> .)
 
-    constructor {container cmd} {
+    variable mydefault
+
+    constructor {container default} {
 	debug.marpa/slif/semantics {[debug caller] | }
 	marpa::import $container Container
-	set mycmd     $cmd
-	set myglobal  {}
-	set mypending {}
+	set myignore {}
+	set mydefault $default
 	return
     }
 
-    method global! {x} {
+    # # ## ### ##### ######## #############
+
+    method exclude {symbol} {
 	debug.marpa/slif/semantics {[debug caller] | }
-	# Set global state, handle all pending fixup
-	# Note! Caller makes sure to call this only once.
-	set myglobal $x
-	foreach symbol $mypending { my fixup $symbol 0 }
-	set mypending {}
+	Container comment [namespace tail [self]] skip $symbol
+	dict set myignore $symbol .
 	return
     }
 
-    method fixup {sym {immediate 1}} {
+    method default: {x} {
 	debug.marpa/slif/semantics {[debug caller] | }
-	# Run fixup immediate if we have state, else defer
-	if {$myglobal ne {}} {
-	    {*}$mycmd $sym $myglobal $immediate
-	    return
+	Container comment [namespace tail [self]] default: $x
+	set mydefault $x
+	return
+    }
+
+    method fix {symbols cmd} {
+	debug.marpa/slif/semantics {[debug caller] | }
+	Container comment [namespace tail [self]] fix $mydefault
+	foreach symbol $symbols {
+	    if {[dict exists $myignore $symbol]} continue
+	    {*}$cmd $symbol $mydefault
 	}
-	lappend mypending $sym
 	return
     }
+
+    # # ## ### ##### ######## #############
 }
+
+# # ## ### ##### ######## #############
+return

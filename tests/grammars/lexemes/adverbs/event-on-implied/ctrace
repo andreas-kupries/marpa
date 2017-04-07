@@ -1,10 +1,28 @@
 GC comment usage A 10 1
+GC comment :lexeme A undef --> {JMP lexeme:u  make-lexeme}
+GC l0 lexeme A
+GC g1 terminal A
 
 	GC l0 configure A event {snafu on before}
 
-GC comment LATM fixup A
+GC comment LATM skip A
 GC comment definition B 44 1
+GC comment g1-definition B undef --> {JMP brick     g1-new}
+GC g1 symbol B
 GC comment usage A 50 1
+GC comment g1-usage A lexeme:u --> NOP
 GC g1 priority-rule B A 0 action {array values} bless {special undef} mask 0
+GC comment definition A 52 1
+GC comment l0-definition A lexeme:u --> {JMP lexeme}
+GC comment usage 'a' 56 3
+GC comment usage @LIT:<a> 56 3
+GC comment definition 'a' 56 3
+GC comment definition @LIT:<a> 56 3
+GC l0 string @LIT:<a> {{CH 61}} 0
+GC comment <literal> @LIT:<a> undef --> {JMP literal}
+GC comment l0-usage @LIT:<a> literal --> NOP
+GC l0 priority-rule A @LIT:<a> 0
 GC comment Semantics completion processing
 GC start! B
+GC comment LATM fix 1
+GC comment DDE fix {}

@@ -1,30 +1,70 @@
 GC comment definition A 0 1
+GC comment g1-definition A undef --> {JMP brick     g1-new}
+GC g1 symbol A
 GC comment usage B 6 1
 GC comment usage C 8 1
 GC comment usage D 10 1
 GC comment usage E 12 1
+GC comment g1-usage B undef --> {JMP floater}
+GC comment g1-usage C undef --> {JMP floater}
+GC comment g1-usage D undef --> {JMP floater}
+GC comment g1-usage E undef --> {JMP floater}
 
 	GC g1 priority-rule A {B C D E} 0 action {array values} bless {special undef} mask {0 0 0 0}
 
 GC comment definition B 15 1
-GC l0 string 'b'
+GC comment l0-definition B floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme B
+GC g1 terminal B
 GC comment usage 'b' 19 3
-GC l0 priority-rule B 'b' 0
+GC comment usage @LIT:<b> 19 3
+GC comment definition 'b' 19 3
+GC comment definition @LIT:<b> 19 3
+GC l0 string @LIT:<b> {{CH 62}} 0
+GC comment <literal> @LIT:<b> undef --> {JMP literal}
+GC comment l0-usage @LIT:<b> literal --> NOP
+GC l0 priority-rule B @LIT:<b> 0
 GC comment definition C 23 1
-GC l0 string 'b'
+GC comment l0-definition C floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme C
+GC g1 terminal C
 GC comment usage 'b' 27 3
-GC l0 priority-rule C 'b' 0
+GC comment usage @LIT:<b> 27 3
+GC comment definition 'b' 27 3
+GC comment definition @LIT:<b> 27 3
+GC l0 string @LIT:<b> {{CH 62}} 0
+GC comment <literal> @LIT:<b> literal --> NOP
+GC comment l0-usage @LIT:<b> literal --> NOP
+GC l0 priority-rule C @LIT:<b> 0
 GC comment definition D 31 1
-GC l0 string 'b'
+GC comment l0-definition D floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme D
+GC g1 terminal D
 GC comment usage 'b' 35 3
-GC l0 priority-rule D 'b' 0
+GC comment usage @LIT:<b> 35 3
+GC comment definition 'b' 35 3
+GC comment definition @LIT:<b> 35 3
+GC l0 string @LIT:<b> {{CH 62}} 0
+GC comment <literal> @LIT:<b> literal --> NOP
+GC comment l0-usage @LIT:<b> literal --> NOP
+GC l0 priority-rule D @LIT:<b> 0
 GC comment definition E 39 1
-GC l0 string 'b'
+GC comment l0-definition E floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme E
+GC g1 terminal E
 GC comment usage 'b' 43 3
-GC l0 priority-rule E 'b' 0
+GC comment usage @LIT:<b> 43 3
+GC comment definition 'b' 43 3
+GC comment definition @LIT:<b> 43 3
+GC l0 string @LIT:<b> {{CH 62}} 0
+GC comment <literal> @LIT:<b> literal --> NOP
+GC comment l0-usage @LIT:<b> literal --> NOP
+GC l0 priority-rule E @LIT:<b> 0
 GC comment Semantics completion processing
 GC start! A
-GC comment LATM fixup B
-GC comment LATM fixup C
-GC comment LATM fixup D
-GC comment LATM fixup E
+GC comment LATM fix 1
+GC l0 configure B latm 1
+GC l0 configure C latm 1
+GC l0 configure D latm 1
+GC l0 configure E latm 1
+GC comment DDE fix {}

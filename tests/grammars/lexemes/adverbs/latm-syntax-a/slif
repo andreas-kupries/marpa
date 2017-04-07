@@ -1,3 +1,4 @@
 :lexeme ~ A latm => 0
 
 B ::= A
+A ~ 'a'

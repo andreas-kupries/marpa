@@ -1,10 +1,23 @@
 GC comment definition A 44 1
-GC l0 string 'a'
+GC comment l0-definition A undef --> {JMP match     l0-new}
+GC l0 symbol A
 GC comment usage 'a' 48 3
-GC l0 priority-rule A 'a' 0
+GC comment usage @LIT:<a> 48 3
+GC comment definition 'a' 48 3
+GC comment definition @LIT:<a> 48 3
+GC l0 string @LIT:<a> {{CH 61}} 0
+GC comment <literal> @LIT:<a> undef --> {JMP literal}
+GC comment l0-usage @LIT:<a> literal --> NOP
+GC l0 priority-rule A @LIT:<a> 0
 GC comment usage A 63 1
+GC comment :discard A match --> {JMP discard make-discard}
 GC l0 discard A
-GC comment DDE fixup A
 GC comment usage A 76 1
+GC comment :lexeme A discard --> {ERR discard/lexeme}
 
-	GC error {Grammar error. Unable to make <A> a lexeme, already other}
+	GC error {Grammar error. Forbidden use of L0 discard <A> as L0 lexeme
+	Definitions:
+	- @44..44
+	Uses:
+	- @63..63
+	- @76..76}

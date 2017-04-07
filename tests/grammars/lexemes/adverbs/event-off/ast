@@ -32,3 +32,15 @@ statements/0
                     symbol name/0
                       @56 1 'A'
             @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @58 1 'A'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @62 3 ''a''
+            @{} {} ''

@@ -1,83 +1,176 @@
 GC comment definition E 0 1
+GC comment g1-definition E undef --> {JMP brick     g1-new}
+GC g1 symbol E
 GC comment usage N 6 1
+GC comment g1-usage N undef --> {JMP floater}
 
 	GC g1 priority-rule E N 0 action {array values} bless {special undef} mask 0
 
+GC comment g1-definition E brick --> NOP
 GC comment usage PO 14 2
 GC comment usage E 17 1
 GC comment usage PC 19 2
+GC comment g1-usage PO undef --> {JMP floater}
+GC comment g1-usage E brick --> NOP
+GC comment g1-usage PC undef --> {JMP floater}
 
 	GC g1 priority-rule E {PO E PC} 0 action {array values} bless {special undef} assoc group mask {0 0 0}
 
+GC comment g1-definition E brick --> NOP
 GC comment usage E 43 1
 GC comment usage POW 45 3
 GC comment usage E 49 1
+GC comment g1-usage E brick --> NOP
+GC comment g1-usage POW undef --> {JMP floater}
+GC comment g1-usage E brick --> NOP
 
 	GC g1 priority-rule E {E POW E} -1 action {array values} bless {special undef} assoc right mask {0 0 0}
 
+GC comment g1-definition E brick --> NOP
 GC comment usage E 72 1
 GC comment usage MUL 74 3
 GC comment usage E 78 1
+GC comment g1-usage E brick --> NOP
+GC comment g1-usage MUL undef --> {JMP floater}
+GC comment g1-usage E brick --> NOP
 
 	GC g1 priority-rule E {E MUL E} -2 action {array values} bless {special undef} mask {0 0 0}
 
+GC comment g1-definition E brick --> NOP
 GC comment usage E 86 1
 GC comment usage DIV 88 3
 GC comment usage E 92 1
+GC comment g1-usage E brick --> NOP
+GC comment g1-usage DIV undef --> {JMP floater}
+GC comment g1-usage E brick --> NOP
 
 	GC g1 priority-rule E {E DIV E} -2 action {array values} bless {special undef} mask {0 0 0}
 
+GC comment g1-definition E brick --> NOP
 GC comment usage E 100 1
 GC comment usage ADD 102 3
 GC comment usage E 106 1
+GC comment g1-usage E brick --> NOP
+GC comment g1-usage ADD undef --> {JMP floater}
+GC comment g1-usage E brick --> NOP
 
 	GC g1 priority-rule E {E ADD E} -3 action {array values} bless {special undef} mask {0 0 0}
 
+GC comment g1-definition E brick --> NOP
 GC comment usage E 114 1
 GC comment usage SUB 116 3
 GC comment usage E 120 1
+GC comment g1-usage E brick --> NOP
+GC comment g1-usage SUB undef --> {JMP floater}
+GC comment g1-usage E brick --> NOP
 
 	GC g1 priority-rule E {E SUB E} -3 action {array values} bless {special undef} mask {0 0 0}
 
 GC comment definition PO 123 2
-GC l0 string '('
+GC comment l0-definition PO floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme PO
+GC g1 terminal PO
 GC comment usage '(' 129 3
-GC l0 priority-rule PO '(' 0
+GC comment usage @LIT:<(> 129 3
+GC comment definition '(' 129 3
+GC comment definition @LIT:<(> 129 3
+GC l0 string @LIT:<(> {{CH 28}} 0
+GC comment <literal> @LIT:<(> undef --> {JMP literal}
+GC comment l0-usage @LIT:<(> literal --> NOP
+GC l0 priority-rule PO @LIT:<(> 0
 GC comment definition PC 133 2
-GC l0 string ')'
+GC comment l0-definition PC floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme PC
+GC g1 terminal PC
 GC comment usage ')' 139 3
-GC l0 priority-rule PC ')' 0
+GC comment usage @LIT:<)> 139 3
+GC comment definition ')' 139 3
+GC comment definition @LIT:<)> 139 3
+GC l0 string @LIT:<)> {{CH 29}} 0
+GC comment <literal> @LIT:<)> undef --> {JMP literal}
+GC comment l0-usage @LIT:<)> literal --> NOP
+GC l0 priority-rule PC @LIT:<)> 0
 GC comment definition POW 143 3
-GC l0 string '**'
+GC comment l0-definition POW floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme POW
+GC g1 terminal POW
 GC comment usage '**' 149 4
-GC l0 priority-rule POW '**' 0
+GC comment usage @LIT:<**> 149 4
+GC comment definition '**' 149 4
+GC comment definition @LIT:<**> 149 4
+GC l0 string @LIT:<**> {{CH 2a} {CH 2a}} 0
+GC comment <literal> @LIT:<**> undef --> {JMP literal}
+GC comment l0-usage @LIT:<**> literal --> NOP
+GC l0 priority-rule POW @LIT:<**> 0
 GC comment definition MUL 154 3
-GC l0 string '*'
+GC comment l0-definition MUL floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme MUL
+GC g1 terminal MUL
 GC comment usage '*' 160 3
-GC l0 priority-rule MUL '*' 0
+GC comment usage @LIT:<*> 160 3
+GC comment definition '*' 160 3
+GC comment definition @LIT:<*> 160 3
+GC l0 string @LIT:<*> {{CH 2a}} 0
+GC comment <literal> @LIT:<*> undef --> {JMP literal}
+GC comment l0-usage @LIT:<*> literal --> NOP
+GC l0 priority-rule MUL @LIT:<*> 0
 GC comment definition DIV 164 3
-GC l0 string '/'
+GC comment l0-definition DIV floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme DIV
+GC g1 terminal DIV
 GC comment usage '/' 170 3
-GC l0 priority-rule DIV '/' 0
+GC comment usage @LIT:</> 170 3
+GC comment definition '/' 170 3
+GC comment definition @LIT:</> 170 3
+GC l0 string @LIT:</> {{CH 2f}} 0
+GC comment <literal> @LIT:</> undef --> {JMP literal}
+GC comment l0-usage @LIT:</> literal --> NOP
+GC l0 priority-rule DIV @LIT:</> 0
 GC comment definition ADD 174 3
-GC l0 string '+'
+GC comment l0-definition ADD floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme ADD
+GC g1 terminal ADD
 GC comment usage '+' 180 3
-GC l0 priority-rule ADD '+' 0
+GC comment usage @LIT:<+> 180 3
+GC comment definition '+' 180 3
+GC comment definition @LIT:<+> 180 3
+GC l0 string @LIT:<+> {{CH 2b}} 0
+GC comment <literal> @LIT:<+> undef --> {JMP literal}
+GC comment l0-usage @LIT:<+> literal --> NOP
+GC l0 priority-rule ADD @LIT:<+> 0
 GC comment definition SUB 184 3
-GC l0 string '-'
+GC comment l0-definition SUB floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme SUB
+GC g1 terminal SUB
 GC comment usage '-' 190 3
-GC l0 priority-rule SUB '-' 0
+GC comment usage @LIT:<-> 190 3
+GC comment definition '-' 190 3
+GC comment definition @LIT:<-> 190 3
+GC l0 string @LIT:<-> {{CH 2d}} 0
+GC comment <literal> @LIT:<-> undef --> {JMP literal}
+GC comment l0-usage @LIT:<-> literal --> NOP
+GC l0 priority-rule SUB @LIT:<-> 0
 GC comment definition N 194 1
-GC l0 charclass {[0-9]}
+GC comment l0-definition N floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme N
+GC g1 terminal N
 GC comment usage {[0-9]} 200 5
-GC l0 quantified-rule N {[0-9]} 1
+GC comment usage @LCC:<-09> 200 5
+GC comment definition {[0-9]} 200 5
+GC comment definition @LCC:<-09> 200 5
+GC comment <literal> @LCC:<-09> undef --> {JMP literal}
+GC l0 charclass @LCC:<-09> {{CH 2d} {CH 30} {CH 39}} 0
+GC comment l0-usage @LCC:<-09> literal --> NOP
+GC l0 quantified-rule N @LCC:<-09> 1
 GC comment Semantics completion processing
 GC start! E
-GC comment LATM fixup PO
-GC comment LATM fixup PC
-GC comment LATM fixup POW
-GC comment LATM fixup MUL
-GC comment LATM fixup DIV
-GC comment LATM fixup ADD
-GC comment LATM fixup SUB
-GC comment LATM fixup N
+GC comment LATM fix 1
+GC l0 configure N latm 1
+GC l0 configure PO latm 1
+GC l0 configure PC latm 1
+GC l0 configure POW latm 1
+GC l0 configure MUL latm 1
+GC l0 configure DIV latm 1
+GC l0 configure ADD latm 1
+GC l0 configure SUB latm 1
+GC comment DDE fix {}

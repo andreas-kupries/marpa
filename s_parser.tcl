@@ -402,7 +402,8 @@ oo::class create marpa::slif::parser {
 	    {{quantified rule}			:M {1} lhs {op declare match} {single symbol} quantifier {adverb list match quantified}}
 	    {quantifier                         := @lex-*}
 	    {quantifier                         := @lex-+}
-	    {{discard rule}			:M {0 1} @lex-:discard {op declare match} {single symbol} {adverb list discard}}
+	    {{discard rule}			:M {0 1} @lex-:discard {op declare match} symbol {adverb list discard}}
+	    {{discard rule}			:M {0 1} @lex-:discard {op declare match} {character class} {adverb list discard}}
 	    {{lexeme rule}			:M {0 1} @lex-:lexeme {op declare match} symbol {adverb list lexeme}}
 	    {{completion event declaration}	:M {0 2 3} @lex-event {event initialization} @lex-= @lex-completed {symbol name}}
 	    {{nulled event declaration}		:M {0 2 3} @lex-event {event initialization} @lex-= @lex-nulled {symbol name}}

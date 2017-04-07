@@ -48,7 +48,10 @@ statement ::= <start rule> | <empty rule>
 <quantified rule> ::= lhs <op declare bnf> <single symbol> quantifier <adverb list bnf quantified>
 <quantified rule> ::= lhs <op declare match> <single symbol> quantifier <adverb list match quantified>
 
-<discard rule> ::= (':discard' <op declare match>) <single symbol> <adverb list discard>
+<discard rule> ::= (':discard' <op declare match>) symbol <adverb list discard>
+<discard rule> ::= (':discard' <op declare match>) <character class> <adverb list discard>
+# Expanded <single symbol> into its two possibilities
+
 <lexeme rule> ::= (':lexeme' <op declare match>) symbol <adverb list lexeme>
 <completion event declaration> ::= ('event') <event initialization> ('=' 'completed') <symbol name>
 <nulled event declaration> ::= ('event') <event initialization> ('=' 'nulled') <symbol name>

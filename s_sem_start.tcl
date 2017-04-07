@@ -52,10 +52,13 @@ oo::class create marpa::slif::semantics::Start {
     variable mystate
     variable mysym
 
-    constructor {container terminal} {
+    constructor {container st def use semantics} {
 	debug.marpa/slif/semantics {[debug caller] | }
 	marpa::import $container Container
-	marpa::import $terminal  Terminal
+	marpa::import $st        Symbol
+	marpa::import $def       Definition
+	marpa::import $use       Usage
+	marpa::import $semantics Semantics
 	set mystate undef
 	set mysym   {}
 	return
@@ -64,34 +67,40 @@ oo::class create marpa::slif::semantics::Start {
     # # -- --- ----- -------- -------------
 
     method maybe: {symbol} {
+	# Weak definition, from structural rule. Remember first.
 	debug.marpa/slif/semantics {[debug caller] | state=$mystate}
 	switch -exact -- $mystate {
 	    undef {
+		# First call, remember
 		set mysym   $symbol
 		set mystate maybe
 	    }
 	    maybe -
-	    done {}
+	    done {
+		# Ignore further weak definitions
+	    }
 	}
 	debug.marpa/slif/semantics {[debug caller] | /done}
 	return
     }
 
     method with: {symbol} {
+	# Explicit, strong definition. Once only.
 	debug.marpa/slif/semantics {[debug caller] | state=$mystate}
 	switch -exact -- $mystate {
 	    undef -
 	    maybe {
 		set mystate done
-		set mysym   $symbol
-		# We defer passing even and explicitly defined start
-		# symbol to the completion phase. Because then we can
-		# check if it has a definition or not (Terminal flags).
+		Symbol context1 g1-usage $symbol
+		Container start!         $symbol
 	    }
 	    done {
 		# TODO: Get location information from somewhere.
-		my E "illegally declared for a second time" \
-		    WITH TWICE
+		set def [Definition where $symbol]
+		set dd  [Semantics LOCFMT $def]
+
+		my E "illegally declared for a second time$dd" \
+		    WITH TWICE $def
 	    }
 	}
 	debug.marpa/slif/semantics {[debug caller] | /done}
@@ -102,20 +111,15 @@ oo::class create marpa::slif::semantics::Start {
 	debug.marpa/slif/semantics {[debug caller] | state=$mystate}
 	switch -exact -- $mystate {
 	    undef {
+		# Nothing defined. Error.
 		my E "not known" UNKNOWN
 	    }
-	    done -
+	    done {
+		# Explicit definition. Already passed on. There is
+		# nothing to do.
+	    }
 	    maybe {
-		# While the start symbol cannot be a terminal
-		# << Why not? >>
-		# there is
-		# still the possibility that there is no rule defining
-		# it either.
-		# IOW instead of simply trying unset! we explictly check
-		# that it is a non-terminal and bail if not.
-		if {![Terminal unset? $mysym]} {
-		    my E "<$mysym> has no G1 rule" UNDEFINED
-		}
+		# Weak definition survived to the end. Pass it now on.
 		Container start! $mysym
 	    }
 	    done {}

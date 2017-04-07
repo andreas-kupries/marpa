@@ -1,19 +1,37 @@
 GC comment definition B 0 1
-GC l0 string 'b'
+GC comment l0-definition B undef --> {JMP match     l0-new}
+GC l0 symbol B
 GC comment usage 'b' 4 3
-GC l0 priority-rule B 'b' 0
+GC comment usage @LIT:<b> 4 3
+GC comment definition 'b' 4 3
+GC comment definition @LIT:<b> 4 3
+GC l0 string @LIT:<b> {{CH 62}} 0
+GC comment <literal> @LIT:<b> undef --> {JMP literal}
+GC comment l0-usage @LIT:<b> literal --> NOP
+GC l0 priority-rule B @LIT:<b> 0
 GC comment usage A 42 1
+GC comment g1-usage A undef --> {JMP floater}
+GC start! A
 GC comment definition A 44 1
+GC comment g1-definition A floater --> {JMP brick    g1-new}
+GC g1 symbol A
 GC comment usage C 50 1
+GC comment g1-usage C undef --> {JMP floater}
 GC g1 priority-rule A C 0 action {array values} bless {special undef} mask 0
 GC comment definition C 52 1
-GC l0 string 'c'
+GC comment l0-definition C floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme C
+GC g1 terminal C
 GC comment usage 'c' 56 3
-GC l0 priority-rule C 'c' 0
+GC comment usage @LIT:<c> 56 3
+GC comment definition 'c' 56 3
+GC comment definition @LIT:<c> 56 3
+GC l0 string @LIT:<c> {{CH 63}} 0
+GC comment <literal> @LIT:<c> undef --> {JMP literal}
+GC comment l0-usage @LIT:<c> literal --> NOP
+GC l0 priority-rule C @LIT:<c> 0
 GC comment Semantics completion processing
-GC start! A
-GC comment LATM fixup B
-GC comment LATM fixup C
 
-	GC error {Lexeme <B> not used as terminal
+	GC error {Grammar error. L0 lexeme <B> not used as G1 terminal
+	Definitions:
 	- @0..0}

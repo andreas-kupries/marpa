@@ -1,12 +1,28 @@
 GC comment definition A 0 1
+GC comment l0-definition A undef --> {JMP match     l0-new}
+GC l0 symbol A
 
-	GC l0 string {'case-insensitive string':ic}
+	GC comment usage {'case-insensitive string':ic} 4 28
+	GC comment usage {@LIT:<case-insensitive string>:i} 4 28
+	GC comment definition {'case-insensitive string':ic} 4 28
+	GC comment definition {@LIT:<case-insensitive string>:i} 4 28
 
-GC comment usage {'case-insensitive string':ic} 4 28
-GC l0 priority-rule A {{'case-insensitive string':ic}} 0
+	GC l0 string {@LIT:<case-insensitive string>:i} {{CH 63} {CH 61} {CH 73} {CH 65} {CH 2d} {CH 69} {CH 6e} {CH 73} {CH 65} {CH 6e} {CH 73} {CH 69} {CH 74} {CH 69} {CH 76} {CH 65} {CH 20} {CH 73} {CH 74} {CH 72} {CH 69} {CH 6e} {CH 67}} 1
+
+	GC comment <literal> {@LIT:<case-insensitive string>:i} undef --> {JMP literal}
+
+GC comment l0-usage {@LIT:<case-insensitive string>:i} literal --> NOP
+GC l0 priority-rule A {{@LIT:<case-insensitive string>:i}} 0
 GC comment definition Language 34 8
+GC comment g1-definition Language undef --> {JMP brick     g1-new}
+GC g1 symbol Language
 GC comment usage A 47 1
+GC comment g1-usage A match --> {JMP lexeme  make-lexeme}
+GC l0 lexeme A
+GC g1 terminal A
 GC g1 priority-rule Language A 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! Language
-GC comment LATM fixup A
+GC comment LATM fix 1
+GC l0 configure A latm 1
+GC comment DDE fix {}

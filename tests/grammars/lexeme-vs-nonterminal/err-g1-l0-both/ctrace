@@ -1,26 +1,19 @@
 GC comment definition A 0 1
+GC comment g1-definition A undef --> {JMP brick     g1-new}
+GC g1 symbol A
 GC comment usage B 6 1
+GC comment g1-usage B undef --> {JMP floater}
 
 	GC g1 priority-rule A B 0 action {array values} bless {special undef} mask 0
 
 GC comment definition C 8 1
+GC comment l0-definition C undef --> {JMP match     l0-new}
+GC l0 symbol C
 GC comment usage B 12 1
+GC comment l0-usage B floater --> {ERR g1/l0use}
 
-	GC l0 priority-rule C B 0
-
-GC comment usage D 76 1
-GC comment definition B 78 1
-GC l0 string 'b'
-GC comment usage 'b' 82 3
-GC l0 priority-rule B 'b' 0
-GC comment definition D 86 1
-GC comment usage A 92 1
-GC comment usage C 94 1
-GC g1 priority-rule D {A C} 0 action {array values} bless {special undef} mask {0 0}
-GC comment Semantics completion processing
-GC start! D
-GC comment LATM fixup C
-
-	GC error {Terminal <B> also used as L0 non-lexeme
+	GC error {Grammar error. Forbidden use of G1 symbol <B> as L0 symbol
+	Definitions:
+	Uses:
 	- @6..6
 	- @12..12}

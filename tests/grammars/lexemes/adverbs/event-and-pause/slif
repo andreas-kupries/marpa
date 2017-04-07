@@ -3,3 +3,4 @@
 	pause => before
 
 B ::= A
+A ~ 'a'

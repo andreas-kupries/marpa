@@ -1,19 +1,40 @@
 GC comment usage A 11 1
 
+	GC comment :discard A undef --> {JMP discard:u make-discard}
 	GC l0 discard A
 	GC l0 configure A event {A on discard}
+	GC comment DDE skip A
 
 GC comment definition B 32 1
+GC comment g1-definition B undef --> {JMP brick     g1-new}
+GC g1 symbol B
 GC comment usage C 38 1
+GC comment g1-usage C undef --> {JMP floater}
 GC g1 priority-rule B C 0 action {array values} bless {special undef} mask 0
 GC comment definition C 40 1
-GC l0 string 'c'
+GC comment l0-definition C floater --> {JMP lexeme   make-lexeme}
+GC l0 lexeme C
+GC g1 terminal C
 GC comment usage 'c' 44 3
-GC l0 priority-rule C 'c' 0
+GC comment usage @LIT:<c> 44 3
+GC comment definition 'c' 44 3
+GC comment definition @LIT:<c> 44 3
+GC l0 string @LIT:<c> {{CH 63}} 0
+GC comment <literal> @LIT:<c> undef --> {JMP literal}
+GC comment l0-usage @LIT:<c> literal --> NOP
+GC l0 priority-rule C @LIT:<c> 0
 GC comment definition A 48 1
-GC l0 string 'a'
+GC comment l0-definition A discard:u --> {JMP discard}
 GC comment usage 'a' 52 3
-GC l0 priority-rule A 'a' 0
+GC comment usage @LIT:<a> 52 3
+GC comment definition 'a' 52 3
+GC comment definition @LIT:<a> 52 3
+GC l0 string @LIT:<a> {{CH 61}} 0
+GC comment <literal> @LIT:<a> undef --> {JMP literal}
+GC comment l0-usage @LIT:<a> literal --> NOP
+GC l0 priority-rule A @LIT:<a> 0
 GC comment Semantics completion processing
 GC start! B
-GC comment LATM fixup C
+GC comment LATM fix 1
+GC l0 configure C latm 1
+GC comment DDE fix {}

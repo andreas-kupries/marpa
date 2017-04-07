@@ -1,8 +1,7 @@
 statements/0
   statement/6
-    discard rule/0
-      single symbol/1
-        @11 5 {'[0-9]'}
+    discard rule/1
+      @11 5 {'[0-9]'}
       @{} {} ''
   statement/4
     priority rule/1

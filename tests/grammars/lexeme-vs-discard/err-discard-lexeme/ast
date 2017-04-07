@@ -13,10 +13,9 @@ statements/0
             @{} {} ''
   statement/6
     discard rule/0
-      single symbol/0
-        symbol/0
-          symbol name/0
-            @63 1 'A'
+      symbol/0
+        symbol name/0
+          @63 1 'A'
       @{} {} ''
   statement/10
     lexeme rule/0

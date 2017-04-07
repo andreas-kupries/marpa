@@ -1,0 +1,27 @@
+GC comment definition A 0 1
+GC comment g1-definition A undef --> {JMP brick     g1-new}
+GC g1 symbol A
+
+	GC comment usage {[0-9A]:ic:i:ic:i} 6 16
+	GC comment usage @LCC:<-09A>:i 6 16
+	GC comment definition {[0-9A]:ic:i:ic:i} 6 16
+	GC comment definition @LCC:<-09A>:i 6 16
+	GC comment <literal> @LCC:<-09A>:i undef --> {JMP literal}
+
+	GC l0 charclass @LCC:<-09A>:i {{CH 2d} {CH 30} {CH 39} {CH 41}} 1
+	# TODO BUGFIX: foldcase character(range)s down
+
+GC comment definition @LEX:@LCC:<-09A>:i 6 16
+GC comment l0-definition @LEX:@LCC:<-09A>:i undef --> {JMP match     l0-new}
+GC l0 symbol @LEX:@LCC:<-09A>:i
+GC comment :lexeme @LEX:@LCC:<-09A>:i match --> {JMP lexeme  make-lexeme}
+GC l0 lexeme @LEX:@LCC:<-09A>:i
+GC g1 terminal @LEX:@LCC:<-09A>:i
+GC l0 priority-rule @LEX:@LCC:<-09A>:i @LCC:<-09A>:i 0
+GC comment g1-usage @LEX:@LCC:<-09A>:i lexeme --> NOP
+GC g1 priority-rule A @LEX:@LCC:<-09A>:i 0 action {array values} bless {special undef} mask 0
+GC comment Semantics completion processing
+GC start! A
+GC comment LATM fix 1
+GC l0 configure @LEX:@LCC:<-09A>:i latm 1
+GC comment DDE fix {}

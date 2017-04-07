@@ -1,10 +1,9 @@
 statements/0
   statement/6
     discard rule/0
-      single symbol/0
-        symbol/0
-          symbol name/0
-            @11 3 'foo'
+      symbol/0
+        symbol name/0
+          @11 3 'foo'
       @{} {} ''
   statement/9
     discard default statement/0
@@ -18,10 +17,9 @@ statements/0
                 @{} {} ''
   statement/6
     discard rule/0
-      single symbol/0
-        symbol/0
-          symbol name/0
-            @62 3 'bar'
+      symbol/0
+        symbol name/0
+          @62 3 'bar'
       @{} {} ''
   statement/0
     start rule/0

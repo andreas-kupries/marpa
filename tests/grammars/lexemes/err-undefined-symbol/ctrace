@@ -1,0 +1,16 @@
+GC comment definition A 0 1
+GC comment g1-definition A undef --> {JMP brick     g1-new}
+GC g1 symbol A
+GC comment usage L 6 1
+GC comment g1-usage L undef --> {JMP floater}
+GC g1 priority-rule A L 0 action {array values} bless {special undef} mask 0
+GC comment usage L 18 1
+GC comment :lexeme L floater --> {JMP lexeme:u make-lexeme}
+GC l0 lexeme L
+GC g1 terminal L
+GC comment Semantics completion processing
+
+	GC error {Grammar error. L0 lexeme <L> has no definition
+	Uses:
+	- @6..6
+	- @18..18}
