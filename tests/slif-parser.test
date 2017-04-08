@@ -77,16 +77,14 @@ test marpa-slif-parser-process-file-1.1 {process-file, wrong args, too many} -se
 ## process, process-file
 
 incr max
-test-grammars id slif ast __ctrace_ignored__ {
-    incr max
-}
+test-grammar-files slif --> __ __ { incr max }
 set format %0[string length $max]d
 unset max
 
 incr k
-test-grammars id slif ast __ctrace_ignored__ {
+test-grammar-map slif --> id slif base {
     set input    [fileutil::cat $slif]
-    set expected [string trimright [fileutil::cat $ast]]
+    set expected [string trimright [fileutil::cat [file join $base ast]]]
     set kd       [format $format $k]
 
     if {0} {

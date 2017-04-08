@@ -1,0 +1,80 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::slif::container
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+kt require support fileutil ;# cat
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+## TODO: Testing inspection, serialization
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/common.tcl
+kt source support/ast.tcl
+kt source support/grammars.tcl
+
+# # ## ### ##### ######## ############# #####################
+##  1 constructor/0
+
+# # ## ### ##### ######## ############# #####################
+## constructor - wrong args, initial state, calls
+
+test marpa-slif-container-constructor-1.0 {constructor, wrong args, not enough} -body {
+    marpa::slif::container new
+} -returnCodes error -result {wrong # args: should be "marpa::slif::container new container"}
+
+test marpa-slif-container-constructor-1.1 {constructor, wrong args, too many} -body {
+    marpa::slif::container new CONTAINER X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::container new container"}
+
+# # ## ### ##### ######## ############# #####################
+## Trace driven container state
+
+incr max
+test-grammar-files slif --> __ __ { incr max }
+set format %0[string length $max]d
+unset max
+
+incr k
+test-grammar-map ctrace --> id ctrace base {
+    set input [gr-decomment $ctrace]
+
+    # Ignore traces for parse and/or semantic errors.
+    if {[string match {*GC error*} $input]} continue
+
+    set expected [fileutil::cat [file join $base gcstate]]
+    set kd       [format $format $k]
+
+    test marpa-slif-container-by-trace-2.${kd}---${id} "by-trace $id" -setup {
+	marpa::slif::container create GC
+    } -body {
+	if {[catch {
+	    # Trace of GC method calls filling the container.
+	    eval $input
+	} msg]} {
+	    set msg
+	} else {
+	    #TODO: Deserialize
+	    error TODO:\tdeserialize
+	    pretty-gcstate [GC save]
+	}
+    } -cleanup {
+	unset msg
+	GC destroy
+    } -result $expected
+
+    incr k
+}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

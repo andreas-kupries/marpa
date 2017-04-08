@@ -13,26 +13,53 @@ kt require support fileutil::traverse
 kt require support fileutil
 kt require support lambda
 
-proc test-grammars {iv sv av cv script} {
-    upvar 1 $iv id $sv slif $av ast $cv ctrace
+proc test-grammar-files {key __ iv varname script} {
+    upvar 1 $iv id $varname iter
 
     set gdir [file normalize [file join $::tcltest::testsDirectory grammars]]
 
-    fileutil::traverse T $gdir -filter [lambda path {
-	string equal "slif" [file tail $path]
-    }]
-    set sliflist [lreverse [T files]]
+    fileutil::traverse T $gdir -filter [lambda {key path} {
+	string equal $key [file tail $path]
+    } $key]
+    set files [lreverse [T files]]
     # Reversal because T returns files in reverse lexicographical order.
-    # This also the reason for not using (T foreach).
+    # This is also the reason for not using (T foreach).
     T destroy
-    foreach slif $sliflist {
-	set stem   [file dirname $slif]
-	set id     [string map {/ ,} [fileutil::stripPath $gdir $stem]]
-	set ast    [file join $stem ast]
-	set ctrace [file join $stem ctrace]
+    foreach iter $files {
+	set stem  [file dirname $iter]
+	set id    [string map {/ ,} [fileutil::stripPath $gdir $stem]]
 	uplevel 1 $script
     }
     return
+}
+
+proc test-grammar-map {key __ iv varname basevar script} {
+    upvar 1 $iv id $varname iter $basevar stem
+
+    set gdir [file normalize [file join $::tcltest::testsDirectory grammars]]
+
+    fileutil::traverse T $gdir -filter [lambda {key path} {
+	string equal $key [file tail $path]
+    } $key]
+    set files [lreverse [T files]]
+    # Reversal because T returns files in reverse lexicographical order.
+    # This is also the reason for not using (T foreach).
+    T destroy
+    foreach iter $files {
+	set stem   [file dirname $iter]
+	set id     [string map {/ ,} [fileutil::stripPath $gdir $stem]]
+	uplevel 1 $script
+    }
+    return
+}
+
+proc gr-decomment {path} {
+    set r {}
+    foreach line [split [gr-expected $path] \n] {
+	if {[string match {GC comment*} $line]} continue
+	lappend r $line
+    }
+    return [join $r \n]
 }
 
 proc gr-expected {path} {

@@ -65,16 +65,14 @@ test marpa-slif-semantics-process-1.1 {process, wrong args, too many} -setup {
 ## process
 
 incr max
-test-grammars id slif ast __ctrace_ignored__ {
-    incr max
-}
+test-grammar-files slif --> __ __ { incr max }
 set format %0[string length $max]d
 unset max
 
 incr k
-test-grammars id slif __ast_ignored__ ctrace {
+test-grammar-map slif --> id slif base {
     set input    [fileutil::cat $slif]
-    set expected [gr-expected $ctrace]
+    set expected [gr-expected [file join $base ctrace]]
     set kd       [format $format $k]
 
     test marpa-slif-semantics-process-2.${kd}---${id} "process $id /trace" -setup {
