@@ -20,7 +20,7 @@ kt local   testing marpa
 # # ## ### ##### ######## ############# #####################
 
 kt source support/common.tcl
-kt source support/ast.tcl
+kt source support/gcontainer_state.tcl
 kt source support/grammars.tcl
 
 # # ## ### ##### ######## ############# #####################
@@ -30,15 +30,21 @@ kt source support/grammars.tcl
 ## constructor - wrong args, initial state, calls
 
 test marpa-slif-container-constructor-1.0 {constructor, wrong args, not enough} -body {
-    marpa::slif::container new
-} -returnCodes error -result {wrong # args: should be "marpa::slif::container new container"}
+    marpa::slif::container create
+} -returnCodes error -result {wrong # args: should be "marpa::slif::container create objectName ?arg ...?"}
 
 test marpa-slif-container-constructor-1.1 {constructor, wrong args, too many} -body {
-    marpa::slif::container new CONTAINER X
-} -returnCodes error -result {wrong # args: should be "marpa::slif::container new container"}
+    marpa::slif::container create CONTAINER X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::container create CONTAINER"}
+
+test marpa-slif-container-constructor-1.2 {constructor, wrong args, too many} -body {
+    marpa::slif::container new X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::container new"}
 
 # # ## ### ##### ######## ############# #####################
-## Trace driven container state
+## Trace driven container states
+## The traces are those from the semantics for the non-erroneous test grammars.
+## (With comment lines removed)
 
 incr max
 test-grammar-files slif --> __ __ { incr max }
@@ -64,12 +70,10 @@ test-grammar-map ctrace --> id ctrace base {
 	} msg]} {
 	    set msg
 	} else {
-	    #TODO: Deserialize
-	    error TODO:\tdeserialize
-	    pretty-gcstate [GC save]
+	    pretty-gcstate [GC serialize]
 	}
     } -cleanup {
-	unset msg
+	unset -nocomplain msg
 	GC destroy
     } -result $expected
 

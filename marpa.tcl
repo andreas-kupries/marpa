@@ -130,18 +130,21 @@ critcl::tsources p_parser.tcl    ; # Parser, structure lexemes into
 
 # SLIF support classes
 ##
-critcl::tsources s_id.tcl         ; # Id generator
-critcl::tsources s_symbol.tcl     ; # Basic symbols
-critcl::tsources s_atom.tcl       ; # Basic atoms for L0
-critcl::tsources s_character.tcl  ; # - Character atoms
-critcl::tsources s_charclass.tcl  ; # - Charclass atoms
-critcl::tsources s_rule.tcl       ; # Basic rules
-critcl::tsources s_quantified.tcl ; # - Quantified rules, i.e. lists, sequences
-critcl::tsources s_bnf.tcl        ; # - BNF rules
-critcl::tsources s_grammar.tcl    ; # Basic grammar (symbols and rules)
-critcl::tsources s_g1grammar.tcl  ; # - G1-specific extension of the basics
-critcl::tsources s_l0grammar.tcl  ; # - L0-specific extension of the basics
-critcl::tsources s_container.tcl  ; # SLIF container
+#critcl::tsources s_id.tcl         ; # Id generator
+#critcl::tsources s_symbol.tcl     ; # Basic symbols
+#critcl::tsources s_atom.tcl       ; # Basic atoms for L0
+#critcl::tsources s_character.tcl  ; # - Character atoms
+#critcl::tsources s_charclass.tcl  ; # - Charclass atoms
+#critcl::tsources s_rule.tcl       ; # Basic rules
+#critcl::tsources s_quantified.tcl ; # - Quantified rules, i.e. lists, sequences
+#critcl::tsources s_bnf.tcl        ; # - BNF rules
+#critcl::tsources s_grammar.tcl    ; # Basic grammar (symbols and rules)
+#critcl::tsources s_g1grammar.tcl  ; # - G1-specific extension of the basics
+#critcl::tsources s_l0grammar.tcl  ; # - L0-specific extension of the basics
+critcl::tsources s_attr.tcl        ; # SLIF attribute base
+critcl::tsources s_cglobalattr.tcl ; # SLIF global container attributes
+critcl::tsources s_clexsemattr.tcl ; # SLIF lexeme-semantics attributes
+critcl::tsources s_container.tcl   ; # SLIF container
 
 critcl::tsources s_semantics.tcl     ; # SLIF semantics, driven by AST
 critcl::tsources s_sem_debug.tcl     ; # - Debug support
