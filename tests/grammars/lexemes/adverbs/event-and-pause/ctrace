@@ -7,8 +7,7 @@ GC g1 terminal A
 
 GC comment LATM skip A
 GC comment definition B 52 1
-GC comment g1-definition B undef --> {JMP brick     g1-new}
-GC g1 symbol B
+GC comment g1-definition B undef --> {JMP brick}
 GC comment usage A 58 1
 GC comment g1-usage A lexeme:u --> NOP
 GC g1 priority-rule B A 0 action {array values} bless {special undef} mask 0

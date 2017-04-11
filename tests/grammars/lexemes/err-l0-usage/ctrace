@@ -3,8 +3,7 @@ GC comment :lexeme A undef --> {JMP lexeme:u  make-lexeme}
 GC l0 lexeme A
 GC g1 terminal A
 GC comment definition C 12 1
-GC comment l0-definition C undef --> {JMP match     l0-new}
-GC l0 symbol C
+GC comment l0-definition C undef --> {JMP match}
 GC comment usage A 16 1
 GC comment l0-usage A lexeme:u --> {ERR lexeme/match}
 

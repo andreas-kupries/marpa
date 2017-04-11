@@ -1,8 +1,7 @@
 	GC comment g1 defaults = {action {cmd this}}
 
 GC comment definition A 28 1
-GC comment g1-definition A undef --> {JMP brick     g1-new}
-GC g1 symbol A
+GC comment g1-definition A undef --> {JMP brick}
 GC comment usage 'a' 34 3
 GC comment usage @LIT:<a> 34 3
 GC comment definition 'a' 34 3
@@ -10,9 +9,8 @@ GC comment definition @LIT:<a> 34 3
 GC l0 string @LIT:<a> 97 0
 GC comment <literal> @LIT:<a> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<a> 34 3
-GC comment l0-definition @LEX:@LIT:<a> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<a>
-GC comment :lexeme @LEX:@LIT:<a> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<a> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<a> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<a>
 GC g1 terminal @LEX:@LIT:<a>
 GC l0 priority-rule @LEX:@LIT:<a> @LIT:<a> 0
@@ -22,8 +20,7 @@ GC comment g1-usage @LEX:@LIT:<a> lexeme --> NOP
 	GC comment g1 defaults = {action {cmd that}}
 
 GC comment definition B 66 1
-GC comment g1-definition B undef --> {JMP brick     g1-new}
-GC g1 symbol B
+GC comment g1-definition B undef --> {JMP brick}
 GC comment usage 'b' 72 3
 GC comment usage @LIT:<b> 72 3
 GC comment definition 'b' 72 3
@@ -31,9 +28,8 @@ GC comment definition @LIT:<b> 72 3
 GC l0 string @LIT:<b> 98 0
 GC comment <literal> @LIT:<b> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<b> 72 3
-GC comment l0-definition @LEX:@LIT:<b> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<b>
-GC comment :lexeme @LEX:@LIT:<b> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<b> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<b> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<b>
 GC g1 terminal @LEX:@LIT:<b>
 GC l0 priority-rule @LEX:@LIT:<b> @LIT:<b> 0

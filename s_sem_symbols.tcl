@@ -112,8 +112,6 @@ oo::class create marpa::slif::semantics::Symbol {
 
 	# Action map. See JMP for mapping and execution.
 	set myscript {
-	    g1-new {{Container g1 symbol}}
-	    l0-new {{Container l0 symbol}}
 	    make-lexeme {
 		{Container l0 lexeme}
 		{Container g1 terminal}
@@ -123,9 +121,9 @@ oo::class create marpa::slif::semantics::Symbol {
 	# State engine - transition table
 	set myfa {
 	    undef {
-		g1-definition {JMP brick     g1-new}
+		g1-definition {JMP brick}
 		g1-usage      {JMP floater}
-		l0-definition {JMP match     l0-new}
+		l0-definition {JMP match}
 		l0-usage      {JMP strict:u}
 		:lexeme       {JMP lexeme:u  make-lexeme}
 		:discard      {JMP discard:u make-discard}
@@ -142,10 +140,10 @@ oo::class create marpa::slif::semantics::Symbol {
 	    }
 	    match {
 		g1-definition {ERR match/g1def}
-		g1-usage      {JMP lexeme  make-lexeme}
+		g1-usage      {JMP lexeme make-lexeme}
 		l0-definition NOP
 		l0-usage      {JMP strict}
-		:lexeme       {JMP lexeme  make-lexeme}
+		:lexeme       {JMP lexeme make-lexeme}
 		:discard      {JMP discard make-discard}
 		<literal>     INT
 	    }
@@ -177,9 +175,9 @@ oo::class create marpa::slif::semantics::Symbol {
 		<literal>     INT
 	    }
 	    floater {
-		g1-definition {JMP brick    g1-new}
+		g1-definition {JMP brick}
 		g1-usage      NOP
-		l0-definition {JMP lexeme   make-lexeme}
+		l0-definition {JMP lexeme make-lexeme}
 		l0-usage      {ERR g1/l0use}
 		:lexeme       {JMP lexeme:u make-lexeme}
 		:discard      {ERR g1/discard}

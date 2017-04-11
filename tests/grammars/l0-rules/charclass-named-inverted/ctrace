@@ -1,6 +1,5 @@
 GC comment definition A 0 1
-GC comment l0-definition A undef --> {JMP match     l0-new}
-GC l0 symbol A
+GC comment l0-definition A undef --> {JMP match}
 
 	GC comment usage {[[:^xdigit:]Q]} 4 14
 	GC comment usage {@LCC:<[:^xdigit:]Q>} 4 14
@@ -13,10 +12,9 @@ GC l0 symbol A
 GC comment l0-usage {@LCC:<[:^xdigit:]Q>} literal --> NOP
 GC l0 priority-rule A {{@LCC:<[:^xdigit:]Q>}} 0
 GC comment definition lang 19 4
-GC comment g1-definition lang undef --> {JMP brick     g1-new}
-GC g1 symbol lang
+GC comment g1-definition lang undef --> {JMP brick}
 GC comment usage A 28 1
-GC comment g1-usage A match --> {JMP lexeme  make-lexeme}
+GC comment g1-usage A match --> {JMP lexeme make-lexeme}
 GC l0 lexeme A
 GC g1 terminal A
 GC g1 priority-rule lang A 0 action {array values} bless {special undef} mask 0

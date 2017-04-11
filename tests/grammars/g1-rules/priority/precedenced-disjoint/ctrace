@@ -1,6 +1,5 @@
 GC comment definition E 0 1
-GC comment g1-definition E undef --> {JMP brick     g1-new}
-GC g1 symbol E
+GC comment g1-definition E undef --> {JMP brick}
 GC comment usage N 6 1
 GC comment g1-usage N undef --> {JMP floater}
 
@@ -68,7 +67,7 @@ GC comment g1-usage E brick --> NOP
 	GC g1 priority-rule E {E SUB E} -3 action {array values} bless {special undef} mask {0 0 0}
 
 GC comment definition PO 123 2
-GC comment l0-definition PO floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition PO floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme PO
 GC g1 terminal PO
 GC comment usage '(' 129 3
@@ -80,7 +79,7 @@ GC comment <literal> {@LIT:<\50>} undef --> {JMP literal}
 GC comment l0-usage {@LIT:<\50>} literal --> NOP
 GC l0 priority-rule PO {{@LIT:<\50>}} 0
 GC comment definition PC 133 2
-GC comment l0-definition PC floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition PC floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme PC
 GC g1 terminal PC
 GC comment usage ')' 139 3
@@ -92,7 +91,7 @@ GC comment <literal> {@LIT:<\51>} undef --> {JMP literal}
 GC comment l0-usage {@LIT:<\51>} literal --> NOP
 GC l0 priority-rule PC {{@LIT:<\51>}} 0
 GC comment definition POW 143 3
-GC comment l0-definition POW floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition POW floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme POW
 GC g1 terminal POW
 GC comment usage '**' 149 4
@@ -104,7 +103,7 @@ GC comment <literal> @LIT:<**> undef --> {JMP literal}
 GC comment l0-usage @LIT:<**> literal --> NOP
 GC l0 priority-rule POW @LIT:<**> 0
 GC comment definition MUL 154 3
-GC comment l0-definition MUL floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition MUL floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme MUL
 GC g1 terminal MUL
 GC comment usage '*' 160 3
@@ -116,7 +115,7 @@ GC comment <literal> @LIT:<*> undef --> {JMP literal}
 GC comment l0-usage @LIT:<*> literal --> NOP
 GC l0 priority-rule MUL @LIT:<*> 0
 GC comment definition DIV 164 3
-GC comment l0-definition DIV floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition DIV floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme DIV
 GC g1 terminal DIV
 GC comment usage '/' 170 3
@@ -128,7 +127,7 @@ GC comment <literal> @LIT:</> undef --> {JMP literal}
 GC comment l0-usage @LIT:</> literal --> NOP
 GC l0 priority-rule DIV @LIT:</> 0
 GC comment definition ADD 174 3
-GC comment l0-definition ADD floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition ADD floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme ADD
 GC g1 terminal ADD
 GC comment usage '+' 180 3
@@ -140,7 +139,7 @@ GC comment <literal> @LIT:<+> undef --> {JMP literal}
 GC comment l0-usage @LIT:<+> literal --> NOP
 GC l0 priority-rule ADD @LIT:<+> 0
 GC comment definition SUB 184 3
-GC comment l0-definition SUB floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition SUB floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme SUB
 GC g1 terminal SUB
 GC comment usage '-' 190 3
@@ -152,7 +151,7 @@ GC comment <literal> @LIT:<-> undef --> {JMP literal}
 GC comment l0-usage @LIT:<-> literal --> NOP
 GC l0 priority-rule SUB @LIT:<-> 0
 GC comment definition N 194 1
-GC comment l0-definition N floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition N floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme N
 GC g1 terminal N
 GC comment usage {[0-9]} 200 5

@@ -13,8 +13,7 @@ GC comment usage A 67 1
 GC comment g1-usage A undef --> {JMP floater}
 GC start! A
 GC comment definition A 69 1
-GC comment g1-definition A floater --> {JMP brick    g1-new}
-GC g1 symbol A
+GC comment g1-definition A floater --> {JMP brick}
 GC comment usage foo 75 3
 GC comment usage bar 79 3
 GC comment g1-usage foo lexeme:u --> NOP

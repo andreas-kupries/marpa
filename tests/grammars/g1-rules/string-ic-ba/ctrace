@@ -1,6 +1,5 @@
 GC comment definition A 0 1
-GC comment g1-definition A undef --> {JMP brick     g1-new}
-GC g1 symbol A
+GC comment g1-definition A undef --> {JMP brick}
 
 	GC comment usage 'foXoyo':ic:i:i:ic 6 18
 	GC comment usage @LIT:<FOXOYO>:i 6 18
@@ -11,9 +10,8 @@ GC g1 symbol A
 
 GC comment <literal> @LIT:<FOXOYO>:i undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<FOXOYO>:i 6 18
-GC comment l0-definition @LEX:@LIT:<FOXOYO>:i undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<FOXOYO>:i
-GC comment :lexeme @LEX:@LIT:<FOXOYO>:i match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<FOXOYO>:i undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<FOXOYO>:i match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<FOXOYO>:i
 GC g1 terminal @LEX:@LIT:<FOXOYO>:i
 GC l0 priority-rule @LEX:@LIT:<FOXOYO>:i @LIT:<FOXOYO>:i 0

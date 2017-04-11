@@ -1,7 +1,6 @@
 GC comment definition {op comma} 0 12
-GC comment g1-definition {op comma} undef --> {JMP brick     g1-new}
+GC comment g1-definition {op comma} undef --> {JMP brick}
 
-	GC g1 symbol {op comma}
 
 GC comment usage {op comma} 17 13
 GC comment g1-usage {op comma} brick --> NOP

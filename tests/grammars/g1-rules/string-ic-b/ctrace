@@ -1,6 +1,5 @@
 GC comment definition A 0 1
-GC comment g1-definition A undef --> {JMP brick     g1-new}
-GC g1 symbol A
+GC comment g1-definition A undef --> {JMP brick}
 
 	GC comment usage {'case-insensitive string':ic} 6 28
 	GC comment usage {@LIT:<CASE-INSENSITIVE\40STRING>:i} 6 28
@@ -11,10 +10,9 @@ GC g1 symbol A
 
 	GC comment <literal> {@LIT:<CASE-INSENSITIVE\40STRING>:i} undef --> {JMP literal}
 	GC comment definition {@LEX:@LIT:<CASE-INSENSITIVE\40STRING>:i} 6 28
-	GC comment l0-definition {@LEX:@LIT:<CASE-INSENSITIVE\40STRING>:i} undef --> {JMP match     l0-new}
-	GC l0 symbol {@LEX:@LIT:<CASE-INSENSITIVE\40STRING>:i}
+	GC comment l0-definition {@LEX:@LIT:<CASE-INSENSITIVE\40STRING>:i} undef --> {JMP match}
 
-	GC comment :lexeme {@LEX:@LIT:<CASE-INSENSITIVE\40STRING>:i} match --> {JMP lexeme  make-lexeme}
+	GC comment :lexeme {@LEX:@LIT:<CASE-INSENSITIVE\40STRING>:i} match --> {JMP lexeme make-lexeme}
 	GC l0 lexeme {@LEX:@LIT:<CASE-INSENSITIVE\40STRING>:i}
 	GC g1 terminal {@LEX:@LIT:<CASE-INSENSITIVE\40STRING>:i}
 

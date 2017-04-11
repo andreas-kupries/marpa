@@ -4,8 +4,7 @@ GC comment g1-usage A undef --> {JMP floater}
 	GC g1 event A {{fo x} on predicted}
 
 GC comment definition A 38 1
-GC comment g1-definition A floater --> {JMP brick    g1-new}
-GC g1 symbol A
+GC comment g1-definition A floater --> {JMP brick}
 GC comment usage 'a' 44 3
 GC comment usage @LIT:<a> 44 3
 GC comment definition 'a' 44 3
@@ -13,9 +12,8 @@ GC comment definition @LIT:<a> 44 3
 GC l0 string @LIT:<a> 97 0
 GC comment <literal> @LIT:<a> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<a> 44 3
-GC comment l0-definition @LEX:@LIT:<a> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<a>
-GC comment :lexeme @LEX:@LIT:<a> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<a> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<a> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<a>
 GC g1 terminal @LEX:@LIT:<a>
 GC l0 priority-rule @LEX:@LIT:<a> @LIT:<a> 0

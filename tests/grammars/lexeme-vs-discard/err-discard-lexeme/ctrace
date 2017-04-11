@@ -1,6 +1,5 @@
 GC comment definition A 44 1
-GC comment l0-definition A undef --> {JMP match     l0-new}
-GC l0 symbol A
+GC comment l0-definition A undef --> {JMP match}
 GC comment usage 'a' 48 3
 GC comment usage @LIT:<a> 48 3
 GC comment definition 'a' 48 3

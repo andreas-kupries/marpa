@@ -1,6 +1,5 @@
 GC comment definition B 0 1
-GC comment l0-definition B undef --> {JMP match     l0-new}
-GC l0 symbol B
+GC comment l0-definition B undef --> {JMP match}
 GC comment usage A 4 1
 GC comment l0-usage A undef --> {JMP strict:u}
 GC l0 priority-rule B A 0

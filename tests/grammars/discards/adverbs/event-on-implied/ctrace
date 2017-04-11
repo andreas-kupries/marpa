@@ -6,13 +6,12 @@ GC comment usage A 11 1
 	GC comment DDE skip A
 
 GC comment definition B 29 1
-GC comment g1-definition B undef --> {JMP brick     g1-new}
-GC g1 symbol B
+GC comment g1-definition B undef --> {JMP brick}
 GC comment usage C 35 1
 GC comment g1-usage C undef --> {JMP floater}
 GC g1 priority-rule B C 0 action {array values} bless {special undef} mask 0
 GC comment definition C 37 1
-GC comment l0-definition C floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition C floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme C
 GC g1 terminal C
 GC comment usage 'c' 41 3

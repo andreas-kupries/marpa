@@ -5,14 +5,12 @@ GC comment usage statements 1097 10
 GC comment g1-usage statements undef --> {JMP floater}
 GC start! statements
 GC comment definition statements 1108 10
-GC comment g1-definition statements floater --> {JMP brick    g1-new}
-GC g1 symbol statements
+GC comment g1-definition statements floater --> {JMP brick}
 GC comment usage statement 1123 9
 GC comment g1-usage statement undef --> {JMP floater}
 GC g1 quantified-rule statements statement 1 action {array {start length values}} bless {special lhs}
 GC comment definition statement 1134 9
-GC comment g1-definition statement floater --> {JMP brick    g1-new}
-GC g1 symbol statement
+GC comment g1-definition statement floater --> {JMP brick}
 GC comment usage {start rule} 1148 12
 GC comment g1-usage {start rule} undef --> {JMP floater}
 GC g1 priority-rule statement {{start rule}} 0 action {array {start length values}} bless {special lhs} mask 0
@@ -77,8 +75,7 @@ GC comment usage {inaccessible statement} 1509 24
 GC comment g1-usage {inaccessible statement} undef --> {JMP floater}
 GC g1 priority-rule statement {{inaccessible statement}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {null statement} 1535 16
-GC comment g1-definition {null statement} floater --> {JMP brick    g1-new}
-GC g1 symbol {null statement}
+GC comment g1-definition {null statement} floater --> {JMP brick}
 GC comment usage {';'} 1556 3
 GC comment usage {@LIT:<\73>} 1556 3
 GC comment definition {';'} 1556 3
@@ -86,17 +83,15 @@ GC comment definition {@LIT:<\73>} 1556 3
 GC l0 string {@LIT:<\73>} 59 0
 GC comment <literal> {@LIT:<\73>} undef --> {JMP literal}
 GC comment definition {@LEX:@LIT:<\73>} 1556 3
-GC comment l0-definition {@LEX:@LIT:<\73>} undef --> {JMP match     l0-new}
-GC l0 symbol {@LEX:@LIT:<\73>}
-GC comment :lexeme {@LEX:@LIT:<\73>} match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition {@LEX:@LIT:<\73>} undef --> {JMP match}
+GC comment :lexeme {@LEX:@LIT:<\73>} match --> {JMP lexeme make-lexeme}
 GC l0 lexeme {@LEX:@LIT:<\73>}
 GC g1 terminal {@LEX:@LIT:<\73>}
 GC l0 priority-rule {@LEX:@LIT:<\73>} {@LIT:<\73>} 0
 GC comment g1-usage {@LEX:@LIT:<\73>} lexeme --> NOP
 GC g1 priority-rule {null statement} {{@LEX:@LIT:<\73>}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {statement group} 1560 17
-GC comment g1-definition {statement group} floater --> {JMP brick    g1-new}
-GC g1 symbol {statement group}
+GC comment g1-definition {statement group} floater --> {JMP brick}
 GC comment usage '\{' 1583 3
 GC comment usage {@LIT:<\173>} 1583 3
 GC comment definition '\{' 1583 3
@@ -104,9 +99,8 @@ GC comment definition {@LIT:<\173>} 1583 3
 GC l0 string {@LIT:<\173>} 123 0
 GC comment <literal> {@LIT:<\173>} undef --> {JMP literal}
 GC comment definition {@LEX:@LIT:<\173>} 1583 3
-GC comment l0-definition {@LEX:@LIT:<\173>} undef --> {JMP match     l0-new}
-GC l0 symbol {@LEX:@LIT:<\173>}
-GC comment :lexeme {@LEX:@LIT:<\173>} match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition {@LEX:@LIT:<\173>} undef --> {JMP match}
+GC comment :lexeme {@LEX:@LIT:<\173>} match --> {JMP lexeme make-lexeme}
 GC l0 lexeme {@LEX:@LIT:<\173>}
 GC g1 terminal {@LEX:@LIT:<\173>}
 GC l0 priority-rule {@LEX:@LIT:<\173>} {@LIT:<\173>} 0
@@ -118,9 +112,8 @@ GC comment definition {@LIT:<\175>} 1599 3
 GC l0 string {@LIT:<\175>} 125 0
 GC comment <literal> {@LIT:<\175>} undef --> {JMP literal}
 GC comment definition {@LEX:@LIT:<\175>} 1599 3
-GC comment l0-definition {@LEX:@LIT:<\175>} undef --> {JMP match     l0-new}
-GC l0 symbol {@LEX:@LIT:<\175>}
-GC comment :lexeme {@LEX:@LIT:<\175>} match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition {@LEX:@LIT:<\175>} undef --> {JMP match}
+GC comment :lexeme {@LEX:@LIT:<\175>} match --> {JMP lexeme make-lexeme}
 GC l0 lexeme {@LEX:@LIT:<\175>}
 GC g1 terminal {@LEX:@LIT:<\175>}
 GC l0 priority-rule {@LEX:@LIT:<\175>} {@LIT:<\175>} 0
@@ -129,8 +122,7 @@ GC comment g1-usage statements brick --> NOP
 GC comment g1-usage {@LEX:@LIT:<\175>} lexeme --> NOP
 GC g1 priority-rule {statement group} {{@LEX:@LIT:<\173>} statements {@LEX:@LIT:<\175>}} 0 action {array {start length values}} bless {special lhs} mask {1 0 0}
 GC comment definition {start rule} 1603 12
-GC comment g1-definition {start rule} floater --> {JMP brick    g1-new}
-GC g1 symbol {start rule}
+GC comment g1-definition {start rule} floater --> {JMP brick}
 GC comment usage ':start' 1621 8
 GC comment usage @LIT:<:start> 1621 8
 GC comment definition ':start' 1621 8
@@ -138,9 +130,8 @@ GC comment definition @LIT:<:start> 1621 8
 GC l0 string @LIT:<:start> {58 115 116 97 114 116} 0
 GC comment <literal> @LIT:<:start> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<:start> 1621 8
-GC comment l0-definition @LEX:@LIT:<:start> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<:start>
-GC comment :lexeme @LEX:@LIT:<:start> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<:start> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<:start> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<:start>
 GC g1 terminal @LEX:@LIT:<:start>
 GC l0 priority-rule @LEX:@LIT:<:start> @LIT:<:start> 0
@@ -159,9 +150,8 @@ GC comment definition @LIT:<start> 1673 7
 GC l0 string @LIT:<start> {115 116 97 114 116} 0
 GC comment <literal> @LIT:<start> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<start> 1673 7
-GC comment l0-definition @LEX:@LIT:<start> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<start>
-GC comment :lexeme @LEX:@LIT:<start> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<start> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<start> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<start>
 GC g1 terminal @LEX:@LIT:<start>
 GC l0 priority-rule @LEX:@LIT:<start> @LIT:<start> 0
@@ -172,9 +162,8 @@ GC comment definition @LIT:<symbol> 1681 8
 GC l0 string @LIT:<symbol> {115 121 109 98 111 108} 0
 GC comment <literal> @LIT:<symbol> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<symbol> 1681 8
-GC comment l0-definition @LEX:@LIT:<symbol> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<symbol>
-GC comment :lexeme @LEX:@LIT:<symbol> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<symbol> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<symbol> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<symbol>
 GC g1 terminal @LEX:@LIT:<symbol>
 GC l0 priority-rule @LEX:@LIT:<symbol> @LIT:<symbol> 0
@@ -185,9 +174,8 @@ GC comment definition @LIT:<is> 1690 4
 GC l0 string @LIT:<is> {105 115} 0
 GC comment <literal> @LIT:<is> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<is> 1690 4
-GC comment l0-definition @LEX:@LIT:<is> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<is>
-GC comment :lexeme @LEX:@LIT:<is> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<is> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<is> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<is>
 GC g1 terminal @LEX:@LIT:<is>
 GC l0 priority-rule @LEX:@LIT:<is> @LIT:<is> 0
@@ -198,8 +186,7 @@ GC comment g1-usage @LEX:@LIT:<is> lexeme --> NOP
 GC comment g1-usage symbol floater --> NOP
 GC g1 priority-rule {start rule} {@LEX:@LIT:<start> @LEX:@LIT:<symbol> @LEX:@LIT:<is> symbol} 0 action {array {start length values}} bless {special lhs} mask {1 1 1 0}
 GC comment definition {default rule} 1703 14
-GC comment g1-definition {default rule} floater --> {JMP brick    g1-new}
-GC g1 symbol {default rule}
+GC comment g1-definition {default rule} floater --> {JMP brick}
 GC comment usage ':default' 1722 10
 GC comment usage @LIT:<:default> 1722 10
 GC comment definition ':default' 1722 10
@@ -207,9 +194,8 @@ GC comment definition @LIT:<:default> 1722 10
 GC l0 string @LIT:<:default> {58 100 101 102 97 117 108 116} 0
 GC comment <literal> @LIT:<:default> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<:default> 1722 10
-GC comment l0-definition @LEX:@LIT:<:default> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<:default>
-GC comment :lexeme @LEX:@LIT:<:default> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<:default> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<:default> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<:default>
 GC g1 terminal @LEX:@LIT:<:default>
 GC l0 priority-rule @LEX:@LIT:<:default> @LIT:<:default> 0
@@ -220,8 +206,7 @@ GC comment g1-usage {op declare bnf} floater --> NOP
 GC comment g1-usage {adverb list default} undef --> {JMP floater}
 GC g1 priority-rule {default rule} {@LEX:@LIT:<:default> {op declare bnf} {adverb list default}} 0 action {array {start length values}} bless {special lhs} mask {0 0 0}
 GC comment definition {lexeme default statement} 1772 26
-GC comment g1-definition {lexeme default statement} floater --> {JMP brick    g1-new}
-GC g1 symbol {lexeme default statement}
+GC comment g1-definition {lexeme default statement} floater --> {JMP brick}
 GC comment usage 'lexeme' 1804 8
 GC comment usage @LIT:<lexeme> 1804 8
 GC comment definition 'lexeme' 1804 8
@@ -229,9 +214,8 @@ GC comment definition @LIT:<lexeme> 1804 8
 GC l0 string @LIT:<lexeme> {108 101 120 101 109 101} 0
 GC comment <literal> @LIT:<lexeme> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<lexeme> 1804 8
-GC comment l0-definition @LEX:@LIT:<lexeme> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<lexeme>
-GC comment :lexeme @LEX:@LIT:<lexeme> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<lexeme> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<lexeme> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<lexeme>
 GC g1 terminal @LEX:@LIT:<lexeme>
 GC l0 priority-rule @LEX:@LIT:<lexeme> @LIT:<lexeme> 0
@@ -242,9 +226,8 @@ GC comment definition @LIT:<default> 1813 9
 GC l0 string @LIT:<default> {100 101 102 97 117 108 116} 0
 GC comment <literal> @LIT:<default> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<default> 1813 9
-GC comment l0-definition @LEX:@LIT:<default> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<default>
-GC comment :lexeme @LEX:@LIT:<default> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<default> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<default> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<default>
 GC g1 terminal @LEX:@LIT:<default>
 GC l0 priority-rule @LEX:@LIT:<default> @LIT:<default> 0
@@ -255,9 +238,8 @@ GC comment definition @LIT:<=> 1823 3
 GC l0 string @LIT:<=> 61 0
 GC comment <literal> @LIT:<=> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<=> 1823 3
-GC comment l0-definition @LEX:@LIT:<=> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<=>
-GC comment :lexeme @LEX:@LIT:<=> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<=> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<=> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<=>
 GC g1 terminal @LEX:@LIT:<=>
 GC l0 priority-rule @LEX:@LIT:<=> @LIT:<=> 0
@@ -268,8 +250,7 @@ GC comment g1-usage @LEX:@LIT:<=> lexeme --> NOP
 GC comment g1-usage {adverb list lexeme default} undef --> {JMP floater}
 GC g1 priority-rule {lexeme default statement} {@LEX:@LIT:<lexeme> @LEX:@LIT:<default> @LEX:@LIT:<=> {adverb list lexeme default}} 0 action {array {start length values}} bless {special lhs} mask {1 1 1 0}
 GC comment definition {discard default statement} 1857 27
-GC comment g1-definition {discard default statement} floater --> {JMP brick    g1-new}
-GC g1 symbol {discard default statement}
+GC comment g1-definition {discard default statement} floater --> {JMP brick}
 GC comment usage 'discard' 1890 9
 GC comment usage @LIT:<discard> 1890 9
 GC comment definition 'discard' 1890 9
@@ -277,9 +258,8 @@ GC comment definition @LIT:<discard> 1890 9
 GC l0 string @LIT:<discard> {100 105 115 99 97 114 100} 0
 GC comment <literal> @LIT:<discard> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<discard> 1890 9
-GC comment l0-definition @LEX:@LIT:<discard> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<discard>
-GC comment :lexeme @LEX:@LIT:<discard> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<discard> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<discard> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<discard>
 GC g1 terminal @LEX:@LIT:<discard>
 GC l0 priority-rule @LEX:@LIT:<discard> @LIT:<discard> 0
@@ -310,8 +290,7 @@ GC comment g1-usage @LEX:@LIT:<=> lexeme --> NOP
 GC comment g1-usage {adverb list discard default} undef --> {JMP floater}
 GC g1 priority-rule {discard default statement} {@LEX:@LIT:<discard> @LEX:@LIT:<default> @LEX:@LIT:<=> {adverb list discard default}} 0 action {array {start length values}} bless {special lhs} mask {1 1 1 0}
 GC comment definition {empty rule} 1946 12
-GC comment g1-definition {empty rule} floater --> {JMP brick    g1-new}
-GC g1 symbol {empty rule}
+GC comment g1-definition {empty rule} floater --> {JMP brick}
 GC comment usage lhs 1963 3
 GC comment usage {op declare bnf} 1967 16
 GC comment usage {adverb list bnf empty} 1984 23
@@ -329,8 +308,7 @@ GC comment g1-usage {op declare match} undef --> {JMP floater}
 GC comment g1-usage {adverb list match empty} undef --> {JMP floater}
 GC g1 priority-rule {empty rule} {lhs {op declare match} {adverb list match empty}} 0 action {array {start length values}} bless {special lhs} mask {0 0 0}
 GC comment definition {quantified rule} 2075 17
-GC comment g1-definition {quantified rule} floater --> {JMP brick    g1-new}
-GC g1 symbol {quantified rule}
+GC comment g1-definition {quantified rule} floater --> {JMP brick}
 GC comment usage lhs 2097 3
 GC comment usage {op declare bnf} 2101 16
 GC comment usage {single symbol} 2118 15
@@ -356,8 +334,7 @@ GC comment g1-usage quantifier floater --> NOP
 GC comment g1-usage {adverb list match quantified} undef --> {JMP floater}
 GC g1 priority-rule {quantified rule} {lhs {op declare match} {single symbol} quantifier {adverb list match quantified}} 0 action {array {start length values}} bless {special lhs} mask {0 0 0 0 0}
 GC comment definition {discard rule} 2278 14
-GC comment g1-definition {discard rule} floater --> {JMP brick    g1-new}
-GC g1 symbol {discard rule}
+GC comment g1-definition {discard rule} floater --> {JMP brick}
 GC comment usage ':discard' 2298 10
 GC comment usage @LIT:<:discard> 2298 10
 GC comment definition ':discard' 2298 10
@@ -365,9 +342,8 @@ GC comment definition @LIT:<:discard> 2298 10
 GC l0 string @LIT:<:discard> {58 100 105 115 99 97 114 100} 0
 GC comment <literal> @LIT:<:discard> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<:discard> 2298 10
-GC comment l0-definition @LEX:@LIT:<:discard> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<:discard>
-GC comment :lexeme @LEX:@LIT:<:discard> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<:discard> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<:discard> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<:discard>
 GC g1 terminal @LEX:@LIT:<:discard>
 GC l0 priority-rule @LEX:@LIT:<:discard> @LIT:<:discard> 0
@@ -400,8 +376,7 @@ GC comment g1-usage {character class} undef --> {JMP floater}
 GC comment g1-usage {adverb list discard} floater --> NOP
 GC g1 priority-rule {discard rule} {@LEX:@LIT:<:discard> {op declare match} {character class} {adverb list discard}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0 0}
 GC comment definition {lexeme rule} 2504 13
-GC comment g1-definition {lexeme rule} floater --> {JMP brick    g1-new}
-GC g1 symbol {lexeme rule}
+GC comment g1-definition {lexeme rule} floater --> {JMP brick}
 GC comment usage ':lexeme' 2523 9
 GC comment usage @LIT:<:lexeme> 2523 9
 GC comment definition ':lexeme' 2523 9
@@ -409,9 +384,8 @@ GC comment definition @LIT:<:lexeme> 2523 9
 GC l0 string @LIT:<:lexeme> {58 108 101 120 101 109 101} 0
 GC comment <literal> @LIT:<:lexeme> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<:lexeme> 2523 9
-GC comment l0-definition @LEX:@LIT:<:lexeme> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<:lexeme>
-GC comment :lexeme @LEX:@LIT:<:lexeme> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<:lexeme> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<:lexeme> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<:lexeme>
 GC g1 terminal @LEX:@LIT:<:lexeme>
 GC l0 priority-rule @LEX:@LIT:<:lexeme> @LIT:<:lexeme> 0
@@ -424,8 +398,7 @@ GC comment g1-usage symbol floater --> NOP
 GC comment g1-usage {adverb list lexeme} undef --> {JMP floater}
 GC g1 priority-rule {lexeme rule} {@LEX:@LIT:<:lexeme> {op declare match} symbol {adverb list lexeme}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0 0}
 GC comment definition {completion event declaration} 2581 30
-GC comment g1-definition {completion event declaration} floater --> {JMP brick    g1-new}
-GC g1 symbol {completion event declaration}
+GC comment g1-definition {completion event declaration} floater --> {JMP brick}
 GC comment usage 'event' 2617 7
 GC comment usage @LIT:<event> 2617 7
 GC comment definition 'event' 2617 7
@@ -433,9 +406,8 @@ GC comment definition @LIT:<event> 2617 7
 GC l0 string @LIT:<event> {101 118 101 110 116} 0
 GC comment <literal> @LIT:<event> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<event> 2617 7
-GC comment l0-definition @LEX:@LIT:<event> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<event>
-GC comment :lexeme @LEX:@LIT:<event> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<event> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<event> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<event>
 GC g1 terminal @LEX:@LIT:<event>
 GC l0 priority-rule @LEX:@LIT:<event> @LIT:<event> 0
@@ -457,9 +429,8 @@ GC comment definition @LIT:<completed> 2654 11
 GC l0 string @LIT:<completed> {99 111 109 112 108 101 116 101 100} 0
 GC comment <literal> @LIT:<completed> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<completed> 2654 11
-GC comment l0-definition @LEX:@LIT:<completed> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<completed>
-GC comment :lexeme @LEX:@LIT:<completed> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<completed> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<completed> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<completed>
 GC g1 terminal @LEX:@LIT:<completed>
 GC l0 priority-rule @LEX:@LIT:<completed> @LIT:<completed> 0
@@ -471,8 +442,7 @@ GC comment g1-usage @LEX:@LIT:<completed> lexeme --> NOP
 GC comment g1-usage {symbol name} undef --> {JMP floater}
 GC g1 priority-rule {completion event declaration} {@LEX:@LIT:<event> {event initialization} @LEX:@LIT:<=> @LEX:@LIT:<completed> {symbol name}} 0 action {array {start length values}} bless {special lhs} mask {1 0 1 1 0}
 GC comment definition {nulled event declaration} 2681 26
-GC comment g1-definition {nulled event declaration} floater --> {JMP brick    g1-new}
-GC g1 symbol {nulled event declaration}
+GC comment g1-definition {nulled event declaration} floater --> {JMP brick}
 GC comment usage 'event' 2713 7
 GC comment usage @LIT:<event> 2713 7
 GC comment definition 'event' 2713 7
@@ -501,9 +471,8 @@ GC comment definition @LIT:<nulled> 2750 8
 GC l0 string @LIT:<nulled> {110 117 108 108 101 100} 0
 GC comment <literal> @LIT:<nulled> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<nulled> 2750 8
-GC comment l0-definition @LEX:@LIT:<nulled> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<nulled>
-GC comment :lexeme @LEX:@LIT:<nulled> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<nulled> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<nulled> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<nulled>
 GC g1 terminal @LEX:@LIT:<nulled>
 GC l0 priority-rule @LEX:@LIT:<nulled> @LIT:<nulled> 0
@@ -515,8 +484,7 @@ GC comment g1-usage @LEX:@LIT:<nulled> lexeme --> NOP
 GC comment g1-usage {symbol name} floater --> NOP
 GC g1 priority-rule {nulled event declaration} {@LEX:@LIT:<event> {event initialization} @LEX:@LIT:<=> @LEX:@LIT:<nulled> {symbol name}} 0 action {array {start length values}} bless {special lhs} mask {1 0 1 1 0}
 GC comment definition {prediction event declaration} 2774 30
-GC comment g1-definition {prediction event declaration} floater --> {JMP brick    g1-new}
-GC g1 symbol {prediction event declaration}
+GC comment g1-definition {prediction event declaration} floater --> {JMP brick}
 GC comment usage 'event' 2810 7
 GC comment usage @LIT:<event> 2810 7
 GC comment definition 'event' 2810 7
@@ -545,9 +513,8 @@ GC comment definition @LIT:<predicted> 2847 11
 GC l0 string @LIT:<predicted> {112 114 101 100 105 99 116 101 100} 0
 GC comment <literal> @LIT:<predicted> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<predicted> 2847 11
-GC comment l0-definition @LEX:@LIT:<predicted> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<predicted>
-GC comment :lexeme @LEX:@LIT:<predicted> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<predicted> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<predicted> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<predicted>
 GC g1 terminal @LEX:@LIT:<predicted>
 GC l0 priority-rule @LEX:@LIT:<predicted> @LIT:<predicted> 0
@@ -559,8 +526,7 @@ GC comment g1-usage @LEX:@LIT:<predicted> lexeme --> NOP
 GC comment g1-usage {symbol name} floater --> NOP
 GC g1 priority-rule {prediction event declaration} {@LEX:@LIT:<event> {event initialization} @LEX:@LIT:<=> @LEX:@LIT:<predicted> {symbol name}} 0 action {array {start length values}} bless {special lhs} mask {1 0 1 1 0}
 GC comment definition {current lexer statement} 2874 25
-GC comment g1-definition {current lexer statement} floater --> {JMP brick    g1-new}
-GC g1 symbol {current lexer statement}
+GC comment g1-definition {current lexer statement} floater --> {JMP brick}
 GC comment usage 'current' 2905 9
 GC comment usage @LIT:<current> 2905 9
 GC comment definition 'current' 2905 9
@@ -568,9 +534,8 @@ GC comment definition @LIT:<current> 2905 9
 GC l0 string @LIT:<current> {99 117 114 114 101 110 116} 0
 GC comment <literal> @LIT:<current> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<current> 2905 9
-GC comment l0-definition @LEX:@LIT:<current> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<current>
-GC comment :lexeme @LEX:@LIT:<current> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<current> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<current> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<current>
 GC g1 terminal @LEX:@LIT:<current>
 GC l0 priority-rule @LEX:@LIT:<current> @LIT:<current> 0
@@ -581,9 +546,8 @@ GC comment definition @LIT:<lexer> 2915 7
 GC l0 string @LIT:<lexer> {108 101 120 101 114} 0
 GC comment <literal> @LIT:<lexer> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<lexer> 2915 7
-GC comment l0-definition @LEX:@LIT:<lexer> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<lexer>
-GC comment :lexeme @LEX:@LIT:<lexer> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<lexer> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<lexer> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<lexer>
 GC g1 terminal @LEX:@LIT:<lexer>
 GC l0 priority-rule @LEX:@LIT:<lexer> @LIT:<lexer> 0
@@ -604,8 +568,7 @@ GC comment g1-usage @LEX:@LIT:<is> lexeme --> NOP
 GC comment g1-usage {lexer name} undef --> {JMP floater}
 GC g1 priority-rule {current lexer statement} {@LEX:@LIT:<current> @LEX:@LIT:<lexer> @LEX:@LIT:<is> {lexer name}} 0 action {array {start length values}} bless {special lhs} mask {1 1 1 0}
 GC comment definition {inaccessible statement} 2943 24
-GC comment g1-definition {inaccessible statement} floater --> {JMP brick    g1-new}
-GC g1 symbol {inaccessible statement}
+GC comment g1-definition {inaccessible statement} floater --> {JMP brick}
 GC comment usage 'inaccessible' 2973 14
 GC comment usage @LIT:<inaccessible> 2973 14
 GC comment definition 'inaccessible' 2973 14
@@ -613,9 +576,8 @@ GC comment definition @LIT:<inaccessible> 2973 14
 GC l0 string @LIT:<inaccessible> {105 110 97 99 99 101 115 115 105 98 108 101} 0
 GC comment <literal> @LIT:<inaccessible> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<inaccessible> 2973 14
-GC comment l0-definition @LEX:@LIT:<inaccessible> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<inaccessible>
-GC comment :lexeme @LEX:@LIT:<inaccessible> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<inaccessible> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<inaccessible> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<inaccessible>
 GC g1 terminal @LEX:@LIT:<inaccessible>
 GC l0 priority-rule @LEX:@LIT:<inaccessible> @LIT:<inaccessible> 0
@@ -637,9 +599,8 @@ GC comment definition @LIT:<by> 3020 4
 GC l0 string @LIT:<by> {98 121} 0
 GC comment <literal> @LIT:<by> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<by> 3020 4
-GC comment l0-definition @LEX:@LIT:<by> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<by>
-GC comment :lexeme @LEX:@LIT:<by> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<by> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<by> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<by>
 GC g1 terminal @LEX:@LIT:<by>
 GC l0 priority-rule @LEX:@LIT:<by> @LIT:<by> 0
@@ -660,8 +621,7 @@ GC comment g1-usage @LEX:@LIT:<by> lexeme --> NOP
 GC comment g1-usage @LEX:@LIT:<default> lexeme --> NOP
 GC g1 priority-rule {inaccessible statement} {@LEX:@LIT:<inaccessible> @LEX:@LIT:<is> {inaccessible treatment} @LEX:@LIT:<by> @LEX:@LIT:<default>} 0 action {array {start length values}} bless {special lhs} mask {1 1 0 1 1}
 GC comment definition {inaccessible treatment} 3036 24
-GC comment g1-definition {inaccessible treatment} floater --> {JMP brick    g1-new}
-GC g1 symbol {inaccessible treatment}
+GC comment g1-definition {inaccessible treatment} floater --> {JMP brick}
 GC comment usage 'warn' 3065 6
 GC comment usage @LIT:<warn> 3065 6
 GC comment definition 'warn' 3065 6
@@ -669,9 +629,8 @@ GC comment definition @LIT:<warn> 3065 6
 GC l0 string @LIT:<warn> {119 97 114 110} 0
 GC comment <literal> @LIT:<warn> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<warn> 3065 6
-GC comment l0-definition @LEX:@LIT:<warn> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<warn>
-GC comment :lexeme @LEX:@LIT:<warn> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<warn> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<warn> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<warn>
 GC g1 terminal @LEX:@LIT:<warn>
 GC l0 priority-rule @LEX:@LIT:<warn> @LIT:<warn> 0
@@ -685,9 +644,8 @@ GC comment definition @LIT:<ok> 3074 4
 GC l0 string @LIT:<ok> {111 107} 0
 GC comment <literal> @LIT:<ok> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<ok> 3074 4
-GC comment l0-definition @LEX:@LIT:<ok> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<ok>
-GC comment :lexeme @LEX:@LIT:<ok> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<ok> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<ok> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<ok>
 GC g1 terminal @LEX:@LIT:<ok>
 GC l0 priority-rule @LEX:@LIT:<ok> @LIT:<ok> 0
@@ -701,17 +659,15 @@ GC comment definition @LIT:<fatal> 3081 7
 GC l0 string @LIT:<fatal> {102 97 116 97 108} 0
 GC comment <literal> @LIT:<fatal> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<fatal> 3081 7
-GC comment l0-definition @LEX:@LIT:<fatal> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<fatal>
-GC comment :lexeme @LEX:@LIT:<fatal> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<fatal> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<fatal> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<fatal>
 GC g1 terminal @LEX:@LIT:<fatal>
 GC l0 priority-rule @LEX:@LIT:<fatal> @LIT:<fatal> 0
 GC comment g1-usage @LEX:@LIT:<fatal> lexeme --> NOP
 GC g1 priority-rule {inaccessible treatment} @LEX:@LIT:<fatal> 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {priority rule} 3090 15
-GC comment g1-definition {priority rule} floater --> {JMP brick    g1-new}
-GC g1 symbol {priority rule}
+GC comment g1-definition {priority rule} floater --> {JMP brick}
 GC comment usage lhs 3110 3
 GC comment usage {op declare bnf} 3114 16
 GC comment usage {priorities bnf} 3131 16
@@ -729,188 +685,159 @@ GC comment g1-usage {op declare match} floater --> NOP
 GC comment g1-usage {priorities match} undef --> {JMP floater}
 GC g1 priority-rule {priority rule} {lhs {op declare match} {priorities match}} 0 action {array {start length values}} bless {special lhs} mask {0 0 0}
 GC comment definition {priorities bnf} 3211 16
-GC comment g1-definition {priorities bnf} floater --> {JMP brick    g1-new}
-GC g1 symbol {priorities bnf}
+GC comment g1-definition {priorities bnf} floater --> {JMP brick}
 GC comment usage {alternatives bnf} 3232 18
 GC comment g1-usage {alternatives bnf} undef --> {JMP floater}
 GC comment usage {op loosen} 3268 11
 GC comment g1-usage {op loosen} undef --> {JMP floater}
 GC g1 quantified-rule {priorities bnf} {alternatives bnf} 1 action {array {start length values}} bless {special lhs} separator {{op loosen} 1}
 GC comment definition {priorities match} 3292 18
-GC comment g1-definition {priorities match} floater --> {JMP brick    g1-new}
-GC g1 symbol {priorities match}
+GC comment g1-definition {priorities match} floater --> {JMP brick}
 GC comment usage {alternatives match} 3315 20
 GC comment g1-usage {alternatives match} undef --> {JMP floater}
 GC comment usage {op loosen} 3353 11
 GC comment g1-usage {op loosen} floater --> NOP
 GC g1 quantified-rule {priorities match} {alternatives match} 1 action {array {start length values}} bless {special lhs} separator {{op loosen} 1}
 GC comment definition {alternatives bnf} 3378 18
-GC comment g1-definition {alternatives bnf} floater --> {JMP brick    g1-new}
-GC g1 symbol {alternatives bnf}
+GC comment g1-definition {alternatives bnf} floater --> {JMP brick}
 GC comment usage {alternative bnf} 3401 17
 GC comment g1-usage {alternative bnf} undef --> {JMP floater}
 GC comment usage {op equal priority} 3436 19
 GC comment g1-usage {op equal priority} undef --> {JMP floater}
 GC g1 quantified-rule {alternatives bnf} {alternative bnf} 1 action {array {start length values}} bless {special lhs} separator {{op equal priority} 1}
 GC comment definition {alternatives match} 3468 20
-GC comment g1-definition {alternatives match} floater --> {JMP brick    g1-new}
-GC g1 symbol {alternatives match}
+GC comment g1-definition {alternatives match} floater --> {JMP brick}
 GC comment usage {alternative match} 3493 19
 GC comment g1-usage {alternative match} undef --> {JMP floater}
 GC comment usage {op equal priority} 3530 19
 GC comment g1-usage {op equal priority} floater --> NOP
 GC g1 quantified-rule {alternatives match} {alternative match} 1 action {array {start length values}} bless {special lhs} separator {{op equal priority} 1}
 GC comment definition {alternative bnf} 3563 17
-GC comment g1-definition {alternative bnf} floater --> {JMP brick    g1-new}
-GC g1 symbol {alternative bnf}
+GC comment g1-definition {alternative bnf} floater --> {JMP brick}
 GC comment usage rhs 3585 3
 GC comment usage {adverb list bnf alternative} 3589 29
 GC comment g1-usage rhs undef --> {JMP floater}
 GC comment g1-usage {adverb list bnf alternative} undef --> {JMP floater}
 GC g1 priority-rule {alternative bnf} {rhs {adverb list bnf alternative}} 0 action {array {start length values}} bless {special lhs} mask {0 0}
 GC comment definition {alternative match} 3619 19
-GC comment g1-definition {alternative match} floater --> {JMP brick    g1-new}
-GC g1 symbol {alternative match}
+GC comment g1-definition {alternative match} floater --> {JMP brick}
 GC comment usage rhs 3643 3
 GC comment usage {adverb list match alternative} 3647 31
 GC comment g1-usage rhs floater --> NOP
 GC comment g1-usage {adverb list match alternative} undef --> {JMP floater}
 GC g1 priority-rule {alternative match} {rhs {adverb list match alternative}} 0 action {array {start length values}} bless {special lhs} mask {0 0}
 GC comment definition {adverb list default} 3680 21
-GC comment g1-definition {adverb list default} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list default}
+GC comment g1-definition {adverb list default} floater --> {JMP brick}
 GC comment usage {adverb list items default} 3707 27
 GC comment g1-usage {adverb list items default} undef --> {JMP floater}
 GC g1 priority-rule {adverb list default} {{adverb list items default}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb list discard} 3740 21
-GC comment g1-definition {adverb list discard} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list discard}
+GC comment g1-definition {adverb list discard} floater --> {JMP brick}
 GC comment usage {adverb list items discard} 3767 27
 GC comment g1-usage {adverb list items discard} undef --> {JMP floater}
 GC g1 priority-rule {adverb list discard} {{adverb list items discard}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb list lexeme} 3800 20
-GC comment g1-definition {adverb list lexeme} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list lexeme}
+GC comment g1-definition {adverb list lexeme} floater --> {JMP brick}
 GC comment usage {adverb list items lexeme} 3826 26
 GC comment g1-usage {adverb list items lexeme} undef --> {JMP floater}
 GC g1 priority-rule {adverb list lexeme} {{adverb list items lexeme}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb list discard default} 3858 29
-GC comment g1-definition {adverb list discard default} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list discard default}
+GC comment g1-definition {adverb list discard default} floater --> {JMP brick}
 GC comment usage {adverb list items discard default} 3892 35
 GC comment g1-usage {adverb list items discard default} undef --> {JMP floater}
 GC g1 priority-rule {adverb list discard default} {{adverb list items discard default}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb list lexeme default} 3929 28
-GC comment g1-definition {adverb list lexeme default} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list lexeme default}
+GC comment g1-definition {adverb list lexeme default} floater --> {JMP brick}
 GC comment usage {adverb list items lexeme default} 3962 34
 GC comment g1-usage {adverb list items lexeme default} undef --> {JMP floater}
 GC g1 priority-rule {adverb list lexeme default} {{adverb list items lexeme default}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb list bnf alternative} 3999 29
-GC comment g1-definition {adverb list bnf alternative} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list bnf alternative}
+GC comment g1-definition {adverb list bnf alternative} floater --> {JMP brick}
 GC comment usage {adverb list items bnf alternative} 4033 35
 GC comment g1-usage {adverb list items bnf alternative} undef --> {JMP floater}
 GC g1 priority-rule {adverb list bnf alternative} {{adverb list items bnf alternative}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb list bnf empty} 4070 23
-GC comment g1-definition {adverb list bnf empty} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list bnf empty}
+GC comment g1-definition {adverb list bnf empty} floater --> {JMP brick}
 GC comment usage {adverb list items bnf empty} 4099 29
 GC comment g1-usage {adverb list items bnf empty} undef --> {JMP floater}
 GC g1 priority-rule {adverb list bnf empty} {{adverb list items bnf empty}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb list bnf quantified} 4134 28
-GC comment g1-definition {adverb list bnf quantified} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list bnf quantified}
+GC comment g1-definition {adverb list bnf quantified} floater --> {JMP brick}
 GC comment usage {adverb list items bnf quantified} 4167 34
 GC comment g1-usage {adverb list items bnf quantified} undef --> {JMP floater}
 GC g1 priority-rule {adverb list bnf quantified} {{adverb list items bnf quantified}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb list match alternative} 4204 31
-GC comment g1-definition {adverb list match alternative} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list match alternative}
+GC comment g1-definition {adverb list match alternative} floater --> {JMP brick}
 GC comment usage {adverb list items match alternative} 4240 37
 GC comment g1-usage {adverb list items match alternative} undef --> {JMP floater}
 GC g1 priority-rule {adverb list match alternative} {{adverb list items match alternative}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb list match empty} 4278 25
-GC comment g1-definition {adverb list match empty} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list match empty}
+GC comment g1-definition {adverb list match empty} floater --> {JMP brick}
 GC comment usage {adverb list items match empty} 4309 31
 GC comment g1-usage {adverb list items match empty} undef --> {JMP floater}
 GC g1 priority-rule {adverb list match empty} {{adverb list items match empty}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb list match quantified} 4346 30
-GC comment g1-definition {adverb list match quantified} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list match quantified}
+GC comment g1-definition {adverb list match quantified} floater --> {JMP brick}
 GC comment usage {adverb list items match quantified} 4381 36
 GC comment g1-usage {adverb list items match quantified} undef --> {JMP floater}
 GC g1 priority-rule {adverb list match quantified} {{adverb list items match quantified}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb list items default} 4419 27
-GC comment g1-definition {adverb list items default} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list items default}
+GC comment g1-definition {adverb list items default} floater --> {JMP brick}
 GC comment usage {adverb item default} 4452 21
 GC comment g1-usage {adverb item default} undef --> {JMP floater}
 GC g1 quantified-rule {adverb list items default} {adverb item default} 0 action {array {start length values}} bless {special lhs}
 GC comment definition {adverb list items discard} 4476 27
-GC comment g1-definition {adverb list items discard} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list items discard}
+GC comment g1-definition {adverb list items discard} floater --> {JMP brick}
 GC comment usage {adverb item discard} 4513 21
 GC comment g1-usage {adverb item discard} undef --> {JMP floater}
 GC g1 quantified-rule {adverb list items discard} {adverb item discard} 0 action {array {start length values}} bless {special lhs}
 GC comment definition {adverb list items lexeme} 4536 26
-GC comment g1-definition {adverb list items lexeme} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list items lexeme}
+GC comment g1-definition {adverb list items lexeme} floater --> {JMP brick}
 GC comment usage {adverb item lexeme} 4572 20
 GC comment g1-usage {adverb item lexeme} undef --> {JMP floater}
 GC g1 quantified-rule {adverb list items lexeme} {adverb item lexeme} 0 action {array {start length values}} bless {special lhs}
 GC comment definition {adverb list items discard default} 4594 35
-GC comment g1-definition {adverb list items discard default} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list items discard default}
+GC comment g1-definition {adverb list items discard default} floater --> {JMP brick}
 GC comment usage {adverb item discard default} 4635 29
 GC comment g1-usage {adverb item discard default} undef --> {JMP floater}
 GC g1 quantified-rule {adverb list items discard default} {adverb item discard default} 0 action {array {start length values}} bless {special lhs}
 GC comment definition {adverb list items lexeme default} 4666 34
-GC comment g1-definition {adverb list items lexeme default} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list items lexeme default}
+GC comment g1-definition {adverb list items lexeme default} floater --> {JMP brick}
 GC comment usage {adverb item lexeme default} 4707 28
 GC comment g1-usage {adverb item lexeme default} undef --> {JMP floater}
 GC g1 quantified-rule {adverb list items lexeme default} {adverb item lexeme default} 0 action {array {start length values}} bless {special lhs}
 GC comment definition {adverb list items bnf alternative} 4737 35
-GC comment g1-definition {adverb list items bnf alternative} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list items bnf alternative}
+GC comment g1-definition {adverb list items bnf alternative} floater --> {JMP brick}
 GC comment usage {adverb item bnf alternative} 4778 29
 GC comment g1-usage {adverb item bnf alternative} undef --> {JMP floater}
 GC g1 quantified-rule {adverb list items bnf alternative} {adverb item bnf alternative} 0 action {array {start length values}} bless {special lhs}
 GC comment definition {adverb list items bnf empty} 4809 29
-GC comment g1-definition {adverb list items bnf empty} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list items bnf empty}
+GC comment g1-definition {adverb list items bnf empty} floater --> {JMP brick}
 GC comment usage {adverb item bnf empty} 4844 23
 GC comment g1-usage {adverb item bnf empty} undef --> {JMP floater}
 GC g1 quantified-rule {adverb list items bnf empty} {adverb item bnf empty} 0 action {array {start length values}} bless {special lhs}
 GC comment definition {adverb list items bnf quantified} 4869 34
-GC comment g1-definition {adverb list items bnf quantified} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list items bnf quantified}
+GC comment g1-definition {adverb list items bnf quantified} floater --> {JMP brick}
 GC comment usage {adverb item bnf quantified} 4908 28
 GC comment g1-usage {adverb item bnf quantified} undef --> {JMP floater}
 GC g1 quantified-rule {adverb list items bnf quantified} {adverb item bnf quantified} 0 action {array {start length values}} bless {special lhs}
 GC comment definition {adverb list items match alternative} 4938 37
-GC comment g1-definition {adverb list items match alternative} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list items match alternative}
+GC comment g1-definition {adverb list items match alternative} floater --> {JMP brick}
 GC comment usage {adverb item match alternative} 4980 31
 GC comment g1-usage {adverb item match alternative} undef --> {JMP floater}
 GC g1 quantified-rule {adverb list items match alternative} {adverb item match alternative} 0 action {array {start length values}} bless {special lhs}
 GC comment definition {adverb list items match empty} 5013 31
-GC comment g1-definition {adverb list items match empty} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list items match empty}
+GC comment g1-definition {adverb list items match empty} floater --> {JMP brick}
 GC comment usage {adverb item match empty} 5050 25
 GC comment g1-usage {adverb item match empty} undef --> {JMP floater}
 GC g1 quantified-rule {adverb list items match empty} {adverb item match empty} 0 action {array {start length values}} bless {special lhs}
 GC comment definition {adverb list items match quantified} 5077 36
-GC comment g1-definition {adverb list items match quantified} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb list items match quantified}
+GC comment g1-definition {adverb list items match quantified} floater --> {JMP brick}
 GC comment usage {adverb item match quantified} 5118 30
 GC comment g1-usage {adverb item match quantified} undef --> {JMP floater}
 GC g1 quantified-rule {adverb list items match quantified} {adverb item match quantified} 0 action {array {start length values}} bless {special lhs}
 GC comment definition {adverb item default} 5151 21
-GC comment g1-definition {adverb item default} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb item default}
+GC comment g1-definition {adverb item default} floater --> {JMP brick}
 GC comment usage action 5178 6
 GC comment g1-usage action undef --> {JMP floater}
 GC g1 priority-rule {adverb item default} action 0 action {array {start length values}} bless {special lhs} mask 0
@@ -923,8 +850,7 @@ GC comment usage {null adverb} 5208 13
 GC comment g1-usage {null adverb} undef --> {JMP floater}
 GC g1 priority-rule {adverb item default} {{null adverb}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb item discard} 5222 21
-GC comment g1-definition {adverb item discard} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb item discard}
+GC comment g1-definition {adverb item discard} floater --> {JMP brick}
 GC comment usage {event specification} 5253 21
 GC comment g1-usage {event specification} undef --> {JMP floater}
 GC g1 priority-rule {adverb item discard} {{event specification}} 0 action {array {start length values}} bless {special lhs} mask 0
@@ -933,8 +859,7 @@ GC comment usage {null adverb} 5286 13
 GC comment g1-usage {null adverb} floater --> NOP
 GC g1 priority-rule {adverb item discard} {{null adverb}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb item lexeme} 5300 20
-GC comment g1-definition {adverb item lexeme} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb item lexeme}
+GC comment g1-definition {adverb item lexeme} floater --> {JMP brick}
 GC comment usage {event specification} 5330 21
 GC comment g1-usage {event specification} floater --> NOP
 GC g1 priority-rule {adverb item lexeme} {{event specification}} 0 action {array {start length values}} bless {special lhs} mask 0
@@ -955,8 +880,7 @@ GC comment usage {null adverb} 5428 13
 GC comment g1-usage {null adverb} floater --> NOP
 GC g1 priority-rule {adverb item lexeme} {{null adverb}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb item discard default} 5442 29
-GC comment g1-definition {adverb item discard default} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb item discard default}
+GC comment g1-definition {adverb item discard default} floater --> {JMP brick}
 GC comment usage {event specification} 5477 21
 GC comment g1-usage {event specification} floater --> NOP
 GC g1 priority-rule {adverb item discard default} {{event specification}} 0 action {array {start length values}} bless {special lhs} mask 0
@@ -965,8 +889,7 @@ GC comment usage {null adverb} 5510 13
 GC comment g1-usage {null adverb} floater --> NOP
 GC g1 priority-rule {adverb item discard default} {{null adverb}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb item lexeme default} 5524 28
-GC comment g1-definition {adverb item lexeme default} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb item lexeme default}
+GC comment g1-definition {adverb item lexeme default} floater --> {JMP brick}
 GC comment usage action 5559 6
 GC comment g1-usage action floater --> NOP
 GC g1 priority-rule {adverb item lexeme default} action 0 action {array {start length values}} bless {special lhs} mask 0
@@ -983,8 +906,7 @@ GC comment usage {null adverb} 5609 13
 GC comment g1-usage {null adverb} floater --> NOP
 GC g1 priority-rule {adverb item lexeme default} {{null adverb}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb item bnf alternative} 5623 29
-GC comment g1-definition {adverb item bnf alternative} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb item bnf alternative}
+GC comment g1-definition {adverb item bnf alternative} floater --> {JMP brick}
 GC comment usage action 5658 6
 GC comment g1-usage action floater --> NOP
 GC g1 priority-rule {adverb item bnf alternative} action 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1013,8 +935,7 @@ GC comment usage {null adverb} 5753 13
 GC comment g1-usage {null adverb} floater --> NOP
 GC g1 priority-rule {adverb item bnf alternative} {{null adverb}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb item bnf empty} 5767 23
-GC comment g1-definition {adverb item bnf empty} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb item bnf empty}
+GC comment g1-definition {adverb item bnf empty} floater --> {JMP brick}
 GC comment usage action 5796 6
 GC comment g1-usage action floater --> NOP
 GC g1 priority-rule {adverb item bnf empty} action 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1043,8 +964,7 @@ GC comment usage {null adverb} 5891 13
 GC comment g1-usage {null adverb} floater --> NOP
 GC g1 priority-rule {adverb item bnf empty} {{null adverb}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb item bnf quantified} 5905 28
-GC comment g1-definition {adverb item bnf quantified} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb item bnf quantified}
+GC comment g1-definition {adverb item bnf quantified} floater --> {JMP brick}
 GC comment usage action 5938 6
 GC comment g1-usage action floater --> NOP
 GC g1 priority-rule {adverb item bnf quantified} action 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1065,8 +985,7 @@ GC comment usage {null adverb} 6014 13
 GC comment g1-usage {null adverb} floater --> NOP
 GC g1 priority-rule {adverb item bnf quantified} {{null adverb}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb item match alternative} 6028 31
-GC comment g1-definition {adverb item match alternative} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb item match alternative}
+GC comment g1-definition {adverb item match alternative} floater --> {JMP brick}
 GC comment usage naming 6064 6
 GC comment g1-usage naming floater --> NOP
 GC g1 priority-rule {adverb item match alternative} naming 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1075,8 +994,7 @@ GC comment usage {null adverb} 6084 13
 GC comment g1-usage {null adverb} floater --> NOP
 GC g1 priority-rule {adverb item match alternative} {{null adverb}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb item match empty} 6098 25
-GC comment g1-definition {adverb item match empty} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb item match empty}
+GC comment g1-definition {adverb item match empty} floater --> {JMP brick}
 GC comment usage naming 6128 6
 GC comment g1-usage naming floater --> NOP
 GC g1 priority-rule {adverb item match empty} naming 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1085,8 +1003,7 @@ GC comment usage {null adverb} 6148 13
 GC comment g1-usage {null adverb} floater --> NOP
 GC g1 priority-rule {adverb item match empty} {{null adverb}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {adverb item match quantified} 6162 30
-GC comment g1-definition {adverb item match quantified} floater --> {JMP brick    g1-new}
-GC g1 symbol {adverb item match quantified}
+GC comment g1-definition {adverb item match quantified} floater --> {JMP brick}
 GC comment usage {separator specification} 6197 25
 GC comment g1-usage {separator specification} floater --> NOP
 GC g1 priority-rule {adverb item match quantified} {{separator specification}} 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1099,8 +1016,7 @@ GC comment usage {null adverb} 6256 13
 GC comment g1-usage {null adverb} floater --> NOP
 GC g1 priority-rule {adverb item match quantified} {{null adverb}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {null adverb} 6794 13
-GC comment g1-definition {null adverb} floater --> {JMP brick    g1-new}
-GC g1 symbol {null adverb}
+GC comment g1-definition {null adverb} floater --> {JMP brick}
 GC comment usage ',' 6812 3
 GC comment usage @LIT:<,> 6812 3
 GC comment definition ',' 6812 3
@@ -1108,17 +1024,15 @@ GC comment definition @LIT:<,> 6812 3
 GC l0 string @LIT:<,> 44 0
 GC comment <literal> @LIT:<,> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<,> 6812 3
-GC comment l0-definition @LEX:@LIT:<,> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<,>
-GC comment :lexeme @LEX:@LIT:<,> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<,> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<,> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<,>
 GC g1 terminal @LEX:@LIT:<,>
 GC l0 priority-rule @LEX:@LIT:<,> @LIT:<,> 0
 GC comment g1-usage @LEX:@LIT:<,> lexeme --> NOP
 GC g1 priority-rule {null adverb} @LEX:@LIT:<,> 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition action 6816 6
-GC comment g1-definition action floater --> {JMP brick    g1-new}
-GC g1 symbol action
+GC comment g1-definition action floater --> {JMP brick}
 GC comment usage 'action' 6828 8
 GC comment usage @LIT:<action> 6828 8
 GC comment definition 'action' 6828 8
@@ -1126,9 +1040,8 @@ GC comment definition @LIT:<action> 6828 8
 GC l0 string @LIT:<action> {97 99 116 105 111 110} 0
 GC comment <literal> @LIT:<action> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<action> 6828 8
-GC comment l0-definition @LEX:@LIT:<action> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<action>
-GC comment :lexeme @LEX:@LIT:<action> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<action> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<action> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<action>
 GC g1 terminal @LEX:@LIT:<action>
 GC l0 priority-rule @LEX:@LIT:<action> @LIT:<action> 0
@@ -1139,9 +1052,8 @@ GC comment definition @LIT:<=>> 6837 4
 GC l0 string @LIT:<=>> {61 62} 0
 GC comment <literal> @LIT:<=>> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<=>> 6837 4
-GC comment l0-definition @LEX:@LIT:<=>> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<=>>
-GC comment :lexeme @LEX:@LIT:<=>> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<=>> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<=>> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<=>>
 GC g1 terminal @LEX:@LIT:<=>>
 GC l0 priority-rule @LEX:@LIT:<=>> @LIT:<=>> 0
@@ -1151,8 +1063,7 @@ GC comment g1-usage @LEX:@LIT:<=>> lexeme --> NOP
 GC comment g1-usage {action name} undef --> {JMP floater}
 GC g1 priority-rule action {@LEX:@LIT:<action> @LEX:@LIT:<=>> {action name}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {left association} 6857 18
-GC comment g1-definition {left association} floater --> {JMP brick    g1-new}
-GC g1 symbol {left association}
+GC comment g1-definition {left association} floater --> {JMP brick}
 GC comment usage 'assoc' 6881 7
 GC comment usage @LIT:<assoc> 6881 7
 GC comment definition 'assoc' 6881 7
@@ -1160,9 +1071,8 @@ GC comment definition @LIT:<assoc> 6881 7
 GC l0 string @LIT:<assoc> {97 115 115 111 99} 0
 GC comment <literal> @LIT:<assoc> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<assoc> 6881 7
-GC comment l0-definition @LEX:@LIT:<assoc> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<assoc>
-GC comment :lexeme @LEX:@LIT:<assoc> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<assoc> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<assoc> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<assoc>
 GC g1 terminal @LEX:@LIT:<assoc>
 GC l0 priority-rule @LEX:@LIT:<assoc> @LIT:<assoc> 0
@@ -1183,9 +1093,8 @@ GC comment definition @LIT:<left> 6894 6
 GC l0 string @LIT:<left> {108 101 102 116} 0
 GC comment <literal> @LIT:<left> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<left> 6894 6
-GC comment l0-definition @LEX:@LIT:<left> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<left>
-GC comment :lexeme @LEX:@LIT:<left> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<left> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<left> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<left>
 GC g1 terminal @LEX:@LIT:<left>
 GC l0 priority-rule @LEX:@LIT:<left> @LIT:<left> 0
@@ -1194,8 +1103,7 @@ GC comment g1-usage @LEX:@LIT:<=>> lexeme --> NOP
 GC comment g1-usage @LEX:@LIT:<left> lexeme --> NOP
 GC g1 priority-rule {left association} {@LEX:@LIT:<assoc> @LEX:@LIT:<=>> @LEX:@LIT:<left>} 0 action {array {start length values}} bless {special lhs} mask {1 1 1}
 GC comment definition {right association} 6902 19
-GC comment g1-definition {right association} floater --> {JMP brick    g1-new}
-GC g1 symbol {right association}
+GC comment g1-definition {right association} floater --> {JMP brick}
 GC comment usage 'assoc' 6927 7
 GC comment usage @LIT:<assoc> 6927 7
 GC comment definition 'assoc' 6927 7
@@ -1223,9 +1131,8 @@ GC comment definition @LIT:<right> 6940 7
 GC l0 string @LIT:<right> {114 105 103 104 116} 0
 GC comment <literal> @LIT:<right> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<right> 6940 7
-GC comment l0-definition @LEX:@LIT:<right> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<right>
-GC comment :lexeme @LEX:@LIT:<right> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<right> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<right> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<right>
 GC g1 terminal @LEX:@LIT:<right>
 GC l0 priority-rule @LEX:@LIT:<right> @LIT:<right> 0
@@ -1234,8 +1141,7 @@ GC comment g1-usage @LEX:@LIT:<=>> lexeme --> NOP
 GC comment g1-usage @LEX:@LIT:<right> lexeme --> NOP
 GC g1 priority-rule {right association} {@LEX:@LIT:<assoc> @LEX:@LIT:<=>> @LEX:@LIT:<right>} 0 action {array {start length values}} bless {special lhs} mask {1 1 1}
 GC comment definition {group association} 6949 19
-GC comment g1-definition {group association} floater --> {JMP brick    g1-new}
-GC g1 symbol {group association}
+GC comment g1-definition {group association} floater --> {JMP brick}
 GC comment usage 'assoc' 6974 7
 GC comment usage @LIT:<assoc> 6974 7
 GC comment definition 'assoc' 6974 7
@@ -1263,9 +1169,8 @@ GC comment definition @LIT:<group> 6987 7
 GC l0 string @LIT:<group> {103 114 111 117 112} 0
 GC comment <literal> @LIT:<group> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<group> 6987 7
-GC comment l0-definition @LEX:@LIT:<group> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<group>
-GC comment :lexeme @LEX:@LIT:<group> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<group> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<group> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<group>
 GC g1 terminal @LEX:@LIT:<group>
 GC l0 priority-rule @LEX:@LIT:<group> @LIT:<group> 0
@@ -1274,8 +1179,7 @@ GC comment g1-usage @LEX:@LIT:<=>> lexeme --> NOP
 GC comment g1-usage @LEX:@LIT:<group> lexeme --> NOP
 GC g1 priority-rule {group association} {@LEX:@LIT:<assoc> @LEX:@LIT:<=>> @LEX:@LIT:<group>} 0 action {array {start length values}} bless {special lhs} mask {1 1 1}
 GC comment definition {separator specification} 6996 25
-GC comment g1-definition {separator specification} floater --> {JMP brick    g1-new}
-GC g1 symbol {separator specification}
+GC comment g1-definition {separator specification} floater --> {JMP brick}
 GC comment usage 'separator' 7027 11
 GC comment usage @LIT:<separator> 7027 11
 GC comment definition 'separator' 7027 11
@@ -1283,9 +1187,8 @@ GC comment definition @LIT:<separator> 7027 11
 GC l0 string @LIT:<separator> {115 101 112 97 114 97 116 111 114} 0
 GC comment <literal> @LIT:<separator> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<separator> 7027 11
-GC comment l0-definition @LEX:@LIT:<separator> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<separator>
-GC comment :lexeme @LEX:@LIT:<separator> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<separator> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<separator> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<separator>
 GC g1 terminal @LEX:@LIT:<separator>
 GC l0 priority-rule @LEX:@LIT:<separator> @LIT:<separator> 0
@@ -1305,8 +1208,7 @@ GC comment g1-usage @LEX:@LIT:<=>> lexeme --> NOP
 GC comment g1-usage {single symbol} floater --> NOP
 GC g1 priority-rule {separator specification} {@LEX:@LIT:<separator> @LEX:@LIT:<=>> {single symbol}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {proper specification} 7061 22
-GC comment g1-definition {proper specification} floater --> {JMP brick    g1-new}
-GC g1 symbol {proper specification}
+GC comment g1-definition {proper specification} floater --> {JMP brick}
 GC comment usage 'proper' 7089 8
 GC comment usage @LIT:<proper> 7089 8
 GC comment definition 'proper' 7089 8
@@ -1314,9 +1216,8 @@ GC comment definition @LIT:<proper> 7089 8
 GC l0 string @LIT:<proper> {112 114 111 112 101 114} 0
 GC comment <literal> @LIT:<proper> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<proper> 7089 8
-GC comment l0-definition @LEX:@LIT:<proper> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<proper>
-GC comment :lexeme @LEX:@LIT:<proper> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<proper> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<proper> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<proper>
 GC g1 terminal @LEX:@LIT:<proper>
 GC l0 priority-rule @LEX:@LIT:<proper> @LIT:<proper> 0
@@ -1336,8 +1237,7 @@ GC comment g1-usage @LEX:@LIT:<=>> lexeme --> NOP
 GC comment g1-usage boolean undef --> {JMP floater}
 GC g1 priority-rule {proper specification} {@LEX:@LIT:<proper> @LEX:@LIT:<=>> boolean} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {rank specification} 7112 20
-GC comment g1-definition {rank specification} undef --> {JMP brick     g1-new}
-GC g1 symbol {rank specification}
+GC comment g1-definition {rank specification} undef --> {JMP brick}
 GC comment usage 'rank' 7138 6
 GC comment usage @LIT:<rank> 7138 6
 GC comment definition 'rank' 7138 6
@@ -1345,9 +1245,8 @@ GC comment definition @LIT:<rank> 7138 6
 GC l0 string @LIT:<rank> {114 97 110 107} 0
 GC comment <literal> @LIT:<rank> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<rank> 7138 6
-GC comment l0-definition @LEX:@LIT:<rank> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<rank>
-GC comment :lexeme @LEX:@LIT:<rank> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<rank> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<rank> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<rank>
 GC g1 terminal @LEX:@LIT:<rank>
 GC l0 priority-rule @LEX:@LIT:<rank> @LIT:<rank> 0
@@ -1367,8 +1266,7 @@ GC comment g1-usage @LEX:@LIT:<=>> lexeme --> NOP
 GC comment g1-usage {signed integer} undef --> {JMP floater}
 GC g1 priority-rule {rank specification} {@LEX:@LIT:<rank> @LEX:@LIT:<=>> {signed integer}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {null ranking specification} 7168 28
-GC comment g1-definition {null ranking specification} undef --> {JMP brick     g1-new}
-GC g1 symbol {null ranking specification}
+GC comment g1-definition {null ranking specification} undef --> {JMP brick}
 GC comment usage 'null-ranking' 7202 14
 GC comment usage @LIT:<null-ranking> 7202 14
 GC comment definition 'null-ranking' 7202 14
@@ -1376,9 +1274,8 @@ GC comment definition @LIT:<null-ranking> 7202 14
 GC l0 string @LIT:<null-ranking> {110 117 108 108 45 114 97 110 107 105 110 103} 0
 GC comment <literal> @LIT:<null-ranking> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<null-ranking> 7202 14
-GC comment l0-definition @LEX:@LIT:<null-ranking> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<null-ranking>
-GC comment :lexeme @LEX:@LIT:<null-ranking> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<null-ranking> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<null-ranking> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<null-ranking>
 GC g1 terminal @LEX:@LIT:<null-ranking>
 GC l0 priority-rule @LEX:@LIT:<null-ranking> @LIT:<null-ranking> 0
@@ -1406,9 +1303,8 @@ GC comment definition @LIT:<null> 7281 6
 GC l0 string @LIT:<null> {110 117 108 108} 0
 GC comment <literal> @LIT:<null> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<null> 7281 6
-GC comment l0-definition @LEX:@LIT:<null> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<null>
-GC comment :lexeme @LEX:@LIT:<null> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<null> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<null> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<null>
 GC g1 terminal @LEX:@LIT:<null>
 GC l0 priority-rule @LEX:@LIT:<null> @LIT:<null> 0
@@ -1439,8 +1335,7 @@ GC comment g1-usage @LEX:@LIT:<=>> lexeme --> NOP
 GC comment g1-usage {null ranking constant} floater --> NOP
 GC g1 priority-rule {null ranking specification} {@LEX:@LIT:<null> @LEX:@LIT:<rank> @LEX:@LIT:<=>> {null ranking constant}} 0 action {array {start length values}} bless {special lhs} mask {1 1 1 0}
 GC comment definition {null ranking constant} 7325 23
-GC comment g1-definition {null ranking constant} floater --> {JMP brick    g1-new}
-GC g1 symbol {null ranking constant}
+GC comment g1-definition {null ranking constant} floater --> {JMP brick}
 GC comment usage 'low' 7353 5
 GC comment usage @LIT:<low> 7353 5
 GC comment definition 'low' 7353 5
@@ -1448,9 +1343,8 @@ GC comment definition @LIT:<low> 7353 5
 GC l0 string @LIT:<low> {108 111 119} 0
 GC comment <literal> @LIT:<low> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<low> 7353 5
-GC comment l0-definition @LEX:@LIT:<low> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<low>
-GC comment :lexeme @LEX:@LIT:<low> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<low> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<low> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<low>
 GC g1 terminal @LEX:@LIT:<low>
 GC l0 priority-rule @LEX:@LIT:<low> @LIT:<low> 0
@@ -1464,17 +1358,15 @@ GC comment definition @LIT:<high> 7361 6
 GC l0 string @LIT:<high> {104 105 103 104} 0
 GC comment <literal> @LIT:<high> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<high> 7361 6
-GC comment l0-definition @LEX:@LIT:<high> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<high>
-GC comment :lexeme @LEX:@LIT:<high> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<high> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<high> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<high>
 GC g1 terminal @LEX:@LIT:<high>
 GC l0 priority-rule @LEX:@LIT:<high> @LIT:<high> 0
 GC comment g1-usage @LEX:@LIT:<high> lexeme --> NOP
 GC g1 priority-rule {null ranking constant} @LEX:@LIT:<high> 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {priority specification} 7368 24
-GC comment g1-definition {priority specification} floater --> {JMP brick    g1-new}
-GC g1 symbol {priority specification}
+GC comment g1-definition {priority specification} floater --> {JMP brick}
 GC comment usage 'priority' 7398 10
 GC comment usage @LIT:<priority> 7398 10
 GC comment definition 'priority' 7398 10
@@ -1482,9 +1374,8 @@ GC comment definition @LIT:<priority> 7398 10
 GC l0 string @LIT:<priority> {112 114 105 111 114 105 116 121} 0
 GC comment <literal> @LIT:<priority> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<priority> 7398 10
-GC comment l0-definition @LEX:@LIT:<priority> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<priority>
-GC comment :lexeme @LEX:@LIT:<priority> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<priority> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<priority> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<priority>
 GC g1 terminal @LEX:@LIT:<priority>
 GC l0 priority-rule @LEX:@LIT:<priority> @LIT:<priority> 0
@@ -1504,8 +1395,7 @@ GC comment g1-usage @LEX:@LIT:<=>> lexeme --> NOP
 GC comment g1-usage {signed integer} floater --> NOP
 GC g1 priority-rule {priority specification} {@LEX:@LIT:<priority> @LEX:@LIT:<=>> {signed integer}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {pause specification} 7432 21
-GC comment g1-definition {pause specification} floater --> {JMP brick    g1-new}
-GC g1 symbol {pause specification}
+GC comment g1-definition {pause specification} floater --> {JMP brick}
 GC comment usage 'pause' 7459 7
 GC comment usage @LIT:<pause> 7459 7
 GC comment definition 'pause' 7459 7
@@ -1513,9 +1403,8 @@ GC comment definition @LIT:<pause> 7459 7
 GC l0 string @LIT:<pause> {112 97 117 115 101} 0
 GC comment <literal> @LIT:<pause> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<pause> 7459 7
-GC comment l0-definition @LEX:@LIT:<pause> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<pause>
-GC comment :lexeme @LEX:@LIT:<pause> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<pause> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<pause> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<pause>
 GC g1 terminal @LEX:@LIT:<pause>
 GC l0 priority-rule @LEX:@LIT:<pause> @LIT:<pause> 0
@@ -1535,8 +1424,7 @@ GC comment g1-usage @LEX:@LIT:<=>> lexeme --> NOP
 GC comment g1-usage {before or after} undef --> {JMP floater}
 GC g1 priority-rule {pause specification} {@LEX:@LIT:<pause> @LEX:@LIT:<=>> {before or after}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {event specification} 7492 21
-GC comment g1-definition {event specification} floater --> {JMP brick    g1-new}
-GC g1 symbol {event specification}
+GC comment g1-definition {event specification} floater --> {JMP brick}
 GC comment usage 'event' 7519 7
 GC comment usage @LIT:<event> 7519 7
 GC comment definition 'event' 7519 7
@@ -1563,16 +1451,14 @@ GC comment g1-usage @LEX:@LIT:<=>> lexeme --> NOP
 GC comment g1-usage {event initialization} floater --> NOP
 GC g1 priority-rule {event specification} {@LEX:@LIT:<event> @LEX:@LIT:<=>> {event initialization}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {event initialization} 7556 22
-GC comment g1-definition {event initialization} floater --> {JMP brick    g1-new}
-GC g1 symbol {event initialization}
+GC comment g1-definition {event initialization} floater --> {JMP brick}
 GC comment usage {event name} 7583 12
 GC comment usage {event initializer} 7596 19
 GC comment g1-usage {event name} undef --> {JMP floater}
 GC comment g1-usage {event initializer} undef --> {JMP floater}
 GC g1 priority-rule {event initialization} {{event name} {event initializer}} 0 action {array {start length values}} bless {special lhs} mask {0 0}
 GC comment definition {event initializer} 7616 19
-GC comment g1-definition {event initializer} floater --> {JMP brick    g1-new}
-GC g1 symbol {event initializer}
+GC comment g1-definition {event initializer} floater --> {JMP brick}
 GC comment usage '=' 7641 3
 GC comment usage @LIT:<=> 7641 3
 GC comment definition '=' 7641 3
@@ -1588,8 +1474,7 @@ GC comment g1-usage @LEX:@LIT:<=> lexeme --> NOP
 GC comment g1-usage {on or off} undef --> {JMP floater}
 GC g1 priority-rule {event initializer} {@LEX:@LIT:<=> {on or off}} 0 action {array {start length values}} bless {special lhs} mask {1 0}
 GC comment definition {on or off} 7658 11
-GC comment g1-definition {on or off} floater --> {JMP brick    g1-new}
-GC g1 symbol {on or off}
+GC comment g1-definition {on or off} floater --> {JMP brick}
 GC comment usage 'on' 7674 4
 GC comment usage @LIT:<on> 7674 4
 GC comment definition 'on' 7674 4
@@ -1597,9 +1482,8 @@ GC comment definition @LIT:<on> 7674 4
 GC l0 string @LIT:<on> {111 110} 0
 GC comment <literal> @LIT:<on> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<on> 7674 4
-GC comment l0-definition @LEX:@LIT:<on> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<on>
-GC comment :lexeme @LEX:@LIT:<on> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<on> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<on> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<on>
 GC g1 terminal @LEX:@LIT:<on>
 GC l0 priority-rule @LEX:@LIT:<on> @LIT:<on> 0
@@ -1613,9 +1497,8 @@ GC comment definition @LIT:<off> 7681 5
 GC l0 string @LIT:<off> {111 102 102} 0
 GC comment <literal> @LIT:<off> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<off> 7681 5
-GC comment l0-definition @LEX:@LIT:<off> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<off>
-GC comment :lexeme @LEX:@LIT:<off> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<off> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<off> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<off>
 GC g1 terminal @LEX:@LIT:<off>
 GC l0 priority-rule @LEX:@LIT:<off> @LIT:<off> 0
@@ -1625,8 +1508,7 @@ GC comment definition {event initializer} 7687 19
 GC comment g1-definition {event initializer} brick --> NOP
 GC g1 priority-rule {event initializer} {} 0 action {array {start length values}} bless {special lhs}
 GC comment definition {latm specification} 7720 20
-GC comment g1-definition {latm specification} floater --> {JMP brick    g1-new}
-GC g1 symbol {latm specification}
+GC comment g1-definition {latm specification} floater --> {JMP brick}
 GC comment usage 'forgiving' 7746 11
 GC comment usage @LIT:<forgiving> 7746 11
 GC comment definition 'forgiving' 7746 11
@@ -1634,9 +1516,8 @@ GC comment definition @LIT:<forgiving> 7746 11
 GC l0 string @LIT:<forgiving> {102 111 114 103 105 118 105 110 103} 0
 GC comment <literal> @LIT:<forgiving> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<forgiving> 7746 11
-GC comment l0-definition @LEX:@LIT:<forgiving> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<forgiving>
-GC comment :lexeme @LEX:@LIT:<forgiving> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<forgiving> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<forgiving> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<forgiving>
 GC g1 terminal @LEX:@LIT:<forgiving>
 GC l0 priority-rule @LEX:@LIT:<forgiving> @LIT:<forgiving> 0
@@ -1664,9 +1545,8 @@ GC comment definition @LIT:<latm> 7798 6
 GC l0 string @LIT:<latm> {108 97 116 109} 0
 GC comment <literal> @LIT:<latm> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<latm> 7798 6
-GC comment l0-definition @LEX:@LIT:<latm> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<latm>
-GC comment :lexeme @LEX:@LIT:<latm> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<latm> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<latm> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<latm>
 GC g1 terminal @LEX:@LIT:<latm>
 GC l0 priority-rule @LEX:@LIT:<latm> @LIT:<latm> 0
@@ -1686,8 +1566,7 @@ GC comment g1-usage @LEX:@LIT:<=>> lexeme --> NOP
 GC comment g1-usage boolean floater --> NOP
 GC g1 priority-rule {latm specification} {@LEX:@LIT:<latm> @LEX:@LIT:<=>> boolean} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition blessing 7819 10
-GC comment g1-definition blessing floater --> {JMP brick    g1-new}
-GC g1 symbol blessing
+GC comment g1-definition blessing floater --> {JMP brick}
 GC comment usage 'bless' 7835 7
 GC comment usage @LIT:<bless> 7835 7
 GC comment definition 'bless' 7835 7
@@ -1695,9 +1574,8 @@ GC comment definition @LIT:<bless> 7835 7
 GC l0 string @LIT:<bless> {98 108 101 115 115} 0
 GC comment <literal> @LIT:<bless> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<bless> 7835 7
-GC comment l0-definition @LEX:@LIT:<bless> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<bless>
-GC comment :lexeme @LEX:@LIT:<bless> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<bless> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<bless> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<bless>
 GC g1 terminal @LEX:@LIT:<bless>
 GC l0 priority-rule @LEX:@LIT:<bless> @LIT:<bless> 0
@@ -1717,8 +1595,7 @@ GC comment g1-usage @LEX:@LIT:<=>> lexeme --> NOP
 GC comment g1-usage {blessing name} undef --> {JMP floater}
 GC g1 priority-rule blessing {@LEX:@LIT:<bless> @LEX:@LIT:<=>> {blessing name}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition naming 7865 8
-GC comment g1-definition naming floater --> {JMP brick    g1-new}
-GC g1 symbol naming
+GC comment g1-definition naming floater --> {JMP brick}
 GC comment usage 'name' 7879 6
 GC comment usage @LIT:<name> 7879 6
 GC comment definition 'name' 7879 6
@@ -1726,9 +1603,8 @@ GC comment definition @LIT:<name> 7879 6
 GC l0 string @LIT:<name> {110 97 109 101} 0
 GC comment <literal> @LIT:<name> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<name> 7879 6
-GC comment l0-definition @LEX:@LIT:<name> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<name>
-GC comment :lexeme @LEX:@LIT:<name> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<name> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<name> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<name>
 GC g1 terminal @LEX:@LIT:<name>
 GC l0 priority-rule @LEX:@LIT:<name> @LIT:<name> 0
@@ -1748,8 +1624,7 @@ GC comment g1-usage @LEX:@LIT:<=>> lexeme --> NOP
 GC comment g1-usage {alternative name} undef --> {JMP floater}
 GC g1 priority-rule naming {@LEX:@LIT:<name> @LEX:@LIT:<=>> {alternative name}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {alternative name} 7912 18
-GC comment g1-definition {alternative name} floater --> {JMP brick    g1-new}
-GC g1 symbol {alternative name}
+GC comment g1-definition {alternative name} floater --> {JMP brick}
 GC comment usage {standard name} 7935 15
 GC comment g1-usage {standard name} undef --> {JMP floater}
 GC g1 priority-rule {alternative name} {{standard name}} 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1758,8 +1633,7 @@ GC comment usage {single quoted name} 7953 20
 GC comment g1-usage {single quoted name} undef --> {JMP floater}
 GC g1 priority-rule {alternative name} {{single quoted name}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {lexer name} 7974 12
-GC comment g1-definition {lexer name} floater --> {JMP brick    g1-new}
-GC g1 symbol {lexer name}
+GC comment g1-definition {lexer name} floater --> {JMP brick}
 GC comment usage {standard name} 7991 15
 GC comment g1-usage {standard name} floater --> NOP
 GC g1 priority-rule {lexer name} {{standard name}} 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1768,8 +1642,7 @@ GC comment usage {single quoted name} 8009 20
 GC comment g1-usage {single quoted name} floater --> NOP
 GC g1 priority-rule {lexer name} {{single quoted name}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {event name} 8031 12
-GC comment g1-definition {event name} floater --> {JMP brick    g1-new}
-GC g1 symbol {event name}
+GC comment g1-definition {event name} floater --> {JMP brick}
 GC comment usage {standard name} 8048 15
 GC comment g1-usage {standard name} floater --> NOP
 GC g1 priority-rule {event name} {{standard name}} 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1782,7 +1655,7 @@ GC comment usage {reserved event name} 8097 21
 GC comment g1-usage {reserved event name} undef --> {JMP floater}
 GC g1 priority-rule {event name} {{reserved event name}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {reserved event name} 8119 21
-GC comment l0-definition {reserved event name} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {reserved event name} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {reserved event name}
 GC g1 terminal {reserved event name}
 GC comment usage '::' 8143 4
@@ -1796,8 +1669,7 @@ GC comment l0-usage @LIT:<::> literal --> NOP
 GC comment l0-usage {one or more word characters} undef --> {JMP strict:u}
 GC l0 priority-rule {reserved event name} {@LIT:<::> {one or more word characters}} 0
 GC comment definition {blessing name} 8179 15
-GC comment g1-definition {blessing name} floater --> {JMP brick    g1-new}
-GC g1 symbol {blessing name}
+GC comment g1-definition {blessing name} floater --> {JMP brick}
 GC comment usage {standard name} 8199 15
 GC comment g1-usage {standard name} floater --> NOP
 GC g1 priority-rule {blessing name} {{standard name}} 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1807,20 +1679,17 @@ GC comment usage {reserved blessing name} 8235 24
 GC comment g1-usage {reserved blessing name} undef --> {JMP floater}
 GC g1 priority-rule {blessing name} {{reserved blessing name}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition lhs 8261 3
-GC comment g1-definition lhs floater --> {JMP brick    g1-new}
-GC g1 symbol lhs
+GC comment g1-definition lhs floater --> {JMP brick}
 GC comment usage {symbol name} 8269 13
 GC comment g1-usage {symbol name} floater --> NOP
 GC g1 priority-rule lhs {{symbol name}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition rhs 8283 3
-GC comment g1-definition rhs floater --> {JMP brick    g1-new}
-GC g1 symbol rhs
+GC comment g1-definition rhs floater --> {JMP brick}
 GC comment usage {rhs primary} 8291 13
 GC comment g1-usage {rhs primary} undef --> {JMP floater}
 GC g1 quantified-rule rhs {rhs primary} 1 action {array {start length values}} bless {special lhs}
 GC comment definition {rhs primary} 8306 13
-GC comment g1-definition {rhs primary} floater --> {JMP brick    g1-new}
-GC g1 symbol {rhs primary}
+GC comment g1-definition {rhs primary} floater --> {JMP brick}
 GC comment usage {single symbol} 8324 15
 GC comment g1-usage {single symbol} floater --> NOP
 GC g1 priority-rule {rhs primary} {{single symbol}} 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1835,8 +1704,7 @@ GC comment usage {parenthesized rhs primary list} 8399 32
 GC comment g1-usage {parenthesized rhs primary list} undef --> {JMP floater}
 GC g1 priority-rule {rhs primary} {{parenthesized rhs primary list}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {parenthesized rhs primary list} 8432 32
-GC comment g1-definition {parenthesized rhs primary list} floater --> {JMP brick    g1-new}
-GC g1 symbol {parenthesized rhs primary list}
+GC comment g1-definition {parenthesized rhs primary list} floater --> {JMP brick}
 GC comment usage '(' 8470 3
 GC comment usage {@LIT:<\50>} 8470 3
 GC comment definition '(' 8470 3
@@ -1844,9 +1712,8 @@ GC comment definition {@LIT:<\50>} 8470 3
 GC l0 string {@LIT:<\50>} 40 0
 GC comment <literal> {@LIT:<\50>} undef --> {JMP literal}
 GC comment definition {@LEX:@LIT:<\50>} 8470 3
-GC comment l0-definition {@LEX:@LIT:<\50>} undef --> {JMP match     l0-new}
-GC l0 symbol {@LEX:@LIT:<\50>}
-GC comment :lexeme {@LEX:@LIT:<\50>} match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition {@LEX:@LIT:<\50>} undef --> {JMP match}
+GC comment :lexeme {@LEX:@LIT:<\50>} match --> {JMP lexeme make-lexeme}
 GC l0 lexeme {@LEX:@LIT:<\50>}
 GC g1 terminal {@LEX:@LIT:<\50>}
 GC l0 priority-rule {@LEX:@LIT:<\50>} {@LIT:<\50>} 0
@@ -1858,9 +1725,8 @@ GC comment definition {@LIT:<\51>} 8495 3
 GC l0 string {@LIT:<\51>} 41 0
 GC comment <literal> {@LIT:<\51>} undef --> {JMP literal}
 GC comment definition {@LEX:@LIT:<\51>} 8495 3
-GC comment l0-definition {@LEX:@LIT:<\51>} undef --> {JMP match     l0-new}
-GC l0 symbol {@LEX:@LIT:<\51>}
-GC comment :lexeme {@LEX:@LIT:<\51>} match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition {@LEX:@LIT:<\51>} undef --> {JMP match}
+GC comment :lexeme {@LEX:@LIT:<\51>} match --> {JMP lexeme make-lexeme}
 GC l0 lexeme {@LEX:@LIT:<\51>}
 GC g1 terminal {@LEX:@LIT:<\51>}
 GC l0 priority-rule {@LEX:@LIT:<\51>} {@LIT:<\51>} 0
@@ -1869,14 +1735,12 @@ GC comment g1-usage {rhs primary list} undef --> {JMP floater}
 GC comment g1-usage {@LEX:@LIT:<\51>} lexeme --> NOP
 GC g1 priority-rule {parenthesized rhs primary list} {{@LEX:@LIT:<\50>} {rhs primary list} {@LEX:@LIT:<\51>}} 0 action {array {start length values}} bless {special lhs} mask {1 0 1}
 GC comment definition {rhs primary list} 8500 18
-GC comment g1-definition {rhs primary list} floater --> {JMP brick    g1-new}
-GC g1 symbol {rhs primary list}
+GC comment g1-definition {rhs primary list} floater --> {JMP brick}
 GC comment usage {rhs primary} 8523 13
 GC comment g1-usage {rhs primary} brick --> NOP
 GC g1 quantified-rule {rhs primary list} {rhs primary} 1 action {array {start length values}} bless {special lhs}
 GC comment definition {single symbol} 8538 15
-GC comment g1-definition {single symbol} floater --> {JMP brick    g1-new}
-GC g1 symbol {single symbol}
+GC comment g1-definition {single symbol} floater --> {JMP brick}
 GC comment usage symbol 8562 6
 GC comment g1-usage symbol floater --> NOP
 GC g1 priority-rule {single symbol} symbol 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1885,14 +1749,12 @@ GC comment usage {character class} 8573 17
 GC comment g1-usage {character class} floater --> NOP
 GC g1 priority-rule {single symbol} {{character class}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition symbol 8591 6
-GC comment g1-definition symbol floater --> {JMP brick    g1-new}
-GC g1 symbol symbol
+GC comment g1-definition symbol floater --> {JMP brick}
 GC comment usage {symbol name} 8602 13
 GC comment g1-usage {symbol name} floater --> NOP
 GC g1 priority-rule symbol {{symbol name}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {symbol name} 8616 13
-GC comment g1-definition {symbol name} floater --> {JMP brick    g1-new}
-GC g1 symbol {symbol name}
+GC comment g1-definition {symbol name} floater --> {JMP brick}
 GC comment usage {bare name} 8634 11
 GC comment g1-usage {bare name} undef --> {JMP floater}
 GC g1 priority-rule {symbol name} {{bare name}} 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1902,8 +1764,7 @@ GC comment usage {bracketed name} 8664 16
 GC comment g1-usage {bracketed name} undef --> {JMP floater}
 GC g1 priority-rule {symbol name} {{bracketed name}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {action name} 8681 13
-GC comment g1-definition {action name} floater --> {JMP brick    g1-new}
-GC g1 symbol {action name}
+GC comment g1-definition {action name} floater --> {JMP brick}
 GC comment usage {Perl name} 8699 11
 GC comment g1-usage {Perl name} undef --> {JMP floater}
 GC g1 priority-rule {action name} {{Perl name}} 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1994,7 +1855,7 @@ GC l0 charclass {@LCC:<\n-\r\u2028-\u2029^>} {{10 13} {8232 8233} 94} 0
 GC comment l0-usage {@LCC:<\n-\r\u2028-\u2029^>} literal --> NOP
 GC l0 priority-rule {hash comment char} {{@LCC:<\n-\r\u2028-\u2029^>}} 0
 GC comment definition {op declare bnf} 9229 16
-GC comment l0-definition {op declare bnf} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {op declare bnf} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {op declare bnf}
 GC g1 terminal {op declare bnf}
 GC comment usage '::=' 9248 5
@@ -2006,7 +1867,7 @@ GC comment <literal> @LIT:<::=> undef --> {JMP literal}
 GC comment l0-usage @LIT:<::=> literal --> NOP
 GC l0 priority-rule {op declare bnf} @LIT:<::=> 0
 GC comment definition {op declare match} 9254 18
-GC comment l0-definition {op declare match} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {op declare match} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {op declare match}
 GC g1 terminal {op declare match}
 GC comment usage '~' 9275 3
@@ -2018,7 +1879,7 @@ GC comment <literal> @LIT:<~> undef --> {JMP literal}
 GC comment l0-usage @LIT:<~> literal --> NOP
 GC l0 priority-rule {op declare match} @LIT:<~> 0
 GC comment definition {op loosen} 9279 11
-GC comment l0-definition {op loosen} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {op loosen} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {op loosen}
 GC g1 terminal {op loosen}
 GC comment usage '||' 9293 4
@@ -2030,7 +1891,7 @@ GC comment <literal> @LIT:<||> undef --> {JMP literal}
 GC comment l0-usage @LIT:<||> literal --> NOP
 GC l0 priority-rule {op loosen} @LIT:<||> 0
 GC comment definition {op equal priority} 9298 19
-GC comment l0-definition {op equal priority} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {op equal priority} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {op equal priority}
 GC g1 terminal {op equal priority}
 GC comment usage '|' 9320 3
@@ -2042,8 +1903,7 @@ GC comment <literal> @LIT:<|> undef --> {JMP literal}
 GC comment l0-usage @LIT:<|> literal --> NOP
 GC l0 priority-rule {op equal priority} @LIT:<|> 0
 GC comment definition quantifier 9324 10
-GC comment g1-definition quantifier floater --> {JMP brick    g1-new}
-GC g1 symbol quantifier
+GC comment g1-definition quantifier floater --> {JMP brick}
 GC comment usage '*' 9339 3
 GC comment usage @LIT:<*> 9339 3
 GC comment definition '*' 9339 3
@@ -2051,9 +1911,8 @@ GC comment definition @LIT:<*> 9339 3
 GC l0 string @LIT:<*> 42 0
 GC comment <literal> @LIT:<*> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<*> 9339 3
-GC comment l0-definition @LEX:@LIT:<*> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<*>
-GC comment :lexeme @LEX:@LIT:<*> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<*> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<*> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<*>
 GC g1 terminal @LEX:@LIT:<*>
 GC l0 priority-rule @LEX:@LIT:<*> @LIT:<*> 0
@@ -2067,16 +1926,15 @@ GC comment definition @LIT:<+> 9345 3
 GC l0 string @LIT:<+> 43 0
 GC comment <literal> @LIT:<+> undef --> {JMP literal}
 GC comment definition @LEX:@LIT:<+> 9345 3
-GC comment l0-definition @LEX:@LIT:<+> undef --> {JMP match     l0-new}
-GC l0 symbol @LEX:@LIT:<+>
-GC comment :lexeme @LEX:@LIT:<+> match --> {JMP lexeme  make-lexeme}
+GC comment l0-definition @LEX:@LIT:<+> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<+> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@LIT:<+>
 GC g1 terminal @LEX:@LIT:<+>
 GC l0 priority-rule @LEX:@LIT:<+> @LIT:<+> 0
 GC comment g1-usage @LEX:@LIT:<+> lexeme --> NOP
 GC g1 priority-rule quantifier @LEX:@LIT:<+> 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {before or after} 9349 17
-GC comment l0-definition {before or after} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {before or after} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {before or after}
 GC g1 terminal {before or after}
 GC comment usage 'before' 9369 8
@@ -2097,7 +1955,7 @@ GC comment <literal> @LIT:<after> undef --> {JMP literal}
 GC comment l0-usage @LIT:<after> literal --> NOP
 GC l0 priority-rule {before or after} @LIT:<after> 0
 GC comment definition {signed integer} 9389 16
-GC comment l0-definition {signed integer} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {signed integer} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {signed integer}
 GC g1 terminal {signed integer}
 GC comment usage integer 9408 9
@@ -2130,7 +1988,7 @@ GC l0 charclass @LCC:<d> 100 0
 GC comment l0-usage @LCC:<d> literal --> NOP
 GC l0 quantified-rule integer @LCC:<d> 1
 GC comment definition boolean 9470 7
-GC comment l0-definition boolean floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition boolean floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme boolean
 GC g1 terminal boolean
 GC comment usage {[01]} 9480 4
@@ -2142,7 +2000,7 @@ GC l0 charclass @LCC:<0-1> {{48 49}} 0
 GC comment l0-usage @LCC:<0-1> literal --> NOP
 GC l0 priority-rule boolean @LCC:<0-1> 0
 GC comment definition {reserved action name} 9486 22
-GC comment l0-definition {reserved action name} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {reserved action name} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {reserved action name}
 GC g1 terminal {reserved action name}
 GC comment usage '::' 9511 4
@@ -2156,7 +2014,7 @@ GC comment l0-usage @LIT:<::> literal --> NOP
 GC comment l0-usage {one or more word characters} strict:u --> NOP
 GC l0 priority-rule {reserved action name} {@LIT:<::> {one or more word characters}} 0
 GC comment definition {reserved blessing name} 9546 24
-GC comment l0-definition {reserved blessing name} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {reserved blessing name} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {reserved blessing name}
 GC g1 terminal {reserved blessing name}
 GC comment usage '::' 9573 4
@@ -2180,8 +2038,7 @@ GC l0 charclass @LCC:<w> 119 0
 GC comment l0-usage @LCC:<w> literal --> NOP
 GC l0 quantified-rule {one or more word characters} @LCC:<w> 1
 GC comment definition {zero or more word characters} 9646 30
-GC comment l0-definition {zero or more word characters} undef --> {JMP match     l0-new}
-GC l0 symbol {zero or more word characters}
+GC comment l0-definition {zero or more word characters} undef --> {JMP match}
 GC comment usage {[\w]} 9679 4
 GC comment usage @LCC:<w> 9679 4
 GC comment definition {[\w]} 9679 4
@@ -2191,8 +2048,7 @@ GC l0 charclass @LCC:<w> 119 0
 GC comment l0-usage @LCC:<w> literal --> NOP
 GC l0 quantified-rule {zero or more word characters} @LCC:<w> 0
 GC comment definition {Perl identifier} 9833 17
-GC comment l0-definition {Perl identifier} undef --> {JMP match     l0-new}
-GC l0 symbol {Perl identifier}
+GC comment l0-definition {Perl identifier} undef --> {JMP match}
 GC comment usage {[\w]} 9853 4
 GC comment usage @LCC:<w> 9853 4
 GC comment definition {[\w]} 9853 4
@@ -2202,8 +2058,7 @@ GC l0 charclass @LCC:<w> 119 0
 GC comment l0-usage @LCC:<w> literal --> NOP
 GC l0 quantified-rule {Perl identifier} @LCC:<w> 1
 GC comment definition {double colon} 9859 14
-GC comment l0-definition {double colon} undef --> {JMP match     l0-new}
-GC l0 symbol {double colon}
+GC comment l0-definition {double colon} undef --> {JMP match}
 GC comment usage '::' 9876 4
 GC comment usage @LIT:<::> 9876 4
 GC comment definition '::' 9876 4
@@ -2213,7 +2068,7 @@ GC comment <literal> @LIT:<::> literal --> NOP
 GC comment l0-usage @LIT:<::> literal --> NOP
 GC l0 priority-rule {double colon} @LIT:<::> 0
 GC comment definition {Perl name} 9881 11
-GC comment l0-definition {Perl name} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {Perl name} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {Perl name}
 GC g1 terminal {Perl name}
 GC comment usage {Perl identifier} 9895 17
@@ -2222,7 +2077,7 @@ GC comment usage {double colon} 9927 14
 GC comment l0-usage {double colon} match --> {JMP strict}
 GC l0 quantified-rule {Perl name} {Perl identifier} 1 separator {{double colon} 1}
 GC comment definition {bare name} 9955 11
-GC comment l0-definition {bare name} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {bare name} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {bare name}
 GC g1 terminal {bare name}
 GC comment usage {[\w]} 9969 4
@@ -2234,7 +2089,7 @@ GC l0 charclass @LCC:<w> 119 0
 GC comment l0-usage @LCC:<w> literal --> NOP
 GC l0 quantified-rule {bare name} @LCC:<w> 1
 GC comment definition {standard name} 9975 15
-GC comment l0-definition {standard name} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {standard name} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {standard name}
 GC g1 terminal {standard name}
 GC comment usage {[a-zA-Z]} 9993 8
@@ -2248,7 +2103,7 @@ GC comment l0-usage @LCC:<d-zA-Za-c> literal --> NOP
 GC comment l0-usage {zero or more word characters} match --> {JMP strict}
 GC l0 priority-rule {standard name} {@LCC:<d-zA-Za-c> {zero or more word characters}} 0
 GC comment definition {bracketed name} 10033 16
-GC comment l0-definition {bracketed name} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {bracketed name} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {bracketed name}
 GC g1 terminal {bracketed name}
 GC comment usage '<' 10052 3
@@ -2279,7 +2134,7 @@ GC l0 charclass @LCC:<sw> {115 119} 0
 GC comment l0-usage @LCC:<sw> literal --> NOP
 GC l0 quantified-rule {bracketed name string} @LCC:<sw> 1
 GC comment definition {array descriptor} 10119 18
-GC comment l0-definition {array descriptor} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {array descriptor} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {array descriptor}
 GC g1 terminal {array descriptor}
 GC comment usage {array descriptor left bracket} 10140 31
@@ -2454,8 +2309,7 @@ GC comment <literal> @LIT:<values> undef --> {JMP literal}
 GC comment l0-usage @LIT:<values> literal --> NOP
 GC l0 priority-rule {result item descriptor} @LIT:<values> 0
 GC comment definition quote 11203 5
-GC comment l0-definition quote undef --> {JMP match     l0-new}
-GC l0 symbol quote
+GC comment l0-definition quote undef --> {JMP match}
 GC comment usage {[']} 11211 3
 GC comment usage @LCC:<'> 11211 3
 GC comment definition {[']} 11211 3
@@ -2465,7 +2319,7 @@ GC l0 charclass @LCC:<'> 39 0
 GC comment l0-usage @LCC:<'> literal --> NOP
 GC l0 priority-rule quote @LCC:<'> 0
 GC comment definition {single quoted string} 11215 22
-GC comment l0-definition {single quoted string} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {single quoted string} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {single quoted string}
 GC g1 terminal {single quoted string}
 GC comment usage quote 11240 5
@@ -2478,7 +2332,7 @@ GC comment l0-usage quote strict --> NOP
 GC comment l0-usage {character class modifiers} undef --> {JMP strict:u}
 GC l0 priority-rule {single quoted string} {quote {string without single quote or vertical space} quote {character class modifiers}} 0
 GC comment definition {single quoted name} 11328 20
-GC comment l0-definition {single quoted name} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {single quoted name} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {single quoted name}
 GC g1 terminal {single quoted name}
 GC comment usage quote 11351 5
@@ -2499,7 +2353,7 @@ GC l0 charclass {@LCC:<\n-\r'\u2028-\u2029^>} {{10 13} 39 {8232 8233} 94} 0
 GC comment l0-usage {@LCC:<\n-\r'\u2028-\u2029^>} literal --> NOP
 GC l0 quantified-rule {string without single quote or vertical space} {@LCC:<\n-\r'\u2028-\u2029^>} 1
 GC comment definition {character class} 11488 17
-GC comment l0-definition {character class} floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition {character class} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {character class}
 GC g1 terminal {character class}
 GC comment usage {'['} 11508 3

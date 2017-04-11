@@ -1,6 +1,5 @@
 GC comment definition A 0 1
-GC comment g1-definition A undef --> {JMP brick     g1-new}
-GC g1 symbol A
+GC comment g1-definition A undef --> {JMP brick}
 
 	GC comment usage 'string' 6 8
 	GC comment usage @LIT:<string> 6 8
@@ -11,10 +10,9 @@ GC g1 symbol A
 
 	GC comment <literal> @LIT:<string> undef --> {JMP literal}
 	GC comment definition @LEX:@LIT:<string> 6 8
-	GC comment l0-definition @LEX:@LIT:<string> undef --> {JMP match     l0-new}
-	GC l0 symbol @LEX:@LIT:<string>
+	GC comment l0-definition @LEX:@LIT:<string> undef --> {JMP match}
 
-	GC comment :lexeme @LEX:@LIT:<string> match --> {JMP lexeme  make-lexeme}
+	GC comment :lexeme @LEX:@LIT:<string> match --> {JMP lexeme make-lexeme}
 	GC l0 lexeme @LEX:@LIT:<string>
 	GC g1 terminal @LEX:@LIT:<string>
 

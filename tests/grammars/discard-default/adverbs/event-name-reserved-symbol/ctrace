@@ -2,13 +2,12 @@
 	GC comment DDE default: {event {{special symbol} {}}}
 
 GC comment definition B 37 1
-GC comment g1-definition B undef --> {JMP brick     g1-new}
-GC g1 symbol B
+GC comment g1-definition B undef --> {JMP brick}
 GC comment usage A 43 1
 GC comment g1-usage A undef --> {JMP floater}
 GC g1 priority-rule B A 0 action {array values} bless {special undef} mask 0
 GC comment definition A 45 1
-GC comment l0-definition A floater --> {JMP lexeme   make-lexeme}
+GC comment l0-definition A floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme A
 GC g1 terminal A
 GC comment usage 'a' 49 3
