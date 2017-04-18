@@ -1,0 +1,32 @@
+grammar {
+    global {
+        start Language
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            Language { {priority A 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            A { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        {} {
+            @LIT:<FOXY>:i { {string {70 79 88 89} 1} }
+        }
+        latm {
+            A 1
+        }
+        lexeme {
+            A { {priority @LIT:<FOXY>:i 0} }
+        }
+    }
+}

@@ -24,18 +24,20 @@ debug define marpa/slif/container
 ## 
 
 oo::class create marpa::slif::container {
+    superclass marpa::slif::container::serdes
+
     marpa::E marpa/slif/container SLIF CONTAINER
 
     constructor {} {
 	debug.marpa/slif/container {}
 
 	# Attributes, global and lexeme semantics
-	marpa::slif::attr/global create GA [self]
-	marpa::slif::attr/lexsem create LS [self]
+	marpa::slif::container::attribute::global create GA [self]
+	marpa::slif::container::attribute::lexsem create LS
 
 	# Grammars for the two levels.
-	#marpa::slif::g1::grammar create G1 g1 [self]
-	#marpa::slif::l0::grammar create L0 l0 [self]
+	marpa::slif::container::grammar::g1 create G1
+	marpa::slif::container::grammar::l0 create L0
 
 	# TODO? semstore, used as a string pool
 	debug.marpa/slif/container {/ok}
@@ -46,18 +48,8 @@ oo::class create marpa::slif::container {
     ## Toplevel API invoked by the semantics.
     ## Delegated to internl objects for actual handling.
 
-    method g1 {args} {
-	debug.marpa/slif/container {}
-	return
-    }
-    # forward g1 G1
-
-    method l0 {args} {
-	debug.marpa/slif/container {}
-	return
-    }
-    # forward l0 L0
-
+    forward g1               G1
+    forward l0               L0
     forward inaccessible     GA set inaccessible
     forward start!           GA set start
     forward lexeme-semantics LS set
@@ -68,30 +60,30 @@ oo::class create marpa::slif::container {
     method serialize {} {
 	debug.marpa/slif/container {}
 	# Recursively generate a nested dict describing the container
-	# contents
-	dict set s global [GA serialize]
-	dict set s lexeme [LS serialize]
+	# contents. Empty parts are not placed into the result.
+
+	foreach {label part} {
+	    global GA
+	    lexeme LS
+	    g1     G1
+	    l0     L0
+	} {
+	    set child [$part serialize]
+	    if {![llength $child]} continue
+	    dict set s $label $child
+	}
 	return $s
     }
 
     method deserialize {blob} {
 	debug.marpa/slif/container {}
+	error ;# TODO: ser(deser(ser())) == ser()
+	# clear all parts first
+	# ignore missing parts.
 	return
     }
 
-    method := {origin} {
-	debug.marpa/slif/container {}
-	my deserialize [$origin serialize]
-	return
-    }
-    export :=
-
-    method --> {destination} {
-	debug.marpa/slif/container {}
-	$destination deserialize [my serialize]
-	return
-    }
-    export -->
+    # TODO: Validation.
 
     # # -- --- ----- -------- -------------
     ## Internal methods

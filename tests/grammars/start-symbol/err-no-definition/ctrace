@@ -1,6 +1,5 @@
 GC comment usage A 51 1
 GC comment g1-usage A undef --> {JMP floater}
-GC start! A
 GC comment Semantics completion processing
 
 	GC error {Grammar error. G1 symbol <A> has no definition

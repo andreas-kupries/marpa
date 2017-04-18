@@ -47,7 +47,8 @@ oo::class create marpa::slif::semantics::Start {
 
     # "maybe:" is used by the LHS of rules. It will pass its value
     # only on the 1st call, and even then only if no explicit setting
-    # was made via "with:". "with:" always passes its value.
+    # was made via "with:". "with:" also defers its value, to avoid
+    # issues should the symbol be left undefined.
 
     variable mystate
     variable mysym
@@ -91,8 +92,8 @@ oo::class create marpa::slif::semantics::Start {
 	    undef -
 	    maybe {
 		set mystate done
+		set mysym $symbol
 		Symbol context1 g1-usage $symbol
-		Container start!         $symbol
 	    }
 	    done {
 		# TODO: Get location information from somewhere.
@@ -115,8 +116,8 @@ oo::class create marpa::slif::semantics::Start {
 		my E "not known" UNKNOWN
 	    }
 	    done {
-		# Explicit definition. Already passed on. There is
-		# nothing to do.
+		# Explicit definition. Pass it now.
+		Container start! $mysym
 	    }
 	    maybe {
 		# Weak definition survived to the end. Pass it now on.

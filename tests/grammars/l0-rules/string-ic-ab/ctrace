@@ -6,9 +6,8 @@ GC comment l0-definition A undef --> {JMP match}
 	GC comment definition 'fOXy':i:ic:ic:i 4 16
 	GC comment definition @LIT:<FOXY>:i 4 16
 
-	GC l0 string @LIT:<FOXY>:i {70 79 88 89} 1
-
 	GC comment <literal> @LIT:<FOXY>:i undef --> {JMP literal}
+	GC l0 string @LIT:<FOXY>:i {70 79 88 89} 1
 
 GC comment l0-usage @LIT:<FOXY>:i literal --> NOP
 GC l0 priority-rule A @LIT:<FOXY>:i 0

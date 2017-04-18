@@ -19,14 +19,16 @@ package require TclOO         ;# Implies Tcl 8.5 requirement.
 package require debug
 package require debug::caller
 
-debug define marpa/slif/attribute
-#debug prefix marpa/slif/attribute {[debug caller] | }
+debug define marpa/slif/container/attribute
+#debug prefix marpa/slif/container/attribute {[debug caller] | }
 
 # # ## ### ##### ######## #############
 ## 
 
-oo::class create marpa::slif::attribute {
-    marpa::E marpa/slif/attribute SLIF ATTRIBUTE
+oo::class create marpa::slif::container::attribute {
+    superclass marpa::slif::container::serdes
+
+    marpa::E marpa/slif/container/attribute SLIF CONTAINER ATTRIBUTE
 
     variable myspec  ;# :: dict (name -> dict (...))
     #                            ?default  -> value?
@@ -34,7 +36,7 @@ oo::class create marpa::slif::attribute {
     variable myattr  ;# :: dict (name -> value)
 
     constructor {args} {
-	debug.marpa/slif/attribute {}
+	debug.marpa/slif/container/attribute {}
 	# args = dict (name -> dict(...))
 	set myspec $args
 
@@ -44,7 +46,7 @@ oo::class create marpa::slif::attribute {
 	    if {![dict exists $def default]} continue
 	    dict set myattr $a [dict get $def default]
 	}
-	debug.marpa/slif/attribute {/ok}
+	debug.marpa/slif/container/attribute {/ok}
 	return
     }
 
@@ -52,7 +54,8 @@ oo::class create marpa::slif::attribute {
     ## Public API - Manipulate and query attributes
 
     method set {args} {
-	debug.marpa/slif/attribute {}
+	debug.marpa/slif/container/attribute {}
+	set norm {}
 	foreach {attribute value} $args {
 	    my ValidateA $attribute
 	    lappend norm $attribute [my ValidateV $attribute $value]
@@ -64,7 +67,7 @@ oo::class create marpa::slif::attribute {
     }
 
     method get {attribute} {
-	debug.marpa/slif/attribute {}
+	debug.marpa/slif/container/attribute {}
 	my ValidateA $attribute
 	return [dict get $myattr $attribute]
     }
@@ -73,12 +76,12 @@ oo::class create marpa::slif::attribute {
     ## Public API - (de)serialization, assignment, copying
 
     method serialize {} {
-	debug.marpa/slif/attribute {}
+	debug.marpa/slif/container/attribute {}
 	return $myattr
     }
 
     method deserialize {blob} {
-	debug.marpa/slif/attribute {}
+	debug.marpa/slif/container/attribute {}
 	# No simple assignment, have to validate structure (dict),
 	# attribute legality, and value validity => We are going
 	# through the proper API method for all of that.
@@ -87,32 +90,18 @@ oo::class create marpa::slif::attribute {
 	return
     }
 
-    method := {origin} {
-	debug.marpa/slif/attribute {}
-	my deserialize [$origin serialize]
-	return
-    }
-    export :=
-
-    method --> {destination} {
-	debug.marpa/slif/attribute {}
-	$destination deserialize [my serialize]
-	return
-    }
-    export -->
-
     # # -- --- ----- -------- -------------
     ## Internal methods
 
     method ValidateA {attribute} {
-	debug.marpa/slif/attribute {}
+	debug.marpa/slif/container/attribute {}
 	if {[dict exists $myspec $attribute]} return
 	my E "Illegal attribute '$attribute'" \
 	    ILLEGAL ATTRIBUTE $attribute
     }
 
     method ValidateV {attribute value} {
-	debug.marpa/slif/attribute {}
+	debug.marpa/slif/container/attribute {}
 	set def [dict get $myspec $attribute]
 	if {![dict exists $def validate]} {
 	    return $value

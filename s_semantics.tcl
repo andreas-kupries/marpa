@@ -914,40 +914,17 @@ oo::class create marpa::slif::semantics {
 
     method CCLASS {} {
 	debug.marpa/slif/semantics {[debug caller] | [AT][INDENT]}
-	upvar 1 children children
-	lassign [lindex $children 0] start length literal
 
-	SymCo assert usage
-	# Expect RHS
+	set result [my MAKE-LITERAL charclass NORMCLASS]
 
-	set layer [SymCo layer?]
+	debug.marpa/slif/semantics {[UNDENT][debug caller] | [AT] ==> $result}
+	return $result
+    }
 
-	lassign [my NORMCLASS $literal] spec nocase litsymbol
-	usage      add $start $length  $literal $litsymbol
-	definition add $start $length  $literal $litsymbol
+    method CSTRING {} {
+	debug.marpa/slif/semantics {[debug caller] | [AT][INDENT]}
 
-	dict set mycc $litsymbol $literal
-	# Remember actual literal for use in (discard rule/1)
-
-	# The literal is (always) a terminal in the L0 grammar.
-	Symbol context1 <literal> $litsymbol
-	Container l0 charclass    $litsymbol $spec $nocase
-
-	if {$layer eq "l0"} {
-	    set result $litsymbol
-	} else {
-	    # We are in the G1 layer.
-	    # The literal cannot be used directly.
-	    # We need a lexeme around it, and an associated match rule.
-
-	    set lexeme @LEX:$litsymbol
-	    definition add $start $length $lexeme
-	    Symbol context1 l0-definition $lexeme ; # Issue container ops
-	    Symbol context1 :lexeme       $lexeme ; # Issue container ops
-	    Container l0 priority-rule $lexeme $litsymbol 0
-
-	    set result $lexeme
-	}
+	set result [my MAKE-LITERAL string NORMSTR]
 
 	debug.marpa/slif/semantics {[UNDENT][debug caller] | [AT] ==> $result}
 	return $result
@@ -1013,7 +990,7 @@ oo::class create marpa::slif::semantics {
 	# compression to ranges where possible.
 
 	#puts NCC:E:($spec)
-	set spec [RANGES [lsort -unique $spec]]
+	set spec [RANGES [lsort -dict -unique $spec]]
 	#puts NCC:C:($spec)
 
 	# Generate a symbol from the normalized spec.  This symbol
@@ -1023,45 +1000,10 @@ oo::class create marpa::slif::semantics {
 
 	set symbol [my SYM @LCC:<> $nocase $spec]
 
+	dict set mycc $symbol $literal
+	# Remember the actual literal mapping for use in (discard rule/1)
+
 	return [list $spec $nocase $symbol]
-    }
-
-    method CSTRING {} {
-	debug.marpa/slif/semantics {[debug caller] | [AT][INDENT]}
-	upvar 1 children children
-	lassign [lindex $children 0] start length literal
-
-	SymCo assert usage
-	# Expect RHS
-
-	set layer [SymCo layer?]
-
-	lassign [my NORMSTR $literal] spec nocase litsymbol
-	usage      add $start $length  $literal $litsymbol
-	definition add $start $length  $literal $litsymbol
-
-	# The literal is (always) a terminal in the L0 grammar.
-	Container l0 string $litsymbol $spec $nocase
-	Symbol context1 <literal> $litsymbol
-
-	if {$layer eq "l0"} {
-	    set result $litsymbol
-	} else {
-	    # We are in the G1 layer.
-	    # The literal cannot be used directly.
-	    # We need a lexeme around it, and a match rule.
-
-	    set lexeme @LEX:$litsymbol
-	    definition add $start $length $lexeme
-	    Symbol context1 l0-definition $lexeme ; # Issue container ops
-	    Symbol context1 :lexeme       $lexeme ; # Issue container ops
-	    Container l0 priority-rule $lexeme $litsymbol 0
-
-	  set result $lexeme
-	}
-
-	debug.marpa/slif/semantics {[UNDENT][debug caller] | [AT] ==> $result}
-	return $result
     }
 
     method NORMSTR {literal} {
@@ -1198,6 +1140,54 @@ oo::class create marpa::slif::semantics {
 	append symbol [string index $base end]
 	if {$nocase} { append symbol :i }
 	return $symbol
+    }
+
+    method MAKE-LITERAL {type processor} {
+	SymCo assert usage
+	# Expect RHS
+
+	upvar 2 children children
+	lassign [lindex $children 0] start length literal
+	lassign [my $processor $literal] spec nocase litsymbol
+
+	usage      add $start $length  $literal $litsymbol
+	definition add $start $length  $literal $litsymbol
+
+	# The literal is (always) a terminal in the L0 grammar.
+	# Create it only once, when it is encountred the 1st time.
+	if {[Symbol context1 <literal> $litsymbol] eq "undef"} {
+	    Container l0 $type $litsymbol $spec $nocase
+	}
+
+	if {[SymCo layer?] eq "l0"} {
+	    set result $litsymbol
+	} else {
+	    # We are in the G1 layer.
+	    # The literal cannot be used directly.
+	    # We need a lexeme around it, and an associated match rule.
+
+	    set result [my MAKE-LEXEME $litsymbol $start $length]
+	}
+
+	debug.marpa/slif/semantics {[UNDENT][debug caller] | [AT] ==> $result}
+	return $result
+    }
+
+    method MAKE-LEXEME {litsymbol start length} {
+	set lexeme @LEX:$litsymbol
+
+	definition add $start $length $lexeme
+
+	set pre [Symbol context1 l0-definition $lexeme] ; # Issue container ops
+	Symbol context1 :lexeme $lexeme ; # Issue container ops
+
+	# Create the lexeme (rule|definition) only once, when it is
+	# encountered the 1st time.
+	if {$pre eq "undef"} {
+	    Container l0 priority-rule $lexeme $litsymbol 0
+	}
+
+	return $lexeme
     }
 
     # # ## ### ##### ######## #############

@@ -16,31 +16,36 @@ package require debug
 package require debug::caller
 package require oo::util      ;# mymethod
 
-debug define marpa/slif/attr/global
-#debug prefix marpa/slif/attr/global {[debug caller] | }
+debug define marpa/slif/container/attribute/global
+#debug prefix marpa/slif/container/attribute/global {[debug caller] | }
 
 # # ## ### ##### ######## #############
 ## 
 
-oo::class create marpa::slif::attr/global {
-    superclass marpa::slif::attribute
-    marpa::E marpa/slif/attr/global SLIF ATTR-GLOBAL
+oo::class create marpa::slif::container::attribute::global {
+    superclass marpa::slif::container::attribute
+
+    marpa::E marpa/slif/container/attribute/global \
+	SLIF CONTAINER ATTRIBUTE GLOBAL
 
     constructor {container} {
-	debug.marpa/slif/attr/global {}
+	debug.marpa/slif/container/attribute/global {}
 	marpa::import $container Container
 
-	next inaccessible [dict create \
-	       default  warn \
-	       validate [mymethod v-inaccessible] \
-	] start [dict create \
-		     validate [mymethod v-start]]
+	marpa A   default  warn
+	marpa A   validate [mymethod v-inaccessible]
+	marpa C inaccessible
+	marpa A   validate [mymethod v-start]
+	marpa C start
+
+	next {*}$spec
+	return
     }
 
     # # ## ### ##### ######## #############
 
     method v-inaccessible {_validate_ value} {
-	debug.marpa/slif/attr/global {}
+	debug.marpa/slif/container/attribute/global {}
 	if {$value in {fatal ok warn}} {
 	    return $value
 	}
@@ -49,8 +54,8 @@ oo::class create marpa::slif::attr/global {
     }
 
     method v-start {_validate_ symbol} {
-	debug.marpa/slif/attr/global {}
-	# TODO - Container g1 musthave! $symbol
+	debug.marpa/slif/container/attribute/global {}
+	Container g1 must-have $symbol
 	return $symbol
     }
 

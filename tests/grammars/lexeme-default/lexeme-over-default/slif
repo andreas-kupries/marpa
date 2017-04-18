@@ -1,7 +1,7 @@
 :lexeme ~ foo latm => 1
 lexeme default = latm => 0
 :lexeme ~ bar latm => 0
-:start ::= A
+
 A ::= foo bar
 foo ~ 'f'
 bar ~ 'b'

@@ -4,8 +4,8 @@ GC comment usage 'a' 4 3
 GC comment usage @LIT:<a> 4 3
 GC comment definition 'a' 4 3
 GC comment definition @LIT:<a> 4 3
-GC l0 string @LIT:<a> 97 0
 GC comment <literal> @LIT:<a> undef --> {JMP literal}
+GC l0 string @LIT:<a> 97 0
 GC comment l0-usage @LIT:<a> literal --> NOP
 GC l0 priority-rule A @LIT:<a> 0
 GC comment definition B 8 1

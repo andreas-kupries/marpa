@@ -20,7 +20,36 @@ debug prefix marpa/support {[debug caller] | }
 # # ## ### ##### ######## #############
 
 namespace eval marpa {
-    namespace export D DX E EP X import filter K
+    namespace export D DX E EP X import filter K A C C*
+}
+
+# # ## ### ##### ######## #############
+## Incremental dict assembly, helper for moving.
+
+proc marpa::A {k v} {
+    upvar 1 tmp tmp
+    dict set tmp $k $v
+    return
+}
+
+proc marpa::C {k} {
+    upvar 1 tmp tmp spec spec
+    dict set spec $k $tmp
+    unset tmp
+    return
+}
+
+proc marpa::C* {k} {
+    upvar 1 spec spec
+    dict set spec $k {}
+    return
+}
+
+proc marpa::dict-move {dvdst key dvsrc} {
+upvar 1 $dvdst dst $dvsrc src
+    dict set dst $key $src
+    unset src
+    return
 }
 
 # # ## ### ##### ######## #############

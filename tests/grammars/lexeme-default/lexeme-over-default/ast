@@ -26,16 +26,11 @@ statements/0
           adverb item lexeme/1
             latm specification/1
               @73 1 '0'
-  statement/0
-    start rule/0
-      symbol/0
-        symbol name/0
-          @86 1 'A'
   statement/4
     priority rule/0
       lhs/0
         symbol name/0
-          @88 1 'A'
+          @76 1 'A'
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -44,34 +39,34 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @94 3 'foo'
+                      @82 3 'foo'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @98 3 'bar'
+                      @86 3 'bar'
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/0
-          @102 3 'foo'
+          @90 3 'foo'
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @108 3 ''f''
+                @96 3 ''f''
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/0
-          @112 3 'bar'
+          @100 3 'bar'
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @118 3 ''b''
+                @106 3 ''b''
             @{} {} ''

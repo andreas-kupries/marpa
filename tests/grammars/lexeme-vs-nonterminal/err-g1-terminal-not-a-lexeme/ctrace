@@ -5,7 +5,6 @@ GC comment g1-usage B undef --> {JMP floater}
 GC g1 priority-rule A B 0 action {array values} bless {special undef} mask 0
 GC comment usage A 54 1
 GC comment g1-usage A brick --> NOP
-GC start! A
 GC comment Semantics completion processing
 
 	GC error {Grammar error. G1 symbol <B> has no definition

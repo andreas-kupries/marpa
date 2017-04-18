@@ -1,5 +1,5 @@
 foo ~ 'ab'
 lexeme default = latm => 0
 bar ~ [a]
-start ::= A
+
 A ::= foo bar

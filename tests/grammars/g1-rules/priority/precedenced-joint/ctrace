@@ -73,8 +73,8 @@ GC comment usage '(' 129 3
 GC comment usage {@LIT:<\50>} 129 3
 GC comment definition '(' 129 3
 GC comment definition {@LIT:<\50>} 129 3
-GC l0 string {@LIT:<\50>} 40 0
 GC comment <literal> {@LIT:<\50>} undef --> {JMP literal}
+GC l0 string {@LIT:<\50>} 40 0
 GC comment l0-usage {@LIT:<\50>} literal --> NOP
 GC l0 priority-rule PO {{@LIT:<\50>}} 0
 GC comment definition PC 133 2
@@ -85,8 +85,8 @@ GC comment usage ')' 139 3
 GC comment usage {@LIT:<\51>} 139 3
 GC comment definition ')' 139 3
 GC comment definition {@LIT:<\51>} 139 3
-GC l0 string {@LIT:<\51>} 41 0
 GC comment <literal> {@LIT:<\51>} undef --> {JMP literal}
+GC l0 string {@LIT:<\51>} 41 0
 GC comment l0-usage {@LIT:<\51>} literal --> NOP
 GC l0 priority-rule PC {{@LIT:<\51>}} 0
 GC comment definition POW 143 3
@@ -97,8 +97,8 @@ GC comment usage '**' 149 4
 GC comment usage @LIT:<**> 149 4
 GC comment definition '**' 149 4
 GC comment definition @LIT:<**> 149 4
-GC l0 string @LIT:<**> {42 42} 0
 GC comment <literal> @LIT:<**> undef --> {JMP literal}
+GC l0 string @LIT:<**> {42 42} 0
 GC comment l0-usage @LIT:<**> literal --> NOP
 GC l0 priority-rule POW @LIT:<**> 0
 GC comment definition MUL 154 3
@@ -109,8 +109,8 @@ GC comment usage '*' 160 3
 GC comment usage @LIT:<*> 160 3
 GC comment definition '*' 160 3
 GC comment definition @LIT:<*> 160 3
-GC l0 string @LIT:<*> 42 0
 GC comment <literal> @LIT:<*> undef --> {JMP literal}
+GC l0 string @LIT:<*> 42 0
 GC comment l0-usage @LIT:<*> literal --> NOP
 GC l0 priority-rule MUL @LIT:<*> 0
 GC comment definition DIV 164 3
@@ -121,8 +121,8 @@ GC comment usage '/' 170 3
 GC comment usage @LIT:</> 170 3
 GC comment definition '/' 170 3
 GC comment definition @LIT:</> 170 3
-GC l0 string @LIT:</> 47 0
 GC comment <literal> @LIT:</> undef --> {JMP literal}
+GC l0 string @LIT:</> 47 0
 GC comment l0-usage @LIT:</> literal --> NOP
 GC l0 priority-rule DIV @LIT:</> 0
 GC comment definition ADD 174 3
@@ -133,8 +133,8 @@ GC comment usage '+' 180 3
 GC comment usage @LIT:<+> 180 3
 GC comment definition '+' 180 3
 GC comment definition @LIT:<+> 180 3
-GC l0 string @LIT:<+> 43 0
 GC comment <literal> @LIT:<+> undef --> {JMP literal}
+GC l0 string @LIT:<+> 43 0
 GC comment l0-usage @LIT:<+> literal --> NOP
 GC l0 priority-rule ADD @LIT:<+> 0
 GC comment definition SUB 184 3
@@ -145,8 +145,8 @@ GC comment usage '-' 190 3
 GC comment usage @LIT:<-> 190 3
 GC comment definition '-' 190 3
 GC comment definition @LIT:<-> 190 3
-GC l0 string @LIT:<-> 45 0
 GC comment <literal> @LIT:<-> undef --> {JMP literal}
+GC l0 string @LIT:<-> 45 0
 GC comment l0-usage @LIT:<-> literal --> NOP
 GC l0 priority-rule SUB @LIT:<-> 0
 GC comment definition N 194 1

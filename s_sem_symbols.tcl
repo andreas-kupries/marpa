@@ -230,6 +230,9 @@ oo::class create marpa::slif::semantics::Symbol {
 
     method @ {symbol} {
 	debug.marpa/slif/semantics {}
+	if {![dict exists $mysym $symbol]} {
+	    return undef
+	}
 	return [dict get $mysym $symbol]
     }
     export @
@@ -250,7 +253,10 @@ oo::class create marpa::slif::semantics::Symbol {
 
 	Container comment $context $sym $current --> $action
 	eval $action
-	return
+
+	# Return the new previous state of the context machine, for
+	# callers to make decisions on.
+	return $current
     }
 
     method finalize {} {

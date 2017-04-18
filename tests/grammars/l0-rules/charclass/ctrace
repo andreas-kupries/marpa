@@ -7,8 +7,8 @@ GC comment l0-definition A undef --> {JMP match}
 	GC comment definition @LCC:<0-9> 4 5
 	GC comment <literal> @LCC:<0-9> undef --> {JMP literal}
 
-	GC l0 charclass @LCC:<0-9> {{48 57}} 0
 
+	GC l0 charclass @LCC:<0-9> {{48 57}} 0
 	GC comment l0-usage @LCC:<0-9> literal --> NOP
 
 GC l0 priority-rule A @LCC:<0-9> 0

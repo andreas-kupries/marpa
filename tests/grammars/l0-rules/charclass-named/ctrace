@@ -7,8 +7,8 @@ GC comment l0-definition A undef --> {JMP match}
 	GC comment definition {@LCC:<[:xdigit:]Q>} 4 13
 	GC comment <literal> {@LCC:<[:xdigit:]Q>} undef --> {JMP literal}
 
-	GC l0 charclass {@LCC:<[:xdigit:]Q>} {:xdigit 81} 0
 
+	GC l0 charclass {@LCC:<[:xdigit:]Q>} {:xdigit 81} 0
 GC comment l0-usage {@LCC:<[:xdigit:]Q>} literal --> NOP
 GC l0 priority-rule A {{@LCC:<[:xdigit:]Q>}} 0
 GC comment definition lang 18 4

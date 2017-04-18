@@ -6,14 +6,16 @@ GC comment g1-definition A undef --> {JMP brick}
 	GC comment definition 'foXoyo':ic:i:i:ic 6 18
 	GC comment definition @LIT:<FOXOYO>:i 6 18
 
+	GC comment <literal> @LIT:<FOXOYO>:i undef --> {JMP literal}
 	GC l0 string @LIT:<FOXOYO>:i {70 79 88 79 89 79} 1
 
-GC comment <literal> @LIT:<FOXOYO>:i undef --> {JMP literal}
-GC comment definition @LEX:@LIT:<FOXOYO>:i 6 18
-GC comment l0-definition @LEX:@LIT:<FOXOYO>:i undef --> {JMP match}
-GC comment :lexeme @LEX:@LIT:<FOXOYO>:i match --> {JMP lexeme make-lexeme}
-GC l0 lexeme @LEX:@LIT:<FOXOYO>:i
-GC g1 terminal @LEX:@LIT:<FOXOYO>:i
+	GC comment definition @LEX:@LIT:<FOXOYO>:i 6 18
+	GC comment l0-definition @LEX:@LIT:<FOXOYO>:i undef --> {JMP match}
+
+	GC comment :lexeme @LEX:@LIT:<FOXOYO>:i match --> {JMP lexeme make-lexeme}
+	GC l0 lexeme @LEX:@LIT:<FOXOYO>:i
+	GC g1 terminal @LEX:@LIT:<FOXOYO>:i
+
 GC l0 priority-rule @LEX:@LIT:<FOXOYO>:i @LIT:<FOXOYO>:i 0
 GC comment g1-usage @LEX:@LIT:<FOXOYO>:i lexeme --> NOP
 GC g1 priority-rule A @LEX:@LIT:<FOXOYO>:i 0 action {array values} bless {special undef} mask 0

@@ -7,8 +7,8 @@ GC comment usage 'b' 35 3
 GC comment usage @LIT:<b> 35 3
 GC comment definition 'b' 35 3
 GC comment definition @LIT:<b> 35 3
-GC l0 string @LIT:<b> 98 0
 GC comment <literal> @LIT:<b> undef --> {JMP literal}
+GC l0 string @LIT:<b> 98 0
 GC comment definition @LEX:@LIT:<b> 35 3
 GC comment l0-definition @LEX:@LIT:<b> undef --> {JMP match}
 GC comment :lexeme @LEX:@LIT:<b> match --> {JMP lexeme make-lexeme}

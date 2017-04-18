@@ -9,8 +9,8 @@ GC comment usage 'a' 34 3
 GC comment usage @LIT:<a> 34 3
 GC comment definition 'a' 34 3
 GC comment definition @LIT:<a> 34 3
-GC l0 string @LIT:<a> 97 0
 GC comment <literal> @LIT:<a> undef --> {JMP literal}
+GC l0 string @LIT:<a> 97 0
 GC comment definition @LEX:@LIT:<a> 34 3
 GC comment l0-definition @LEX:@LIT:<a> undef --> {JMP match}
 GC comment :lexeme @LEX:@LIT:<a> match --> {JMP lexeme make-lexeme}

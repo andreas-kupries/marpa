@@ -1,6 +1,5 @@
 lexeme default = latm => 0
 :lexeme ~ foo
 
-:start ::= A
 A ::= foo
 foo ~ 'a'

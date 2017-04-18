@@ -58,8 +58,10 @@ test-grammar-map ctrace --> id ctrace base {
     # Ignore traces for parse and/or semantic errors.
     if {[string match {*GC error*} $input]} continue
 
-    set expected [fileutil::cat [file join $base gcstate]]
+    set expected [string trimright [fileutil::cat [file join $base gcstate]]]
     set kd       [format $format $k]
+
+    #puts ZZZ\t[join [split $input \n] \nZZZ\t]
 
     test marpa-slif-container-by-trace-2.${kd}---${id} "by-trace $id" -setup {
 	marpa::slif::container create GC
@@ -68,9 +70,10 @@ test-grammar-map ctrace --> id ctrace base {
 	    # Trace of GC method calls filling the container.
 	    eval $input
 	} msg]} {
+	    #puts $::errorInfo
 	    set msg
 	} else {
-	    pretty-gcstate [GC serialize]
+	    gc-format [GC serialize]
 	}
     } -cleanup {
 	unset -nocomplain msg
@@ -79,6 +82,9 @@ test-grammar-map ctrace --> id ctrace base {
 
     incr k
 }
+
+# # ## ### ##### ######## ############# #####################
+## TODO slif::container -- Test individual methods
 
 # # ## ### ##### ######## ############# #####################
 cleanupTests

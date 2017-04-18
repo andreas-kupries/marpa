@@ -7,7 +7,6 @@ GC comment l0-definition B undef --> {JMP match}
 
 GC comment usage A 40 1
 GC comment g1-usage A undef --> {JMP floater}
-GC start! A
 GC comment definition A 42 1
 GC comment g1-definition A floater --> {JMP brick}
 GC comment usage B 48 1

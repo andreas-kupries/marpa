@@ -7,8 +7,8 @@ GC comment g1-definition A undef --> {JMP brick}
 	GC comment definition @LCC:<4A-Z>:i 6 16
 
 	GC comment <literal> @LCC:<4A-Z>:i undef --> {JMP literal}
-	GC l0 charclass @LCC:<4A-Z>:i {52 {65 90}} 1
 
+	GC l0 charclass @LCC:<4A-Z>:i {52 {65 90}} 1
 	GC comment definition @LEX:@LCC:<4A-Z>:i 6 16
 	GC comment l0-definition @LEX:@LCC:<4A-Z>:i undef --> {JMP match}
 

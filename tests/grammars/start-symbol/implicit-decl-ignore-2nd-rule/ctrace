@@ -16,8 +16,8 @@ GC comment usage 'c' 21 3
 GC comment usage @LIT:<c> 21 3
 GC comment definition 'c' 21 3
 GC comment definition @LIT:<c> 21 3
-GC l0 string @LIT:<c> 99 0
 GC comment <literal> @LIT:<c> undef --> {JMP literal}
+GC l0 string @LIT:<c> 99 0
 GC comment l0-usage @LIT:<c> literal --> NOP
 GC l0 priority-rule C @LIT:<c> 0
 GC comment Semantics completion processing

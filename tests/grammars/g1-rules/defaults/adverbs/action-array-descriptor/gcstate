@@ -1,0 +1,32 @@
+grammar {
+    global {
+        start B
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            B { {priority @LEX:@LIT:<b> 0
+                    action {array {values start}}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            @LEX:@LIT:<b> { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        {} {
+            @LIT:<b> { {string 98 0} }
+        }
+        latm {
+            @LEX:@LIT:<b> 1
+        }
+        lexeme {
+            @LEX:@LIT:<b> { {priority @LIT:<b> 0} }
+        }
+    }
+}

@@ -130,34 +130,44 @@ critcl::tsources p_parser.tcl    ; # Parser, structure lexemes into
 
 # SLIF support classes
 ##
-#critcl::tsources s_id.tcl         ; # Id generator
-#critcl::tsources s_symbol.tcl     ; # Basic symbols
-#critcl::tsources s_atom.tcl       ; # Basic atoms for L0
-#critcl::tsources s_character.tcl  ; # - Character atoms
-#critcl::tsources s_charclass.tcl  ; # - Charclass atoms
-#critcl::tsources s_rule.tcl       ; # Basic rules
-#critcl::tsources s_quantified.tcl ; # - Quantified rules, i.e. lists, sequences
-#critcl::tsources s_bnf.tcl        ; # - BNF rules
-#critcl::tsources s_grammar.tcl    ; # Basic grammar (symbols and rules)
-#critcl::tsources s_g1grammar.tcl  ; # - G1-specific extension of the basics
-#critcl::tsources s_l0grammar.tcl  ; # - L0-specific extension of the basics
-critcl::tsources s_attr.tcl        ; # SLIF attribute base
-critcl::tsources s_cglobalattr.tcl ; # SLIF global container attributes
-critcl::tsources s_clexsemattr.tcl ; # SLIF lexeme-semantics attributes
-critcl::tsources s_container.tcl   ; # SLIF container
 
-critcl::tsources s_semantics.tcl     ; # SLIF semantics, driven by AST
-critcl::tsources s_sem_debug.tcl     ; # - Debug support
-critcl::tsources s_sem_start.tcl     ; # - Start symbol handling
-critcl::tsources s_sem_fixup.tcl     ; # - Defered adverb handling
-critcl::tsources s_sem_defaults.tcl  ; # - Defaults, generic
-critcl::tsources s_sem_context.tcl   ; # - Symbol context
-critcl::tsources s_sem_flags.tcl     ; # - Flags, generic
-critcl::tsources s_sem_singleton.tcl ; # - Singleton, generic
-critcl::tsources s_sem_locations.tcl ; # - Locations for items.
-critcl::tsources s_sem_symbols.tcl   ; # - Item state machine.
+critcl::tsources s_parser.tcl          ; # SLIF Parser (hardwired)
 
-critcl::tsources s_parser.tcl ; # Parser hardwired for SLIF
+critcl::tsources s_semantics.tcl       ; # SLIF semantics, driven by AST
+critcl::tsources s_sem_debug.tcl       ; # - Debug support
+critcl::tsources s_sem_start.tcl       ; # - Start symbol handling
+critcl::tsources s_sem_fixup.tcl       ; # - Defered adverb handling
+critcl::tsources s_sem_defaults.tcl    ; # - Defaults, generic
+critcl::tsources s_sem_context.tcl     ; # - Symbol context
+critcl::tsources s_sem_flags.tcl       ; # - Flags, generic
+critcl::tsources s_sem_singleton.tcl   ; # - Singleton, generic
+critcl::tsources s_sem_locations.tcl   ; # - Locations for items.
+critcl::tsources s_sem_symbols.tcl     ; # - Item state machine.
+
+critcl::tsources sc_serdes.tcl         ; # - Abstract (de)serialization base
+critcl::tsources s_container.tcl       ; # SLIF container
+critcl::tsources sc_atom.tcl           ; # - Basic grammar atoms
+critcl::tsources sc_atom_string.tcl    ; #   - L0 string
+critcl::tsources sc_atom_charclass.tcl ; #   - L0 character class
+critcl::tsources sc_atom_character.tcl ; #   - L0 character
+critcl::tsources sc_atom_terminal.tcl  ; #   - G1 terminal (L0 class lexeme)
+critcl::tsources sc_alter.tcl          ; # - Generic alternative in priority rules
+critcl::tsources sc_priority.tcl       ; # - Generic priority rules
+critcl::tsources sc_priority_g1.tcl    ; #   - Specialized to G1 (attributes)
+critcl::tsources sc_priority_l0.tcl    ; #   - Specialized to L0 (attributes)
+critcl::tsources sc_quantified.tcl     ; # - Generic quantified rules
+critcl::tsources sc_quantified_g1.tcl  ; #   - Specialized to G1 (attributes)
+critcl::tsources sc_quantified_l0.tcl  ; #   - Specialized to L0 (attributes)
+critcl::tsources sc_grammar.tcl        ; # - Basic grammar (symbols in various forms)
+critcl::tsources sc_grammar_g1.tcl     ; #   - G1-specific extension of the basics
+critcl::tsources sc_grammar_l0.tcl     ; #   - L0-specific extension of the basics
+critcl::tsources sc_attribute.tcl      ; # - Attribute base
+critcl::tsources sc_attr_global.tcl    ; #   - global container attributes
+critcl::tsources sc_attr_lexsem.tcl    ; #   - lexeme-semantics attributes
+critcl::tsources sc_attr_prio_g1.tcl   ; #   - Priority G1 rule attributes
+critcl::tsources sc_attr_prio_l0.tcl   ; #   - Priority L0 rule attributes
+critcl::tsources sc_attr_quant_g1.tcl  ; #   - Quantified G1 rule attributes
+critcl::tsources sc_attr_quant_l0.tcl  ; #   - Quantified L0 rule attributes
 
 # Experimental work on an alternate grammar container (vs
 # p_grammar.tcl) ...

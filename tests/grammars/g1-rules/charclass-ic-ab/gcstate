@@ -1,0 +1,32 @@
+grammar {
+    global {
+        start A
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            A { {priority @LEX:@LCC:<4A-Z>:i 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            @LEX:@LCC:<4A-Z>:i { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        {} {
+            @LCC:<4A-Z>:i { {charclass {52 {65 90}} 1} }
+        }
+        latm {
+            @LEX:@LCC:<4A-Z>:i 1
+        }
+        lexeme {
+            @LEX:@LCC:<4A-Z>:i { {priority @LCC:<4A-Z>:i 0} }
+        }
+    }
+}

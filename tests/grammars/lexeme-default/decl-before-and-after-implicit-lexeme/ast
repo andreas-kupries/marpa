@@ -35,7 +35,7 @@ statements/0
     priority rule/0
       lhs/0
         symbol name/0
-          @48 5 'start'
+          @49 1 'A'
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -44,25 +44,10 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @58 1 'A'
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/0
-          @60 1 'A'
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
+                      @55 3 'foo'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @66 3 'foo'
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/0
-                      @70 3 'bar'
+                      @59 3 'bar'
             @{} {} ''

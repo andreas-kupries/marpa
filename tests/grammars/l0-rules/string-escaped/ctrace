@@ -6,9 +6,8 @@ GC comment g1-definition A undef --> {JMP brick}
 	GC comment definition {'\a\b\t\n\v\f\r\\a\5\67\377\xab\u3456|'} 6 39
 	GC comment definition {@LIT:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39
 
-	GC l0 string {@LIT:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} {7 8 9 10 11 12 13 92 97 5 55 255 171 13398 124} 0
-
 	GC comment <literal> {@LIT:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} undef --> {JMP literal}
+	GC l0 string {@LIT:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} {7 8 9 10 11 12 13 92 97 5 55 255 171 13398 124} 0
 
 GC comment definition {@LEX:@LIT:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39
 GC comment l0-definition {@LEX:@LIT:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} undef --> {JMP match}

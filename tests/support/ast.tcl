@@ -9,13 +9,13 @@
 # # ## ### ##### ######## #############
 ## Pretty printing an AST coming out of the SLIF parser
 
-proc pretty-ast {ast {step {  }}} {
+proc ast-format {ast {step {  }}} {
     set lines {}
-    pretty-ast-acc $ast {} $step
+    ast-format-acc $ast {} $step
     return [join $lines \n]
 }
 
-proc pretty-ast-acc {ast indent step} {
+proc ast-format-acc {ast indent step} {
     upvar 1 lines lines
     lassign $ast symbol children
 
@@ -28,7 +28,7 @@ proc pretty-ast-acc {ast indent step} {
     lappend lines $indent$symbol
     append indent $step
     foreach child $children {
-	pretty-ast-acc $child $indent $step
+	ast-format-acc $child $indent $step
     }
     return
 }

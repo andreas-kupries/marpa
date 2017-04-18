@@ -92,7 +92,7 @@ test-grammar-map slif --> id slif base {
 	    marpa::slif::parser create SP
 	} -body {
 	    if {[catch {
-		pretty-ast [SP process $input]
+		ast-format [SP process $input]
 	    } msg]} {
 		puts ZZZ:$::errorInfo
 	    }
@@ -110,7 +110,7 @@ test-grammar-map slif --> id slif base {
 	marpa::slif::parser create SP
     } -body {
 	catch {
-	    pretty-ast [SP process $input]
+	    ast-format [SP process $input]
 	} msg
 	set msg
     } -cleanup {
@@ -122,7 +122,7 @@ test-grammar-map slif --> id slif base {
 	marpa::slif::parser create SP
     } -body {
 	catch {
-	    pretty-ast [SP process-file $slif]
+	    ast-format [SP process-file $slif]
 	} msg
 	set msg
     } -cleanup {

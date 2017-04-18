@@ -1,4 +1,3 @@
-
 	GC comment LATM default: 0
 
 GC comment definition foo 27 3
@@ -7,21 +6,19 @@ GC comment usage 'ab' 33 4
 GC comment usage @LIT:<ab> 33 4
 GC comment definition 'ab' 33 4
 GC comment definition @LIT:<ab> 33 4
-GC l0 string @LIT:<ab> {97 98} 0
 GC comment <literal> @LIT:<ab> undef --> {JMP literal}
+GC l0 string @LIT:<ab> {97 98} 0
 GC comment l0-usage @LIT:<ab> literal --> NOP
 GC l0 priority-rule foo @LIT:<ab> 0
-GC comment usage A 49 1
-GC comment g1-usage A undef --> {JMP floater}
-GC start! A
-GC comment definition A 51 1
-GC comment g1-definition A floater --> {JMP brick}
-GC comment usage foo 57 3
+GC comment definition A 39 1
+GC comment g1-definition A undef --> {JMP brick}
+GC comment usage foo 45 3
 GC comment g1-usage foo match --> {JMP lexeme make-lexeme}
 GC l0 lexeme foo
 GC g1 terminal foo
 GC g1 priority-rule A foo 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
+GC start! A
 
 	GC comment LATM fix 0
 	GC l0 configure foo latm 0

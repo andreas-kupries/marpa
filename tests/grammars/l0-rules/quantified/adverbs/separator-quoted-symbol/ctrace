@@ -20,8 +20,8 @@ GC comment usage 'b' 39 3
 GC comment usage @LIT:<b> 39 3
 GC comment definition 'b' 39 3
 GC comment definition @LIT:<b> 39 3
-GC l0 string @LIT:<b> 98 0
 GC comment <literal> @LIT:<b> undef --> {JMP literal}
+GC l0 string @LIT:<b> 98 0
 GC comment l0-usage @LIT:<b> literal --> NOP
 GC l0 priority-rule B @LIT:<b> 0
 GC comment definition {C X} 43 5
@@ -30,8 +30,8 @@ GC comment usage 'c' 51 3
 GC comment usage @LIT:<c> 51 3
 GC comment definition 'c' 51 3
 GC comment definition @LIT:<c> 51 3
-GC l0 string @LIT:<c> 99 0
 GC comment <literal> @LIT:<c> undef --> {JMP literal}
+GC l0 string @LIT:<c> 99 0
 GC comment l0-usage @LIT:<c> literal --> NOP
 GC l0 priority-rule {C X} @LIT:<c> 0
 GC comment Semantics completion processing

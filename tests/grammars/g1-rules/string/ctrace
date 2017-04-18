@@ -6,9 +6,9 @@ GC comment g1-definition A undef --> {JMP brick}
 	GC comment definition 'string' 6 8
 	GC comment definition @LIT:<string> 6 8
 
-	GC l0 string @LIT:<string> {115 116 114 105 110 103} 0
 
 	GC comment <literal> @LIT:<string> undef --> {JMP literal}
+	GC l0 string @LIT:<string> {115 116 114 105 110 103} 0
 	GC comment definition @LEX:@LIT:<string> 6 8
 	GC comment l0-definition @LEX:@LIT:<string> undef --> {JMP match}
 

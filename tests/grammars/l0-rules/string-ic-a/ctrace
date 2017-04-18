@@ -6,9 +6,8 @@ GC comment l0-definition A undef --> {JMP match}
 	GC comment definition {'case-insensitive string':i} 4 27
 	GC comment definition {@LIT:<CASE-INSENSITIVE\40STRING>:i} 4 27
 
-	GC l0 string {@LIT:<CASE-INSENSITIVE\40STRING>:i} {67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71} 1
-
 	GC comment <literal> {@LIT:<CASE-INSENSITIVE\40STRING>:i} undef --> {JMP literal}
+	GC l0 string {@LIT:<CASE-INSENSITIVE\40STRING>:i} {67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71} 1
 
 GC comment l0-usage {@LIT:<CASE-INSENSITIVE\40STRING>:i} literal --> NOP
 GC l0 priority-rule A {{@LIT:<CASE-INSENSITIVE\40STRING>:i}} 0

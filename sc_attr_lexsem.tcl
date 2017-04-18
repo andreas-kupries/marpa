@@ -16,31 +16,43 @@ package require debug
 package require debug::caller
 package require oo::util      ;# mymethod
 
-debug define marpa/slif/attr/lexsem
-#debug prefix marpa/slif/attr/lexsem {[debug caller] | }
+debug define marpa/slif/container/attribute/lexsem
+#debug prefix marpa/slif/container/attribute/lexsem {[debug caller] | }
 
 # # ## ### ##### ######## #############
 ## 
 
-oo::class create marpa::slif::attr/lexsem {
-    superclass marpa::slif::attribute
-    marpa::E marpa/slif/attr/lexsem SLIF ATTR-LEXSEM
+oo::class create marpa::slif::container::attribute::lexsem {
+    superclass marpa::slif::container::attribute
 
-    constructor {container} {
-	debug.marpa/slif/attr/lexsem {}
-	marpa::import $container Container
+    marpa::E marpa/slif/container/attribute/lexsem \
+	SLIF CONTAINER ATTRIBUTE LEXSEM
 
-	next action [dict create \
-	     default {array values} \
-	     validate [mymethod v-action] \
-	] bless [dict create \
-	     validate [mymethod v-bless]]
+    constructor {} {
+	debug.marpa/slif/container/attribute/lexsem {}
+
+	marpa A   default  {array values}	 
+	marpa A   validate [mymethod v-action]
+	marpa C action
+	marpa A   validate [mymethod v-bless]
+	marpa C bless
+
+	next {*}$spec
+	return
     }
 
     # # ## ### ##### ######## #############
 
+    method v-bool {_validate_ value} {
+	debug.marpa/slif/container/attribute/lexsem {}
+	if {[string is bool -strict $value]} {
+	    return $value
+	}
+	my E "Expected a boolean, got '$value'"
+    }
+
     method v-action {_validate_ value} {
-	debug.marpa/slif/attr/lexsem {}
+	debug.marpa/slif/container/attribute/lexsem {}
 	lassign $value type details
 	if {$type in {array cmd}} {
 	    if {$type eq "array"} {
@@ -60,7 +72,7 @@ oo::class create marpa::slif::attr/lexsem {
     }
 
     method v-bless {_validate_ value} {
-	debug.marpa/slif/attr/lexsem {}
+	debug.marpa/slif/container/attribute/lexsem {}
 	lassign $value type details
 	if {$type in {special standard}} {
 	    # TODO: check supported specials ?
