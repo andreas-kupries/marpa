@@ -41,6 +41,10 @@ oo::class create marpa::slif::semantics {
     variable mycc ;# map from char class literal symbols to their
 		   # original literal. Always the last.
 
+    variable myrhs ;# map: layer -> lhs -> rhs -> {}
+    #               # Determine if rhs is already known.
+    #               # Throw error for multiple identical definitions.
+
     constructor {container} {
 	debug.marpa/slif/semantics {[marpa::D {
 	    # Mix helpers, pre- and post- filters on all AST
@@ -54,7 +58,8 @@ oo::class create marpa::slif::semantics {
 	    link {UNDENT UNDENT}
 	}]}
 	marpa::import $container Container
-	set mycc {}
+	set mycc  {}
+	set myrhs {}
 
 	# Track the def and use locations for all pieces of rules
 	set def [marpa::slif::semantics::Locations create definition $container]
@@ -305,10 +310,11 @@ oo::class create marpa::slif::semantics {
 
 	SymCo g1 definition
 	set lhs [FIRST]
+
+	my RHS-CHECK $lhs {}
 	Symbol context1 g1-definition $lhs
 
 	set adverbs [G1 defaults [SINGLE 1]]
-
 	Container g1 priority-rule $lhs {} 0 {*}$adverbs
 	Start maybe: $lhs
 	return
@@ -324,10 +330,11 @@ oo::class create marpa::slif::semantics {
 
 	SymCo l0 definition
 	set lhs [FIRST]
+
+	my RHS-CHECK $lhs {}
 	Symbol context1 l0-definition $lhs
 
 	set adverbs [SINGLE 1]
-
 	Container l0 priority-rule $lhs {} 0 {*}$adverbs
 	return
     }
@@ -394,6 +401,8 @@ oo::class create marpa::slif::semantics {
 	Symbol context1 g1-definition $lhs
 
 	lassign [FIRST] rhsmask rhssymbols
+
+	my RHS-CHECK $lhs $rhssymbols
 	Symbol context  g1-usage {*}$rhssymbols
 
 	set adverbs [G1 defaults [SINGLE 1]]
@@ -415,7 +424,9 @@ oo::class create marpa::slif::semantics {
 
 	# Ignore masking, irrelevant at L0 level.
 	lassign [FIRST] __ rhssymbols
-	Symbol context  l0-usage      {*}$rhssymbols
+
+	my RHS-CHECK $lhs $rhssymbols
+	Symbol context  l0-usage {*}$rhssymbols
 
 	set adverbs [SINGLE 1]
 	set prec    [SymCo precedence?]
@@ -561,9 +572,12 @@ oo::class create marpa::slif::semantics {
 
 	set discard @DIS:$litsymbol
 	definition add {*}[definition last $litsymbol] $discard
-	Symbol context1 l0-definition $discard ;# Issues container ops
-	Symbol context1 :discard      $discard ;# Issues container ops
-	Container l0 priority-rule    $discard $litsymbol 0
+
+	set pre [Symbol context1 l0-definition $discard] ;# Issues container ops
+	Symbol context1 :discard $discard ;# Issues container ops
+	if {$pre eq "undef"} {
+	    Container l0 priority-rule $discard $litsymbol 0
+	}
 
 	set adverbs [SINGLE 1]
 	#Container comment :discard adverbs = $adverbs ;#debug
@@ -1188,6 +1202,16 @@ oo::class create marpa::slif::semantics {
 	}
 
 	return $lexeme
+    }
+
+    method RHS-CHECK {lhs rhs} {
+	set layer [SymCo layer?]
+	if {[dict exists $myrhs $layer $lhs $rhs]} {
+	    my E "Duplicate RHS for $layer symbol <$lhs>" \
+		RHS DUPLICATE
+	}
+	dict set myrhs $layer $lhs $rhs {}
+	return
     }
 
     # # ## ### ##### ######## #############

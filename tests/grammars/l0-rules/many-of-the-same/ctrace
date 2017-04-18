@@ -1,0 +1,9 @@
+GC comment definition A 0 1
+GC comment l0-definition A undef --> {JMP match}
+GC comment usage B 4 1
+GC comment l0-usage B undef --> {JMP strict:u}
+GC l0 priority-rule A B 0
+GC comment definition A 6 1
+GC comment l0-definition A match --> NOP
+GC comment usage B 10 1
+GC error {Duplicate RHS for l0 symbol <A>}

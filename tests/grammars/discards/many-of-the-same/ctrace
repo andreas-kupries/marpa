@@ -1,0 +1,47 @@
+GC comment usage {[a-z]} 11 5
+GC comment usage @LCC:<a-z> 11 5
+GC comment definition {[a-z]} 11 5
+GC comment definition @LCC:<a-z> 11 5
+
+	GC comment <literal> @LCC:<a-z> undef --> {JMP literal}
+	GC l0 charclass @LCC:<a-z> {{97 122}} 0
+
+	GC comment definition @DIS:@LCC:<a-z> 11 5
+	GC comment l0-definition @DIS:@LCC:<a-z> undef --> {JMP match}
+	GC comment :discard @DIS:@LCC:<a-z> match --> {JMP discard make-discard}
+
+	GC l0 discard @DIS:@LCC:<a-z>
+	GC l0 priority-rule @DIS:@LCC:<a-z> @LCC:<a-z> 0
+
+GC comment usage {[a-z]} 28 5
+GC comment usage @LCC:<a-z> 28 5
+GC comment definition {[a-z]} 28 5
+GC comment definition @LCC:<a-z> 28 5
+
+	GC comment <literal> @LCC:<a-z> literal --> NOP
+
+	GC comment definition @DIS:@LCC:<a-z> 28 5
+	GC comment l0-definition @DIS:@LCC:<a-z> discard --> NOP
+	GC comment :discard @DIS:@LCC:<a-z> discard --> NOP
+
+GC comment definition A 73 1
+GC comment g1-definition A undef --> {JMP brick}
+GC comment usage '0' 79 3
+GC comment usage @LIT:<0> 79 3
+GC comment definition '0' 79 3
+GC comment definition @LIT:<0> 79 3
+GC comment <literal> @LIT:<0> undef --> {JMP literal}
+GC l0 string @LIT:<0> 48 0
+GC comment definition @LEX:@LIT:<0> 79 3
+GC comment l0-definition @LEX:@LIT:<0> undef --> {JMP match}
+GC comment :lexeme @LEX:@LIT:<0> match --> {JMP lexeme make-lexeme}
+GC l0 lexeme @LEX:@LIT:<0>
+GC g1 terminal @LEX:@LIT:<0>
+GC l0 priority-rule @LEX:@LIT:<0> @LIT:<0> 0
+GC comment g1-usage @LEX:@LIT:<0> lexeme --> NOP
+GC g1 priority-rule A @LEX:@LIT:<0> 0 action {array values} bless {special undef} mask 0
+GC comment Semantics completion processing
+GC start! A
+GC comment LATM fix 1
+GC l0 configure @LEX:@LIT:<0> latm 1
+GC comment DDE fix {}

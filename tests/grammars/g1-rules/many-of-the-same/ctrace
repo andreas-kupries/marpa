@@ -1,0 +1,9 @@
+GC comment definition A 0 1
+GC comment g1-definition A undef --> {JMP brick}
+GC comment usage B 6 1
+GC comment g1-usage B undef --> {JMP floater}
+GC g1 priority-rule A B 0 action {array values} bless {special undef} mask 0
+GC comment definition A 8 1
+GC comment g1-definition A brick --> NOP
+GC comment usage B 14 1
+GC error {Duplicate RHS for g1 symbol <A>}
