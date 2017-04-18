@@ -20,7 +20,6 @@ grammar {
     }
     l0 {
         {} {
-            @LIT:<b> { {string 98 0} }
             B { {priority @LIT:<b> 0} }
         }
         latm {
@@ -29,6 +28,9 @@ grammar {
         lexeme {
             A { {priority B 0
                     name {a/b reduction}} }
+        }
+        literal {
+            @LIT:<b> { {string 98 0} }
         }
     }
 }

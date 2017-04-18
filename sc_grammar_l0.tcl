@@ -37,6 +37,7 @@ oo::class create marpa::slif::container::grammar::l0 {
 	next {
 	    string    ::marpa::slif::container::string
 	    charclass ::marpa::slif::container::charclass
+	    character ::marpa::slif::container::character
 	}   ::marpa::slif::container::priority::l0 \
 	    ::marpa::slif::container::quantified::l0
 
@@ -125,8 +126,9 @@ oo::class create marpa::slif::container::grammar::l0 {
 	return
     }
 
-    forward charclass  my Symbol: {} charclass
-    forward string     my Symbol: {} string
+    forward charclass  my Symbol: literal charclass
+    forward character  my Symbol: literal character
+    forward string     my Symbol: literal string
     forward discard    my Class: discard
     forward lexeme     my Class: lexeme
 

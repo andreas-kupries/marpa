@@ -26,9 +26,6 @@ grammar {
         action {array values}
     }
     l0 {
-        {} {
-            @LIT:<b> { {string 98 0} }
-        }
         latm {
             B 1
             C 1
@@ -40,6 +37,9 @@ grammar {
             C { {priority @LIT:<b> 0} }
             D { {priority @LIT:<b> 0} }
             E { {priority @LIT:<b> 0} }
+        }
+        literal {
+            @LIT:<b> { {string 98 0} }
         }
     }
 }

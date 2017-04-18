@@ -19,14 +19,14 @@ grammar {
         action {array values}
     }
     l0 {
-        {} {
-            @LCC:<A-Z>:i { {charclass {{65 90}} 1} }
-        }
         latm {
             A 1
         }
         lexeme {
             A { {priority @LCC:<A-Z>:i 0} }
+        }
+        literal {
+            @LCC:<A-Z>:i { {charclass {{65 90}} 1} }
         }
     }
 }

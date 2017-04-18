@@ -25,10 +25,6 @@ grammar {
         action {array values}
     }
     l0 {
-        {} {
-            @LIT:<a> { {string 97 0} }
-            @LIT:<b> { {string 98 0} }
-        }
         latm {
             @LEX:@LIT:<a> 1
             @LEX:@LIT:<b> 1
@@ -36,6 +32,10 @@ grammar {
         lexeme {
             @LEX:@LIT:<a> { {priority @LIT:<a> 0} }
             @LEX:@LIT:<b> { {priority @LIT:<b> 0} }
+        }
+        literal {
+            @LIT:<a> { {string 97 0} }
+            @LIT:<b> { {string 98 0} }
         }
     }
 }

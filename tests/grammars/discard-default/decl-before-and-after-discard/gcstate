@@ -19,11 +19,6 @@ grammar {
         action {array values}
     }
     l0 {
-        {} {
-            @LIT:<a> { {string 97 0} }
-            @LIT:<b> { {string 98 0} }
-            @LIT:<x> { {string 120 0} }
-        }
         discard {
             bar { {priority @LIT:<b> 0} }
             foo { {priority @LIT:<a> 0} }
@@ -45,6 +40,11 @@ grammar {
         }
         lexeme {
             fox { {priority @LIT:<x> 0} }
+        }
+        literal {
+            @LIT:<a> { {string 97 0} }
+            @LIT:<b> { {string 98 0} }
+            @LIT:<x> { {string 120 0} }
         }
     }
 }

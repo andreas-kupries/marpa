@@ -19,14 +19,14 @@ grammar {
         action {array values}
     }
     l0 {
-        {} {
-            @LIT:<a> { {string 97 0} }
-        }
         latm {
             A 0
         }
         lexeme {
             A { {priority @LIT:<a> 0} }
+        }
+        literal {
+            @LIT:<a> { {string 97 0} }
         }
     }
 }

@@ -17,14 +17,14 @@ grammar {
         action {array values}
     }
     l0 {
-        {} {
-            @LIT:<b> { {string 98 0} }
-        }
         latm {
             B 1
         }
         lexeme {
             B { {priority @LIT:<b> 0} }
+        }
+        literal {
+            @LIT:<b> { {string 98 0} }
         }
     }
 }

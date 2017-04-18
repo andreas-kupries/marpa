@@ -20,8 +20,6 @@ grammar {
     }
     l0 {
         {} {
-            @LIT:<b> { {string 98 0} }
-            @LIT:<c> { {string 99 0} }
             B { {priority @LIT:<b> 0} }
             C { {priority @LIT:<c> 0} }
         }
@@ -33,6 +31,10 @@ grammar {
                 {priority B 0}
                 {priority C 0}
             }
+        }
+        literal {
+            @LIT:<b> { {string 98 0} }
+            @LIT:<c> { {string 99 0} }
         }
     }
 }

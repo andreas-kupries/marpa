@@ -22,10 +22,6 @@ grammar {
         action {array values}
     }
     l0 {
-        {} {
-            @LCC:<a> { {charclass 97 0} }
-            @LIT:<ab> { {string {97 98} 0} }
-        }
         latm {
             bar 0
             foo 0
@@ -33,6 +29,10 @@ grammar {
         lexeme {
             bar { {priority @LCC:<a> 0} }
             foo { {priority @LIT:<ab> 0} }
+        }
+        literal {
+            @LCC:<a> { {charclass 97 0} }
+            @LIT:<ab> { {string {97 98} 0} }
         }
     }
 }

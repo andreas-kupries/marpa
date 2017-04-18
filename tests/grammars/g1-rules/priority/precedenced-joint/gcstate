@@ -76,16 +76,6 @@ grammar {
         action {array values}
     }
     l0 {
-        {} {
-            @LCC:<0-9> { {charclass {{48 57}} 0} }
-            @LIT:<**> { {string {42 42} 0} }
-            @LIT:<*> { {string 42 0} }
-            @LIT:<+> { {string 43 0} }
-            @LIT:<-> { {string 45 0} }
-            @LIT:</> { {string 47 0} }
-            {@LIT:<\50>} { {string 40 0} }
-            {@LIT:<\51>} { {string 41 0} }
-        }
         latm {
             ADD 1
             DIV 1
@@ -106,6 +96,15 @@ grammar {
             POW { {priority @LIT:<**> 0} }
             SUB { {priority @LIT:<-> 0} }
         }
+        literal {
+            @LCC:<0-9> { {charclass {{48 57}} 0} }
+            @LIT:<**> { {string {42 42} 0} }
+            @LIT:<*> { {string 42 0} }
+            @LIT:<+> { {string 43 0} }
+            @LIT:<-> { {string 45 0} }
+            @LIT:</> { {string 47 0} }
+            {@LIT:<\50>} { {string 40 0} }
+            {@LIT:<\51>} { {string 41 0} }
+        }
     }
 }
-

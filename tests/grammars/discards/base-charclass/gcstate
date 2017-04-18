@@ -19,10 +19,6 @@ grammar {
         action {array values}
     }
     l0 {
-        {} {
-            @LCC:<0-9> { {charclass {{48 57}} 0} }
-            @LIT:<a> { {string 97 0} }
-        }
         discard {
             @DIS:@LCC:<0-9> { {priority @LCC:<0-9> 0} }
         }
@@ -31,6 +27,10 @@ grammar {
         }
         lexeme {
             A { {priority @LIT:<a> 0} }
+        }
+        literal {
+            @LCC:<0-9> { {charclass {{48 57}} 0} }
+            @LIT:<a> { {string 97 0} }
         }
     }
 }

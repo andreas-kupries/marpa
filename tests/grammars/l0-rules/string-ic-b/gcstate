@@ -19,14 +19,14 @@ grammar {
         action {array values}
     }
     l0 {
-        {} {
-            {@LIT:<CASE-INSENSITIVE\40STRING>:i} { {string {67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71} 1} }
-        }
         latm {
             A 1
         }
         lexeme {
             A { {priority {{@LIT:<CASE-INSENSITIVE\40STRING>:i}} 0} }
+        }
+        literal {
+            {@LIT:<CASE-INSENSITIVE\40STRING>:i} { {string {67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71} 1} }
         }
     }
 }

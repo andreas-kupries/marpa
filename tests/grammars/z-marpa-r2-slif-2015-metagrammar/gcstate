@@ -1059,95 +1059,6 @@ grammar {
     }
     l0 {
         {} {
-            @LCC:<'> { {charclass 39 0} }
-            @LCC:<+-> { {charclass {43 45} 0} }
-            @LCC:<0-1> { {charclass {{48 49}} 0} }
-            {@LCC:<[:alnum:]>} { {charclass :alnum 0} }
-            {@LCC:<\n-\r'^\u2028-\u2029>} { {charclass {{10 13} 39 94 {8232 8233}} 0} }
-            {@LCC:<\n-\r\135-^\205\u2028-\u2029>} { {charclass {{10 13} {93 94} 133 {8232 8233}} 0} }
-            {@LCC:<\n-\r\u2028-\u2029>} { {charclass {{10 13} {8232 8233}} 0} }
-            {@LCC:<\n-\r^\u2028-\u2029>} { {charclass {{10 13} 94 {8232 8233}} 0} }
-            @LCC:<A-Za-z> { {charclass {{65 90} {97 122}} 0} }
-            @LCC:<d> { {charclass 100 0} }
-            @LCC:<s> { {charclass 115 0} }
-            @LCC:<sw> { {charclass {115 119} 0} }
-            @LCC:<w> { {charclass 119 0} }
-            @LIT:<#> { {string 35 0} }
-            @LIT:<*> { {string 42 0} }
-            @LIT:<+> { {string 43 0} }
-            @LIT:<,> { {string 44 0} }
-            @LIT:<::=> { {string {58 58 61} 0} }
-            @LIT:<::> { {string {58 58} 0} }
-            {@LIT:<:\135>} { {string {58 93} 0} }
-            @LIT:<:default> { {string {58 100 101 102 97 117 108 116} 0} }
-            @LIT:<:discard> { {string {58 100 105 115 99 97 114 100} 0} }
-            @LIT:<:i> { {string {58 105} 0} }
-            @LIT:<:ic> { {string {58 105 99} 0} }
-            @LIT:<:lexeme> { {string {58 108 101 120 101 109 101} 0} }
-            @LIT:<:start> { {string {58 115 116 97 114 116} 0} }
-            @LIT:<<> { {string 60 0} }
-            @LIT:<=> { {string 61 0} }
-            @LIT:<=>> { {string {61 62} 0} }
-            @LIT:<>> { {string 62 0} }
-            {@LIT:<\50>} { {string 40 0} }
-            {@LIT:<\51>} { {string 41 0} }
-            {@LIT:<\73>} { {string 59 0} }
-            {@LIT:<\133:>} { {string {91 58} 0} }
-            {@LIT:<\133:^>} { {string {91 58 94} 0} }
-            {@LIT:<\133>} { {string 91 0} }
-            {@LIT:<\134>} { {string 92 0} }
-            {@LIT:<\135>} { {string 93 0} }
-            {@LIT:<\173>} { {string 123 0} }
-            {@LIT:<\175>} { {string 125 0} }
-            @LIT:<action> { {string {97 99 116 105 111 110} 0} }
-            @LIT:<after> { {string {97 102 116 101 114} 0} }
-            @LIT:<assoc> { {string {97 115 115 111 99} 0} }
-            @LIT:<before> { {string {98 101 102 111 114 101} 0} }
-            @LIT:<bless> { {string {98 108 101 115 115} 0} }
-            @LIT:<by> { {string {98 121} 0} }
-            @LIT:<completed> { {string {99 111 109 112 108 101 116 101 100} 0} }
-            @LIT:<current> { {string {99 117 114 114 101 110 116} 0} }
-            @LIT:<default> { {string {100 101 102 97 117 108 116} 0} }
-            @LIT:<discard> { {string {100 105 115 99 97 114 100} 0} }
-            @LIT:<event> { {string {101 118 101 110 116} 0} }
-            @LIT:<fatal> { {string {102 97 116 97 108} 0} }
-            @LIT:<forgiving> { {string {102 111 114 103 105 118 105 110 103} 0} }
-            @LIT:<g1length> { {string {103 49 108 101 110 103 116 104} 0} }
-            @LIT:<g1start> { {string {103 49 115 116 97 114 116} 0} }
-            @LIT:<group> { {string {103 114 111 117 112} 0} }
-            @LIT:<high> { {string {104 105 103 104} 0} }
-            @LIT:<inaccessible> { {string {105 110 97 99 99 101 115 115 105 98 108 101} 0} }
-            @LIT:<is> { {string {105 115} 0} }
-            @LIT:<latm> { {string {108 97 116 109} 0} }
-            @LIT:<left> { {string {108 101 102 116} 0} }
-            @LIT:<length> { {string {108 101 110 103 116 104} 0} }
-            @LIT:<lexeme> { {string {108 101 120 101 109 101} 0} }
-            @LIT:<lexer> { {string {108 101 120 101 114} 0} }
-            @LIT:<lhs> { {string {108 104 115} 0} }
-            @LIT:<low> { {string {108 111 119} 0} }
-            @LIT:<name> { {string {110 97 109 101} 0} }
-            @LIT:<null-ranking> { {string {110 117 108 108 45 114 97 110 107 105 110 103} 0} }
-            @LIT:<null> { {string {110 117 108 108} 0} }
-            @LIT:<nulled> { {string {110 117 108 108 101 100} 0} }
-            @LIT:<off> { {string {111 102 102} 0} }
-            @LIT:<ok> { {string {111 107} 0} }
-            @LIT:<on> { {string {111 110} 0} }
-            @LIT:<pause> { {string {112 97 117 115 101} 0} }
-            @LIT:<predicted> { {string {112 114 101 100 105 99 116 101 100} 0} }
-            @LIT:<priority> { {string {112 114 105 111 114 105 116 121} 0} }
-            @LIT:<proper> { {string {112 114 111 112 101 114} 0} }
-            @LIT:<rank> { {string {114 97 110 107} 0} }
-            @LIT:<right> { {string {114 105 103 104 116} 0} }
-            @LIT:<rule> { {string {114 117 108 101} 0} }
-            @LIT:<separator> { {string {115 101 112 97 114 97 116 111 114} 0} }
-            @LIT:<start> { {string {115 116 97 114 116} 0} }
-            @LIT:<symbol> { {string {115 121 109 98 111 108} 0} }
-            @LIT:<value> { {string {118 97 108 117 101} 0} }
-            @LIT:<values> { {string {118 97 108 117 101 115} 0} }
-            @LIT:<warn> { {string {119 97 114 110} 0} }
-            @LIT:<|> { {string 124 0} }
-            @LIT:<||> { {string {124 124} 0} }
-            @LIT:<~> { {string 126 0} }
             {array descriptor left bracket} {
                 {priority {{@LIT:<\133>}} 0}
                 {priority {
@@ -1409,6 +1320,96 @@ grammar {
                     @LCC:<A-Za-z>
                     {zero or more word characters}} 0} }
         }
+        literal {
+            @LCC:<'> { {charclass 39 0} }
+            @LCC:<+-> { {charclass {43 45} 0} }
+            @LCC:<0-1> { {charclass {{48 49}} 0} }
+            {@LCC:<[:alnum:]>} { {charclass :alnum 0} }
+            {@LCC:<\n-\r'^\u2028-\u2029>} { {charclass {{10 13} 39 94 {8232 8233}} 0} }
+            {@LCC:<\n-\r\135-^\205\u2028-\u2029>} { {charclass {{10 13} {93 94} 133 {8232 8233}} 0} }
+            {@LCC:<\n-\r\u2028-\u2029>} { {charclass {{10 13} {8232 8233}} 0} }
+            {@LCC:<\n-\r^\u2028-\u2029>} { {charclass {{10 13} 94 {8232 8233}} 0} }
+            @LCC:<A-Za-z> { {charclass {{65 90} {97 122}} 0} }
+            @LCC:<d> { {charclass 100 0} }
+            @LCC:<s> { {charclass 115 0} }
+            @LCC:<sw> { {charclass {115 119} 0} }
+            @LCC:<w> { {charclass 119 0} }
+            @LIT:<#> { {string 35 0} }
+            @LIT:<*> { {string 42 0} }
+            @LIT:<+> { {string 43 0} }
+            @LIT:<,> { {string 44 0} }
+            @LIT:<::=> { {string {58 58 61} 0} }
+            @LIT:<::> { {string {58 58} 0} }
+            {@LIT:<:\135>} { {string {58 93} 0} }
+            @LIT:<:default> { {string {58 100 101 102 97 117 108 116} 0} }
+            @LIT:<:discard> { {string {58 100 105 115 99 97 114 100} 0} }
+            @LIT:<:i> { {string {58 105} 0} }
+            @LIT:<:ic> { {string {58 105 99} 0} }
+            @LIT:<:lexeme> { {string {58 108 101 120 101 109 101} 0} }
+            @LIT:<:start> { {string {58 115 116 97 114 116} 0} }
+            @LIT:<<> { {string 60 0} }
+            @LIT:<=> { {string 61 0} }
+            @LIT:<=>> { {string {61 62} 0} }
+            @LIT:<>> { {string 62 0} }
+            {@LIT:<\50>} { {string 40 0} }
+            {@LIT:<\51>} { {string 41 0} }
+            {@LIT:<\73>} { {string 59 0} }
+            {@LIT:<\133:>} { {string {91 58} 0} }
+            {@LIT:<\133:^>} { {string {91 58 94} 0} }
+            {@LIT:<\133>} { {string 91 0} }
+            {@LIT:<\134>} { {string 92 0} }
+            {@LIT:<\135>} { {string 93 0} }
+            {@LIT:<\173>} { {string 123 0} }
+            {@LIT:<\175>} { {string 125 0} }
+            @LIT:<action> { {string {97 99 116 105 111 110} 0} }
+            @LIT:<after> { {string {97 102 116 101 114} 0} }
+            @LIT:<assoc> { {string {97 115 115 111 99} 0} }
+            @LIT:<before> { {string {98 101 102 111 114 101} 0} }
+            @LIT:<bless> { {string {98 108 101 115 115} 0} }
+            @LIT:<by> { {string {98 121} 0} }
+            @LIT:<completed> { {string {99 111 109 112 108 101 116 101 100} 0} }
+            @LIT:<current> { {string {99 117 114 114 101 110 116} 0} }
+            @LIT:<default> { {string {100 101 102 97 117 108 116} 0} }
+            @LIT:<discard> { {string {100 105 115 99 97 114 100} 0} }
+            @LIT:<event> { {string {101 118 101 110 116} 0} }
+            @LIT:<fatal> { {string {102 97 116 97 108} 0} }
+            @LIT:<forgiving> { {string {102 111 114 103 105 118 105 110 103} 0} }
+            @LIT:<g1length> { {string {103 49 108 101 110 103 116 104} 0} }
+            @LIT:<g1start> { {string {103 49 115 116 97 114 116} 0} }
+            @LIT:<group> { {string {103 114 111 117 112} 0} }
+            @LIT:<high> { {string {104 105 103 104} 0} }
+            @LIT:<inaccessible> { {string {105 110 97 99 99 101 115 115 105 98 108 101} 0} }
+            @LIT:<is> { {string {105 115} 0} }
+            @LIT:<latm> { {string {108 97 116 109} 0} }
+            @LIT:<left> { {string {108 101 102 116} 0} }
+            @LIT:<length> { {string {108 101 110 103 116 104} 0} }
+            @LIT:<lexeme> { {string {108 101 120 101 109 101} 0} }
+            @LIT:<lexer> { {string {108 101 120 101 114} 0} }
+            @LIT:<lhs> { {string {108 104 115} 0} }
+            @LIT:<low> { {string {108 111 119} 0} }
+            @LIT:<name> { {string {110 97 109 101} 0} }
+            @LIT:<null-ranking> { {string {110 117 108 108 45 114 97 110 107 105 110 103} 0} }
+            @LIT:<null> { {string {110 117 108 108} 0} }
+            @LIT:<nulled> { {string {110 117 108 108 101 100} 0} }
+            @LIT:<off> { {string {111 102 102} 0} }
+            @LIT:<ok> { {string {111 107} 0} }
+            @LIT:<on> { {string {111 110} 0} }
+            @LIT:<pause> { {string {112 97 117 115 101} 0} }
+            @LIT:<predicted> { {string {112 114 101 100 105 99 116 101 100} 0} }
+            @LIT:<priority> { {string {112 114 105 111 114 105 116 121} 0} }
+            @LIT:<proper> { {string {112 114 111 112 101 114} 0} }
+            @LIT:<rank> { {string {114 97 110 107} 0} }
+            @LIT:<right> { {string {114 105 103 104 116} 0} }
+            @LIT:<rule> { {string {114 117 108 101} 0} }
+            @LIT:<separator> { {string {115 101 112 97 114 97 116 111 114} 0} }
+            @LIT:<start> { {string {115 116 97 114 116} 0} }
+            @LIT:<symbol> { {string {115 121 109 98 111 108} 0} }
+            @LIT:<value> { {string {118 97 108 117 101} 0} }
+            @LIT:<values> { {string {118 97 108 117 101 115} 0} }
+            @LIT:<warn> { {string {119 97 114 110} 0} }
+            @LIT:<|> { {string 124 0} }
+            @LIT:<||> { {string {124 124} 0} }
+            @LIT:<~> { {string 126 0} }
+        }
     }
 }
-

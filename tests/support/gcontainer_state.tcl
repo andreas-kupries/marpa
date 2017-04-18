@@ -77,7 +77,7 @@ proc gc-format-acc {serial indent step parent key} {
 	    gc-line "\}"
 	    return
 	}
-	//l0/ - //g1/ - //g1/terminal - //l0/lexeme - //l0/discard {
+	//l0/ - //g1/ - //g1/terminal - //l0/lexeme - //l0/discard - //l0/literal {
 	    #puts XXX.0|$serial|
 	    if {![dict size $serial]} {
 		# No symbols in this collection.
