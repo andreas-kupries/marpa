@@ -5,7 +5,11 @@
 ##
 # This code is BSD-licensed.
 
-# SLIF support. L0 Charclass atom.
+# SLIF support. Atom: L0 character class.
+# Should not be used.
+
+# See the simplifier for literals, lowering them into simpler
+# structures (alternatives of char(classes)).
 
 # # ## ### ##### ######## #############
 ## Requisites

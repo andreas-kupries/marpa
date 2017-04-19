@@ -1,11 +1,11 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                          http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
-# SLIF support. Atom: L0 character.
+# SLIF support. Atom: L0 character range.
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -15,31 +15,33 @@ package require TclOO ;# Implies Tcl 8.5 requirement.
 package require debug
 package require debug::caller 1.1
 
-debug define marpa/slif/container/atom/character
-debug prefix marpa/slif/container/atom/character {[debug caller] | }
+debug define marpa/slif/container/atom/range
+debug prefix marpa/slif/container/atom/range {[debug caller] | }
 
 # # ## ### ##### ######## #############
 ## Managing symbol information.
 
-oo::class create marpa::slif::container::character {
+oo::class create marpa::slif::container::range {
     superclass marpa::slif::container::atom
 
-    marpa::E marpa/slif/container/atom/character \
-	SLIF CONTAINER ATOM CHARACTER
+    marpa::E marpa/slif/container/atom/range \
+	SLIF CONTAINER ATOM RANGE
 
-    variable mychar ;# :: codepoint
+    variable mystart ;# :: codepoint
+    variable myend   ;# :: codepoint
 
     # Note: codepoints <= 255 can be used for byte-based engines.
 
     # - -- --- ----- -------- -------------
     ## lifecycle
 
-    constructor {char} {
-	debug.marpa/slif/container/atom/character {}
+    constructor {start end} {
+	debug.marpa/slif/container/atom/range {}
 
-	set mychar $char
+	set mystart $start
+	set myend   $end
 
-	debug.marpa/slif/container/atom/character {/ok}
+	debug.marpa/slif/container/atom/range {/ok}
 	return
     }
 
@@ -47,8 +49,8 @@ oo::class create marpa::slif::container::character {
     ## Fill serdes virtual abstract methods
 
     method serialize {} {
-	debug.marpa/slif/container/atom/character {}
-	return [list [list character $mychar]]
+	debug.marpa/slif/container/atom/range {}
+	return [list [list range $mystart $myend]]
     }
 
     # - -- --- ----- -------- -------------
