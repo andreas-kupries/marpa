@@ -20,7 +20,7 @@ grammar {
     }
     l0 {
         {} {
-            B { {priority @LIT:<b> 0} }
+            B { {priority @STR:<b> 0} }
         }
         latm {
             A 1
@@ -29,7 +29,7 @@ grammar {
             A { {quantified B 0} }
         }
         literal {
-            @LIT:<b> { {string 98 0} }
+            @STR:<b> { {string 98 0} }
         }
     }
 }

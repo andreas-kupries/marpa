@@ -5,20 +5,20 @@ grammar {
     }
     g1 {
         {} {
-            A { {priority @LEX:@LIT:<a> 0
+            A { {priority @LEX:@STR:<a> 0
                     action {cmd this}
                     assoc left
                     bless {special undef}
                     mask 0} }
-            B { {priority @LEX:@LIT:<b> 0
+            B { {priority @LEX:@STR:<b> 0
                     action {cmd that}
                     assoc left
                     bless {special undef}
                     mask 0} }
         }
         terminal {
-            @LEX:@LIT:<a> { terminal }
-            @LEX:@LIT:<b> { terminal }
+            @LEX:@STR:<a> { terminal }
+            @LEX:@STR:<b> { terminal }
         }
     }
     lexeme {
@@ -26,16 +26,16 @@ grammar {
     }
     l0 {
         latm {
-            @LEX:@LIT:<a> 1
-            @LEX:@LIT:<b> 1
+            @LEX:@STR:<a> 1
+            @LEX:@STR:<b> 1
         }
         lexeme {
-            @LEX:@LIT:<a> { {priority @LIT:<a> 0} }
-            @LEX:@LIT:<b> { {priority @LIT:<b> 0} }
+            @LEX:@STR:<a> { {priority @STR:<a> 0} }
+            @LEX:@STR:<b> { {priority @STR:<b> 0} }
         }
         literal {
-            @LIT:<a> { {string 97 0} }
-            @LIT:<b> { {string 98 0} }
+            @STR:<a> { {string 97 0} }
+            @STR:<b> { {string 98 0} }
         }
     }
 }

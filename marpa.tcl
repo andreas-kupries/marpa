@@ -141,8 +141,9 @@ critcl::tsources s_sem_defaults.tcl    ; # - Defaults, generic
 critcl::tsources s_sem_context.tcl     ; # - Symbol context
 critcl::tsources s_sem_flags.tcl       ; # - Flags, generic
 critcl::tsources s_sem_singleton.tcl   ; # - Singleton, generic
-critcl::tsources s_sem_locations.tcl   ; # - Locations for items.
-critcl::tsources s_sem_symbols.tcl     ; # - Item state machine.
+critcl::tsources s_sem_locations.tcl   ; # - Locations for items
+critcl::tsources s_sem_symbols.tcl     ; # - Item state machine
+critcl::tsources s_sem_literal.tcl     ; # - Literal handling
 
 critcl::tsources sc_serdes.tcl         ; # - Abstract (de)serialization base
 critcl::tsources s_container.tcl       ; # SLIF container

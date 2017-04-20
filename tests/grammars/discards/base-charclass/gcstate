@@ -20,17 +20,17 @@ grammar {
     }
     l0 {
         discard {
-            @DIS:@LCC:<0-9> { {priority @LCC:<0-9> 0} }
+            @DIS:@CLS:<0-9> { {priority @CLS:<0-9> 0} }
         }
         latm {
             A 1
         }
         lexeme {
-            A { {priority @LIT:<a> 0} }
+            A { {priority @STR:<a> 0} }
         }
         literal {
-            @LCC:<0-9> { {charclass {{48 57}} 0} }
-            @LIT:<a> { {string 97 0} }
+            @CLS:<0-9> { {charclass {{48 57}} 0} }
+            @STR:<a> { {string 97 0} }
         }
     }
 }

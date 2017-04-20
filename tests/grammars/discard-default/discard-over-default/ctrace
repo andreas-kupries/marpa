@@ -24,35 +24,35 @@ GC g1 priority-rule A fox 0 action {array values} bless {special undef} mask 0
 GC comment definition foo 117 3
 GC comment l0-definition foo discard:u --> {JMP discard}
 GC comment usage 'a' 123 3
-GC comment usage @LIT:<a> 123 3
+GC comment usage @STR:<a> 123 3
 GC comment definition 'a' 123 3
-GC comment definition @LIT:<a> 123 3
-GC comment <literal> @LIT:<a> undef --> {JMP literal}
-GC l0 string @LIT:<a> 97 0
-GC comment l0-usage @LIT:<a> literal --> NOP
-GC l0 priority-rule foo @LIT:<a> 0
+GC comment definition @STR:<a> 123 3
+GC comment <literal> @STR:<a> undef --> {JMP literal}
+GC l0 string @STR:<a> 97 0
+GC comment l0-usage @STR:<a> literal --> NOP
+GC l0 priority-rule foo @STR:<a> 0
 GC comment definition bar 127 3
 GC comment l0-definition bar discard:u --> {JMP discard}
 GC comment usage 'b' 133 3
-GC comment usage @LIT:<b> 133 3
+GC comment usage @STR:<b> 133 3
 GC comment definition 'b' 133 3
-GC comment definition @LIT:<b> 133 3
-GC comment <literal> @LIT:<b> undef --> {JMP literal}
-GC l0 string @LIT:<b> 98 0
-GC comment l0-usage @LIT:<b> literal --> NOP
-GC l0 priority-rule bar @LIT:<b> 0
+GC comment definition @STR:<b> 133 3
+GC comment <literal> @STR:<b> undef --> {JMP literal}
+GC l0 string @STR:<b> 98 0
+GC comment l0-usage @STR:<b> literal --> NOP
+GC l0 priority-rule bar @STR:<b> 0
 GC comment definition fox 137 3
 GC comment l0-definition fox floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme fox
 GC g1 terminal fox
 GC comment usage 'x' 143 3
-GC comment usage @LIT:<x> 143 3
+GC comment usage @STR:<x> 143 3
 GC comment definition 'x' 143 3
-GC comment definition @LIT:<x> 143 3
-GC comment <literal> @LIT:<x> undef --> {JMP literal}
-GC l0 string @LIT:<x> 120 0
-GC comment l0-usage @LIT:<x> literal --> NOP
-GC l0 priority-rule fox @LIT:<x> 0
+GC comment definition @STR:<x> 143 3
+GC comment <literal> @STR:<x> undef --> {JMP literal}
+GC l0 string @STR:<x> 120 0
+GC comment l0-usage @STR:<x> literal --> NOP
+GC l0 priority-rule fox @STR:<x> 0
 GC comment Semantics completion processing
 GC start! A
 GC comment LATM fix 1

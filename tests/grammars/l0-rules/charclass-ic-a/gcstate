@@ -23,10 +23,10 @@ grammar {
             A 1
         }
         lexeme {
-            A { {priority @LCC:<A-Z>:i 0} }
+            A { {priority @CLS/i:<A-Z> 0} }
         }
         literal {
-            @LCC:<A-Z>:i { {charclass {{65 90}} 1} }
+            @CLS/i:<A-Z> { {charclass {{65 90}} 1} }
         }
     }
 }

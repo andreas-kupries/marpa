@@ -19,23 +19,23 @@ GC g1 priority-rule A {foo bar} 0 action {array values} bless {special undef} ma
 GC comment definition foo 70 3
 GC comment l0-definition foo lexeme:u --> {JMP lexeme}
 GC comment usage 'a' 76 3
-GC comment usage @LIT:<a> 76 3
+GC comment usage @STR:<a> 76 3
 GC comment definition 'a' 76 3
-GC comment definition @LIT:<a> 76 3
-GC comment <literal> @LIT:<a> undef --> {JMP literal}
-GC l0 string @LIT:<a> 97 0
-GC comment l0-usage @LIT:<a> literal --> NOP
-GC l0 priority-rule foo @LIT:<a> 0
+GC comment definition @STR:<a> 76 3
+GC comment <literal> @STR:<a> undef --> {JMP literal}
+GC l0 string @STR:<a> 97 0
+GC comment l0-usage @STR:<a> literal --> NOP
+GC l0 priority-rule foo @STR:<a> 0
 GC comment definition bar 80 3
 GC comment l0-definition bar lexeme:u --> {JMP lexeme}
 GC comment usage 'b' 86 3
-GC comment usage @LIT:<b> 86 3
+GC comment usage @STR:<b> 86 3
 GC comment definition 'b' 86 3
-GC comment definition @LIT:<b> 86 3
-GC comment <literal> @LIT:<b> undef --> {JMP literal}
-GC l0 string @LIT:<b> 98 0
-GC comment l0-usage @LIT:<b> literal --> NOP
-GC l0 priority-rule bar @LIT:<b> 0
+GC comment definition @STR:<b> 86 3
+GC comment <literal> @STR:<b> undef --> {JMP literal}
+GC l0 string @STR:<b> 98 0
+GC comment l0-usage @STR:<b> literal --> NOP
+GC l0 priority-rule bar @STR:<b> 0
 GC comment Semantics completion processing
 GC start! A
 

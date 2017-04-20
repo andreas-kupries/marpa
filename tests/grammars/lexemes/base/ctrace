@@ -12,13 +12,13 @@ GC g1 priority-rule B A 0 action {array values} bless {special undef} mask 0
 GC comment definition A 21 1
 GC comment l0-definition A lexeme:u --> {JMP lexeme}
 GC comment usage 'a' 25 3
-GC comment usage @LIT:<a> 25 3
+GC comment usage @STR:<a> 25 3
 GC comment definition 'a' 25 3
-GC comment definition @LIT:<a> 25 3
-GC comment <literal> @LIT:<a> undef --> {JMP literal}
-GC l0 string @LIT:<a> 97 0
-GC comment l0-usage @LIT:<a> literal --> NOP
-GC l0 priority-rule A @LIT:<a> 0
+GC comment definition @STR:<a> 25 3
+GC comment <literal> @STR:<a> undef --> {JMP literal}
+GC l0 string @STR:<a> 97 0
+GC comment l0-usage @STR:<a> literal --> NOP
+GC l0 priority-rule A @STR:<a> 0
 GC comment Semantics completion processing
 GC start! B
 GC comment LATM fix 1

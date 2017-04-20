@@ -3,13 +3,13 @@
 GC comment definition foo 27 3
 GC comment l0-definition foo undef --> {JMP match}
 GC comment usage 'ab' 33 4
-GC comment usage @LIT:<ab> 33 4
+GC comment usage @STR:<ab> 33 4
 GC comment definition 'ab' 33 4
-GC comment definition @LIT:<ab> 33 4
-GC comment <literal> @LIT:<ab> undef --> {JMP literal}
-GC l0 string @LIT:<ab> {97 98} 0
-GC comment l0-usage @LIT:<ab> literal --> NOP
-GC l0 priority-rule foo @LIT:<ab> 0
+GC comment definition @STR:<ab> 33 4
+GC comment <literal> @STR:<ab> undef --> {JMP literal}
+GC l0 string @STR:<ab> {97 98} 0
+GC comment l0-usage @STR:<ab> literal --> NOP
+GC l0 priority-rule foo @STR:<ab> 0
 GC comment definition A 39 1
 GC comment g1-definition A undef --> {JMP brick}
 GC comment usage foo 45 3

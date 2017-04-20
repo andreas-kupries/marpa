@@ -14,25 +14,25 @@ GC comment l0-definition PO floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme PO
 GC g1 terminal PO
 GC comment usage '(' 35 3
-GC comment usage {@LIT:<\50>} 35 3
+GC comment usage {@STR:<\50>} 35 3
 GC comment definition '(' 35 3
-GC comment definition {@LIT:<\50>} 35 3
-GC comment <literal> {@LIT:<\50>} undef --> {JMP literal}
-GC l0 string {@LIT:<\50>} 40 0
-GC comment l0-usage {@LIT:<\50>} literal --> NOP
-GC l0 priority-rule PO {{@LIT:<\50>}} 0
+GC comment definition {@STR:<\50>} 35 3
+GC comment <literal> {@STR:<\50>} undef --> {JMP literal}
+GC l0 string {@STR:<\50>} 40 0
+GC comment l0-usage {@STR:<\50>} literal --> NOP
+GC l0 priority-rule PO {{@STR:<\50>}} 0
 GC comment definition PC 39 2
 GC comment l0-definition PC floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme PC
 GC g1 terminal PC
 GC comment usage ')' 44 3
-GC comment usage {@LIT:<\51>} 44 3
+GC comment usage {@STR:<\51>} 44 3
 GC comment definition ')' 44 3
-GC comment definition {@LIT:<\51>} 44 3
-GC comment <literal> {@LIT:<\51>} undef --> {JMP literal}
-GC l0 string {@LIT:<\51>} 41 0
-GC comment l0-usage {@LIT:<\51>} literal --> NOP
-GC l0 priority-rule PC {{@LIT:<\51>}} 0
+GC comment definition {@STR:<\51>} 44 3
+GC comment <literal> {@STR:<\51>} undef --> {JMP literal}
+GC l0 string {@STR:<\51>} 41 0
+GC comment l0-usage {@STR:<\51>} literal --> NOP
+GC l0 priority-rule PC {{@STR:<\51>}} 0
 GC comment Semantics completion processing
 GC start! A
 GC comment LATM fix 1

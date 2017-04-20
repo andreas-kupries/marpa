@@ -26,10 +26,10 @@ grammar {
             OP 1
         }
         lexeme {
-            OP { {priority @LIT:<b> 0} }
+            OP { {priority @STR:<b> 0} }
         }
         literal {
-            @LIT:<b> { {string 98 0} }
+            @STR:<b> { {string 98 0} }
         }
     }
 }

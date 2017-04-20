@@ -5,14 +5,14 @@ grammar {
     }
     g1 {
         {} {
-            A { {priority {{@LEX:@LIT:<CASE-INSENSITIVE\40STRING>:i}} 0
+            A { {priority {{@LEX:@STR/i:<CASE-INSENSITIVE\40STRING>}} 0
                     action {array values}
                     assoc left
                     bless {special undef}
                     mask 0} }
         }
         terminal {
-            {@LEX:@LIT:<CASE-INSENSITIVE\40STRING>:i} { terminal }
+            {@LEX:@STR/i:<CASE-INSENSITIVE\40STRING>} { terminal }
         }
     }
     lexeme {
@@ -20,13 +20,13 @@ grammar {
     }
     l0 {
         latm {
-            {@LEX:@LIT:<CASE-INSENSITIVE\40STRING>:i} 1
+            {@LEX:@STR/i:<CASE-INSENSITIVE\40STRING>} 1
         }
         lexeme {
-            {@LEX:@LIT:<CASE-INSENSITIVE\40STRING>:i} { {priority {@LIT:<CASE-INSENSITIVE\40STRING>:i} 0} }
+            {@LEX:@STR/i:<CASE-INSENSITIVE\40STRING>} { {priority {@STR/i:<CASE-INSENSITIVE\40STRING>} 0} }
         }
         literal {
-            {@LIT:<CASE-INSENSITIVE\40STRING>:i} { {string {67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71} 1} }
+            {@STR/i:<CASE-INSENSITIVE\40STRING>} { {string {67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71} 1} }
         }
     }
 }

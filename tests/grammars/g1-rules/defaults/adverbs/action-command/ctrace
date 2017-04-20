@@ -4,23 +4,23 @@
 GC comment definition B 31 1
 GC comment g1-definition B undef --> {JMP brick}
 GC comment usage 'b' 37 3
-GC comment usage @LIT:<b> 37 3
+GC comment usage @STR:<b> 37 3
 GC comment definition 'b' 37 3
-GC comment definition @LIT:<b> 37 3
-GC comment <literal> @LIT:<b> undef --> {JMP literal}
-GC l0 string @LIT:<b> 98 0
-GC comment definition @LEX:@LIT:<b> 37 3
-GC comment l0-definition @LEX:@LIT:<b> undef --> {JMP match}
-GC comment :lexeme @LEX:@LIT:<b> match --> {JMP lexeme make-lexeme}
-GC l0 lexeme @LEX:@LIT:<b>
-GC g1 terminal @LEX:@LIT:<b>
-GC l0 priority-rule @LEX:@LIT:<b> @LIT:<b> 0
-GC comment g1-usage @LEX:@LIT:<b> lexeme --> NOP
+GC comment definition @STR:<b> 37 3
+GC comment <literal> @STR:<b> undef --> {JMP literal}
+GC l0 string @STR:<b> 98 0
+GC comment definition @LEX:@STR:<b> 37 3
+GC comment l0-definition @LEX:@STR:<b> undef --> {JMP match}
+GC comment :lexeme @LEX:@STR:<b> match --> {JMP lexeme make-lexeme}
+GC l0 lexeme @LEX:@STR:<b>
+GC g1 terminal @LEX:@STR:<b>
+GC l0 priority-rule @LEX:@STR:<b> @STR:<b> 0
+GC comment g1-usage @LEX:@STR:<b> lexeme --> NOP
 
-	GC g1 priority-rule B @LEX:@LIT:<b> 0 action {cmd dobeta} bless {special undef} mask 0
+	GC g1 priority-rule B @LEX:@STR:<b> 0 action {cmd dobeta} bless {special undef} mask 0
 
 GC comment Semantics completion processing
 GC start! B
 GC comment LATM fix 1
-GC l0 configure @LEX:@LIT:<b> latm 1
+GC l0 configure @LEX:@STR:<b> latm 1
 GC comment DDE fix {}

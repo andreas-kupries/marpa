@@ -20,7 +20,7 @@ grammar {
     }
     l0 {
         discard {
-            fox { {priority @LIT:<x> 0} }
+            fox { {priority @STR:<x> 0} }
         }
         events {
             fox {
@@ -33,11 +33,11 @@ grammar {
             foo 1
         }
         lexeme {
-            foo { {priority @LIT:<a> 0} }
+            foo { {priority @STR:<a> 0} }
         }
         literal {
-            @LIT:<a> { {string 97 0} }
-            @LIT:<x> { {string 120 0} }
+            @STR:<a> { {string 97 0} }
+            @STR:<x> { {string 120 0} }
         }
     }
 }

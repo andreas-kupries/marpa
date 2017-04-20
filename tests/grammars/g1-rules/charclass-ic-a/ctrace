@@ -2,26 +2,26 @@ GC comment definition A 0 1
 GC comment g1-definition A undef --> {JMP brick}
 
 	GC comment usage {[a-z]:i} 6 7
-	GC comment usage @LCC:<A-Z>:i 6 7
+	GC comment usage @CLS/i:<A-Z> 6 7
 	GC comment definition {[a-z]:i} 6 7
-	GC comment definition @LCC:<A-Z>:i 6 7
+	GC comment definition @CLS/i:<A-Z> 6 7
 
-	GC comment <literal> @LCC:<A-Z>:i undef --> {JMP literal}
+	GC comment <literal> @CLS/i:<A-Z> undef --> {JMP literal}
 
-	GC l0 charclass @LCC:<A-Z>:i {{65 90}} 1
-	GC comment definition @LEX:@LCC:<A-Z>:i 6 7
-	GC comment l0-definition @LEX:@LCC:<A-Z>:i undef --> {JMP match}
+	GC l0 charclass @CLS/i:<A-Z> {{65 90}} 1
+	GC comment definition @LEX:@CLS/i:<A-Z> 6 7
+	GC comment l0-definition @LEX:@CLS/i:<A-Z> undef --> {JMP match}
 
-	GC comment :lexeme @LEX:@LCC:<A-Z>:i match --> {JMP lexeme make-lexeme}
-	GC l0 lexeme @LEX:@LCC:<A-Z>:i
-	GC g1 terminal @LEX:@LCC:<A-Z>:i
+	GC comment :lexeme @LEX:@CLS/i:<A-Z> match --> {JMP lexeme make-lexeme}
+	GC l0 lexeme @LEX:@CLS/i:<A-Z>
+	GC g1 terminal @LEX:@CLS/i:<A-Z>
 
-	GC l0 priority-rule @LEX:@LCC:<A-Z>:i @LCC:<A-Z>:i 0
-	GC comment g1-usage @LEX:@LCC:<A-Z>:i lexeme --> NOP
+	GC l0 priority-rule @LEX:@CLS/i:<A-Z> @CLS/i:<A-Z> 0
+	GC comment g1-usage @LEX:@CLS/i:<A-Z> lexeme --> NOP
 
-GC g1 priority-rule A @LEX:@LCC:<A-Z>:i 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule A @LEX:@CLS/i:<A-Z> 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! A
 GC comment LATM fix 1
-GC l0 configure @LEX:@LCC:<A-Z>:i latm 1
+GC l0 configure @LEX:@CLS/i:<A-Z> latm 1
 GC comment DDE fix {}

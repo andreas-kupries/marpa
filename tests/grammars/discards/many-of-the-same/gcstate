@@ -5,14 +5,14 @@ grammar {
     }
     g1 {
         {} {
-            A { {priority @LEX:@LIT:<0> 0
+            A { {priority @LEX:@STR:<0> 0
                     action {array values}
                     assoc left
                     bless {special undef}
                     mask 0} }
         }
         terminal {
-            @LEX:@LIT:<0> { terminal }
+            @LEX:@STR:<0> { terminal }
         }
     }
     lexeme {
@@ -20,17 +20,17 @@ grammar {
     }
     l0 {
         discard {
-            @DIS:@LCC:<a-z> { {priority @LCC:<a-z> 0} }
+            @DIS:@CLS:<a-z> { {priority @CLS:<a-z> 0} }
         }
         latm {
-            @LEX:@LIT:<0> 1
+            @LEX:@STR:<0> 1
         }
         lexeme {
-            @LEX:@LIT:<0> { {priority @LIT:<0> 0} }
+            @LEX:@STR:<0> { {priority @STR:<0> 0} }
         }
         literal {
-            @LCC:<a-z> { {charclass {{97 122}} 0} }
-            @LIT:<0> { {string 48 0} }
+            @CLS:<a-z> { {charclass {{97 122}} 0} }
+            @STR:<0> { {string 48 0} }
         }
     }
 }

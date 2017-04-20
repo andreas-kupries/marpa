@@ -28,12 +28,12 @@ grammar {
             PO 1
         }
         lexeme {
-            PC { {priority {{@LIT:<\51>}} 0} }
-            PO { {priority {{@LIT:<\50>}} 0} }
+            PC { {priority {{@STR:<\51>}} 0} }
+            PO { {priority {{@STR:<\50>}} 0} }
         }
         literal {
-            {@LIT:<\50>} { {string 40 0} }
-            {@LIT:<\51>} { {string 41 0} }
+            {@STR:<\50>} { {string 40 0} }
+            {@STR:<\51>} { {string 41 0} }
         }
     }
 }

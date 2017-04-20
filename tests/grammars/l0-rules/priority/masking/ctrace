@@ -24,43 +24,43 @@ GC g1 priority-rule F A 0 action {array values} bless {special undef} mask 0
 GC comment definition B 38 1
 GC comment l0-definition B strict:u --> {JMP strict}
 GC comment usage 'b' 42 3
-GC comment usage @LIT:<b> 42 3
+GC comment usage @STR:<b> 42 3
 GC comment definition 'b' 42 3
-GC comment definition @LIT:<b> 42 3
-GC comment <literal> @LIT:<b> undef --> {JMP literal}
-GC l0 string @LIT:<b> 98 0
-GC comment l0-usage @LIT:<b> literal --> NOP
-GC l0 priority-rule B @LIT:<b> 0
+GC comment definition @STR:<b> 42 3
+GC comment <literal> @STR:<b> undef --> {JMP literal}
+GC l0 string @STR:<b> 98 0
+GC comment l0-usage @STR:<b> literal --> NOP
+GC l0 priority-rule B @STR:<b> 0
 GC comment definition C 46 1
 GC comment l0-definition C strict:u --> {JMP strict}
 GC comment usage 'c' 50 3
-GC comment usage @LIT:<c> 50 3
+GC comment usage @STR:<c> 50 3
 GC comment definition 'c' 50 3
-GC comment definition @LIT:<c> 50 3
-GC comment <literal> @LIT:<c> undef --> {JMP literal}
-GC l0 string @LIT:<c> 99 0
-GC comment l0-usage @LIT:<c> literal --> NOP
-GC l0 priority-rule C @LIT:<c> 0
+GC comment definition @STR:<c> 50 3
+GC comment <literal> @STR:<c> undef --> {JMP literal}
+GC l0 string @STR:<c> 99 0
+GC comment l0-usage @STR:<c> literal --> NOP
+GC l0 priority-rule C @STR:<c> 0
 GC comment definition D 54 1
 GC comment l0-definition D strict:u --> {JMP strict}
 GC comment usage 'd' 58 3
-GC comment usage @LIT:<d> 58 3
+GC comment usage @STR:<d> 58 3
 GC comment definition 'd' 58 3
-GC comment definition @LIT:<d> 58 3
-GC comment <literal> @LIT:<d> undef --> {JMP literal}
-GC l0 string @LIT:<d> 100 0
-GC comment l0-usage @LIT:<d> literal --> NOP
-GC l0 priority-rule D @LIT:<d> 0
+GC comment definition @STR:<d> 58 3
+GC comment <literal> @STR:<d> undef --> {JMP literal}
+GC l0 string @STR:<d> 100 0
+GC comment l0-usage @STR:<d> literal --> NOP
+GC l0 priority-rule D @STR:<d> 0
 GC comment definition E 62 1
 GC comment l0-definition E strict:u --> {JMP strict}
 GC comment usage 'e' 66 3
-GC comment usage @LIT:<e> 66 3
+GC comment usage @STR:<e> 66 3
 GC comment definition 'e' 66 3
-GC comment definition @LIT:<e> 66 3
-GC comment <literal> @LIT:<e> undef --> {JMP literal}
-GC l0 string @LIT:<e> 101 0
-GC comment l0-usage @LIT:<e> literal --> NOP
-GC l0 priority-rule E @LIT:<e> 0
+GC comment definition @STR:<e> 66 3
+GC comment <literal> @STR:<e> undef --> {JMP literal}
+GC l0 string @STR:<e> 101 0
+GC comment l0-usage @STR:<e> literal --> NOP
+GC l0 priority-rule E @STR:<e> 0
 GC comment Semantics completion processing
 GC start! F
 GC comment LATM fix 1

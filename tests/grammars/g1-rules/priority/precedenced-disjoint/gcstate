@@ -87,24 +87,24 @@ grammar {
             SUB 1
         }
         lexeme {
-            ADD { {priority @LIT:<+> 0} }
-            DIV { {priority @LIT:</> 0} }
-            MUL { {priority @LIT:<*> 0} }
-            N { {quantified @LCC:<0-9> 1} }
-            PC { {priority {{@LIT:<\51>}} 0} }
-            PO { {priority {{@LIT:<\50>}} 0} }
-            POW { {priority @LIT:<**> 0} }
-            SUB { {priority @LIT:<-> 0} }
+            ADD { {priority @STR:<+> 0} }
+            DIV { {priority @STR:</> 0} }
+            MUL { {priority @STR:<*> 0} }
+            N { {quantified @CLS:<0-9> 1} }
+            PC { {priority {{@STR:<\51>}} 0} }
+            PO { {priority {{@STR:<\50>}} 0} }
+            POW { {priority @STR:<**> 0} }
+            SUB { {priority @STR:<-> 0} }
         }
         literal {
-            @LCC:<0-9> { {charclass {{48 57}} 0} }
-            @LIT:<**> { {string {42 42} 0} }
-            @LIT:<*> { {string 42 0} }
-            @LIT:<+> { {string 43 0} }
-            @LIT:<-> { {string 45 0} }
-            @LIT:</> { {string 47 0} }
-            {@LIT:<\50>} { {string 40 0} }
-            {@LIT:<\51>} { {string 41 0} }
+            @CLS:<0-9> { {charclass {{48 57}} 0} }
+            @STR:<**> { {string {42 42} 0} }
+            @STR:<*> { {string 42 0} }
+            @STR:<+> { {string 43 0} }
+            @STR:<-> { {string 45 0} }
+            @STR:</> { {string 47 0} }
+            {@STR:<\50>} { {string 40 0} }
+            {@STR:<\51>} { {string 41 0} }
         }
     }
 }

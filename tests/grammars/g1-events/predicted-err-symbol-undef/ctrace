@@ -6,19 +6,19 @@ GC comment g1-usage A undef --> {JMP floater}
 GC comment definition X 30 1
 GC comment g1-definition X undef --> {JMP brick}
 GC comment usage 'a' 36 3
-GC comment usage @LIT:<a> 36 3
+GC comment usage @STR:<a> 36 3
 GC comment definition 'a' 36 3
-GC comment definition @LIT:<a> 36 3
-GC comment <literal> @LIT:<a> undef --> {JMP literal}
-GC l0 string @LIT:<a> 97 0
-GC comment definition @LEX:@LIT:<a> 36 3
-GC comment l0-definition @LEX:@LIT:<a> undef --> {JMP match}
-GC comment :lexeme @LEX:@LIT:<a> match --> {JMP lexeme make-lexeme}
-GC l0 lexeme @LEX:@LIT:<a>
-GC g1 terminal @LEX:@LIT:<a>
-GC l0 priority-rule @LEX:@LIT:<a> @LIT:<a> 0
-GC comment g1-usage @LEX:@LIT:<a> lexeme --> NOP
-GC g1 priority-rule X @LEX:@LIT:<a> 0 action {array values} bless {special undef} mask 0
+GC comment definition @STR:<a> 36 3
+GC comment <literal> @STR:<a> undef --> {JMP literal}
+GC l0 string @STR:<a> 97 0
+GC comment definition @LEX:@STR:<a> 36 3
+GC comment l0-definition @LEX:@STR:<a> undef --> {JMP match}
+GC comment :lexeme @LEX:@STR:<a> match --> {JMP lexeme make-lexeme}
+GC l0 lexeme @LEX:@STR:<a>
+GC g1 terminal @LEX:@STR:<a>
+GC l0 priority-rule @LEX:@STR:<a> @STR:<a> 0
+GC comment g1-usage @LEX:@STR:<a> lexeme --> NOP
+GC g1 priority-rule X @LEX:@STR:<a> 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 
 	GC error {Grammar error. G1 symbol <A> has no definition

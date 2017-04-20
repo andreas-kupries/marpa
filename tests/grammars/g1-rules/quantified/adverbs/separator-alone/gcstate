@@ -24,12 +24,12 @@ grammar {
             C 1
         }
         lexeme {
-            B { {priority @LIT:<b> 0} }
-            C { {priority @LIT:<c> 0} }
+            B { {priority @STR:<b> 0} }
+            C { {priority @STR:<c> 0} }
         }
         literal {
-            @LIT:<b> { {string 98 0} }
-            @LIT:<c> { {string 99 0} }
+            @STR:<b> { {string 98 0} }
+            @STR:<c> { {string 99 0} }
         }
     }
 }

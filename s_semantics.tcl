@@ -71,6 +71,10 @@ oo::class create marpa::slif::semantics {
 	set st [marpa::slif::semantics::Symbol create \
 		    Symbol $container $def $use [self]]
 
+	# Handle incoming literals
+	marpa::slif::semantics::Literal create \
+	    Literal $container $def $use $st
+
 	# Track G1 action/bless defaults
 	marpa::slif::semantics::Defaults create G1 \
 	    $container {
@@ -134,13 +138,7 @@ oo::class create marpa::slif::semantics {
 	link {MERGE   MERGE}   ;# Merge multiple rhs sem values
 	link {MERGE2  MERGE2}  ;# Merge 2 rhs sem values
 	link {HIDE    HIDE}    ;# Set mask in rhs sem value to "all hidden"
-	link {CCLASS  CCLASS}  ;# Character class translation
-	link {CSTRING CSTRING} ;# Character string translation
-	link {CHAR    CHAR}    ;# Character normalization. Determine codepoint, wrap.
-	link {CCODE   CCODE}   ;# Char codepoint, raw.
-	link {CWRAP   CWRAP}   ;# Char boxing
-	link {UNESC   UNESC}   ;# Char normalization. Handle escape sequences.
-	link {RANGES  RANGES}  ;# Recompression of adjacent chars into ranges.
+	link {MKLIT   MKLIT}   ;# Literal handling
 	link {G1Event G1Event} ;# Adverb processing for g1 parse events
 	link {E       ERR}
 	link {LOCFMT  LOCFMT}
@@ -438,9 +436,9 @@ oo::class create marpa::slif::semantics {
     method rhs/0                {children} { MERGE {*}[VALUES] } ; # OK <rhs>+
     method {rhs primary list/0} {children} { MERGE {*}[VALUES] } ; # OK <rhs>+
 
-    method {rhs primary/0} {children} { FIRST }          ; # OK <single symbol>
-    method {rhs primary/1} {children} { LEAF [CSTRING] } ; # OK <single quoted string>
-    method {rhs primary/2} {children} { FIRST }          ; # OK <parenthesized rhs primary list>
+    method {rhs primary/0} {children} { FIRST }        ; # OK <single symbol>
+    method {rhs primary/1} {children} { LEAF [MKLIT] } ; # OK <single quoted string>
+    method {rhs primary/2} {children} { FIRST }        ; # OK <parenthesized rhs primary list>
 
     method {parenthesized rhs primary list/0} {children} { HIDE [FIRST] } ; # OK <rhs primary list>
 
@@ -563,11 +561,11 @@ oo::class create marpa::slif::semantics {
 	# - event
 
 	SymCo l0 use
-	set litsymbol [CCLASS] ;# implied index 0
+	set litsymbol [MKLIT] ;# implied index 0
 
 	# Create a proper discard symbol on top of the char class
-	# literal, plus associated priority rule. See also CCLASS and
-	# CSTRING for similar constructions to embed a literal into G1
+	# literal, plus associated priority rule. See also MKLIT
+	# itself for a similar construction to embed a literal into G1
 	# with a helper lexeme symbol.
 
 	set discard @DIS:$litsymbol
@@ -840,8 +838,8 @@ oo::class create marpa::slif::semantics {
     method {symbol name/1} {children} { SYMBOL 0 1 } ; # OK bracketed
 
     # users: quantified rule, discard rule, separator spec, rhs primary/0
-    method {single symbol/0} {children} { LEAF [FIRST]  } ; # OK <symbol>
-    method {single symbol/1} {children} { LEAF [CCLASS] } ; # OK <character class>
+    method {single symbol/0} {children} { LEAF [FIRST] } ; # OK <symbol>
+    method {single symbol/1} {children} { LEAF [MKLIT] } ; # OK <character class>
 
     # # -- --- ----- -------- -------------
     ## Action forms
@@ -926,252 +924,17 @@ oo::class create marpa::slif::semantics {
 	return [list $mask $symbols]
     }
 
-    method CCLASS {} {
+    method MKLIT {} {
 	debug.marpa/slif/semantics {[debug caller] | [AT][INDENT]}
 
-	set result [my MAKE-LITERAL charclass NORMCLASS]
-
-	debug.marpa/slif/semantics {[UNDENT][debug caller] | [AT] ==> $result}
-	return $result
-    }
-
-    method CSTRING {} {
-	debug.marpa/slif/semantics {[debug caller] | [AT][INDENT]}
-
-	set result [my MAKE-LITERAL string NORMSTR]
-
-	debug.marpa/slif/semantics {[UNDENT][debug caller] | [AT] ==> $result}
-	return $result
-    }
-
-    method NORMCLASS {literal} {
-	# literal = [...](:ic|:i)* where
-	# where ... = list (char|range|collation-element)
-	#    or ... = [:classname:]
-	#       range = X-Y
-	#       collation-element = [.X.]
-
-	#puts NCC:I:|$literal|
-
-	lassign [my NOCASE $literal] literal nocase
-
-	# Handle escapes (Tcl syntax), afterward we have a simple
-	# sequence of characters and ranges.
-	set literal [UNESC $literal]
-
-	# Process class elements.
-	set spec {}
-	while {[string length $literal]} {
-	    #puts NCC|$literal|
-
-	    # negated posix char class
-	    if {[regexp -- "^\\\[:\[\[.^.\]\](\\w+):\\\](.*)$" $literal -> name remainder]} {
-		lappend spec ^$name
-		set literal $remainder
-		continue
-	    }
-	    # posix char class
-	    if {[regexp -- "^\\\[:(\\w+):\\\](.*)$" $literal -> name remainder]} {
-		lappend spec :$name
-		set literal $remainder
-		continue
-	    }
-
-	    if {[regexp -- {^(.)-(.)(.*)$} $literal -> start end remainder]} {
-		# Expand the range into the individual characters
-		# (We cannot assume that folding preverses continuity, or order)
-		set start [CCODE $start]
-		set end   [CCODE $end]
-		for {set codepoint $start} {$codepoint <= $end} {incr codepoint} {
-		    lappend spec [CWRAP $codepoint $nocase]
-		}
-		set literal $remainder
-		continue
-	    }
-
-	    if {[regexp -- {^(.)(.*)$} $literal -> char remainder]} {
-		# Remember characters as codepoints, possibly up/downcased
-		lappend spec [CHAR $char $nocase]
-		set literal $remainder
-		continue
-	    }
-
-	    my E "" ... ;# internal error semantic/syntax mismatch
-	    break
-	}
-
-	# Canonical sort order, removal of obvious duplicates, and
-	# compression to ranges where possible.
-
-	#puts NCC:E:($spec)
-	set spec [RANGES [lsort -dict -unique $spec]]
-	#puts NCC:C:($spec)
-
-	# Generate a symbol from the normalized spec.  This symbol
-	# represents the char class itself.  There may come more
-	# symbols derived from it which represent things built from
-	# the literal. For example a lexeme.
-
-	set symbol [my SYM @LCC:<> $nocase $spec]
-
-	dict set mycc $symbol $literal
-	# Remember the actual literal mapping for use in (discard rule/1)
-
-	return [list $spec $nocase $symbol]
-    }
-
-    method NORMSTR {literal} {
-	lassign [my NOCASE $literal] literal nocase
-
-	# Handle escapes (Tcl syntax), afterward we have a simple
-	# sequence of characters.
-	set literal [UNESC $literal]
-
-	# Process the string elements.
-	set spec {}
-	foreach char [split $literal {}] {
-	    # Remember characters as code points, possibly downcased for nocase.
-	    lappend spec [CHAR $char $nocase]
-	}
-
-	# Generate a symbol from the normalized spec.  This symbol
-	# represents the char class itself.  There may come more
-	# symbols derived from it which represent things built from
-	# the literal. For example a lexeme.
-
-	set symbol [my SYM @LIT:<> $nocase $spec]
-
-	return [list $spec $nocase $symbol]
-
-    }
-
-    method RANGES {spec} {
-	set result {}
-	set buf {}
-	foreach value $spec {
-	    switch -glob -- $value {
-		:* - ^* {
-		    lappend result $value
-		}
-		* {
-		    # char class calls ranges without ranges, only codepoints.
-		    if {![llength $buf]} {
-			lappend buf $value
-			continue
-		    }
-		    if {([lindex $buf end] + 1) == $value} {
-			lappend buf $value
-			continue
-		    }
-		    # gap, flush buffer
-		    if {[llength $buf] > 1} {
-			set s [lindex $buf 0]
-			set e [lindex $buf end]
-			lappend result [list $s $e]
-		    } else {
-			lappend result [lindex $buf 0]
-		    }
-		    # restart accumulation
-		    set buf [list $value]
-		}
-	    }
-	}
-	if {[llength $buf]} {
-	    if {[llength $buf] > 1} {
-		set s [lindex $buf 0]
-		set e [lindex $buf end]
-		lappend result [list $s $e]
-	    } else {
-		lappend result [lindex $buf 0]
-	    }
-	}
-	return $result
-    }
-
-    method CHAR {char nocase} {
-	return [CWRAP [CCODE $char] $nocase]
-    }
-
-    method CWRAP {codepoint nocase} {
-	if {$nocase} {
-	    set codepoint [marpa unicode data fold/c $codepoint]
-	}
-	return $codepoint
-    }
-
-    method UNESC {x} {
-	return [subst -nocommands -novariables $x]
-    }
-
-    method CCODE {char} {
-	# Input is unescaped tcl character.
-	# Determine the decimal codepoint.
-	scan $char %c char
-	return $char
-    }
-
-    method NOCASE {literal} {
-	# Strip and normalize modifiers
-	set nocase 0
-	while {1} {
-	    if {[string match *:i $literal]} {
-		set literal [string range $literal 0 end-2]
-		set nocase 1
-		continue
-	    }
-	    if {[string match *:ic $literal]} {
-		set literal [string range $literal 0 end-3]
-		set nocase 1
-		continue
-	    }
-	    break
-	}
-
-	# Strip bracketing
-	set literal [string range $literal 1 end-1]
-
-	return [list $literal $nocase]
-    }
-
-    method SYM {base nocase spec} {
-	set symbol [string range $base 0 end-1]
-	foreach value $spec {
-	    switch -glob -- $value {
-		:* { append symbol \[${value}:\]  }
-		^* { append symbol \[:${value}:\] }
-		*  {
-		    if {[string is int -strict $value]} {
-			append symbol [char quote tcl [format %c $value]]
-		    } else {
-			lassign $value s e
-			append symbol \
-			    [char quote tcl [format %c $s]] - \
-			    [char quote tcl [format %c $e]]
-		    }
-		}
-	    }
-	}
-	append symbol [string index $base end]
-	if {$nocase} { append symbol :i }
-	return $symbol
-    }
-
-    method MAKE-LITERAL {type processor} {
 	SymCo assert usage
 	# Expect RHS
 
-	upvar 2 children children
+	upvar 1 children children
 	lassign [lindex $children 0] start length literal
-	lassign [my $processor $literal] spec nocase litsymbol
+	set litsymbol [Literal enter $literal $start $length]
 
-	usage      add $start $length  $literal $litsymbol
-	definition add $start $length  $literal $litsymbol
-
-	# The literal is (always) a terminal in the L0 grammar.
-	# Create it only once, when it is encountred the 1st time.
-	if {[Symbol context1 <literal> $litsymbol] eq "undef"} {
-	    Container l0 $type $litsymbol $spec $nocase
-	}
+	dict set mycc $litsymbol $literal
 
 	if {[SymCo layer?] eq "l0"} {
 	    set result $litsymbol

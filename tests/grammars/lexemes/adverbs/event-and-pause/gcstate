@@ -27,10 +27,10 @@ grammar {
             }
         }
         lexeme {
-            A { {priority @LIT:<a> 0} }
+            A { {priority @STR:<a> 0} }
         }
         literal {
-            @LIT:<a> { {string 97 0} }
+            @STR:<a> { {string 97 0} }
         }
     }
 }

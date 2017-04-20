@@ -23,10 +23,10 @@ grammar {
             foo 0
         }
         lexeme {
-            foo { {priority @LIT:<ab> 0} }
+            foo { {priority @STR:<ab> 0} }
         }
         literal {
-            @LIT:<ab> { {string {97 98} 0} }
+            @STR:<ab> { {string {97 98} 0} }
         }
     }
 }
