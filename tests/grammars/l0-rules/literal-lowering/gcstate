@@ -1,0 +1,144 @@
+grammar {
+    global {
+        start A
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            A { {priority {
+                    B
+                    C
+                    D
+                    E
+                    F
+                    G
+                    H
+                    I
+                    J
+                    K
+                    L
+                    M} 0
+                        action {array values}
+                        assoc left
+                        bless {special undef}
+                        mask {0 0 0 0 0 0 0 0 0 0 0 0}} }
+            B { {priority @LEX:@CHR:<a> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            C { {priority @LEX:@STR:<abc> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            D { {priority @LEX:@STR/i:<A> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            E { {priority @LEX:@STR/i:<ABC> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            F { {priority @LEX:@CHR:<a> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            G { {priority @LEX:@CLS:<a-z> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            H { {priority {{@LEX:@CLS:<[:alnum:]>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            I { {priority {{@LEX:@CLS:<0-9[:braille:]a>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            J { {priority @LEX:@CLS/i:<A> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            K { {priority @LEX:@CLS/i:<A-Z> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            L { {priority {{@LEX:@CLS/i:<[:alnum:]>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            M { {priority {{@LEX:@CLS/i:<0-9[:braille:]A>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            @LEX:@CHR:<a> { terminal }
+            {@LEX:@CLS/i:<0-9[:braille:]A>} { terminal }
+            {@LEX:@CLS/i:<[:alnum:]>} { terminal }
+            @LEX:@CLS/i:<A-Z> { terminal }
+            @LEX:@CLS/i:<A> { terminal }
+            {@LEX:@CLS:<0-9[:braille:]a>} { terminal }
+            {@LEX:@CLS:<[:alnum:]>} { terminal }
+            @LEX:@CLS:<a-z> { terminal }
+            @LEX:@STR/i:<A> { terminal }
+            @LEX:@STR/i:<ABC> { terminal }
+            @LEX:@STR:<abc> { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        latm {
+            @LEX:@CHR:<a> 1
+            {@LEX:@CLS/i:<0-9[:braille:]A>} 1
+            {@LEX:@CLS/i:<[:alnum:]>} 1
+            @LEX:@CLS/i:<A-Z> 1
+            @LEX:@CLS/i:<A> 1
+            {@LEX:@CLS:<0-9[:braille:]a>} 1
+            {@LEX:@CLS:<[:alnum:]>} 1
+            @LEX:@CLS:<a-z> 1
+            @LEX:@STR/i:<A> 1
+            @LEX:@STR/i:<ABC> 1
+            @LEX:@STR:<abc> 1
+        }
+        lexeme {
+            @LEX:@CHR:<a> { {priority @CHR:<a> 0} }
+            {@LEX:@CLS/i:<0-9[:braille:]A>} { {priority {@CLS/i:<0-9[:braille:]A>} 0} }
+            {@LEX:@CLS/i:<[:alnum:]>} { {priority {@CLS/i:<[:alnum:]>} 0} }
+            @LEX:@CLS/i:<A-Z> { {priority @CLS/i:<A-Z> 0} }
+            @LEX:@CLS/i:<A> { {priority @CLS/i:<A> 0} }
+            {@LEX:@CLS:<0-9[:braille:]a>} { {priority {@CLS:<0-9[:braille:]a>} 0} }
+            {@LEX:@CLS:<[:alnum:]>} { {priority {@CLS:<[:alnum:]>} 0} }
+            @LEX:@CLS:<a-z> { {priority @CLS:<a-z> 0} }
+            @LEX:@STR/i:<A> { {priority @STR/i:<A> 0} }
+            @LEX:@STR/i:<ABC> { {priority @STR/i:<ABC> 0} }
+            @LEX:@STR:<abc> { {priority @STR:<abc> 0} }
+        }
+        literal {
+            @CHR:<a> { {character 97} }
+            {@CLS/i:<0-9[:braille:]A>} { {charclass {{48 57} :braille 65} 1} }
+            {@CLS/i:<[:alnum:]>} { {charclass :alnum 1} }
+            @CLS/i:<A-Z> { {charclass {{65 90}} 1} }
+            @CLS/i:<A> { {charclass 65 1} }
+            {@CLS:<0-9[:braille:]a>} { {charclass {{48 57} :braille 97} 0} }
+            {@CLS:<[:alnum:]>} { {charclass :alnum 0} }
+            @CLS:<a-z> { {charclass {{97 122}} 0} }
+            @STR/i:<A> { {string 65 1} }
+            @STR/i:<ABC> { {string {65 66 67} 1} }
+            @STR:<abc> { {string {97 98 99} 0} }
+        }
+    }
+}
