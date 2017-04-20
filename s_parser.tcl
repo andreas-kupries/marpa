@@ -198,7 +198,7 @@ oo::class create marpa::slif::parser {
 
 	L0 rules {
 	    {@lex-(                                           := (}
-							      {@lex-)                                           := )}
+	    {@lex-)                                           := )}
 	    {@lex-*                                           := *}
 	    {@lex-+                                           := +}
 	    {@lex-,                                           := ,}
