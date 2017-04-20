@@ -1,9 +1,7 @@
 GC comment definition A 0 1
 GC comment l0-definition A undef --> {JMP match}
 
-	GC comment usage 'fOXy':i:ic:ic:i 4 16
 	GC comment usage @STR/i:<FOXY> 4 16
-	GC comment definition 'fOXy':i:ic:ic:i 4 16
 	GC comment definition @STR/i:<FOXY> 4 16
 
 	GC comment <literal> @STR/i:<FOXY> undef --> {JMP literal}

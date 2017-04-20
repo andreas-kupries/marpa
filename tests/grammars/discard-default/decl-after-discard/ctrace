@@ -6,9 +6,7 @@ GC comment usage fox 11 3
 
 GC comment definition fox 51 3
 GC comment l0-definition fox discard:u --> {JMP discard}
-GC comment usage 'b' 57 3
 GC comment usage @CHR:<b> 57 3
-GC comment definition 'b' 57 3
 GC comment definition @CHR:<b> 57 3
 GC comment <literal> @CHR:<b> undef --> {JMP literal}
 GC l0 character @CHR:<b> 98
@@ -23,9 +21,7 @@ GC comment definition foo 72 3
 GC comment l0-definition foo floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme foo
 GC g1 terminal foo
-GC comment usage 'a' 78 3
 GC comment usage @CHR:<a> 78 3
-GC comment definition 'a' 78 3
 GC comment definition @CHR:<a> 78 3
 GC comment <literal> @CHR:<a> undef --> {JMP literal}
 GC l0 character @CHR:<a> 97

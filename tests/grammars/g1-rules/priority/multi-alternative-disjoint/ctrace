@@ -16,9 +16,7 @@ GC comment definition B 17 1
 GC comment l0-definition B floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme B
 GC g1 terminal B
-GC comment usage 'b' 21 3
 GC comment usage @CHR:<b> 21 3
-GC comment definition 'b' 21 3
 GC comment definition @CHR:<b> 21 3
 GC comment <literal> @CHR:<b> undef --> {JMP literal}
 GC l0 character @CHR:<b> 98
@@ -28,9 +26,7 @@ GC comment definition C 25 1
 GC comment l0-definition C floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme C
 GC g1 terminal C
-GC comment usage 'c' 29 3
 GC comment usage @CHR:<c> 29 3
-GC comment definition 'c' 29 3
 GC comment definition @CHR:<c> 29 3
 GC comment <literal> @CHR:<c> undef --> {JMP literal}
 GC l0 character @CHR:<c> 99

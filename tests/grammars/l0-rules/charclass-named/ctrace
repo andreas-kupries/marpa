@@ -1,9 +1,7 @@
 GC comment definition A 0 1
 GC comment l0-definition A undef --> {JMP match}
 
-	GC comment usage {[Q[:xdigit:]]} 4 13
 	GC comment usage {@CLS:<[:xdigit:]Q>} 4 13
-	GC comment definition {[Q[:xdigit:]]} 4 13
 	GC comment definition {@CLS:<[:xdigit:]Q>} 4 13
 	GC comment <literal> {@CLS:<[:xdigit:]Q>} undef --> {JMP literal}
 

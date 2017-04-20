@@ -5,9 +5,7 @@ GC comment g1-usage A undef --> {JMP floater}
 
 GC comment definition A 30 1
 GC comment g1-definition A floater --> {JMP brick}
-GC comment usage 'a' 36 3
 GC comment usage @CHR:<a> 36 3
-GC comment definition 'a' 36 3
 GC comment definition @CHR:<a> 36 3
 GC comment <literal> @CHR:<a> undef --> {JMP literal}
 GC l0 character @CHR:<a> 97

@@ -170,10 +170,10 @@ oo::class create marpa::slif::semantics::Literal {
     }
 
     method ENTER {litsymbol} {
-	upvar 1 ltype ltype ldata ldata start start length length literal literal
+	upvar 1 ltype ltype ldata ldata start start length length
 
-	Usage      add $start $length  $literal $litsymbol
-	Definition add $start $length  $literal $litsymbol
+	Usage      add $start $length  $litsymbol
+	Definition add $start $length  $litsymbol
 
 	# The literal is (always) a terminal in the L0 grammar.
 	# Create it only once, when it is encountred the 1st time.

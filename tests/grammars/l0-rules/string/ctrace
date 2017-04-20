@@ -1,9 +1,7 @@
 GC comment definition A 0 1
 GC comment l0-definition A undef --> {JMP match}
 
-	GC comment usage 'string' 4 8
 	GC comment usage @STR:<string> 4 8
-	GC comment definition 'string' 4 8
 	GC comment definition @STR:<string> 4 8
 
 	GC comment <literal> @STR:<string> undef --> {JMP literal}

@@ -1,9 +1,7 @@
 GC comment definition A 0 1
 GC comment g1-definition A undef --> {JMP brick}
 
-	GC comment usage 'foXoyo':ic:i:i:ic 6 18
 	GC comment usage @STR/i:<FOXOYO> 6 18
-	GC comment definition 'foXoyo':ic:i:i:ic 6 18
 	GC comment definition @STR/i:<FOXOYO> 6 18
 
 	GC comment <literal> @STR/i:<FOXOYO> undef --> {JMP literal}

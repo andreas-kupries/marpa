@@ -1,9 +1,7 @@
 GC comment definition A 0 1
 GC comment g1-definition A undef --> {JMP brick}
 
-	GC comment usage 'string' 6 8
 	GC comment usage @STR:<string> 6 8
-	GC comment definition 'string' 6 8
 	GC comment definition @STR:<string> 6 8
 
 

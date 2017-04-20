@@ -1,9 +1,7 @@
 GC comment definition A 0 1
 GC comment l0-definition A undef --> {JMP match}
 
-	GC comment usage {[a-z4]:ic:ic:i:i} 4 16
 	GC comment usage @CLS/i:<4A-Z> 4 16
-	GC comment definition {[a-z4]:ic:ic:i:i} 4 16
 	GC comment definition @CLS/i:<4A-Z> 4 16
 
 	GC comment <literal> @CLS/i:<4A-Z> undef --> {JMP literal}

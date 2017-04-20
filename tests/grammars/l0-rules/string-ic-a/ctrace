@@ -1,9 +1,7 @@
 GC comment definition A 0 1
 GC comment l0-definition A undef --> {JMP match}
 
-	GC comment usage {'case-insensitive string':i} 4 27
 	GC comment usage {@STR/i:<CASE-INSENSITIVE\40STRING>} 4 27
-	GC comment definition {'case-insensitive string':i} 4 27
 	GC comment definition {@STR/i:<CASE-INSENSITIVE\40STRING>} 4 27
 
 	GC comment <literal> {@STR/i:<CASE-INSENSITIVE\40STRING>} undef --> {JMP literal}

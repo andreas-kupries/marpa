@@ -1,9 +1,7 @@
 GC comment definition A 0 1
 GC comment g1-definition A undef --> {JMP brick}
 
-	GC comment usage {[0-9]} 6 5
 	GC comment usage @CLS:<0-9> 6 5
-	GC comment definition {[0-9]} 6 5
 	GC comment definition @CLS:<0-9> 6 5
 
 	GC comment <literal> @CLS:<0-9> undef --> {JMP literal}

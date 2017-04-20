@@ -13,9 +13,7 @@ GC comment definition OP 28 2
 GC comment l0-definition OP floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme OP
 GC g1 terminal OP
-GC comment usage 'b' 33 3
 GC comment usage @CHR:<b> 33 3
-GC comment definition 'b' 33 3
 GC comment definition @CHR:<b> 33 3
 GC comment <literal> @CHR:<b> undef --> {JMP literal}
 GC l0 character @CHR:<b> 98

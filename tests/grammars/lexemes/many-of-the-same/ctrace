@@ -1,8 +1,6 @@
 GC comment definition A 0 1
 GC comment g1-definition A undef --> {JMP brick}
-GC comment usage 'a' 6 3
 GC comment usage @CHR:<a> 6 3
-GC comment definition 'a' 6 3
 GC comment definition @CHR:<a> 6 3
 
 	GC comment <literal> @CHR:<a> undef --> {JMP literal}
@@ -22,10 +20,8 @@ GC comment g1-usage B undef --> {JMP floater}
 GC g1 priority-rule A {@LEX:@CHR:<a> B} 0 action {array values} bless {special undef} mask {0 0}
 GC comment definition B 12 1
 GC comment g1-definition B floater --> {JMP brick}
-GC comment usage 'a' 18 3
 GC comment usage @CHR:<a> 18 3
 
-GC comment definition 'a' 18 3
 GC comment definition @CHR:<a> 18 3
 
 	GC comment <literal> @CHR:<a> literal --> NOP

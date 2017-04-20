@@ -1,8 +1,6 @@
 GC comment definition A 31 1
 GC comment l0-definition A undef --> {JMP match}
-GC comment usage 'a' 35 3
 GC comment usage @CHR:<a> 35 3
-GC comment definition 'a' 35 3
 GC comment definition @CHR:<a> 35 3
 GC comment <literal> @CHR:<a> undef --> {JMP literal}
 GC l0 character @CHR:<a> 97

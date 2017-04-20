@@ -2,9 +2,7 @@
 
 GC comment definition A 28 1
 GC comment g1-definition A undef --> {JMP brick}
-GC comment usage 'a' 34 3
 GC comment usage @CHR:<a> 34 3
-GC comment definition 'a' 34 3
 GC comment definition @CHR:<a> 34 3
 GC comment <literal> @CHR:<a> undef --> {JMP literal}
 GC l0 character @CHR:<a> 97
@@ -21,9 +19,7 @@ GC comment g1-usage @LEX:@CHR:<a> lexeme --> NOP
 
 GC comment definition B 66 1
 GC comment g1-definition B undef --> {JMP brick}
-GC comment usage 'b' 72 3
 GC comment usage @CHR:<b> 72 3
-GC comment definition 'b' 72 3
 GC comment definition @CHR:<b> 72 3
 GC comment <literal> @CHR:<b> undef --> {JMP literal}
 GC l0 character @CHR:<b> 98

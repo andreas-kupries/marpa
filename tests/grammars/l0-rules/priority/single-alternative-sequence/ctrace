@@ -22,9 +22,7 @@ GC g1 terminal A
 GC g1 priority-rule F A 0 action {array values} bless {special undef} mask 0
 GC comment definition B 34 1
 GC comment l0-definition B strict:u --> {JMP strict}
-GC comment usage 'b' 38 3
 GC comment usage @CHR:<b> 38 3
-GC comment definition 'b' 38 3
 GC comment definition @CHR:<b> 38 3
 GC comment <literal> @CHR:<b> undef --> {JMP literal}
 GC l0 character @CHR:<b> 98
@@ -32,9 +30,7 @@ GC comment l0-usage @CHR:<b> literal --> NOP
 GC l0 priority-rule B @CHR:<b> 0
 GC comment definition C 42 1
 GC comment l0-definition C strict:u --> {JMP strict}
-GC comment usage 'c' 46 3
 GC comment usage @CHR:<c> 46 3
-GC comment definition 'c' 46 3
 GC comment definition @CHR:<c> 46 3
 GC comment <literal> @CHR:<c> undef --> {JMP literal}
 GC l0 character @CHR:<c> 99
@@ -42,9 +38,7 @@ GC comment l0-usage @CHR:<c> literal --> NOP
 GC l0 priority-rule C @CHR:<c> 0
 GC comment definition D 50 1
 GC comment l0-definition D strict:u --> {JMP strict}
-GC comment usage 'd' 54 3
 GC comment usage @CHR:<d> 54 3
-GC comment definition 'd' 54 3
 GC comment definition @CHR:<d> 54 3
 GC comment <literal> @CHR:<d> undef --> {JMP literal}
 GC l0 character @CHR:<d> 100
@@ -52,9 +46,7 @@ GC comment l0-usage @CHR:<d> literal --> NOP
 GC l0 priority-rule D @CHR:<d> 0
 GC comment definition E 58 1
 GC comment l0-definition E strict:u --> {JMP strict}
-GC comment usage 'e' 62 3
 GC comment usage @CHR:<e> 62 3
-GC comment definition 'e' 62 3
 GC comment definition @CHR:<e> 62 3
 GC comment <literal> @CHR:<e> undef --> {JMP literal}
 GC l0 character @CHR:<e> 101

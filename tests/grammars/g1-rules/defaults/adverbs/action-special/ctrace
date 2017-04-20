@@ -3,9 +3,7 @@
 
 GC comment definition B 32 1
 GC comment g1-definition B undef --> {JMP brick}
-GC comment usage 'b' 38 3
 GC comment usage @CHR:<b> 38 3
-GC comment definition 'b' 38 3
 GC comment definition @CHR:<b> 38 3
 GC comment <literal> @CHR:<b> undef --> {JMP literal}
 GC l0 character @CHR:<b> 98

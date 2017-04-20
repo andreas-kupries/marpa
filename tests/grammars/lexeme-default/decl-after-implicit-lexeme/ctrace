@@ -1,8 +1,6 @@
 GC comment definition foo 0 3
 GC comment l0-definition foo undef --> {JMP match}
-GC comment usage 'ab' 6 4
 GC comment usage @STR:<ab> 6 4
-GC comment definition 'ab' 6 4
 GC comment definition @STR:<ab> 6 4
 GC comment <literal> @STR:<ab> undef --> {JMP literal}
 GC l0 string @STR:<ab> {97 98} 0
