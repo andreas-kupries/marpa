@@ -27,12 +27,12 @@ grammar {
             foo 1
         }
         lexeme {
-            bar { {priority @STR:<b> 0} }
-            foo { {priority @STR:<f> 0} }
+            bar { {priority @CHR:<b> 0} }
+            foo { {priority @CHR:<f> 0} }
         }
         literal {
-            @STR:<b> { {string 98 0} }
-            @STR:<f> { {string 102 0} }
+            @CHR:<b> { {character 98} }
+            @CHR:<f> { {character 102} }
         }
     }
 }

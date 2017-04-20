@@ -33,16 +33,16 @@ grammar {
             E 1
         }
         lexeme {
-            B { {priority @STR:<b> 0} }
-            C { {priority @STR:<c> 0} }
-            D { {priority @STR:<d> 0} }
-            E { {priority @STR:<e> 0} }
+            B { {priority @CHR:<b> 0} }
+            C { {priority @CHR:<c> 0} }
+            D { {priority @CHR:<d> 0} }
+            E { {priority @CHR:<e> 0} }
         }
         literal {
-            @STR:<b> { {string 98 0} }
-            @STR:<c> { {string 99 0} }
-            @STR:<d> { {string 100 0} }
-            @STR:<e> { {string 101 0} }
+            @CHR:<b> { {character 98} }
+            @CHR:<c> { {character 99} }
+            @CHR:<d> { {character 100} }
+            @CHR:<e> { {character 101} }
         }
     }
 }

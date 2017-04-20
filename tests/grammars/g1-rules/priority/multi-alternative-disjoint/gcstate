@@ -32,12 +32,12 @@ grammar {
             C 1
         }
         lexeme {
-            B { {priority @STR:<b> 0} }
-            C { {priority @STR:<c> 0} }
+            B { {priority @CHR:<b> 0} }
+            C { {priority @CHR:<c> 0} }
         }
         literal {
-            @STR:<b> { {string 98 0} }
-            @STR:<c> { {string 99 0} }
+            @CHR:<b> { {character 98} }
+            @CHR:<c> { {character 99} }
         }
     }
 }

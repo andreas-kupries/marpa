@@ -1,13 +1,13 @@
 GC comment definition A 44 1
 GC comment l0-definition A undef --> {JMP match}
 GC comment usage 'a' 48 3
-GC comment usage @STR:<a> 48 3
+GC comment usage @CHR:<a> 48 3
 GC comment definition 'a' 48 3
-GC comment definition @STR:<a> 48 3
-GC comment <literal> @STR:<a> undef --> {JMP literal}
-GC l0 string @STR:<a> 97 0
-GC comment l0-usage @STR:<a> literal --> NOP
-GC l0 priority-rule A @STR:<a> 0
+GC comment definition @CHR:<a> 48 3
+GC comment <literal> @CHR:<a> undef --> {JMP literal}
+GC l0 character @CHR:<a> 97
+GC comment l0-usage @CHR:<a> literal --> NOP
+GC l0 priority-rule A @CHR:<a> 0
 GC comment usage A 63 1
 GC comment :discard A match --> {JMP discard make-discard}
 GC l0 discard A

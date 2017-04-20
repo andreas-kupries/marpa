@@ -26,11 +26,11 @@ grammar {
             A 1
         }
         lexeme {
-            A { {priority @STR:<a> 0} }
+            A { {priority @CHR:<a> 0} }
         }
         literal {
+            @CHR:<a> { {character 97} }
             @CLS:<0-9> { {charclass {{48 57}} 0} }
-            @STR:<a> { {string 97 0} }
         }
     }
 }

@@ -1,42 +1,42 @@
 GC comment definition A 0 1
 GC comment g1-definition A undef --> {JMP brick}
 GC comment usage 'a' 6 3
-GC comment usage @STR:<a> 6 3
+GC comment usage @CHR:<a> 6 3
 GC comment definition 'a' 6 3
-GC comment definition @STR:<a> 6 3
+GC comment definition @CHR:<a> 6 3
 
-	GC comment <literal> @STR:<a> undef --> {JMP literal}
-	GC l0 string @STR:<a> 97 0
+	GC comment <literal> @CHR:<a> undef --> {JMP literal}
+	GC l0 character @CHR:<a> 97
 
-	GC comment definition @LEX:@STR:<a> 6 3
-	GC comment l0-definition @LEX:@STR:<a> undef --> {JMP match}
-	GC comment :lexeme @LEX:@STR:<a> match --> {JMP lexeme make-lexeme}
-	GC l0 lexeme @LEX:@STR:<a>
-	GC g1 terminal @LEX:@STR:<a>
+	GC comment definition @LEX:@CHR:<a> 6 3
+	GC comment l0-definition @LEX:@CHR:<a> undef --> {JMP match}
+	GC comment :lexeme @LEX:@CHR:<a> match --> {JMP lexeme make-lexeme}
+	GC l0 lexeme @LEX:@CHR:<a>
+	GC g1 terminal @LEX:@CHR:<a>
 
-	GC l0 priority-rule @LEX:@STR:<a> @STR:<a> 0
+	GC l0 priority-rule @LEX:@CHR:<a> @CHR:<a> 0
 
 GC comment usage B 10 1
-GC comment g1-usage @LEX:@STR:<a> lexeme --> NOP
+GC comment g1-usage @LEX:@CHR:<a> lexeme --> NOP
 GC comment g1-usage B undef --> {JMP floater}
-GC g1 priority-rule A {@LEX:@STR:<a> B} 0 action {array values} bless {special undef} mask {0 0}
+GC g1 priority-rule A {@LEX:@CHR:<a> B} 0 action {array values} bless {special undef} mask {0 0}
 GC comment definition B 12 1
 GC comment g1-definition B floater --> {JMP brick}
 GC comment usage 'a' 18 3
-GC comment usage @STR:<a> 18 3
+GC comment usage @CHR:<a> 18 3
 
 GC comment definition 'a' 18 3
-GC comment definition @STR:<a> 18 3
+GC comment definition @CHR:<a> 18 3
 
-	GC comment <literal> @STR:<a> literal --> NOP
-	GC comment definition @LEX:@STR:<a> 18 3
-	GC comment l0-definition @LEX:@STR:<a> lexeme --> NOP
-	GC comment :lexeme @LEX:@STR:<a> lexeme --> NOP
+	GC comment <literal> @CHR:<a> literal --> NOP
+	GC comment definition @LEX:@CHR:<a> 18 3
+	GC comment l0-definition @LEX:@CHR:<a> lexeme --> NOP
+	GC comment :lexeme @LEX:@CHR:<a> lexeme --> NOP
 
-GC comment g1-usage @LEX:@STR:<a> lexeme --> NOP
-GC g1 priority-rule B @LEX:@STR:<a> 0 action {array values} bless {special undef} mask 0
+GC comment g1-usage @LEX:@CHR:<a> lexeme --> NOP
+GC g1 priority-rule B @LEX:@CHR:<a> 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! A
 GC comment LATM fix 1
-GC l0 configure @LEX:@STR:<a> latm 1
+GC l0 configure @LEX:@CHR:<a> latm 1
 GC comment DDE fix {}

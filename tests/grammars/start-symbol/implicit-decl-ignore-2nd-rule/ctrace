@@ -13,13 +13,13 @@ GC comment l0-definition C floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme C
 GC g1 terminal C
 GC comment usage 'c' 21 3
-GC comment usage @STR:<c> 21 3
+GC comment usage @CHR:<c> 21 3
 GC comment definition 'c' 21 3
-GC comment definition @STR:<c> 21 3
-GC comment <literal> @STR:<c> undef --> {JMP literal}
-GC l0 string @STR:<c> 99 0
-GC comment l0-usage @STR:<c> literal --> NOP
-GC l0 priority-rule C @STR:<c> 0
+GC comment definition @CHR:<c> 21 3
+GC comment <literal> @CHR:<c> undef --> {JMP literal}
+GC l0 character @CHR:<c> 99
+GC comment l0-usage @CHR:<c> literal --> NOP
+GC l0 priority-rule C @CHR:<c> 0
 GC comment Semantics completion processing
 
 	GC start! A

@@ -28,10 +28,10 @@ grammar {
             C 1
         }
         lexeme {
-            C { {priority @STR:<c> 0} }
+            C { {priority @CHR:<c> 0} }
         }
         literal {
-            @STR:<c> { {string 99 0} }
+            @CHR:<c> { {character 99} }
         }
     }
 }

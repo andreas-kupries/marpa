@@ -24,18 +24,18 @@
 #
 # The rules for simplification are
 #
-# | Id | Type     | Nocase | Other     | Result                    | Note |
-# |---:|----------|--------|-----------|---------------------------|------|
-# |  1 | string   | 0      | len==1    | character                 |      |
-# |  2 | string   | 0      | len>1     | sequence (character)      |      |
-# |  3 | string   | 1      | len==1    | charclass/case            |      |
-# |  4 | string   | 1      | len>1     | sequence (cc/case)        |      |
-# |  5 | cclass   | 0      | len==1    | cc-elem itself            |      |
-# |  6 | cclass   | 0      | *         | alternation (cc-elem)     |      |
-# |  7 | cclass   | 1      | *         | alternation(cc-el/nocase) |      |
-# |  8 | char     | -      | -         | nothing to do, simplest   |      |
-# |  9 | range    | -      | -         | alternation(char)         | [1]  |
-# | 10 | named-cc | -      | -         | Inline definition         | [1]  |
+# | Id  | Type     | Nocase | Other     | Result                    | Note |
+# |-----|----------|--------|-----------|---------------------------|------|
+# | S01 | string   | 0      | len==1    | character                 |      |*
+# | S02 | string   | 0      | len>1     | sequence (character)      |      |
+# | S03 | string   | 1      | len==1    | charclass/case            |      |
+# | S04 | string   | 1      | len>1     | sequence (cc/case)        |      |
+# | S05 | cclass   | 0      | len==1    | cc-elem itself            |      |*
+# | S06 | cclass   | 0      | *         | alternation (cc-elem)     |      |
+# | S07 | cclass   | 1      | *         | alternation(cc-el/nocase) |      |
+# | S08 | char     | -      | -         | nothing to do, simplest   |      |
+# | S09 | range    | -      | -         | alternation(char)         | [1]  |
+# | S10 | named-cc | -      | -         | Inline definition         | [1]  |
 #
 # [1] Reducing this one early/eager is likely not a good idea
 #     (large ranges, classes) Better to defer the decision on this to
@@ -93,7 +93,7 @@ oo::class create marpa::slif::semantics::Literal {
 	foreach m {
 	    PARSE-MODS PARSE-TYPE FIX-ESCAPES
 	    PARSE-STRING PARSE-CHARCLASS CHAR CCODE CFOLD RANGES
-	    MAKE-SYMBOL RECODE ENTER
+	    GENERATE MAKE-SYMBOL RECODE ENTER
 	} { link [list $m $m] }
 
 	# Type coding information for MAKE-SYMBOL
@@ -131,12 +131,43 @@ oo::class create marpa::slif::semantics::Literal {
 	    string    { PARSE-STRING    lwork }
 	    charclass { PARSE-CHARCLASS lwork }
 	}
-	# TODO: Simplify the state
-	return [ENTER [MAKE-SYMBOL]]
+	return [GENERATE $ltype $nocase $ldata $literal $start $length]
     }
 
     # - -- --- ----- -------- -------------
     # Helpers
+
+    method GENERATE {ltype nocase ldata literal start length} {
+	# Detect and simplify single character strings and classes.
+	switch -exact -- $ltype/$nocase {
+	    string/0 {
+		# S01 - Detect and simplify single character strings
+		lassign $ldata lwork __
+		if {[llength $lwork] == 1} {
+		    set first [lindex $lwork 0]
+		    return [GENERATE character 0 $first $literal $start $length]
+		}
+		# else: TODO sequence of characters.
+		# check for the main symbol first, however, and skip
+		# generation if already present.
+	    }
+	    charclass/0 {
+		# S05
+		lassign $ldata lwork __
+		if {[llength $lwork] == 1} {
+		    set first [lindex $lwork 0]
+		    if {[string is integer -strict $first]} {
+			# S05/S08 - Detect and simplify single char char-classes.
+			return [GENERATE character 0 $first $literal $start $length]
+		    }
+		}
+	    }
+	}
+
+	# TODO: Simplify the state, complex rules.
+
+	return [ENTER [MAKE-SYMBOL]]
+    }
 
     method ENTER {litsymbol} {
 	upvar 1 ltype ltype ldata ldata start start length length literal literal

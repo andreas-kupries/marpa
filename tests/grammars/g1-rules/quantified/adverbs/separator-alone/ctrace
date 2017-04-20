@@ -12,25 +12,25 @@ GC comment l0-definition B floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme B
 GC g1 terminal B
 GC comment usage 'b' 29 3
-GC comment usage @STR:<b> 29 3
+GC comment usage @CHR:<b> 29 3
 GC comment definition 'b' 29 3
-GC comment definition @STR:<b> 29 3
-GC comment <literal> @STR:<b> undef --> {JMP literal}
-GC l0 string @STR:<b> 98 0
-GC comment l0-usage @STR:<b> literal --> NOP
-GC l0 priority-rule B @STR:<b> 0
+GC comment definition @CHR:<b> 29 3
+GC comment <literal> @CHR:<b> undef --> {JMP literal}
+GC l0 character @CHR:<b> 98
+GC comment l0-usage @CHR:<b> literal --> NOP
+GC l0 priority-rule B @CHR:<b> 0
 GC comment definition C 33 1
 GC comment l0-definition C floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme C
 GC g1 terminal C
 GC comment usage 'c' 37 3
-GC comment usage @STR:<c> 37 3
+GC comment usage @CHR:<c> 37 3
 GC comment definition 'c' 37 3
-GC comment definition @STR:<c> 37 3
-GC comment <literal> @STR:<c> undef --> {JMP literal}
-GC l0 string @STR:<c> 99 0
-GC comment l0-usage @STR:<c> literal --> NOP
-GC l0 priority-rule C @STR:<c> 0
+GC comment definition @CHR:<c> 37 3
+GC comment <literal> @CHR:<c> undef --> {JMP literal}
+GC l0 character @CHR:<c> 99
+GC comment l0-usage @CHR:<c> literal --> NOP
+GC l0 priority-rule C @CHR:<c> 0
 GC comment Semantics completion processing
 GC start! A
 GC comment LATM fix 1

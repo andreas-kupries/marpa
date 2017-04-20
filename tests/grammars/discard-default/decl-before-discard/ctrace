@@ -8,13 +8,13 @@ GC comment :discard fox undef --> {JMP discard:u make-discard}
 GC comment definition fox 47 3
 GC comment l0-definition fox discard:u --> {JMP discard}
 GC comment usage 'x' 53 3
-GC comment usage @STR:<x> 53 3
+GC comment usage @CHR:<x> 53 3
 GC comment definition 'x' 53 3
-GC comment definition @STR:<x> 53 3
-GC comment <literal> @STR:<x> undef --> {JMP literal}
-GC l0 string @STR:<x> 120 0
-GC comment l0-usage @STR:<x> literal --> NOP
-GC l0 priority-rule fox @STR:<x> 0
+GC comment definition @CHR:<x> 53 3
+GC comment <literal> @CHR:<x> undef --> {JMP literal}
+GC l0 character @CHR:<x> 120
+GC comment l0-usage @CHR:<x> literal --> NOP
+GC l0 priority-rule fox @CHR:<x> 0
 GC comment usage A 69 1
 GC comment g1-usage A undef --> {JMP floater}
 GC comment definition A 71 1
@@ -27,13 +27,13 @@ GC comment l0-definition foo floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme foo
 GC g1 terminal foo
 GC comment usage 'a' 87 3
-GC comment usage @STR:<a> 87 3
+GC comment usage @CHR:<a> 87 3
 GC comment definition 'a' 87 3
-GC comment definition @STR:<a> 87 3
-GC comment <literal> @STR:<a> undef --> {JMP literal}
-GC l0 string @STR:<a> 97 0
-GC comment l0-usage @STR:<a> literal --> NOP
-GC l0 priority-rule foo @STR:<a> 0
+GC comment definition @CHR:<a> 87 3
+GC comment <literal> @CHR:<a> undef --> {JMP literal}
+GC l0 character @CHR:<a> 97
+GC comment l0-usage @CHR:<a> literal --> NOP
+GC l0 priority-rule foo @CHR:<a> 0
 GC comment Semantics completion processing
 GC start! A
 GC comment LATM fix 1

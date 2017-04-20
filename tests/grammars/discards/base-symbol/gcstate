@@ -20,17 +20,17 @@ grammar {
     }
     l0 {
         discard {
-            A { {priority @STR:<a> 0} }
+            A { {priority @CHR:<a> 0} }
         }
         latm {
             B 1
         }
         lexeme {
-            B { {priority @STR:<b> 0} }
+            B { {priority @CHR:<b> 0} }
         }
         literal {
-            @STR:<a> { {string 97 0} }
-            @STR:<b> { {string 98 0} }
+            @CHR:<a> { {character 97} }
+            @CHR:<b> { {character 98} }
         }
     }
 }

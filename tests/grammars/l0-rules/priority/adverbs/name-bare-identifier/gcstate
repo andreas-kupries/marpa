@@ -20,7 +20,7 @@ grammar {
     }
     l0 {
         {} {
-            B { {priority @STR:<b> 0} }
+            B { {priority @CHR:<b> 0} }
         }
         latm {
             A 1
@@ -30,7 +30,7 @@ grammar {
                     name reduction} }
         }
         literal {
-            @STR:<b> { {string 98 0} }
+            @CHR:<b> { {character 98} }
         }
     }
 }

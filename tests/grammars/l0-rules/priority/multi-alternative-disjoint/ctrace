@@ -24,23 +24,23 @@ GC g1 priority-rule D A 0 action {array values} bless {special undef} mask 0
 GC comment definition B 34 1
 GC comment l0-definition B strict:u --> {JMP strict}
 GC comment usage 'b' 38 3
-GC comment usage @STR:<b> 38 3
+GC comment usage @CHR:<b> 38 3
 GC comment definition 'b' 38 3
-GC comment definition @STR:<b> 38 3
-GC comment <literal> @STR:<b> undef --> {JMP literal}
-GC l0 string @STR:<b> 98 0
-GC comment l0-usage @STR:<b> literal --> NOP
-GC l0 priority-rule B @STR:<b> 0
+GC comment definition @CHR:<b> 38 3
+GC comment <literal> @CHR:<b> undef --> {JMP literal}
+GC l0 character @CHR:<b> 98
+GC comment l0-usage @CHR:<b> literal --> NOP
+GC l0 priority-rule B @CHR:<b> 0
 GC comment definition C 42 1
 GC comment l0-definition C strict:u --> {JMP strict}
 GC comment usage 'c' 46 3
-GC comment usage @STR:<c> 46 3
+GC comment usage @CHR:<c> 46 3
 GC comment definition 'c' 46 3
-GC comment definition @STR:<c> 46 3
-GC comment <literal> @STR:<c> undef --> {JMP literal}
-GC l0 string @STR:<c> 99 0
-GC comment l0-usage @STR:<c> literal --> NOP
-GC l0 priority-rule C @STR:<c> 0
+GC comment definition @CHR:<c> 46 3
+GC comment <literal> @CHR:<c> undef --> {JMP literal}
+GC l0 character @CHR:<c> 99
+GC comment l0-usage @CHR:<c> literal --> NOP
+GC l0 priority-rule C @CHR:<c> 0
 GC comment Semantics completion processing
 GC start! D
 GC comment LATM fix 1
