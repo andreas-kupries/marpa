@@ -19,6 +19,11 @@ grammar {
         action {array values}
     }
     l0 {
+        {} {
+            @STR:<ab> { {priority {
+                    @CHR:<a>
+                    @CHR:<b>} 0} }
+        }
         latm {
             foo 0
         }
@@ -26,7 +31,8 @@ grammar {
             foo { {priority @STR:<ab> 0} }
         }
         literal {
-            @STR:<ab> { {string {97 98} 0} }
+            @CHR:<a> { {character 97} }
+            @CHR:<b> { {character 98} }
         }
     }
 }

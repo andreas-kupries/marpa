@@ -1,13 +1,41 @@
 GC comment definition A 0 1
 GC comment l0-definition A undef --> {JMP match}
 
-	GC comment usage @STR:<string> 4 8
-	GC comment definition @STR:<string> 4 8
+	GC comment l0-definition @STR:<string> undef --> {JMP match}
 
-	GC comment <literal> @STR:<string> undef --> {JMP literal}
-	GC l0 string @STR:<string> {115 116 114 105 110 103} 0
+	GC comment usage @CHR:<s> 4 1
+	GC comment definition @CHR:<s> 4 1
+	GC comment <literal> @CHR:<s> undef --> {JMP literal}
+	GC l0 character @CHR:<s> 115
 
-GC comment l0-usage @STR:<string> literal --> NOP
+	GC comment usage @CHR:<t> 5 1
+	GC comment definition @CHR:<t> 5 1
+	GC comment <literal> @CHR:<t> undef --> {JMP literal}
+	GC l0 character @CHR:<t> 116
+
+	GC comment usage @CHR:<r> 6 1
+	GC comment definition @CHR:<r> 6 1
+	GC comment <literal> @CHR:<r> undef --> {JMP literal}
+	GC l0 character @CHR:<r> 114
+
+	GC comment usage @CHR:<i> 7 1
+	GC comment definition @CHR:<i> 7 1
+	GC comment <literal> @CHR:<i> undef --> {JMP literal}
+	GC l0 character @CHR:<i> 105
+
+	GC comment usage @CHR:<n> 8 1
+	GC comment definition @CHR:<n> 8 1
+	GC comment <literal> @CHR:<n> undef --> {JMP literal}
+	GC l0 character @CHR:<n> 110
+
+	GC comment usage @CHR:<g> 9 1
+	GC comment definition @CHR:<g> 9 1
+	GC comment <literal> @CHR:<g> undef --> {JMP literal}
+	GC l0 character @CHR:<g> 103
+
+	GC l0 priority-rule @STR:<string> {@CHR:<s> @CHR:<t> @CHR:<r> @CHR:<i> @CHR:<n> @CHR:<g>} 0
+	GC comment l0-usage @STR:<string> match --> {JMP strict}
+
 GC l0 priority-rule A @STR:<string> 0
 GC comment definition Language 14 8
 GC comment g1-definition Language undef --> {JMP brick}

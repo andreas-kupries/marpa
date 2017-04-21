@@ -76,6 +76,11 @@ grammar {
         action {array values}
     }
     l0 {
+        {} {
+            @STR:<**> { {priority {
+                    @CHR:<*>
+                    @CHR:<*>} 0} }
+        }
         latm {
             ADD 1
             DIV 1
@@ -104,7 +109,6 @@ grammar {
             {@CHR:<\50>} { {character 40} }
             {@CHR:<\51>} { {character 41} }
             @CLS:<0-9> { {charclass {{48 57}} 0} }
-            @STR:<**> { {string {42 42} 0} }
         }
     }
 }

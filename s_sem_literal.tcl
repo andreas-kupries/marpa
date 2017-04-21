@@ -147,9 +147,24 @@ oo::class create marpa::slif::semantics::Literal {
 		    set first [lindex $lwork 0]
 		    return [GENERATE character 0 $first $literal $start $length]
 		}
-		# else: TODO sequence of characters.
-		# check for the main symbol first, however, and skip
-		# generation if already present.
+
+		# S02 - Decompose string into single characters, and
+		#       merge them back into a sequence via priority
+		#       rule (single alternate). Skip if already
+		#       done/known.
+
+		set seqsymbol [MAKE-SYMBOL]
+
+		if {[Symbol context1 l0-definition $seqsymbol] eq "undef"} {
+		    set rhs {}
+		    foreach char $lwork {
+			lappend rhs [GENERATE character 0 $char $literal $start 1]
+			incr start
+		    }
+		    Container l0 priority-rule $seqsymbol $rhs 0
+		}
+
+		return $seqsymbol
 	    }
 	    charclass/0 {
 		# S05

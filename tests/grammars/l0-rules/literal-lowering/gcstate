@@ -101,6 +101,12 @@ grammar {
         action {array values}
     }
     l0 {
+        {} {
+            @STR:<abc> { {priority {
+                    @CHR:<a>
+                    @CHR:<b>
+                    @CHR:<c>} 0} }
+        }
         latm {
             @LEX:@CHR:<a> 1
             {@LEX:@CLS/i:<0-9[:braille:]A>} 1
@@ -129,6 +135,8 @@ grammar {
         }
         literal {
             @CHR:<a> { {character 97} }
+            @CHR:<b> { {character 98} }
+            @CHR:<c> { {character 99} }
             {@CLS/i:<0-9[:braille:]A>} { {charclass {{48 57} :braille 65} 1} }
             {@CLS/i:<[:alnum:]>} { {charclass :alnum 1} }
             @CLS/i:<A-Z> { {charclass {{65 90}} 1} }
@@ -138,7 +146,6 @@ grammar {
             @CLS:<a-z> { {charclass {{97 122}} 0} }
             @STR/i:<A> { {string 65 1} }
             @STR/i:<ABC> { {string {65 66 67} 1} }
-            @STR:<abc> { {string {97 98 99} 0} }
         }
     }
 }
