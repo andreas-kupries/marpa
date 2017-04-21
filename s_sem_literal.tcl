@@ -308,7 +308,7 @@ oo::class create marpa::slif::semantics::Literal {
 	##
 	upvar 1 $litvar literal nocase nocase ldata ldata
 
-	# TODO: Handle inverted classes.
+	# TODO: Handle negated classes.
 
 	set ldata {}
 	while {[string length $literal]} {
