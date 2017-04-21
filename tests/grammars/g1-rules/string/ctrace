@@ -4,16 +4,17 @@ GC comment g1-definition A undef --> {JMP brick}
 	GC comment usage @STR:<string> 6 8
 	GC comment definition @STR:<string> 6 8
 
-
 	GC comment <literal> @STR:<string> undef --> {JMP literal}
 	GC l0 string @STR:<string> {115 116 114 105 110 103} 0
 	GC comment definition @LEX:@STR:<string> 6 8
+	GC comment usage @STR:<string> 6 8
 	GC comment l0-definition @LEX:@STR:<string> undef --> {JMP match}
 
 	GC comment :lexeme @LEX:@STR:<string> match --> {JMP lexeme make-lexeme}
 	GC l0 lexeme @LEX:@STR:<string>
 	GC g1 terminal @LEX:@STR:<string>
 
+	GC comment l0-usage @STR:<string> literal --> NOP
 	GC l0 priority-rule @LEX:@STR:<string> @STR:<string> 0
 	GC comment g1-usage @LEX:@STR:<string> lexeme --> NOP
 

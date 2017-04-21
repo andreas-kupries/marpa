@@ -8,10 +8,12 @@ GC comment definition @CHR:<b> 38 3
 GC comment <literal> @CHR:<b> undef --> {JMP literal}
 GC l0 character @CHR:<b> 98
 GC comment definition @LEX:@CHR:<b> 38 3
+GC comment usage @CHR:<b> 38 3
 GC comment l0-definition @LEX:@CHR:<b> undef --> {JMP match}
 GC comment :lexeme @LEX:@CHR:<b> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@CHR:<b>
 GC g1 terminal @LEX:@CHR:<b>
+GC comment l0-usage @CHR:<b> literal --> NOP
 GC l0 priority-rule @LEX:@CHR:<b> @CHR:<b> 0
 GC comment g1-usage @LEX:@CHR:<b> lexeme --> NOP
 

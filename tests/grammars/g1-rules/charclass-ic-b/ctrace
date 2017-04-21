@@ -8,12 +8,14 @@ GC comment g1-definition A undef --> {JMP brick}
 
 	GC l0 charclass @CLS/i:<A-Z> {{65 90}} 1
 	GC comment definition @LEX:@CLS/i:<A-Z> 6 8
+	GC comment usage @CLS/i:<A-Z> 6 8
 	GC comment l0-definition @LEX:@CLS/i:<A-Z> undef --> {JMP match}
 
 	GC comment :lexeme @LEX:@CLS/i:<A-Z> match --> {JMP lexeme make-lexeme}
 	GC l0 lexeme @LEX:@CLS/i:<A-Z>
 	GC g1 terminal @LEX:@CLS/i:<A-Z>
 
+	GC comment l0-usage @CLS/i:<A-Z> literal --> NOP
 	GC l0 priority-rule @LEX:@CLS/i:<A-Z> @CLS/i:<A-Z> 0
 	GC comment g1-usage @LEX:@CLS/i:<A-Z> lexeme --> NOP
 

@@ -570,9 +570,13 @@ oo::class create marpa::slif::semantics {
 
 	set discard @DIS:$litsymbol
 	definition add {*}[definition last $litsymbol] $discard
+	usage      add {*}[definition last $litsymbol] $litsymbol
 
 	set pre [Symbol context1 l0-definition $discard] ;# Issues container ops
-	Symbol context1 :discard $discard ;# Issues container ops
+	Symbol context1 :discard $discard   ; # Issues container ops
+	Symbol context1 l0-usage $litsymbol ; # Register, might be
+					      # composite, due to
+					      # literal lowering
 	if {$pre eq "undef"} {
 	    Container l0 priority-rule $discard $litsymbol 0
 	}
@@ -954,9 +958,13 @@ oo::class create marpa::slif::semantics {
 	set lexeme @LEX:$litsymbol
 
 	definition add $start $length $lexeme
+	usage      add $start $length $litsymbol
 
 	set pre [Symbol context1 l0-definition $lexeme] ; # Issue container ops
-	Symbol context1 :lexeme $lexeme ; # Issue container ops
+	Symbol context1 :lexeme  $lexeme    ; # Issue container ops
+	Symbol context1 l0-usage $litsymbol ; # Register, might be
+					      # composite, due to
+					      # literal lowering
 
 	# Create the lexeme (rule|definition) only once, when it is
 	# encountered the 1st time.

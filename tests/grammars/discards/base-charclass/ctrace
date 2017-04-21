@@ -2,13 +2,14 @@ GC comment usage @CLS:<0-9> 11 5
 GC comment definition @CLS:<0-9> 11 5
 GC comment <literal> @CLS:<0-9> undef --> {JMP literal}
 
-
 	GC l0 charclass @CLS:<0-9> {{48 57}} 0
 	GC comment definition @DIS:@CLS:<0-9> 11 5
+	GC comment usage @CLS:<0-9> 11 5
 	GC comment l0-definition @DIS:@CLS:<0-9> undef --> {JMP match}
 
 	GC comment :discard @DIS:@CLS:<0-9> match --> {JMP discard make-discard}
 	GC l0 discard @DIS:@CLS:<0-9>
+	GC comment l0-usage @CLS:<0-9> literal --> NOP
 
 GC l0 priority-rule @DIS:@CLS:<0-9> @CLS:<0-9> 0
 GC comment definition A 18 1

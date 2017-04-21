@@ -10,10 +10,12 @@ GC comment definition @CHR:<a> 33 3
 GC comment <literal> @CHR:<a> undef --> {JMP literal}
 GC l0 character @CHR:<a> 97
 GC comment definition @LEX:@CHR:<a> 33 3
+GC comment usage @CHR:<a> 33 3
 GC comment l0-definition @LEX:@CHR:<a> undef --> {JMP match}
 GC comment :lexeme @LEX:@CHR:<a> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@CHR:<a>
 GC g1 terminal @LEX:@CHR:<a>
+GC comment l0-usage @CHR:<a> literal --> NOP
 GC l0 priority-rule @LEX:@CHR:<a> @CHR:<a> 0
 GC comment g1-usage @LEX:@CHR:<a> lexeme --> NOP
 GC g1 priority-rule X @LEX:@CHR:<a> 0 action {array values} bless {special undef} mask 0
