@@ -244,15 +244,13 @@ oo::class create marpa::slif::semantics::Symbol {
     }
     method context1 {context sym} {
 	debug.marpa/slif/semantics {}
-	if {[dict exists $mysym $sym]} {
-	    set current [dict get $mysym $sym]
-	} else {
-	    set current undef
-	}
+
+	set current [my @ $sym]
 	set action [dict get $myfa $current $context]
 
 	Container comment $context $sym $current --> $action
 	eval $action
+	#Container comment $context $sym $current @@@ [my @ $sym]
 
 	# Return the new previous state of the context machine, for
 	# callers to make decisions on.
@@ -261,6 +259,7 @@ oo::class create marpa::slif::semantics::Symbol {
 
     method finalize {} {
 	debug.marpa/slif/semantics {}
+	#dict for {sym tag} $mysym { puts "XXX $sym -- $tag" }
 	dict for {sym tag} $mysym {
 	    switch -exact -- $tag {
 		match {
