@@ -188,7 +188,7 @@ proc gc-spec {spec} {
 
 	    return $spec
 	}
-	terminal - string - charclass - character {
+	terminal - string - charclass - character - negcclass - namedcc - range {
 	    return $spec
 	}
 	default {

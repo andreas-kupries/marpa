@@ -2376,12 +2376,12 @@ GC comment l0-usage {@CLS:<\n-\r\u2028-\u2029>} literal --> NOP
 GC l0 priority-rule {vertical space char} {{@CLS:<\n-\r\u2028-\u2029>}} 0
 GC comment definition {hash comment char} 9181 19
 GC comment l0-definition {hash comment char} strict:u --> {JMP strict}
-GC comment usage {@CLS:<\n-\r^\u2028-\u2029>} 9204 23
-GC comment definition {@CLS:<\n-\r^\u2028-\u2029>} 9204 23
-GC comment <literal> {@CLS:<\n-\r^\u2028-\u2029>} undef --> {JMP literal}
-GC l0 charclass {@CLS:<\n-\r^\u2028-\u2029>} {{10 13} 94 {8232 8233}} 0
-GC comment l0-usage {@CLS:<\n-\r^\u2028-\u2029>} literal --> NOP
-GC l0 priority-rule {hash comment char} {{@CLS:<\n-\r^\u2028-\u2029>}} 0
+GC comment usage {@NEC:<\n-\r\u2028-\u2029>} 9204 23
+GC comment definition {@NEC:<\n-\r\u2028-\u2029>} 9204 23
+GC comment <literal> {@NEC:<\n-\r\u2028-\u2029>} undef --> {JMP literal}
+GC l0 negcclass {@NEC:<\n-\r\u2028-\u2029>} {{10 13} {8232 8233}} 0
+GC comment l0-usage {@NEC:<\n-\r\u2028-\u2029>} literal --> NOP
+GC l0 priority-rule {hash comment char} {{@NEC:<\n-\r\u2028-\u2029>}} 0
 GC comment definition {op declare bnf} 9229 16
 GC comment l0-definition {op declare bnf} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {op declare bnf}
@@ -2914,12 +2914,12 @@ GC comment l0-usage quote strict --> NOP
 GC l0 priority-rule {single quoted name} {quote {string without single quote or vertical space} quote} 0
 GC comment definition {string without single quote or vertical space} 11411 47
 GC comment l0-definition {string without single quote or vertical space} strict:u --> {JMP strict}
-GC comment usage {@CLS:<\n-\r'^\u2028-\u2029>} 11461 24
-GC comment definition {@CLS:<\n-\r'^\u2028-\u2029>} 11461 24
-GC comment <literal> {@CLS:<\n-\r'^\u2028-\u2029>} undef --> {JMP literal}
-GC l0 charclass {@CLS:<\n-\r'^\u2028-\u2029>} {{10 13} 39 94 {8232 8233}} 0
-GC comment l0-usage {@CLS:<\n-\r'^\u2028-\u2029>} literal --> NOP
-GC l0 quantified-rule {string without single quote or vertical space} {@CLS:<\n-\r'^\u2028-\u2029>} 1
+GC comment usage {@NEC:<\n-\r'\u2028-\u2029>} 11461 24
+GC comment definition {@NEC:<\n-\r'\u2028-\u2029>} 11461 24
+GC comment <literal> {@NEC:<\n-\r'\u2028-\u2029>} undef --> {JMP literal}
+GC l0 negcclass {@NEC:<\n-\r'\u2028-\u2029>} {{10 13} 39 {8232 8233}} 0
+GC comment l0-usage {@NEC:<\n-\r'\u2028-\u2029>} literal --> NOP
+GC l0 quantified-rule {string without single quote or vertical space} {@NEC:<\n-\r'\u2028-\u2029>} 1
 GC comment definition {character class} 11488 17
 GC comment l0-definition {character class} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {character class}
@@ -2949,12 +2949,12 @@ GC comment l0-usage {safe cc character} undef --> {JMP strict:u}
 GC l0 priority-rule {cc element} {{safe cc character}} 0
 GC comment definition {safe cc character} 11656 19
 GC comment l0-definition {safe cc character} strict:u --> {JMP strict}
-GC comment usage {@CLS:<\n-\r\135-^\205\u2028-\u2029>} 11678 33
-GC comment definition {@CLS:<\n-\r\135-^\205\u2028-\u2029>} 11678 33
-GC comment <literal> {@CLS:<\n-\r\135-^\205\u2028-\u2029>} undef --> {JMP literal}
-GC l0 charclass {@CLS:<\n-\r\135-^\205\u2028-\u2029>} {{10 13} {93 94} 133 {8232 8233}} 0
-GC comment l0-usage {@CLS:<\n-\r\135-^\205\u2028-\u2029>} literal --> NOP
-GC l0 priority-rule {safe cc character} {{@CLS:<\n-\r\135-^\205\u2028-\u2029>}} 0
+GC comment usage {@NEC:<\n-\r\135\205\u2028-\u2029>} 11678 33
+GC comment definition {@NEC:<\n-\r\135\205\u2028-\u2029>} 11678 33
+GC comment <literal> {@NEC:<\n-\r\135\205\u2028-\u2029>} undef --> {JMP literal}
+GC l0 negcclass {@NEC:<\n-\r\135\205\u2028-\u2029>} {{10 13} 93 133 {8232 8233}} 0
+GC comment l0-usage {@NEC:<\n-\r\135\205\u2028-\u2029>} literal --> NOP
+GC l0 priority-rule {safe cc character} {{@NEC:<\n-\r\135\205\u2028-\u2029>}} 0
 GC comment definition {cc element} 11713 12
 GC comment l0-definition {cc element} strict --> NOP
 GC comment usage {escaped cc character} 11728 22
@@ -3065,11 +3065,11 @@ GC comment l0-usage {@CLS:<[:alnum:]>} literal --> NOP
 GC l0 quantified-rule {posix char class name} {@CLS:<[:alnum:]>} 1
 GC comment definition {horizontal character} 12413 22
 GC comment l0-definition {horizontal character} strict:u --> {JMP strict}
-GC comment usage {@CLS:<\n-\r^\u2028-\u2029>} 12438 23
-GC comment definition {@CLS:<\n-\r^\u2028-\u2029>} 12438 23
-GC comment <literal> {@CLS:<\n-\r^\u2028-\u2029>} literal --> NOP
-GC comment l0-usage {@CLS:<\n-\r^\u2028-\u2029>} literal --> NOP
-GC l0 priority-rule {horizontal character} {{@CLS:<\n-\r^\u2028-\u2029>}} 0
+GC comment usage {@NEC:<\n-\r\u2028-\u2029>} 12438 23
+GC comment definition {@NEC:<\n-\r\u2028-\u2029>} 12438 23
+GC comment <literal> {@NEC:<\n-\r\u2028-\u2029>} literal --> NOP
+GC comment l0-usage {@NEC:<\n-\r\u2028-\u2029>} literal --> NOP
+GC l0 priority-rule {horizontal character} {{@NEC:<\n-\r\u2028-\u2029>}} 0
 GC comment Semantics completion processing
 GC start! statements
 GC comment LATM fix 1

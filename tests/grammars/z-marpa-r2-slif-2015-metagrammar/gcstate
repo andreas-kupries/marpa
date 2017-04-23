@@ -1454,8 +1454,8 @@ grammar {
                     {@CHR:<\134>}
                     {horizontal character}} 0} }
             {hash comment body} { {quantified {hash comment char} 0} }
-            {hash comment char} { {priority {{@CLS:<\n-\r^\u2028-\u2029>}} 0} }
-            {horizontal character} { {priority {{@CLS:<\n-\r^\u2028-\u2029>}} 0} }
+            {hash comment char} { {priority {{@NEC:<\n-\r\u2028-\u2029>}} 0} }
+            {horizontal character} { {priority {{@NEC:<\n-\r\u2028-\u2029>}} 0} }
             integer { {quantified @CHR:<d> 1} }
             {negated posix char class} { {priority {
                     {@STR:<\133:^>}
@@ -1489,9 +1489,9 @@ grammar {
                         @CHR:<,>
                         whitespace} 0}
             }
-            {safe cc character} { {priority {{@CLS:<\n-\r\135-^\205\u2028-\u2029>}} 0} }
+            {safe cc character} { {priority {{@NEC:<\n-\r\135\205\u2028-\u2029>}} 0} }
             sign { {priority @CLS:<+-> 0} }
-            {string without single quote or vertical space} { {quantified {@CLS:<\n-\r'^\u2028-\u2029>} 1} }
+            {string without single quote or vertical space} { {quantified {@NEC:<\n-\r'\u2028-\u2029>} 1} }
             {terminated hash comment} { {priority {
                     @CHR:<#>
                     {hash comment body}
@@ -1734,12 +1734,12 @@ grammar {
             @CLS:<+-> { {charclass {43 45} 0} }
             @CLS:<0-1> { {charclass {{48 49}} 0} }
             {@CLS:<[:alnum:]>} { {charclass :alnum 0} }
-            {@CLS:<\n-\r'^\u2028-\u2029>} { {charclass {{10 13} 39 94 {8232 8233}} 0} }
-            {@CLS:<\n-\r\135-^\205\u2028-\u2029>} { {charclass {{10 13} {93 94} 133 {8232 8233}} 0} }
             {@CLS:<\n-\r\u2028-\u2029>} { {charclass {{10 13} {8232 8233}} 0} }
-            {@CLS:<\n-\r^\u2028-\u2029>} { {charclass {{10 13} 94 {8232 8233}} 0} }
             @CLS:<A-Za-z> { {charclass {{65 90} {97 122}} 0} }
             @CLS:<sw> { {charclass {115 119} 0} }
+            {@NEC:<\n-\r'\u2028-\u2029>} { {negcclass {{10 13} 39 {8232 8233}} 0} }
+            {@NEC:<\n-\r\135\205\u2028-\u2029>} { {negcclass {{10 13} 93 133 {8232 8233}} 0} }
+            {@NEC:<\n-\r\u2028-\u2029>} { {negcclass {{10 13} {8232 8233}} 0} }
         }
     }
 }

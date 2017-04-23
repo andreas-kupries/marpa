@@ -148,10 +148,16 @@ critcl::tsources s_sem_literal.tcl     ; # - Literal handling
 critcl::tsources sc_serdes.tcl         ; # - Abstract (de)serialization base
 critcl::tsources s_container.tcl       ; # SLIF container
 critcl::tsources sc_atom.tcl           ; # - Basic grammar atoms
-critcl::tsources sc_atom_string.tcl    ; #   - L0 string
-critcl::tsources sc_atom_charclass.tcl ; #   - L0 character class
-critcl::tsources sc_atom_character.tcl ; #   - L0 character
-critcl::tsources sc_atom_terminal.tcl  ; #   - G1 terminal (L0 class lexeme)
+#                                        #   - Pseudo atoms, deconstructed by semantics
+critcl::tsources sc_atom_string.tcl    ; #     - L0 string
+critcl::tsources sc_atom_charclass.tcl ; #     - L0 character class
+critcl::tsources sc_atom_negcclass.tcl ; #     - L0 negative character class
+#                                        #   - Pseudo atoms II, defered
+critcl::tsources sc_atom_namedclass.tcl ; #    - L0 named (unicode) character class
+critcl::tsources sc_atom_range.tcl     ; #     - L0 range of characters
+#                                        #   - True atoms
+critcl::tsources sc_atom_character.tcl ; #     - L0 character
+critcl::tsources sc_atom_terminal.tcl  ; #     - G1 terminal (L0 class lexeme)
 critcl::tsources sc_alter.tcl          ; # - Generic alternative in priority rules
 critcl::tsources sc_priority.tcl       ; # - Generic priority rules
 critcl::tsources sc_priority_g1.tcl    ; #   - Specialized to G1 (attributes)

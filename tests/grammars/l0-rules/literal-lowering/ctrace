@@ -2,16 +2,24 @@ GC comment definition A 290 1
 GC comment g1-definition A undef --> {JMP brick}
 GC comment usage B 296 1
 GC comment usage C 298 1
-GC comment usage D 306 1
-GC comment usage E 308 1
-GC comment usage F 316 1
-GC comment usage G 318 1
-GC comment usage H 320 1
-GC comment usage I 322 1
-GC comment usage J 330 1
-GC comment usage K 332 1
-GC comment usage L 334 1
-GC comment usage M 336 1
+GC comment usage D 309 1
+GC comment usage E 311 1
+GC comment usage F 319 1
+GC comment usage G 321 1
+GC comment usage H 323 1
+GC comment usage I 325 1
+GC comment usage J 332 1
+GC comment usage K 334 1
+GC comment usage L 336 1
+GC comment usage M 338 1
+GC comment usage N 346 1
+GC comment usage O 348 1
+GC comment usage P 350 1
+GC comment usage Q 352 1
+GC comment usage R 359 1
+GC comment usage S 361 1
+GC comment usage T 363 1
+GC comment usage U 365 1
 GC comment g1-usage B undef --> {JMP floater}
 GC comment g1-usage C undef --> {JMP floater}
 GC comment g1-usage D undef --> {JMP floater}
@@ -24,21 +32,29 @@ GC comment g1-usage J undef --> {JMP floater}
 GC comment g1-usage K undef --> {JMP floater}
 GC comment g1-usage L undef --> {JMP floater}
 GC comment g1-usage M undef --> {JMP floater}
-GC g1 priority-rule A {B C D E F G H I J K L M} 0 action {array values} bless {special undef} mask {0 0 0 0 0 0 0 0 0 0 0 0}
+GC comment g1-usage N undef --> {JMP floater}
+GC comment g1-usage O undef --> {JMP floater}
+GC comment g1-usage P undef --> {JMP floater}
+GC comment g1-usage Q undef --> {JMP floater}
+GC comment g1-usage R undef --> {JMP floater}
+GC comment g1-usage S undef --> {JMP floater}
+GC comment g1-usage T undef --> {JMP floater}
+GC comment g1-usage U undef --> {JMP floater}
+GC g1 priority-rule A {B C D E F G H I J K L M N O P Q R S T U} 0 action {array values} bless {special undef} mask {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0}
 
 # - -- --- ----- -------- B 'a' -------- ----- --- -- - -
 
-GC comment definition B 349 1
+GC comment definition B 378 1
 GC comment g1-definition B floater --> {JMP brick}
 
-	GC comment usage @CHR:<a> 355 3
-	GC comment definition @CHR:<a> 355 3
+	GC comment usage @CHR:<a> 384 3
+	GC comment definition @CHR:<a> 384 3
 	GC comment <literal> @CHR:<a> undef --> {JMP literal}
 
 	GC l0 character @CHR:<a> 97
 
-GC comment definition @LEX:@CHR:<a> 355 3
-GC comment usage @CHR:<a> 355 3
+GC comment definition @LEX:@CHR:<a> 384 3
+GC comment usage @CHR:<a> 384 3
 GC comment l0-definition @LEX:@CHR:<a> undef --> {JMP match}
 GC comment :lexeme @LEX:@CHR:<a> match --> {JMP lexeme make-lexeme}
 
@@ -53,29 +69,29 @@ GC g1 priority-rule B @LEX:@CHR:<a> 0 action {array values} bless {special undef
 
 # - -- --- ----- -------- C 'abc' -------- ----- --- -- - -
 
-GC comment definition C 359 1
+GC comment definition C 388 1
 GC comment g1-definition C floater --> {JMP brick}
 
 	GC comment l0-definition @STR:<abc> undef --> {JMP match}
 
-	GC comment usage @CHR:<a> 365 1
-	GC comment definition @CHR:<a> 365 1
+	GC comment usage @CHR:<a> 394 1
+	GC comment definition @CHR:<a> 394 1
 	GC comment <literal> @CHR:<a> literal --> NOP
 
-	GC comment usage @CHR:<b> 366 1
-	GC comment definition @CHR:<b> 366 1
+	GC comment usage @CHR:<b> 395 1
+	GC comment definition @CHR:<b> 395 1
 	GC comment <literal> @CHR:<b> undef --> {JMP literal}
 	GC l0 character @CHR:<b> 98
 
-	GC comment usage @CHR:<c> 367 1
-	GC comment definition @CHR:<c> 367 1
+	GC comment usage @CHR:<c> 396 1
+	GC comment definition @CHR:<c> 396 1
 	GC comment <literal> @CHR:<c> undef --> {JMP literal}
 	GC l0 character @CHR:<c> 99
 
 	GC l0 priority-rule @STR:<abc> {@CHR:<a> @CHR:<b> @CHR:<c>} 0
 
-GC comment definition @LEX:@STR:<abc> 365 5
-GC comment usage @STR:<abc> 365 5
+GC comment definition @LEX:@STR:<abc> 394 5
+GC comment usage @STR:<abc> 394 5
 GC comment l0-definition @LEX:@STR:<abc> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<abc> match --> {JMP lexeme make-lexeme}
 
@@ -90,17 +106,17 @@ GC g1 priority-rule C @LEX:@STR:<abc> 0 action {array values} bless {special und
 
 # - -- --- ----- -------- D 'a'/i -------- ----- --- -- - -
 
-GC comment definition D 372 1
+GC comment definition D 401 1
 GC comment g1-definition D floater --> {JMP brick}
 
-	GC comment usage @STR/i:<A> 378 5
-	GC comment definition @STR/i:<A> 378 5
+	GC comment usage @STR/i:<A> 407 5
+	GC comment definition @STR/i:<A> 407 5
 	GC comment <literal> @STR/i:<A> undef --> {JMP literal}
 
 	GC l0 string @STR/i:<A> 65 1
 
-GC comment definition @LEX:@STR/i:<A> 378 5
-GC comment usage @STR/i:<A> 378 5
+GC comment definition @LEX:@STR/i:<A> 407 5
+GC comment usage @STR/i:<A> 407 5
 GC comment l0-definition @LEX:@STR/i:<A> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR/i:<A> match --> {JMP lexeme make-lexeme}
 
@@ -115,17 +131,17 @@ GC g1 priority-rule D @LEX:@STR/i:<A> 0 action {array values} bless {special und
 
 # - -- --- ----- -------- E 'abc'/i -------- ----- --- -- - -
 
-GC comment definition E 384 1
+GC comment definition E 413 1
 GC comment g1-definition E floater --> {JMP brick}
 
-	GC comment usage @STR/i:<ABC> 390 7
-	GC comment definition @STR/i:<ABC> 390 7
+	GC comment usage @STR/i:<ABC> 419 7
+	GC comment definition @STR/i:<ABC> 419 7
 	GC comment <literal> @STR/i:<ABC> undef --> {JMP literal}
 
 	GC l0 string @STR/i:<ABC> {65 66 67} 1
 
-GC comment definition @LEX:@STR/i:<ABC> 390 7
-GC comment usage @STR/i:<ABC> 390 7
+GC comment definition @LEX:@STR/i:<ABC> 419 7
+GC comment usage @STR/i:<ABC> 419 7
 GC comment l0-definition @LEX:@STR/i:<ABC> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR/i:<ABC> match --> {JMP lexeme make-lexeme}
 
@@ -140,14 +156,14 @@ GC g1 priority-rule E @LEX:@STR/i:<ABC> 0 action {array values} bless {special u
 
 # - -- --- ----- -------- F [a] -------- ----- --- -- - -
 
-GC comment definition F 430 1
+GC comment definition F 443 1
 GC comment g1-definition F floater --> {JMP brick}
 
-GC comment usage @CHR:<a> 436 3
-GC comment definition @CHR:<a> 436 3
+GC comment usage @CHR:<a> 449 3
+GC comment definition @CHR:<a> 449 3
 GC comment <literal> @CHR:<a> literal --> NOP
-GC comment definition @LEX:@CHR:<a> 436 3
-GC comment usage @CHR:<a> 436 3
+GC comment definition @LEX:@CHR:<a> 449 3
+GC comment usage @CHR:<a> 449 3
 GC comment l0-definition @LEX:@CHR:<a> lexeme --> NOP
 GC comment :lexeme @LEX:@CHR:<a> lexeme --> NOP
 GC comment l0-usage @CHR:<a> literal --> NOP
@@ -157,17 +173,17 @@ GC g1 priority-rule F @LEX:@CHR:<a> 0 action {array values} bless {special undef
 
 # - -- --- ----- -------- G [a-z] -------- ----- --- -- - -
 
-GC comment definition G 440 1
+GC comment definition G 453 1
 GC comment g1-definition G floater --> {JMP brick}
 
-	GC comment usage @CLS:<a-z> 446 5
-	GC comment definition @CLS:<a-z> 446 5
+	GC comment usage @CLS:<a-z> 459 5
+	GC comment definition @CLS:<a-z> 459 5
 	GC comment <literal> @CLS:<a-z> undef --> {JMP literal}
 
 	GC l0 charclass @CLS:<a-z> {{97 122}} 0
 
-GC comment definition @LEX:@CLS:<a-z> 446 5
-GC comment usage @CLS:<a-z> 446 5
+GC comment definition @LEX:@CLS:<a-z> 459 5
+GC comment usage @CLS:<a-z> 459 5
 GC comment l0-definition @LEX:@CLS:<a-z> undef --> {JMP match}
 GC comment :lexeme @LEX:@CLS:<a-z> match --> {JMP lexeme make-lexeme}
 
@@ -182,17 +198,17 @@ GC g1 priority-rule G @LEX:@CLS:<a-z> 0 action {array values} bless {special und
 
 # - -- --- ----- -------- H [[:alnum:]] -------- ----- --- -- - -
 
-GC comment definition H 452 1
+GC comment definition H 465 1
 GC comment g1-definition H floater --> {JMP brick}
 
-	GC comment usage {@CLS:<[:alnum:]>} 458 11
-	GC comment definition {@CLS:<[:alnum:]>} 458 11
+	GC comment usage {@CLS:<[:alnum:]>} 471 11
+	GC comment definition {@CLS:<[:alnum:]>} 471 11
 	GC comment <literal> {@CLS:<[:alnum:]>} undef --> {JMP literal}
 
 	GC l0 charclass {@CLS:<[:alnum:]>} :alnum 0
 
-GC comment definition {@LEX:@CLS:<[:alnum:]>} 458 11
-GC comment usage {@CLS:<[:alnum:]>} 458 11
+GC comment definition {@LEX:@CLS:<[:alnum:]>} 471 11
+GC comment usage {@CLS:<[:alnum:]>} 471 11
 GC comment l0-definition {@LEX:@CLS:<[:alnum:]>} undef --> {JMP match}
 GC comment :lexeme {@LEX:@CLS:<[:alnum:]>} match --> {JMP lexeme make-lexeme}
 
@@ -207,17 +223,17 @@ GC g1 priority-rule H {{@LEX:@CLS:<[:alnum:]>}} 0 action {array values} bless {s
 
 # - -- --- ----- -------- I [0-9a[:braille:]] -------- ----- --- -- - -
 
-GC comment definition I 470 1
+GC comment definition I 483 1
 GC comment g1-definition I floater --> {JMP brick}
 
-	GC comment usage {@CLS:<0-9[:braille:]a>} 476 17
-	GC comment definition {@CLS:<0-9[:braille:]a>} 476 17
+	GC comment usage {@CLS:<0-9[:braille:]a>} 489 17
+	GC comment definition {@CLS:<0-9[:braille:]a>} 489 17
 	GC comment <literal> {@CLS:<0-9[:braille:]a>} undef --> {JMP literal}
 
 	GC l0 charclass {@CLS:<0-9[:braille:]a>} {{48 57} :braille 97} 0
 
-GC comment definition {@LEX:@CLS:<0-9[:braille:]a>} 476 17
-GC comment usage {@CLS:<0-9[:braille:]a>} 476 17
+GC comment definition {@LEX:@CLS:<0-9[:braille:]a>} 489 17
+GC comment usage {@CLS:<0-9[:braille:]a>} 489 17
 GC comment l0-definition {@LEX:@CLS:<0-9[:braille:]a>} undef --> {JMP match}
 GC comment :lexeme {@LEX:@CLS:<0-9[:braille:]a>} match --> {JMP lexeme make-lexeme}
 
@@ -232,17 +248,17 @@ GC g1 priority-rule I {{@LEX:@CLS:<0-9[:braille:]a>}} 0 action {array values} bl
 
 # - -- --- ----- -------- J [a]/i -------- ----- --- -- - -
 
-GC comment definition J 495 1
+GC comment definition J 508 1
 GC comment g1-definition J floater --> {JMP brick}
 
-	GC comment usage @CLS/i:<A> 501 5
-	GC comment definition @CLS/i:<A> 501 5
+	GC comment usage @CLS/i:<A> 514 5
+	GC comment definition @CLS/i:<A> 514 5
 	GC comment <literal> @CLS/i:<A> undef --> {JMP literal}
 
 	GC l0 charclass @CLS/i:<A> 65 1
 
-GC comment definition @LEX:@CLS/i:<A> 501 5
-GC comment usage @CLS/i:<A> 501 5
+GC comment definition @LEX:@CLS/i:<A> 514 5
+GC comment usage @CLS/i:<A> 514 5
 GC comment l0-definition @LEX:@CLS/i:<A> undef --> {JMP match}
 GC comment :lexeme @LEX:@CLS/i:<A> match --> {JMP lexeme make-lexeme}
 
@@ -257,17 +273,17 @@ GC g1 priority-rule J @LEX:@CLS/i:<A> 0 action {array values} bless {special und
 
 # - -- --- ----- -------- K [a-z]/i -------- ----- --- -- - -
 
-GC comment definition K 507 1
+GC comment definition K 520 1
 GC comment g1-definition K floater --> {JMP brick}
 
-	GC comment usage @CLS/i:<A-Z> 513 7
-	GC comment definition @CLS/i:<A-Z> 513 7
+	GC comment usage @CLS/i:<A-Z> 526 7
+	GC comment definition @CLS/i:<A-Z> 526 7
 	GC comment <literal> @CLS/i:<A-Z> undef --> {JMP literal}
 
 	GC l0 charclass @CLS/i:<A-Z> {{65 90}} 1
 
-GC comment definition @LEX:@CLS/i:<A-Z> 513 7
-GC comment usage @CLS/i:<A-Z> 513 7
+GC comment definition @LEX:@CLS/i:<A-Z> 526 7
+GC comment usage @CLS/i:<A-Z> 526 7
 GC comment l0-definition @LEX:@CLS/i:<A-Z> undef --> {JMP match}
 GC comment :lexeme @LEX:@CLS/i:<A-Z> match --> {JMP lexeme make-lexeme}
 
@@ -282,17 +298,17 @@ GC g1 priority-rule K @LEX:@CLS/i:<A-Z> 0 action {array values} bless {special u
 
 # - -- --- ----- -------- L [[:alnum:]]/i -------- ----- --- -- - -
 
-GC comment definition L 521 1
+GC comment definition L 534 1
 GC comment g1-definition L floater --> {JMP brick}
 
-	GC comment usage {@CLS/i:<[:alnum:]>} 527 13
-	GC comment definition {@CLS/i:<[:alnum:]>} 527 13
+	GC comment usage {@CLS/i:<[:alnum:]>} 540 13
+	GC comment definition {@CLS/i:<[:alnum:]>} 540 13
 	GC comment <literal> {@CLS/i:<[:alnum:]>} undef --> {JMP literal}
 
 	GC l0 charclass {@CLS/i:<[:alnum:]>} :alnum 1
 
-GC comment definition {@LEX:@CLS/i:<[:alnum:]>} 527 13
-GC comment usage {@CLS/i:<[:alnum:]>} 527 13
+GC comment definition {@LEX:@CLS/i:<[:alnum:]>} 540 13
+GC comment usage {@CLS/i:<[:alnum:]>} 540 13
 GC comment l0-definition {@LEX:@CLS/i:<[:alnum:]>} undef --> {JMP match}
 GC comment :lexeme {@LEX:@CLS/i:<[:alnum:]>} match --> {JMP lexeme make-lexeme}
 
@@ -307,17 +323,17 @@ GC g1 priority-rule L {{@LEX:@CLS/i:<[:alnum:]>}} 0 action {array values} bless 
 
 # - -- --- ----- -------- M [0-9a[:braille:]]/i -------- ----- --- -- - -
 
-GC comment definition M 541 1
+GC comment definition M 554 1
 GC comment g1-definition M floater --> {JMP brick}
 
-	GC comment usage {@CLS/i:<0-9[:braille:]A>} 547 19
-	GC comment definition {@CLS/i:<0-9[:braille:]A>} 547 19
+	GC comment usage {@CLS/i:<0-9[:braille:]A>} 560 19
+	GC comment definition {@CLS/i:<0-9[:braille:]A>} 560 19
 	GC comment <literal> {@CLS/i:<0-9[:braille:]A>} undef --> {JMP literal}
 
 	GC l0 charclass {@CLS/i:<0-9[:braille:]A>} {{48 57} :braille 65} 1
 
-GC comment definition {@LEX:@CLS/i:<0-9[:braille:]A>} 547 19
-GC comment usage {@CLS/i:<0-9[:braille:]A>} 547 19
+GC comment definition {@LEX:@CLS/i:<0-9[:braille:]A>} 560 19
+GC comment usage {@CLS/i:<0-9[:braille:]A>} 560 19
 GC comment l0-definition {@LEX:@CLS/i:<0-9[:braille:]A>} undef --> {JMP match}
 GC comment :lexeme {@LEX:@CLS/i:<0-9[:braille:]A>} match --> {JMP lexeme make-lexeme}
 
@@ -329,6 +345,198 @@ GC comment :lexeme {@LEX:@CLS/i:<0-9[:braille:]A>} match --> {JMP lexeme make-le
 GC comment g1-usage {@LEX:@CLS/i:<0-9[:braille:]A>} lexeme --> NOP
 
 GC g1 priority-rule M {{@LEX:@CLS/i:<0-9[:braille:]A>}} 0 action {array values} bless {special undef} mask 0
+
+# - -- --- ----- -------- N [^a] -------- ----- --- -- - -
+
+GC comment definition N 604 1
+GC comment g1-definition N floater --> {JMP brick}
+
+	GC comment usage @NEC:<a> 610 4
+	GC comment definition @NEC:<a> 610 4
+	GC comment <literal> @NEC:<a> undef --> {JMP literal}
+	GC l0 negcclass @NEC:<a> 97 0
+
+GC comment definition @LEX:@NEC:<a> 610 4
+GC comment usage @NEC:<a> 610 4
+GC comment l0-definition @LEX:@NEC:<a> undef --> {JMP match}
+GC comment :lexeme @LEX:@NEC:<a> match --> {JMP lexeme make-lexeme}
+
+	GC l0 lexeme @LEX:@NEC:<a>
+	GC g1 terminal @LEX:@NEC:<a>
+	GC comment l0-usage @NEC:<a> literal --> NOP
+	GC l0 priority-rule @LEX:@NEC:<a> @NEC:<a> 0
+
+GC comment g1-usage @LEX:@NEC:<a> lexeme --> NOP
+
+GC g1 priority-rule N @LEX:@NEC:<a> 0 action {array values} bless {special undef} mask 0
+
+# - -- --- ----- -------- O [^a-z] -------- ----- --- -- - -
+
+GC comment definition O 615 1
+GC comment g1-definition O floater --> {JMP brick}
+
+	GC comment usage @NEC:<a-z> 621 6
+	GC comment definition @NEC:<a-z> 621 6
+	GC comment <literal> @NEC:<a-z> undef --> {JMP literal}
+	GC l0 negcclass @NEC:<a-z> {{97 122}} 0
+
+GC comment definition @LEX:@NEC:<a-z> 621 6
+GC comment usage @NEC:<a-z> 621 6
+GC comment l0-definition @LEX:@NEC:<a-z> undef --> {JMP match}
+GC comment :lexeme @LEX:@NEC:<a-z> match --> {JMP lexeme make-lexeme}
+
+	GC l0 lexeme @LEX:@NEC:<a-z>
+	GC g1 terminal @LEX:@NEC:<a-z>
+	GC comment l0-usage @NEC:<a-z> literal --> NOP
+	GC l0 priority-rule @LEX:@NEC:<a-z> @NEC:<a-z> 0
+
+GC comment g1-usage @LEX:@NEC:<a-z> lexeme --> NOP
+
+GC g1 priority-rule O @LEX:@NEC:<a-z> 0 action {array values} bless {special undef} mask 0
+
+# - -- --- ----- -------- P [^[:alnum:]] -------- ----- --- -- - -
+
+GC comment definition P 628 1
+GC comment g1-definition P floater --> {JMP brick}
+
+	GC comment usage {@NEC:<[:alnum:]>} 634 12
+	GC comment definition {@NEC:<[:alnum:]>} 634 12
+	GC comment <literal> {@NEC:<[:alnum:]>} undef --> {JMP literal}
+	GC l0 negcclass {@NEC:<[:alnum:]>} :alnum 0
+
+GC comment definition {@LEX:@NEC:<[:alnum:]>} 634 12
+GC comment usage {@NEC:<[:alnum:]>} 634 12
+GC comment l0-definition {@LEX:@NEC:<[:alnum:]>} undef --> {JMP match}
+GC comment :lexeme {@LEX:@NEC:<[:alnum:]>} match --> {JMP lexeme make-lexeme}
+
+	GC l0 lexeme {@LEX:@NEC:<[:alnum:]>}
+	GC g1 terminal {@LEX:@NEC:<[:alnum:]>}
+	GC comment l0-usage {@NEC:<[:alnum:]>} literal --> NOP
+	GC l0 priority-rule {@LEX:@NEC:<[:alnum:]>} {@NEC:<[:alnum:]>} 0
+
+GC comment g1-usage {@LEX:@NEC:<[:alnum:]>} lexeme --> NOP
+
+GC g1 priority-rule P {{@LEX:@NEC:<[:alnum:]>}} 0 action {array values} bless {special undef} mask 0
+
+# - -- --- ----- -------- Q [^0-9a[:braille:]] -------- ----- --- -- - -
+
+GC comment definition Q 647 1
+GC comment g1-definition Q floater --> {JMP brick}
+
+	GC comment usage {@NEC:<0-9[:braille:]a>} 653 18
+	GC comment definition {@NEC:<0-9[:braille:]a>} 653 18
+	GC comment <literal> {@NEC:<0-9[:braille:]a>} undef --> {JMP literal}
+	GC l0 negcclass {@NEC:<0-9[:braille:]a>} {{48 57} :braille 97} 0
+
+GC comment definition {@LEX:@NEC:<0-9[:braille:]a>} 653 18
+GC comment usage {@NEC:<0-9[:braille:]a>} 653 18
+GC comment l0-definition {@LEX:@NEC:<0-9[:braille:]a>} undef --> {JMP match}
+GC comment :lexeme {@LEX:@NEC:<0-9[:braille:]a>} match --> {JMP lexeme make-lexeme}
+
+	GC l0 lexeme {@LEX:@NEC:<0-9[:braille:]a>}
+	GC g1 terminal {@LEX:@NEC:<0-9[:braille:]a>}
+	GC comment l0-usage {@NEC:<0-9[:braille:]a>} literal --> NOP
+	GC l0 priority-rule {@LEX:@NEC:<0-9[:braille:]a>} {@NEC:<0-9[:braille:]a>} 0
+
+GC comment g1-usage {@LEX:@NEC:<0-9[:braille:]a>} lexeme --> NOP
+
+GC g1 priority-rule Q {{@LEX:@NEC:<0-9[:braille:]a>}} 0 action {array values} bless {special undef} mask 0
+
+# - -- --- ----- -------- R [^a]/i -------- ----- --- -- - -
+
+GC comment definition R 673 1
+GC comment g1-definition R floater --> {JMP brick}
+
+	GC comment usage @NEC/i:<A> 679 6
+	GC comment definition @NEC/i:<A> 679 6
+	GC comment <literal> @NEC/i:<A> undef --> {JMP literal}
+	GC l0 negcclass @NEC/i:<A> 65 1
+
+GC comment definition @LEX:@NEC/i:<A> 679 6
+GC comment usage @NEC/i:<A> 679 6
+GC comment l0-definition @LEX:@NEC/i:<A> undef --> {JMP match}
+GC comment :lexeme @LEX:@NEC/i:<A> match --> {JMP lexeme make-lexeme}
+
+	GC l0 lexeme @LEX:@NEC/i:<A>
+	GC g1 terminal @LEX:@NEC/i:<A>
+	GC comment l0-usage @NEC/i:<A> literal --> NOP
+	GC l0 priority-rule @LEX:@NEC/i:<A> @NEC/i:<A> 0
+
+GC comment g1-usage @LEX:@NEC/i:<A> lexeme --> NOP
+
+GC g1 priority-rule R @LEX:@NEC/i:<A> 0 action {array values} bless {special undef} mask 0
+
+# - -- --- ----- -------- S [^a-z]/i -------- ----- --- -- - -
+
+GC comment definition S 686 1
+GC comment g1-definition S floater --> {JMP brick}
+
+	GC comment usage @NEC/i:<A-Z> 692 8
+	GC comment definition @NEC/i:<A-Z> 692 8
+	GC comment <literal> @NEC/i:<A-Z> undef --> {JMP literal}
+	GC l0 negcclass @NEC/i:<A-Z> {{65 90}} 1
+
+GC comment definition @LEX:@NEC/i:<A-Z> 692 8
+GC comment usage @NEC/i:<A-Z> 692 8
+GC comment l0-definition @LEX:@NEC/i:<A-Z> undef --> {JMP match}
+GC comment :lexeme @LEX:@NEC/i:<A-Z> match --> {JMP lexeme make-lexeme}
+
+	GC l0 lexeme @LEX:@NEC/i:<A-Z>
+	GC g1 terminal @LEX:@NEC/i:<A-Z>
+	GC comment l0-usage @NEC/i:<A-Z> literal --> NOP
+	GC l0 priority-rule @LEX:@NEC/i:<A-Z> @NEC/i:<A-Z> 0
+
+GC comment g1-usage @LEX:@NEC/i:<A-Z> lexeme --> NOP
+
+GC g1 priority-rule S @LEX:@NEC/i:<A-Z> 0 action {array values} bless {special undef} mask 0
+
+# - -- --- ----- -------- T [^[:alnum:]]/i -------- ----- --- -- - -
+
+GC comment definition T 701 1
+GC comment g1-definition T floater --> {JMP brick}
+
+	GC comment usage {@NEC/i:<[:alnum:]>} 707 14
+	GC comment definition {@NEC/i:<[:alnum:]>} 707 14
+	GC comment <literal> {@NEC/i:<[:alnum:]>} undef --> {JMP literal}
+	GC l0 negcclass {@NEC/i:<[:alnum:]>} :alnum 1
+
+GC comment definition {@LEX:@NEC/i:<[:alnum:]>} 707 14
+GC comment usage {@NEC/i:<[:alnum:]>} 707 14
+GC comment l0-definition {@LEX:@NEC/i:<[:alnum:]>} undef --> {JMP match}
+GC comment :lexeme {@LEX:@NEC/i:<[:alnum:]>} match --> {JMP lexeme make-lexeme}
+
+	GC l0 lexeme {@LEX:@NEC/i:<[:alnum:]>}
+	GC g1 terminal {@LEX:@NEC/i:<[:alnum:]>}
+	GC comment l0-usage {@NEC/i:<[:alnum:]>} literal --> NOP
+	GC l0 priority-rule {@LEX:@NEC/i:<[:alnum:]>} {@NEC/i:<[:alnum:]>} 0
+
+GC comment g1-usage {@LEX:@NEC/i:<[:alnum:]>} lexeme --> NOP
+
+GC g1 priority-rule T {{@LEX:@NEC/i:<[:alnum:]>}} 0 action {array values} bless {special undef} mask 0
+
+# - -- --- ----- -------- U [^0-9a[:braille:]]/i -------- ----- --- -- - -
+
+GC comment definition U 722 1
+GC comment g1-definition U floater --> {JMP brick}
+
+	GC comment usage {@NEC/i:<0-9[:braille:]A>} 728 20
+	GC comment definition {@NEC/i:<0-9[:braille:]A>} 728 20
+	GC comment <literal> {@NEC/i:<0-9[:braille:]A>} undef --> {JMP literal}
+	GC l0 negcclass {@NEC/i:<0-9[:braille:]A>} {{48 57} :braille 65} 1
+
+GC comment definition {@LEX:@NEC/i:<0-9[:braille:]A>} 728 20
+GC comment usage {@NEC/i:<0-9[:braille:]A>} 728 20
+GC comment l0-definition {@LEX:@NEC/i:<0-9[:braille:]A>} undef --> {JMP match}
+GC comment :lexeme {@LEX:@NEC/i:<0-9[:braille:]A>} match --> {JMP lexeme make-lexeme}
+
+	GC l0 lexeme {@LEX:@NEC/i:<0-9[:braille:]A>}
+	GC g1 terminal {@LEX:@NEC/i:<0-9[:braille:]A>}
+	GC comment l0-usage {@NEC/i:<0-9[:braille:]A>} literal --> NOP
+	GC l0 priority-rule {@LEX:@NEC/i:<0-9[:braille:]A>} {@NEC/i:<0-9[:braille:]A>} 0
+
+GC comment g1-usage {@LEX:@NEC/i:<0-9[:braille:]A>} lexeme --> NOP
+
+GC g1 priority-rule U {{@LEX:@NEC/i:<0-9[:braille:]A>}} 0 action {array values} bless {special undef} mask 0
 
 # - -- --- ----- -------- DONE -------- ----- --- -- - -
 
@@ -346,4 +554,12 @@ GC l0 configure @LEX:@CLS/i:<A> latm 1
 GC l0 configure @LEX:@CLS/i:<A-Z> latm 1
 GC l0 configure {@LEX:@CLS/i:<[:alnum:]>} latm 1
 GC l0 configure {@LEX:@CLS/i:<0-9[:braille:]A>} latm 1
+GC l0 configure @LEX:@NEC:<a> latm 1
+GC l0 configure @LEX:@NEC:<a-z> latm 1
+GC l0 configure {@LEX:@NEC:<[:alnum:]>} latm 1
+GC l0 configure {@LEX:@NEC:<0-9[:braille:]a>} latm 1
+GC l0 configure @LEX:@NEC/i:<A> latm 1
+GC l0 configure @LEX:@NEC/i:<A-Z> latm 1
+GC l0 configure {@LEX:@NEC/i:<[:alnum:]>} latm 1
+GC l0 configure {@LEX:@NEC/i:<0-9[:braille:]A>} latm 1
 GC comment DDE fix {}

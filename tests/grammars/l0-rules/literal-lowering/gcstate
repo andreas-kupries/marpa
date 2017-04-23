@@ -17,11 +17,19 @@ grammar {
                     J
                     K
                     L
-                    M} 0
+                    M
+                    N
+                    O
+                    P
+                    Q
+                    R
+                    S
+                    T
+                    U} 0
                         action {array values}
                         assoc left
                         bless {special undef}
-                        mask {0 0 0 0 0 0 0 0 0 0 0 0}} }
+                        mask {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0}} }
             B { {priority @LEX:@CHR:<a> 0
                     action {array values}
                     assoc left
@@ -82,6 +90,46 @@ grammar {
                     assoc left
                     bless {special undef}
                     mask 0} }
+            N { {priority @LEX:@NEC:<a> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            O { {priority @LEX:@NEC:<a-z> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            P { {priority {{@LEX:@NEC:<[:alnum:]>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            Q { {priority {{@LEX:@NEC:<0-9[:braille:]a>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            R { {priority @LEX:@NEC/i:<A> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            S { {priority @LEX:@NEC/i:<A-Z> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            T { {priority {{@LEX:@NEC/i:<[:alnum:]>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            U { {priority {{@LEX:@NEC/i:<0-9[:braille:]A>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
         }
         terminal {
             @LEX:@CHR:<a> { terminal }
@@ -92,6 +140,14 @@ grammar {
             {@LEX:@CLS:<0-9[:braille:]a>} { terminal }
             {@LEX:@CLS:<[:alnum:]>} { terminal }
             @LEX:@CLS:<a-z> { terminal }
+            {@LEX:@NEC/i:<0-9[:braille:]A>} { terminal }
+            {@LEX:@NEC/i:<[:alnum:]>} { terminal }
+            @LEX:@NEC/i:<A-Z> { terminal }
+            @LEX:@NEC/i:<A> { terminal }
+            {@LEX:@NEC:<0-9[:braille:]a>} { terminal }
+            {@LEX:@NEC:<[:alnum:]>} { terminal }
+            @LEX:@NEC:<a-z> { terminal }
+            @LEX:@NEC:<a> { terminal }
             @LEX:@STR/i:<A> { terminal }
             @LEX:@STR/i:<ABC> { terminal }
             @LEX:@STR:<abc> { terminal }
@@ -116,6 +172,14 @@ grammar {
             {@LEX:@CLS:<0-9[:braille:]a>} 1
             {@LEX:@CLS:<[:alnum:]>} 1
             @LEX:@CLS:<a-z> 1
+            {@LEX:@NEC/i:<0-9[:braille:]A>} 1
+            {@LEX:@NEC/i:<[:alnum:]>} 1
+            @LEX:@NEC/i:<A-Z> 1
+            @LEX:@NEC/i:<A> 1
+            {@LEX:@NEC:<0-9[:braille:]a>} 1
+            {@LEX:@NEC:<[:alnum:]>} 1
+            @LEX:@NEC:<a-z> 1
+            @LEX:@NEC:<a> 1
             @LEX:@STR/i:<A> 1
             @LEX:@STR/i:<ABC> 1
             @LEX:@STR:<abc> 1
@@ -129,6 +193,14 @@ grammar {
             {@LEX:@CLS:<0-9[:braille:]a>} { {priority {@CLS:<0-9[:braille:]a>} 0} }
             {@LEX:@CLS:<[:alnum:]>} { {priority {@CLS:<[:alnum:]>} 0} }
             @LEX:@CLS:<a-z> { {priority @CLS:<a-z> 0} }
+            {@LEX:@NEC/i:<0-9[:braille:]A>} { {priority {@NEC/i:<0-9[:braille:]A>} 0} }
+            {@LEX:@NEC/i:<[:alnum:]>} { {priority {@NEC/i:<[:alnum:]>} 0} }
+            @LEX:@NEC/i:<A-Z> { {priority @NEC/i:<A-Z> 0} }
+            @LEX:@NEC/i:<A> { {priority @NEC/i:<A> 0} }
+            {@LEX:@NEC:<0-9[:braille:]a>} { {priority {@NEC:<0-9[:braille:]a>} 0} }
+            {@LEX:@NEC:<[:alnum:]>} { {priority {@NEC:<[:alnum:]>} 0} }
+            @LEX:@NEC:<a-z> { {priority @NEC:<a-z> 0} }
+            @LEX:@NEC:<a> { {priority @NEC:<a> 0} }
             @LEX:@STR/i:<A> { {priority @STR/i:<A> 0} }
             @LEX:@STR/i:<ABC> { {priority @STR/i:<ABC> 0} }
             @LEX:@STR:<abc> { {priority @STR:<abc> 0} }
@@ -144,6 +216,14 @@ grammar {
             {@CLS:<0-9[:braille:]a>} { {charclass {{48 57} :braille 97} 0} }
             {@CLS:<[:alnum:]>} { {charclass :alnum 0} }
             @CLS:<a-z> { {charclass {{97 122}} 0} }
+            {@NEC/i:<0-9[:braille:]A>} { {negcclass {{48 57} :braille 65} 1} }
+            {@NEC/i:<[:alnum:]>} { {negcclass :alnum 1} }
+            @NEC/i:<A-Z> { {negcclass {{65 90}} 1} }
+            @NEC/i:<A> { {negcclass 65 1} }
+            {@NEC:<0-9[:braille:]a>} { {negcclass {{48 57} :braille 97} 0} }
+            {@NEC:<[:alnum:]>} { {negcclass :alnum 0} }
+            @NEC:<a-z> { {negcclass {{97 122}} 0} }
+            @NEC:<a> { {negcclass 97 0} }
             @STR/i:<A> { {string 65 1} }
             @STR/i:<ABC> { {string {65 66 67} 1} }
         }

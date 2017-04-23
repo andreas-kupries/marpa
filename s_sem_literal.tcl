@@ -57,6 +57,7 @@
 # |-----------|-----------|----------|
 # | string    | @str<...> |          |
 # | charclass | @cls<...> |          |
+# | negcclass | @nec<...> |          |
 #
 
 # # ## ### ##### ######## #############
@@ -103,6 +104,7 @@ oo::class create marpa::slif::semantics::Literal {
 	    range     @INT
 	    string    @STR
 	    charclass @CLS
+	    negcclass @NEC
 	}
 	return
     }
@@ -209,7 +211,9 @@ oo::class create marpa::slif::semantics::Literal {
 
     method RECODE {spec} {
 	upvar 1 ltype ltype
-	if {$ltype in {string charclass}} {
+
+	# Unbox the definition for types with nocase information.
+	if {$ltype in {string charclass negcclass}} {
 	    set spec [lindex $spec 0]
 	}
 
@@ -306,9 +310,13 @@ oo::class create marpa::slif::semantics::Literal {
 	#           | char '-' char - range of characters
 	#           | char          - single character
 	##
-	upvar 1 $litvar literal nocase nocase ldata ldata
+	upvar 1 $litvar literal nocase nocase ldata ldata ltype ltype
 
-	# TODO: Handle negated classes.
+	# Recognize negated class, and strip the indicator
+	if {[string match "^*" $literal]} {
+	    set literal [string range $literal 1 end]
+	    set ltype negcclass
+	}
 
 	set ldata {}
 	while {[string length $literal]} {
