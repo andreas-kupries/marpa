@@ -33,7 +33,7 @@ oo::class create marpa::slif::container::grammar::g1 {
     constructor {} {
 	debug.marpa/slif/container/grammar/g1 {}
 	next {
-	    terminal ::marpa::slif::container::terminal
+	    terminal {::marpa::slif::container::atom terminal}
 	}   ::marpa::slif::container::priority::g1 \
 	    ::marpa::slif::container::quantified::g1
 

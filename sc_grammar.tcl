@@ -101,8 +101,9 @@ oo::class create marpa::slif::container::grammar {
 
 	my Class: $class $symbol
 	if {![dict exists $mysymbol $symbol]} {
-	    set factory [dict get $mytype $type]
-	    set obj [{*}$factory new {*}$args]
+	    set targs [lassign $type type]
+	    set fargs [lassign [dict get $mytype $type] factory]
+	    set obj [{*}$factory new {*}$fargs {*}$targs {*}$args]
 	    dict set mysymbol $symbol $obj
 	} else {
 	    [dict get $mysymbol $symbol] extend {*}$args

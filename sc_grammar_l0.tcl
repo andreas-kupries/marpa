@@ -35,12 +35,7 @@ oo::class create marpa::slif::container::grammar::l0 {
     constructor {} {
 	debug.marpa/slif/container/grammar/l0 {}
 	next {
-	    string    ::marpa::slif::container::string
-	    charclass ::marpa::slif::container::charclass
-	    negcclass ::marpa::slif::container::negcharclass
-	    namedcc   ::marpa::slif::container::namedcc
-	    range     ::marpa::slif::container::range
-	    character ::marpa::slif::container::character
+	    atom      ::marpa::slif::container::atom
 	}   ::marpa::slif::container::priority::l0 \
 	    ::marpa::slif::container::quantified::l0
 
@@ -129,12 +124,15 @@ oo::class create marpa::slif::container::grammar::l0 {
 	return
     }
 
-    forward charclass  my Symbol: literal charclass
-    forward negcclass  my Symbol: literal negcclass
-    forward namedcc    my Symbol: literal namedcc
-    forward string     my Symbol: literal string
-    forward range      my Symbol: literal range
-    forward character  my Symbol: literal character
+    forward literal    my Symbol: literal atom
+
+    # Backward compatility for the moment
+    forward charclass  my Symbol: literal {atom charclass}
+    forward negcclass  my Symbol: literal {atom negcclass}
+    forward namedcc    my Symbol: literal {atom namedcc}
+    forward string     my Symbol: literal {atom string}
+    forward range      my Symbol: literal {atom range}
+    forward character  my Symbol: literal {atom character}
 
     forward discard    my Class: discard
     forward lexeme     my Class: lexeme

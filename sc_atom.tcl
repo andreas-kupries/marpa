@@ -26,26 +26,40 @@ oo::class create marpa::slif::container::atom {
 
     marpa::E marpa/slif/container/atom SLIF CONTAINER ATOM
 
+    variable mytype    ;# 
+    variable mydetails ;# type-dependent
+
+
     # - -- --- ----- -------- -------------
     ## lifecycle
 
-    constructor {} {
+    constructor {type args} {
 	debug.marpa/slif/container/atom {}
+
+	set mytype    $type
+	set mydetails $args
+
 	debug.marpa/slif/container/atom {/ok}
 	return
+    }
+
+
+    method serialize {} {
+	debug.marpa/slif/container/atom {}
+	return [list [list $mytype {*}$mydetails]]
     }
 
     # - -- --- ----- -------- -------------
 
     method extend {args} {
 	debug.marpa/slif/container/atom {}
-	my E "Atom cannot be extended: $args" \
+	my E "Atom: Cannot be extended: $args" \
 	    FORBIDDEN
     }
 
     method deserialize {blob} {
 	debug.marpa/slif/container/atom {}
-	my E "Atom deserialization forbidden, go through constructor" \
+	my E "Atom: Deserialization forbidden, must go through constructor" \
 	    FORBIDDEN
     }
 
