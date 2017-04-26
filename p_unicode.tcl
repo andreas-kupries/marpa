@@ -31,17 +31,17 @@ namespace eval marpa {
     namespace ensemble create
 }
 namespace eval marpa::unicode {
-    namespace export norm 2utf 2asbr pretty-asbr data
+    namespace export norm-class point unfold fold/c 2utf 2asbr asbr-format data
     namespace ensemble create
 }
 
 # # ## ### ##### ######## #############
 ## Public API
 ##
-## - 2utf        - Convert unicode point to sequence of bytes
+## - 2utf        - Convert uni(code)point to sequence of bytes
 ## - 2asbr       - Convert unicode class to utf8 asbr
-## - pretty-asbr - Pretty print the result of 2asbr.
-## - norm        - normalize a series of ranges and code points.
+## - asbr-format - Convert the result of 2asbr into a human-readable form.
+## - norm-class  - normalize a series of ranges and code points (i.e. a char class).
 
 proc marpa::unicode::2utf {code} {
     debug.marpa/unicode {}
@@ -74,30 +74,32 @@ proc marpa::unicode::2utf {code} {
     return [list $a $b $c $d]
 }
 
-proc marpa::unicode::norm {items} {
+proc marpa::unicode::norm-class {charclass} {
     debug.marpa/unicode {}
-    # Each item is either a code point, or a range The result is a
-    # sorted list of minimal ranges and points covering the input.
+    # Each item is either a code point, or a range (specified by a
+    # pair of codepoints, low and high borders, inclusive). The result
+    # is a sorted list of minimal ranges and points covering the
+    # input.
 
-    set items [lsort -unique $items]
+    set charclass [lsort -dict -unique $charclass]
 
-    if {[llength $items] < 2} {
-	return $items
+    if {[llength $charclass] < 2} {
+	return $charclass
     }
-    # assert: llength $items >= 2
-    foreach spec $items {
+    # assert: llength $charclass >= 2
+    foreach spec $charclass {
 	if {[llength $spec] == 1} { 
 	    lappend spec [lindex $spec 0]
 	}
 	lappend tmp $spec
     }
-    set items $tmp
+    set charclass $tmp
 
-    set items [lsort -index 1 -integer $items]
-    set items [lsort -index 0 -integer $items]
-    set items [lassign $items previous]
+    set charclass [lsort -index 1 -integer $charclass]
+    set charclass [lsort -index 0 -integer $charclass]
+    set charclass [lassign $charclass previous]
 
-    foreach current $items {
+    foreach current $charclass {
 	lassign $previous ps pe
 	lassign $current  cs ce
 
@@ -141,17 +143,45 @@ proc marpa::unicode::NA {range} {
     return
 }
 
-proc marpa::unicode::2asbr {items} {
+proc marpa::unicode::point {character} {
+    debug.marpa/unicode {}
+    # Convert first character if we got a string.
+    scan [lindex [split $character {}] 0] %c codepoint
+    return $codepoint
+}
+
+proc marpa::unicode::fold/c {codes} {
+    debug.marpa/unicode {}
+    lmap codepoint $codes { data fold/c $codepoint }
+}
+
+proc marpa::unicode::unfold {codes} {
+    debug.marpa/unicode {}
+    set result {}
+    foreach el $codes {
+	if {[llength $el] == 1} { 
+	    lappend result {*}[data fold $el]
+	} else {
+	    lassign $el s e
+	    for {} {$s <= $e} {incr s} {
+		lappend result {*}[data fold $s]
+	    }
+	}
+    }
+    norm-class $result
+}
+
+proc marpa::unicode::2asbr {charclass} {
     debug.marpa/unicode {}
     set c [u8class new]
-    $c add-items $items
+    $c add-charclass $charclass
     set utf [$c get]
     $c destroy
     debug.marpa/unicode {==> ($utf)}
     return $utf
 }
 
-proc marpa::unicode::pretty-asbr {asbr {compact 0}} {
+proc marpa::unicode::asbr-format {asbr {compact 0}} {
     debug.marpa/unicode {}
     set r {}
     set prefix " "
@@ -189,6 +219,7 @@ namespace eval marpa::unicode::data {
     namespace export cc range fold fold/c
     namespace ensemble create
     namespace import ::marpa::X
+    namespace import ::marpa::unicode::norm-class
 }
 namespace eval marpa::unicode::data::cc {
     namespace export ranges asbr grammar
@@ -206,7 +237,7 @@ proc marpa::unicode::data::cc::ranges {cclass} {
 
 proc marpa::unicode::data::cc::asbr {cclass} {
     variable ::marpa::unicode::asbr
-    if {![dict exists $cc $cclass]} {
+    if {![dict exists $asbr $cclass]} {
 	X "Bad character class $cclass" UNICODE BAD CLASS
     }
     return [dict get $asbr $cclass]
@@ -214,15 +245,17 @@ proc marpa::unicode::data::cc::asbr {cclass} {
 
 proc marpa::unicode::data::cc::grammar {cclass} {
     variable ::marpa::unicode::gr
-    if {![dict exists $cc $cclass]} {
+    if {![dict exists $gr $cclass]} {
 	X "Bad character class $cclass" UNICODE BAD CLASS
     }
     return [dict get $gr $cclass]
 }
 
 proc marpa::unicode::data::range {id} {
-    variable marpa::unicode::range
-    # TODO: validate argument
+    variable ::marpa::unicode::range
+    if {![dict exists $range $id]} {
+	X "Bad byte range $id" UNICODE BAD RANGE
+    }
     return [dict get $range $id]
 }
 
@@ -285,9 +318,9 @@ oo::class create u8class {
 	return $result
     }
 
-    method add-items {items} {
+    method add-charclass {charclass} {
 	debug.marpa/unicode {}
-	foreach item [marpa unicode norm $items] {
+	foreach item [marpa unicode norm-class $charclass] {
 	    lassign $item s e
 	    if {$e eq {}} {
 		# Add point
@@ -302,7 +335,7 @@ oo::class create u8class {
 	return
     }
 
-    # add a single unicode point to the class.  Must be added in
+    # add a single uni(code)point to the class.  Must be added in
     # lexicographic order for the merge system to work.
     method add {code} {
 	debug.marpa/unicode {}
@@ -369,9 +402,9 @@ oo::class create u8sequence {
     variable myranges
 
     # make a sequence from ranges or bytes, or a mix thereof
-    constructor {items} {
+    constructor {charclass} {
 	debug.marpa/unicode {}
-	foreach spec $items {
+	foreach spec $charclass {
 	    if {[llength $spec] == 1} {
 		lappend spec [lindex $spec 0]
 	    }

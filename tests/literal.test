@@ -1,0 +1,489 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::slif::literal
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+## [..] symbol        \
+## [ok] parse         / API
+## [ok] norm          \
+## [ok] eltype        | Helpers. Exposed for testing internals
+## [ok] ccunfold      | (before testing the visible API)
+## [ok] ccsplit       |   |
+## [ok] decode        \___/
+## [ok] decode-string /
+## [ok] decode-class  |
+## [ok] type          |
+## [ok] unescape      |
+## [ok] tags          
+
+# # ## ### ##### ######## ############# #####################
+## symbol - Generate a symbol for a literal from its representation.
+
+test marpa-slif-literal-symbol-1.0 {symbol, wrong args, not enough} -body {
+    marpa::slif::literal symbol
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal symbol literal"}
+
+test marpa-slif-literal-symbol-1.2 {symbol, wrong args, too many} -body {
+    marpa::slif::literal symbol LITERAL X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal symbol literal"}
+
+set k 0
+foreach {literal symbol} {
+    {%named-class braille}                        @%NCC:<[:braille:]>
+    {%string 65 45}                               @%STR:<A->
+    {^%named-class braille}                       @^%NCC:<[:braille:]>
+    {^character 45}                               @^CHR:<->
+    {^character 97}                               @^CHR:<a>
+    {^charclass 45 %braille}                      @^CLS:<-[:%braille:]>
+    {^charclass 45 {65 70} {97 102} %braille}     @^CLS:<-A-Fa-f[:%braille:]>
+    {^charclass 45 {65 70} {97 102}}              @^CLS:<-A-Fa-f>
+    {^charclass 45 {97 102} braille}              @^CLS:<-a-f[:braille:]>
+    {^charclass 45 {97 102}}                      @^CLS:<-a-f>
+    {^charclass 65 97 %braille}                   @^CLS:<Aa[:%braille:]>
+    {^charclass 65 97}                            @^CLS:<Aa>
+    {^charclass 97 braille}                       @^CLS:<a[:braille:]>
+    {^charclass {45 47} %braille}                 @^CLS:<--/[:%braille:]>
+    {^charclass {45 47} 65 97}                    @^CLS:<--/Aa>
+    {^charclass {65 70} {97 102} %braille}        @^CLS:<A-Fa-f[:%braille:]>
+    {^charclass {65 70} {97 102}}                 @^CLS:<A-Fa-f>
+    {^charclass {97 102} braille}                 @^CLS:<a-f[:braille:]>
+    {^named-class braille}                        @^NCC:<[:braille:]>
+    {^range 97 102}                               @^RAN:<af>
+    {character 45}                                @CHR:<->
+    {character 97}                                @CHR:<a>
+    {charclass 45 %braille}                       @CLS:<-[:%braille:]>
+    {charclass 45 {65 70} {97 102} %braille}      @CLS:<-A-Fa-f[:%braille:]>
+    {charclass 45 {65 70} {97 102}}               @CLS:<-A-Fa-f>
+    {charclass 45 {97 102} braille}               @CLS:<-a-f[:braille:]>
+    {charclass 45 {97 102}}                       @CLS:<-a-f>
+    {charclass 65 97 %braille}                    @CLS:<Aa[:%braille:]>
+    {charclass 65 97}                             @CLS:<Aa>
+    {charclass 97 braille}                        @CLS:<a[:braille:]>
+    {charclass {45 47} %braille}                  @CLS:<--/[:%braille:]>
+    {charclass {45 47} 65 97}                     @CLS:<--/Aa>
+    {charclass {65 70} {97 102} %braille}         @CLS:<A-Fa-f[:%braille:]>
+    {charclass {65 70} {97 102}}                  @CLS:<A-Fa-f>
+    {charclass {97 102} braille}                  @CLS:<a-f[:braille:]>
+    {named-class braille}                         @NCC:<[:braille:]>
+    {range 97 102}                                @RAN:<af>
+    {string 97 45}                                @STR:<a->
+} {
+    incr k
+    test marpa-slif-literal-symbol-2.$k "symbol, $literal" -body {
+	marpa::slif::literal symbol $literal
+    } -result $symbol
+}
+
+# # ## ### ##### ######## ############# #####################
+## parse - Parse a literal string into a normalized internal representation.
+
+test marpa-slif-literal-parse-1.0 {parse, wrong args, not enough} -body {
+    marpa::slif::literal parse
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal parse litstring"}
+
+test marpa-slif-literal-parse-1.2 {parse, wrong args, too many} -body {
+    marpa::slif::literal parse LITSTRING X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal parse litstring"}
+
+set k 0
+foreach {rule litstring res} {
+    N01 {'a'}                        {character 97}
+    N02 {'a-'}                       {string 97 45}
+
+    N03 {'a':i}                      {charclass 65 97}
+    N03 {'-':i}                      {character 45}
+    N04 {'a-':i}                     {%string 65 45}
+
+    N05 {[a]}                        {character 97}
+    N06 {[a-f]}                      {range 97 102}
+    N07 {[[:braille:]]}              {named-class braille}
+    N08 {[[:braille:]a]}             {charclass 97 braille}
+    N08 {[\-a-f]}                    {charclass 45 {97 102}}
+    N08 {[a-f[:braille:]]}           {charclass {97 102} braille}
+    N08 {[a-f[:braille:]\-]}         {charclass 45 {97 102} braille}
+
+    N09 {[a]:i}                      {charclass 65 97}
+    N09 {[\-]:i}                     {character 45}
+    N10 {[a-f]:i}                    {charclass {65 70} {97 102}}
+    N11 {[[:braille:]]:i}            {%named-class braille}
+    N12 {[a[:braille:]]:i}           {charclass 65 97 %braille}
+    N12 {[[:braille:]\-]:i}          {charclass 45 %braille}
+    N12 {[a-f\-]:i}                  {charclass 45 {65 70} {97 102}}
+    N12 {[\x2D-/a]:i}                {charclass {45 47} 65 97}
+    N12 {[[:braille:]a-f]:i}         {charclass {65 70} {97 102} %braille}
+    N12 {[\055-/[:braille:]]:i}      {charclass {45 47} %braille}
+    N12 {[\055[:braille:]a-f]:i}     {charclass 45 {65 70} {97 102} %braille}
+	                 
+    N13 {[^a]}                       {^character 97}
+    N14 {[^abcdef]}                  {^range 97 102}
+    N15 {[^[:braille:]]}             {^named-class braille}
+    N16 {[^[:braille:]a]}            {^charclass 97 braille}
+    N16 {[^a-c\055d-f]}              {^charclass 45 {97 102}}
+    N16 {[^d-f[:braille:]a-e]}       {^charclass {97 102} braille}
+    N16 {[^a-c\055[:braille:]b-f]}  {^charclass 45 {97 102} braille}
+	                
+    N17 {[^a]:i}                     {^charclass 65 97}
+    N17 {[^\x2d]:i}                  {^character 45}
+    N18 {[^a-f]:i}                   {^charclass {65 70} {97 102}}
+    N19 {[^[:braille:]]:i}           {^%named-class braille}
+    N20 {[^[:braille:]a]:i}          {^charclass 65 97 %braille}
+    N20 {[^[:braille:]\055]:i}       {^charclass 45 %braille}
+    N20 {[^a-c\055b-f]:i}            {^charclass 45 {65 70} {97 102}}
+    N20 {[^\055\056\057a]:i}         {^charclass {45 47} 65 97}
+    N20 {[^[:braille:]a-f]:i}        {^charclass {65 70} {97 102} %braille}
+    N20 {[^[:braille:]\--/]:i}       {^charclass {45 47} %braille}
+    N20 {[^\055abcdef[:braille:]]:i} {^charclass 45 {65 70} {97 102} %braille}
+} {
+    incr k
+    test marpa-slif-literal-parse-2.$k "parse, $rule, $litstring" -body {
+	marpa::slif::literal parse $litstring
+    } -result $res
+}
+
+# # ## ### ##### ######## ############# #####################
+## norm - Normalize literal without deconstructing it into multiple pieces.
+##        Keeps named classes, ranges
+
+test marpa-slif-literal-norm-1.0 {norm, wrong args, not enough} -body {
+    marpa::slif::literal norm
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal norm literal"}
+
+test marpa-slif-literal-norm-1.2 {norm, wrong args, too many} -body {
+    marpa::slif::literal norm LITERAL X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal norm literal"}
+
+set k 0
+foreach {rule literal res} {
+    N01 {string 97}             {character 97}
+    N02 {string 97 45}          --
+
+    N03 {%string 97}            {charclass 65 97}
+    N03 {%string 45}            {character 45}
+    N04 {%string 65 45}         --
+
+    N05 {charclass 97}                    {character 97}
+    N06 {charclass {97 102}}              {range 97 102}
+    N07 {charclass braille}               {named-class braille}
+    N08 {charclass 97 braille}            --mix:char,named
+    N08 {charclass 45 {97 102}}           --mix:char,range
+    N08 {charclass {97 102} braille}      --mix:range,named
+    N08 {charclass 45 {97 102} braille}   --mix:char,range,named
+
+    N09 {%charclass 97}                   {charclass 65 97}
+    N09 {%charclass 45}                   {character 45}
+    N10 {%charclass {97 102}}             {charclass {65 70} {97 102}}
+    N11 {%charclass braille}              {%named-class braille}
+    N12 {%charclass 97 braille}           {charclass 65 97 %braille}
+    N12 {%charclass 45 braille}           {charclass 45 %braille}
+    N12 {%charclass 45 {97 102}}          {charclass 45 {65 70} {97 102}}
+    N12 {%charclass {45 47} 97}           {charclass {45 47} 65 97}
+    N12 {%charclass {97 102} braille}     {charclass {65 70} {97 102} %braille}
+    N12 {%charclass {45 47} braille}      {charclass {45 47} %braille}
+    N12 {%charclass 45 {97 102} braille}  {charclass 45 {65 70} {97 102} %braille}
+
+    N13 {^charclass 97}                   {^character 97}
+    N14 {^charclass {97 102}}             {^range 97 102}
+    N15 {^charclass braille}              {^named-class braille}
+    N16 {^charclass 97 braille}           --mix:char,named
+    N16 {^charclass 45 {97 102}}          --mix:char,range
+    N16 {^charclass {97 102} braille}     --mix:range,named
+    N16 {^charclass 45 {97 102} braille}  --mix:char,range,named
+
+    N17 {^%charclass 97}                  {^charclass 65 97}
+    N17 {^%charclass 45}                  {^character 45}
+    N18 {^%charclass {97 102}}            {^charclass {65 70} {97 102}}
+    N19 {^%charclass braille}             {^%named-class braille}
+    N20 {^%charclass 97 braille}          {^charclass 65 97 %braille}
+    N20 {^%charclass 45 braille}          {^charclass 45 %braille}
+    N20 {^%charclass 45 {97 102}}         {^charclass 45 {65 70} {97 102}}
+    N20 {^%charclass {45 47} 97}          {^charclass {45 47} 65 97}
+    N20 {^%charclass {97 102} braille}    {^charclass {65 70} {97 102} %braille}
+    N20 {^%charclass {45 47} braille}     {^charclass {45 47} %braille}
+    N20 {^%charclass 45 {97 102} braille} {^charclass 45 {65 70} {97 102} %braille}
+} {
+    incr k
+    if {[string match --* $res]} { set res $literal }
+    test marpa-slif-literal-norm-2.$k "norm, $rule, $literal" -body {
+	marpa::slif::literal norm $literal
+    } -result $res
+}
+
+# # ## ### ##### ######## ############# #####################
+## eltype - Determine type of charclass element
+
+test marpa-slif-literal-eltype-1.0 {eltype, wrong args, not enough} -body {
+    marpa::slif::literal eltype
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal eltype ccelement"}
+
+test marpa-slif-literal-eltype-1.2 {eltype, wrong args, too many} -body {
+    marpa::slif::literal eltype CCELEMENT X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal eltype ccelement"}
+
+set k 0
+foreach {ccelement res} {
+    37      character
+    {48 57} range
+    alnum   named-class
+} {
+    incr k
+    test marpa-slif-literal-eltype-2.$k "eltype, $ccelement" -body {
+	marpa::slif::literal eltype $ccelement
+    } -result $res
+}
+
+# # ## ### ##### ######## ############# #####################
+## ccunfold - Case-expand a charclass to contain original and case-equivalent characters.
+
+test marpa-slif-literal-ccunfold-1.0 {ccunfold, wrong args, not enough} -body {
+    marpa::slif::literal ccunfold
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal ccunfold data"}
+
+test marpa-slif-literal-ccunfold-1.2 {ccunfold, wrong args, too many} -body {
+    marpa::slif::literal ccunfold DATA X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal ccunfold data"}
+
+set k 0
+foreach {data res} {
+    {37 {48 57} {97 122} alnum braille}
+    {37 {48 57} {65 90} {97 122} {304 305} 383 8490 %alnum %braille}
+} {
+    incr k
+    test marpa-slif-literal-ccunfold-2.$k "ccunfold, $data" -body {
+	marpa::slif::literal ccunfold $data
+    } -result $res
+}
+
+# # ## ### ##### ######## ############# #####################
+## ccsplit - Split char class data into codes/ranges vs named
+
+test marpa-slif-literal-ccsplit-1.0 {ccsplit, wrong args, not enough} -body {
+    marpa::slif::literal ccsplit
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal ccsplit data"}
+
+test marpa-slif-literal-ccsplit-1.2 {ccsplit, wrong args, too many} -body {
+    marpa::slif::literal ccsplit DATA X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal ccsplit data"}
+
+set k 0
+foreach {data res} {
+    {37 {48 57} {97 122} alnum braille}    {{37 {48 57} {97 122}} {alnum braille}}
+} {
+    incr k
+    test marpa-slif-literal-ccsplit-2.$k "ccsplit, $data" -body {
+	marpa::slif::literal ccsplit $data
+    } -result $res
+}
+
+# # ## ### ##### ######## ############# #####################
+## decode - Generate internal rep for incoming typed literal
+
+test marpa-slif-literal-decode-1.0 {decode, wrong args, not enough} -body {
+    marpa::slif::literal decode
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal decode type litstring"}
+
+test marpa-slif-literal-decode-1.1 {decode, wrong args, not enough} -body {
+    marpa::slif::literal decode TYPE
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal decode type litstring"}
+
+test marpa-slif-literal-decode-1.2 {decode, wrong args, too many} -body {
+    marpa::slif::literal decode TYPE LITSTRING X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal decode type litstring"}
+
+test marpa-slif-literal-decode-2.0 {decode, bogus type} -body {
+    marpa::slif::literal decode bogus abcdef
+} -returnCodes error -result {Unable to decode bogus type "bogus"}
+
+#       a   b   c   d   e   f   g   h   i   j   k   l   m
+# a-m = 97  98  99  100 101 102 103 104 105 106 107 108 109
+#       n   o   p   q   r   s   t   u   v   w   x   y   z
+# n-z = 110 111 112 113 114 115 116 117 118 119 120 121 122
+
+set k 0
+foreach {lit rclass rstring} {
+    abcdef                 {{97 102}}            {97 98 99 100 101 102}
+    a-z                    {{97 122}}            {97 45 122}
+    {[:braille:]}          {braille}             {91 58 98 114 97 105 108 108 101 58 93}
+    --z                    {{45 122}}            {45 45 122}
+    %--                    {{37 45}}             {37 45 45}
+    a-z0-9%                {37 {48 57} {97 122}} {97 45 122 48 45 57 37}
+    {0-9[:alnum:]}         {{48 57} alnum}       {48 45 57 91 58 97 108 110 117 109 58 93}
+    {[:braille:][:alnum:]} {alnum braille}       {91 58 98 114 97 105 108 108 101 58 93 91 58 97 108 110 117 109 58 93}
+} {
+    incr k
+
+    test marpa-slif-literal-decode-2.$k.1 "decode, string $lit" -body {
+	marpa::slif::literal decode string $lit
+    } -result [linsert $rstring 0 string]
+
+    # %string is special, as it converts to primary codepoints.
+    # Thus, no looping, but a separate test case.
+    test marpa-slif-literal-decode-2.$k.2 "decode, %string $lit" -body {
+	marpa::slif::literal decode %string $lit
+    } -result [linsert [marpa unicode fold/c $rstring] 0 %string]
+
+    set j 0
+    foreach type {
+	charclass %charclass ^charclass ^%charclass
+    } {
+	incr j
+	test marpa-slif-literal-decode-3.$k.$j "decode, $type $lit" -body {
+	    marpa::slif::literal decode $type $lit
+	} -result [linsert $rclass 0 $type]
+    }
+}
+
+# # ## ### ##### ######## ############# #####################
+## decode-class - Generate internal rep for incoming character class
+
+test marpa-slif-literal-decode-class-1.0 {decode-class, wrong args, not enough} -body {
+    marpa::slif::literal decode-class
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal decode-class litstring"}
+
+test marpa-slif-literal-decode-class-1.1 {decode-class, wrong args, too many} -body {
+    marpa::slif::literal decode-class LITSTRING X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal decode-class litstring"}
+
+set k 0
+foreach {lit res} {
+    abcdef                 {{97 102}}
+    a-z                    {{97 122}}
+    {[:braille:]}          {braille}
+    --z                    {{45 122}}
+    %--                    {{37 45}}
+    a-z0-9%                {37 {48 57} {97 122}}
+    {0-9[:alnum:]}         {{48 57} alnum}
+    {[:braille:][:alnum:]} {alnum braille}
+} {
+    incr k
+    test marpa-slif-literal-decode-class-2.$k "decode-class, $lit" -body {
+	marpa::slif::literal decode-class $lit
+    } -result $res
+}
+
+# # ## ### ##### ######## ############# #####################
+## decode-string - Generate internal rep for incoming string
+##                 ATTENTION: The `type` information is upvar'd from
+##                 the calling scope, normally `decode`.
+
+test marpa-slif-literal-decode-string-1.0 {decode-string, wrong args, not enough} -body {
+    marpa::slif::literal decode-string
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal decode-string litstring"}
+
+test marpa-slif-literal-decode-string-1.1 {decode-string, wrong args, too many} -body {
+    marpa::slif::literal decode-string LITSTRING X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal decode-string litstring"}
+
+set k 0
+foreach {lit type res} {
+    abcdef  string  {97 98 99 100 101 102}
+    abcdef  %string {65 66 67 68 69 70}
+} {
+    incr k
+    test marpa-slif-literal-decode-string-2.$k "decode-string, $lit" -body {
+	# `type` is upvar'd in.
+	marpa::slif::literal decode-string $lit
+    } -result $res
+}
+
+# # ## ### ##### ######## ############# #####################
+## type - Determine type of incoming literal+nocase (string, charclass)
+
+test marpa-slif-literal-type-1.0 {type, wrong args, not enough} -body {
+    marpa::slif::literal type
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal type litstring nocase"}
+
+test marpa-slif-literal-type-1.1 {type, wrong args, not enough} -body {
+    marpa::slif::literal type LITSTRING
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal type litstring nocase"}
+
+test marpa-slif-literal-type-1.2 {type, wrong args, too many} -body {
+    marpa::slif::literal type LITSTRING NOCASE X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal type litstring nocase"}
+
+test marpa-slif-literal-type-2.0 {type, bogus} -body {
+    marpa::slif::literal type {abcde} 0
+} -returnCodes error -result {Unable to determine type of literal "abcde"}
+
+set k 0
+foreach {lit nocase res} {
+    "'abcdef'"    0 {string abcdef}
+    "\[abcdef\]"  0 {charclass abcdef}
+    "\[^abcdef\]" 0 {^charclass abcdef}
+    "'abcdef'"    1 {%string abcdef}
+    "\[abcdef\]"  1 {%charclass abcdef}
+    "\[^abcdef\]" 1 {^%charclass abcdef}
+} {
+    incr k
+    test marpa-slif-literal-type-2.$k "type, $lit" -body {
+	marpa::slif::literal type $lit $nocase
+    } -result $res
+}
+
+# # ## ### ##### ######## ############# #####################
+## unescape - Deal with Tcl \-escape in the literal, convert to regular characters.
+## To handle
+## - \[nrtfv\']-] (more ? ab...) CHECK Tcl docs
+## - \xHHHHHHHHHH (hexes)
+## - \OOO (octals)
+## - \uHHHH (unicodes)
+
+test marpa-slif-literal-unescape-1.0 {unescape, wrong args, not enough} -body {
+    marpa::slif::literal unescape
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal unescape litstring"}
+
+test marpa-slif-literal-unescape-1.1 {unescape, wrong args, too many} -body {
+    marpa::slif::literal unescape LITSTRING X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal unescape litstring"}
+
+set k 0
+foreach {lit res} {
+    "\\n\\r\\t\\f\\v\\a\\'\\\]\\-\\\\"  "\n\r\t\f\v\a'\]-\\"
+    "\\377"                             "\377"
+    "\xFFFFFFFFFFFF"                    "\xFF"
+    "\\u2202"                           "\u2202"
+    "abcdef"                            "abcdef"
+} {
+    incr k
+    test marpa-slif-literal-unescape-2.$k "unescape, $lit" -body {
+	marpa::slif::literal unescape $lit
+    } -result $res
+}
+
+# # ## ### ##### ######## ############# #####################
+## tags - Strips tags from the literal. Currently only :i, :ic, both
+##        indicating a case-insensitive literal
+
+test marpa-slif-literal-tags-1.0 {tags, wrong args, not enough} -body {
+    marpa::slif::literal tags
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal tags litstring"}
+
+test marpa-slif-literal-tags-1.1 {tags, wrong args, too many} -body {
+    marpa::slif::literal tags LITSTRING X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal tags litstring"}
+
+set k 0
+foreach {lit res} {
+    foo:i  {foo 1}
+    foo:ic {foo 1}
+    foo:x  {foo:x 0}
+    fox    {fox 0}
+} {
+    incr k
+    test marpa-slif-literal-tags-2.$k "tags, $lit" -body {
+	marpa::slif::literal tags $lit
+    } -result $res
+}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

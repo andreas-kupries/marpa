@@ -132,7 +132,7 @@ critcl::tsources p_parser.tcl    ; # Parser, structure lexemes into
 ##
 
 critcl::tsources s_parser.tcl          ; # SLIF Parser (hardwired)
-
+critcl::tsources s_literal_util.tcl    ; # SLIF, support commands for literals
 critcl::tsources s_semantics.tcl       ; # SLIF semantics, driven by AST
 critcl::tsources s_sem_debug.tcl       ; # - Debug support
 critcl::tsources s_sem_start.tcl       ; # - Start symbol handling

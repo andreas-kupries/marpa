@@ -143,4 +143,35 @@ proc marpa::filter {values mask} {
 proc marpa::K {x y} { return $x }
 
 # # ## ### ##### ######## #############
+
+if {![llength [info commands ::lmap]]} {
+
+    # http://wiki.tcl.tk/40570
+    # lmap forward compatibility
+
+    proc lmap {args} {
+	set body [lindex $args end]
+	set args [lrange $args 0 end-1]
+	set n 0
+	set pairs [list]
+	# Import all variables into local scope
+	foreach {varnames listval} $args {
+	    set varlist [list]
+	    foreach varname $varnames {
+		upvar 1 $varname var$n
+		lappend varlist var$n
+		incr n
+	    }
+	    lappend pairs $varlist $listval
+	}
+	# Run the actual operation via foreach
+	set temp [list]
+	foreach {*}$pairs {
+	    lappend temp [uplevel 1 $body]
+	}
+	set temp
+    }
+}
+
+# # ## ### ##### ######## #############
 return
