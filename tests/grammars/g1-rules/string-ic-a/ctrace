@@ -1,26 +1,26 @@
 GC comment definition A 0 1
 GC comment g1-definition A undef --> {JMP brick}
 
-	GC comment usage {@STR/i:<CASE-INSENSITIVE\40STRING>} 6 27
-	GC comment definition {@STR/i:<CASE-INSENSITIVE\40STRING>} 6 27
+	GC comment usage {@%STR:<CASE-INSENSITIVE\40STRING>} 6 27
+	GC comment definition {@%STR:<CASE-INSENSITIVE\40STRING>} 6 27
 
-	GC comment <literal> {@STR/i:<CASE-INSENSITIVE\40STRING>} undef --> {JMP literal}
-	GC l0 string {@STR/i:<CASE-INSENSITIVE\40STRING>} {67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71} 1
-	GC comment definition {@LEX:@STR/i:<CASE-INSENSITIVE\40STRING>} 6 27
-	GC comment usage {@STR/i:<CASE-INSENSITIVE\40STRING>} 6 27
-	GC comment l0-definition {@LEX:@STR/i:<CASE-INSENSITIVE\40STRING>} undef --> {JMP match}
+	GC comment <literal> {@%STR:<CASE-INSENSITIVE\40STRING>} undef --> {JMP literal}
+	GC l0 atom {@%STR:<CASE-INSENSITIVE\40STRING>} %string 67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71
+	GC comment definition {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} 6 27
+	GC comment usage {@%STR:<CASE-INSENSITIVE\40STRING>} 6 27
+	GC comment l0-definition {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} undef --> {JMP match}
 
-	GC comment :lexeme {@LEX:@STR/i:<CASE-INSENSITIVE\40STRING>} match --> {JMP lexeme make-lexeme}
-	GC l0 lexeme {@LEX:@STR/i:<CASE-INSENSITIVE\40STRING>}
-	GC g1 terminal {@LEX:@STR/i:<CASE-INSENSITIVE\40STRING>}
+	GC comment :lexeme {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} match --> {JMP lexeme make-lexeme}
+	GC l0 lexeme {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>}
+	GC g1 terminal {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>}
 
-	GC comment l0-usage {@STR/i:<CASE-INSENSITIVE\40STRING>} literal --> NOP
-	GC l0 priority-rule {@LEX:@STR/i:<CASE-INSENSITIVE\40STRING>} {@STR/i:<CASE-INSENSITIVE\40STRING>} 0
-	GC comment g1-usage {@LEX:@STR/i:<CASE-INSENSITIVE\40STRING>} lexeme --> NOP
+	GC comment l0-usage {@%STR:<CASE-INSENSITIVE\40STRING>} literal --> NOP
+	GC l0 priority-rule {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} {@%STR:<CASE-INSENSITIVE\40STRING>} 0
+	GC comment g1-usage {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} lexeme --> NOP
 
-GC g1 priority-rule A {{@LEX:@STR/i:<CASE-INSENSITIVE\40STRING>}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule A {{@LEX:@%STR:<CASE-INSENSITIVE\40STRING>}} 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! A
 GC comment LATM fix 1
-GC l0 configure {@LEX:@STR/i:<CASE-INSENSITIVE\40STRING>} latm 1
+GC l0 configure {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} latm 1
 GC comment DDE fix {}

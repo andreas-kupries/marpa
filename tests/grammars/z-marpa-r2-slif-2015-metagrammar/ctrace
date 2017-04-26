@@ -78,7 +78,7 @@ GC comment g1-definition {null statement} floater --> {JMP brick}
 GC comment usage {@CHR:<\73>} 1556 3
 GC comment definition {@CHR:<\73>} 1556 3
 GC comment <literal> {@CHR:<\73>} undef --> {JMP literal}
-GC l0 character {@CHR:<\73>} 59
+GC l0 atom {@CHR:<\73>} character 59
 GC comment definition {@LEX:@CHR:<\73>} 1556 3
 GC comment usage {@CHR:<\73>} 1556 3
 GC comment l0-definition {@LEX:@CHR:<\73>} undef --> {JMP match}
@@ -94,7 +94,7 @@ GC comment g1-definition {statement group} floater --> {JMP brick}
 GC comment usage {@CHR:<\173>} 1583 3
 GC comment definition {@CHR:<\173>} 1583 3
 GC comment <literal> {@CHR:<\173>} undef --> {JMP literal}
-GC l0 character {@CHR:<\173>} 123
+GC l0 atom {@CHR:<\173>} character 123
 GC comment definition {@LEX:@CHR:<\173>} 1583 3
 GC comment usage {@CHR:<\173>} 1583 3
 GC comment l0-definition {@LEX:@CHR:<\173>} undef --> {JMP match}
@@ -107,7 +107,7 @@ GC comment usage statements 1588 10
 GC comment usage {@CHR:<\175>} 1599 3
 GC comment definition {@CHR:<\175>} 1599 3
 GC comment <literal> {@CHR:<\175>} undef --> {JMP literal}
-GC l0 character {@CHR:<\175>} 125
+GC l0 atom {@CHR:<\175>} character 125
 GC comment definition {@LEX:@CHR:<\175>} 1599 3
 GC comment usage {@CHR:<\175>} 1599 3
 GC comment l0-definition {@LEX:@CHR:<\175>} undef --> {JMP match}
@@ -122,38 +122,17 @@ GC comment g1-usage {@LEX:@CHR:<\175>} lexeme --> NOP
 GC g1 priority-rule {statement group} {{@LEX:@CHR:<\173>} statements {@LEX:@CHR:<\175>}} 0 action {array {start length values}} bless {special lhs} mask {1 0 0}
 GC comment definition {start rule} 1603 12
 GC comment g1-definition {start rule} floater --> {JMP brick}
-GC comment l0-definition @STR:<:start> undef --> {JMP match}
-GC comment usage @CHR:<:> 1621 1
-GC comment definition @CHR:<:> 1621 1
-GC comment <literal> @CHR:<:> undef --> {JMP literal}
-GC l0 character @CHR:<:> 58
-GC comment usage @CHR:<s> 1622 1
-GC comment definition @CHR:<s> 1622 1
-GC comment <literal> @CHR:<s> undef --> {JMP literal}
-GC l0 character @CHR:<s> 115
-GC comment usage @CHR:<t> 1623 1
-GC comment definition @CHR:<t> 1623 1
-GC comment <literal> @CHR:<t> undef --> {JMP literal}
-GC l0 character @CHR:<t> 116
-GC comment usage @CHR:<a> 1624 1
-GC comment definition @CHR:<a> 1624 1
-GC comment <literal> @CHR:<a> undef --> {JMP literal}
-GC l0 character @CHR:<a> 97
-GC comment usage @CHR:<r> 1625 1
-GC comment definition @CHR:<r> 1625 1
-GC comment <literal> @CHR:<r> undef --> {JMP literal}
-GC l0 character @CHR:<r> 114
-GC comment usage @CHR:<t> 1626 1
-GC comment definition @CHR:<t> 1626 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC l0 priority-rule @STR:<:start> {@CHR:<:> @CHR:<s> @CHR:<t> @CHR:<a> @CHR:<r> @CHR:<t>} 0
+GC comment usage @STR:<:start> 1621 8
+GC comment definition @STR:<:start> 1621 8
+GC comment <literal> @STR:<:start> undef --> {JMP literal}
+GC l0 atom @STR:<:start> string 58 115 116 97 114 116
 GC comment definition @LEX:@STR:<:start> 1621 8
 GC comment usage @STR:<:start> 1621 8
 GC comment l0-definition @LEX:@STR:<:start> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<:start> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<:start>
 GC g1 terminal @LEX:@STR:<:start>
-GC comment l0-usage @STR:<:start> match --> {JMP strict}
+GC comment l0-usage @STR:<:start> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<:start> @STR:<:start> 0
 GC comment usage {op declare bnf} 1630 16
 GC comment usage symbol 1648 6
@@ -163,80 +142,41 @@ GC comment g1-usage symbol undef --> {JMP floater}
 GC g1 priority-rule {start rule} {@LEX:@STR:<:start> {op declare bnf} symbol} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {start rule} 1655 12
 GC comment g1-definition {start rule} brick --> NOP
-GC comment l0-definition @STR:<start> undef --> {JMP match}
-GC comment usage @CHR:<s> 1673 1
-GC comment definition @CHR:<s> 1673 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC comment usage @CHR:<t> 1674 1
-GC comment definition @CHR:<t> 1674 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC comment usage @CHR:<a> 1675 1
-GC comment definition @CHR:<a> 1675 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<r> 1676 1
-GC comment definition @CHR:<r> 1676 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<t> 1677 1
-GC comment definition @CHR:<t> 1677 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC l0 priority-rule @STR:<start> {@CHR:<s> @CHR:<t> @CHR:<a> @CHR:<r> @CHR:<t>} 0
+GC comment usage @STR:<start> 1673 7
+GC comment definition @STR:<start> 1673 7
+GC comment <literal> @STR:<start> undef --> {JMP literal}
+GC l0 atom @STR:<start> string 115 116 97 114 116
 GC comment definition @LEX:@STR:<start> 1673 7
 GC comment usage @STR:<start> 1673 7
 GC comment l0-definition @LEX:@STR:<start> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<start> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<start>
 GC g1 terminal @LEX:@STR:<start>
-GC comment l0-usage @STR:<start> match --> {JMP strict}
+GC comment l0-usage @STR:<start> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<start> @STR:<start> 0
-GC comment l0-definition @STR:<symbol> undef --> {JMP match}
-GC comment usage @CHR:<s> 1681 1
-GC comment definition @CHR:<s> 1681 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC comment usage @CHR:<y> 1682 1
-GC comment definition @CHR:<y> 1682 1
-GC comment <literal> @CHR:<y> undef --> {JMP literal}
-GC l0 character @CHR:<y> 121
-GC comment usage @CHR:<m> 1683 1
-GC comment definition @CHR:<m> 1683 1
-GC comment <literal> @CHR:<m> undef --> {JMP literal}
-GC l0 character @CHR:<m> 109
-GC comment usage @CHR:<b> 1684 1
-GC comment definition @CHR:<b> 1684 1
-GC comment <literal> @CHR:<b> undef --> {JMP literal}
-GC l0 character @CHR:<b> 98
-GC comment usage @CHR:<o> 1685 1
-GC comment definition @CHR:<o> 1685 1
-GC comment <literal> @CHR:<o> undef --> {JMP literal}
-GC l0 character @CHR:<o> 111
-GC comment usage @CHR:<l> 1686 1
-GC comment definition @CHR:<l> 1686 1
-GC comment <literal> @CHR:<l> undef --> {JMP literal}
-GC l0 character @CHR:<l> 108
-GC l0 priority-rule @STR:<symbol> {@CHR:<s> @CHR:<y> @CHR:<m> @CHR:<b> @CHR:<o> @CHR:<l>} 0
+GC comment usage @STR:<symbol> 1681 8
+GC comment definition @STR:<symbol> 1681 8
+GC comment <literal> @STR:<symbol> undef --> {JMP literal}
+GC l0 atom @STR:<symbol> string 115 121 109 98 111 108
 GC comment definition @LEX:@STR:<symbol> 1681 8
 GC comment usage @STR:<symbol> 1681 8
 GC comment l0-definition @LEX:@STR:<symbol> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<symbol> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<symbol>
 GC g1 terminal @LEX:@STR:<symbol>
-GC comment l0-usage @STR:<symbol> match --> {JMP strict}
+GC comment l0-usage @STR:<symbol> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<symbol> @STR:<symbol> 0
-GC comment l0-definition @STR:<is> undef --> {JMP match}
-GC comment usage @CHR:<i> 1690 1
-GC comment definition @CHR:<i> 1690 1
-GC comment <literal> @CHR:<i> undef --> {JMP literal}
-GC l0 character @CHR:<i> 105
-GC comment usage @CHR:<s> 1691 1
-GC comment definition @CHR:<s> 1691 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC l0 priority-rule @STR:<is> {@CHR:<i> @CHR:<s>} 0
+GC comment usage @STR:<is> 1690 4
+GC comment definition @STR:<is> 1690 4
+GC comment <literal> @STR:<is> undef --> {JMP literal}
+GC l0 atom @STR:<is> string 105 115
 GC comment definition @LEX:@STR:<is> 1690 4
 GC comment usage @STR:<is> 1690 4
 GC comment l0-definition @LEX:@STR:<is> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<is> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<is>
 GC g1 terminal @LEX:@STR:<is>
-GC comment l0-usage @STR:<is> match --> {JMP strict}
+GC comment l0-usage @STR:<is> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<is> @STR:<is> 0
 GC comment usage symbol 1696 6
 GC comment g1-usage @LEX:@STR:<start> lexeme --> NOP
@@ -246,43 +186,17 @@ GC comment g1-usage symbol floater --> NOP
 GC g1 priority-rule {start rule} {@LEX:@STR:<start> @LEX:@STR:<symbol> @LEX:@STR:<is> symbol} 0 action {array {start length values}} bless {special lhs} mask {1 1 1 0}
 GC comment definition {default rule} 1703 14
 GC comment g1-definition {default rule} floater --> {JMP brick}
-GC comment l0-definition @STR:<:default> undef --> {JMP match}
-GC comment usage @CHR:<:> 1722 1
-GC comment definition @CHR:<:> 1722 1
-GC comment <literal> @CHR:<:> literal --> NOP
-GC comment usage @CHR:<d> 1723 1
-GC comment definition @CHR:<d> 1723 1
-GC comment <literal> @CHR:<d> undef --> {JMP literal}
-GC l0 character @CHR:<d> 100
-GC comment usage @CHR:<e> 1724 1
-GC comment definition @CHR:<e> 1724 1
-GC comment <literal> @CHR:<e> undef --> {JMP literal}
-GC l0 character @CHR:<e> 101
-GC comment usage @CHR:<f> 1725 1
-GC comment definition @CHR:<f> 1725 1
-GC comment <literal> @CHR:<f> undef --> {JMP literal}
-GC l0 character @CHR:<f> 102
-GC comment usage @CHR:<a> 1726 1
-GC comment definition @CHR:<a> 1726 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<u> 1727 1
-GC comment definition @CHR:<u> 1727 1
-GC comment <literal> @CHR:<u> undef --> {JMP literal}
-GC l0 character @CHR:<u> 117
-GC comment usage @CHR:<l> 1728 1
-GC comment definition @CHR:<l> 1728 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<t> 1729 1
-GC comment definition @CHR:<t> 1729 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC l0 priority-rule @STR:<:default> {@CHR:<:> @CHR:<d> @CHR:<e> @CHR:<f> @CHR:<a> @CHR:<u> @CHR:<l> @CHR:<t>} 0
+GC comment usage @STR:<:default> 1722 10
+GC comment definition @STR:<:default> 1722 10
+GC comment <literal> @STR:<:default> undef --> {JMP literal}
+GC l0 atom @STR:<:default> string 58 100 101 102 97 117 108 116
 GC comment definition @LEX:@STR:<:default> 1722 10
 GC comment usage @STR:<:default> 1722 10
 GC comment l0-definition @LEX:@STR:<:default> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<:default> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<:default>
 GC g1 terminal @LEX:@STR:<:default>
-GC comment l0-usage @STR:<:default> match --> {JMP strict}
+GC comment l0-usage @STR:<:default> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<:default> @STR:<:default> 0
 GC comment usage {op declare bnf} 1733 16
 GC comment usage {adverb list default} 1750 21
@@ -292,70 +206,34 @@ GC comment g1-usage {adverb list default} undef --> {JMP floater}
 GC g1 priority-rule {default rule} {@LEX:@STR:<:default> {op declare bnf} {adverb list default}} 0 action {array {start length values}} bless {special lhs} mask {0 0 0}
 GC comment definition {lexeme default statement} 1772 26
 GC comment g1-definition {lexeme default statement} floater --> {JMP brick}
-GC comment l0-definition @STR:<lexeme> undef --> {JMP match}
-GC comment usage @CHR:<l> 1804 1
-GC comment definition @CHR:<l> 1804 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<e> 1805 1
-GC comment definition @CHR:<e> 1805 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<x> 1806 1
-GC comment definition @CHR:<x> 1806 1
-GC comment <literal> @CHR:<x> undef --> {JMP literal}
-GC l0 character @CHR:<x> 120
-GC comment usage @CHR:<e> 1807 1
-GC comment definition @CHR:<e> 1807 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<m> 1808 1
-GC comment definition @CHR:<m> 1808 1
-GC comment <literal> @CHR:<m> literal --> NOP
-GC comment usage @CHR:<e> 1809 1
-GC comment definition @CHR:<e> 1809 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC l0 priority-rule @STR:<lexeme> {@CHR:<l> @CHR:<e> @CHR:<x> @CHR:<e> @CHR:<m> @CHR:<e>} 0
+GC comment usage @STR:<lexeme> 1804 8
+GC comment definition @STR:<lexeme> 1804 8
+GC comment <literal> @STR:<lexeme> undef --> {JMP literal}
+GC l0 atom @STR:<lexeme> string 108 101 120 101 109 101
 GC comment definition @LEX:@STR:<lexeme> 1804 8
 GC comment usage @STR:<lexeme> 1804 8
 GC comment l0-definition @LEX:@STR:<lexeme> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<lexeme> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<lexeme>
 GC g1 terminal @LEX:@STR:<lexeme>
-GC comment l0-usage @STR:<lexeme> match --> {JMP strict}
+GC comment l0-usage @STR:<lexeme> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<lexeme> @STR:<lexeme> 0
-GC comment l0-definition @STR:<default> undef --> {JMP match}
-GC comment usage @CHR:<d> 1813 1
-GC comment definition @CHR:<d> 1813 1
-GC comment <literal> @CHR:<d> literal --> NOP
-GC comment usage @CHR:<e> 1814 1
-GC comment definition @CHR:<e> 1814 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<f> 1815 1
-GC comment definition @CHR:<f> 1815 1
-GC comment <literal> @CHR:<f> literal --> NOP
-GC comment usage @CHR:<a> 1816 1
-GC comment definition @CHR:<a> 1816 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<u> 1817 1
-GC comment definition @CHR:<u> 1817 1
-GC comment <literal> @CHR:<u> literal --> NOP
-GC comment usage @CHR:<l> 1818 1
-GC comment definition @CHR:<l> 1818 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<t> 1819 1
-GC comment definition @CHR:<t> 1819 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC l0 priority-rule @STR:<default> {@CHR:<d> @CHR:<e> @CHR:<f> @CHR:<a> @CHR:<u> @CHR:<l> @CHR:<t>} 0
+GC comment usage @STR:<default> 1813 9
+GC comment definition @STR:<default> 1813 9
+GC comment <literal> @STR:<default> undef --> {JMP literal}
+GC l0 atom @STR:<default> string 100 101 102 97 117 108 116
 GC comment definition @LEX:@STR:<default> 1813 9
 GC comment usage @STR:<default> 1813 9
 GC comment l0-definition @LEX:@STR:<default> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<default> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<default>
 GC g1 terminal @LEX:@STR:<default>
-GC comment l0-usage @STR:<default> match --> {JMP strict}
+GC comment l0-usage @STR:<default> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<default> @STR:<default> 0
 GC comment usage @CHR:<=> 1823 3
 GC comment definition @CHR:<=> 1823 3
 GC comment <literal> @CHR:<=> undef --> {JMP literal}
-GC l0 character @CHR:<=> 61
+GC l0 atom @CHR:<=> character 61
 GC comment definition @LEX:@CHR:<=> 1823 3
 GC comment usage @CHR:<=> 1823 3
 GC comment l0-definition @LEX:@CHR:<=> undef --> {JMP match}
@@ -372,44 +250,26 @@ GC comment g1-usage {adverb list lexeme default} undef --> {JMP floater}
 GC g1 priority-rule {lexeme default statement} {@LEX:@STR:<lexeme> @LEX:@STR:<default> @LEX:@CHR:<=> {adverb list lexeme default}} 0 action {array {start length values}} bless {special lhs} mask {1 1 1 0}
 GC comment definition {discard default statement} 1857 27
 GC comment g1-definition {discard default statement} floater --> {JMP brick}
-GC comment l0-definition @STR:<discard> undef --> {JMP match}
-GC comment usage @CHR:<d> 1890 1
-GC comment definition @CHR:<d> 1890 1
-GC comment <literal> @CHR:<d> literal --> NOP
-GC comment usage @CHR:<i> 1891 1
-GC comment definition @CHR:<i> 1891 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC comment usage @CHR:<s> 1892 1
-GC comment definition @CHR:<s> 1892 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC comment usage @CHR:<c> 1893 1
-GC comment definition @CHR:<c> 1893 1
-GC comment <literal> @CHR:<c> undef --> {JMP literal}
-GC l0 character @CHR:<c> 99
-GC comment usage @CHR:<a> 1894 1
-GC comment definition @CHR:<a> 1894 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<r> 1895 1
-GC comment definition @CHR:<r> 1895 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<d> 1896 1
-GC comment definition @CHR:<d> 1896 1
-GC comment <literal> @CHR:<d> literal --> NOP
-GC l0 priority-rule @STR:<discard> {@CHR:<d> @CHR:<i> @CHR:<s> @CHR:<c> @CHR:<a> @CHR:<r> @CHR:<d>} 0
+GC comment usage @STR:<discard> 1890 9
+GC comment definition @STR:<discard> 1890 9
+GC comment <literal> @STR:<discard> undef --> {JMP literal}
+GC l0 atom @STR:<discard> string 100 105 115 99 97 114 100
 GC comment definition @LEX:@STR:<discard> 1890 9
 GC comment usage @STR:<discard> 1890 9
 GC comment l0-definition @LEX:@STR:<discard> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<discard> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<discard>
 GC g1 terminal @LEX:@STR:<discard>
-GC comment l0-usage @STR:<discard> match --> {JMP strict}
+GC comment l0-usage @STR:<discard> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<discard> @STR:<discard> 0
-GC comment l0-definition @STR:<default> strict --> NOP
+GC comment usage @STR:<default> 1900 9
+GC comment definition @STR:<default> 1900 9
+GC comment <literal> @STR:<default> literal --> NOP
 GC comment definition @LEX:@STR:<default> 1900 9
 GC comment usage @STR:<default> 1900 9
 GC comment l0-definition @LEX:@STR:<default> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<default> lexeme --> NOP
-GC comment l0-usage @STR:<default> strict --> NOP
+GC comment l0-usage @STR:<default> literal --> NOP
 GC comment usage @CHR:<=> 1910 3
 GC comment definition @CHR:<=> 1910 3
 GC comment <literal> @CHR:<=> literal --> NOP
@@ -470,39 +330,17 @@ GC comment g1-usage {adverb list match quantified} undef --> {JMP floater}
 GC g1 priority-rule {quantified rule} {lhs {op declare match} {single symbol} quantifier {adverb list match quantified}} 0 action {array {start length values}} bless {special lhs} mask {0 0 0 0 0}
 GC comment definition {discard rule} 2278 14
 GC comment g1-definition {discard rule} floater --> {JMP brick}
-GC comment l0-definition @STR:<:discard> undef --> {JMP match}
-GC comment usage @CHR:<:> 2298 1
-GC comment definition @CHR:<:> 2298 1
-GC comment <literal> @CHR:<:> literal --> NOP
-GC comment usage @CHR:<d> 2299 1
-GC comment definition @CHR:<d> 2299 1
-GC comment <literal> @CHR:<d> literal --> NOP
-GC comment usage @CHR:<i> 2300 1
-GC comment definition @CHR:<i> 2300 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC comment usage @CHR:<s> 2301 1
-GC comment definition @CHR:<s> 2301 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC comment usage @CHR:<c> 2302 1
-GC comment definition @CHR:<c> 2302 1
-GC comment <literal> @CHR:<c> literal --> NOP
-GC comment usage @CHR:<a> 2303 1
-GC comment definition @CHR:<a> 2303 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<r> 2304 1
-GC comment definition @CHR:<r> 2304 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<d> 2305 1
-GC comment definition @CHR:<d> 2305 1
-GC comment <literal> @CHR:<d> literal --> NOP
-GC l0 priority-rule @STR:<:discard> {@CHR:<:> @CHR:<d> @CHR:<i> @CHR:<s> @CHR:<c> @CHR:<a> @CHR:<r> @CHR:<d>} 0
+GC comment usage @STR:<:discard> 2298 10
+GC comment definition @STR:<:discard> 2298 10
+GC comment <literal> @STR:<:discard> undef --> {JMP literal}
+GC l0 atom @STR:<:discard> string 58 100 105 115 99 97 114 100
 GC comment definition @LEX:@STR:<:discard> 2298 10
 GC comment usage @STR:<:discard> 2298 10
 GC comment l0-definition @LEX:@STR:<:discard> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<:discard> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<:discard>
 GC g1 terminal @LEX:@STR:<:discard>
-GC comment l0-usage @STR:<:discard> match --> {JMP strict}
+GC comment l0-usage @STR:<:discard> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<:discard> @STR:<:discard> 0
 GC comment usage {op declare match} 2309 18
 GC comment usage symbol 2329 6
@@ -514,12 +352,14 @@ GC comment g1-usage {adverb list discard} undef --> {JMP floater}
 GC g1 priority-rule {discard rule} {@LEX:@STR:<:discard> {op declare match} symbol {adverb list discard}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0 0}
 GC comment definition {discard rule} 2358 14
 GC comment g1-definition {discard rule} brick --> NOP
-GC comment l0-definition @STR:<:discard> strict --> NOP
+GC comment usage @STR:<:discard> 2378 10
+GC comment definition @STR:<:discard> 2378 10
+GC comment <literal> @STR:<:discard> literal --> NOP
 GC comment definition @LEX:@STR:<:discard> 2378 10
 GC comment usage @STR:<:discard> 2378 10
 GC comment l0-definition @LEX:@STR:<:discard> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<:discard> lexeme --> NOP
-GC comment l0-usage @STR:<:discard> strict --> NOP
+GC comment l0-usage @STR:<:discard> literal --> NOP
 GC comment usage {op declare match} 2389 18
 GC comment usage {character class} 2409 17
 GC comment usage {adverb list discard} 2427 21
@@ -530,36 +370,17 @@ GC comment g1-usage {adverb list discard} floater --> NOP
 GC g1 priority-rule {discard rule} {@LEX:@STR:<:discard> {op declare match} {character class} {adverb list discard}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0 0}
 GC comment definition {lexeme rule} 2504 13
 GC comment g1-definition {lexeme rule} floater --> {JMP brick}
-GC comment l0-definition @STR:<:lexeme> undef --> {JMP match}
-GC comment usage @CHR:<:> 2523 1
-GC comment definition @CHR:<:> 2523 1
-GC comment <literal> @CHR:<:> literal --> NOP
-GC comment usage @CHR:<l> 2524 1
-GC comment definition @CHR:<l> 2524 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<e> 2525 1
-GC comment definition @CHR:<e> 2525 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<x> 2526 1
-GC comment definition @CHR:<x> 2526 1
-GC comment <literal> @CHR:<x> literal --> NOP
-GC comment usage @CHR:<e> 2527 1
-GC comment definition @CHR:<e> 2527 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<m> 2528 1
-GC comment definition @CHR:<m> 2528 1
-GC comment <literal> @CHR:<m> literal --> NOP
-GC comment usage @CHR:<e> 2529 1
-GC comment definition @CHR:<e> 2529 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC l0 priority-rule @STR:<:lexeme> {@CHR:<:> @CHR:<l> @CHR:<e> @CHR:<x> @CHR:<e> @CHR:<m> @CHR:<e>} 0
+GC comment usage @STR:<:lexeme> 2523 9
+GC comment definition @STR:<:lexeme> 2523 9
+GC comment <literal> @STR:<:lexeme> undef --> {JMP literal}
+GC l0 atom @STR:<:lexeme> string 58 108 101 120 101 109 101
 GC comment definition @LEX:@STR:<:lexeme> 2523 9
 GC comment usage @STR:<:lexeme> 2523 9
 GC comment l0-definition @LEX:@STR:<:lexeme> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<:lexeme> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<:lexeme>
 GC g1 terminal @LEX:@STR:<:lexeme>
-GC comment l0-usage @STR:<:lexeme> match --> {JMP strict}
+GC comment l0-usage @STR:<:lexeme> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<:lexeme> @STR:<:lexeme> 0
 GC comment usage {op declare match} 2533 18
 GC comment usage symbol 2553 6
@@ -571,32 +392,17 @@ GC comment g1-usage {adverb list lexeme} undef --> {JMP floater}
 GC g1 priority-rule {lexeme rule} {@LEX:@STR:<:lexeme> {op declare match} symbol {adverb list lexeme}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0 0}
 GC comment definition {completion event declaration} 2581 30
 GC comment g1-definition {completion event declaration} floater --> {JMP brick}
-GC comment l0-definition @STR:<event> undef --> {JMP match}
-GC comment usage @CHR:<e> 2617 1
-GC comment definition @CHR:<e> 2617 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<v> 2618 1
-GC comment definition @CHR:<v> 2618 1
-GC comment <literal> @CHR:<v> undef --> {JMP literal}
-GC l0 character @CHR:<v> 118
-GC comment usage @CHR:<e> 2619 1
-GC comment definition @CHR:<e> 2619 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<n> 2620 1
-GC comment definition @CHR:<n> 2620 1
-GC comment <literal> @CHR:<n> undef --> {JMP literal}
-GC l0 character @CHR:<n> 110
-GC comment usage @CHR:<t> 2621 1
-GC comment definition @CHR:<t> 2621 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC l0 priority-rule @STR:<event> {@CHR:<e> @CHR:<v> @CHR:<e> @CHR:<n> @CHR:<t>} 0
+GC comment usage @STR:<event> 2617 7
+GC comment definition @STR:<event> 2617 7
+GC comment <literal> @STR:<event> undef --> {JMP literal}
+GC l0 atom @STR:<event> string 101 118 101 110 116
 GC comment definition @LEX:@STR:<event> 2617 7
 GC comment usage @STR:<event> 2617 7
 GC comment l0-definition @LEX:@STR:<event> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<event> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<event>
 GC g1 terminal @LEX:@STR:<event>
-GC comment l0-usage @STR:<event> match --> {JMP strict}
+GC comment l0-usage @STR:<event> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<event> @STR:<event> 0
 GC comment usage {event initialization} 2626 22
 GC comment usage @CHR:<=> 2650 3
@@ -607,43 +413,17 @@ GC comment usage @CHR:<=> 2650 3
 GC comment l0-definition @LEX:@CHR:<=> lexeme --> NOP
 GC comment :lexeme @LEX:@CHR:<=> lexeme --> NOP
 GC comment l0-usage @CHR:<=> literal --> NOP
-GC comment l0-definition @STR:<completed> undef --> {JMP match}
-GC comment usage @CHR:<c> 2654 1
-GC comment definition @CHR:<c> 2654 1
-GC comment <literal> @CHR:<c> literal --> NOP
-GC comment usage @CHR:<o> 2655 1
-GC comment definition @CHR:<o> 2655 1
-GC comment <literal> @CHR:<o> literal --> NOP
-GC comment usage @CHR:<m> 2656 1
-GC comment definition @CHR:<m> 2656 1
-GC comment <literal> @CHR:<m> literal --> NOP
-GC comment usage @CHR:<p> 2657 1
-GC comment definition @CHR:<p> 2657 1
-GC comment <literal> @CHR:<p> undef --> {JMP literal}
-GC l0 character @CHR:<p> 112
-GC comment usage @CHR:<l> 2658 1
-GC comment definition @CHR:<l> 2658 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<e> 2659 1
-GC comment definition @CHR:<e> 2659 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<t> 2660 1
-GC comment definition @CHR:<t> 2660 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC comment usage @CHR:<e> 2661 1
-GC comment definition @CHR:<e> 2661 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<d> 2662 1
-GC comment definition @CHR:<d> 2662 1
-GC comment <literal> @CHR:<d> literal --> NOP
-GC l0 priority-rule @STR:<completed> {@CHR:<c> @CHR:<o> @CHR:<m> @CHR:<p> @CHR:<l> @CHR:<e> @CHR:<t> @CHR:<e> @CHR:<d>} 0
+GC comment usage @STR:<completed> 2654 11
+GC comment definition @STR:<completed> 2654 11
+GC comment <literal> @STR:<completed> undef --> {JMP literal}
+GC l0 atom @STR:<completed> string 99 111 109 112 108 101 116 101 100
 GC comment definition @LEX:@STR:<completed> 2654 11
 GC comment usage @STR:<completed> 2654 11
 GC comment l0-definition @LEX:@STR:<completed> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<completed> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<completed>
 GC g1 terminal @LEX:@STR:<completed>
-GC comment l0-usage @STR:<completed> match --> {JMP strict}
+GC comment l0-usage @STR:<completed> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<completed> @STR:<completed> 0
 GC comment usage {symbol name} 2667 13
 GC comment g1-usage @LEX:@STR:<event> lexeme --> NOP
@@ -654,12 +434,14 @@ GC comment g1-usage {symbol name} undef --> {JMP floater}
 GC g1 priority-rule {completion event declaration} {@LEX:@STR:<event> {event initialization} @LEX:@CHR:<=> @LEX:@STR:<completed> {symbol name}} 0 action {array {start length values}} bless {special lhs} mask {1 0 1 1 0}
 GC comment definition {nulled event declaration} 2681 26
 GC comment g1-definition {nulled event declaration} floater --> {JMP brick}
-GC comment l0-definition @STR:<event> strict --> NOP
+GC comment usage @STR:<event> 2713 7
+GC comment definition @STR:<event> 2713 7
+GC comment <literal> @STR:<event> literal --> NOP
 GC comment definition @LEX:@STR:<event> 2713 7
 GC comment usage @STR:<event> 2713 7
 GC comment l0-definition @LEX:@STR:<event> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<event> lexeme --> NOP
-GC comment l0-usage @STR:<event> strict --> NOP
+GC comment l0-usage @STR:<event> literal --> NOP
 GC comment usage {event initialization} 2722 22
 GC comment usage @CHR:<=> 2746 3
 GC comment definition @CHR:<=> 2746 3
@@ -669,33 +451,17 @@ GC comment usage @CHR:<=> 2746 3
 GC comment l0-definition @LEX:@CHR:<=> lexeme --> NOP
 GC comment :lexeme @LEX:@CHR:<=> lexeme --> NOP
 GC comment l0-usage @CHR:<=> literal --> NOP
-GC comment l0-definition @STR:<nulled> undef --> {JMP match}
-GC comment usage @CHR:<n> 2750 1
-GC comment definition @CHR:<n> 2750 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC comment usage @CHR:<u> 2751 1
-GC comment definition @CHR:<u> 2751 1
-GC comment <literal> @CHR:<u> literal --> NOP
-GC comment usage @CHR:<l> 2752 1
-GC comment definition @CHR:<l> 2752 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<l> 2753 1
-GC comment definition @CHR:<l> 2753 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<e> 2754 1
-GC comment definition @CHR:<e> 2754 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<d> 2755 1
-GC comment definition @CHR:<d> 2755 1
-GC comment <literal> @CHR:<d> literal --> NOP
-GC l0 priority-rule @STR:<nulled> {@CHR:<n> @CHR:<u> @CHR:<l> @CHR:<l> @CHR:<e> @CHR:<d>} 0
+GC comment usage @STR:<nulled> 2750 8
+GC comment definition @STR:<nulled> 2750 8
+GC comment <literal> @STR:<nulled> undef --> {JMP literal}
+GC l0 atom @STR:<nulled> string 110 117 108 108 101 100
 GC comment definition @LEX:@STR:<nulled> 2750 8
 GC comment usage @STR:<nulled> 2750 8
 GC comment l0-definition @LEX:@STR:<nulled> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<nulled> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<nulled>
 GC g1 terminal @LEX:@STR:<nulled>
-GC comment l0-usage @STR:<nulled> match --> {JMP strict}
+GC comment l0-usage @STR:<nulled> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<nulled> @STR:<nulled> 0
 GC comment usage {symbol name} 2760 13
 GC comment g1-usage @LEX:@STR:<event> lexeme --> NOP
@@ -706,12 +472,14 @@ GC comment g1-usage {symbol name} floater --> NOP
 GC g1 priority-rule {nulled event declaration} {@LEX:@STR:<event> {event initialization} @LEX:@CHR:<=> @LEX:@STR:<nulled> {symbol name}} 0 action {array {start length values}} bless {special lhs} mask {1 0 1 1 0}
 GC comment definition {prediction event declaration} 2774 30
 GC comment g1-definition {prediction event declaration} floater --> {JMP brick}
-GC comment l0-definition @STR:<event> strict --> NOP
+GC comment usage @STR:<event> 2810 7
+GC comment definition @STR:<event> 2810 7
+GC comment <literal> @STR:<event> literal --> NOP
 GC comment definition @LEX:@STR:<event> 2810 7
 GC comment usage @STR:<event> 2810 7
 GC comment l0-definition @LEX:@STR:<event> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<event> lexeme --> NOP
-GC comment l0-usage @STR:<event> strict --> NOP
+GC comment l0-usage @STR:<event> literal --> NOP
 GC comment usage {event initialization} 2819 22
 GC comment usage @CHR:<=> 2843 3
 GC comment definition @CHR:<=> 2843 3
@@ -721,42 +489,17 @@ GC comment usage @CHR:<=> 2843 3
 GC comment l0-definition @LEX:@CHR:<=> lexeme --> NOP
 GC comment :lexeme @LEX:@CHR:<=> lexeme --> NOP
 GC comment l0-usage @CHR:<=> literal --> NOP
-GC comment l0-definition @STR:<predicted> undef --> {JMP match}
-GC comment usage @CHR:<p> 2847 1
-GC comment definition @CHR:<p> 2847 1
-GC comment <literal> @CHR:<p> literal --> NOP
-GC comment usage @CHR:<r> 2848 1
-GC comment definition @CHR:<r> 2848 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<e> 2849 1
-GC comment definition @CHR:<e> 2849 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<d> 2850 1
-GC comment definition @CHR:<d> 2850 1
-GC comment <literal> @CHR:<d> literal --> NOP
-GC comment usage @CHR:<i> 2851 1
-GC comment definition @CHR:<i> 2851 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC comment usage @CHR:<c> 2852 1
-GC comment definition @CHR:<c> 2852 1
-GC comment <literal> @CHR:<c> literal --> NOP
-GC comment usage @CHR:<t> 2853 1
-GC comment definition @CHR:<t> 2853 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC comment usage @CHR:<e> 2854 1
-GC comment definition @CHR:<e> 2854 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<d> 2855 1
-GC comment definition @CHR:<d> 2855 1
-GC comment <literal> @CHR:<d> literal --> NOP
-GC l0 priority-rule @STR:<predicted> {@CHR:<p> @CHR:<r> @CHR:<e> @CHR:<d> @CHR:<i> @CHR:<c> @CHR:<t> @CHR:<e> @CHR:<d>} 0
+GC comment usage @STR:<predicted> 2847 11
+GC comment definition @STR:<predicted> 2847 11
+GC comment <literal> @STR:<predicted> undef --> {JMP literal}
+GC l0 atom @STR:<predicted> string 112 114 101 100 105 99 116 101 100
 GC comment definition @LEX:@STR:<predicted> 2847 11
 GC comment usage @STR:<predicted> 2847 11
 GC comment l0-definition @LEX:@STR:<predicted> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<predicted> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<predicted>
 GC g1 terminal @LEX:@STR:<predicted>
-GC comment l0-usage @STR:<predicted> match --> {JMP strict}
+GC comment l0-usage @STR:<predicted> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<predicted> @STR:<predicted> 0
 GC comment usage {symbol name} 2860 13
 GC comment g1-usage @LEX:@STR:<event> lexeme --> NOP
@@ -767,68 +510,38 @@ GC comment g1-usage {symbol name} floater --> NOP
 GC g1 priority-rule {prediction event declaration} {@LEX:@STR:<event> {event initialization} @LEX:@CHR:<=> @LEX:@STR:<predicted> {symbol name}} 0 action {array {start length values}} bless {special lhs} mask {1 0 1 1 0}
 GC comment definition {current lexer statement} 2874 25
 GC comment g1-definition {current lexer statement} floater --> {JMP brick}
-GC comment l0-definition @STR:<current> undef --> {JMP match}
-GC comment usage @CHR:<c> 2905 1
-GC comment definition @CHR:<c> 2905 1
-GC comment <literal> @CHR:<c> literal --> NOP
-GC comment usage @CHR:<u> 2906 1
-GC comment definition @CHR:<u> 2906 1
-GC comment <literal> @CHR:<u> literal --> NOP
-GC comment usage @CHR:<r> 2907 1
-GC comment definition @CHR:<r> 2907 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<r> 2908 1
-GC comment definition @CHR:<r> 2908 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<e> 2909 1
-GC comment definition @CHR:<e> 2909 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<n> 2910 1
-GC comment definition @CHR:<n> 2910 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC comment usage @CHR:<t> 2911 1
-GC comment definition @CHR:<t> 2911 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC l0 priority-rule @STR:<current> {@CHR:<c> @CHR:<u> @CHR:<r> @CHR:<r> @CHR:<e> @CHR:<n> @CHR:<t>} 0
+GC comment usage @STR:<current> 2905 9
+GC comment definition @STR:<current> 2905 9
+GC comment <literal> @STR:<current> undef --> {JMP literal}
+GC l0 atom @STR:<current> string 99 117 114 114 101 110 116
 GC comment definition @LEX:@STR:<current> 2905 9
 GC comment usage @STR:<current> 2905 9
 GC comment l0-definition @LEX:@STR:<current> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<current> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<current>
 GC g1 terminal @LEX:@STR:<current>
-GC comment l0-usage @STR:<current> match --> {JMP strict}
+GC comment l0-usage @STR:<current> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<current> @STR:<current> 0
-GC comment l0-definition @STR:<lexer> undef --> {JMP match}
-GC comment usage @CHR:<l> 2915 1
-GC comment definition @CHR:<l> 2915 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<e> 2916 1
-GC comment definition @CHR:<e> 2916 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<x> 2917 1
-GC comment definition @CHR:<x> 2917 1
-GC comment <literal> @CHR:<x> literal --> NOP
-GC comment usage @CHR:<e> 2918 1
-GC comment definition @CHR:<e> 2918 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<r> 2919 1
-GC comment definition @CHR:<r> 2919 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC l0 priority-rule @STR:<lexer> {@CHR:<l> @CHR:<e> @CHR:<x> @CHR:<e> @CHR:<r>} 0
+GC comment usage @STR:<lexer> 2915 7
+GC comment definition @STR:<lexer> 2915 7
+GC comment <literal> @STR:<lexer> undef --> {JMP literal}
+GC l0 atom @STR:<lexer> string 108 101 120 101 114
 GC comment definition @LEX:@STR:<lexer> 2915 7
 GC comment usage @STR:<lexer> 2915 7
 GC comment l0-definition @LEX:@STR:<lexer> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<lexer> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<lexer>
 GC g1 terminal @LEX:@STR:<lexer>
-GC comment l0-usage @STR:<lexer> match --> {JMP strict}
+GC comment l0-usage @STR:<lexer> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<lexer> @STR:<lexer> 0
-GC comment l0-definition @STR:<is> strict --> NOP
+GC comment usage @STR:<is> 2923 4
+GC comment definition @STR:<is> 2923 4
+GC comment <literal> @STR:<is> literal --> NOP
 GC comment definition @LEX:@STR:<is> 2923 4
 GC comment usage @STR:<is> 2923 4
 GC comment l0-definition @LEX:@STR:<is> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<is> lexeme --> NOP
-GC comment l0-usage @STR:<is> strict --> NOP
+GC comment l0-usage @STR:<is> literal --> NOP
 GC comment usage {lexer name} 2929 12
 GC comment g1-usage @LEX:@STR:<current> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<lexer> lexeme --> NOP
@@ -837,81 +550,47 @@ GC comment g1-usage {lexer name} undef --> {JMP floater}
 GC g1 priority-rule {current lexer statement} {@LEX:@STR:<current> @LEX:@STR:<lexer> @LEX:@STR:<is> {lexer name}} 0 action {array {start length values}} bless {special lhs} mask {1 1 1 0}
 GC comment definition {inaccessible statement} 2943 24
 GC comment g1-definition {inaccessible statement} floater --> {JMP brick}
-GC comment l0-definition @STR:<inaccessible> undef --> {JMP match}
-GC comment usage @CHR:<i> 2973 1
-GC comment definition @CHR:<i> 2973 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC comment usage @CHR:<n> 2974 1
-GC comment definition @CHR:<n> 2974 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC comment usage @CHR:<a> 2975 1
-GC comment definition @CHR:<a> 2975 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<c> 2976 1
-GC comment definition @CHR:<c> 2976 1
-GC comment <literal> @CHR:<c> literal --> NOP
-GC comment usage @CHR:<c> 2977 1
-GC comment definition @CHR:<c> 2977 1
-GC comment <literal> @CHR:<c> literal --> NOP
-GC comment usage @CHR:<e> 2978 1
-GC comment definition @CHR:<e> 2978 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<s> 2979 1
-GC comment definition @CHR:<s> 2979 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC comment usage @CHR:<s> 2980 1
-GC comment definition @CHR:<s> 2980 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC comment usage @CHR:<i> 2981 1
-GC comment definition @CHR:<i> 2981 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC comment usage @CHR:<b> 2982 1
-GC comment definition @CHR:<b> 2982 1
-GC comment <literal> @CHR:<b> literal --> NOP
-GC comment usage @CHR:<l> 2983 1
-GC comment definition @CHR:<l> 2983 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<e> 2984 1
-GC comment definition @CHR:<e> 2984 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC l0 priority-rule @STR:<inaccessible> {@CHR:<i> @CHR:<n> @CHR:<a> @CHR:<c> @CHR:<c> @CHR:<e> @CHR:<s> @CHR:<s> @CHR:<i> @CHR:<b> @CHR:<l> @CHR:<e>} 0
+GC comment usage @STR:<inaccessible> 2973 14
+GC comment definition @STR:<inaccessible> 2973 14
+GC comment <literal> @STR:<inaccessible> undef --> {JMP literal}
+GC l0 atom @STR:<inaccessible> string 105 110 97 99 99 101 115 115 105 98 108 101
 GC comment definition @LEX:@STR:<inaccessible> 2973 14
 GC comment usage @STR:<inaccessible> 2973 14
 GC comment l0-definition @LEX:@STR:<inaccessible> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<inaccessible> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<inaccessible>
 GC g1 terminal @LEX:@STR:<inaccessible>
-GC comment l0-usage @STR:<inaccessible> match --> {JMP strict}
+GC comment l0-usage @STR:<inaccessible> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<inaccessible> @STR:<inaccessible> 0
-GC comment l0-definition @STR:<is> strict --> NOP
+GC comment usage @STR:<is> 2988 4
+GC comment definition @STR:<is> 2988 4
+GC comment <literal> @STR:<is> literal --> NOP
 GC comment definition @LEX:@STR:<is> 2988 4
 GC comment usage @STR:<is> 2988 4
 GC comment l0-definition @LEX:@STR:<is> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<is> lexeme --> NOP
-GC comment l0-usage @STR:<is> strict --> NOP
+GC comment l0-usage @STR:<is> literal --> NOP
 GC comment usage {inaccessible treatment} 2994 24
-GC comment l0-definition @STR:<by> undef --> {JMP match}
-GC comment usage @CHR:<b> 3020 1
-GC comment definition @CHR:<b> 3020 1
-GC comment <literal> @CHR:<b> literal --> NOP
-GC comment usage @CHR:<y> 3021 1
-GC comment definition @CHR:<y> 3021 1
-GC comment <literal> @CHR:<y> literal --> NOP
-GC l0 priority-rule @STR:<by> {@CHR:<b> @CHR:<y>} 0
+GC comment usage @STR:<by> 3020 4
+GC comment definition @STR:<by> 3020 4
+GC comment <literal> @STR:<by> undef --> {JMP literal}
+GC l0 atom @STR:<by> string 98 121
 GC comment definition @LEX:@STR:<by> 3020 4
 GC comment usage @STR:<by> 3020 4
 GC comment l0-definition @LEX:@STR:<by> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<by> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<by>
 GC g1 terminal @LEX:@STR:<by>
-GC comment l0-usage @STR:<by> match --> {JMP strict}
+GC comment l0-usage @STR:<by> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<by> @STR:<by> 0
-GC comment l0-definition @STR:<default> strict --> NOP
+GC comment usage @STR:<default> 3025 9
+GC comment definition @STR:<default> 3025 9
+GC comment <literal> @STR:<default> literal --> NOP
 GC comment definition @LEX:@STR:<default> 3025 9
 GC comment usage @STR:<default> 3025 9
 GC comment l0-definition @LEX:@STR:<default> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<default> lexeme --> NOP
-GC comment l0-usage @STR:<default> strict --> NOP
+GC comment l0-usage @STR:<default> literal --> NOP
 GC comment g1-usage @LEX:@STR:<inaccessible> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<is> lexeme --> NOP
 GC comment g1-usage {inaccessible treatment} undef --> {JMP floater}
@@ -920,76 +599,47 @@ GC comment g1-usage @LEX:@STR:<default> lexeme --> NOP
 GC g1 priority-rule {inaccessible statement} {@LEX:@STR:<inaccessible> @LEX:@STR:<is> {inaccessible treatment} @LEX:@STR:<by> @LEX:@STR:<default>} 0 action {array {start length values}} bless {special lhs} mask {1 1 0 1 1}
 GC comment definition {inaccessible treatment} 3036 24
 GC comment g1-definition {inaccessible treatment} floater --> {JMP brick}
-GC comment l0-definition @STR:<warn> undef --> {JMP match}
-GC comment usage @CHR:<w> 3065 1
-GC comment definition @CHR:<w> 3065 1
-GC comment <literal> @CHR:<w> undef --> {JMP literal}
-GC l0 character @CHR:<w> 119
-GC comment usage @CHR:<a> 3066 1
-GC comment definition @CHR:<a> 3066 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<r> 3067 1
-GC comment definition @CHR:<r> 3067 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<n> 3068 1
-GC comment definition @CHR:<n> 3068 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC l0 priority-rule @STR:<warn> {@CHR:<w> @CHR:<a> @CHR:<r> @CHR:<n>} 0
+GC comment usage @STR:<warn> 3065 6
+GC comment definition @STR:<warn> 3065 6
+GC comment <literal> @STR:<warn> undef --> {JMP literal}
+GC l0 atom @STR:<warn> string 119 97 114 110
 GC comment definition @LEX:@STR:<warn> 3065 6
 GC comment usage @STR:<warn> 3065 6
 GC comment l0-definition @LEX:@STR:<warn> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<warn> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<warn>
 GC g1 terminal @LEX:@STR:<warn>
-GC comment l0-usage @STR:<warn> match --> {JMP strict}
+GC comment l0-usage @STR:<warn> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<warn> @STR:<warn> 0
 GC comment g1-usage @LEX:@STR:<warn> lexeme --> NOP
 GC g1 priority-rule {inaccessible treatment} @LEX:@STR:<warn> 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment g1-definition {inaccessible treatment} brick --> NOP
-GC comment l0-definition @STR:<ok> undef --> {JMP match}
-GC comment usage @CHR:<o> 3074 1
-GC comment definition @CHR:<o> 3074 1
-GC comment <literal> @CHR:<o> literal --> NOP
-GC comment usage @CHR:<k> 3075 1
-GC comment definition @CHR:<k> 3075 1
-GC comment <literal> @CHR:<k> undef --> {JMP literal}
-GC l0 character @CHR:<k> 107
-GC l0 priority-rule @STR:<ok> {@CHR:<o> @CHR:<k>} 0
+GC comment usage @STR:<ok> 3074 4
+GC comment definition @STR:<ok> 3074 4
+GC comment <literal> @STR:<ok> undef --> {JMP literal}
+GC l0 atom @STR:<ok> string 111 107
 GC comment definition @LEX:@STR:<ok> 3074 4
 GC comment usage @STR:<ok> 3074 4
 GC comment l0-definition @LEX:@STR:<ok> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<ok> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<ok>
 GC g1 terminal @LEX:@STR:<ok>
-GC comment l0-usage @STR:<ok> match --> {JMP strict}
+GC comment l0-usage @STR:<ok> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<ok> @STR:<ok> 0
 GC comment g1-usage @LEX:@STR:<ok> lexeme --> NOP
 GC g1 priority-rule {inaccessible treatment} @LEX:@STR:<ok> 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment g1-definition {inaccessible treatment} brick --> NOP
-GC comment l0-definition @STR:<fatal> undef --> {JMP match}
-GC comment usage @CHR:<f> 3081 1
-GC comment definition @CHR:<f> 3081 1
-GC comment <literal> @CHR:<f> literal --> NOP
-GC comment usage @CHR:<a> 3082 1
-GC comment definition @CHR:<a> 3082 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<t> 3083 1
-GC comment definition @CHR:<t> 3083 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC comment usage @CHR:<a> 3084 1
-GC comment definition @CHR:<a> 3084 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<l> 3085 1
-GC comment definition @CHR:<l> 3085 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC l0 priority-rule @STR:<fatal> {@CHR:<f> @CHR:<a> @CHR:<t> @CHR:<a> @CHR:<l>} 0
+GC comment usage @STR:<fatal> 3081 7
+GC comment definition @STR:<fatal> 3081 7
+GC comment <literal> @STR:<fatal> undef --> {JMP literal}
+GC l0 atom @STR:<fatal> string 102 97 116 97 108
 GC comment definition @LEX:@STR:<fatal> 3081 7
 GC comment usage @STR:<fatal> 3081 7
 GC comment l0-definition @LEX:@STR:<fatal> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<fatal> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<fatal>
 GC g1 terminal @LEX:@STR:<fatal>
-GC comment l0-usage @STR:<fatal> match --> {JMP strict}
+GC comment l0-usage @STR:<fatal> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<fatal> @STR:<fatal> 0
 GC comment g1-usage @LEX:@STR:<fatal> lexeme --> NOP
 GC g1 priority-rule {inaccessible treatment} @LEX:@STR:<fatal> 0 action {array {start length values}} bless {special lhs} mask 0
@@ -1347,7 +997,7 @@ GC comment g1-definition {null adverb} floater --> {JMP brick}
 GC comment usage @CHR:<,> 6812 3
 GC comment definition @CHR:<,> 6812 3
 GC comment <literal> @CHR:<,> undef --> {JMP literal}
-GC l0 character @CHR:<,> 44
+GC l0 atom @CHR:<,> character 44
 GC comment definition @LEX:@CHR:<,> 6812 3
 GC comment usage @CHR:<,> 6812 3
 GC comment l0-definition @LEX:@CHR:<,> undef --> {JMP match}
@@ -1360,50 +1010,29 @@ GC comment g1-usage @LEX:@CHR:<,> lexeme --> NOP
 GC g1 priority-rule {null adverb} @LEX:@CHR:<,> 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition action 6816 6
 GC comment g1-definition action floater --> {JMP brick}
-GC comment l0-definition @STR:<action> undef --> {JMP match}
-GC comment usage @CHR:<a> 6828 1
-GC comment definition @CHR:<a> 6828 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<c> 6829 1
-GC comment definition @CHR:<c> 6829 1
-GC comment <literal> @CHR:<c> literal --> NOP
-GC comment usage @CHR:<t> 6830 1
-GC comment definition @CHR:<t> 6830 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC comment usage @CHR:<i> 6831 1
-GC comment definition @CHR:<i> 6831 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC comment usage @CHR:<o> 6832 1
-GC comment definition @CHR:<o> 6832 1
-GC comment <literal> @CHR:<o> literal --> NOP
-GC comment usage @CHR:<n> 6833 1
-GC comment definition @CHR:<n> 6833 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC l0 priority-rule @STR:<action> {@CHR:<a> @CHR:<c> @CHR:<t> @CHR:<i> @CHR:<o> @CHR:<n>} 0
+GC comment usage @STR:<action> 6828 8
+GC comment definition @STR:<action> 6828 8
+GC comment <literal> @STR:<action> undef --> {JMP literal}
+GC l0 atom @STR:<action> string 97 99 116 105 111 110
 GC comment definition @LEX:@STR:<action> 6828 8
 GC comment usage @STR:<action> 6828 8
 GC comment l0-definition @LEX:@STR:<action> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<action> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<action>
 GC g1 terminal @LEX:@STR:<action>
-GC comment l0-usage @STR:<action> match --> {JMP strict}
+GC comment l0-usage @STR:<action> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<action> @STR:<action> 0
-GC comment l0-definition @STR:<=>> undef --> {JMP match}
-GC comment usage @CHR:<=> 6837 1
-GC comment definition @CHR:<=> 6837 1
-GC comment <literal> @CHR:<=> literal --> NOP
-GC comment usage @CHR:<>> 6838 1
-GC comment definition @CHR:<>> 6838 1
-GC comment <literal> @CHR:<>> undef --> {JMP literal}
-GC l0 character @CHR:<>> 62
-GC l0 priority-rule @STR:<=>> {@CHR:<=> @CHR:<>>} 0
+GC comment usage @STR:<=>> 6837 4
+GC comment definition @STR:<=>> 6837 4
+GC comment <literal> @STR:<=>> undef --> {JMP literal}
+GC l0 atom @STR:<=>> string 61 62
 GC comment definition @LEX:@STR:<=>> 6837 4
 GC comment usage @STR:<=>> 6837 4
 GC comment l0-definition @LEX:@STR:<=>> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<=>> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<=>>
 GC g1 terminal @LEX:@STR:<=>>
-GC comment l0-usage @STR:<=>> match --> {JMP strict}
+GC comment l0-usage @STR:<=>> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<=>> @STR:<=>> 0
 GC comment usage {action name} 6843 13
 GC comment g1-usage @LEX:@STR:<action> lexeme --> NOP
@@ -1412,58 +1041,37 @@ GC comment g1-usage {action name} undef --> {JMP floater}
 GC g1 priority-rule action {@LEX:@STR:<action> @LEX:@STR:<=>> {action name}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {left association} 6857 18
 GC comment g1-definition {left association} floater --> {JMP brick}
-GC comment l0-definition @STR:<assoc> undef --> {JMP match}
-GC comment usage @CHR:<a> 6881 1
-GC comment definition @CHR:<a> 6881 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<s> 6882 1
-GC comment definition @CHR:<s> 6882 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC comment usage @CHR:<s> 6883 1
-GC comment definition @CHR:<s> 6883 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC comment usage @CHR:<o> 6884 1
-GC comment definition @CHR:<o> 6884 1
-GC comment <literal> @CHR:<o> literal --> NOP
-GC comment usage @CHR:<c> 6885 1
-GC comment definition @CHR:<c> 6885 1
-GC comment <literal> @CHR:<c> literal --> NOP
-GC l0 priority-rule @STR:<assoc> {@CHR:<a> @CHR:<s> @CHR:<s> @CHR:<o> @CHR:<c>} 0
+GC comment usage @STR:<assoc> 6881 7
+GC comment definition @STR:<assoc> 6881 7
+GC comment <literal> @STR:<assoc> undef --> {JMP literal}
+GC l0 atom @STR:<assoc> string 97 115 115 111 99
 GC comment definition @LEX:@STR:<assoc> 6881 7
 GC comment usage @STR:<assoc> 6881 7
 GC comment l0-definition @LEX:@STR:<assoc> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<assoc> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<assoc>
 GC g1 terminal @LEX:@STR:<assoc>
-GC comment l0-usage @STR:<assoc> match --> {JMP strict}
+GC comment l0-usage @STR:<assoc> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<assoc> @STR:<assoc> 0
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment usage @STR:<=>> 6889 4
+GC comment definition @STR:<=>> 6889 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 6889 4
 GC comment usage @STR:<=>> 6889 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
-GC comment l0-definition @STR:<left> undef --> {JMP match}
-GC comment usage @CHR:<l> 6894 1
-GC comment definition @CHR:<l> 6894 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<e> 6895 1
-GC comment definition @CHR:<e> 6895 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<f> 6896 1
-GC comment definition @CHR:<f> 6896 1
-GC comment <literal> @CHR:<f> literal --> NOP
-GC comment usage @CHR:<t> 6897 1
-GC comment definition @CHR:<t> 6897 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC l0 priority-rule @STR:<left> {@CHR:<l> @CHR:<e> @CHR:<f> @CHR:<t>} 0
+GC comment l0-usage @STR:<=>> literal --> NOP
+GC comment usage @STR:<left> 6894 6
+GC comment definition @STR:<left> 6894 6
+GC comment <literal> @STR:<left> undef --> {JMP literal}
+GC l0 atom @STR:<left> string 108 101 102 116
 GC comment definition @LEX:@STR:<left> 6894 6
 GC comment usage @STR:<left> 6894 6
 GC comment l0-definition @LEX:@STR:<left> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<left> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<left>
 GC g1 terminal @LEX:@STR:<left>
-GC comment l0-usage @STR:<left> match --> {JMP strict}
+GC comment l0-usage @STR:<left> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<left> @STR:<left> 0
 GC comment g1-usage @LEX:@STR:<assoc> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<=>> lexeme --> NOP
@@ -1471,44 +1079,33 @@ GC comment g1-usage @LEX:@STR:<left> lexeme --> NOP
 GC g1 priority-rule {left association} {@LEX:@STR:<assoc> @LEX:@STR:<=>> @LEX:@STR:<left>} 0 action {array {start length values}} bless {special lhs} mask {1 1 1}
 GC comment definition {right association} 6902 19
 GC comment g1-definition {right association} floater --> {JMP brick}
-GC comment l0-definition @STR:<assoc> strict --> NOP
+GC comment usage @STR:<assoc> 6927 7
+GC comment definition @STR:<assoc> 6927 7
+GC comment <literal> @STR:<assoc> literal --> NOP
 GC comment definition @LEX:@STR:<assoc> 6927 7
 GC comment usage @STR:<assoc> 6927 7
 GC comment l0-definition @LEX:@STR:<assoc> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<assoc> lexeme --> NOP
-GC comment l0-usage @STR:<assoc> strict --> NOP
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<assoc> literal --> NOP
+GC comment usage @STR:<=>> 6935 4
+GC comment definition @STR:<=>> 6935 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 6935 4
 GC comment usage @STR:<=>> 6935 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
-GC comment l0-definition @STR:<right> undef --> {JMP match}
-GC comment usage @CHR:<r> 6940 1
-GC comment definition @CHR:<r> 6940 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<i> 6941 1
-GC comment definition @CHR:<i> 6941 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC comment usage @CHR:<g> 6942 1
-GC comment definition @CHR:<g> 6942 1
-GC comment <literal> @CHR:<g> undef --> {JMP literal}
-GC l0 character @CHR:<g> 103
-GC comment usage @CHR:<h> 6943 1
-GC comment definition @CHR:<h> 6943 1
-GC comment <literal> @CHR:<h> undef --> {JMP literal}
-GC l0 character @CHR:<h> 104
-GC comment usage @CHR:<t> 6944 1
-GC comment definition @CHR:<t> 6944 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC l0 priority-rule @STR:<right> {@CHR:<r> @CHR:<i> @CHR:<g> @CHR:<h> @CHR:<t>} 0
+GC comment l0-usage @STR:<=>> literal --> NOP
+GC comment usage @STR:<right> 6940 7
+GC comment definition @STR:<right> 6940 7
+GC comment <literal> @STR:<right> undef --> {JMP literal}
+GC l0 atom @STR:<right> string 114 105 103 104 116
 GC comment definition @LEX:@STR:<right> 6940 7
 GC comment usage @STR:<right> 6940 7
 GC comment l0-definition @LEX:@STR:<right> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<right> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<right>
 GC g1 terminal @LEX:@STR:<right>
-GC comment l0-usage @STR:<right> match --> {JMP strict}
+GC comment l0-usage @STR:<right> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<right> @STR:<right> 0
 GC comment g1-usage @LEX:@STR:<assoc> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<=>> lexeme --> NOP
@@ -1516,42 +1113,33 @@ GC comment g1-usage @LEX:@STR:<right> lexeme --> NOP
 GC g1 priority-rule {right association} {@LEX:@STR:<assoc> @LEX:@STR:<=>> @LEX:@STR:<right>} 0 action {array {start length values}} bless {special lhs} mask {1 1 1}
 GC comment definition {group association} 6949 19
 GC comment g1-definition {group association} floater --> {JMP brick}
-GC comment l0-definition @STR:<assoc> strict --> NOP
+GC comment usage @STR:<assoc> 6974 7
+GC comment definition @STR:<assoc> 6974 7
+GC comment <literal> @STR:<assoc> literal --> NOP
 GC comment definition @LEX:@STR:<assoc> 6974 7
 GC comment usage @STR:<assoc> 6974 7
 GC comment l0-definition @LEX:@STR:<assoc> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<assoc> lexeme --> NOP
-GC comment l0-usage @STR:<assoc> strict --> NOP
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<assoc> literal --> NOP
+GC comment usage @STR:<=>> 6982 4
+GC comment definition @STR:<=>> 6982 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 6982 4
 GC comment usage @STR:<=>> 6982 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
-GC comment l0-definition @STR:<group> undef --> {JMP match}
-GC comment usage @CHR:<g> 6987 1
-GC comment definition @CHR:<g> 6987 1
-GC comment <literal> @CHR:<g> literal --> NOP
-GC comment usage @CHR:<r> 6988 1
-GC comment definition @CHR:<r> 6988 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<o> 6989 1
-GC comment definition @CHR:<o> 6989 1
-GC comment <literal> @CHR:<o> literal --> NOP
-GC comment usage @CHR:<u> 6990 1
-GC comment definition @CHR:<u> 6990 1
-GC comment <literal> @CHR:<u> literal --> NOP
-GC comment usage @CHR:<p> 6991 1
-GC comment definition @CHR:<p> 6991 1
-GC comment <literal> @CHR:<p> literal --> NOP
-GC l0 priority-rule @STR:<group> {@CHR:<g> @CHR:<r> @CHR:<o> @CHR:<u> @CHR:<p>} 0
+GC comment l0-usage @STR:<=>> literal --> NOP
+GC comment usage @STR:<group> 6987 7
+GC comment definition @STR:<group> 6987 7
+GC comment <literal> @STR:<group> undef --> {JMP literal}
+GC l0 atom @STR:<group> string 103 114 111 117 112
 GC comment definition @LEX:@STR:<group> 6987 7
 GC comment usage @STR:<group> 6987 7
 GC comment l0-definition @LEX:@STR:<group> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<group> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<group>
 GC g1 terminal @LEX:@STR:<group>
-GC comment l0-usage @STR:<group> match --> {JMP strict}
+GC comment l0-usage @STR:<group> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<group> @STR:<group> 0
 GC comment g1-usage @LEX:@STR:<assoc> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<=>> lexeme --> NOP
@@ -1559,49 +1147,26 @@ GC comment g1-usage @LEX:@STR:<group> lexeme --> NOP
 GC g1 priority-rule {group association} {@LEX:@STR:<assoc> @LEX:@STR:<=>> @LEX:@STR:<group>} 0 action {array {start length values}} bless {special lhs} mask {1 1 1}
 GC comment definition {separator specification} 6996 25
 GC comment g1-definition {separator specification} floater --> {JMP brick}
-GC comment l0-definition @STR:<separator> undef --> {JMP match}
-GC comment usage @CHR:<s> 7027 1
-GC comment definition @CHR:<s> 7027 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC comment usage @CHR:<e> 7028 1
-GC comment definition @CHR:<e> 7028 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<p> 7029 1
-GC comment definition @CHR:<p> 7029 1
-GC comment <literal> @CHR:<p> literal --> NOP
-GC comment usage @CHR:<a> 7030 1
-GC comment definition @CHR:<a> 7030 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<r> 7031 1
-GC comment definition @CHR:<r> 7031 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<a> 7032 1
-GC comment definition @CHR:<a> 7032 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<t> 7033 1
-GC comment definition @CHR:<t> 7033 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC comment usage @CHR:<o> 7034 1
-GC comment definition @CHR:<o> 7034 1
-GC comment <literal> @CHR:<o> literal --> NOP
-GC comment usage @CHR:<r> 7035 1
-GC comment definition @CHR:<r> 7035 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC l0 priority-rule @STR:<separator> {@CHR:<s> @CHR:<e> @CHR:<p> @CHR:<a> @CHR:<r> @CHR:<a> @CHR:<t> @CHR:<o> @CHR:<r>} 0
+GC comment usage @STR:<separator> 7027 11
+GC comment definition @STR:<separator> 7027 11
+GC comment <literal> @STR:<separator> undef --> {JMP literal}
+GC l0 atom @STR:<separator> string 115 101 112 97 114 97 116 111 114
 GC comment definition @LEX:@STR:<separator> 7027 11
 GC comment usage @STR:<separator> 7027 11
 GC comment l0-definition @LEX:@STR:<separator> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<separator> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<separator>
 GC g1 terminal @LEX:@STR:<separator>
-GC comment l0-usage @STR:<separator> match --> {JMP strict}
+GC comment l0-usage @STR:<separator> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<separator> @STR:<separator> 0
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment usage @STR:<=>> 7039 4
+GC comment definition @STR:<=>> 7039 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 7039 4
 GC comment usage @STR:<=>> 7039 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<=>> literal --> NOP
 GC comment usage {single symbol} 7045 15
 GC comment g1-usage @LEX:@STR:<separator> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<=>> lexeme --> NOP
@@ -1609,40 +1174,26 @@ GC comment g1-usage {single symbol} floater --> NOP
 GC g1 priority-rule {separator specification} {@LEX:@STR:<separator> @LEX:@STR:<=>> {single symbol}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {proper specification} 7061 22
 GC comment g1-definition {proper specification} floater --> {JMP brick}
-GC comment l0-definition @STR:<proper> undef --> {JMP match}
-GC comment usage @CHR:<p> 7089 1
-GC comment definition @CHR:<p> 7089 1
-GC comment <literal> @CHR:<p> literal --> NOP
-GC comment usage @CHR:<r> 7090 1
-GC comment definition @CHR:<r> 7090 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<o> 7091 1
-GC comment definition @CHR:<o> 7091 1
-GC comment <literal> @CHR:<o> literal --> NOP
-GC comment usage @CHR:<p> 7092 1
-GC comment definition @CHR:<p> 7092 1
-GC comment <literal> @CHR:<p> literal --> NOP
-GC comment usage @CHR:<e> 7093 1
-GC comment definition @CHR:<e> 7093 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<r> 7094 1
-GC comment definition @CHR:<r> 7094 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC l0 priority-rule @STR:<proper> {@CHR:<p> @CHR:<r> @CHR:<o> @CHR:<p> @CHR:<e> @CHR:<r>} 0
+GC comment usage @STR:<proper> 7089 8
+GC comment definition @STR:<proper> 7089 8
+GC comment <literal> @STR:<proper> undef --> {JMP literal}
+GC l0 atom @STR:<proper> string 112 114 111 112 101 114
 GC comment definition @LEX:@STR:<proper> 7089 8
 GC comment usage @STR:<proper> 7089 8
 GC comment l0-definition @LEX:@STR:<proper> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<proper> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<proper>
 GC g1 terminal @LEX:@STR:<proper>
-GC comment l0-usage @STR:<proper> match --> {JMP strict}
+GC comment l0-usage @STR:<proper> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<proper> @STR:<proper> 0
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment usage @STR:<=>> 7098 4
+GC comment definition @STR:<=>> 7098 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 7098 4
 GC comment usage @STR:<=>> 7098 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<=>> literal --> NOP
 GC comment usage boolean 7104 7
 GC comment g1-usage @LEX:@STR:<proper> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<=>> lexeme --> NOP
@@ -1650,34 +1201,26 @@ GC comment g1-usage boolean undef --> {JMP floater}
 GC g1 priority-rule {proper specification} {@LEX:@STR:<proper> @LEX:@STR:<=>> boolean} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {rank specification} 7112 20
 GC comment g1-definition {rank specification} undef --> {JMP brick}
-GC comment l0-definition @STR:<rank> undef --> {JMP match}
-GC comment usage @CHR:<r> 7138 1
-GC comment definition @CHR:<r> 7138 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<a> 7139 1
-GC comment definition @CHR:<a> 7139 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<n> 7140 1
-GC comment definition @CHR:<n> 7140 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC comment usage @CHR:<k> 7141 1
-GC comment definition @CHR:<k> 7141 1
-GC comment <literal> @CHR:<k> literal --> NOP
-GC l0 priority-rule @STR:<rank> {@CHR:<r> @CHR:<a> @CHR:<n> @CHR:<k>} 0
+GC comment usage @STR:<rank> 7138 6
+GC comment definition @STR:<rank> 7138 6
+GC comment <literal> @STR:<rank> undef --> {JMP literal}
+GC l0 atom @STR:<rank> string 114 97 110 107
 GC comment definition @LEX:@STR:<rank> 7138 6
 GC comment usage @STR:<rank> 7138 6
 GC comment l0-definition @LEX:@STR:<rank> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<rank> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<rank>
 GC g1 terminal @LEX:@STR:<rank>
-GC comment l0-usage @STR:<rank> match --> {JMP strict}
+GC comment l0-usage @STR:<rank> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<rank> @STR:<rank> 0
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment usage @STR:<=>> 7145 4
+GC comment definition @STR:<=>> 7145 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 7145 4
 GC comment usage @STR:<=>> 7145 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<=>> literal --> NOP
 GC comment usage {signed integer} 7151 16
 GC comment g1-usage @LEX:@STR:<rank> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<=>> lexeme --> NOP
@@ -1685,59 +1228,26 @@ GC comment g1-usage {signed integer} undef --> {JMP floater}
 GC g1 priority-rule {rank specification} {@LEX:@STR:<rank> @LEX:@STR:<=>> {signed integer}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {null ranking specification} 7168 28
 GC comment g1-definition {null ranking specification} undef --> {JMP brick}
-GC comment l0-definition @STR:<null-ranking> undef --> {JMP match}
-GC comment usage @CHR:<n> 7202 1
-GC comment definition @CHR:<n> 7202 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC comment usage @CHR:<u> 7203 1
-GC comment definition @CHR:<u> 7203 1
-GC comment <literal> @CHR:<u> literal --> NOP
-GC comment usage @CHR:<l> 7204 1
-GC comment definition @CHR:<l> 7204 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<l> 7205 1
-GC comment definition @CHR:<l> 7205 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<-> 7206 1
-GC comment definition @CHR:<-> 7206 1
-GC comment <literal> @CHR:<-> undef --> {JMP literal}
-GC l0 character @CHR:<-> 45
-GC comment usage @CHR:<r> 7207 1
-GC comment definition @CHR:<r> 7207 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<a> 7208 1
-GC comment definition @CHR:<a> 7208 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<n> 7209 1
-GC comment definition @CHR:<n> 7209 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC comment usage @CHR:<k> 7210 1
-GC comment definition @CHR:<k> 7210 1
-GC comment <literal> @CHR:<k> literal --> NOP
-GC comment usage @CHR:<i> 7211 1
-GC comment definition @CHR:<i> 7211 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC comment usage @CHR:<n> 7212 1
-GC comment definition @CHR:<n> 7212 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC comment usage @CHR:<g> 7213 1
-GC comment definition @CHR:<g> 7213 1
-GC comment <literal> @CHR:<g> literal --> NOP
-GC l0 priority-rule @STR:<null-ranking> {@CHR:<n> @CHR:<u> @CHR:<l> @CHR:<l> @CHR:<-> @CHR:<r> @CHR:<a> @CHR:<n> @CHR:<k> @CHR:<i> @CHR:<n> @CHR:<g>} 0
+GC comment usage @STR:<null-ranking> 7202 14
+GC comment definition @STR:<null-ranking> 7202 14
+GC comment <literal> @STR:<null-ranking> undef --> {JMP literal}
+GC l0 atom @STR:<null-ranking> string 110 117 108 108 45 114 97 110 107 105 110 103
 GC comment definition @LEX:@STR:<null-ranking> 7202 14
 GC comment usage @STR:<null-ranking> 7202 14
 GC comment l0-definition @LEX:@STR:<null-ranking> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<null-ranking> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<null-ranking>
 GC g1 terminal @LEX:@STR:<null-ranking>
-GC comment l0-usage @STR:<null-ranking> match --> {JMP strict}
+GC comment l0-usage @STR:<null-ranking> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<null-ranking> @STR:<null-ranking> 0
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment usage @STR:<=>> 7217 4
+GC comment definition @STR:<=>> 7217 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 7217 4
 GC comment usage @STR:<=>> 7217 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<=>> literal --> NOP
 GC comment usage {null ranking constant} 7223 23
 GC comment g1-usage @LEX:@STR:<null-ranking> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<=>> lexeme --> NOP
@@ -1745,40 +1255,34 @@ GC comment g1-usage {null ranking constant} undef --> {JMP floater}
 GC g1 priority-rule {null ranking specification} {@LEX:@STR:<null-ranking> @LEX:@STR:<=>> {null ranking constant}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {null ranking specification} 7247 28
 GC comment g1-definition {null ranking specification} brick --> NOP
-GC comment l0-definition @STR:<null> undef --> {JMP match}
-GC comment usage @CHR:<n> 7281 1
-GC comment definition @CHR:<n> 7281 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC comment usage @CHR:<u> 7282 1
-GC comment definition @CHR:<u> 7282 1
-GC comment <literal> @CHR:<u> literal --> NOP
-GC comment usage @CHR:<l> 7283 1
-GC comment definition @CHR:<l> 7283 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<l> 7284 1
-GC comment definition @CHR:<l> 7284 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC l0 priority-rule @STR:<null> {@CHR:<n> @CHR:<u> @CHR:<l> @CHR:<l>} 0
+GC comment usage @STR:<null> 7281 6
+GC comment definition @STR:<null> 7281 6
+GC comment <literal> @STR:<null> undef --> {JMP literal}
+GC l0 atom @STR:<null> string 110 117 108 108
 GC comment definition @LEX:@STR:<null> 7281 6
 GC comment usage @STR:<null> 7281 6
 GC comment l0-definition @LEX:@STR:<null> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<null> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<null>
 GC g1 terminal @LEX:@STR:<null>
-GC comment l0-usage @STR:<null> match --> {JMP strict}
+GC comment l0-usage @STR:<null> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<null> @STR:<null> 0
-GC comment l0-definition @STR:<rank> strict --> NOP
+GC comment usage @STR:<rank> 7288 6
+GC comment definition @STR:<rank> 7288 6
+GC comment <literal> @STR:<rank> literal --> NOP
 GC comment definition @LEX:@STR:<rank> 7288 6
 GC comment usage @STR:<rank> 7288 6
 GC comment l0-definition @LEX:@STR:<rank> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<rank> lexeme --> NOP
-GC comment l0-usage @STR:<rank> strict --> NOP
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<rank> literal --> NOP
+GC comment usage @STR:<=>> 7295 4
+GC comment definition @STR:<=>> 7295 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 7295 4
 GC comment usage @STR:<=>> 7295 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<=>> literal --> NOP
 GC comment usage {null ranking constant} 7301 23
 GC comment g1-usage @LEX:@STR:<null> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<rank> lexeme --> NOP
@@ -1787,94 +1291,57 @@ GC comment g1-usage {null ranking constant} floater --> NOP
 GC g1 priority-rule {null ranking specification} {@LEX:@STR:<null> @LEX:@STR:<rank> @LEX:@STR:<=>> {null ranking constant}} 0 action {array {start length values}} bless {special lhs} mask {1 1 1 0}
 GC comment definition {null ranking constant} 7325 23
 GC comment g1-definition {null ranking constant} floater --> {JMP brick}
-GC comment l0-definition @STR:<low> undef --> {JMP match}
-GC comment usage @CHR:<l> 7353 1
-GC comment definition @CHR:<l> 7353 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<o> 7354 1
-GC comment definition @CHR:<o> 7354 1
-GC comment <literal> @CHR:<o> literal --> NOP
-GC comment usage @CHR:<w> 7355 1
-GC comment definition @CHR:<w> 7355 1
-GC comment <literal> @CHR:<w> literal --> NOP
-GC l0 priority-rule @STR:<low> {@CHR:<l> @CHR:<o> @CHR:<w>} 0
+GC comment usage @STR:<low> 7353 5
+GC comment definition @STR:<low> 7353 5
+GC comment <literal> @STR:<low> undef --> {JMP literal}
+GC l0 atom @STR:<low> string 108 111 119
 GC comment definition @LEX:@STR:<low> 7353 5
 GC comment usage @STR:<low> 7353 5
 GC comment l0-definition @LEX:@STR:<low> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<low> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<low>
 GC g1 terminal @LEX:@STR:<low>
-GC comment l0-usage @STR:<low> match --> {JMP strict}
+GC comment l0-usage @STR:<low> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<low> @STR:<low> 0
 GC comment g1-usage @LEX:@STR:<low> lexeme --> NOP
 GC g1 priority-rule {null ranking constant} @LEX:@STR:<low> 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment g1-definition {null ranking constant} brick --> NOP
-GC comment l0-definition @STR:<high> undef --> {JMP match}
-GC comment usage @CHR:<h> 7361 1
-GC comment definition @CHR:<h> 7361 1
-GC comment <literal> @CHR:<h> literal --> NOP
-GC comment usage @CHR:<i> 7362 1
-GC comment definition @CHR:<i> 7362 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC comment usage @CHR:<g> 7363 1
-GC comment definition @CHR:<g> 7363 1
-GC comment <literal> @CHR:<g> literal --> NOP
-GC comment usage @CHR:<h> 7364 1
-GC comment definition @CHR:<h> 7364 1
-GC comment <literal> @CHR:<h> literal --> NOP
-GC l0 priority-rule @STR:<high> {@CHR:<h> @CHR:<i> @CHR:<g> @CHR:<h>} 0
+GC comment usage @STR:<high> 7361 6
+GC comment definition @STR:<high> 7361 6
+GC comment <literal> @STR:<high> undef --> {JMP literal}
+GC l0 atom @STR:<high> string 104 105 103 104
 GC comment definition @LEX:@STR:<high> 7361 6
 GC comment usage @STR:<high> 7361 6
 GC comment l0-definition @LEX:@STR:<high> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<high> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<high>
 GC g1 terminal @LEX:@STR:<high>
-GC comment l0-usage @STR:<high> match --> {JMP strict}
+GC comment l0-usage @STR:<high> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<high> @STR:<high> 0
 GC comment g1-usage @LEX:@STR:<high> lexeme --> NOP
 GC g1 priority-rule {null ranking constant} @LEX:@STR:<high> 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {priority specification} 7368 24
 GC comment g1-definition {priority specification} floater --> {JMP brick}
-GC comment l0-definition @STR:<priority> undef --> {JMP match}
-GC comment usage @CHR:<p> 7398 1
-GC comment definition @CHR:<p> 7398 1
-GC comment <literal> @CHR:<p> literal --> NOP
-GC comment usage @CHR:<r> 7399 1
-GC comment definition @CHR:<r> 7399 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<i> 7400 1
-GC comment definition @CHR:<i> 7400 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC comment usage @CHR:<o> 7401 1
-GC comment definition @CHR:<o> 7401 1
-GC comment <literal> @CHR:<o> literal --> NOP
-GC comment usage @CHR:<r> 7402 1
-GC comment definition @CHR:<r> 7402 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<i> 7403 1
-GC comment definition @CHR:<i> 7403 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC comment usage @CHR:<t> 7404 1
-GC comment definition @CHR:<t> 7404 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC comment usage @CHR:<y> 7405 1
-GC comment definition @CHR:<y> 7405 1
-GC comment <literal> @CHR:<y> literal --> NOP
-GC l0 priority-rule @STR:<priority> {@CHR:<p> @CHR:<r> @CHR:<i> @CHR:<o> @CHR:<r> @CHR:<i> @CHR:<t> @CHR:<y>} 0
+GC comment usage @STR:<priority> 7398 10
+GC comment definition @STR:<priority> 7398 10
+GC comment <literal> @STR:<priority> undef --> {JMP literal}
+GC l0 atom @STR:<priority> string 112 114 105 111 114 105 116 121
 GC comment definition @LEX:@STR:<priority> 7398 10
 GC comment usage @STR:<priority> 7398 10
 GC comment l0-definition @LEX:@STR:<priority> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<priority> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<priority>
 GC g1 terminal @LEX:@STR:<priority>
-GC comment l0-usage @STR:<priority> match --> {JMP strict}
+GC comment l0-usage @STR:<priority> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<priority> @STR:<priority> 0
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment usage @STR:<=>> 7409 4
+GC comment definition @STR:<=>> 7409 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 7409 4
 GC comment usage @STR:<=>> 7409 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<=>> literal --> NOP
 GC comment usage {signed integer} 7415 16
 GC comment g1-usage @LEX:@STR:<priority> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<=>> lexeme --> NOP
@@ -1882,37 +1349,26 @@ GC comment g1-usage {signed integer} floater --> NOP
 GC g1 priority-rule {priority specification} {@LEX:@STR:<priority> @LEX:@STR:<=>> {signed integer}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {pause specification} 7432 21
 GC comment g1-definition {pause specification} floater --> {JMP brick}
-GC comment l0-definition @STR:<pause> undef --> {JMP match}
-GC comment usage @CHR:<p> 7459 1
-GC comment definition @CHR:<p> 7459 1
-GC comment <literal> @CHR:<p> literal --> NOP
-GC comment usage @CHR:<a> 7460 1
-GC comment definition @CHR:<a> 7460 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<u> 7461 1
-GC comment definition @CHR:<u> 7461 1
-GC comment <literal> @CHR:<u> literal --> NOP
-GC comment usage @CHR:<s> 7462 1
-GC comment definition @CHR:<s> 7462 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC comment usage @CHR:<e> 7463 1
-GC comment definition @CHR:<e> 7463 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC l0 priority-rule @STR:<pause> {@CHR:<p> @CHR:<a> @CHR:<u> @CHR:<s> @CHR:<e>} 0
+GC comment usage @STR:<pause> 7459 7
+GC comment definition @STR:<pause> 7459 7
+GC comment <literal> @STR:<pause> undef --> {JMP literal}
+GC l0 atom @STR:<pause> string 112 97 117 115 101
 GC comment definition @LEX:@STR:<pause> 7459 7
 GC comment usage @STR:<pause> 7459 7
 GC comment l0-definition @LEX:@STR:<pause> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<pause> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<pause>
 GC g1 terminal @LEX:@STR:<pause>
-GC comment l0-usage @STR:<pause> match --> {JMP strict}
+GC comment l0-usage @STR:<pause> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<pause> @STR:<pause> 0
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment usage @STR:<=>> 7467 4
+GC comment definition @STR:<=>> 7467 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 7467 4
 GC comment usage @STR:<=>> 7467 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<=>> literal --> NOP
 GC comment usage {before or after} 7473 17
 GC comment g1-usage @LEX:@STR:<pause> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<=>> lexeme --> NOP
@@ -1920,18 +1376,22 @@ GC comment g1-usage {before or after} undef --> {JMP floater}
 GC g1 priority-rule {pause specification} {@LEX:@STR:<pause> @LEX:@STR:<=>> {before or after}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {event specification} 7492 21
 GC comment g1-definition {event specification} floater --> {JMP brick}
-GC comment l0-definition @STR:<event> strict --> NOP
+GC comment usage @STR:<event> 7519 7
+GC comment definition @STR:<event> 7519 7
+GC comment <literal> @STR:<event> literal --> NOP
 GC comment definition @LEX:@STR:<event> 7519 7
 GC comment usage @STR:<event> 7519 7
 GC comment l0-definition @LEX:@STR:<event> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<event> lexeme --> NOP
-GC comment l0-usage @STR:<event> strict --> NOP
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<event> literal --> NOP
+GC comment usage @STR:<=>> 7527 4
+GC comment definition @STR:<=>> 7527 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 7527 4
 GC comment usage @STR:<=>> 7527 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<=>> literal --> NOP
 GC comment usage {event initialization} 7533 22
 GC comment g1-usage @LEX:@STR:<event> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<=>> lexeme --> NOP
@@ -1960,43 +1420,32 @@ GC comment g1-usage {on or off} undef --> {JMP floater}
 GC g1 priority-rule {event initializer} {@LEX:@CHR:<=> {on or off}} 0 action {array {start length values}} bless {special lhs} mask {1 0}
 GC comment definition {on or off} 7658 11
 GC comment g1-definition {on or off} floater --> {JMP brick}
-GC comment l0-definition @STR:<on> undef --> {JMP match}
-GC comment usage @CHR:<o> 7674 1
-GC comment definition @CHR:<o> 7674 1
-GC comment <literal> @CHR:<o> literal --> NOP
-GC comment usage @CHR:<n> 7675 1
-GC comment definition @CHR:<n> 7675 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC l0 priority-rule @STR:<on> {@CHR:<o> @CHR:<n>} 0
+GC comment usage @STR:<on> 7674 4
+GC comment definition @STR:<on> 7674 4
+GC comment <literal> @STR:<on> undef --> {JMP literal}
+GC l0 atom @STR:<on> string 111 110
 GC comment definition @LEX:@STR:<on> 7674 4
 GC comment usage @STR:<on> 7674 4
 GC comment l0-definition @LEX:@STR:<on> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<on> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<on>
 GC g1 terminal @LEX:@STR:<on>
-GC comment l0-usage @STR:<on> match --> {JMP strict}
+GC comment l0-usage @STR:<on> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<on> @STR:<on> 0
 GC comment g1-usage @LEX:@STR:<on> lexeme --> NOP
 GC g1 priority-rule {on or off} @LEX:@STR:<on> 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment g1-definition {on or off} brick --> NOP
-GC comment l0-definition @STR:<off> undef --> {JMP match}
-GC comment usage @CHR:<o> 7681 1
-GC comment definition @CHR:<o> 7681 1
-GC comment <literal> @CHR:<o> literal --> NOP
-GC comment usage @CHR:<f> 7682 1
-GC comment definition @CHR:<f> 7682 1
-GC comment <literal> @CHR:<f> literal --> NOP
-GC comment usage @CHR:<f> 7683 1
-GC comment definition @CHR:<f> 7683 1
-GC comment <literal> @CHR:<f> literal --> NOP
-GC l0 priority-rule @STR:<off> {@CHR:<o> @CHR:<f> @CHR:<f>} 0
+GC comment usage @STR:<off> 7681 5
+GC comment definition @STR:<off> 7681 5
+GC comment <literal> @STR:<off> undef --> {JMP literal}
+GC l0 atom @STR:<off> string 111 102 102
 GC comment definition @LEX:@STR:<off> 7681 5
 GC comment usage @STR:<off> 7681 5
 GC comment l0-definition @LEX:@STR:<off> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<off> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<off>
 GC g1 terminal @LEX:@STR:<off>
-GC comment l0-usage @STR:<off> match --> {JMP strict}
+GC comment l0-usage @STR:<off> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<off> @STR:<off> 0
 GC comment g1-usage @LEX:@STR:<off> lexeme --> NOP
 GC g1 priority-rule {on or off} @LEX:@STR:<off> 0 action {array {start length values}} bless {special lhs} mask 0
@@ -2005,49 +1454,26 @@ GC comment g1-definition {event initializer} brick --> NOP
 GC g1 priority-rule {event initializer} {} 0 action {array {start length values}} bless {special lhs}
 GC comment definition {latm specification} 7720 20
 GC comment g1-definition {latm specification} floater --> {JMP brick}
-GC comment l0-definition @STR:<forgiving> undef --> {JMP match}
-GC comment usage @CHR:<f> 7746 1
-GC comment definition @CHR:<f> 7746 1
-GC comment <literal> @CHR:<f> literal --> NOP
-GC comment usage @CHR:<o> 7747 1
-GC comment definition @CHR:<o> 7747 1
-GC comment <literal> @CHR:<o> literal --> NOP
-GC comment usage @CHR:<r> 7748 1
-GC comment definition @CHR:<r> 7748 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<g> 7749 1
-GC comment definition @CHR:<g> 7749 1
-GC comment <literal> @CHR:<g> literal --> NOP
-GC comment usage @CHR:<i> 7750 1
-GC comment definition @CHR:<i> 7750 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC comment usage @CHR:<v> 7751 1
-GC comment definition @CHR:<v> 7751 1
-GC comment <literal> @CHR:<v> literal --> NOP
-GC comment usage @CHR:<i> 7752 1
-GC comment definition @CHR:<i> 7752 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC comment usage @CHR:<n> 7753 1
-GC comment definition @CHR:<n> 7753 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC comment usage @CHR:<g> 7754 1
-GC comment definition @CHR:<g> 7754 1
-GC comment <literal> @CHR:<g> literal --> NOP
-GC l0 priority-rule @STR:<forgiving> {@CHR:<f> @CHR:<o> @CHR:<r> @CHR:<g> @CHR:<i> @CHR:<v> @CHR:<i> @CHR:<n> @CHR:<g>} 0
+GC comment usage @STR:<forgiving> 7746 11
+GC comment definition @STR:<forgiving> 7746 11
+GC comment <literal> @STR:<forgiving> undef --> {JMP literal}
+GC l0 atom @STR:<forgiving> string 102 111 114 103 105 118 105 110 103
 GC comment definition @LEX:@STR:<forgiving> 7746 11
 GC comment usage @STR:<forgiving> 7746 11
 GC comment l0-definition @LEX:@STR:<forgiving> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<forgiving> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<forgiving>
 GC g1 terminal @LEX:@STR:<forgiving>
-GC comment l0-usage @STR:<forgiving> match --> {JMP strict}
+GC comment l0-usage @STR:<forgiving> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<forgiving> @STR:<forgiving> 0
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment usage @STR:<=>> 7758 4
+GC comment definition @STR:<=>> 7758 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 7758 4
 GC comment usage @STR:<=>> 7758 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<=>> literal --> NOP
 GC comment usage boolean 7764 7
 GC comment g1-usage @LEX:@STR:<forgiving> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<=>> lexeme --> NOP
@@ -2055,34 +1481,26 @@ GC comment g1-usage boolean floater --> NOP
 GC g1 priority-rule {latm specification} {@LEX:@STR:<forgiving> @LEX:@STR:<=>> boolean} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition {latm specification} 7772 20
 GC comment g1-definition {latm specification} brick --> NOP
-GC comment l0-definition @STR:<latm> undef --> {JMP match}
-GC comment usage @CHR:<l> 7798 1
-GC comment definition @CHR:<l> 7798 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<a> 7799 1
-GC comment definition @CHR:<a> 7799 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<t> 7800 1
-GC comment definition @CHR:<t> 7800 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC comment usage @CHR:<m> 7801 1
-GC comment definition @CHR:<m> 7801 1
-GC comment <literal> @CHR:<m> literal --> NOP
-GC l0 priority-rule @STR:<latm> {@CHR:<l> @CHR:<a> @CHR:<t> @CHR:<m>} 0
+GC comment usage @STR:<latm> 7798 6
+GC comment definition @STR:<latm> 7798 6
+GC comment <literal> @STR:<latm> undef --> {JMP literal}
+GC l0 atom @STR:<latm> string 108 97 116 109
 GC comment definition @LEX:@STR:<latm> 7798 6
 GC comment usage @STR:<latm> 7798 6
 GC comment l0-definition @LEX:@STR:<latm> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<latm> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<latm>
 GC g1 terminal @LEX:@STR:<latm>
-GC comment l0-usage @STR:<latm> match --> {JMP strict}
+GC comment l0-usage @STR:<latm> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<latm> @STR:<latm> 0
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment usage @STR:<=>> 7805 4
+GC comment definition @STR:<=>> 7805 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 7805 4
 GC comment usage @STR:<=>> 7805 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<=>> literal --> NOP
 GC comment usage boolean 7811 7
 GC comment g1-usage @LEX:@STR:<latm> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<=>> lexeme --> NOP
@@ -2090,37 +1508,26 @@ GC comment g1-usage boolean floater --> NOP
 GC g1 priority-rule {latm specification} {@LEX:@STR:<latm> @LEX:@STR:<=>> boolean} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition blessing 7819 10
 GC comment g1-definition blessing floater --> {JMP brick}
-GC comment l0-definition @STR:<bless> undef --> {JMP match}
-GC comment usage @CHR:<b> 7835 1
-GC comment definition @CHR:<b> 7835 1
-GC comment <literal> @CHR:<b> literal --> NOP
-GC comment usage @CHR:<l> 7836 1
-GC comment definition @CHR:<l> 7836 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<e> 7837 1
-GC comment definition @CHR:<e> 7837 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<s> 7838 1
-GC comment definition @CHR:<s> 7838 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC comment usage @CHR:<s> 7839 1
-GC comment definition @CHR:<s> 7839 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC l0 priority-rule @STR:<bless> {@CHR:<b> @CHR:<l> @CHR:<e> @CHR:<s> @CHR:<s>} 0
+GC comment usage @STR:<bless> 7835 7
+GC comment definition @STR:<bless> 7835 7
+GC comment <literal> @STR:<bless> undef --> {JMP literal}
+GC l0 atom @STR:<bless> string 98 108 101 115 115
 GC comment definition @LEX:@STR:<bless> 7835 7
 GC comment usage @STR:<bless> 7835 7
 GC comment l0-definition @LEX:@STR:<bless> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<bless> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<bless>
 GC g1 terminal @LEX:@STR:<bless>
-GC comment l0-usage @STR:<bless> match --> {JMP strict}
+GC comment l0-usage @STR:<bless> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<bless> @STR:<bless> 0
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment usage @STR:<=>> 7843 4
+GC comment definition @STR:<=>> 7843 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 7843 4
 GC comment usage @STR:<=>> 7843 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<=>> literal --> NOP
 GC comment usage {blessing name} 7849 15
 GC comment g1-usage @LEX:@STR:<bless> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<=>> lexeme --> NOP
@@ -2128,34 +1535,26 @@ GC comment g1-usage {blessing name} undef --> {JMP floater}
 GC g1 priority-rule blessing {@LEX:@STR:<bless> @LEX:@STR:<=>> {blessing name}} 0 action {array {start length values}} bless {special lhs} mask {1 1 0}
 GC comment definition naming 7865 8
 GC comment g1-definition naming floater --> {JMP brick}
-GC comment l0-definition @STR:<name> undef --> {JMP match}
-GC comment usage @CHR:<n> 7879 1
-GC comment definition @CHR:<n> 7879 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC comment usage @CHR:<a> 7880 1
-GC comment definition @CHR:<a> 7880 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<m> 7881 1
-GC comment definition @CHR:<m> 7881 1
-GC comment <literal> @CHR:<m> literal --> NOP
-GC comment usage @CHR:<e> 7882 1
-GC comment definition @CHR:<e> 7882 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC l0 priority-rule @STR:<name> {@CHR:<n> @CHR:<a> @CHR:<m> @CHR:<e>} 0
+GC comment usage @STR:<name> 7879 6
+GC comment definition @STR:<name> 7879 6
+GC comment <literal> @STR:<name> undef --> {JMP literal}
+GC l0 atom @STR:<name> string 110 97 109 101
 GC comment definition @LEX:@STR:<name> 7879 6
 GC comment usage @STR:<name> 7879 6
 GC comment l0-definition @LEX:@STR:<name> undef --> {JMP match}
 GC comment :lexeme @LEX:@STR:<name> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@STR:<name>
 GC g1 terminal @LEX:@STR:<name>
-GC comment l0-usage @STR:<name> match --> {JMP strict}
+GC comment l0-usage @STR:<name> literal --> NOP
 GC l0 priority-rule @LEX:@STR:<name> @STR:<name> 0
-GC comment l0-definition @STR:<=>> strict --> NOP
+GC comment usage @STR:<=>> 7886 4
+GC comment definition @STR:<=>> 7886 4
+GC comment <literal> @STR:<=>> literal --> NOP
 GC comment definition @LEX:@STR:<=>> 7886 4
 GC comment usage @STR:<=>> 7886 4
 GC comment l0-definition @LEX:@STR:<=>> lexeme --> NOP
 GC comment :lexeme @LEX:@STR:<=>> lexeme --> NOP
-GC comment l0-usage @STR:<=>> strict --> NOP
+GC comment l0-usage @STR:<=>> literal --> NOP
 GC comment usage {alternative name} 7892 18
 GC comment g1-usage @LEX:@STR:<name> lexeme --> NOP
 GC comment g1-usage @LEX:@STR:<=>> lexeme --> NOP
@@ -2196,16 +1595,12 @@ GC comment definition {reserved event name} 8119 21
 GC comment l0-definition {reserved event name} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {reserved event name}
 GC g1 terminal {reserved event name}
-GC comment l0-definition @STR:<::> undef --> {JMP match}
-GC comment usage @CHR:<:> 8143 1
-GC comment definition @CHR:<:> 8143 1
-GC comment <literal> @CHR:<:> literal --> NOP
-GC comment usage @CHR:<:> 8144 1
-GC comment definition @CHR:<:> 8144 1
-GC comment <literal> @CHR:<:> literal --> NOP
-GC l0 priority-rule @STR:<::> {@CHR:<:> @CHR:<:>} 0
+GC comment usage @STR:<::> 8143 4
+GC comment definition @STR:<::> 8143 4
+GC comment <literal> @STR:<::> undef --> {JMP literal}
+GC l0 atom @STR:<::> string 58 58
 GC comment usage {one or more word characters} 8148 29
-GC comment l0-usage @STR:<::> match --> {JMP strict}
+GC comment l0-usage @STR:<::> literal --> NOP
 GC comment l0-usage {one or more word characters} undef --> {JMP strict:u}
 GC l0 priority-rule {reserved event name} {@STR:<::> {one or more word characters}} 0
 GC comment definition {blessing name} 8179 15
@@ -2248,7 +1643,7 @@ GC comment g1-definition {parenthesized rhs primary list} floater --> {JMP brick
 GC comment usage {@CHR:<\50>} 8470 3
 GC comment definition {@CHR:<\50>} 8470 3
 GC comment <literal> {@CHR:<\50>} undef --> {JMP literal}
-GC l0 character {@CHR:<\50>} 40
+GC l0 atom {@CHR:<\50>} character 40
 GC comment definition {@LEX:@CHR:<\50>} 8470 3
 GC comment usage {@CHR:<\50>} 8470 3
 GC comment l0-definition {@LEX:@CHR:<\50>} undef --> {JMP match}
@@ -2261,7 +1656,7 @@ GC comment usage {rhs primary list} 8475 18
 GC comment usage {@CHR:<\51>} 8495 3
 GC comment definition {@CHR:<\51>} 8495 3
 GC comment <literal> {@CHR:<\51>} undef --> {JMP literal}
-GC l0 character {@CHR:<\51>} 41
+GC l0 atom {@CHR:<\51>} character 41
 GC comment definition {@LEX:@CHR:<\51>} 8495 3
 GC comment usage {@CHR:<\51>} 8495 3
 GC comment l0-definition {@LEX:@CHR:<\51>} undef --> {JMP match}
@@ -2325,7 +1720,8 @@ GC comment definition whitespace 8812 10
 GC comment l0-definition whitespace discard:u --> {JMP discard}
 GC comment usage @CHR:<s> 8825 4
 GC comment definition @CHR:<s> 8825 4
-GC comment <literal> @CHR:<s> literal --> NOP
+GC comment <literal> @CHR:<s> undef --> {JMP literal}
+GC l0 atom @CHR:<s> character 115
 GC comment l0-usage @CHR:<s> literal --> NOP
 GC l0 quantified-rule whitespace @CHR:<s> 1
 GC comment usage {hash comment} 8860 14
@@ -2345,7 +1741,7 @@ GC comment l0-definition {terminated hash comment} strict:u --> {JMP strict}
 GC comment usage @CHR:<#> 8985 3
 GC comment definition @CHR:<#> 8985 3
 GC comment <literal> @CHR:<#> undef --> {JMP literal}
-GC l0 character @CHR:<#> 35
+GC l0 atom @CHR:<#> character 35
 GC comment usage {hash comment body} 8989 19
 GC comment usage {vertical space char} 9009 21
 GC comment l0-usage @CHR:<#> literal --> NOP
@@ -2371,33 +1767,26 @@ GC comment l0-definition {vertical space char} strict:u --> {JMP strict}
 GC comment usage {@CLS:<\n-\r\u2028-\u2029>} 9158 22
 GC comment definition {@CLS:<\n-\r\u2028-\u2029>} 9158 22
 GC comment <literal> {@CLS:<\n-\r\u2028-\u2029>} undef --> {JMP literal}
-GC l0 charclass {@CLS:<\n-\r\u2028-\u2029>} {{10 13} {8232 8233}} 0
+GC l0 atom {@CLS:<\n-\r\u2028-\u2029>} charclass {10 13} {8232 8233}
 GC comment l0-usage {@CLS:<\n-\r\u2028-\u2029>} literal --> NOP
 GC l0 priority-rule {vertical space char} {{@CLS:<\n-\r\u2028-\u2029>}} 0
 GC comment definition {hash comment char} 9181 19
 GC comment l0-definition {hash comment char} strict:u --> {JMP strict}
-GC comment usage {@NEC:<\n-\r\u2028-\u2029>} 9204 23
-GC comment definition {@NEC:<\n-\r\u2028-\u2029>} 9204 23
-GC comment <literal> {@NEC:<\n-\r\u2028-\u2029>} undef --> {JMP literal}
-GC l0 negcclass {@NEC:<\n-\r\u2028-\u2029>} {{10 13} {8232 8233}} 0
-GC comment l0-usage {@NEC:<\n-\r\u2028-\u2029>} literal --> NOP
-GC l0 priority-rule {hash comment char} {{@NEC:<\n-\r\u2028-\u2029>}} 0
+GC comment usage {@^CLS:<\n-\r\u2028-\u2029>} 9204 23
+GC comment definition {@^CLS:<\n-\r\u2028-\u2029>} 9204 23
+GC comment <literal> {@^CLS:<\n-\r\u2028-\u2029>} undef --> {JMP literal}
+GC l0 atom {@^CLS:<\n-\r\u2028-\u2029>} ^charclass {10 13} {8232 8233}
+GC comment l0-usage {@^CLS:<\n-\r\u2028-\u2029>} literal --> NOP
+GC l0 priority-rule {hash comment char} {{@^CLS:<\n-\r\u2028-\u2029>}} 0
 GC comment definition {op declare bnf} 9229 16
 GC comment l0-definition {op declare bnf} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {op declare bnf}
 GC g1 terminal {op declare bnf}
-GC comment l0-definition @STR:<::=> undef --> {JMP match}
-GC comment usage @CHR:<:> 9248 1
-GC comment definition @CHR:<:> 9248 1
-GC comment <literal> @CHR:<:> literal --> NOP
-GC comment usage @CHR:<:> 9249 1
-GC comment definition @CHR:<:> 9249 1
-GC comment <literal> @CHR:<:> literal --> NOP
-GC comment usage @CHR:<=> 9250 1
-GC comment definition @CHR:<=> 9250 1
-GC comment <literal> @CHR:<=> literal --> NOP
-GC l0 priority-rule @STR:<::=> {@CHR:<:> @CHR:<:> @CHR:<=>} 0
-GC comment l0-usage @STR:<::=> match --> {JMP strict}
+GC comment usage @STR:<::=> 9248 5
+GC comment definition @STR:<::=> 9248 5
+GC comment <literal> @STR:<::=> undef --> {JMP literal}
+GC l0 atom @STR:<::=> string 58 58 61
+GC comment l0-usage @STR:<::=> literal --> NOP
 GC l0 priority-rule {op declare bnf} @STR:<::=> 0
 GC comment definition {op declare match} 9254 18
 GC comment l0-definition {op declare match} floater --> {JMP lexeme make-lexeme}
@@ -2406,23 +1795,18 @@ GC g1 terminal {op declare match}
 GC comment usage @CHR:<~> 9275 3
 GC comment definition @CHR:<~> 9275 3
 GC comment <literal> @CHR:<~> undef --> {JMP literal}
-GC l0 character @CHR:<~> 126
+GC l0 atom @CHR:<~> character 126
 GC comment l0-usage @CHR:<~> literal --> NOP
 GC l0 priority-rule {op declare match} @CHR:<~> 0
 GC comment definition {op loosen} 9279 11
 GC comment l0-definition {op loosen} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {op loosen}
 GC g1 terminal {op loosen}
-GC comment l0-definition @STR:<||> undef --> {JMP match}
-GC comment usage @CHR:<|> 9293 1
-GC comment definition @CHR:<|> 9293 1
-GC comment <literal> @CHR:<|> undef --> {JMP literal}
-GC l0 character @CHR:<|> 124
-GC comment usage @CHR:<|> 9294 1
-GC comment definition @CHR:<|> 9294 1
-GC comment <literal> @CHR:<|> literal --> NOP
-GC l0 priority-rule @STR:<||> {@CHR:<|> @CHR:<|>} 0
-GC comment l0-usage @STR:<||> match --> {JMP strict}
+GC comment usage @STR:<||> 9293 4
+GC comment definition @STR:<||> 9293 4
+GC comment <literal> @STR:<||> undef --> {JMP literal}
+GC l0 atom @STR:<||> string 124 124
+GC comment l0-usage @STR:<||> literal --> NOP
 GC l0 priority-rule {op loosen} @STR:<||> 0
 GC comment definition {op equal priority} 9298 19
 GC comment l0-definition {op equal priority} floater --> {JMP lexeme make-lexeme}
@@ -2430,7 +1814,8 @@ GC l0 lexeme {op equal priority}
 GC g1 terminal {op equal priority}
 GC comment usage @CHR:<|> 9320 3
 GC comment definition @CHR:<|> 9320 3
-GC comment <literal> @CHR:<|> literal --> NOP
+GC comment <literal> @CHR:<|> undef --> {JMP literal}
+GC l0 atom @CHR:<|> character 124
 GC comment l0-usage @CHR:<|> literal --> NOP
 GC l0 priority-rule {op equal priority} @CHR:<|> 0
 GC comment definition quantifier 9324 10
@@ -2438,7 +1823,7 @@ GC comment g1-definition quantifier floater --> {JMP brick}
 GC comment usage @CHR:<*> 9339 3
 GC comment definition @CHR:<*> 9339 3
 GC comment <literal> @CHR:<*> undef --> {JMP literal}
-GC l0 character @CHR:<*> 42
+GC l0 atom @CHR:<*> character 42
 GC comment definition @LEX:@CHR:<*> 9339 3
 GC comment usage @CHR:<*> 9339 3
 GC comment l0-definition @LEX:@CHR:<*> undef --> {JMP match}
@@ -2453,7 +1838,7 @@ GC comment g1-definition quantifier brick --> NOP
 GC comment usage @CHR:<+> 9345 3
 GC comment definition @CHR:<+> 9345 3
 GC comment <literal> @CHR:<+> undef --> {JMP literal}
-GC l0 character @CHR:<+> 43
+GC l0 atom @CHR:<+> character 43
 GC comment definition @LEX:@CHR:<+> 9345 3
 GC comment usage @CHR:<+> 9345 3
 GC comment l0-definition @LEX:@CHR:<+> undef --> {JMP match}
@@ -2468,47 +1853,18 @@ GC comment definition {before or after} 9349 17
 GC comment l0-definition {before or after} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {before or after}
 GC g1 terminal {before or after}
-GC comment l0-definition @STR:<before> undef --> {JMP match}
-GC comment usage @CHR:<b> 9369 1
-GC comment definition @CHR:<b> 9369 1
-GC comment <literal> @CHR:<b> literal --> NOP
-GC comment usage @CHR:<e> 9370 1
-GC comment definition @CHR:<e> 9370 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<f> 9371 1
-GC comment definition @CHR:<f> 9371 1
-GC comment <literal> @CHR:<f> literal --> NOP
-GC comment usage @CHR:<o> 9372 1
-GC comment definition @CHR:<o> 9372 1
-GC comment <literal> @CHR:<o> literal --> NOP
-GC comment usage @CHR:<r> 9373 1
-GC comment definition @CHR:<r> 9373 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<e> 9374 1
-GC comment definition @CHR:<e> 9374 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC l0 priority-rule @STR:<before> {@CHR:<b> @CHR:<e> @CHR:<f> @CHR:<o> @CHR:<r> @CHR:<e>} 0
-GC comment l0-usage @STR:<before> match --> {JMP strict}
+GC comment usage @STR:<before> 9369 8
+GC comment definition @STR:<before> 9369 8
+GC comment <literal> @STR:<before> undef --> {JMP literal}
+GC l0 atom @STR:<before> string 98 101 102 111 114 101
+GC comment l0-usage @STR:<before> literal --> NOP
 GC l0 priority-rule {before or after} @STR:<before> 0
 GC comment l0-definition {before or after} lexeme --> NOP
-GC comment l0-definition @STR:<after> undef --> {JMP match}
-GC comment usage @CHR:<a> 9380 1
-GC comment definition @CHR:<a> 9380 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<f> 9381 1
-GC comment definition @CHR:<f> 9381 1
-GC comment <literal> @CHR:<f> literal --> NOP
-GC comment usage @CHR:<t> 9382 1
-GC comment definition @CHR:<t> 9382 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC comment usage @CHR:<e> 9383 1
-GC comment definition @CHR:<e> 9383 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<r> 9384 1
-GC comment definition @CHR:<r> 9384 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC l0 priority-rule @STR:<after> {@CHR:<a> @CHR:<f> @CHR:<t> @CHR:<e> @CHR:<r>} 0
-GC comment l0-usage @STR:<after> match --> {JMP strict}
+GC comment usage @STR:<after> 9380 7
+GC comment definition @STR:<after> 9380 7
+GC comment <literal> @STR:<after> undef --> {JMP literal}
+GC l0 atom @STR:<after> string 97 102 116 101 114
+GC comment l0-usage @STR:<after> literal --> NOP
 GC l0 priority-rule {before or after} @STR:<after> 0
 GC comment definition {signed integer} 9389 16
 GC comment l0-definition {signed integer} floater --> {JMP lexeme make-lexeme}
@@ -2528,49 +1884,55 @@ GC comment l0-definition sign strict:u --> {JMP strict}
 GC comment usage @CLS:<+-> 9446 4
 GC comment definition @CLS:<+-> 9446 4
 GC comment <literal> @CLS:<+-> undef --> {JMP literal}
-GC l0 charclass @CLS:<+-> {43 45} 0
+GC l0 atom @CLS:<+-> charclass 43 45
 GC comment l0-usage @CLS:<+-> literal --> NOP
 GC l0 priority-rule sign @CLS:<+-> 0
 GC comment definition integer 9451 9
 GC comment l0-definition integer strict:u --> {JMP strict}
 GC comment usage @CHR:<d> 9463 4
 GC comment definition @CHR:<d> 9463 4
-GC comment <literal> @CHR:<d> literal --> NOP
+GC comment <literal> @CHR:<d> undef --> {JMP literal}
+GC l0 atom @CHR:<d> character 100
 GC comment l0-usage @CHR:<d> literal --> NOP
 GC l0 quantified-rule integer @CHR:<d> 1
 GC comment definition boolean 9470 7
 GC comment l0-definition boolean floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme boolean
 GC g1 terminal boolean
-GC comment usage @CLS:<0-1> 9480 4
-GC comment definition @CLS:<0-1> 9480 4
-GC comment <literal> @CLS:<0-1> undef --> {JMP literal}
-GC l0 charclass @CLS:<0-1> {{48 49}} 0
-GC comment l0-usage @CLS:<0-1> literal --> NOP
-GC l0 priority-rule boolean @CLS:<0-1> 0
+GC comment usage @RAN:<01> 9480 4
+GC comment definition @RAN:<01> 9480 4
+GC comment <literal> @RAN:<01> undef --> {JMP literal}
+GC l0 atom @RAN:<01> range 48 49
+GC comment l0-usage @RAN:<01> literal --> NOP
+GC l0 priority-rule boolean @RAN:<01> 0
 GC comment definition {reserved action name} 9486 22
 GC comment l0-definition {reserved action name} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {reserved action name}
 GC g1 terminal {reserved action name}
-GC comment l0-definition @STR:<::> strict --> NOP
+GC comment usage @STR:<::> 9511 4
+GC comment definition @STR:<::> 9511 4
+GC comment <literal> @STR:<::> literal --> NOP
 GC comment usage {one or more word characters} 9516 29
-GC comment l0-usage @STR:<::> strict --> NOP
+GC comment l0-usage @STR:<::> literal --> NOP
 GC comment l0-usage {one or more word characters} strict:u --> NOP
 GC l0 priority-rule {reserved action name} {@STR:<::> {one or more word characters}} 0
 GC comment definition {reserved blessing name} 9546 24
 GC comment l0-definition {reserved blessing name} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {reserved blessing name}
 GC g1 terminal {reserved blessing name}
-GC comment l0-definition @STR:<::> strict --> NOP
+GC comment usage @STR:<::> 9573 4
+GC comment definition @STR:<::> 9573 4
+GC comment <literal> @STR:<::> literal --> NOP
 GC comment usage {one or more word characters} 9578 29
-GC comment l0-usage @STR:<::> strict --> NOP
+GC comment l0-usage @STR:<::> literal --> NOP
 GC comment l0-usage {one or more word characters} strict:u --> NOP
 GC l0 priority-rule {reserved blessing name} {@STR:<::> {one or more word characters}} 0
 GC comment definition {one or more word characters} 9608 29
 GC comment l0-definition {one or more word characters} strict:u --> {JMP strict}
 GC comment usage @CHR:<w> 9640 4
 GC comment definition @CHR:<w> 9640 4
-GC comment <literal> @CHR:<w> literal --> NOP
+GC comment <literal> @CHR:<w> undef --> {JMP literal}
+GC l0 atom @CHR:<w> character 119
 GC comment l0-usage @CHR:<w> literal --> NOP
 GC l0 quantified-rule {one or more word characters} @CHR:<w> 1
 GC comment definition {zero or more word characters} 9646 30
@@ -2589,8 +1951,10 @@ GC comment l0-usage @CHR:<w> literal --> NOP
 GC l0 quantified-rule {Perl identifier} @CHR:<w> 1
 GC comment definition {double colon} 9859 14
 GC comment l0-definition {double colon} undef --> {JMP match}
-GC comment l0-definition @STR:<::> strict --> NOP
-GC comment l0-usage @STR:<::> strict --> NOP
+GC comment usage @STR:<::> 9876 4
+GC comment definition @STR:<::> 9876 4
+GC comment <literal> @STR:<::> literal --> NOP
+GC comment l0-usage @STR:<::> literal --> NOP
 GC l0 priority-rule {double colon} @STR:<::> 0
 GC comment definition {Perl name} 9881 11
 GC comment l0-definition {Perl name} floater --> {JMP lexeme make-lexeme}
@@ -2617,7 +1981,7 @@ GC g1 terminal {standard name}
 GC comment usage @CLS:<A-Za-z> 9993 8
 GC comment definition @CLS:<A-Za-z> 9993 8
 GC comment <literal> @CLS:<A-Za-z> undef --> {JMP literal}
-GC l0 charclass @CLS:<A-Za-z> {{65 90} {97 122}} 0
+GC l0 atom @CLS:<A-Za-z> charclass {65 90} {97 122}
 GC comment usage {zero or more word characters} 10002 30
 GC comment l0-usage @CLS:<A-Za-z> literal --> NOP
 GC comment l0-usage {zero or more word characters} match --> {JMP strict}
@@ -2629,11 +1993,12 @@ GC g1 terminal {bracketed name}
 GC comment usage @CHR:<<> 10052 3
 GC comment definition @CHR:<<> 10052 3
 GC comment <literal> @CHR:<<> undef --> {JMP literal}
-GC l0 character @CHR:<<> 60
+GC l0 atom @CHR:<<> character 60
 GC comment usage {bracketed name string} 10056 23
 GC comment usage @CHR:<>> 10080 3
 GC comment definition @CHR:<>> 10080 3
-GC comment <literal> @CHR:<>> literal --> NOP
+GC comment <literal> @CHR:<>> undef --> {JMP literal}
+GC l0 atom @CHR:<>> character 62
 GC comment l0-usage @CHR:<<> literal --> NOP
 GC comment l0-usage {bracketed name string} undef --> {JMP strict:u}
 GC comment l0-usage @CHR:<>> literal --> NOP
@@ -2643,7 +2008,7 @@ GC comment l0-definition {bracketed name string} strict:u --> {JMP strict}
 GC comment usage @CLS:<sw> 10110 6
 GC comment definition @CLS:<sw> 10110 6
 GC comment <literal> @CLS:<sw> undef --> {JMP literal}
-GC l0 charclass @CLS:<sw> {115 119} 0
+GC l0 atom @CLS:<sw> charclass 115 119
 GC comment l0-usage @CLS:<sw> literal --> NOP
 GC l0 quantified-rule {bracketed name string} @CLS:<sw> 1
 GC comment definition {array descriptor} 10119 18
@@ -2662,7 +2027,7 @@ GC comment l0-definition {array descriptor left bracket} strict:u --> {JMP stric
 GC comment usage {@CHR:<\133>} 10270 3
 GC comment definition {@CHR:<\133>} 10270 3
 GC comment <literal> {@CHR:<\133>} undef --> {JMP literal}
-GC l0 character {@CHR:<\133>} 91
+GC l0 atom {@CHR:<\133>} character 91
 GC comment l0-usage {@CHR:<\133>} literal --> NOP
 GC l0 priority-rule {array descriptor left bracket} {{@CHR:<\133>}} 0
 GC comment definition {array descriptor left bracket} 10275 31
@@ -2679,7 +2044,7 @@ GC comment l0-definition {array descriptor right bracket} strict:u --> {JMP stri
 GC comment usage {@CHR:<\135>} 10360 3
 GC comment definition {@CHR:<\135>} 10360 3
 GC comment <literal> {@CHR:<\135>} undef --> {JMP literal}
-GC l0 character {@CHR:<\135>} 93
+GC l0 atom {@CHR:<\135>} character 93
 GC comment l0-usage {@CHR:<\135>} literal --> NOP
 GC l0 priority-rule {array descriptor right bracket} {{@CHR:<\135>}} 0
 GC comment definition {array descriptor right bracket} 10365 32
@@ -2716,176 +2081,78 @@ GC comment l0-usage whitespace discard --> NOP
 GC l0 priority-rule {result item descriptor separator} {@CHR:<,> whitespace} 0
 GC comment definition {result item descriptor} 10618 24
 GC comment l0-definition {result item descriptor} strict:u --> {JMP strict}
-GC comment l0-definition @STR:<start> strict --> NOP
-GC comment l0-usage @STR:<start> strict --> NOP
+GC comment usage @STR:<start> 10645 7
+GC comment definition @STR:<start> 10645 7
+GC comment <literal> @STR:<start> literal --> NOP
+GC comment l0-usage @STR:<start> literal --> NOP
 GC l0 priority-rule {result item descriptor} @STR:<start> 0
 GC comment l0-definition {result item descriptor} strict --> NOP
-GC comment l0-definition @STR:<length> undef --> {JMP match}
-GC comment usage @CHR:<l> 10655 1
-GC comment definition @CHR:<l> 10655 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<e> 10656 1
-GC comment definition @CHR:<e> 10656 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<n> 10657 1
-GC comment definition @CHR:<n> 10657 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC comment usage @CHR:<g> 10658 1
-GC comment definition @CHR:<g> 10658 1
-GC comment <literal> @CHR:<g> literal --> NOP
-GC comment usage @CHR:<t> 10659 1
-GC comment definition @CHR:<t> 10659 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC comment usage @CHR:<h> 10660 1
-GC comment definition @CHR:<h> 10660 1
-GC comment <literal> @CHR:<h> literal --> NOP
-GC l0 priority-rule @STR:<length> {@CHR:<l> @CHR:<e> @CHR:<n> @CHR:<g> @CHR:<t> @CHR:<h>} 0
-GC comment l0-usage @STR:<length> match --> {JMP strict}
+GC comment usage @STR:<length> 10655 8
+GC comment definition @STR:<length> 10655 8
+GC comment <literal> @STR:<length> undef --> {JMP literal}
+GC l0 atom @STR:<length> string 108 101 110 103 116 104
+GC comment l0-usage @STR:<length> literal --> NOP
 GC l0 priority-rule {result item descriptor} @STR:<length> 0
 GC comment l0-definition {result item descriptor} strict --> NOP
-GC comment l0-definition @STR:<g1start> undef --> {JMP match}
-GC comment usage @CHR:<g> 10668 1
-GC comment definition @CHR:<g> 10668 1
-GC comment <literal> @CHR:<g> literal --> NOP
-GC comment usage @CHR:<1> 10669 1
-GC comment definition @CHR:<1> 10669 1
-GC comment <literal> @CHR:<1> undef --> {JMP literal}
-GC l0 character @CHR:<1> 49
-GC comment usage @CHR:<s> 10670 1
-GC comment definition @CHR:<s> 10670 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC comment usage @CHR:<t> 10671 1
-GC comment definition @CHR:<t> 10671 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC comment usage @CHR:<a> 10672 1
-GC comment definition @CHR:<a> 10672 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<r> 10673 1
-GC comment definition @CHR:<r> 10673 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<t> 10674 1
-GC comment definition @CHR:<t> 10674 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC l0 priority-rule @STR:<g1start> {@CHR:<g> @CHR:<1> @CHR:<s> @CHR:<t> @CHR:<a> @CHR:<r> @CHR:<t>} 0
-GC comment l0-usage @STR:<g1start> match --> {JMP strict}
+GC comment usage @STR:<g1start> 10668 9
+GC comment definition @STR:<g1start> 10668 9
+GC comment <literal> @STR:<g1start> undef --> {JMP literal}
+GC l0 atom @STR:<g1start> string 103 49 115 116 97 114 116
+GC comment l0-usage @STR:<g1start> literal --> NOP
 GC l0 priority-rule {result item descriptor} @STR:<g1start> 0
 GC comment l0-definition {result item descriptor} strict --> NOP
-GC comment l0-definition @STR:<g1length> undef --> {JMP match}
-GC comment usage @CHR:<g> 10680 1
-GC comment definition @CHR:<g> 10680 1
-GC comment <literal> @CHR:<g> literal --> NOP
-GC comment usage @CHR:<1> 10681 1
-GC comment definition @CHR:<1> 10681 1
-GC comment <literal> @CHR:<1> literal --> NOP
-GC comment usage @CHR:<l> 10682 1
-GC comment definition @CHR:<l> 10682 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<e> 10683 1
-GC comment definition @CHR:<e> 10683 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<n> 10684 1
-GC comment definition @CHR:<n> 10684 1
-GC comment <literal> @CHR:<n> literal --> NOP
-GC comment usage @CHR:<g> 10685 1
-GC comment definition @CHR:<g> 10685 1
-GC comment <literal> @CHR:<g> literal --> NOP
-GC comment usage @CHR:<t> 10686 1
-GC comment definition @CHR:<t> 10686 1
-GC comment <literal> @CHR:<t> literal --> NOP
-GC comment usage @CHR:<h> 10687 1
-GC comment definition @CHR:<h> 10687 1
-GC comment <literal> @CHR:<h> literal --> NOP
-GC l0 priority-rule @STR:<g1length> {@CHR:<g> @CHR:<1> @CHR:<l> @CHR:<e> @CHR:<n> @CHR:<g> @CHR:<t> @CHR:<h>} 0
-GC comment l0-usage @STR:<g1length> match --> {JMP strict}
+GC comment usage @STR:<g1length> 10680 10
+GC comment definition @STR:<g1length> 10680 10
+GC comment <literal> @STR:<g1length> undef --> {JMP literal}
+GC l0 atom @STR:<g1length> string 103 49 108 101 110 103 116 104
+GC comment l0-usage @STR:<g1length> literal --> NOP
 GC l0 priority-rule {result item descriptor} @STR:<g1length> 0
 GC comment l0-definition {result item descriptor} strict --> NOP
-GC comment l0-definition @STR:<name> strict --> NOP
-GC comment l0-usage @STR:<name> strict --> NOP
+GC comment usage @STR:<name> 10695 6
+GC comment definition @STR:<name> 10695 6
+GC comment <literal> @STR:<name> literal --> NOP
+GC comment l0-usage @STR:<name> literal --> NOP
 GC l0 priority-rule {result item descriptor} @STR:<name> 0
 GC comment l0-definition {result item descriptor} strict --> NOP
-GC comment l0-definition @STR:<lhs> undef --> {JMP match}
-GC comment usage @CHR:<l> 10704 1
-GC comment definition @CHR:<l> 10704 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<h> 10705 1
-GC comment definition @CHR:<h> 10705 1
-GC comment <literal> @CHR:<h> literal --> NOP
-GC comment usage @CHR:<s> 10706 1
-GC comment definition @CHR:<s> 10706 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC l0 priority-rule @STR:<lhs> {@CHR:<l> @CHR:<h> @CHR:<s>} 0
-GC comment l0-usage @STR:<lhs> match --> {JMP strict}
+GC comment usage @STR:<lhs> 10704 5
+GC comment definition @STR:<lhs> 10704 5
+GC comment <literal> @STR:<lhs> undef --> {JMP literal}
+GC l0 atom @STR:<lhs> string 108 104 115
+GC comment l0-usage @STR:<lhs> literal --> NOP
 GC l0 priority-rule {result item descriptor} @STR:<lhs> 0
 GC comment l0-definition {result item descriptor} strict --> NOP
-GC comment l0-definition @STR:<symbol> strict --> NOP
-GC comment l0-usage @STR:<symbol> strict --> NOP
+GC comment usage @STR:<symbol> 10712 8
+GC comment definition @STR:<symbol> 10712 8
+GC comment <literal> @STR:<symbol> literal --> NOP
+GC comment l0-usage @STR:<symbol> literal --> NOP
 GC l0 priority-rule {result item descriptor} @STR:<symbol> 0
 GC comment l0-definition {result item descriptor} strict --> NOP
-GC comment l0-definition @STR:<rule> undef --> {JMP match}
-GC comment usage @CHR:<r> 10723 1
-GC comment definition @CHR:<r> 10723 1
-GC comment <literal> @CHR:<r> literal --> NOP
-GC comment usage @CHR:<u> 10724 1
-GC comment definition @CHR:<u> 10724 1
-GC comment <literal> @CHR:<u> literal --> NOP
-GC comment usage @CHR:<l> 10725 1
-GC comment definition @CHR:<l> 10725 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<e> 10726 1
-GC comment definition @CHR:<e> 10726 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC l0 priority-rule @STR:<rule> {@CHR:<r> @CHR:<u> @CHR:<l> @CHR:<e>} 0
-GC comment l0-usage @STR:<rule> match --> {JMP strict}
+GC comment usage @STR:<rule> 10723 6
+GC comment definition @STR:<rule> 10723 6
+GC comment <literal> @STR:<rule> undef --> {JMP literal}
+GC l0 atom @STR:<rule> string 114 117 108 101
+GC comment l0-usage @STR:<rule> literal --> NOP
 GC l0 priority-rule {result item descriptor} @STR:<rule> 0
 GC comment l0-definition {result item descriptor} strict --> NOP
-GC comment l0-definition @STR:<value> undef --> {JMP match}
-GC comment usage @CHR:<v> 10735 1
-GC comment definition @CHR:<v> 10735 1
-GC comment <literal> @CHR:<v> literal --> NOP
-GC comment usage @CHR:<a> 10736 1
-GC comment definition @CHR:<a> 10736 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<l> 10737 1
-GC comment definition @CHR:<l> 10737 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<u> 10738 1
-GC comment definition @CHR:<u> 10738 1
-GC comment <literal> @CHR:<u> literal --> NOP
-GC comment usage @CHR:<e> 10739 1
-GC comment definition @CHR:<e> 10739 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC l0 priority-rule @STR:<value> {@CHR:<v> @CHR:<a> @CHR:<l> @CHR:<u> @CHR:<e>} 0
-GC comment l0-usage @STR:<value> match --> {JMP strict}
+GC comment usage @STR:<value> 10735 7
+GC comment definition @STR:<value> 10735 7
+GC comment <literal> @STR:<value> undef --> {JMP literal}
+GC l0 atom @STR:<value> string 118 97 108 117 101
+GC comment l0-usage @STR:<value> literal --> NOP
 GC l0 priority-rule {result item descriptor} @STR:<value> 0
 GC comment l0-definition {result item descriptor} strict --> NOP
-GC comment l0-definition @STR:<values> undef --> {JMP match}
-GC comment usage @CHR:<v> 10745 1
-GC comment definition @CHR:<v> 10745 1
-GC comment <literal> @CHR:<v> literal --> NOP
-GC comment usage @CHR:<a> 10746 1
-GC comment definition @CHR:<a> 10746 1
-GC comment <literal> @CHR:<a> literal --> NOP
-GC comment usage @CHR:<l> 10747 1
-GC comment definition @CHR:<l> 10747 1
-GC comment <literal> @CHR:<l> literal --> NOP
-GC comment usage @CHR:<u> 10748 1
-GC comment definition @CHR:<u> 10748 1
-GC comment <literal> @CHR:<u> literal --> NOP
-GC comment usage @CHR:<e> 10749 1
-GC comment definition @CHR:<e> 10749 1
-GC comment <literal> @CHR:<e> literal --> NOP
-GC comment usage @CHR:<s> 10750 1
-GC comment definition @CHR:<s> 10750 1
-GC comment <literal> @CHR:<s> literal --> NOP
-GC l0 priority-rule @STR:<values> {@CHR:<v> @CHR:<a> @CHR:<l> @CHR:<u> @CHR:<e> @CHR:<s>} 0
-GC comment l0-usage @STR:<values> match --> {JMP strict}
+GC comment usage @STR:<values> 10745 8
+GC comment definition @STR:<values> 10745 8
+GC comment <literal> @STR:<values> undef --> {JMP literal}
+GC l0 atom @STR:<values> string 118 97 108 117 101 115
+GC comment l0-usage @STR:<values> literal --> NOP
 GC l0 priority-rule {result item descriptor} @STR:<values> 0
 GC comment definition quote 11203 5
 GC comment l0-definition quote undef --> {JMP match}
 GC comment usage @CHR:<'> 11211 3
 GC comment definition @CHR:<'> 11211 3
 GC comment <literal> @CHR:<'> undef --> {JMP literal}
-GC l0 character @CHR:<'> 39
+GC l0 atom @CHR:<'> character 39
 GC comment l0-usage @CHR:<'> literal --> NOP
 GC l0 priority-rule quote @CHR:<'> 0
 GC comment definition {single quoted string} 11215 22
@@ -2914,12 +2181,12 @@ GC comment l0-usage quote strict --> NOP
 GC l0 priority-rule {single quoted name} {quote {string without single quote or vertical space} quote} 0
 GC comment definition {string without single quote or vertical space} 11411 47
 GC comment l0-definition {string without single quote or vertical space} strict:u --> {JMP strict}
-GC comment usage {@NEC:<\n-\r'\u2028-\u2029>} 11461 24
-GC comment definition {@NEC:<\n-\r'\u2028-\u2029>} 11461 24
-GC comment <literal> {@NEC:<\n-\r'\u2028-\u2029>} undef --> {JMP literal}
-GC l0 negcclass {@NEC:<\n-\r'\u2028-\u2029>} {{10 13} 39 {8232 8233}} 0
-GC comment l0-usage {@NEC:<\n-\r'\u2028-\u2029>} literal --> NOP
-GC l0 quantified-rule {string without single quote or vertical space} {@NEC:<\n-\r'\u2028-\u2029>} 1
+GC comment usage {@^CLS:<\n-\r'\u2028-\u2029>} 11461 24
+GC comment definition {@^CLS:<\n-\r'\u2028-\u2029>} 11461 24
+GC comment <literal> {@^CLS:<\n-\r'\u2028-\u2029>} undef --> {JMP literal}
+GC l0 atom {@^CLS:<\n-\r'\u2028-\u2029>} ^charclass {10 13} 39 {8232 8233}
+GC comment l0-usage {@^CLS:<\n-\r'\u2028-\u2029>} literal --> NOP
+GC l0 quantified-rule {string without single quote or vertical space} {@^CLS:<\n-\r'\u2028-\u2029>} 1
 GC comment definition {character class} 11488 17
 GC comment l0-definition {character class} floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme {character class}
@@ -2949,12 +2216,12 @@ GC comment l0-usage {safe cc character} undef --> {JMP strict:u}
 GC l0 priority-rule {cc element} {{safe cc character}} 0
 GC comment definition {safe cc character} 11656 19
 GC comment l0-definition {safe cc character} strict:u --> {JMP strict}
-GC comment usage {@NEC:<\n-\r\135\205\u2028-\u2029>} 11678 33
-GC comment definition {@NEC:<\n-\r\135\205\u2028-\u2029>} 11678 33
-GC comment <literal> {@NEC:<\n-\r\135\205\u2028-\u2029>} undef --> {JMP literal}
-GC l0 negcclass {@NEC:<\n-\r\135\205\u2028-\u2029>} {{10 13} 93 133 {8232 8233}} 0
-GC comment l0-usage {@NEC:<\n-\r\135\205\u2028-\u2029>} literal --> NOP
-GC l0 priority-rule {safe cc character} {{@NEC:<\n-\r\135\205\u2028-\u2029>}} 0
+GC comment usage {@^CLS:<\n-\r\135\205\u2028-\u2029>} 11678 33
+GC comment definition {@^CLS:<\n-\r\135\205\u2028-\u2029>} 11678 33
+GC comment <literal> {@^CLS:<\n-\r\135\205\u2028-\u2029>} undef --> {JMP literal}
+GC l0 atom {@^CLS:<\n-\r\135\205\u2028-\u2029>} ^charclass {10 13} 93 133 {8232 8233}
+GC comment l0-usage {@^CLS:<\n-\r\135\205\u2028-\u2029>} literal --> NOP
+GC l0 priority-rule {safe cc character} {{@^CLS:<\n-\r\135\205\u2028-\u2029>}} 0
 GC comment definition {cc element} 11713 12
 GC comment l0-definition {cc element} strict --> NOP
 GC comment usage {escaped cc character} 11728 22
@@ -2965,7 +2232,7 @@ GC comment l0-definition {escaped cc character} strict:u --> {JMP strict}
 GC comment usage {@CHR:<\134>} 11776 3
 GC comment definition {@CHR:<\134>} 11776 3
 GC comment <literal> {@CHR:<\134>} undef --> {JMP literal}
-GC l0 character {@CHR:<\134>} 92
+GC l0 atom {@CHR:<\134>} character 92
 GC comment usage {horizontal character} 11780 22
 GC comment l0-usage {@CHR:<\134>} literal --> NOP
 GC comment l0-usage {horizontal character} undef --> {JMP strict:u}
@@ -2987,89 +2254,64 @@ GC comment l0-usage {character class modifier} undef --> {JMP strict:u}
 GC l0 quantified-rule {character class modifiers} {character class modifier} 0
 GC comment definition {character class modifier} 11937 26
 GC comment l0-definition {character class modifier} strict:u --> {JMP strict}
-GC comment l0-definition @STR:<:ic> undef --> {JMP match}
-GC comment usage @CHR:<:> 11966 1
-GC comment definition @CHR:<:> 11966 1
-GC comment <literal> @CHR:<:> literal --> NOP
-GC comment usage @CHR:<i> 11967 1
-GC comment definition @CHR:<i> 11967 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC comment usage @CHR:<c> 11968 1
-GC comment definition @CHR:<c> 11968 1
-GC comment <literal> @CHR:<c> literal --> NOP
-GC l0 priority-rule @STR:<:ic> {@CHR:<:> @CHR:<i> @CHR:<c>} 0
-GC comment l0-usage @STR:<:ic> match --> {JMP strict}
+GC comment usage @STR:<:ic> 11966 5
+GC comment definition @STR:<:ic> 11966 5
+GC comment <literal> @STR:<:ic> undef --> {JMP literal}
+GC l0 atom @STR:<:ic> string 58 105 99
+GC comment l0-usage @STR:<:ic> literal --> NOP
 GC l0 priority-rule {character class modifier} @STR:<:ic> 0
 GC comment definition {character class modifier} 11972 26
 GC comment l0-definition {character class modifier} strict --> NOP
-GC comment l0-definition @STR:<:i> undef --> {JMP match}
-GC comment usage @CHR:<:> 12001 1
-GC comment definition @CHR:<:> 12001 1
-GC comment <literal> @CHR:<:> literal --> NOP
-GC comment usage @CHR:<i> 12002 1
-GC comment definition @CHR:<i> 12002 1
-GC comment <literal> @CHR:<i> literal --> NOP
-GC l0 priority-rule @STR:<:i> {@CHR:<:> @CHR:<i>} 0
-GC comment l0-usage @STR:<:i> match --> {JMP strict}
+GC comment usage @STR:<:i> 12001 4
+GC comment definition @STR:<:i> 12001 4
+GC comment <literal> @STR:<:i> undef --> {JMP literal}
+GC l0 atom @STR:<:i> string 58 105
+GC comment l0-usage @STR:<:i> literal --> NOP
 GC l0 priority-rule {character class modifier} @STR:<:i> 0
 GC comment definition {posix char class} 12185 18
 GC comment l0-definition {posix char class} strict:u --> {JMP strict}
-GC comment l0-definition {@STR:<\133:>} undef --> {JMP match}
-GC comment usage {@CHR:<\133>} 12206 1
-GC comment definition {@CHR:<\133>} 12206 1
-GC comment <literal> {@CHR:<\133>} literal --> NOP
-GC comment usage @CHR:<:> 12207 1
-GC comment definition @CHR:<:> 12207 1
-GC comment <literal> @CHR:<:> literal --> NOP
-GC l0 priority-rule {@STR:<\133:>} {{@CHR:<\133>} @CHR:<:>} 0
+GC comment usage {@STR:<\133:>} 12206 4
+GC comment definition {@STR:<\133:>} 12206 4
+GC comment <literal> {@STR:<\133:>} undef --> {JMP literal}
+GC l0 atom {@STR:<\133:>} string 91 58
 GC comment usage {posix char class name} 12211 23
-GC comment l0-definition {@STR:<:\135>} undef --> {JMP match}
-GC comment usage @CHR:<:> 12235 1
-GC comment definition @CHR:<:> 12235 1
-GC comment <literal> @CHR:<:> literal --> NOP
-GC comment usage {@CHR:<\135>} 12236 1
-GC comment definition {@CHR:<\135>} 12236 1
-GC comment <literal> {@CHR:<\135>} literal --> NOP
-GC l0 priority-rule {@STR:<:\135>} {@CHR:<:> {@CHR:<\135>}} 0
-GC comment l0-usage {@STR:<\133:>} match --> {JMP strict}
+GC comment usage {@STR:<:\135>} 12235 4
+GC comment definition {@STR:<:\135>} 12235 4
+GC comment <literal> {@STR:<:\135>} undef --> {JMP literal}
+GC l0 atom {@STR:<:\135>} string 58 93
+GC comment l0-usage {@STR:<\133:>} literal --> NOP
 GC comment l0-usage {posix char class name} undef --> {JMP strict:u}
-GC comment l0-usage {@STR:<:\135>} match --> {JMP strict}
+GC comment l0-usage {@STR:<:\135>} literal --> NOP
 GC l0 priority-rule {posix char class} {{@STR:<\133:>} {posix char class name} {@STR:<:\135>}} 0
 GC comment definition {negated posix char class} 12240 26
 GC comment l0-definition {negated posix char class} strict:u --> {JMP strict}
-GC comment l0-definition {@STR:<\133:^>} undef --> {JMP match}
-GC comment usage {@CHR:<\133>} 12269 1
-GC comment definition {@CHR:<\133>} 12269 1
-GC comment <literal> {@CHR:<\133>} literal --> NOP
-GC comment usage @CHR:<:> 12270 1
-GC comment definition @CHR:<:> 12270 1
-GC comment <literal> @CHR:<:> literal --> NOP
-GC comment usage @CHR:<^> 12271 1
-GC comment definition @CHR:<^> 12271 1
-GC comment <literal> @CHR:<^> undef --> {JMP literal}
-GC l0 character @CHR:<^> 94
-GC l0 priority-rule {@STR:<\133:^>} {{@CHR:<\133>} @CHR:<:> @CHR:<^>} 0
+GC comment usage {@STR:<\133:^>} 12269 5
+GC comment definition {@STR:<\133:^>} 12269 5
+GC comment <literal> {@STR:<\133:^>} undef --> {JMP literal}
+GC l0 atom {@STR:<\133:^>} string 91 58 94
 GC comment usage {posix char class name} 12275 23
-GC comment l0-definition {@STR:<:\135>} strict --> NOP
-GC comment l0-usage {@STR:<\133:^>} match --> {JMP strict}
+GC comment usage {@STR:<:\135>} 12299 4
+GC comment definition {@STR:<:\135>} 12299 4
+GC comment <literal> {@STR:<:\135>} literal --> NOP
+GC comment l0-usage {@STR:<\133:^>} literal --> NOP
 GC comment l0-usage {posix char class name} strict:u --> NOP
-GC comment l0-usage {@STR:<:\135>} strict --> NOP
+GC comment l0-usage {@STR:<:\135>} literal --> NOP
 GC l0 priority-rule {negated posix char class} {{@STR:<\133:^>} {posix char class name} {@STR:<:\135>}} 0
 GC comment definition {posix char class name} 12304 23
 GC comment l0-definition {posix char class name} strict:u --> {JMP strict}
-GC comment usage {@CLS:<[:alnum:]>} 12330 11
-GC comment definition {@CLS:<[:alnum:]>} 12330 11
-GC comment <literal> {@CLS:<[:alnum:]>} undef --> {JMP literal}
-GC l0 charclass {@CLS:<[:alnum:]>} :alnum 0
-GC comment l0-usage {@CLS:<[:alnum:]>} literal --> NOP
-GC l0 quantified-rule {posix char class name} {@CLS:<[:alnum:]>} 1
+GC comment usage {@NCC:<[:alnum:]>} 12330 11
+GC comment definition {@NCC:<[:alnum:]>} 12330 11
+GC comment <literal> {@NCC:<[:alnum:]>} undef --> {JMP literal}
+GC l0 atom {@NCC:<[:alnum:]>} named-class alnum
+GC comment l0-usage {@NCC:<[:alnum:]>} literal --> NOP
+GC l0 quantified-rule {posix char class name} {@NCC:<[:alnum:]>} 1
 GC comment definition {horizontal character} 12413 22
 GC comment l0-definition {horizontal character} strict:u --> {JMP strict}
-GC comment usage {@NEC:<\n-\r\u2028-\u2029>} 12438 23
-GC comment definition {@NEC:<\n-\r\u2028-\u2029>} 12438 23
-GC comment <literal> {@NEC:<\n-\r\u2028-\u2029>} literal --> NOP
-GC comment l0-usage {@NEC:<\n-\r\u2028-\u2029>} literal --> NOP
-GC l0 priority-rule {horizontal character} {{@NEC:<\n-\r\u2028-\u2029>}} 0
+GC comment usage {@^CLS:<\n-\r\u2028-\u2029>} 12438 23
+GC comment definition {@^CLS:<\n-\r\u2028-\u2029>} 12438 23
+GC comment <literal> {@^CLS:<\n-\r\u2028-\u2029>} literal --> NOP
+GC comment l0-usage {@^CLS:<\n-\r\u2028-\u2029>} literal --> NOP
+GC l0 priority-rule {horizontal character} {{@^CLS:<\n-\r\u2028-\u2029>}} 0
 GC comment Semantics completion processing
 GC start! statements
 GC comment LATM fix 1

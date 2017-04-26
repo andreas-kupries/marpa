@@ -71,10 +71,6 @@ oo::class create marpa::slif::semantics {
 	set st [marpa::slif::semantics::Symbol create \
 		    Symbol $container $def $use [self]]
 
-	# Handle incoming literals
-	marpa::slif::semantics::Literal create \
-	    Literal $container $def $use $st
-
 	# Track G1 action/bless defaults
 	marpa::slif::semantics::Defaults create G1 \
 	    $container {
@@ -935,10 +931,22 @@ oo::class create marpa::slif::semantics {
 	# Expect RHS
 
 	upvar 1 children children
-	lassign [lindex $children 0] start length literal
-	set litsymbol [Literal enter $literal $start $length]
+	lassign [lindex $children 0] start length litstring
 
-	dict set mycc $litsymbol $literal
+	set literal   [marpa::slif::literal parse  $litstring]
+	set litsymbol [marpa::slif::literal symbol $literal]
+
+	usage      add $start $length  $litsymbol
+	definition add $start $length  $litsymbol
+
+	# The literal is (always) a terminal in the L0 grammar.
+	# Create it only once, when it is encountered the 1st time.
+
+	if {[Symbol context1 <literal> $litsymbol] eq "undef"} {
+	    Container l0 atom $litsymbol {*}$literal
+	}
+
+	dict set mycc $litsymbol $litstring
 
 	if {[SymCo layer?] eq "l0"} {
 	    set result $litsymbol

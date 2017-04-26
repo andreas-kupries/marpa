@@ -1,15 +1,15 @@
 GC comment definition A 0 1
 GC comment l0-definition A undef --> {JMP match}
 
-	GC comment usage @CLS/i:<A-Z> 4 7
-	GC comment definition @CLS/i:<A-Z> 4 7
+	GC comment usage {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 4 7
+	GC comment definition {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 4 7
 
-	GC comment <literal> @CLS/i:<A-Z> undef --> {JMP literal}
+	GC comment <literal> {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} undef --> {JMP literal}
 
-	GC l0 charclass @CLS/i:<A-Z> {{65 90}} 1
-	GC comment l0-usage @CLS/i:<A-Z> literal --> NOP
+	GC l0 atom {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} charclass {65 90} {97 122} {304 305} 383 8490
+	GC comment l0-usage {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} literal --> NOP
 
-GC l0 priority-rule A @CLS/i:<A-Z> 0
+GC l0 priority-rule A {{@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0
 GC comment definition Language 13 8
 GC comment g1-definition Language undef --> {JMP brick}
 GC comment usage A 26 1

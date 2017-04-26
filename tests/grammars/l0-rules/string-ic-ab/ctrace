@@ -1,14 +1,14 @@
 GC comment definition A 0 1
 GC comment l0-definition A undef --> {JMP match}
 
-	GC comment usage @STR/i:<FOXY> 4 16
-	GC comment definition @STR/i:<FOXY> 4 16
+	GC comment usage @%STR:<FOXY> 4 16
+	GC comment definition @%STR:<FOXY> 4 16
 
-	GC comment <literal> @STR/i:<FOXY> undef --> {JMP literal}
-	GC l0 string @STR/i:<FOXY> {70 79 88 89} 1
+	GC comment <literal> @%STR:<FOXY> undef --> {JMP literal}
+	GC l0 atom @%STR:<FOXY> %string 70 79 88 89
 
-GC comment l0-usage @STR/i:<FOXY> literal --> NOP
-GC l0 priority-rule A @STR/i:<FOXY> 0
+GC comment l0-usage @%STR:<FOXY> literal --> NOP
+GC l0 priority-rule A @%STR:<FOXY> 0
 GC comment definition Language 22 8
 GC comment g1-definition Language undef --> {JMP brick}
 GC comment usage A 35 1

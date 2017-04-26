@@ -128,7 +128,7 @@ critcl::tsources p_lexer.tcl     ; # Lexer, aggregate characters to
 critcl::tsources p_parser.tcl    ; # Parser, structure lexemes into
 				   # ASTs
 
-# SLIF support classes
+# SLIF support commands and classes
 ##
 
 critcl::tsources s_parser.tcl          ; # SLIF Parser (hardwired)
@@ -143,7 +143,6 @@ critcl::tsources s_sem_flags.tcl       ; # - Flags, generic
 critcl::tsources s_sem_singleton.tcl   ; # - Singleton, generic
 critcl::tsources s_sem_locations.tcl   ; # - Locations for items
 critcl::tsources s_sem_symbols.tcl     ; # - Item state machine
-critcl::tsources s_sem_literal.tcl     ; # - Literal handling
 
 critcl::tsources sc_serdes.tcl         ; # - Abstract (de)serialization base
 critcl::tsources s_container.tcl       ; # SLIF container

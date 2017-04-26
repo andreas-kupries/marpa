@@ -1,84 +1,10 @@
 GC comment definition A 0 1
 GC comment g1-definition A undef --> {JMP brick}
 
-	GC comment l0-definition {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} undef --> {JMP match}
-
-	GC comment usage {@CHR:<\7>} 6 1
-	GC comment definition {@CHR:<\7>} 6 1
-	GC comment <literal> {@CHR:<\7>} undef --> {JMP literal}
-	GC l0 character {@CHR:<\7>} 7
-
-	GC comment usage {@CHR:<\10>} 7 1
-	GC comment definition {@CHR:<\10>} 7 1
-	GC comment <literal> {@CHR:<\10>} undef --> {JMP literal}
-	GC l0 character {@CHR:<\10>} 8
-
-	GC comment usage {@CHR:<\t>} 8 1
-	GC comment definition {@CHR:<\t>} 8 1
-	GC comment <literal> {@CHR:<\t>} undef --> {JMP literal}
-	GC l0 character {@CHR:<\t>} 9
-
-	GC comment usage {@CHR:<\n>} 9 1
-	GC comment definition {@CHR:<\n>} 9 1
-	GC comment <literal> {@CHR:<\n>} undef --> {JMP literal}
-	GC l0 character {@CHR:<\n>} 10
-
-	GC comment usage {@CHR:<\13>} 10 1
-	GC comment definition {@CHR:<\13>} 10 1
-	GC comment <literal> {@CHR:<\13>} undef --> {JMP literal}
-	GC l0 character {@CHR:<\13>} 11
-
-	GC comment usage {@CHR:<\14>} 11 1
-	GC comment definition {@CHR:<\14>} 11 1
-	GC comment <literal> {@CHR:<\14>} undef --> {JMP literal}
-	GC l0 character {@CHR:<\14>} 12
-
-	GC comment usage {@CHR:<\r>} 12 1
-	GC comment definition {@CHR:<\r>} 12 1
-	GC comment <literal> {@CHR:<\r>} undef --> {JMP literal}
-	GC l0 character {@CHR:<\r>} 13
-
-	GC comment usage {@CHR:<\134>} 13 1
-	GC comment definition {@CHR:<\134>} 13 1
-	GC comment <literal> {@CHR:<\134>} undef --> {JMP literal}
-	GC l0 character {@CHR:<\134>} 92
-
-	GC comment usage @CHR:<a> 14 1
-	GC comment definition @CHR:<a> 14 1
-	GC comment <literal> @CHR:<a> undef --> {JMP literal}
-	GC l0 character @CHR:<a> 97
-
-	GC comment usage {@CHR:<\5>} 15 1
-	GC comment definition {@CHR:<\5>} 15 1
-	GC comment <literal> {@CHR:<\5>} undef --> {JMP literal}
-	GC l0 character {@CHR:<\5>} 5
-
-	GC comment usage @CHR:<7> 16 1
-	GC comment definition @CHR:<7> 16 1
-	GC comment <literal> @CHR:<7> undef --> {JMP literal}
-	GC l0 character @CHR:<7> 55
-
-	GC comment usage {@CHR:<\u00ff>} 17 1
-	GC comment definition {@CHR:<\u00ff>} 17 1
-	GC comment <literal> {@CHR:<\u00ff>} undef --> {JMP literal}
-	GC l0 character {@CHR:<\u00ff>} 255
-
-	GC comment usage {@CHR:<\u00ab>} 18 1
-	GC comment definition {@CHR:<\u00ab>} 18 1
-	GC comment <literal> {@CHR:<\u00ab>} undef --> {JMP literal}
-	GC l0 character {@CHR:<\u00ab>} 171
-
-	GC comment usage {@CHR:<\u3456>} 19 1
-	GC comment definition {@CHR:<\u3456>} 19 1
-	GC comment <literal> {@CHR:<\u3456>} undef --> {JMP literal}
-	GC l0 character {@CHR:<\u3456>} 13398
-
-	GC comment usage @CHR:<|> 20 1
-	GC comment definition @CHR:<|> 20 1
-	GC comment <literal> @CHR:<|> undef --> {JMP literal}
-	GC l0 character @CHR:<|> 124
-
-	GC l0 priority-rule {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} {{@CHR:<\7>} {@CHR:<\10>} {@CHR:<\t>} {@CHR:<\n>} {@CHR:<\13>} {@CHR:<\14>} {@CHR:<\r>} {@CHR:<\134>} @CHR:<a> {@CHR:<\5>} @CHR:<7> {@CHR:<\u00ff>} {@CHR:<\u00ab>} {@CHR:<\u3456>} @CHR:<|>} 0
+	GC comment usage {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39
+	GC comment definition {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39
+	GC comment <literal> {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} undef --> {JMP literal}
+	GC l0 atom {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} string 7 8 9 10 11 12 13 92 97 5 55 255 171 13398 124
 
 GC comment definition {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39
 GC comment usage {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39
@@ -86,7 +12,7 @@ GC comment l0-definition {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456
 GC comment :lexeme {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} match --> {JMP lexeme make-lexeme}
 GC l0 lexeme {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}
 GC g1 terminal {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}
-GC comment l0-usage {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} match --> {JMP strict}
+GC comment l0-usage {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} literal --> NOP
 GC l0 priority-rule {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 0
 GC comment g1-usage {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} lexeme --> NOP
 GC g1 priority-rule A {{@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}} 0 action {array values} bless {special undef} mask 0

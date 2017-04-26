@@ -1,27 +1,27 @@
 GC comment definition A 0 1
 GC comment g1-definition A undef --> {JMP brick}
 
-	GC comment usage @CLS/i:<A-Z> 6 8
-	GC comment definition @CLS/i:<A-Z> 6 8
+	GC comment usage {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 6 8
+	GC comment definition {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 6 8
 
-	GC comment <literal> @CLS/i:<A-Z> undef --> {JMP literal}
+	GC comment <literal> {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} undef --> {JMP literal}
 
-	GC l0 charclass @CLS/i:<A-Z> {{65 90}} 1
-	GC comment definition @LEX:@CLS/i:<A-Z> 6 8
-	GC comment usage @CLS/i:<A-Z> 6 8
-	GC comment l0-definition @LEX:@CLS/i:<A-Z> undef --> {JMP match}
+	GC l0 atom {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} charclass {65 90} {97 122} {304 305} 383 8490
+	GC comment definition {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 6 8
+	GC comment usage {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 6 8
+	GC comment l0-definition {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} undef --> {JMP match}
 
-	GC comment :lexeme @LEX:@CLS/i:<A-Z> match --> {JMP lexeme make-lexeme}
-	GC l0 lexeme @LEX:@CLS/i:<A-Z>
-	GC g1 terminal @LEX:@CLS/i:<A-Z>
+	GC comment :lexeme {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} match --> {JMP lexeme make-lexeme}
+	GC l0 lexeme {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}
+	GC g1 terminal {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}
 
-	GC comment l0-usage @CLS/i:<A-Z> literal --> NOP
-	GC l0 priority-rule @LEX:@CLS/i:<A-Z> @CLS/i:<A-Z> 0
-	GC comment g1-usage @LEX:@CLS/i:<A-Z> lexeme --> NOP
+	GC comment l0-usage {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} literal --> NOP
+	GC l0 priority-rule {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 0
+	GC comment g1-usage {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} lexeme --> NOP
 
-GC g1 priority-rule A @LEX:@CLS/i:<A-Z> 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule A {{@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0 action {array values} bless {special undef} mask 0
 GC comment Semantics completion processing
 GC start! A
 GC comment LATM fix 1
-GC l0 configure @LEX:@CLS/i:<A-Z> latm 1
+GC l0 configure {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} latm 1
 GC comment DDE fix {}

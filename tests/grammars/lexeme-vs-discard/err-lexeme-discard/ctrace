@@ -3,7 +3,7 @@ GC comment l0-definition A undef --> {JMP match}
 GC comment usage @CHR:<a> 35 3
 GC comment definition @CHR:<a> 35 3
 GC comment <literal> @CHR:<a> undef --> {JMP literal}
-GC l0 character @CHR:<a> 97
+GC l0 atom @CHR:<a> character 97
 GC comment l0-usage @CHR:<a> literal --> NOP
 GC l0 priority-rule A @CHR:<a> 0
 GC comment usage A 50 1

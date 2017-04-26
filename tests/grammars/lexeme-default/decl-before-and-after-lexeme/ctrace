@@ -21,7 +21,7 @@ GC comment l0-definition foo lexeme:u --> {JMP lexeme}
 GC comment usage @CHR:<a> 76 3
 GC comment definition @CHR:<a> 76 3
 GC comment <literal> @CHR:<a> undef --> {JMP literal}
-GC l0 character @CHR:<a> 97
+GC l0 atom @CHR:<a> character 97
 GC comment l0-usage @CHR:<a> literal --> NOP
 GC l0 priority-rule foo @CHR:<a> 0
 GC comment definition bar 80 3
@@ -29,7 +29,7 @@ GC comment l0-definition bar lexeme:u --> {JMP lexeme}
 GC comment usage @CHR:<b> 86 3
 GC comment definition @CHR:<b> 86 3
 GC comment <literal> @CHR:<b> undef --> {JMP literal}
-GC l0 character @CHR:<b> 98
+GC l0 atom @CHR:<b> character 98
 GC comment l0-usage @CHR:<b> literal --> NOP
 GC l0 priority-rule bar @CHR:<b> 0
 GC comment Semantics completion processing

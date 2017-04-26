@@ -1,14 +1,14 @@
 GC comment definition A 0 1
 GC comment l0-definition A undef --> {JMP match}
 
-	GC comment usage {@CLS:<[:xdigit:]Q>} 4 13
-	GC comment definition {@CLS:<[:xdigit:]Q>} 4 13
-	GC comment <literal> {@CLS:<[:xdigit:]Q>} undef --> {JMP literal}
+	GC comment usage {@CLS:<Q[:xdigit:]>} 4 13
+	GC comment definition {@CLS:<Q[:xdigit:]>} 4 13
+	GC comment <literal> {@CLS:<Q[:xdigit:]>} undef --> {JMP literal}
 
+	GC l0 atom {@CLS:<Q[:xdigit:]>} charclass 81 xdigit
 
-	GC l0 charclass {@CLS:<[:xdigit:]Q>} {:xdigit 81} 0
-GC comment l0-usage {@CLS:<[:xdigit:]Q>} literal --> NOP
-GC l0 priority-rule A {{@CLS:<[:xdigit:]Q>}} 0
+GC comment l0-usage {@CLS:<Q[:xdigit:]>} literal --> NOP
+GC l0 priority-rule A {{@CLS:<Q[:xdigit:]>}} 0
 GC comment definition lang 18 4
 GC comment g1-definition lang undef --> {JMP brick}
 GC comment usage A 27 1

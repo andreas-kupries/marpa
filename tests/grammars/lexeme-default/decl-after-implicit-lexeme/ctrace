@@ -1,16 +1,10 @@
 GC comment definition foo 0 3
 GC comment l0-definition foo undef --> {JMP match}
-GC comment l0-definition @STR:<ab> undef --> {JMP match}
-GC comment usage @CHR:<a> 6 1
-GC comment definition @CHR:<a> 6 1
-GC comment <literal> @CHR:<a> undef --> {JMP literal}
-GC l0 character @CHR:<a> 97
-GC comment usage @CHR:<b> 7 1
-GC comment definition @CHR:<b> 7 1
-GC comment <literal> @CHR:<b> undef --> {JMP literal}
-GC l0 character @CHR:<b> 98
-GC l0 priority-rule @STR:<ab> {@CHR:<a> @CHR:<b>} 0
-GC comment l0-usage @STR:<ab> match --> {JMP strict}
+GC comment usage @STR:<ab> 6 4
+GC comment definition @STR:<ab> 6 4
+GC comment <literal> @STR:<ab> undef --> {JMP literal}
+GC l0 atom @STR:<ab> string 97 98
+GC comment l0-usage @STR:<ab> literal --> NOP
 GC l0 priority-rule foo @STR:<ab> 0
 
 	GC comment LATM default: 0

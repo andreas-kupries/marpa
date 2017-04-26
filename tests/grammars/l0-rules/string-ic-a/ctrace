@@ -1,14 +1,14 @@
 GC comment definition A 0 1
 GC comment l0-definition A undef --> {JMP match}
 
-	GC comment usage {@STR/i:<CASE-INSENSITIVE\40STRING>} 4 27
-	GC comment definition {@STR/i:<CASE-INSENSITIVE\40STRING>} 4 27
+	GC comment usage {@%STR:<CASE-INSENSITIVE\40STRING>} 4 27
+	GC comment definition {@%STR:<CASE-INSENSITIVE\40STRING>} 4 27
 
-	GC comment <literal> {@STR/i:<CASE-INSENSITIVE\40STRING>} undef --> {JMP literal}
-	GC l0 string {@STR/i:<CASE-INSENSITIVE\40STRING>} {67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71} 1
+	GC comment <literal> {@%STR:<CASE-INSENSITIVE\40STRING>} undef --> {JMP literal}
+	GC l0 atom {@%STR:<CASE-INSENSITIVE\40STRING>} %string 67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71
 
-GC comment l0-usage {@STR/i:<CASE-INSENSITIVE\40STRING>} literal --> NOP
-GC l0 priority-rule A {{@STR/i:<CASE-INSENSITIVE\40STRING>}} 0
+GC comment l0-usage {@%STR:<CASE-INSENSITIVE\40STRING>} literal --> NOP
+GC l0 priority-rule A {{@%STR:<CASE-INSENSITIVE\40STRING>}} 0
 GC comment definition Language 33 8
 GC comment g1-definition Language undef --> {JMP brick}
 GC comment usage A 46 1

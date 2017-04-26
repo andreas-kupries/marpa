@@ -1,15 +1,14 @@
 GC comment definition A 0 1
 GC comment l0-definition A undef --> {JMP match}
 
-	GC comment usage @CLS:<0-9> 4 5
-	GC comment definition @CLS:<0-9> 4 5
-	GC comment <literal> @CLS:<0-9> undef --> {JMP literal}
+	GC comment usage @RAN:<09> 4 5
+	GC comment definition @RAN:<09> 4 5
+	GC comment <literal> @RAN:<09> undef --> {JMP literal}
 
+	GC l0 atom @RAN:<09> range 48 57
+	GC comment l0-usage @RAN:<09> literal --> NOP
 
-	GC l0 charclass @CLS:<0-9> {{48 57}} 0
-	GC comment l0-usage @CLS:<0-9> literal --> NOP
-
-GC l0 priority-rule A @CLS:<0-9> 0
+GC l0 priority-rule A @RAN:<09> 0
 GC comment definition Language 11 8
 GC comment g1-definition Language undef --> {JMP brick}
 GC comment usage A 24 1

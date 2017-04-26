@@ -14,7 +14,7 @@ GC g1 terminal B
 GC comment usage @CHR:<b> 29 3
 GC comment definition @CHR:<b> 29 3
 GC comment <literal> @CHR:<b> undef --> {JMP literal}
-GC l0 character @CHR:<b> 98
+GC l0 atom @CHR:<b> character 98
 GC comment l0-usage @CHR:<b> literal --> NOP
 GC l0 priority-rule B @CHR:<b> 0
 GC comment definition C 33 1
@@ -24,7 +24,7 @@ GC g1 terminal C
 GC comment usage @CHR:<c> 37 3
 GC comment definition @CHR:<c> 37 3
 GC comment <literal> @CHR:<c> undef --> {JMP literal}
-GC l0 character @CHR:<c> 99
+GC l0 atom @CHR:<c> character 99
 GC comment l0-usage @CHR:<c> literal --> NOP
 GC l0 priority-rule C @CHR:<c> 0
 GC comment Semantics completion processing

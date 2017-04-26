@@ -72,7 +72,7 @@ GC g1 terminal PO
 GC comment usage {@CHR:<\50>} 129 3
 GC comment definition {@CHR:<\50>} 129 3
 GC comment <literal> {@CHR:<\50>} undef --> {JMP literal}
-GC l0 character {@CHR:<\50>} 40
+GC l0 atom {@CHR:<\50>} character 40
 GC comment l0-usage {@CHR:<\50>} literal --> NOP
 GC l0 priority-rule PO {{@CHR:<\50>}} 0
 GC comment definition PC 133 2
@@ -82,23 +82,18 @@ GC g1 terminal PC
 GC comment usage {@CHR:<\51>} 139 3
 GC comment definition {@CHR:<\51>} 139 3
 GC comment <literal> {@CHR:<\51>} undef --> {JMP literal}
-GC l0 character {@CHR:<\51>} 41
+GC l0 atom {@CHR:<\51>} character 41
 GC comment l0-usage {@CHR:<\51>} literal --> NOP
 GC l0 priority-rule PC {{@CHR:<\51>}} 0
 GC comment definition POW 143 3
 GC comment l0-definition POW floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme POW
 GC g1 terminal POW
-GC comment l0-definition @STR:<**> undef --> {JMP match}
-GC comment usage @CHR:<*> 149 1
-GC comment definition @CHR:<*> 149 1
-GC comment <literal> @CHR:<*> undef --> {JMP literal}
-GC l0 character @CHR:<*> 42
-GC comment usage @CHR:<*> 150 1
-GC comment definition @CHR:<*> 150 1
-GC comment <literal> @CHR:<*> literal --> NOP
-GC l0 priority-rule @STR:<**> {@CHR:<*> @CHR:<*>} 0
-GC comment l0-usage @STR:<**> match --> {JMP strict}
+GC comment usage @STR:<**> 149 4
+GC comment definition @STR:<**> 149 4
+GC comment <literal> @STR:<**> undef --> {JMP literal}
+GC l0 atom @STR:<**> string 42 42
+GC comment l0-usage @STR:<**> literal --> NOP
 GC l0 priority-rule POW @STR:<**> 0
 GC comment definition MUL 154 3
 GC comment l0-definition MUL floater --> {JMP lexeme make-lexeme}
@@ -106,7 +101,8 @@ GC l0 lexeme MUL
 GC g1 terminal MUL
 GC comment usage @CHR:<*> 160 3
 GC comment definition @CHR:<*> 160 3
-GC comment <literal> @CHR:<*> literal --> NOP
+GC comment <literal> @CHR:<*> undef --> {JMP literal}
+GC l0 atom @CHR:<*> character 42
 GC comment l0-usage @CHR:<*> literal --> NOP
 GC l0 priority-rule MUL @CHR:<*> 0
 GC comment definition DIV 164 3
@@ -116,7 +112,7 @@ GC g1 terminal DIV
 GC comment usage @CHR:</> 170 3
 GC comment definition @CHR:</> 170 3
 GC comment <literal> @CHR:</> undef --> {JMP literal}
-GC l0 character @CHR:</> 47
+GC l0 atom @CHR:</> character 47
 GC comment l0-usage @CHR:</> literal --> NOP
 GC l0 priority-rule DIV @CHR:</> 0
 GC comment definition ADD 174 3
@@ -126,7 +122,7 @@ GC g1 terminal ADD
 GC comment usage @CHR:<+> 180 3
 GC comment definition @CHR:<+> 180 3
 GC comment <literal> @CHR:<+> undef --> {JMP literal}
-GC l0 character @CHR:<+> 43
+GC l0 atom @CHR:<+> character 43
 GC comment l0-usage @CHR:<+> literal --> NOP
 GC l0 priority-rule ADD @CHR:<+> 0
 GC comment definition SUB 184 3
@@ -136,19 +132,19 @@ GC g1 terminal SUB
 GC comment usage @CHR:<-> 190 3
 GC comment definition @CHR:<-> 190 3
 GC comment <literal> @CHR:<-> undef --> {JMP literal}
-GC l0 character @CHR:<-> 45
+GC l0 atom @CHR:<-> character 45
 GC comment l0-usage @CHR:<-> literal --> NOP
 GC l0 priority-rule SUB @CHR:<-> 0
 GC comment definition N 194 1
 GC comment l0-definition N floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme N
 GC g1 terminal N
-GC comment usage @CLS:<0-9> 200 5
-GC comment definition @CLS:<0-9> 200 5
-GC comment <literal> @CLS:<0-9> undef --> {JMP literal}
-GC l0 charclass @CLS:<0-9> {{48 57}} 0
-GC comment l0-usage @CLS:<0-9> literal --> NOP
-GC l0 quantified-rule N @CLS:<0-9> 1
+GC comment usage @RAN:<09> 200 5
+GC comment definition @RAN:<09> 200 5
+GC comment <literal> @RAN:<09> undef --> {JMP literal}
+GC l0 atom @RAN:<09> range 48 57
+GC comment l0-usage @RAN:<09> literal --> NOP
+GC l0 quantified-rule N @RAN:<09> 1
 GC comment Semantics completion processing
 GC start! E
 GC comment LATM fix 1
