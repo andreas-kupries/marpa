@@ -2,7 +2,7 @@ GC comment usage @RAN:<09> 11 5
 GC comment definition @RAN:<09> 11 5
 GC comment <literal> @RAN:<09> undef --> {JMP literal}
 
-	GC l0 atom @RAN:<09> range 48 57
+	GC l0 literal @RAN:<09> range 48 57
 	GC comment definition @DIS:@RAN:<09> 11 5
 	GC comment usage @RAN:<09> 11 5
 	GC comment l0-definition @DIS:@RAN:<09> undef --> {JMP match}
@@ -17,7 +17,7 @@ GC comment l0-definition A undef --> {JMP match}
 GC comment usage @CHR:<a> 22 3
 GC comment definition @CHR:<a> 22 3
 GC comment <literal> @CHR:<a> undef --> {JMP literal}
-GC l0 atom @CHR:<a> character 97
+GC l0 literal @CHR:<a> character 97
 GC comment l0-usage @CHR:<a> literal --> NOP
 GC l0 priority-rule A @CHR:<a> 0
 GC comment definition B 26 1

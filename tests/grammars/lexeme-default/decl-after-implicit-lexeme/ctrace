@@ -3,7 +3,7 @@ GC comment l0-definition foo undef --> {JMP match}
 GC comment usage @STR:<ab> 6 4
 GC comment definition @STR:<ab> 6 4
 GC comment <literal> @STR:<ab> undef --> {JMP literal}
-GC l0 atom @STR:<ab> string 97 98
+GC l0 literal @STR:<ab> string 97 98
 GC comment l0-usage @STR:<ab> literal --> NOP
 GC l0 priority-rule foo @STR:<ab> 0
 

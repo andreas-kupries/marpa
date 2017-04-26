@@ -188,9 +188,14 @@ proc gc-spec {spec} {
 
 	    return $spec
 	}
-	terminal - string - charclass - character - negcclass - namedcc - range {
-	    return $spec
-	}
+	terminal - \
+	    string - %string - \
+	    charclass - ^charclass - %charclass - ^%charclass - \
+	    character - ^character - \
+	    named-class - ^named-class - %named-class - ^%named-class - \
+	    range - ^range - %range - ^%range {
+		return $spec
+	    }
 	default {
 	    error "Unknown spec type in: [list $spec]"
 	}

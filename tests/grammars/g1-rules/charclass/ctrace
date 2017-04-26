@@ -6,7 +6,7 @@ GC comment g1-definition A undef --> {JMP brick}
 
 	GC comment <literal> @RAN:<09> undef --> {JMP literal}
 
-	GC l0 atom @RAN:<09> range 48 57
+	GC l0 literal @RAN:<09> range 48 57
 	GC comment definition @LEX:@RAN:<09> 6 5
 	GC comment usage @RAN:<09> 6 5
 	GC comment l0-definition @LEX:@RAN:<09> undef --> {JMP match}

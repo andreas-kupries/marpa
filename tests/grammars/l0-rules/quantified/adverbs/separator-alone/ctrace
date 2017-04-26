@@ -21,7 +21,7 @@ GC comment l0-definition B strict:u --> {JMP strict}
 GC comment usage @CHR:<b> 48 3
 GC comment definition @CHR:<b> 48 3
 GC comment <literal> @CHR:<b> undef --> {JMP literal}
-GC l0 atom @CHR:<b> character 98
+GC l0 literal @CHR:<b> character 98
 GC comment l0-usage @CHR:<b> literal --> NOP
 GC l0 priority-rule B @CHR:<b> 0
 GC comment definition C 52 1
@@ -29,7 +29,7 @@ GC comment l0-definition C strict:u --> {JMP strict}
 GC comment usage @CHR:<c> 56 3
 GC comment definition @CHR:<c> 56 3
 GC comment <literal> @CHR:<c> undef --> {JMP literal}
-GC l0 atom @CHR:<c> character 99
+GC l0 literal @CHR:<c> character 99
 GC comment l0-usage @CHR:<c> literal --> NOP
 GC l0 priority-rule C @CHR:<c> 0
 GC comment Semantics completion processing

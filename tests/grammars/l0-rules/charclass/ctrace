@@ -5,7 +5,7 @@ GC comment l0-definition A undef --> {JMP match}
 	GC comment definition @RAN:<09> 4 5
 	GC comment <literal> @RAN:<09> undef --> {JMP literal}
 
-	GC l0 atom @RAN:<09> range 48 57
+	GC l0 literal @RAN:<09> range 48 57
 	GC comment l0-usage @RAN:<09> literal --> NOP
 
 GC l0 priority-rule A @RAN:<09> 0

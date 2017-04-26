@@ -943,7 +943,7 @@ oo::class create marpa::slif::semantics {
 	# Create it only once, when it is encountered the 1st time.
 
 	if {[Symbol context1 <literal> $litsymbol] eq "undef"} {
-	    Container l0 atom $litsymbol {*}$literal
+	    Container l0 literal $litsymbol {*}$literal
 	}
 
 	dict set mycc $litsymbol $litstring

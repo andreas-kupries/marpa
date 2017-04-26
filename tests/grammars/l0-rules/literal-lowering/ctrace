@@ -51,7 +51,7 @@ GC comment g1-definition B floater --> {JMP brick}
 	GC comment definition @CHR:<a> 384 3
 	GC comment <literal> @CHR:<a> undef --> {JMP literal}
 
-	GC l0 atom @CHR:<a> character 97
+	GC l0 literal @CHR:<a> character 97
 
 GC comment definition @LEX:@CHR:<a> 384 3
 GC comment usage @CHR:<a> 384 3
@@ -75,7 +75,7 @@ GC comment g1-definition C floater --> {JMP brick}
 	GC comment usage @STR:<abc> 394 5
 	GC comment definition @STR:<abc> 394 5
 	GC comment <literal> @STR:<abc> undef --> {JMP literal}
-	GC l0 atom @STR:<abc> string 97 98 99
+	GC l0 literal @STR:<abc> string 97 98 99
 
 GC comment definition @LEX:@STR:<abc> 394 5
 GC comment usage @STR:<abc> 394 5
@@ -100,7 +100,7 @@ GC comment g1-definition D floater --> {JMP brick}
 	GC comment definition @CLS:<Aa> 407 5
 	GC comment <literal> @CLS:<Aa> undef --> {JMP literal}
 
-	GC l0 atom @CLS:<Aa> charclass 65 97
+	GC l0 literal @CLS:<Aa> charclass 65 97
 
 GC comment definition @LEX:@CLS:<Aa> 407 5
 GC comment usage @CLS:<Aa> 407 5
@@ -125,7 +125,7 @@ GC comment g1-definition E floater --> {JMP brick}
 	GC comment definition @%STR:<ABC> 419 7
 	GC comment <literal> @%STR:<ABC> undef --> {JMP literal}
 
-	GC l0 atom @%STR:<ABC> %string 65 66 67
+	GC l0 literal @%STR:<ABC> %string 65 66 67
 
 GC comment definition @LEX:@%STR:<ABC> 419 7
 GC comment usage @%STR:<ABC> 419 7
@@ -167,7 +167,7 @@ GC comment g1-definition G floater --> {JMP brick}
 	GC comment definition @RAN:<az> 459 5
 	GC comment <literal> @RAN:<az> undef --> {JMP literal}
 
-	GC l0 atom @RAN:<az> range 97 122
+	GC l0 literal @RAN:<az> range 97 122
 
 GC comment definition @LEX:@RAN:<az> 459 5
 GC comment usage @RAN:<az> 459 5
@@ -192,7 +192,7 @@ GC comment g1-definition H floater --> {JMP brick}
 	GC comment definition {@NCC:<[:alnum:]>} 471 11
 	GC comment <literal> {@NCC:<[:alnum:]>} undef --> {JMP literal}
 
-	GC l0 atom {@NCC:<[:alnum:]>} named-class alnum
+	GC l0 literal {@NCC:<[:alnum:]>} named-class alnum
 
 GC comment definition {@LEX:@NCC:<[:alnum:]>} 471 11
 GC comment usage {@NCC:<[:alnum:]>} 471 11
@@ -217,7 +217,7 @@ GC comment g1-definition I floater --> {JMP brick}
 	GC comment definition {@CLS:<0-9a[:braille:]>} 489 17
 	GC comment <literal> {@CLS:<0-9a[:braille:]>} undef --> {JMP literal}
 
-	GC l0 atom {@CLS:<0-9a[:braille:]>} charclass {48 57} 97 braille
+	GC l0 literal {@CLS:<0-9a[:braille:]>} charclass {48 57} 97 braille
 
 GC comment definition {@LEX:@CLS:<0-9a[:braille:]>} 489 17
 GC comment usage {@CLS:<0-9a[:braille:]>} 489 17
@@ -260,7 +260,7 @@ GC comment g1-definition K floater --> {JMP brick}
 	GC comment definition {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 526 7
 	GC comment <literal> {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} undef --> {JMP literal}
 
-	GC l0 atom {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} charclass {65 90} {97 122} {304 305} 383 8490
+	GC l0 literal {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} charclass {65 90} {97 122} {304 305} 383 8490
 
 GC comment definition {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 526 7
 GC comment usage {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 526 7
@@ -285,7 +285,7 @@ GC comment g1-definition L floater --> {JMP brick}
 	GC comment definition {@%NCC:<[:alnum:]>} 540 13
 	GC comment <literal> {@%NCC:<[:alnum:]>} undef --> {JMP literal}
 
-	GC l0 atom {@%NCC:<[:alnum:]>} %named-class alnum
+	GC l0 literal {@%NCC:<[:alnum:]>} %named-class alnum
 
 GC comment definition {@LEX:@%NCC:<[:alnum:]>} 540 13
 GC comment usage {@%NCC:<[:alnum:]>} 540 13
@@ -310,7 +310,7 @@ GC comment g1-definition M floater --> {JMP brick}
 	GC comment definition {@CLS:<0-9Aa[:%braille:]>} 560 19
 	GC comment <literal> {@CLS:<0-9Aa[:%braille:]>} undef --> {JMP literal}
 
-	GC l0 atom {@CLS:<0-9Aa[:%braille:]>} charclass {48 57} 65 97 %braille
+	GC l0 literal {@CLS:<0-9Aa[:%braille:]>} charclass {48 57} 65 97 %braille
 
 GC comment definition {@LEX:@CLS:<0-9Aa[:%braille:]>} 560 19
 GC comment usage {@CLS:<0-9Aa[:%braille:]>} 560 19
@@ -334,7 +334,7 @@ GC comment g1-definition N floater --> {JMP brick}
 	GC comment usage @^CHR:<a> 610 4
 	GC comment definition @^CHR:<a> 610 4
 	GC comment <literal> @^CHR:<a> undef --> {JMP literal}
-	GC l0 atom @^CHR:<a> ^character 97
+	GC l0 literal @^CHR:<a> ^character 97
 
 GC comment definition @LEX:@^CHR:<a> 610 4
 GC comment usage @^CHR:<a> 610 4
@@ -358,7 +358,7 @@ GC comment g1-definition O floater --> {JMP brick}
 	GC comment usage @^RAN:<az> 621 6
 	GC comment definition @^RAN:<az> 621 6
 	GC comment <literal> @^RAN:<az> undef --> {JMP literal}
-	GC l0 atom @^RAN:<az> ^range 97 122
+	GC l0 literal @^RAN:<az> ^range 97 122
 
 GC comment definition @LEX:@^RAN:<az> 621 6
 GC comment usage @^RAN:<az> 621 6
@@ -382,7 +382,7 @@ GC comment g1-definition P floater --> {JMP brick}
 	GC comment usage {@^NCC:<[:alnum:]>} 634 12
 	GC comment definition {@^NCC:<[:alnum:]>} 634 12
 	GC comment <literal> {@^NCC:<[:alnum:]>} undef --> {JMP literal}
-	GC l0 atom {@^NCC:<[:alnum:]>} ^named-class alnum
+	GC l0 literal {@^NCC:<[:alnum:]>} ^named-class alnum
 
 GC comment definition {@LEX:@^NCC:<[:alnum:]>} 634 12
 GC comment usage {@^NCC:<[:alnum:]>} 634 12
@@ -406,7 +406,7 @@ GC comment g1-definition Q floater --> {JMP brick}
 	GC comment usage {@^CLS:<0-9a[:braille:]>} 653 18
 	GC comment definition {@^CLS:<0-9a[:braille:]>} 653 18
 	GC comment <literal> {@^CLS:<0-9a[:braille:]>} undef --> {JMP literal}
-	GC l0 atom {@^CLS:<0-9a[:braille:]>} ^charclass {48 57} 97 braille
+	GC l0 literal {@^CLS:<0-9a[:braille:]>} ^charclass {48 57} 97 braille
 
 GC comment definition {@LEX:@^CLS:<0-9a[:braille:]>} 653 18
 GC comment usage {@^CLS:<0-9a[:braille:]>} 653 18
@@ -430,7 +430,7 @@ GC comment g1-definition R floater --> {JMP brick}
 	GC comment usage @^CLS:<Aa> 679 6
 	GC comment definition @^CLS:<Aa> 679 6
 	GC comment <literal> @^CLS:<Aa> undef --> {JMP literal}
-	GC l0 atom @^CLS:<Aa> ^charclass 65 97
+	GC l0 literal @^CLS:<Aa> ^charclass 65 97
 
 GC comment definition @LEX:@^CLS:<Aa> 679 6
 GC comment usage @^CLS:<Aa> 679 6
@@ -454,7 +454,7 @@ GC comment g1-definition S floater --> {JMP brick}
 	GC comment usage {@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 692 8
 	GC comment definition {@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 692 8
 	GC comment <literal> {@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} undef --> {JMP literal}
-	GC l0 atom {@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} ^charclass {65 90} {97 122} {304 305} 383 8490
+	GC l0 literal {@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} ^charclass {65 90} {97 122} {304 305} 383 8490
 
 GC comment definition {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 692 8
 GC comment usage {@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 692 8
@@ -478,7 +478,7 @@ GC comment g1-definition T floater --> {JMP brick}
 	GC comment usage {@^%NCC:<[:alnum:]>} 707 14
 	GC comment definition {@^%NCC:<[:alnum:]>} 707 14
 	GC comment <literal> {@^%NCC:<[:alnum:]>} undef --> {JMP literal}
-	GC l0 atom {@^%NCC:<[:alnum:]>} ^%named-class alnum
+	GC l0 literal {@^%NCC:<[:alnum:]>} ^%named-class alnum
 
 GC comment definition {@LEX:@^%NCC:<[:alnum:]>} 707 14
 GC comment usage {@^%NCC:<[:alnum:]>} 707 14
@@ -502,7 +502,7 @@ GC comment g1-definition U floater --> {JMP brick}
 	GC comment usage {@^CLS:<0-9Aa[:%braille:]>} 728 20
 	GC comment definition {@^CLS:<0-9Aa[:%braille:]>} 728 20
 	GC comment <literal> {@^CLS:<0-9Aa[:%braille:]>} undef --> {JMP literal}
-	GC l0 atom {@^CLS:<0-9Aa[:%braille:]>} ^charclass {48 57} 65 97 %braille
+	GC l0 literal {@^CLS:<0-9Aa[:%braille:]>} ^charclass {48 57} 65 97 %braille
 
 GC comment definition {@LEX:@^CLS:<0-9Aa[:%braille:]>} 728 20
 GC comment usage {@^CLS:<0-9Aa[:%braille:]>} 728 20

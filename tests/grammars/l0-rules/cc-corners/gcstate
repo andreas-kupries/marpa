@@ -36,8 +36,8 @@ grammar {
             {@LEX:@CLS:<\135b>} { {priority {@CLS:<\135b>} 0} }
         }
         literal {
-            @CLS:<-b> { {charclass {45 98} 0} }
-            {@CLS:<\135b>} { {charclass {93 98} 0} }
+            @CLS:<-b> { {charclass 45 98} }
+            {@CLS:<\135b>} { {charclass 93 98} }
         }
     }
 }

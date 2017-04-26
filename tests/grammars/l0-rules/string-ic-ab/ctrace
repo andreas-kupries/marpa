@@ -5,7 +5,7 @@ GC comment l0-definition A undef --> {JMP match}
 	GC comment definition @%STR:<FOXY> 4 16
 
 	GC comment <literal> @%STR:<FOXY> undef --> {JMP literal}
-	GC l0 atom @%STR:<FOXY> %string 70 79 88 89
+	GC l0 literal @%STR:<FOXY> %string 70 79 88 89
 
 GC comment l0-usage @%STR:<FOXY> literal --> NOP
 GC l0 priority-rule A @%STR:<FOXY> 0

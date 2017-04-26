@@ -4,7 +4,7 @@ GC comment g1-definition A undef --> {JMP brick}
 	GC comment usage {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39
 	GC comment definition {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39
 	GC comment <literal> {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} undef --> {JMP literal}
-	GC l0 atom {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} string 7 8 9 10 11 12 13 92 97 5 55 255 171 13398 124
+	GC l0 literal {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} string 7 8 9 10 11 12 13 92 97 5 55 255 171 13398 124
 
 GC comment definition {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39
 GC comment usage {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39

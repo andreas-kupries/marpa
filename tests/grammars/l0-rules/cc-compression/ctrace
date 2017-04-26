@@ -4,7 +4,7 @@ GC comment g1-definition A undef --> {JMP brick}
 	GC comment usage @CLS:<0-1a-|> 545 11
 	GC comment definition @CLS:<0-1a-|> 545 11
 	GC comment <literal> @CLS:<0-1a-|> undef --> {JMP literal}
-	GC l0 atom @CLS:<0-1a-|> charclass {48 49} {97 124}
+	GC l0 literal @CLS:<0-1a-|> charclass {48 49} {97 124}
 
 GC comment definition @LEX:@CLS:<0-1a-|> 545 11
 GC comment usage @CLS:<0-1a-|> 545 11
@@ -21,7 +21,7 @@ GC comment g1-definition A brick --> NOP
 	GC comment usage @RAN:<09> 563 12
 	GC comment definition @RAN:<09> 563 12
 	GC comment <literal> @RAN:<09> undef --> {JMP literal}
-	GC l0 atom @RAN:<09> range 48 57
+	GC l0 literal @RAN:<09> range 48 57
 
 GC comment definition @LEX:@RAN:<09> 563 12
 GC comment usage @RAN:<09> 563 12

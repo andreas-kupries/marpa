@@ -6,7 +6,7 @@ GC comment l0-definition A undef --> {JMP match}
 GC comment usage {@CLS:<:Q\133\135-^dgitx>} 4 14
 GC comment definition {@CLS:<:Q\133\135-^dgitx>} 4 14
 GC comment <literal> {@CLS:<:Q\133\135-^dgitx>} undef --> {JMP literal}
-GC l0 atom {@CLS:<:Q\133\135-^dgitx>} charclass 58 81 91 {93 94} 100 103 105 116 120
+GC l0 literal {@CLS:<:Q\133\135-^dgitx>} charclass 58 81 91 {93 94} 100 103 105 116 120
 GC comment l0-usage {@CLS:<:Q\133\135-^dgitx>} literal --> NOP
 GC l0 priority-rule A {{@CLS:<:Q\133\135-^dgitx>}} 0
 GC comment definition lang 19 4

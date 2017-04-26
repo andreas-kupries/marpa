@@ -23,10 +23,10 @@ grammar {
             A 1
         }
         lexeme {
-            A { {priority {{@STR/i:<CASE-INSENSITIVE\40STRING>}} 0} }
+            A { {priority {{@%STR:<CASE-INSENSITIVE\40STRING>}} 0} }
         }
         literal {
-            {@STR/i:<CASE-INSENSITIVE\40STRING>} { {string {67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71} 1} }
+            {@%STR:<CASE-INSENSITIVE\40STRING>} { {%string 67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71} }
         }
     }
 }

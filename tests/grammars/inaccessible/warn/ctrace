@@ -6,7 +6,7 @@ GC comment g1-definition A undef --> {JMP brick}
 GC comment usage @CHR:<a> 39 3
 GC comment definition @CHR:<a> 39 3
 GC comment <literal> @CHR:<a> undef --> {JMP literal}
-GC l0 atom @CHR:<a> character 97
+GC l0 literal @CHR:<a> character 97
 GC comment definition @LEX:@CHR:<a> 39 3
 GC comment usage @CHR:<a> 39 3
 GC comment l0-definition @LEX:@CHR:<a> undef --> {JMP match}

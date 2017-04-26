@@ -1059,371 +1059,6 @@ grammar {
     }
     l0 {
         {} {
-            @STR:<::=> { {priority {
-                    @CHR:<:>
-                    @CHR:<:>
-                    @CHR:<=>} 0} }
-            @STR:<::> { {priority {
-                    @CHR:<:>
-                    @CHR:<:>} 0} }
-            {@STR:<:\135>} { {priority {
-                    @CHR:<:>
-                    {@CHR:<\135>}} 0} }
-            @STR:<:default> { {priority {
-                    @CHR:<:>
-                    @CHR:<d>
-                    @CHR:<e>
-                    @CHR:<f>
-                    @CHR:<a>
-                    @CHR:<u>
-                    @CHR:<l>
-                    @CHR:<t>} 0} }
-            @STR:<:discard> { {priority {
-                    @CHR:<:>
-                    @CHR:<d>
-                    @CHR:<i>
-                    @CHR:<s>
-                    @CHR:<c>
-                    @CHR:<a>
-                    @CHR:<r>
-                    @CHR:<d>} 0} }
-            @STR:<:i> { {priority {
-                    @CHR:<:>
-                    @CHR:<i>} 0} }
-            @STR:<:ic> { {priority {
-                    @CHR:<:>
-                    @CHR:<i>
-                    @CHR:<c>} 0} }
-            @STR:<:lexeme> { {priority {
-                    @CHR:<:>
-                    @CHR:<l>
-                    @CHR:<e>
-                    @CHR:<x>
-                    @CHR:<e>
-                    @CHR:<m>
-                    @CHR:<e>} 0} }
-            @STR:<:start> { {priority {
-                    @CHR:<:>
-                    @CHR:<s>
-                    @CHR:<t>
-                    @CHR:<a>
-                    @CHR:<r>
-                    @CHR:<t>} 0} }
-            @STR:<=>> { {priority {
-                    @CHR:<=>
-                    @CHR:<>>} 0} }
-            {@STR:<\133:>} { {priority {
-                    {@CHR:<\133>}
-                    @CHR:<:>} 0} }
-            {@STR:<\133:^>} { {priority {
-                    {@CHR:<\133>}
-                    @CHR:<:>
-                    @CHR:<^>} 0} }
-            @STR:<action> { {priority {
-                    @CHR:<a>
-                    @CHR:<c>
-                    @CHR:<t>
-                    @CHR:<i>
-                    @CHR:<o>
-                    @CHR:<n>} 0} }
-            @STR:<after> { {priority {
-                    @CHR:<a>
-                    @CHR:<f>
-                    @CHR:<t>
-                    @CHR:<e>
-                    @CHR:<r>} 0} }
-            @STR:<assoc> { {priority {
-                    @CHR:<a>
-                    @CHR:<s>
-                    @CHR:<s>
-                    @CHR:<o>
-                    @CHR:<c>} 0} }
-            @STR:<before> { {priority {
-                    @CHR:<b>
-                    @CHR:<e>
-                    @CHR:<f>
-                    @CHR:<o>
-                    @CHR:<r>
-                    @CHR:<e>} 0} }
-            @STR:<bless> { {priority {
-                    @CHR:<b>
-                    @CHR:<l>
-                    @CHR:<e>
-                    @CHR:<s>
-                    @CHR:<s>} 0} }
-            @STR:<by> { {priority {
-                    @CHR:<b>
-                    @CHR:<y>} 0} }
-            @STR:<completed> { {priority {
-                    @CHR:<c>
-                    @CHR:<o>
-                    @CHR:<m>
-                    @CHR:<p>
-                    @CHR:<l>
-                    @CHR:<e>
-                    @CHR:<t>
-                    @CHR:<e>
-                    @CHR:<d>} 0} }
-            @STR:<current> { {priority {
-                    @CHR:<c>
-                    @CHR:<u>
-                    @CHR:<r>
-                    @CHR:<r>
-                    @CHR:<e>
-                    @CHR:<n>
-                    @CHR:<t>} 0} }
-            @STR:<default> { {priority {
-                    @CHR:<d>
-                    @CHR:<e>
-                    @CHR:<f>
-                    @CHR:<a>
-                    @CHR:<u>
-                    @CHR:<l>
-                    @CHR:<t>} 0} }
-            @STR:<discard> { {priority {
-                    @CHR:<d>
-                    @CHR:<i>
-                    @CHR:<s>
-                    @CHR:<c>
-                    @CHR:<a>
-                    @CHR:<r>
-                    @CHR:<d>} 0} }
-            @STR:<event> { {priority {
-                    @CHR:<e>
-                    @CHR:<v>
-                    @CHR:<e>
-                    @CHR:<n>
-                    @CHR:<t>} 0} }
-            @STR:<fatal> { {priority {
-                    @CHR:<f>
-                    @CHR:<a>
-                    @CHR:<t>
-                    @CHR:<a>
-                    @CHR:<l>} 0} }
-            @STR:<forgiving> { {priority {
-                    @CHR:<f>
-                    @CHR:<o>
-                    @CHR:<r>
-                    @CHR:<g>
-                    @CHR:<i>
-                    @CHR:<v>
-                    @CHR:<i>
-                    @CHR:<n>
-                    @CHR:<g>} 0} }
-            @STR:<g1length> { {priority {
-                    @CHR:<g>
-                    @CHR:<1>
-                    @CHR:<l>
-                    @CHR:<e>
-                    @CHR:<n>
-                    @CHR:<g>
-                    @CHR:<t>
-                    @CHR:<h>} 0} }
-            @STR:<g1start> { {priority {
-                    @CHR:<g>
-                    @CHR:<1>
-                    @CHR:<s>
-                    @CHR:<t>
-                    @CHR:<a>
-                    @CHR:<r>
-                    @CHR:<t>} 0} }
-            @STR:<group> { {priority {
-                    @CHR:<g>
-                    @CHR:<r>
-                    @CHR:<o>
-                    @CHR:<u>
-                    @CHR:<p>} 0} }
-            @STR:<high> { {priority {
-                    @CHR:<h>
-                    @CHR:<i>
-                    @CHR:<g>
-                    @CHR:<h>} 0} }
-            @STR:<inaccessible> { {priority {
-                    @CHR:<i>
-                    @CHR:<n>
-                    @CHR:<a>
-                    @CHR:<c>
-                    @CHR:<c>
-                    @CHR:<e>
-                    @CHR:<s>
-                    @CHR:<s>
-                    @CHR:<i>
-                    @CHR:<b>
-                    @CHR:<l>
-                    @CHR:<e>} 0} }
-            @STR:<is> { {priority {
-                    @CHR:<i>
-                    @CHR:<s>} 0} }
-            @STR:<latm> { {priority {
-                    @CHR:<l>
-                    @CHR:<a>
-                    @CHR:<t>
-                    @CHR:<m>} 0} }
-            @STR:<left> { {priority {
-                    @CHR:<l>
-                    @CHR:<e>
-                    @CHR:<f>
-                    @CHR:<t>} 0} }
-            @STR:<length> { {priority {
-                    @CHR:<l>
-                    @CHR:<e>
-                    @CHR:<n>
-                    @CHR:<g>
-                    @CHR:<t>
-                    @CHR:<h>} 0} }
-            @STR:<lexeme> { {priority {
-                    @CHR:<l>
-                    @CHR:<e>
-                    @CHR:<x>
-                    @CHR:<e>
-                    @CHR:<m>
-                    @CHR:<e>} 0} }
-            @STR:<lexer> { {priority {
-                    @CHR:<l>
-                    @CHR:<e>
-                    @CHR:<x>
-                    @CHR:<e>
-                    @CHR:<r>} 0} }
-            @STR:<lhs> { {priority {
-                    @CHR:<l>
-                    @CHR:<h>
-                    @CHR:<s>} 0} }
-            @STR:<low> { {priority {
-                    @CHR:<l>
-                    @CHR:<o>
-                    @CHR:<w>} 0} }
-            @STR:<name> { {priority {
-                    @CHR:<n>
-                    @CHR:<a>
-                    @CHR:<m>
-                    @CHR:<e>} 0} }
-            @STR:<null-ranking> { {priority {
-                    @CHR:<n>
-                    @CHR:<u>
-                    @CHR:<l>
-                    @CHR:<l>
-                    @CHR:<->
-                    @CHR:<r>
-                    @CHR:<a>
-                    @CHR:<n>
-                    @CHR:<k>
-                    @CHR:<i>
-                    @CHR:<n>
-                    @CHR:<g>} 0} }
-            @STR:<null> { {priority {
-                    @CHR:<n>
-                    @CHR:<u>
-                    @CHR:<l>
-                    @CHR:<l>} 0} }
-            @STR:<nulled> { {priority {
-                    @CHR:<n>
-                    @CHR:<u>
-                    @CHR:<l>
-                    @CHR:<l>
-                    @CHR:<e>
-                    @CHR:<d>} 0} }
-            @STR:<off> { {priority {
-                    @CHR:<o>
-                    @CHR:<f>
-                    @CHR:<f>} 0} }
-            @STR:<ok> { {priority {
-                    @CHR:<o>
-                    @CHR:<k>} 0} }
-            @STR:<on> { {priority {
-                    @CHR:<o>
-                    @CHR:<n>} 0} }
-            @STR:<pause> { {priority {
-                    @CHR:<p>
-                    @CHR:<a>
-                    @CHR:<u>
-                    @CHR:<s>
-                    @CHR:<e>} 0} }
-            @STR:<predicted> { {priority {
-                    @CHR:<p>
-                    @CHR:<r>
-                    @CHR:<e>
-                    @CHR:<d>
-                    @CHR:<i>
-                    @CHR:<c>
-                    @CHR:<t>
-                    @CHR:<e>
-                    @CHR:<d>} 0} }
-            @STR:<priority> { {priority {
-                    @CHR:<p>
-                    @CHR:<r>
-                    @CHR:<i>
-                    @CHR:<o>
-                    @CHR:<r>
-                    @CHR:<i>
-                    @CHR:<t>
-                    @CHR:<y>} 0} }
-            @STR:<proper> { {priority {
-                    @CHR:<p>
-                    @CHR:<r>
-                    @CHR:<o>
-                    @CHR:<p>
-                    @CHR:<e>
-                    @CHR:<r>} 0} }
-            @STR:<rank> { {priority {
-                    @CHR:<r>
-                    @CHR:<a>
-                    @CHR:<n>
-                    @CHR:<k>} 0} }
-            @STR:<right> { {priority {
-                    @CHR:<r>
-                    @CHR:<i>
-                    @CHR:<g>
-                    @CHR:<h>
-                    @CHR:<t>} 0} }
-            @STR:<rule> { {priority {
-                    @CHR:<r>
-                    @CHR:<u>
-                    @CHR:<l>
-                    @CHR:<e>} 0} }
-            @STR:<separator> { {priority {
-                    @CHR:<s>
-                    @CHR:<e>
-                    @CHR:<p>
-                    @CHR:<a>
-                    @CHR:<r>
-                    @CHR:<a>
-                    @CHR:<t>
-                    @CHR:<o>
-                    @CHR:<r>} 0} }
-            @STR:<start> { {priority {
-                    @CHR:<s>
-                    @CHR:<t>
-                    @CHR:<a>
-                    @CHR:<r>
-                    @CHR:<t>} 0} }
-            @STR:<symbol> { {priority {
-                    @CHR:<s>
-                    @CHR:<y>
-                    @CHR:<m>
-                    @CHR:<b>
-                    @CHR:<o>
-                    @CHR:<l>} 0} }
-            @STR:<value> { {priority {
-                    @CHR:<v>
-                    @CHR:<a>
-                    @CHR:<l>
-                    @CHR:<u>
-                    @CHR:<e>} 0} }
-            @STR:<values> { {priority {
-                    @CHR:<v>
-                    @CHR:<a>
-                    @CHR:<l>
-                    @CHR:<u>
-                    @CHR:<e>
-                    @CHR:<s>} 0} }
-            @STR:<warn> { {priority {
-                    @CHR:<w>
-                    @CHR:<a>
-                    @CHR:<r>
-                    @CHR:<n>} 0} }
-            @STR:<||> { {priority {
-                    @CHR:<|>
-                    @CHR:<|>} 0} }
             {array descriptor left bracket} {
                 {priority {{@CHR:<\133>}} 0}
                 {priority {
@@ -1454,8 +1089,8 @@ grammar {
                     {@CHR:<\134>}
                     {horizontal character}} 0} }
             {hash comment body} { {quantified {hash comment char} 0} }
-            {hash comment char} { {priority {{@NEC:<\n-\r\u2028-\u2029>}} 0} }
-            {horizontal character} { {priority {{@NEC:<\n-\r\u2028-\u2029>}} 0} }
+            {hash comment char} { {priority {{@^CLS:<\n-\r\u2028-\u2029>}} 0} }
+            {horizontal character} { {priority {{@^CLS:<\n-\r\u2028-\u2029>}} 0} }
             integer { {quantified @CHR:<d> 1} }
             {negated posix char class} { {priority {
                     {@STR:<\133:^>}
@@ -1467,7 +1102,7 @@ grammar {
                     {@STR:<\133:>}
                     {posix char class name}
                     {@STR:<:\135>}} 0} }
-            {posix char class name} { {quantified {@CLS:<[:alnum:]>} 1} }
+            {posix char class name} { {quantified {@NCC:<[:alnum:]>} 1} }
             quote { {priority @CHR:<'> 0} }
             {result item descriptor} {
                 {priority @STR:<start> 0}
@@ -1489,9 +1124,9 @@ grammar {
                         @CHR:<,>
                         whitespace} 0}
             }
-            {safe cc character} { {priority {{@NEC:<\n-\r\135\205\u2028-\u2029>}} 0} }
+            {safe cc character} { {priority {{@^CLS:<\n-\r\135\205\u2028-\u2029>}} 0} }
             sign { {priority @CLS:<+-> 0} }
-            {string without single quote or vertical space} { {quantified {@NEC:<\n-\r'\u2028-\u2029>} 1} }
+            {string without single quote or vertical space} { {quantified {@^CLS:<\n-\r'\u2028-\u2029>} 1} }
             {terminated hash comment} { {priority {
                     @CHR:<#>
                     {hash comment body}
@@ -1641,7 +1276,7 @@ grammar {
                 {priority @STR:<before> 0}
                 {priority @STR:<after> 0}
             }
-            boolean { {priority @CLS:<0-1> 0} }
+            boolean { {priority @RAN:<01> 0} }
             {bracketed name} { {priority {
                     @CHR:<<>
                     {bracketed name string}
@@ -1686,14 +1321,14 @@ grammar {
                     {zero or more word characters}} 0} }
         }
         literal {
+            {@^CLS:<\n-\r'\u2028-\u2029>} { {^charclass {10 13} 39 {8232 8233}} }
+            {@^CLS:<\n-\r\135\205\u2028-\u2029>} { {^charclass {10 13} 93 133 {8232 8233}} }
+            {@^CLS:<\n-\r\u2028-\u2029>} { {^charclass {10 13} {8232 8233}} }
             @CHR:<#> { {character 35} }
             @CHR:<'> { {character 39} }
             @CHR:<*> { {character 42} }
             @CHR:<+> { {character 43} }
             @CHR:<,> { {character 44} }
-            @CHR:<-> { {character 45} }
-            @CHR:<1> { {character 49} }
-            @CHR:<:> { {character 58} }
             @CHR:<<> { {character 60} }
             @CHR:<=> { {character 61} }
             @CHR:<>> { {character 62} }
@@ -1705,41 +1340,76 @@ grammar {
             {@CHR:<\135>} { {character 93} }
             {@CHR:<\173>} { {character 123} }
             {@CHR:<\175>} { {character 125} }
-            @CHR:<^> { {character 94} }
-            @CHR:<a> { {character 97} }
-            @CHR:<b> { {character 98} }
-            @CHR:<c> { {character 99} }
             @CHR:<d> { {character 100} }
-            @CHR:<e> { {character 101} }
-            @CHR:<f> { {character 102} }
-            @CHR:<g> { {character 103} }
-            @CHR:<h> { {character 104} }
-            @CHR:<i> { {character 105} }
-            @CHR:<k> { {character 107} }
-            @CHR:<l> { {character 108} }
-            @CHR:<m> { {character 109} }
-            @CHR:<n> { {character 110} }
-            @CHR:<o> { {character 111} }
-            @CHR:<p> { {character 112} }
-            @CHR:<r> { {character 114} }
             @CHR:<s> { {character 115} }
-            @CHR:<t> { {character 116} }
-            @CHR:<u> { {character 117} }
-            @CHR:<v> { {character 118} }
             @CHR:<w> { {character 119} }
-            @CHR:<x> { {character 120} }
-            @CHR:<y> { {character 121} }
             @CHR:<|> { {character 124} }
             @CHR:<~> { {character 126} }
-            @CLS:<+-> { {charclass {43 45} 0} }
-            @CLS:<0-1> { {charclass {{48 49}} 0} }
-            {@CLS:<[:alnum:]>} { {charclass :alnum 0} }
-            {@CLS:<\n-\r\u2028-\u2029>} { {charclass {{10 13} {8232 8233}} 0} }
-            @CLS:<A-Za-z> { {charclass {{65 90} {97 122}} 0} }
-            @CLS:<sw> { {charclass {115 119} 0} }
-            {@NEC:<\n-\r'\u2028-\u2029>} { {negcclass {{10 13} 39 {8232 8233}} 0} }
-            {@NEC:<\n-\r\135\205\u2028-\u2029>} { {negcclass {{10 13} 93 133 {8232 8233}} 0} }
-            {@NEC:<\n-\r\u2028-\u2029>} { {negcclass {{10 13} {8232 8233}} 0} }
+            @CLS:<+-> { {charclass 43 45} }
+            {@CLS:<\n-\r\u2028-\u2029>} { {charclass {10 13} {8232 8233}} }
+            @CLS:<A-Za-z> { {charclass {65 90} {97 122}} }
+            @CLS:<sw> { {charclass 115 119} }
+            {@NCC:<[:alnum:]>} { {named-class alnum} }
+            @RAN:<01> { {range 48 49} }
+            @STR:<::=> { {string 58 58 61} }
+            @STR:<::> { {string 58 58} }
+            {@STR:<:\135>} { {string 58 93} }
+            @STR:<:default> { {string 58 100 101 102 97 117 108 116} }
+            @STR:<:discard> { {string 58 100 105 115 99 97 114 100} }
+            @STR:<:i> { {string 58 105} }
+            @STR:<:ic> { {string 58 105 99} }
+            @STR:<:lexeme> { {string 58 108 101 120 101 109 101} }
+            @STR:<:start> { {string 58 115 116 97 114 116} }
+            @STR:<=>> { {string 61 62} }
+            {@STR:<\133:>} { {string 91 58} }
+            {@STR:<\133:^>} { {string 91 58 94} }
+            @STR:<action> { {string 97 99 116 105 111 110} }
+            @STR:<after> { {string 97 102 116 101 114} }
+            @STR:<assoc> { {string 97 115 115 111 99} }
+            @STR:<before> { {string 98 101 102 111 114 101} }
+            @STR:<bless> { {string 98 108 101 115 115} }
+            @STR:<by> { {string 98 121} }
+            @STR:<completed> { {string 99 111 109 112 108 101 116 101 100} }
+            @STR:<current> { {string 99 117 114 114 101 110 116} }
+            @STR:<default> { {string 100 101 102 97 117 108 116} }
+            @STR:<discard> { {string 100 105 115 99 97 114 100} }
+            @STR:<event> { {string 101 118 101 110 116} }
+            @STR:<fatal> { {string 102 97 116 97 108} }
+            @STR:<forgiving> { {string 102 111 114 103 105 118 105 110 103} }
+            @STR:<g1length> { {string 103 49 108 101 110 103 116 104} }
+            @STR:<g1start> { {string 103 49 115 116 97 114 116} }
+            @STR:<group> { {string 103 114 111 117 112} }
+            @STR:<high> { {string 104 105 103 104} }
+            @STR:<inaccessible> { {string 105 110 97 99 99 101 115 115 105 98 108 101} }
+            @STR:<is> { {string 105 115} }
+            @STR:<latm> { {string 108 97 116 109} }
+            @STR:<left> { {string 108 101 102 116} }
+            @STR:<length> { {string 108 101 110 103 116 104} }
+            @STR:<lexeme> { {string 108 101 120 101 109 101} }
+            @STR:<lexer> { {string 108 101 120 101 114} }
+            @STR:<lhs> { {string 108 104 115} }
+            @STR:<low> { {string 108 111 119} }
+            @STR:<name> { {string 110 97 109 101} }
+            @STR:<null-ranking> { {string 110 117 108 108 45 114 97 110 107 105 110 103} }
+            @STR:<null> { {string 110 117 108 108} }
+            @STR:<nulled> { {string 110 117 108 108 101 100} }
+            @STR:<off> { {string 111 102 102} }
+            @STR:<ok> { {string 111 107} }
+            @STR:<on> { {string 111 110} }
+            @STR:<pause> { {string 112 97 117 115 101} }
+            @STR:<predicted> { {string 112 114 101 100 105 99 116 101 100} }
+            @STR:<priority> { {string 112 114 105 111 114 105 116 121} }
+            @STR:<proper> { {string 112 114 111 112 101 114} }
+            @STR:<rank> { {string 114 97 110 107} }
+            @STR:<right> { {string 114 105 103 104 116} }
+            @STR:<rule> { {string 114 117 108 101} }
+            @STR:<separator> { {string 115 101 112 97 114 97 116 111 114} }
+            @STR:<start> { {string 115 116 97 114 116} }
+            @STR:<symbol> { {string 115 121 109 98 111 108} }
+            @STR:<value> { {string 118 97 108 117 101} }
+            @STR:<values> { {string 118 97 108 117 101 115} }
+            @STR:<warn> { {string 119 97 114 110} }
+            @STR:<||> { {string 124 124} }
         }
     }
 }

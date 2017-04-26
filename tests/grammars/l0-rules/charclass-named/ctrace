@@ -5,7 +5,7 @@ GC comment l0-definition A undef --> {JMP match}
 	GC comment definition {@CLS:<Q[:xdigit:]>} 4 13
 	GC comment <literal> {@CLS:<Q[:xdigit:]>} undef --> {JMP literal}
 
-	GC l0 atom {@CLS:<Q[:xdigit:]>} charclass 81 xdigit
+	GC l0 literal {@CLS:<Q[:xdigit:]>} charclass 81 xdigit
 
 GC comment l0-usage {@CLS:<Q[:xdigit:]>} literal --> NOP
 GC l0 priority-rule A {{@CLS:<Q[:xdigit:]>}} 0

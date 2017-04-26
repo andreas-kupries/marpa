@@ -5,7 +5,7 @@ GC comment l0-definition A undef --> {JMP match}
 	GC comment definition {@%STR:<CASE-INSENSITIVE\40STRING>} 4 28
 
 	GC comment <literal> {@%STR:<CASE-INSENSITIVE\40STRING>} undef --> {JMP literal}
-	GC l0 atom {@%STR:<CASE-INSENSITIVE\40STRING>} %string 67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71
+	GC l0 literal {@%STR:<CASE-INSENSITIVE\40STRING>} %string 67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71
 
 GC comment l0-usage {@%STR:<CASE-INSENSITIVE\40STRING>} literal --> NOP
 GC l0 priority-rule A {{@%STR:<CASE-INSENSITIVE\40STRING>}} 0

@@ -23,10 +23,10 @@ grammar {
             A 1
         }
         lexeme {
-            A { {priority {{@CLS:<[:^xdigit:]Q>}} 0} }
+            A { {priority {{@CLS:<:Q\133\135-^dgitx>}} 0} }
         }
         literal {
-            {@CLS:<[:^xdigit:]Q>} { {charclass {:^xdigit 81} 0} }
+            {@CLS:<:Q\133\135-^dgitx>} { {charclass 58 81 91 {93 94} 100 103 105 116 120} }
         }
     }
 }

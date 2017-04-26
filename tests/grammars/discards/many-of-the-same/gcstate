@@ -20,7 +20,7 @@ grammar {
     }
     l0 {
         discard {
-            @DIS:@CLS:<a-z> { {priority @CLS:<a-z> 0} }
+            @DIS:@RAN:<az> { {priority @RAN:<az> 0} }
         }
         latm {
             @LEX:@CHR:<0> 1
@@ -30,7 +30,7 @@ grammar {
         }
         literal {
             @CHR:<0> { {character 48} }
-            @CLS:<a-z> { {charclass {{97 122}} 0} }
+            @RAN:<az> { {range 97 122} }
         }
     }
 }

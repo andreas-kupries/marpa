@@ -18,7 +18,7 @@ GC g1 terminal B
 GC comment usage @CHR:<b> 23 3
 GC comment definition @CHR:<b> 23 3
 GC comment <literal> @CHR:<b> undef --> {JMP literal}
-GC l0 atom @CHR:<b> character 98
+GC l0 literal @CHR:<b> character 98
 GC comment l0-usage @CHR:<b> literal --> NOP
 GC l0 priority-rule B @CHR:<b> 0
 GC comment definition C 27 1
@@ -28,7 +28,7 @@ GC g1 terminal C
 GC comment usage @CHR:<c> 31 3
 GC comment definition @CHR:<c> 31 3
 GC comment <literal> @CHR:<c> undef --> {JMP literal}
-GC l0 atom @CHR:<c> character 99
+GC l0 literal @CHR:<c> character 99
 GC comment l0-usage @CHR:<c> literal --> NOP
 GC l0 priority-rule C @CHR:<c> 0
 GC comment definition D 35 1
@@ -38,7 +38,7 @@ GC g1 terminal D
 GC comment usage @CHR:<d> 39 3
 GC comment definition @CHR:<d> 39 3
 GC comment <literal> @CHR:<d> undef --> {JMP literal}
-GC l0 atom @CHR:<d> character 100
+GC l0 literal @CHR:<d> character 100
 GC comment l0-usage @CHR:<d> literal --> NOP
 GC l0 priority-rule D @CHR:<d> 0
 GC comment definition E 43 1
@@ -48,7 +48,7 @@ GC g1 terminal E
 GC comment usage @CHR:<e> 47 3
 GC comment definition @CHR:<e> 47 3
 GC comment <literal> @CHR:<e> undef --> {JMP literal}
-GC l0 atom @CHR:<e> character 101
+GC l0 literal @CHR:<e> character 101
 GC comment l0-usage @CHR:<e> literal --> NOP
 GC l0 priority-rule E @CHR:<e> 0
 GC comment Semantics completion processing

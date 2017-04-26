@@ -6,7 +6,7 @@ GC comment g1-definition A undef --> {JMP brick}
 
 	GC comment <literal> {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} undef --> {JMP literal}
 
-	GC l0 atom {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} charclass {65 90} {97 122} {304 305} 383 8490
+	GC l0 literal {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} charclass {65 90} {97 122} {304 305} 383 8490
 	GC comment definition {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 6 7
 	GC comment usage {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 6 7
 	GC comment l0-definition {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} undef --> {JMP match}

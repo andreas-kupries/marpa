@@ -5,7 +5,7 @@ GC comment g1-definition A undef --> {JMP brick}
 	GC comment definition @%STR:<FOXOYO> 6 18
 
 	GC comment <literal> @%STR:<FOXOYO> undef --> {JMP literal}
-	GC l0 atom @%STR:<FOXOYO> %string 70 79 88 79 89 79
+	GC l0 literal @%STR:<FOXOYO> %string 70 79 88 79 89 79
 
 	GC comment definition @LEX:@%STR:<FOXOYO> 6 18
 	GC comment usage @%STR:<FOXOYO> 6 18

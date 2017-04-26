@@ -76,11 +76,6 @@ grammar {
         action {array values}
     }
     l0 {
-        {} {
-            @STR:<**> { {priority {
-                    @CHR:<*>
-                    @CHR:<*>} 0} }
-        }
         latm {
             ADD 1
             DIV 1
@@ -95,7 +90,7 @@ grammar {
             ADD { {priority @CHR:<+> 0} }
             DIV { {priority @CHR:</> 0} }
             MUL { {priority @CHR:<*> 0} }
-            N { {quantified @CLS:<0-9> 1} }
+            N { {quantified @RAN:<09> 1} }
             PC { {priority {{@CHR:<\51>}} 0} }
             PO { {priority {{@CHR:<\50>}} 0} }
             POW { {priority @STR:<**> 0} }
@@ -108,7 +103,8 @@ grammar {
             @CHR:</> { {character 47} }
             {@CHR:<\50>} { {character 40} }
             {@CHR:<\51>} { {character 41} }
-            @CLS:<0-9> { {charclass {{48 57}} 0} }
+            @RAN:<09> { {range 48 57} }
+            @STR:<**> { {string 42 42} }
         }
     }
 }

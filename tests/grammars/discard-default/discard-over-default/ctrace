@@ -26,7 +26,7 @@ GC comment l0-definition foo discard:u --> {JMP discard}
 GC comment usage @CHR:<a> 123 3
 GC comment definition @CHR:<a> 123 3
 GC comment <literal> @CHR:<a> undef --> {JMP literal}
-GC l0 atom @CHR:<a> character 97
+GC l0 literal @CHR:<a> character 97
 GC comment l0-usage @CHR:<a> literal --> NOP
 GC l0 priority-rule foo @CHR:<a> 0
 GC comment definition bar 127 3
@@ -34,7 +34,7 @@ GC comment l0-definition bar discard:u --> {JMP discard}
 GC comment usage @CHR:<b> 133 3
 GC comment definition @CHR:<b> 133 3
 GC comment <literal> @CHR:<b> undef --> {JMP literal}
-GC l0 atom @CHR:<b> character 98
+GC l0 literal @CHR:<b> character 98
 GC comment l0-usage @CHR:<b> literal --> NOP
 GC l0 priority-rule bar @CHR:<b> 0
 GC comment definition fox 137 3
@@ -44,7 +44,7 @@ GC g1 terminal fox
 GC comment usage @CHR:<x> 143 3
 GC comment definition @CHR:<x> 143 3
 GC comment <literal> @CHR:<x> undef --> {JMP literal}
-GC l0 atom @CHR:<x> character 120
+GC l0 literal @CHR:<x> character 120
 GC comment l0-usage @CHR:<x> literal --> NOP
 GC l0 priority-rule fox @CHR:<x> 0
 GC comment Semantics completion processing
