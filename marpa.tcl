@@ -33,6 +33,13 @@ set selfdir [file dirname [file normalize [info script]]]
 set dud $selfdir/p_unidata.tcl
 set tud $selfdir/tools/unidata.tcl
 
+# Choose the unicode range to support. Default is BMP, because that is
+# what Tcl does, currently. When it supports more we can go to full range.
+# When making the switch remove $dud above to force its regeneration.
+
+set urange bmp   ;# Basic Multilingual Plane
+#set urange full  ;# Full support
+
 if {![file exists $dud] ||
     ([file mtime $dud] < [file mtime $tud]) ||
     ([file mtime $dud] < [file mtime $selfdir/unidata/UnicodeData.txt]) ||
@@ -47,7 +54,7 @@ if {![file exists $dud] ||
     # including them.
 
     set start [clock seconds]
-    exec {*}[info nameofexecutable] $tud $dud 0
+    exec {*}[info nameofexecutable] $tud $dud $urange 0
     set delta [expr { [clock seconds] - $start}]
     critcl::msg -nonewline " Done in $delta seconds: [file size $dud] bytes)"
     unset start delta
@@ -55,7 +62,7 @@ if {![file exists $dud] ||
     critcl::msg -nonewline { (Up-to-date unicode data tables available, skipping generation)}
 }
 
-unset selfdir tud dud
+unset selfdir tud dud urange
 
 # # ## ### ##### ######## #############
 ## Administrivia
