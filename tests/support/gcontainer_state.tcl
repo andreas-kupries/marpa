@@ -189,6 +189,7 @@ proc gc-spec {spec} {
 	    return $spec
 	}
 	terminal - \
+	    byte - brange - \
 	    string - %string - \
 	    charclass - ^charclass - %charclass - ^%charclass - \
 	    character - ^character - \

@@ -7,7 +7,6 @@
 
 package require TclOO
 
-# Test suite support.
 # # ## ### ##### ######## #############
 ## Simplified Log API. Hiding (the complexity of) the classes and
 ## instances from the users. Auto-creation and -destruction as much as

@@ -19,9 +19,11 @@ kt local   testing marpa
 
 # # ## ### ##### ######## ############# #####################
 
-kt source support/common.tcl
 kt source support/ast.tcl
+kt source support/common.tcl
+kt source support/dirs.tcl
 kt source support/grammars.tcl
+kt source support/textutils.tcl
 
 # # ## ### ##### ######## ############# #####################
 ##  1 constructor/0
@@ -72,7 +74,7 @@ unset max
 incr k
 test-grammar-map slif --> id slif base {
     set input    [fileutil::cat $slif]
-    set expected [gr-expected [file join $base ctrace]]
+    set expected [norm-trace [file join $base ctrace]]
     set kd       [format $format $k]
 
     test marpa-slif-semantics-process-2.${kd}---${id} "process $id /trace" -setup {

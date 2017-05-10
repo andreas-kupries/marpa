@@ -20,8 +20,10 @@ kt local   testing marpa
 # # ## ### ##### ######## ############# #####################
 
 kt source support/common.tcl
+kt source support/dirs.tcl
 kt source support/gcontainer_state.tcl
 kt source support/grammars.tcl
+kt source support/textutils.tcl
 
 # # ## ### ##### ######## ############# #####################
 ##  1 constructor/0
@@ -53,7 +55,7 @@ unset max
 
 incr k
 test-grammar-map ctrace --> id ctrace base {
-    set input [gr-decomment $ctrace]
+    set input [norm-trace-gc $ctrace]
 
     # Ignore traces for parse and/or semantic errors.
     if {[string match {*GC error*} $input]} continue

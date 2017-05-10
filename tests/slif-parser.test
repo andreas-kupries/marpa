@@ -21,6 +21,7 @@ kt local   testing marpa
 # # ## ### ##### ######## ############# #####################
 
 kt source support/ast.tcl
+kt source support/dirs.tcl
 kt source support/grammars.tcl
 
 # # ## ### ##### ######## ############# #####################
