@@ -13,19 +13,151 @@ kt require support TclOO
 
 kt local   testing marpa
 
-## TODO accessors to the generated unicode data tables
-##
 # # ## ### ##### ######## ############# #####################
-## - marpa unicode data cc ranges
-## - marpa unicode data cc asbr
-## - marpa unicode data cc grammar
-## - marpa unicode data range
-## - marpa unicode data fold
+
+if 0 {
+    # Trick: The mode string from the unicode sub-package is used as
+    # the name of the variable to read by `set`, which returns the
+    # value we want (argument). An implicit selection/choice instead
+    # of explicit via if/switch/...
+    proc MO {bmp full} { set [marpa unicode mode] }
+    rename MO {}
+}
+
+## Accessors on top of the generated unicode data tables
+# # ## ### ##### ######## ############# #####################
+## [ok] data cc ranges
+## [ok] data cc asbr
+## [ok] data cc grammar
+## [ok] data fold
+## [ok] data fold/c
 
 # # ## ### ##### ######## ############# #####################
-## cc ranges
+## data cc ranges - Convert name of unicode class to set of uni(code)points and ranges.
 
-return
+test marpa-unicode-data-cc-ranges-1.0 {ranges, wrong args, not enough} -body {
+    marpa unicode data cc ranges
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc ranges cclass"}
+
+test marpa-unicode-data-cc-ranges-1.1 {ranges, wrong args, too many} -body {
+    marpa unicode data cc ranges CCLASS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc ranges cclass"}
+
+test marpa-unicode-data-cc-ranges-2.0 {ranges, braille} -body {
+    lrange [marpa unicode data cc ranges braille] 0 end
+    # The lrange is used to strip formatting from the output of ranges.
+} -result {{0x2800 0x28FF}}
+
+test marpa-unicode-data-cc-ranges-2.1 {ranges, bogus} -body {
+    marpa unicode data cc ranges bogus
+} -returnCodes error -result {Bad character class bogus}
+
+# # ## ### ##### ######## ############# #####################
+## data cc asbr - Convert name of unicode class to ASBR form
+##                (Alternate Sequences of Byte Ranges)
+
+test marpa-unicode-data-cc-asbr-1.0 {asbr, wrong args, not enough} -body {
+    marpa unicode data cc asbr
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc asbr cclass"}
+
+test marpa-unicode-data-cc-asbr-1.1 {asbr, wrong args, too many} -body {
+    marpa unicode data cc asbr CCLASS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc asbr cclass"}
+
+test marpa-unicode-data-cc-asbr-2.0 {asbr, braille} -body {
+    lrange [marpa unicode data cc asbr braille] 0 end
+    # The lrange is used to strip formatting from the output of asbr.
+} -result {{{226 226} {160 163} {128 191}}}
+
+test marpa-unicode-data-cc-asbr-2.1 {asbr, bogus} -body {
+    marpa unicode data cc asbr bogus
+} -returnCodes error -result {Bad character class bogus}
+
+# # ## ### ##### ######## ############# #####################
+## data cc grammar - Convert name of unicode class to BNF grammar over byte ranges
+
+test marpa-unicode-data-cc-grammar-1.0 {grammar, wrong args, not enough} -body {
+    marpa unicode data cc grammar
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc grammar cclass ?base?"}
+
+test marpa-unicode-data-cc-grammar-1.1 {grammar, wrong args, too many} -body {
+    marpa unicode data cc grammar CCLASS PREFIX X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc grammar cclass ?base?"}
+
+test marpa-unicode-data-cc-grammar-2.0 {grammar, braille} -body {
+    lrange [marpa unicode data cc grammar braille] 0 end
+    # The lrange is used to strip formatting from the output of grammar.
+} -result {{{} := {symbol A0}} {A0 := {range 226 226} {range 160 163} {range 128 191}}}
+
+test marpa-unicode-data-cc-grammar-2.1 {grammar, braille} -body {
+    lrange [marpa unicode data cc grammar braille PREFIX] 0 end
+    # The lrange is used to strip formatting from the output of grammar.
+} -result {{PREFIX := {symbol PREFIX:A0}} {PREFIX:A0 := {range 226 226} {range 160 163} {range 128 191}}}
+
+test marpa-unicode-data-cc-grammar-2.2 {grammar, bogus} -body {
+    marpa unicode data cc grammar bogus
+} -returnCodes error -result {Bad character class bogus}
+
+# # ## ### ##### ######## ############# #####################
+## data fold - Convert uni(code)point to class of case-equivalent uni(code)points
+
+test marpa-unicode-data-fold-1.0 {fold, wrong args, not enough} -body {
+    marpa unicode data fold
+} -returnCodes error -result {wrong # args: should be "marpa unicode data fold codepoint"}
+
+test marpa-unicode-data-fold-1.1 {fold, wrong args, too many} -body {
+    marpa unicode data fold CODEPOINT X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data fold codepoint"}
+
+test marpa-unicode-data-fold-2.0 {fold, bogus} -body {
+    marpa unicode data fold bogus
+} -returnCodes error -result {expected integer but got "bogus"}
+
+set k 0
+foreach {label codepoint cclass} {
+    a  97 {65 97}
+    i 105 {73 105 304 305}
+    k 107 {75 107 8490}
+    s 115 {83 115 383}
+    @  64 64
+} {
+    # For the unexpected codepoints (>300), see (xx).
+    incr k
+    test marpa-unicode-data-fold-2.$k "fold, $label" -body {
+	marpa unicode data fold $codepoint
+    } -result $cclass
+}
+
+# # ## ### ##### ######## ############# #####################
+## data fold/c - Convert uni(code)point to case-equivalent primary uni(code)point
+
+test marpa-unicode-data-fold/c-1.0 {fold/c, wrong args, not enough} -body {
+    marpa unicode data fold/c
+} -returnCodes error -result {wrong # args: should be "marpa unicode data fold/c codepoint"}
+
+test marpa-unicode-data-fold/c-1.1 {fold/c, wrong args, too many} -body {
+    marpa unicode data fold/c CODEPOINT X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data fold/c codepoint"}
+
+test marpa-unicode-data-fold/c-2.0 {fold/c, bogus} -body {
+    marpa unicode data fold/c bogus
+} -returnCodes error -result {expected integer but got "bogus"}
+
+set k 0
+foreach {label codepoint primary} {
+    a  97 65
+    i 105 73
+    k 107 75
+    s 115 83
+    @  64 64
+} {
+    # For the unexpected codepoints (>300), see (xx).
+    incr k
+    test marpa-unicode-data-fold/c-2.$k "fold/c, $label" -body {
+	marpa unicode data fold/c $codepoint
+    } -result $primary
+}
 
 # # ## ### ##### ######## ############# #####################
 cleanupTests
+return

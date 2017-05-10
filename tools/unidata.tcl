@@ -5,7 +5,7 @@
 #
 # The information is collected in memory first, and then written as a
 # series of Tcl dictionary assignments for easy use by other scripts.
-# One other scripts making use of this information is compiler from
+# One other script making use of this information is the compiler from
 # the unicode ranges for a class into an utf-8 asbr which matches the
 # elements of the class.  The result of that is then used in generator
 # backends to provide unicode support.
@@ -109,6 +109,10 @@ proc main {selfdir} {
 
     make-derived-tcl-classes
     make-direct-tcl-classes
+
+    # Derive negated, case-insensitive classes ?
+    # (All combinations: 2^2 = 4 forms, 3 to derive)
+
     normalize-classes
     clean-folds
 
@@ -119,26 +123,31 @@ proc main {selfdir} {
     ##   Easier written as direct alternatives of characters.
 
     write-header
+    write-limits
     write-ranges
     write-classes
     write-folding
+    write-sep {unidata done}
 
     pong-done
     return
 }
 
 proc cmdline {} {
-    global argv out pong
-    if {[llength $argv] ni {1 2}} usage
-    lassign $argv out pong
+    # Syntax ==> See usage
+    global argv out pong unimax mode
+    if {[llength $argv] ni {2 3}} usage
+    lassign $argv out mode pong
+    if {$mode ni {bmp full}} usage
     if {$pong eq {}} { set pong 1 }
     set out [open $out w]
+    set unimax [expr {$mode eq "bmp" ? 0xFFFF : 0x10FFFF }]
     return
 }
 
 proc usage {} {
     global argv0
-    puts stderr "Usage: $argv0 output ?pong?"
+    puts stderr "Usage: $argv0 output bmp|full ?pong?"
     exit 1
 }
 
@@ -149,6 +158,10 @@ proc process-unidata {file} {
 }
 
 proc do-unidata {first last name category __ __ __ __ __ __ __ __ __ up low __} {
+    # Skip above chosen max
+    global unimax
+    if {$last > $unimax} return
+
     #                       1    2        3  4  5  6  7  8  9  10 11 12 13  14
     #pong "Unidata $first .. $last = $category"
     add-to-class   $category [list $first $last]
@@ -226,6 +239,10 @@ proc process-scripts {file} {
 }
 
 proc do-script {first last script} {
+    # Skip above chosen max
+    global unimax
+    if {$last > $unimax} return
+
     #pong "Script $first .. $last = $script"
     add-to-class $script [list $first $last]
     return
@@ -292,7 +309,7 @@ proc compile-to-asbrs {} {
     foreach cc [lsort -dict [classes]] {
 	pong "Compiling ASBR $cc"
 	set asbr [marpa unicode 2asbr [get-class $cc]]
-	set pretty [marpa unicode pretty-asbr $asbr 1]
+	set pretty [marpa unicode asbr-format $asbr 1]
 	set asbr [encode-ranges $asbr]
 	set-asbr $cc [list $asbr $pretty]
     }
@@ -578,10 +595,13 @@ proc write-comment {text} {
 }
 
 proc write-header {} {
+    global mode unimax
+    set m $unimax ; incr m 0
     wr "# -*- tcl -*-"
-    wr "## Generator    tools/unidata.tcl"
-    wr "## Data sources unidata/{UnicodeData,Scripts}.txt"
-    wr "## Build-Time   [clock format [clock seconds]]"
+    wr "## Generator       tools/unidata.tcl"
+    wr "## Data sources    unidata/{UnicodeData,Scripts}.txt"
+    wr "## Build-Time      [clock format [clock seconds]]"
+    wr "## Supported range $mode ($m codepoints)"
     wr ""
     write-sep {unicode information}
     wr {namespace eval marpa::unicode {
@@ -591,7 +611,18 @@ proc write-header {} {
     variable range   ;# Adjunct to asbr, and gr, their set of unique byte-ranges
     variable foldmap ;# character mapped to equivalence class under folding
     variable foldset ;# id -> equivalence class under folding
+    variable mode    ;# Name of supported unicode range
+    variable max     ;# Maximal codepoint in that range
 }}
+    wr ""
+    return
+}
+
+proc write-limits {} {
+    global mode unimax
+    write-sep "unicode limits: $mode = $unimax"
+    wr "set marpa::unicode::mode $mode"
+    wr "set marpa::unicode::max  $unimax ;# $mode range"
     wr ""
     return
 }
