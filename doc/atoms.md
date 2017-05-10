@@ -154,11 +154,11 @@ is important with regard to footnote 2 of the previous section.
 
 Note further that all of the transformations do not increase the
 number of literals we are dealing with. We begin and end with a single
-literal. The transformations actually deconstructing a literal into
-several simpler pieces glued back together by priority rules are not
-part of the normalization. They are invoked by generators to ensure
-that a grammar contains only the type of literal directly supported by
-the engine they are emitting code for.
+literal. The transformations actually breaking a literal into several
+simpler pieces glued back together by priority rules are not part of
+the normalization. They are invoked by generators to ensure that a
+grammar contains only the type of literal directly supported by the
+engine they are emitting code for. See next section for details.
 
 | Type          | Rule  | Activation conditions | Action, Result        | More |
 |---------------|-------|-----------------------|-----------------------|------|
@@ -225,3 +225,103 @@ Footnote 1: While using a primary codepoint to store single characters
 
 Footnote 2: We want to keep at least these as highlevel definitions,
 	    should the backend support them directly in some way.
+
+
+## Reduction
+
+This can be thought of as normalization phase II.
+
+Where phase I rewrites a literal while keeping it as a single entity
+this phase is allowed and expected to break a literal into pieces and
+glue them back together using priority rules to keep the semantics of
+it.
+
+It is a separate phase because the decision for or against breaking a
+literal is very much dependent on what types of literals are supported
+by the engine which we have chosen to generate code for from the
+grammar. For example, if the target engine supports the direct
+matching of strings then there is no need to break them into a
+sequences of characters. Otherwise we have to.
+
+Now, while strings are usually not directly supported, char classes
+can be. An example of that is the Tcl lexer engine currently used in
+the boot strap, as likely is the Perl engine in Marpa::R2. With some
+limitations however, because Tcl does not support the majority of
+named unicode character classes, only a small subset. That means that
+the decision for or against reduction is not just type- but also
+content-dependent, i.e. depends on the literal as a whole. The same
+can be true of other engines. Even more complex, the choice of machine
+not only determines which literals to break, it may also determine how
+to break it. For example a byte-based engine is better served with
+handling all char-classes as an ASBR or derived grammar, whereas a
+character based engine has no other way than using a large alternation
+of such. And an engine supporting classes only in part should only
+break off the unsupported pieces, and for these work towards
+constructing pieces which are supported, to keep things at as high a
+level as possible.
+
+On the other end of the spectrum is the planned C engine to wrap
+around libmarpa. This engine would support only bytes and therefore
+everything, including all char classes will have to be rendered down
+to that level.
+
+As such, matching of single `bytes` is the absolute minimum any engine
+must support, with a secondary of supporting only single `characters`.
+
+In the rules following note that we can presume normalized literals,
+i.e. we will not see a `string` of length of 1, we will see
+`character`, etc. That simplifies the rule-set. We can further presume
+that the newly created smaller literals are normalized as well, before
+being checked for further reduction. Multiple rules for a type
+indicate alternative ways of breaking the literal, with the generator
+having to choose which fits it best.
+
+Lastly, the table gives the full set of deconstruction rules,
+independent of engines and possible conflicts. Each generator has to
+choose the applicable subset, and is its responsibility to choose
+something sensible.
+
+| Type          | Rule     | Action, Result |
+|---------------|----------|--------------------------------------------------------|
+| string        | D-STR1   | Sequence of `character`                               |
+| string        | D-STR2   | Sequence of `byte`                                    |
+| %string       | D-%STR   | Sequence of `%character`                              |
+| charclass     | D-CLS1   | Alternation of elements                               |
+| charclass     | D-CLS2   | ASBR                                                  |
+| charclass     | D-CLS3   | Alternation non-Tcl NCC split of, remainder direct    |
+| ^charclass    | D-^CLS   | `charclass` (expanded named-classes, merged, negated) |
+| named-class   | D-NCC1   | Alternation of `range` (one!, or more)                |
+| named-class   | D-NCC2   | ASBR                                                  |
+| %named-class  | D-%NCC1  | `charclass` (definition expanded)                     |
+| %named-class  | D-%NCC2  | ASBR (definition expanded)                            |
+| ^named-class  | D-^NCC   | `charclass` (negated definition)                      |
+| ^%named-class | D-^%NCC1 | ASBR (definition expanded, negated (1))               |
+| ^%named-class | D-^%NCC2 | `charclass` (def expanded negated)                    |
+| range         | D-RAN1   | Alternation of `character`                            |
+| range         | D-RAN2   | ASBR                                                  |
+| %range        | D-%RAN   | `charclass` (expanded)                                |
+| ^range        | D-^RAN1  | `charclass` (two sub ranges)                          |
+| ^range        | D-^RAN2  | ASBR                                                  |
+| character     | D-CHR    | Sequence of `byte`                                    |
+| ^character    | D-^CHR   | `charclass` (two sub ranges)                          |
+
+Footnote 1: Does it make sense to precompute these ? (p_unidata is
+	    already 740K, adding the three other combinations should
+	    quadruple it, roughly (have not checked how much of the
+	    file is CC, vs the case-equivalence information))
+
+| #  | Rule 1  | Rule 2   | Rule 3   | Rule 4  |
+|---:|---------|----------|----------|---------|
+|  1 | K-STR   | D-STR1   | D-STR2   |         |
+|  2 | K-%STR  | D-%STR	  |	     |	       |
+|  3 | K-CLS   | D-CLS1	  | D-CLS2   | D-CLS3  |
+|  4 | K-^CLS  | D-^CLS	  |	     |	       |
+|  5 | K-NCC   | D-NCC1	  | D-NCC2   |	       |
+|  6 | K-%NCC  | D-%NCC	  | D-%NCC2  |	       |
+|  7 | K-^NCC  | D-^NCC	  |	     |	       |
+|  8 | K-^%NCC | D-^%NCC1 | D-^%NCC2 | 	       |
+|  9 | K-RAN   | D-RAN1   | D-RAN2   |	       |
+| 10 | K-%RAN  | D-%RAN	  |	     |	       |
+| 11 | K-^RAN  | D-^RAN1  | D-^RAN2  |	       |
+| 12 | K-CHR   | D-CHR	  |	     |	       |
+| 13 | K-^CHR  | D-^CHR	  |	     |	       |

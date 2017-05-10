@@ -1,0 +1,12 @@
+GC l0 remove C
+GC l0 priority-rule C A 0
+GC l0 priority-rule C B 0
+
+GC l0 remove S
+GC l0 priority-rule S {A B} 0
+
+GC l0 remove A
+GC l0 literal A character 65
+
+GC l0 remove B
+GC l0 literal B character 66
