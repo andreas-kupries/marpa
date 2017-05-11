@@ -26,11 +26,77 @@ if 0 {
 
 ## Accessors on top of the generated unicode data tables
 # # ## ### ##### ######## ############# #####################
+## [ok] data cc have-tcl
+## [ok] data cc have
+## [ok] data cc tcl-names
+## [ok] data cc names
 ## [ok] data cc ranges
 ## [ok] data cc asbr
 ## [ok] data cc grammar
 ## [ok] data fold
 ## [ok] data fold/c
+
+# # ## ### ##### ######## ############# #####################
+## data cc tcl-names - Return list of char classes supported by Tcl
+
+test marpa-unicode-data-cc-tcl-names-1.0 {tcl-names, wrong args, too many} -body {
+    marpa unicode data cc tcl-names X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc tcl-names"}
+
+test marpa-unicode-data-cc-tcl-names-2.0 {tcl-names, braille, no} -body {
+    lsort -dict [marpa unicode data cc tcl-names]
+} -result {alnum alpha blank cntrl digit graph lower print punct space upper xdigit}
+
+# # ## ### ##### ######## ############# #####################
+## data cc names - Return list of char classes supported by marpa unicode tables
+
+test marpa-unicode-data-cc-names-1.0 {names, wrong args, too many} -body {
+    marpa unicode data cc names X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc names"}
+
+test marpa-unicode-data-cc-names-2.0 {names, braille, no} -body {
+    lsort -dict [marpa unicode data cc names]
+} -result {alnum alpha arabic armenian ascii balinese bamum batak bengali blank bopomofo braille buginese buhid canadian_aboriginal cc cf cham cherokee co common control coptic cyrillic devanagari digit ethiopic georgian glagolitic graph greek gujarati gurmukhi han hangul hanunoo hebrew hiragana inherited javanese kannada katakana kayah_li khmer lao latin lepcha limbu lisu ll lm lo lower lt lu malayalam mandaic mc me meetei_mayek mn mongolian myanmar nd new_tai_lue nko nl no ogham ol_chiki oriya pc pd pe pf phags_pa pi po print ps punct rejang runic samaritan saurashtra sc sinhala sk sm so space sundanese syloti_nagri syriac tagalog tagbanwa tai_le tai_tham tai_viet tamil telugu thaana thai tibetan tifinagh upper vai word xdigit yi zl zp zs}
+
+# # ## ### ##### ######## ############# #####################
+## data cc have-tcl - Test if a named cclass is supported by Tcl
+
+test marpa-unicode-data-cc-have-tcl-1.0 {have-tcl, wrong args, not enough} -body {
+    marpa unicode data cc have-tcl
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc have-tcl cclass"}
+
+test marpa-unicode-data-cc-have-tcl-1.1 {have-tcl, wrong args, too many} -body {
+    marpa unicode data cc have-tcl CCLASS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc have-tcl cclass"}
+
+test marpa-unicode-data-cc-have-tcl-2.0 {have-tcl, braille, no} -body {
+    marpa unicode data cc have-tcl braille
+} -result 0
+
+test marpa-unicode-data-cc-have-tcl-2.0 {have-tcl, alnum, yes} -body {
+    marpa unicode data cc have-tcl alnum
+} -result 1
+
+# # ## ### ##### ######## ############# #####################
+## data cc have - Test if a named cclass is supported by the Marpa Unicode Tables
+
+test marpa-unicode-data-cc-have-1.0 {have, wrong args, not enough} -body {
+    marpa unicode data cc have
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc have cclass"}
+
+test marpa-unicode-data-cc-have-1.1 {have, wrong args, too many} -body {
+    marpa unicode data cc have CCLASS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc have cclass"}
+
+test marpa-unicode-data-cc-have-2.0 {have, bogus, no} -body {
+    marpa unicode data cc have bogus
+} -result 0
+
+test marpa-unicode-data-cc-have-2.0 {have, braille, yes} -body {
+    marpa unicode data cc have braille
+} -result 1
+
+
 
 # # ## ### ##### ######## ############# #####################
 ## data cc ranges - Convert name of unicode class to set of uni(code)points and ranges.

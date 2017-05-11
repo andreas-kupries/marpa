@@ -274,6 +274,10 @@ proc marpa::unicode::asbr-format {asbr {compact 0}} {
 # # ## ### ##### ######## #############
 ## Public API -- Access to the tables in "p_unidata.tcl"
 ##
+## - data cc have
+## - data cc have-tcl
+## - data cc tcl-names
+## - data cc names
 ## - data cc ranges
 ## - data cc asbr
 ## - data cc grammar
@@ -288,9 +292,35 @@ namespace eval marpa::unicode::data {
     namespace import ::marpa::unicode::norm-class
 }
 namespace eval marpa::unicode::data::cc {
-    namespace export ranges asbr grammar
+    namespace export ranges asbr grammar names tcl-names have have-tcl
     namespace ensemble create
     namespace import ::marpa::X
+}
+
+proc marpa::unicode::data::cc::have-tcl {cclass} {
+    return [dict exists {
+	alnum . alpha . blank . cntrl  .
+	digit . graph . lower . print  .
+	punct . space . upper . xdigit .
+    } $cclass]
+}
+
+proc marpa::unicode::data::cc::tcl-names {} {
+    return {
+	alnum alpha blank cntrl 
+	digit graph lower print 
+	punct space upper xdigit 
+    }
+}
+
+proc marpa::unicode::data::cc::have {cclass} {
+    variable ::marpa::unicode::cc
+    return [dict exists $cc $cclass]
+}
+
+proc marpa::unicode::data::cc::names {} {
+    variable ::marpa::unicode::cc
+    return [dict keys $cc]
 }
 
 proc marpa::unicode::data::cc::ranges {cclass} {
