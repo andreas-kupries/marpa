@@ -111,6 +111,43 @@ test-grammar-files gcstate --> id gcstate {
 }
 
 # # ## ### ##### ######## ############# #####################
+## Reduction I [Tcl]
+## Note, based on gcstate, reuse format.
+
+set k 0
+test-grammar-map gcstate --> id gcstate base {
+    set input    [dict get [string trimright [fget $gcstate]] grammar]
+    set expected [string trimright [fget [file join $base gcr_tcl]]]
+    set kd       [format $format $k]
+
+    test marpa-slif-container-reduce-tcl-1.${kd}---${id} "reduce-tcl $id" -setup {
+	marpa::slif::container create GC
+	GC deserialize $input
+    } -body {
+	# TODO: GC accessors for grammar parts
+
+	# Reduce literals for a Tcl engine
+	set works [dict get $input grammar l0 literal]
+	set works [concat {*}[lmap {sym rhs} $works {
+	    list $sym [lindex $rhs 0]
+	}]]
+	marpa::slif::literal r2container \
+	    [marpa::slif::literal reduce $work {
+		D-STR1 D-%STR  D-CLS3  D-^CLS2
+		D-NCC3 D-%NCC1 D-^NCC2 D-^%NCC1
+		K-RAN  D-%RAN  K-^RAN  K-CHR
+		K-^CHR
+	    }] GC
+	gc-format [GC serialize]
+    } -cleanup {
+	unset -nocomplain msg
+	GC destroy
+    } -result $expected
+
+    incr k
+}
+
+# # ## ### ##### ######## ############# #####################
 ## TODO slif::container -- Test individual methods
 
 # # ## ### ##### ######## ############# #####################
