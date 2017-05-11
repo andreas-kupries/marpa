@@ -24,7 +24,7 @@ debug define marpa/slif/literal
 namespace eval ::marpa::slif::literal {
     namespace export symbol parse norm eltype ccunfold ccsplit \
 	decode decode-string decode-class type unescape tags \
-	reduce reduce1 rstate r2container
+	reduce reduce1 rstate r2container ccranges
     namespace ensemble create
     namespace import ::marpa::X
 
@@ -506,16 +506,13 @@ proc ::marpa::slif::literal::reduce1 {litsymbol literal rules state} {
 	charclass {
 	    ON D-CLS3 {
 		# charclass == tcl | non-tcl
-		# convert non-Tcl parts (unknown unicode classes) to ranges
-		# and merge into the direct part (if any). That is a final
+		# convert the named classes not directly supported by
+		# Tcl to numeric ranges and merge into the codes
+		# section of the class (if any). That is a final
 		# form. (Because it is usable by Tcl)
 		lassign [ccsplit $data] codes named
 		set named [lmap name $named {
-		    if {$name in {
-			alnum alpha blank cntrl 
-			digit graph lower print 
-			punct space upper xdigit 
-		    }} {
+		    if {[marpa unicode data cc have-tcl $name]} {
 			# supported, pass to result
 			set name
 		    } else {
@@ -548,17 +545,47 @@ proc ::marpa::slif::literal::reduce1 {litsymbol literal rules state} {
 	    ON K-CLS KEEP
 	}
 	^charclass {
-	    ON D-^CLS {
+	    ON D-^CLS1 {
 		# charclass - expand to ranges, negate, save as charclass
 		IS-A charclass {*}[marpa unicode negate-class [ccranges $data]]
+	    }
+	    ON D-^CLS2 {
+		# charclass - Tcl support vs non
+		##
+		# convert the named classes not directly supported by
+		# Tcl to numeric ranges and merge into the codes
+		# section of the class (if any). That is a final
+		# form. (Because it is usable by Tcl)
+		lassign [ccsplit $data] codes named
+		set named [lmap name $named {
+		    if {[marpa unicode data cc have-tcl $name]} {
+			# supported, pass to result
+			set name
+		    } else {
+			# not supported, get codes, merge
+			lappend codes {*}[marpa unicode data cc ranges $name]
+			# filter out of result
+			continue
+		    }
+		}]
+		IS-A/ ^charclass {*}[marpa unicode norm-class $codes] {*}$named
 	    }
 	    ON K-^CLS KEEP
 	}
 	named-class {
-	    ON D-NCC3 {
-		# TODO named-class grammar
+	    ON D-NCC4 {
 		# named-class == GRAMMAR (take predefined)
 		CC-GRAMMAR [marpa unicode data cc grammar $data $litsymbol]
+	    }
+	    ON D-NCC3 {
+		if {[marpa unicode data cc have-tcl $data]} {
+		    # Supported by Tcl.
+		    KEEP
+		} else {
+		    # Not directly supported by Tcl. Expand into
+		    # ranges. See -> D-NCC1
+		    IS-A charclass {*}[marpa unicode data cc ranges $data]
+		}
 	    }
 	    ON D-NCC2 {
 		# named-class == ASBR (take predefined)
@@ -586,15 +613,29 @@ proc ::marpa::slif::literal::reduce1 {litsymbol literal rules state} {
 	    ON K-%NCC KEEP
 	}
 	^named-class {
-	    ON D-^NCC {
+	    ON D-^NCC1 {
 		# named-class == charclass (codes, negate)
 		IS-A charclass {*}[marpa unicode negate-class \
 					  [marpa unicode data cc ranges $data]]
 	    }
+	    ON D-^NCC2 {
+		# named-class == Tcl vs non (supported - keep, else -
+		# expand to ranges & negate -- See D-^NCC1)
+
+		if {[marpa unicode data cc have-tcl $data]} {
+		    # Supported by Tcl.
+		    KEEP
+		} else {
+		    # Not directly supported by Tcl. Expand into
+		    # ranges. See -> D-NCC1
+		    IS-A charclass {*}[marpa unicode negate-class \
+					   [marpa unicode data cc ranges $data]]
+		}
+	    }
 	    ON K-^NCC KEEP
 	}
 	^%named-class {
-	    # TODO CC-GRAMMAR
+	    # TODO CC-GRAMMAR on the fly
 	    ON D-^%NCC2 {
 		# ^%named-class == ASBR (on the fly, from codes unfolded, negated)
 		CC-ASBR [marpa unicode 2asbr \
@@ -753,7 +794,8 @@ proc ::marpa::slif::literal::CC-GRAMMAR {grammar} {
     # data is already rewritten to have unique symbols within the
     # current context. Still to do: Rewrite ranges into proper
     # literals, and aggregate the rules per symbol.
-    
+
+    set rules {}
     foreach rule $grammar {
 	set rhs [lmap el [lassign $rule sym __] {
 	    set data [lassign $el type]
@@ -762,9 +804,9 @@ proc ::marpa::slif::literal::CC-GRAMMAR {grammar} {
 		range  { MK-RANGE $data }
 	    }
 	}]
-	dict lappend rule $sym $rhs
+	dict lappend rules $sym $rhs
     }
-    dict for {sym alts} $rule {
+    dict for {sym alts} $rules {
 	$state place done done $sym [list composite {*}$alts]
     }
     return

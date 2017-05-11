@@ -279,24 +279,29 @@ having to choose which fits it best.
 Lastly, the table gives the full set of deconstruction rules,
 independent of engines and possible conflicts. Each generator has to
 choose the applicable subset, and is its responsibility to choose
-something sensible.
+something sensible. Note, every type has a __`K`__ rule, keeping the
+literals of that type as they are. These are not listed explicitly.
 
 | Type          | Rule     | Action, Result |
-|---------------|----------|--------------------------------------------------------|
+|---------------|----------|-------------------------------------------------------|
 | string        | D-STR1   | Sequence of `character`                               |
 | string        | D-STR2   | Sequence of `byte`                                    |
 | %string       | D-%STR   | Sequence of `%character`                              |
 | charclass     | D-CLS1   | Alternation of elements                               |
 | charclass     | D-CLS2   | ASBR                                                  |
 | charclass     | D-CLS3   | Alternation non-Tcl NCC split of, remainder direct    |
-| ^charclass    | D-^CLS   | `charclass` (expanded named-classes, merged, negated) |
+| ^charclass    | D-^CLS1  | `charclass` (expanded named-classes, merged, negated) |
+| ^charclass    | D-^CLS2  | See D-CLS3, for negated		  	  	   |
 | named-class   | D-NCC1   | Alternation of `range` (one!, or more)                |
 | named-class   | D-NCC2   | ASBR                                                  |
+| named-class   | D-NCC3   | Tcl supported KEEP, else charclass of ranges          |
+| named-class   | D-NCC4   | GRAMMAR                                               |
 | %named-class  | D-%NCC1  | `charclass` (definition expanded)                     |
 | %named-class  | D-%NCC2  | ASBR (definition expanded)                            |
-| ^named-class  | D-^NCC   | `charclass` (negated definition)                      |
-| ^%named-class | D-^%NCC1 | ASBR (definition expanded, negated (1))               |
-| ^%named-class | D-^%NCC2 | `charclass` (def expanded negated)                    |
+| ^named-class  | D-^NCC1  | `charclass` (negated definition)                      |
+| ^named-class  | D-^NCC2  | See D-NCC3, for negated                               |
+| ^%named-class | D-^%NCC1 | `charclass` (def expanded negated)                    |
+| ^%named-class | D-^%NCC2 | ASBR (definition expanded, negated (1))               |
 | range         | D-RAN1   | Alternation of `character`                            |
 | range         | D-RAN2   | ASBR                                                  |
 | %range        | D-%RAN   | `charclass` (expanded)                                |
@@ -310,18 +315,18 @@ Footnote 1: Does it make sense to precompute these ? (p_unidata is
 	    quadruple it, roughly (have not checked how much of the
 	    file is CC, vs the case-equivalence information))
 
-| #  | Rule 1  | Rule 2   | Rule 3   | Rule 4  |
-|---:|---------|----------|----------|---------|
-|  1 | K-STR   | D-STR1   | D-STR2   |         |
-|  2 | K-%STR  | D-%STR	  |	     |	       |
-|  3 | K-CLS   | D-CLS1	  | D-CLS2   | D-CLS3  |
-|  4 | K-^CLS  | D-^CLS	  |	     |	       |
-|  5 | K-NCC   | D-NCC1	  | D-NCC2   |	       |
-|  6 | K-%NCC  | D-%NCC	  | D-%NCC2  |	       |
-|  7 | K-^NCC  | D-^NCC	  |	     |	       |
-|  8 | K-^%NCC | D-^%NCC1 | D-^%NCC2 | 	       |
-|  9 | K-RAN   | D-RAN1   | D-RAN2   |	       |
-| 10 | K-%RAN  | D-%RAN	  |	     |	       |
-| 11 | K-^RAN  | D-^RAN1  | D-^RAN2  |	       |
-| 12 | K-CHR   | D-CHR	  |	     |	       |
-| 13 | K-^CHR  | D-^CHR	  |	     |	       |
+| #  | Rule 1  | Rule 2   | Rule 3   | Rule 4  | Rule 5	 |
+|---:|---------|----------|----------|---------|---------|
+|  1 | K-STR   | D-STR1   | D-STR2   |         |	 |
+|  2 | K-%STR  | D-%STR	  |	     |	       |	 |
+|  3 | K-CLS   | D-CLS1	  | D-CLS2   | D-CLS3  |	 |
+|  4 | K-^CLS  | D-^CLS1  | D-^CLS2  |	       |	 |
+|  5 | K-NCC   | D-NCC1	  | D-NCC2   | D-NCC3  | D-NCC4  |
+|  6 | K-%NCC  | D-%NCC1  | D-%NCC2  |	       |	 |
+|  7 | K-^NCC  | D-^NCC1  | D-^NCC2  |	       |	 |
+|  8 | K-^%NCC | D-^%NCC1 | D-^%NCC2 | 	       |	 |
+|  9 | K-RAN   | D-RAN1   | D-RAN2   |	       |	 |
+| 10 | K-%RAN  | D-%RAN	  |	     |	       |	 |
+| 11 | K-^RAN  | D-^RAN1  | D-^RAN2  |	       |	 |
+| 12 | K-CHR   | D-CHR	  |	     |	       |	 |
+| 13 | K-^CHR  | D-^CHR	  |	     |	       |	 |

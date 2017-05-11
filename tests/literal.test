@@ -20,8 +20,43 @@ kt source support/dirs.tcl
 kt source support/textutils.tcl
 
 # # ## ### ##### ######## ############# #####################
-## [..] symbol        \
-## [ok] parse         / API
+
+proc F {defs} {
+    join [lmap {sym lit} $defs { list $sym $lit }] \n
+}
+
+proc FE {str} {
+    join [lmap line [split [string trim $str] \n] {
+	string trim $line
+    }] \n
+}
+
+proc RR {result rules literal} {
+    set data [lassign $literal type]
+    set dlit "($type ($data))"
+    
+    lappend map @@@ [marpa unicode max]
+    lappend map @!  {STATE place done work <symbol>}
+    lappend map @=  {STATE place done done <symbol>}
+    lappend map @q  {STATE queue done <symbol>}
+    lappend map @x  {STATE queue work <symbol>}
+    lappend map RIL "Unable to reduce incomplete literal $dlit"
+    lappend map RT  "Unable to reduce type $dlit"
+    lappend map REL "Unable to reduce empty literal $dlit"
+
+    # Resolve result fragment references
+    while {[regexp {@result<([^>]*)>} $result -> path]} {
+	set content [fget [redir $path]]
+	set result [string map [list @result<${path}> $content] $result]
+    }
+
+    # Resolve standard, fixed shorthands, and strip indentation
+    FE [string map $map $result]
+}
+
+# # ## ### ##### ######## ############# #####################
+## [ok] symbol        \
+## [ok] parse         / API (normalization)
 ## [ok] norm          \
 ## [ok] eltype        | Helpers. Exposed for testing internals
 ## [ok] ccunfold      | (before testing the visible API)
@@ -32,6 +67,37 @@ kt source support/textutils.tcl
 ## [ok] type          |
 ## [ok] unescape      |
 ## [ok] tags          
+#
+## [ok] r2container \
+## [ok] reduce      / API (reduction)
+## [ok] reduce1     \
+## [ok] rstate       > Helpers. Exposed for testing the internals.
+## [ok] ccranges    /
+
+# # ## ### ##### ######## ############# #####################
+## ccranges - Expand a mixed charclass into pure set of ranges
+
+test marpa-slif-literal-ccranges-1.0 {ccranges, wrong args, not enough} -body {
+    marpa::slif::literal ccranges
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal ccranges data"}
+
+test marpa-slif-literal-ccranges-1.1 {ccranges, wrong args, too many} -body {
+    marpa::slif::literal ccranges D X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal ccranges data"}
+
+set k 0
+foreach {data result} {
+    10              10
+    {{10 20}}       {{10 20}}
+    braille         {{0x2800 0x28FF}}
+    {10 braille}    {10 {0x2800 0x28FF}}
+    {10245 braille} {{0x2800 0x28FF}}
+} {
+    incr k
+    test marpa-slif-literal-ccranges-2.$k "ccranges, $data" -body {
+	marpa::slif::literal ccranges $data
+    } -result $result
+}
 
 # # ## ### ##### ######## ############# #####################
 ## r2container - Transfer a reduction result into a container
@@ -69,7 +135,7 @@ test marpa-slif-literal-r2container-2.1 {r2container, all cases} -setup {
     string trim [logged "\n"]
 } -cleanup {
     unset c
-} -result [norm-trace [file join [trdir] r2c21]]
+} -result [norm-trace [trdir r2c21]]
 
 # # ## ### ##### ######## ############# #####################
 ## reduce - reduction to minimum
@@ -86,23 +152,13 @@ test marpa-slif-literal-reduce-1.2 {reduce, wrong args, too many} -body {
     marpa::slif::literal reduce W R X
 } -returnCodes error -result {wrong # args: should be "marpa::slif::literal reduce worklist rules"}
 
-proc F {defs} {
-    join [lmap {sym lit} $defs { list $sym $lit }] \n
-}
-
-proc FE {str} {
-    join [lmap line [split [string trim $str] \n] {
-	string trim $line
-    }] \n
-}
-
 set k 0
 foreach {literal toexpect} {
     string {
-	{} error {Unable to reduce incomplete literal (string ())}
+	{} error RIL
     }
     {string 65 66 300} {
-	{}     error {Unable to reduce type (string (65 66 300))}
+	{}     error RT
 	K-STR  ok    {<symbol> {string 65 66 300}}
 	D-STR1 error {Unable to reduce type (character (300))}
 	{D-STR1 K-CHR} ok {
@@ -129,6 +185,28 @@ foreach {literal toexpect} {
 	    <symbol> {composite {@BYTE:<A> @BYTE:<B> {@BYTE:<\u00c4>} {@BYTE:<\u00ac>}}}
 	}
     }
+    {charclass 65 67} {
+	{}     error RT
+	K-CLS  ok    {<symbol> {charclass 65 67}}
+	D-CLS1 error {Unable to reduce type (character (67))}
+	{D-CLS1 K-CHR} ok {
+	    @CHR:<A> {character 65}
+	    @CHR:<C> {character 67}
+	    <symbol> {composite @CHR:<A> @CHR:<C>}
+	}
+	{D-CLS1 D-CHR} ok {
+	    @BYTE:<A> {byte 65}
+	    @CHR:<A> {composite @BYTE:<A>}
+	    @BYTE:<C> {byte 67}
+	    @CHR:<C> {composite @BYTE:<C>}
+	    <symbol> {composite @CHR:<A> @CHR:<C>}
+	}
+	D-CLS2 ok {
+	    @BYTE:<A> {byte 65}
+	    @BYTE:<C> {byte 67}
+	    <symbol> {composite @BYTE:<A> @BYTE:<C>}
+	}
+    }
 } {
     # Incrementally fill the above table with cases.  The basic flow
     # is covered by what we have now. Extending this is not about
@@ -142,12 +220,9 @@ foreach {literal toexpect} {
 
 	test marpa-slif-literal-reduce-2.$k.$j "reduce $code ($literal) $rules" -body {
 	    F [marpa::slif::literal reduce [list <symbol> $literal] $rules]
-	} -returnCodes $code -result [FE $result]
+	} -returnCodes $code -result [RR $result $rules $literal]
     }
 }
-
-rename F {}
-rename FE {}
 
 # # ## ### ##### ######## ############# #####################
 ## reduce1 - single reduction step
@@ -172,50 +247,43 @@ test marpa-slif-literal-reduce1-1.4 {reduce1, wrong args, too many} -body {
     marpa::slif::literal reduce1 S L R S X
 } -returnCodes error -result {wrong # args: should be "marpa::slif::literal reduce1 litsymbol literal rules state"}
 
-set     map {}
-lappend map @@@ [marpa unicode max]
-lappend map @! {STATE place done work <symbol>}
-#lappend map @= {STATE place done done <symbol>}
-lappend map @q {STATE queue done <symbol>}
-lappend map @x {STATE queue work <symbol>}
-
 set k 0
 foreach {literal toexpect} {
     string {
-	{}     error {Unable to reduce incomplete literal (string ())}
-	K-STR  error {Unable to reduce incomplete literal (string ())}
-	D-STR1 error {Unable to reduce incomplete literal (string ())}
-	D-STR2 error {Unable to reduce incomplete literal (string ())}
+	{}     error RIL
+	K-STR  error RIL
+	D-STR1 error RIL
+	D-STR2 error RIL
     }
     {string 65 66 300} {
-	{}     error {Unable to reduce type (string (65 66 300))}
+	{}     error RT
 	K-STR  ok    {@q {string 65 66 300}}
 	D-STR1 ok    {@! {composite {{character 65} {character 66} {character 300}}}}
 	D-STR2 ok    {@! {composite {{byte 65} {byte 66} {byte 196} {byte 172}}}}
     }
     %string {
-	{}     error {Unable to reduce incomplete literal (%string ())}
-	K-%STR error {Unable to reduce incomplete literal (%string ())}
-	D-%STR error {Unable to reduce incomplete literal (%string ())}
+	{}     error RIL
+	K-%STR error RIL
+	D-%STR error RIL
     }
     {%string 97 98} {
-	{}     error  {Unable to reduce type (%string (97 98))}
+	{}     error  RT
 	K-%STR ok     {@q {%string 97 98}}
 	D-%STR ok     {@! {composite {{%character 97} {%character 98}}}}
 	!----- ------ { -- reduce1 ^^ does not normalize, rstate place does -- }
     }
     character {
-	{}    error {Unable to reduce incomplete literal (character ())}
-	K-CHR error {Unable to reduce incomplete literal (character ())}
-	D-CHR error {Unable to reduce incomplete literal (character ())}
+	{}    error RIL
+	K-CHR error RIL
+	D-CHR error RIL
     }
     {character 65} {
-	{}    error {Unable to reduce type (character (65))}
+	{}    error RT
 	K-CHR ok    {@q {character 65}}
 	D-CHR ok    {@! {composite {{byte 65}}}}
     }
     {character 300} {
-	{}    error {Unable to reduce type (character (300))}
+	{}    error RT
 	K-CHR ok    {@q {character 300}}
 	D-CHR ok    {@! {composite {{byte 196} {byte 172}}}}
 	!---- ----- {                     ^110.00100 ^10.101100   }
@@ -223,211 +291,234 @@ foreach {literal toexpect} {
 	!---- ----- {                     = 0b'00100 101100 = 300 }
     }
     charclass {
-	{}     error {Unable to reduce incomplete literal (charclass ())}
-	K-CLS  error {Unable to reduce incomplete literal (charclass ())}
-	D-CLS1 error {Unable to reduce incomplete literal (charclass ())}
-	D-CLS2 error {Unable to reduce incomplete literal (charclass ())}
-	D-CLS3 error {Unable to reduce incomplete literal (charclass ())}
+	{}     error RIL
+	K-CLS  error RIL
+	D-CLS1 error RIL
+	D-CLS2 error RIL
+	D-CLS3 error RIL
     }
     {charclass {10 20} 300} {
-	{}     error {Unable to reduce type (charclass ({10 20} 300))}
+	{}     error RT
 	K-CLS  ok    {@q {charclass {10 20} 300}}
 	D-CLS1 ok    {@! {composite {{range 10 20}} {{character 300}}}}
 	D-CLS2 ok    {@! {composite {{brange 10 20}} {{byte 196} {byte 172}}}}
 	D-CLS3 ok    {@q {charclass {10 20} 300}}
     }
     {charclass {10 20} braille} {
-	{}     error {Unable to reduce type (charclass ({10 20} braille))}
+	{}     error RT
 	K-CLS  ok    {@q {charclass {10 20} braille}}
 	D-CLS1 ok    {@! {composite {{range 10 20}} {{named-class braille}}}}
 	D-CLS2 ok    {@! {composite {{brange 10 20}} {{byte 226} {brange 160 163} {brange 128 191}}}}
 	D-CLS3 ok    {@q {charclass {10 20} {0x2800 0x28FF}}}
     }
     {charclass 300 braille} {
-	{}     error {Unable to reduce type (charclass (300 braille))}
+	{}     error RT
 	K-CLS  ok    {@q {charclass 300 braille}}
 	D-CLS1 ok    {@! {composite {{character 300}} {{named-class braille}}}}
 	D-CLS2 ok    {@! {composite {{byte 196} {byte 172}} {{byte 226} {brange 160 163} {brange 128 191}}}}
 	D-CLS3 ok    {@q {charclass 300 {0x2800 0x28FF}}}
     }
     {charclass 300 print} {
-	{}     error {Unable to reduce type (charclass (300 print))}
+	{}     error RT
 	K-CLS  ok    {@q {charclass 300 print}}
 	D-CLS1 ok    {@! {composite {{character 300}} {{named-class print}}}}
 	!----- --    { D-CLS2 skipped, avoid large ASBR }
 	D-CLS3 ok    {@q {charclass 300 print}}
     }
     {charclass {10 20} 300 braille} {
-	{}     error {Unable to reduce type (charclass ({10 20} 300 braille))}
+	{}     error RT
 	K-CLS  ok    {@q {charclass {10 20} 300 braille}}
 	D-CLS1 ok    {@! {composite {{range 10 20}} {{character 300}} {{named-class braille}}}}
 	D-CLS2 ok    {@! {composite {{brange 10 20}} {{byte 196} {byte 172}} {{byte 226} {brange 160 163} {brange 128 191}}}}
 	D-CLS3 ok    {@q {charclass {10 20} 300 {0x2800 0x28FF}}}
     }
     ^charclass {
-	{}     error {Unable to reduce incomplete literal (^charclass ())}
-	K-^CLS error {Unable to reduce incomplete literal (^charclass ())}
-	D-^CLS error {Unable to reduce incomplete literal (^charclass ())}
+	{}      error RIL
+	K-^CLS  error RIL
+	D-^CLS1 error RIL
+	D-^CLS2 error RIL
     }
     {^charclass {10 20} 300} {
-	{}     error {Unable to reduce type (^charclass ({10 20} 300))}
-	K-^CLS ok    {@q {^charclass {10 20} 300}}
-	D-^CLS ok    {@x {charclass {0 9} {21 299} {301 @@@}}}
+	{}      error RT
+	K-^CLS  ok    {@q {^charclass {10 20} 300}}
+	D-^CLS1 ok    {@x {charclass {0 9} {21 299} {301 @@@}}}
+	D-^CLS2 ok    {@q {^charclass {10 20} 300}}
     }
     {^charclass {10 20} braille} {
-	{}     error {Unable to reduce type (^charclass ({10 20} braille))}
-	K-^CLS ok    {@q {^charclass {10 20} braille}}
-	D-^CLS ok    {@x {charclass {0 9} {21 10239} {10496 @@@}}}
+	{}      error RT
+	K-^CLS  ok    {@q {^charclass {10 20} braille}}
+	D-^CLS1 ok    {@x {charclass {0 9} {21 10239} {10496 @@@}}}
+	D-^CLS2 ok    {@q {^charclass {10 20} {0x2800 0x28FF}}}
     }
     {^charclass 300 braille} {
-	{}     error {Unable to reduce type (^charclass (300 braille))}
-	K-^CLS ok    {@q {^charclass 300 braille}}
-	D-^CLS ok    {@x {charclass {0 299} {301 10239} {10496 @@@}}}
+	{}      error RT
+	K-^CLS  ok    {@q {^charclass 300 braille}}
+	D-^CLS1 ok    {@x {charclass {0 299} {301 10239} {10496 @@@}}}
+	D-^CLS2 ok    {@q {^charclass 300 {0x2800 0x28FF}}}
     }
     {^charclass {10 20} 300 braille} {
-	{}     error {Unable to reduce type (^charclass ({10 20} 300 braille))}
-	K-^CLS ok    {@q {^charclass {10 20} 300 braille}}
-	D-^CLS ok    {@x {charclass {0 9} {21 299} {301 10239} {10496 @@@}}}
+	{}      error RT
+	K-^CLS  ok    {@q {^charclass {10 20} 300 braille}}
+	D-^CLS1 ok    {@x {charclass {0 9} {21 299} {301 10239} {10496 @@@}}}
+	D-^CLS2 ok    {@q {^charclass {10 20} 300 {0x2800 0x28FF}}}
+    }
+    {^charclass 20 punct} {
+	D-^CLS2 ok {@q {^charclass 20 punct}}
     }
     named-class {
-	{}     error {Unable to reduce incomplete literal (named-class ())}
-	K-NCC  error {Unable to reduce incomplete literal (named-class ())}
-	D-NCC1 error {Unable to reduce incomplete literal (named-class ())}
-	D-NCC2 error {Unable to reduce incomplete literal (named-class ())}
+	{}     error RIL
+	K-NCC  error RIL
+	D-NCC1 error RIL
+	D-NCC2 error RIL
+	D-NCC3 error RIL
+	D-NCC4 error RIL
     }
     {named-class braille} {
-	{}     error {Unable to reduce type (named-class (braille))}
+	{}     error RT
 	K-NCC  ok    {@q {named-class braille}}
 	D-NCC1 ok    {@x {charclass {0x2800 0x28FF}}}
 	D-NCC2 ok    {@! {composite {{byte 226} {brange 160 163} {brange 128 191}}}}
+	D-NCC3 ok    {@x {charclass {0x2800 0x28FF}}}
+	D-NCC4 ok    {
+	    @= {composite {{symbol <symbol>:A0}}}
+	    @=:A0 {composite {{byte 226} {brange 160 163} {brange 128 191}}}
+	}
+    }
+    {named-class punct} {
+	D-NCC3 ok    {@q {named-class punct}}
     }
     %named-class {
-	{}      error {Unable to reduce incomplete literal (%named-class ())}
-	K-%NCC  error {Unable to reduce incomplete literal (%named-class ())}
-	D-%NCC1 error {Unable to reduce incomplete literal (%named-class ())}
-	D-%NCC2 error {Unable to reduce incomplete literal (%named-class ())}
+	{}      error RIL
+	K-%NCC  error RIL
+	D-%NCC1 error RIL
+	D-%NCC2 error RIL
     }
     {%named-class braille} {
-	{}      error {Unable to reduce type (%named-class (braille))}
+	{}      error RT
 	K-%NCC  ok    {@q {%named-class braille}}
 	D-%NCC1 ok    {@x {charclass {10240 10495}}}
 	D-%NCC2 ok    {@! {composite {{byte 226} {brange 160 163} {brange 128 191}}}}
     }
     {%named-class lu} {
-	{}      error {Unable to reduce type (%named-class (lu))}
+	{}      error RT
 	K-%NCC  ok    {@q {%named-class lu}}
-	D-%NCC1 ok    {@x {charclass {65 90} {97 122} 181 {192 214} {216 246} {248 311} {313 328} {330 396} {398 410} {412 425} {428 441} {444 445} 447 {452 495} {497 544} {546 563} {570 596} {598 599} 601 {603 604} {608 609} 611 {613 614} {616 620} 623 {625 626} 629 637 640 643 {647 652} 658 {669 670} 837 {880 883} {886 887} {891 893} 895 902 {904 906} 908 {910 911} {913 929} {931 943} {945 1013} {1015 1019} {1021 1153} {1162 1327} {1329 1366} {1377 1414} {4256 4293} 4295 4301 {5024 5109} {5112 5117} {7296 7304} 7545 7549 {7680 7829} 7835 7838 {7840 7957} {7960 7965} {7968 8005} {8008 8013} 8017 8019 8021 8023 8025 8027 8029 {8031 8061} {8112 8113} {8120 8123} 8126 {8136 8139} {8144 8145} {8152 8155} {8160 8161} 8165 {8168 8172} {8184 8187} 8450 8455 {8459 8461} {8464 8466} 8469 {8473 8477} 8484 8486 8488 {8490 8493} {8496 8499} {8510 8511} 8517 8526 {8579 8580} {11264 11310} {11312 11358} {11360 11376} {11378 11379} {11381 11382} {11390 11491} {11499 11502} {11506 11507} {11520 11557} 11559 11565 {42560 42605} {42624 42651} {42786 42799} {42802 42863} {42873 42887} {42891 42893} {42896 42899} {42902 42926} {42928 42935} 43859 {43888 43967} {65313 65338} {65345 65370}}}
-	D-%NCC2 ok    {@! {composite {{brange 65 90}} {{brange 97 122}} {{byte 194} {byte 181}} {{byte 195} {brange 128 150}} {{byte 195} {brange 152 182}} {{byte 195} {brange 184 191}} {{byte 196} {brange 128 183}} {{byte 196} {brange 185 191}} {{byte 197} {brange 128 136}} {{byte 197} {brange 138 191}} {{byte 198} {brange 128 140}} {{byte 198} {brange 142 154}} {{byte 198} {brange 156 169}} {{byte 198} {brange 172 185}} {{byte 198} {brange 188 189}} {{byte 198} {byte 191}} {{byte 199} {brange 132 175}} {{byte 199} {brange 177 191}} {{byte 200} {brange 128 160}} {{byte 200} {brange 162 179}} {{byte 200} {brange 186 191}} {{byte 201} {brange 128 148}} {{byte 201} {brange 150 151}} {{byte 201} {byte 153}} {{byte 201} {brange 155 156}} {{byte 201} {brange 160 161}} {{byte 201} {byte 163}} {{byte 201} {brange 165 166}} {{byte 201} {brange 168 172}} {{byte 201} {byte 175}} {{byte 201} {brange 177 178}} {{byte 201} {byte 181}} {{byte 201} {byte 189}} {{byte 202} {byte 128}} {{byte 202} {byte 131}} {{byte 202} {brange 135 140}} {{byte 202} {byte 146}} {{byte 202} {brange 157 158}} {{byte 205} {byte 133}} {{byte 205} {brange 176 179}} {{byte 205} {brange 182 183}} {{byte 205} {brange 187 189}} {{byte 205} {byte 191}} {{byte 206} {byte 134}} {{byte 206} {brange 136 138}} {{byte 206} {byte 140}} {{byte 206} {brange 142 143}} {{byte 206} {brange 145 161}} {{byte 206} {brange 163 175}} {{byte 206} {brange 177 191}} {{byte 207} {brange 128 181}} {{byte 207} {brange 183 187}} {{byte 207} {brange 189 191}} {{brange 208 209} {brange 128 191}} {{byte 210} {brange 128 129}} {{byte 210} {brange 138 191}} {{byte 211} {brange 128 191}} {{byte 212} {brange 128 175}} {{byte 212} {brange 177 191}} {{byte 213} {brange 128 150}} {{byte 213} {brange 161 191}} {{byte 214} {brange 128 134}} {{byte 225} {byte 130} {brange 160 191}} {{byte 225} {byte 131} {brange 128 133}} {{byte 225} {byte 131} {byte 135}} {{byte 225} {byte 131} {byte 141}} {{byte 225} {byte 142} {brange 160 191}} {{byte 225} {byte 143} {brange 128 181}} {{byte 225} {byte 143} {brange 184 189}} {{byte 225} {byte 178} {brange 128 136}} {{byte 225} {byte 181} {byte 185}} {{byte 225} {byte 181} {byte 189}} {{byte 225} {brange 184 185} {brange 128 191}} {{byte 225} {byte 186} {brange 128 149}} {{byte 225} {byte 186} {byte 155}} {{byte 225} {byte 186} {byte 158}} {{byte 225} {byte 186} {brange 160 191}} {{byte 225} {byte 187} {brange 128 191}} {{byte 225} {byte 188} {brange 128 149}} {{byte 225} {byte 188} {brange 152 157}} {{byte 225} {byte 188} {brange 160 191}} {{byte 225} {byte 189} {brange 128 133}} {{byte 225} {byte 189} {brange 136 141}} {{byte 225} {byte 189} {byte 145}} {{byte 225} {byte 189} {byte 147}} {{byte 225} {byte 189} {byte 149}} {{byte 225} {byte 189} {byte 151}} {{byte 225} {byte 189} {byte 153}} {{byte 225} {byte 189} {byte 155}} {{byte 225} {byte 189} {byte 157}} {{byte 225} {byte 189} {brange 159 189}} {{byte 225} {byte 190} {brange 176 177}} {{byte 225} {byte 190} {brange 184 187}} {{byte 225} {byte 190} {byte 190}} {{byte 225} {byte 191} {brange 136 139}} {{byte 225} {byte 191} {brange 144 145}} {{byte 225} {byte 191} {brange 152 155}} {{byte 225} {byte 191} {brange 160 161}} {{byte 225} {byte 191} {byte 165}} {{byte 225} {byte 191} {brange 168 172}} {{byte 225} {byte 191} {brange 184 187}} {{byte 226} {byte 132} {byte 130}} {{byte 226} {byte 132} {byte 135}} {{byte 226} {byte 132} {brange 139 141}} {{byte 226} {byte 132} {brange 144 146}} {{byte 226} {byte 132} {byte 149}} {{byte 226} {byte 132} {brange 153 157}} {{byte 226} {byte 132} {byte 164}} {{byte 226} {byte 132} {byte 166}} {{byte 226} {byte 132} {byte 168}} {{byte 226} {byte 132} {brange 170 173}} {{byte 226} {byte 132} {brange 176 179}} {{byte 226} {byte 132} {brange 190 191}} {{byte 226} {byte 133} {byte 133}} {{byte 226} {byte 133} {byte 142}} {{byte 226} {byte 134} {brange 131 132}} {{byte 226} {byte 176} {brange 128 174}} {{byte 226} {byte 176} {brange 176 191}} {{byte 226} {byte 177} {brange 128 158}} {{byte 226} {byte 177} {brange 160 176}} {{byte 226} {byte 177} {brange 178 179}} {{byte 226} {byte 177} {brange 181 182}} {{byte 226} {byte 177} {brange 190 191}} {{byte 226} {byte 178} {brange 128 191}} {{byte 226} {byte 179} {brange 128 163}} {{byte 226} {byte 179} {brange 171 174}} {{byte 226} {byte 179} {brange 178 179}} {{byte 226} {byte 180} {brange 128 165}} {{byte 226} {byte 180} {byte 167}} {{byte 226} {byte 180} {byte 173}} {{byte 234} {byte 153} {brange 128 173}} {{byte 234} {byte 154} {brange 128 155}} {{byte 234} {byte 156} {brange 162 175}} {{byte 234} {byte 156} {brange 178 191}} {{byte 234} {byte 157} {brange 128 175}} {{byte 234} {byte 157} {brange 185 191}} {{byte 234} {byte 158} {brange 128 135}} {{byte 234} {byte 158} {brange 139 141}} {{byte 234} {byte 158} {brange 144 147}} {{byte 234} {byte 158} {brange 150 174}} {{byte 234} {byte 158} {brange 176 183}} {{byte 234} {byte 173} {byte 147}} {{byte 234} {byte 173} {brange 176 191}} {{byte 234} {byte 174} {brange 128 191}} {{byte 239} {byte 188} {brange 161 186}} {{byte 239} {byte 189} {brange 129 154}}}}
+	D-%NCC1 ok    {@x {@result<lu.nocase.ncc1>}}
+	D-%NCC2 ok    {@! {@result<lu.nocase.ncc2>}}
     }
     ^named-class {
-	{}     error {Unable to reduce incomplete literal (^named-class ())}
-	K-^NCC error {Unable to reduce incomplete literal (^named-class ())}
-	D-^NCC error {Unable to reduce incomplete literal (^named-class ())}
+	{}      error RIL
+	K-^NCC  error RIL
+	D-^NCC1 error RIL
+	D-^NCC2 error RIL
     }
     {^named-class braille} {
-	{}     error {Unable to reduce type (^named-class (braille))}
-	K-^NCC ok    {@q {^named-class braille}}
-	D-^NCC ok    {@x {charclass {0 10239} {10496 @@@}}}
+	{}      error RT
+	K-^NCC  ok    {@q {^named-class braille}}
+	D-^NCC1 ok    {@x {charclass {0 10239} {10496 @@@}}}
+	D-^NCC2 ok    {@x {charclass {0 10239} {10496 @@@}}}
+    }
+    {^named-class punct} {
+	D-^NCC2 ok    {@q {^named-class punct}}
     }
     ^%named-class {
-	{}       error {Unable to reduce incomplete literal (^%named-class ())}
-	K-^%NCC  error {Unable to reduce incomplete literal (^%named-class ())}
-	D-^%NCC1 error {Unable to reduce incomplete literal (^%named-class ())}
-	D-^%NCC2 error {Unable to reduce incomplete literal (^%named-class ())}
+	{}       error RIL
+	K-^%NCC  error RIL
+	D-^%NCC1 error RIL
+	D-^%NCC2 error RIL
     }
     {^%named-class braille} {
-	{}       error {Unable to reduce type (^%named-class (braille))}
+	{}       error RT
 	K-^%NCC  ok    {@q {^%named-class braille}}
 	D-^%NCC1 ok    {@x {charclass {0 10239} {10496 @@@}}}
-	D-^%NCC2 ok    {@! {composite {{brange 0 127}} {{brange 194 223} {brange 128 191}} {{byte 224} {brange 160 191} {brange 128 191}} {{byte 225} {brange 128 191} {brange 128 191}} {{byte 226} {brange 128 159} {brange 128 191}} {{byte 226} {brange 164 191} {brange 128 191}} {{brange 227 236} {brange 128 191} {brange 128 191}} {{byte 237} {brange 128 159} {brange 128 191}} {{brange 238 239} {brange 128 191} {brange 128 191}}}}
+	D-^%NCC2 ok    {@! {@result<braille.neg.nocase.ncc2>}}
     }
     {^%named-class lu} {
-	{}       error {Unable to reduce type (^%named-class (lu))}
+	{}       error RT
 	K-^%NCC  ok    {@q {^%named-class lu}}
-	D-^%NCC1 ok    {@x {charclass {0 64} {91 96} {123 180} {182 191} 215 247 312 329 397 411 {426 427} {442 443} 446 {448 451} 496 545 {564 569} 597 600 602 {605 607} 610 612 615 {621 622} 624 {627 628} {630 636} {638 639} {641 642} {644 646} {653 657} {659 668} {671 836} {838 879} {884 885} {888 890} 894 {896 901} 903 907 909 912 930 944 1014 1020 {1154 1161} 1328 {1367 1376} {1415 4255} 4294 {4296 4300} {4302 5023} {5110 5111} {5118 7295} {7305 7544} {7546 7548} {7550 7679} {7830 7834} {7836 7837} 7839 {7958 7959} {7966 7967} {8006 8007} {8014 8016} 8018 8020 8022 8024 8026 8028 8030 {8062 8111} {8114 8119} {8124 8125} {8127 8135} {8140 8143} {8146 8151} {8156 8159} {8162 8164} {8166 8167} {8173 8183} {8188 8449} {8451 8454} {8456 8458} {8462 8463} {8467 8468} {8470 8472} {8478 8483} 8485 8487 8489 {8494 8495} {8500 8509} {8512 8516} {8518 8525} {8527 8578} {8581 11263} 11311 11359 11377 11380 {11383 11389} {11492 11498} {11503 11505} {11508 11519} 11558 {11560 11564} {11566 42559} {42606 42623} {42652 42785} {42800 42801} {42864 42872} {42888 42890} {42894 42895} {42900 42901} 42927 {42936 43858} {43860 43887} {43968 65312} {65339 65344} {65371 @@@}}}
-	D-^%NCC2 ok    {@! {composite {{brange 0 64}} {{brange 91 96}} {{brange 123 127}} {{byte 194} {brange 128 180}} {{byte 194} {brange 182 191}} {{byte 195} {byte 151}} {{byte 195} {byte 183}} {{byte 196} {byte 184}} {{byte 197} {byte 137}} {{byte 198} {byte 141}} {{byte 198} {byte 155}} {{byte 198} {brange 170 171}} {{byte 198} {brange 186 187}} {{byte 198} {byte 190}} {{byte 199} {brange 128 131}} {{byte 199} {byte 176}} {{byte 200} {byte 161}} {{byte 200} {brange 180 185}} {{byte 201} {byte 149}} {{byte 201} {byte 152}} {{byte 201} {byte 154}} {{byte 201} {brange 157 159}} {{byte 201} {byte 162}} {{byte 201} {byte 164}} {{byte 201} {byte 167}} {{byte 201} {brange 173 174}} {{byte 201} {byte 176}} {{byte 201} {brange 179 180}} {{byte 201} {brange 182 188}} {{byte 201} {brange 190 191}} {{byte 202} {brange 129 130}} {{byte 202} {brange 132 134}} {{byte 202} {brange 141 145}} {{byte 202} {brange 147 156}} {{byte 202} {brange 159 191}} {{brange 203 204} {brange 128 191}} {{byte 205} {brange 128 132}} {{byte 205} {brange 134 175}} {{byte 205} {brange 180 181}} {{byte 205} {brange 184 186}} {{byte 205} {byte 190}} {{byte 206} {brange 128 133}} {{byte 206} {byte 135}} {{byte 206} {byte 139}} {{byte 206} {byte 141}} {{byte 206} {byte 144}} {{byte 206} {byte 162}} {{byte 206} {byte 176}} {{byte 207} {byte 182}} {{byte 207} {byte 188}} {{byte 210} {brange 130 137}} {{byte 212} {byte 176}} {{byte 213} {brange 151 160}} {{byte 214} {brange 135 191}} {{brange 215 223} {brange 128 191}} {{byte 224} {brange 160 191} {brange 128 191}} {{byte 225} {brange 128 129} {brange 128 191}} {{byte 225} {byte 130} {brange 128 159}} {{byte 225} {byte 131} {byte 134}} {{byte 225} {byte 131} {brange 136 140}} {{byte 225} {byte 131} {brange 142 191}} {{byte 225} {brange 132 141} {brange 128 191}} {{byte 225} {byte 142} {brange 128 159}} {{byte 225} {byte 143} {brange 182 183}} {{byte 225} {byte 143} {brange 190 191}} {{byte 225} {brange 144 177} {brange 128 191}} {{byte 225} {byte 178} {brange 137 191}} {{byte 225} {brange 179 180} {brange 128 191}} {{byte 225} {byte 181} {brange 128 184}} {{byte 225} {byte 181} {brange 186 188}} {{byte 225} {byte 181} {brange 190 191}} {{byte 225} {brange 182 183} {brange 128 191}} {{byte 225} {byte 186} {brange 150 154}} {{byte 225} {byte 186} {brange 156 157}} {{byte 225} {byte 186} {byte 159}} {{byte 225} {byte 188} {brange 150 151}} {{byte 225} {byte 188} {brange 158 159}} {{byte 225} {byte 189} {brange 134 135}} {{byte 225} {byte 189} {brange 142 144}} {{byte 225} {byte 189} {byte 146}} {{byte 225} {byte 189} {byte 148}} {{byte 225} {byte 189} {byte 150}} {{byte 225} {byte 189} {byte 152}} {{byte 225} {byte 189} {byte 154}} {{byte 225} {byte 189} {byte 156}} {{byte 225} {byte 189} {byte 158}} {{byte 225} {byte 189} {brange 190 191}} {{byte 225} {byte 190} {brange 128 175}} {{byte 225} {byte 190} {brange 178 183}} {{byte 225} {byte 190} {brange 188 189}} {{byte 225} {byte 190} {byte 191}} {{byte 225} {byte 191} {brange 128 135}} {{byte 225} {byte 191} {brange 140 143}} {{byte 225} {byte 191} {brange 146 151}} {{byte 225} {byte 191} {brange 156 159}} {{byte 225} {byte 191} {brange 162 164}} {{byte 225} {byte 191} {brange 166 167}} {{byte 225} {byte 191} {brange 173 183}} {{byte 225} {byte 191} {brange 188 191}} {{byte 226} {brange 128 131} {brange 128 191}} {{byte 226} {byte 132} {brange 128 129}} {{byte 226} {byte 132} {brange 131 134}} {{byte 226} {byte 132} {brange 136 138}} {{byte 226} {byte 132} {brange 142 143}} {{byte 226} {byte 132} {brange 147 148}} {{byte 226} {byte 132} {brange 150 152}} {{byte 226} {byte 132} {brange 158 163}} {{byte 226} {byte 132} {byte 165}} {{byte 226} {byte 132} {byte 167}} {{byte 226} {byte 132} {byte 169}} {{byte 226} {byte 132} {brange 174 175}} {{byte 226} {byte 132} {brange 180 189}} {{byte 226} {byte 133} {brange 128 132}} {{byte 226} {byte 133} {brange 134 141}} {{byte 226} {byte 133} {brange 143 191}} {{byte 226} {byte 134} {brange 128 130}} {{byte 226} {byte 134} {brange 133 191}} {{byte 226} {brange 135 175} {brange 128 191}} {{byte 226} {byte 176} {byte 175}} {{byte 226} {byte 177} {byte 159}} {{byte 226} {byte 177} {byte 177}} {{byte 226} {byte 177} {byte 180}} {{byte 226} {byte 177} {brange 183 189}} {{byte 226} {byte 179} {brange 164 170}} {{byte 226} {byte 179} {brange 175 177}} {{byte 226} {byte 179} {brange 180 191}} {{byte 226} {byte 180} {byte 166}} {{byte 226} {byte 180} {brange 168 172}} {{byte 226} {byte 180} {brange 174 191}} {{byte 226} {brange 181 191} {brange 128 191}} {{brange 227 233} {brange 128 191} {brange 128 191}} {{byte 234} {brange 128 152} {brange 128 191}} {{byte 234} {byte 153} {brange 174 191}} {{byte 234} {byte 154} {brange 156 191}} {{byte 234} {byte 155} {brange 128 191}} {{byte 234} {byte 156} {brange 128 161}} {{byte 234} {byte 156} {brange 176 177}} {{byte 234} {byte 157} {brange 176 184}} {{byte 234} {byte 158} {brange 136 138}} {{byte 234} {byte 158} {brange 142 143}} {{byte 234} {byte 158} {brange 148 149}} {{byte 234} {byte 158} {byte 175}} {{byte 234} {byte 158} {brange 184 191}} {{byte 234} {brange 159 172} {brange 128 191}} {{byte 234} {byte 173} {brange 128 146}} {{byte 234} {byte 173} {brange 148 175}} {{byte 234} {brange 175 191} {brange 128 191}} {{brange 235 236} {brange 128 191} {brange 128 191}} {{byte 237} {brange 128 159} {brange 128 191}} {{byte 238} {brange 128 191} {brange 128 191}} {{byte 239} {brange 128 187} {brange 128 191}} {{byte 239} {byte 188} {brange 128 160}} {{byte 239} {byte 188} {brange 187 191}} {{byte 239} {byte 189} {byte 128}} {{byte 239} {byte 189} {brange 155 191}} {{byte 239} {brange 190 191} {brange 128 191}}}}
+	D-^%NCC1 ok    {@x {@result<lu.neg.nocase.ncc1>}}
+	D-^%NCC2 ok    {@! {@result<lu.neg.nocase.ncc2>}}
     }
     range {
-	{}     error {Unable to reduce incomplete literal (range ())}
-	K-RAN  error {Unable to reduce incomplete literal (range ())}
-	D-RAN1 error {Unable to reduce incomplete literal (range ())}
-	D-RAN2 error {Unable to reduce incomplete literal (range ())}
+	{}     error RIL
+	K-RAN  error RIL
+	D-RAN1 error RIL
+	D-RAN2 error RIL
     }
     {range 20 10} {
-	{}     error {Unable to reduce empty literal (range (20 10))}
-	K-RAN  error {Unable to reduce empty literal (range (20 10))}
-	D-RAN1 error {Unable to reduce empty literal (range (20 10))}
-	D-RAN2 error {Unable to reduce empty literal (range (20 10))}
+	{}     error REL
+	K-RAN  error REL
+	D-RAN1 error REL
+	D-RAN2 error REL
     }
     {range 10 10} {
-	{}     error {Unable to reduce empty literal (range (10 10))}
-	K-RAN  error {Unable to reduce empty literal (range (10 10))}
-	D-RAN1 error {Unable to reduce empty literal (range (10 10))}
-	D-RAN2 error {Unable to reduce empty literal (range (10 10))}
+	{}     error REL
+	K-RAN  error REL
+	D-RAN1 error REL
+	D-RAN2 error REL
     }
     {range 10 11} {
-	{}     error {Unable to reduce type (range (10 11))}
+	{}     error RT
 	K-RAN  ok    {@q {range 10 11}}
 	D-RAN1 ok    {@! {composite {{character 10}} {{character 11}}}}
 	D-RAN2 ok    {@! {composite {{brange 10 11}}}}
     }
     %range {
-	{}     error {Unable to reduce incomplete literal (%range ())}
-	K-%RAN error {Unable to reduce incomplete literal (%range ())}
-	D-%RAN error {Unable to reduce incomplete literal (%range ())}
+	{}     error RIL
+	K-%RAN error RIL
+	D-%RAN error RIL
     }
     {%range 20 10} {
-	{}     error {Unable to reduce empty literal (%range (20 10))}
-	K-%RAN error {Unable to reduce empty literal (%range (20 10))}
-	D-%RAN error {Unable to reduce empty literal (%range (20 10))}
+	{}     error REL
+	K-%RAN error REL
+	D-%RAN error REL
     }
     {%range 10 10} {
-	{}     error {Unable to reduce empty literal (%range (10 10))}
-	K-%RAN error {Unable to reduce empty literal (%range (10 10))}
-	D-%RAN error {Unable to reduce empty literal (%range (10 10))}
+	{}     error REL
+	K-%RAN error REL
+	D-%RAN error REL
     }
     {%range 97 99} {
-	{}     error {Unable to reduce type (%range (97 99))}
+	{}     error RT
 	K-%RAN ok    {@q {%range 97 99}}
 	D-%RAN ok    {@x {charclass {65 67} {97 99}}}
     }
     ^range {
-	{}      error {Unable to reduce incomplete literal (^range ())}
-	K-^RAN  error {Unable to reduce incomplete literal (^range ())}
-	D-^RAN1 error {Unable to reduce incomplete literal (^range ())}
-	D-^RAN2 error {Unable to reduce incomplete literal (^range ())}
+	{}      error RIL
+	K-^RAN  error RIL
+	D-^RAN1 error RIL
+	D-^RAN2 error RIL
     }
     {^range 0 @@@} {
-	{}      error {Unable to reduce empty literal (^range (0 @@@))}
-	K-^RAN  error {Unable to reduce empty literal (^range (0 @@@))}
-	D-^RAN1 error {Unable to reduce empty literal (^range (0 @@@))}
-	D-^RAN2 error {Unable to reduce empty literal (^range (0 @@@))}
+	{}      error REL
+	K-^RAN  error REL
+	D-^RAN1 error REL
+	D-^RAN2 error REL
     }
     {^range 0 10} {
-	{}      error {Unable to reduce type (^range (0 10))}
+	{}      error RT
 	K-^RAN  ok    {@q {^range 0 10}}
 	D-^RAN1 ok    {@x {range 11 @@@}}
-	D-^RAN2 ok    {@! {composite {{brange 11 127}} {{brange 194 223} {brange 128 191}} {{byte 224} {brange 160 191} {brange 128 191}} {{brange 225 236} {brange 128 191} {brange 128 191}} {{byte 237} {brange 128 159} {brange 128 191}} {{brange 238 239} {brange 128 191} {brange 128 191}}}}
+	D-^RAN2 ok    {@! {@result<range.0-10.neg.ran2>}}
     }
     {^range 20 @@@} {
-	{}      error {Unable to reduce type (^range (20 @@@))}
+	{}      error RT
 	K-^RAN  ok    {@q {^range 20 @@@}}
 	D-^RAN1 ok    {@x {range 0 19}}
 	D-^RAN2 ok    {@! {composite {{brange 0 19}}}}
     }
     {^range 10 20} {
-	{}      error {Unable to reduce type (^range (10 20))}
+	{}      error RT
 	K-^RAN  ok    {@q {^range 10 20}}
 	D-^RAN1 ok    {@x {charclass {0 9} {21 @@@}}}
-	D-^RAN2 ok    {@! {composite {{brange 0 9}} {{brange 21 127}} {{brange 194 223} {brange 128 191}} {{byte 224} {brange 160 191} {brange 128 191}} {{brange 225 236} {brange 128 191} {brange 128 191}} {{byte 237} {brange 128 159} {brange 128 191}} {{brange 238 239} {brange 128 191} {brange 128 191}}}}
+	D-^RAN2 ok    {@! {@result<range.10-20.neg.ran2>}}
     }
     ^character {
-	{}     error {Unable to reduce incomplete literal (^character ())}
-	K-^CHR error {Unable to reduce incomplete literal (^character ())}
-	D-^CHR error {Unable to reduce incomplete literal (^character ())}
+	{}     error RIL
+	K-^CHR error RIL
+	D-^CHR error RIL
     }
     {^character 300} {
-	{}     error {Unable to reduce type (^character (300))}
+	{}     error RT
 	K-^CHR ok    {@q {^character 300}}
 	D-^CHR ok    {@x {charclass {0 299} {301 @@@}}}
 	!----- ----- { using 2 ranges,    -^- 300 excluded }
@@ -447,12 +538,6 @@ foreach {literal toexpect} {
 	if {[string match X* $rules]} { puts XXX.reduce1.$literal.$rules ; continue }
 
 	incr j
-
-	set result [string map $map [string trim $result]]
-	set result [join [lmap line [split $result \n] {
-	    string trim $line
-	}] \n]
-
 	test marpa-slif-literal-reduce1-2.$k.$j "reduce1 $code ($literal) $rules" -setup {
 	    set state [log STATE] ; /trace STATE
 	} -body {
@@ -461,7 +546,7 @@ foreach {literal toexpect} {
 	} -cleanup {
 	    catch { logged }
 	    unset state
-	} -returnCodes $code -result $result
+	} -returnCodes $code -result [RR $result $rules $literal]
     }
 }
 
@@ -1243,4 +1328,7 @@ foreach {lit res} {
 }
 
 # # ## ### ##### ######## ############# #####################
+rename F {}
+rename FE {}
 cleanupTests
+return
