@@ -31,8 +31,10 @@ proc rejoin {lines} {
 }
 
 proc 2lines {path} {
-    split [string trimright [fileutil::cat $path]] \n
+    split [string trimright [fget $path]] \n
 }
+
+proc fget {path} { fileutil::cat $path }
 
 proc strip-gc-comments {lines} {
     lmap line $lines {

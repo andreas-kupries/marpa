@@ -13,12 +13,16 @@ proc td {} {
     return [file normalize $::tcltest::testsDirectory]
 }
 
-proc grdir {} {
-    return [file normalize [file join [td] grammars]]
+proc grdir {args} {
+    return [file normalize [file join [td] grammars {*}$args]]
 }
 
-proc trdir {} {
-    return [file normalize [file join [td] traces]]
+proc trdir {args} {
+    return [file normalize [file join [td] traces {*}$args]]
+}
+
+proc redir {args} {
+    return [file normalize [file join [td] results {*}$args]]
 }
 
 # # ## ### ##### ######## #############
