@@ -75,6 +75,12 @@ oo::class create marpa::slif::container::attribute {
     # # -- --- ----- -------- -------------
     ## Public API - (de)serialization, assignment, copying
 
+    method clear {} {
+	debug.marpa/slif/container/attribute {}
+	set myattr {}
+	return
+    }
+    
     method serialize {} {
 	debug.marpa/slif/container/attribute {}
 	return $myattr

@@ -62,6 +62,7 @@ oo::class create marpa::slif::container {
 	# Recursively generate a nested dict describing the container
 	# contents. Empty parts are not placed into the result.
 
+	set serial {}
 	foreach {label part} {
 	    global GA
 	    lexeme LS
@@ -70,16 +71,30 @@ oo::class create marpa::slif::container {
 	} {
 	    set child [$part serialize]
 	    if {![llength $child]} continue
-	    dict set s $label $child
+	    dict set serial $label $child
 	}
-	return $s
+	return $serial
     }
 
     method deserialize {blob} {
 	debug.marpa/slif/container {}
-	error ;# TODO: ser(deser(ser())) == ser()
-	# clear all parts first
-	# ignore missing parts.
+	# Recursively push parts of the incoming blob to the child
+	# handling it. Missing parts are ignored, except that the
+	# associated child is cleared.
+
+	# Note: GA is handled after G1, because its validation of
+	# start! checks that the specified symbol exists in that
+	# grammar.
+	foreach {label part} {
+	    lexeme LS
+	    g1     G1
+	    l0     L0
+	    global GA
+	} {
+	    $part clear
+	    if {![dict exists $blob $label]} continue
+	    $part deserialize [dict get $blob $label]
+	}
 	return
     }
 

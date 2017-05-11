@@ -48,24 +48,24 @@ test marpa-slif-container-constructor-1.2 {constructor, wrong args, too many} -b
 ## The traces are those from the semantics for the non-erroneous test grammars.
 ## (With comment lines removed)
 
-incr max
+set max 0
 test-grammar-files slif --> __ __ { incr max }
 set format %0[string length $max]d
 unset max
 
-incr k
+set k 0
 test-grammar-map ctrace --> id ctrace base {
     set input [norm-trace-gc $ctrace]
 
     # Ignore traces for parse and/or semantic errors.
     if {[string match {*GC error*} $input]} continue
 
-    set expected [string trimright [fileutil::cat [file join $base gcstate]]]
+    set expected [string trimright [fget [file join $base gcstate]]]
     set kd       [format $format $k]
 
     #puts ZZZ\t[join [split $input \n] \nZZZ\t]
 
-    test marpa-slif-container-by-trace-2.${kd}---${id} "by-trace $id" -setup {
+    test marpa-slif-container-by-trace-1.${kd}---${id} "by-trace $id" -setup {
 	marpa::slif::container create GC
     } -body {
 	if {[catch {
@@ -81,6 +81,31 @@ test-grammar-map ctrace --> id ctrace base {
 	unset -nocomplain msg
 	GC destroy
     } -result $expected
+
+    incr k
+}
+
+# # ## ### ##### ######## ############# #####################
+## Container bulk load (deserialization)
+
+set max 0
+test-grammar-files gcstate --> __ __ { incr max }
+set format %0[string length $max]d
+unset max
+
+set k 0
+test-grammar-files gcstate --> id gcstate {
+    set input    [string trimright [fget $gcstate]]
+    set kd       [format $format $k]
+
+    test marpa-slif-container-deserialize-1.${kd}---${id} "deserialize $id" -setup {
+	marpa::slif::container create GC
+    } -body {
+	GC deserialize [dict get $input grammar]
+	gc-format [GC serialize]
+    } -cleanup {
+	GC destroy
+    } -result $input
 
     incr k
 }

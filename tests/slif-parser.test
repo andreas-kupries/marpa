@@ -23,6 +23,7 @@ kt local   testing marpa
 kt source support/ast.tcl
 kt source support/dirs.tcl
 kt source support/grammars.tcl
+kt source support/textutils.tcl
 
 # # ## ### ##### ######## ############# #####################
 ##  1 constructor/0
@@ -84,8 +85,8 @@ unset max
 
 incr k
 test-grammar-map slif --> id slif base {
-    set input    [fileutil::cat $slif]
-    set expected [string trimright [fileutil::cat [file join $base ast]]]
+    set input    [fget $slif]
+    set expected [string trimright [fget [file join $base ast]]]
     set kd       [format $format $k]
 
     if {0} {

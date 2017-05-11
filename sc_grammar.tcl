@@ -65,6 +65,13 @@ oo::class create marpa::slif::container::grammar {
     # - -- --- ----- -------- -------------
     ## Fill serdes virtual abstract methods
 
+    method clear {} {
+	debug.marpa/slif/container/grammar {}
+	set mysymbol {}
+	set mysclass {}
+	return
+    }
+
     method serialize {} {
 	debug.marpa/slif/container/grammar {}
 	set serial {}

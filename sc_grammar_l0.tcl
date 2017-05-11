@@ -35,9 +35,36 @@ oo::class create marpa::slif::container::grammar::l0 {
     constructor {} {
 	debug.marpa/slif/container/grammar/l0 {}
 	next {
-	    atom      ::marpa::slif::container::atom
+	    atom       ::marpa::slif::container::atom
+
+	    %named-class  {::marpa::slif::container::atom %named-class}
+	    %string       {::marpa::slif::container::atom %string}
+	    ^%named-class {::marpa::slif::container::atom ^%named-class}
+	    ^character    {::marpa::slif::container::atom ^character}
+	    ^charclass    {::marpa::slif::container::atom ^charclass}
+	    ^named-class  {::marpa::slif::container::atom ^named-class}
+	    ^range        {::marpa::slif::container::atom ^range}
+	    character     {::marpa::slif::container::atom character}
+	    charclass     {::marpa::slif::container::atom charclass}
+	    named-class   {::marpa::slif::container::atom named-class}
+	    range         {::marpa::slif::container::atom range}
+	    string        {::marpa::slif::container::atom string}
+
+	    byte          {::marpa::slif::container::atom byte}
+	    brange        {::marpa::slif::container::atom brange}
 	}   ::marpa::slif::container::priority::l0 \
 	    ::marpa::slif::container::quantified::l0
+
+	# The primary 'atom' at the top is the support for method
+	# "literal", see the forward at the bottom. All the others are
+	# there to support direct construction from deserializations
+	# (See method "deserialize", call to "Symbol:"). This is the
+	# set that declares the valid literal types.
+	#
+	# The two missing types (%range, ^%range) are not really
+	# such. See the normalization rules N28, N30, and associated
+	# footnote in doc/atoms.md for why they are eliminated by the
+	# normalization code.
 
 	set mylatm  {}
 	set myevent {}

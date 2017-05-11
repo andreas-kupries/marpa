@@ -73,7 +73,7 @@ unset max
 
 incr k
 test-grammar-map slif --> id slif base {
-    set input    [fileutil::cat $slif]
+    set input    [fget $slif]
     set expected [norm-trace [file join $base ctrace]]
     set kd       [format $format $k]
 
