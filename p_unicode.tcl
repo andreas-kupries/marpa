@@ -239,10 +239,9 @@ proc marpa::unicode::unfold {codes} {
 
 proc marpa::unicode::2asbr {charclass} {
     debug.marpa/unicode {}
-    set c [u8class new]
-    $c add-charclass $charclass
-    set utf [$c get]
-    $c destroy
+    u8c mk
+    u8c add-cc $charclass
+    set utf [u8c get]
     debug.marpa/unicode {==> ($utf)}
     return $utf
 }
@@ -400,321 +399,286 @@ proc marpa::unicode::data::fold/c {codepoint} {
 
 # # ## ### ##### ######## #############
 ## Internals - Char class state
+## ASBR compiler - Charclass to alternation of sequences of byte ranges
+#
+# A character class as a list of u8sequence's, each sequence an
+# alternative matching part of the class.
 
-oo::class create u8class {
-    # A character class as a list of u8sequence's, each sequence an
-    # alternative matching part of the class.
+namespace eval marpa::unicode::u8c {
+    namespace export mk get add-cc add match debug-match
+    namespace ensemble create
+}
 
-    variable myalternates
-    variable mylast
+proc marpa::unicode::u8c::mk {} {
+    debug.marpa/unicode {}
+    upvar 1 __alternates __alternates __last __last
+    set __alternates {}
+    set __last       -1
+    return
+}
 
-    constructor {} {
-	debug.marpa/unicode {}
-	set myalternates {}
-	set mylast       -1
-	return
+proc marpa::unicode::u8c::get {} {
+    debug.marpa/unicode {}
+    upvar 1 __alternates __alternates
+    set result {}
+    foreach alter $__alternates {
+	if {$alter eq "."} continue
+	lappend result $alter ;#$resranges
     }
+    debug.marpa/unicode {==> ($result)}
+    return $result
+}
 
-    destructor {
-	debug.marpa/unicode {}
-	foreach alter $myalternates {
-	    if {$alter eq "."} continue
-	    $alter destroy
-	}
-	return
-    }
-
-    method get {} {
-	debug.marpa/unicode {}
-	set result {}
-	foreach alter $myalternates {
-	    if {$alter eq "."} continue
-	    set resranges {}
-	    foreach range [$alter get] {
-		lappend resranges [$range get]
-	    }
-	    lappend result $resranges
-	}
-	debug.marpa/unicode {==> ($result)}
-	return $result
-    }
-
-    method add-charclass {charclass} {
-	debug.marpa/unicode {}
-	foreach item [marpa unicode norm-class $charclass] {
-	    lassign $item s e
-	    if {$e eq {}} {
-		# Add point
-		my add $s
-	    } else {
-		# Expand and add range
-		for {set code $s} {$code <= $e} {incr code} {
-		    my add $code
-		}
+proc marpa::unicode::u8c::add-cc {charclass} {
+    debug.marpa/unicode {}
+    upvar 1 __alternates __alternates __last __last
+    foreach item [marpa unicode norm-class $charclass] {
+	lassign $item s e
+	if {$e eq {}} {
+	    # Add point
+	    add $s
+	} else {
+	    # Expand and add range
+	    for {set code $s} {$code <= $e} {incr code} {
+		add $code
 	    }
 	}
-	return
     }
+    return
+}
 
+proc marpa::unicode::u8c::add {code} {
     # add a single uni(code)point to the class.  Must be added in
     # lexicographic order for the merge system to work.
-    method add {code} {
-	debug.marpa/unicode {}
-	# reject the addition of surrogate code points
-	if {(0xD7FF < $code) && ($code < 0xE000)} {
-	    debug.marpa/unicode {Reject surrogate codepoint $code}
-	    return
-	}
-
-	if {$code > ($mylast+1)} {
-	    # range gap - merge barrier
-	    lappend myalternates .
-	}
-	set mylast $code
-	# push new alternate
-	lappend myalternates [u8sequence new [marpa unicode 2utf $code]]
-	# reduce alternates by merging adjoint ones
-	while {[my Merge]} {}
+    debug.marpa/unicode {}
+    upvar 1 __alternates __alternates __last __last
+    # reject the addition of surrogate code points
+    if {(0xD7FF < $code) && ($code < 0xE000)} {
+	debug.marpa/unicode {Reject surrogate codepoint $code}
 	return
     }
 
-    # TODO: preload an entire utf class.
-
-    method match {code} {
-	debug.marpa/unicode {}
-	set bytes [marpa unicode 2utf $code]
-	foreach sequence $myalternates {
-	    if {$sequence eq "."} continue
-	    if {[$sequence match $bytes]} { return 1 }
-	}
-	return 0
+    if {$code > ($__last+1)} {
+	# range gap - merge barrier - current top is final
+	lappend __alternates .
     }
-
-    method debug-match {code} {
-	debug.marpa/unicode {}
-	set bytes [marpa unicode 2utf $code]
-	foreach sequence $myalternates {
-	    if {$sequence eq "."} continue
-	    incr matches [$sequence match $bytes]
-	}
-	if {$matches > 1} { return -code error "multi-match" }
-	expr {$matches == 1}
-    }
-
-    method Merge {} {
-	debug.marpa/unicode {}
-	# Bail if nothing can be done
-	if {[llength $myalternates] < 2} { return 0 }
-	lassign [lrange $myalternates end-1 end] previous current
-	# Prevent merging across a barrier
-	if {$previous eq "."} { return 0 }
-	if {![$previous merge $current]} { return 0 }
-	$current destroy
-	set myalternates [lreplace $myalternates end end]
-	return 1
-    }
+    set __last $code
+    # push new alternate
+    lappend __alternates [s-mk [marpa unicode 2utf $code]]
+    # reduce alternates by merging adjoint ones
+    while {[Merge]} {}
+    return
 }
+
+proc marpa::unicode::u8c::match {code} {
+    debug.marpa/unicode {}
+    upvar 1 __alternates __alternates
+    set bytes [marpa unicode 2utf $code]
+    foreach sequence $__alternates {
+	if {$sequence eq "."} continue
+	if {[s-match $sequence $bytes]} { return 1 }
+    }
+    return 0
+}
+
+proc marpa::unicode::u8c::debug-match {code} {
+    debug.marpa/unicode {}
+    upvar 1 __alternates __alternates
+    set bytes [marpa unicode 2utf $code]
+    foreach sequence $__alternates {
+	if {$sequence eq "."} continue
+	incr matches [s-match $sequence $bytes]
+    }
+    if {$matches > 1} { return -code error "multi-match" }
+    expr {$matches == 1}
+}
+
+proc marpa::unicode::u8c::Merge {} {
+    debug.marpa/unicode {}
+    upvar 1 __alternates __alternates
+    # Bail if nothing can be done
+    if {[llength $__alternates] < 2} { return 0 }
+    lassign [lrange $__alternates end-1 end] previous current
+    # Prevent merging across a barrier
+    if {$previous eq "."} { return 0 }
+    # Attempt merge
+    if {![s-merge previous $current]} { return 0 }
+    # and on success replace NXT,TOS with result.
+    set __alternates [lreplace [K $__alternates [unset __alternates]] end-1 end $previous]
+    return 1
+}
+
+proc marpa::unicode::u8c::K {x y} { set x }
 
 # # ## ### ##### ######## #############
 ## Internals - Range sequences
+## - Support for alternation of such (following, ASBR "compiler")
+#
+## sequence :: list (range)
+## range    :: See following section
 
-oo::class create u8sequence {
-    # sequence of u8range's
-    variable myranges
+proc marpa::unicode::u8c::s-mk {items} {
+    debug.marpa/unicode {}
+    set sequence {}
+    foreach spec $items {
+	#if {[llength $spec] == 1} {}
+	lappend spec [lindex $spec 0]
+	lappend sequence [r-mk {*}$spec]
+    }
+    return $sequence
+}
 
-    # make a sequence from ranges or bytes, or a mix thereof
-    constructor {charclass} {
-	debug.marpa/unicode {}
-	foreach spec $charclass {
-	    if {[llength $spec] == 1} {
-		lappend spec [lindex $spec 0]
+proc marpa::unicode::u8c::s-match {sequence bytes} {
+    debug.marpa/unicode {}
+    if {[llength $bytes] != [llength $sequence]} { return 0 }
+    foreach range $sequence x $bytes {
+	if {![r-match $range $x]} { return 0 }
+    }
+    return 1
+}
+
+proc marpa::unicode::u8c::s-merge {sv s} {
+    debug.marpa/unicode {}
+    upvar 1 $sv sequence
+
+    # Reject length mismatches
+    set n [llength $sequence]
+    if {$n != [llength $s]} { return 0 }
+
+    # actual merging is length dependent.
+    # unroll the loops, small enough
+
+    # equal     (a,b) : a == b
+    # upper-adj (a,b) : a ## b
+
+    switch -exact -- $n {
+	1 {
+	    lassign $sequence r
+	    lassign $s sr
+	    # Merging allowed for
+	    # (a) r ## sr --> extend r
+
+	    if {[r-adjacent $r $sr]} {
+		lset sequence 0 [r-extend $r $sr]
+		return 1
 	    }
-	    lappend myranges [u8range new {*}$spec]
+	    return 0
 	}
-	return
-    }
+	2 {
+	    lassign $sequence r1  r2
+	    lassign $s sr1 sr2
 
-    destructor {
-	debug.marpa/unicode {}
-	foreach range $myranges { $range destroy }
-	return
-    }
+	    # Merging allowed for
+	    # (a) sr1 == r1 && r2 ## sr2 -> extend r2
+	    # (b) r1 ## sr1 && r2 == sr2 -> extend r1
 
-    method match {bytes} {
-	debug.marpa/unicode {}
-	if {[llength $bytes] != [my len]} { return 0 }
-	foreach range $myranges x $bytes {
-	    if {![$range match $x]} { return 0 }
+	    if {[r-eq $r1 $sr1] && [r-adjacent $r2 $sr2]} {
+		lset sequence 1 [r-extend $r2 $sr2]
+		return 1
+	    }
+	    if {[r-adjacent $r1 $sr1] && [r-eq $r2 $sr2]} {
+		lset sequence 0 [r-extend $r1 $sr1]
+		return 1
+	    }
+	    return 0
 	}
-	return 1
-    }
+	3 {
+	    lassign $sequence r1  r2  r3
+	    lassign $s sr1 sr2 sr3
 
-    method get {} {
-	debug.marpa/unicode {}
-	return $myranges
-    }
+	    # Merging allowed for
+	    # (a) sr1 == r1 && sr2 == r2 && r3 ## sr3 -> extend r3
+	    # (b) sr1 == r1 && r2 ## sr2 && r3 == sr3 -> extend r2
+	    # (c) r1 ## sr1 && r2 == sr2 && r3 == sr3 -> extend r1
 
-    method len {} {
-	debug.marpa/unicode {}
-	llength $myranges
-    }
-
-    method merge {s} {
-	debug.marpa/unicode {}
-	# Try to merge sequence s with self.
-
-	# Reject length mismatches
-	set n [llength $myranges]
-	if {$n != [$s len]} { return 0 }
-
-	# actual merging is length dependent.
-	# unroll the loops, small enough
-
-	# equal     (a,b) : a == b
-	# upper-adj (a,b) : a # b
-
-	switch -exact -- $n {
-	    1 {
-		lassign $myranges r
-		lassign [$s get] sr
-		# Merging allowed for
-		# (a) r ## sr --> extend r
-
-		if {[$r joint $sr]} {
-		    $r extend $sr
-		    return 1
-		}
-		return 0
+	    if {[r-eq $r1 $sr1] && [r-eq $r2 $sr2] && [r-adjacent $r3 $sr3]} {
+		lset sequence 2 [r-extend $r3 $sr3]
+		return 1
 	    }
-	    2 {
-		lassign $myranges r1  r2
-		lassign [$s get] sr1 sr2
-
-		# Merging allowed for
-		# (a) sr1 == r1 && r2 ## sr2 -> extend r2
-		# (b) r1 ## sr1 && r2 == sr2 -> extend r1
-
-		if {[$r1 eq $sr1] && [$r2 joint $sr2]} {
-		    $r2 extend $sr2
-		    return 1
-		}
-		if {[$r1 joint $sr1] && [$r2 eq $sr2]} {
-		    $r1 extend $sr1
-		    return 1
-		}
-		return 0
+	    if {[r-eq $r1 $sr1] && [r-adjacent $r2 $sr2] && [r-eq $r3 $sr3]} {
+		lset sequence 1 [r-extend $r2 $sr2]
+		return 1
 	    }
-	    3 {
-		lassign $myranges r1  r2  r3
-		lassign [$s get] sr1 sr2 sr3
-
-		# Merging allowed for
-		# (a) sr1 == r1 && sr2 == r2 && r3 ## sr3 -> extend r3
-		# (b) sr1 == r1 && r2 ## sr2 && r3 == sr3 -> extend r2
-		# (c) r1 ## sr1 && r2 == sr2 && r3 == sr3 -> extend r1
-
-		if {[$r1 eq $sr1] && [$r2 eq $sr2] && [$r3 joint $sr3]} {
-		    $r3 extend $sr3
-		    return 1
-		}
-		if {[$r1 eq $sr1] && [$r2 joint $sr2] && [$r3 eq $sr3]} {
-		    $r2 extend $sr2
-		    return 1
-		}
-		if {[$r1 joint $sr1] && [$r2 eq $sr2] && [$r3 eq $sr3]} {
-		    $r1 extend $sr1
-		    return 1
-		}
-		return 0
+	    if {[r-adjacent $r1 $sr1] && [r-eq $r2 $sr2] && [r-eq $r3 $sr3]} {
+		lset sequence 0 [r-extend $r1 $sr1]
+		return 1
 	    }
-	    4 {
-		lassign $myranges r1  r2  r3  r4
-		lassign [$s get] sr1 sr2 sr3 sr4
+	    return 0
+	}
+	4 {
+	    lassign $sequence r1  r2  r3  r4
+	    lassign $s sr1 sr2 sr3 sr4
 
-		# Merging allowed for
-		# (a) sr1 == r1 && sr2 == r2 && sr3 == r3 && r4 ## sr4 -> extend r4
-		# (b) sr1 == r1 && sr2 == r2 && r3 ## sr3 && r4 == sr4 -> extend r3
-		# (c) sr1 == r1 && r2 ## sr2 && r3 == sr3 && r4 == sr4 -> extend r2
-		# (d) r1 ## sr1 && r2 == sr2 && r3 == sr3 && r4 == sr4 -> extend r1
+	    # Merging allowed for
+	    # (a) sr1 == r1 && sr2 == r2 && sr3 == r3 && r4 ## sr4 -> extend r4
+	    # (b) sr1 == r1 && sr2 == r2 && r3 ## sr3 && r4 == sr4 -> extend r3
+	    # (c) sr1 == r1 && r2 ## sr2 && r3 == sr3 && r4 == sr4 -> extend r2
+	    # (d) r1 ## sr1 && r2 == sr2 && r3 == sr3 && r4 == sr4 -> extend r1
 
-		if {[$r1 eq $sr1] && [$r2 eq $sr2] && [$r3 eq $sr3] && [$r4 joint $sr4]} {
-		    $r4 extend $sr4
-		    return 1
-		}
-		if {[$r1 eq $sr1] && [$r2 eq $sr2] && [$r3 joint $sr3] && [$r4 eq $sr4]} {
-		    $r3 extend $sr3
-		    return 1
-		}
-		if {[$r1 eq $sr1] && [$r2 joint $sr2] && [$r3 eq $sr3] && [$r4 eq $sr4]} {
-		    $r2 extend $sr2
-		    return 1
-		}
-		if {[$r1 joint $sr1] && [$r2 eq $sr2] && [$r3 eq $sr3] && [$r4 eq $sr4]} {
-		    $r1 extend $sr1
-		    return 1
-		}
-		return 0
+	    if {[r-eq $r1 $sr1] && [r-eq $r2 $sr2] && [r-eq $r3 $sr3] && [r-adjacent $r4 $sr4]} {
+		lset sequence 3 [r-extend $r4 $sr4]
+		return 1
 	    }
+	    if {[r-eq $r1 $sr1] && [r-eq $r2 $sr2] && [r-adjacent $r3 $sr3] && [r-eq $r4 $sr4]} {
+		lset sequence 2 [r-extend $r3 $sr3]
+		return 1
+	    }
+	    if {[r-eq $r1 $sr1] && [r-adjacent $r2 $sr2] && [r-eq $r3 $sr3] && [r-eq $r4 $sr4]} {
+		lset sequence 1 [r-extend $r2 $sr2]
+		return 1
+	    }
+	    if {[r-adjacent $r1 $sr1] && [r-eq $r2 $sr2] && [r-eq $r3 $sr3] && [r-eq $r4 $sr4]} {
+		lset sequence 0 [r-extend $r1 $sr1]
+		return 1
+	    }
+	    return 0
 	}
     }
 }
 
 # # ## ### ##### ######## #############
-## Internals - Ranges
+## Internals - Byte Ranges
+## - Support for Sequences of such (previous section)
+#
+## range :: pair (start end)
+## start :: int
+## end   :: int
+## constraint: start <= end
+## range is inclusive limits.
 
-oo::class create u8range {
-    # byte range
-    variable mystart
-    variable myend
+proc marpa::unicode::u8c::r-mk {s e} {
+    debug.marpa/unicode {}
+    if {$s > $e} { error "Bad order" }
+    list $s $e
+}
 
-    # make new
-    constructor {s e} {
-	debug.marpa/unicode {}
-	if {$s > $e} {
-	    set mystart $e
-	    set myend   $s
-	} else {
-	    set mystart $s
-	    set myend   $e
-	}
-	return
-    }
+# check if byte is contained in the range
+proc marpa::unicode::u8c::r-match {r x} {
+    debug.marpa/unicode {}
+    lassign $r s e
+    set match [expr {($s <= $x) && ($x <= $e)}]
+    debug.marpa/unicode {==> ($match)}
+    return $match
+}
 
-    # check if byte is contained in the range
-    method match {x} {
-	debug.marpa/unicode {}
-	set match [expr {($mystart <= $x) && ($x <= $myend)}]
-	debug.marpa/unicode {==> ($match)}
-	return $match
-    }
+# check two ranges for equality
+proc marpa::unicode::u8c::r-eq {a b} {
+    debug.marpa/unicode {}
+    lassign $a as ae
+    lassign $b bs be
+    expr {($as == $bs) && ($ae == $be)}
+}
 
-    # check ranges for equality
-    method eq {r} {
-	debug.marpa/unicode {}
-	lassign [$r get] s e
-	expr {($s == $mystart) && ($e == $myend)}
-    }
+# check if rb is adjacent to the upper border of r
+proc marpa::unicode::u8c::r-adjacent {r rb} {
+    debug.marpa/unicode {}
+    expr {([lindex $r 1] + 1) == [lindex $rb 0]}
+}
 
-    # retrieve range data
-    method get {} {
-	debug.marpa/unicode {}
-	list $mystart $myend
-    }
-
-    # check if argument is adjacent to upper border of self
-    method joint {r} {
-	debug.marpa/unicode {}
-	lassign [$r get] s e
-	expr {($myend + 1) == $s}
-    }
-
-    # extend self with range - proper only if r is joint
-    method extend {r} {
-	debug.marpa/unicode {}
-	lassign [$r get] s e
-	set myend $e
-	return
-    }
+# extend r with rb and return result - proper only if rb is adjacent to r
+proc marpa::unicode::u8c::r-extend {r rb} {
+    debug.marpa/unicode {}
+    list [lindex $r 0] [lindex $rb 1]
 }
 
 # # ## ### ##### ######## #############

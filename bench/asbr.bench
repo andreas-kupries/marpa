@@ -1,0 +1,38 @@
+# -*- tcl -*- tcl.tk//DSL tclbench//EN//
+## (c) 2017
+## TODO: Convert over to proper tclbench
+
+package require marpa
+
+proc + {times cc} {
+    upvar 1 cases cases
+    if {$times in {. {}}} { set times 1000 }
+    lappend cases $times $cc
+    return
+}
+
+proc 2a {cc} { marpa unicode 2asbr $cc }
+2a {10 20 30} ;# forced compilatin of this proc
+
++ . {{0}}         ;#         1
++ . {{0 9}}       ;#        10
++ . {{0 99}}      ;#       100
++ 100 {{0 999}}     ;#     1,000
++ 10 {{0 9999}}    ;#    10,000
++ 1 {{0 99999}}   ;#   100,000
++ 1 {{0 999999}}  ;# 1,000,000
++ 1 {{0 1114111}} ;# unimax (full cover)
+
+# The preceding cases are in a way worst-case, because they (a)
+# iterate over large ranges, and (b) perform merging for each added
+# code.
+
+foreach {times case} $cases {
+    puts -nonewline "[format %20s $case] :: "
+    flush stdout
+
+    set us [lindex [time {2a $case} $times] 0]
+    #set s  $us;#[expr {$us/1000000.}]
+
+    puts [format %12.3f $us]
+}

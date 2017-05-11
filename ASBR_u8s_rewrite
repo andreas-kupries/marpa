@@ -1,0 +1,13 @@
+
+# Timings with u8sequence and u8range dropping TclOO and using plain
+# procedures operating on list structures. Confirmed ok through
+# testsuite.
+
+                 {0} ::       20.774
+               {0 9} ::      125.261
+              {0 99} ::     1139.526
+             {0 999} ::    17975.010
+            {0 9999} ::   235149.600
+           {0 99999} ::  2659184.000
+          {0 999999} :: 31236191.000
+         {0 1114111} :: 35040915.000
