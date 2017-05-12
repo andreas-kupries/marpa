@@ -186,15 +186,16 @@ critcl::tsources sc_attr_quant_l0.tcl  ; #   - Quantified L0 rule attributes
 ##       declarations, to avoid conflicts with libmarpa's public
 ##       symbols.
 
-critcl::source c_util.tcl     ; # Utilities for debug narrative - TRACE.
-critcl::source c_errors.tcl   ; # Mapping marpa error codes to strings.
-critcl::source c_events.tcl   ; # Mapping marpa event types to strings.
-critcl::source c_steps.tcl    ; # String pool for valuation-steps.
-critcl::source c_support.tcl  ; # General utilities and types.
-critcl::source c_typeconv.tcl ; # Custom argument & result types
-critcl::source c_context.tcl  ; # Per-interp package information,
-				# shared to all classes and instances.
-critcl::source c_unicode.tcl  ; # Unicode support functions.
+critcl::source c_util.tcl       ; # Utilities for debug narrative - TRACE.
+critcl::source c_errors.tcl     ; # Mapping marpa error codes to strings.
+critcl::source c_events.tcl     ; # Mapping marpa event types to strings.
+critcl::source c_steps.tcl      ; # String pool for valuation-steps.
+critcl::source c_support.tcl    ; # General utilities and types.
+critcl::source c_typeconv.tcl   ; # Custom argument & result types
+critcl::source c_context.tcl    ; # Per-interp package information,
+				  # shared to all classes and instances.
+critcl::source c_unicode.tcl    ; # Unicode support functions.
+critcl::source c_cc_objtype.tcl ; # Tcl_ObjType for uni char classes.
 
 # # ## ### ##### ######## #############
 ## C classes for the various types of objects.
