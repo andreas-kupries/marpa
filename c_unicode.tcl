@@ -262,12 +262,12 @@ critcl::ccode {
 	int cmin, cmax;
 	CR *current, *sentinel, *store;
 
-	if (!scr->canon) marpa_scr_norm (scr);
+	marpa_scr_norm (scr);
 
 	/*
-	** For n ranges the complement has n-1 to n+1 ranges. This
-	** depends on which of unicode limits are touched by the
-	** class, or not.
+	** For n ranges the complement between n-1 to n+1 ranges.
+	** This depends on which of unicode limits are touched by
+	** the class, or not.
 	*/
 
 	nc = scr->n + 1;

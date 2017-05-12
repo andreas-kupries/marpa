@@ -241,6 +241,7 @@ critcl::ccode {
     }
 }
 
+# # ## ### ##### ######## #############
 # Glue to critcl::cproc
 
 critcl::argtype Marpa_CharClass {
@@ -255,6 +256,28 @@ critcl::resulttype Marpa_CharClass {
     /* No refcount adjustment */
     return TCL_OK;
 } SCR*
+
+
+# # ## ### ##### ######## #############
+## API exposed to Tcl level
+#@ Supercedes original procs in p_unicode.tcl
+
+critcl::cproc marpa::unicode::negate-class {
+    Tcl_Interp*     interp
+    Marpa_CharClass charclass
+} Marpa_CharClass {
+    return marpa_scr_complement (charclass);
+}
+
+critcl::cproc marpa::unicode::norm-class {
+    Tcl_Interp*     interp
+    Marpa_CharClass charclass
+} Marpa_CharClass {
+xxx - refcount accounting
+    marpa_scr_norm (charclass);
+    return charclass;
+}
+
 
 # # ## ### ##### ######## #############
 return
