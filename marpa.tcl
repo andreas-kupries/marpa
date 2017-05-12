@@ -194,6 +194,7 @@ critcl::source c_support.tcl  ; # General utilities and types.
 critcl::source c_typeconv.tcl ; # Custom argument & result types
 critcl::source c_context.tcl  ; # Per-interp package information,
 				# shared to all classes and instances.
+critcl::source c_unicode.tcl  ; # Unicode support functions.
 
 # # ## ### ##### ######## #############
 ## C classes for the various types of objects.
