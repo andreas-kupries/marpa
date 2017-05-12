@@ -208,6 +208,12 @@ proc ::marpa::slif::literal::norm {literal} {
 		    *   STOP
 		}
 	    }
+	    byte {
+		STOP ;# N47
+	    }
+	    brange {
+		STOP ;# N48
+	    }
 	    default FAIL
 	}
 	# Recurse (tailcall -> loop)
@@ -510,19 +516,8 @@ proc ::marpa::slif::literal::reduce1 {litsymbol literal rules state} {
 		# Tcl to numeric ranges and merge into the codes
 		# section of the class (if any). That is a final
 		# form. (Because it is usable by Tcl)
-		lassign [ccsplit $data] codes named
-		set named [lmap name $named {
-		    if {[marpa unicode data cc have-tcl $name]} {
-			# supported, pass to result
-			set name
-		    } else {
-			# not supported, get codes, merge
-			lappend codes {*}[marpa unicode data cc ranges $name]
-			# filter out of result
-			continue
-		    }
-		}]
-		IS-A/ charclass {*}[marpa unicode norm-class $codes] {*}$named
+
+		IS-A/ charclass {*}[CC-TCL $data]
 	    }
 	    ON D-CLS2 {
 		# charclass == ASBR (on the fly, all)
@@ -556,19 +551,8 @@ proc ::marpa::slif::literal::reduce1 {litsymbol literal rules state} {
 		# Tcl to numeric ranges and merge into the codes
 		# section of the class (if any). That is a final
 		# form. (Because it is usable by Tcl)
-		lassign [ccsplit $data] codes named
-		set named [lmap name $named {
-		    if {[marpa unicode data cc have-tcl $name]} {
-			# supported, pass to result
-			set name
-		    } else {
-			# not supported, get codes, merge
-			lappend codes {*}[marpa unicode data cc ranges $name]
-			# filter out of result
-			continue
-		    }
-		}]
-		IS-A/ ^charclass {*}[marpa unicode norm-class $codes] {*}$named
+
+		IS-A/ ^charclass {*}[CC-TCL $data]
 	    }
 	    ON K-^CLS KEEP
 	}
@@ -846,6 +830,37 @@ proc ::marpa::slif::literal::FAILI {} {
 	SLIF LITERAL INCOMPLETE
 }
 
+proc ::marpa::slif::literal::CC-TCL {charclass} {
+    debug.marpa/slif/literal {}
+    # Take a character class which may contain constructions Tcl
+    # cannot handle and return an equivalent class which can be
+    # handled by Tcl.
+
+    lassign [ccsplit $charclass] codes named
+    set named [lmap name $named {
+	if {[marpa unicode data cc have-tcl $name]} {
+	    # supported, pass to result
+	    set name
+	} else {
+	    # not supported, get code ranges and merge. Any %XXX are
+	    # handled by looking for the base name and case-expanding
+	    # that. Note, this could be moved into the unicode
+	    # database accessor code.
+	    if {[regexp {^%(.*)$} $name -> base]} {
+		set ccodes [marpa unicode data cc ranges $base]
+		set ccodes [marpa unicode unfold $ccodes]
+	    } else {
+		set ccodes [marpa unicode data cc ranges $name]
+	    }
+	    lappend codes {*}$ccodes
+	    # filter out of result
+	    continue
+	}
+    }]
+
+    return [list {*}[marpa unicode norm-class $codes] {*}$named]
+}
+
 # # ## ### ##### ######## #############
 
 oo::class create marpa::slif::literal::rstate {
@@ -910,8 +925,13 @@ oo::class create marpa::slif::literal::rstate {
 	debug.marpa/slif/literal {}
 	# queue in {work, done}
 	# assert: The elements of a composite literal are symbols, not
-	# literal specs to convert into
+	# literal specs to convert into.
 
+	# Note, the incoming non-composite pieces are
+	# normalized to simplify them further.
+	if {[lindex $literal 0] ne "composite"} {
+	    set literal [my NORM $literal]
+	}
 	dict set mydef $litsymbol $literal
 	switch -exact -- $queue {
 	    continue - work { lappend mywork    $litsymbol }

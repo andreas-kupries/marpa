@@ -210,6 +210,9 @@ engine they are emitting code for. See next section for details.
 | ^%named-class | N45   | ^name                 | FAIL                  |
 | ^%named-class | N46   | ^%name                | FAIL                  |
 
+| byte          | N47   | *                     | STOP                  |
+| brange        | N48   | *                     | STOP                  |
+
 (N27 removed, redundant, charclass will handle it)
 
 Footnote 1: While using a primary codepoint to store single characters

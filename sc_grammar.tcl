@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -62,6 +62,13 @@ oo::class create marpa::slif::container::grammar {
 	return [dict get $mysymbol $symbol]
     }
 
+    method remove {symbol} {
+	debug.marpa/slif/container/grammar {}
+	dict unset mysymbol $symbol
+	dict unset mysclass $symbol
+	return
+    }
+    
     # - -- --- ----- -------- -------------
     ## Fill serdes virtual abstract methods
 

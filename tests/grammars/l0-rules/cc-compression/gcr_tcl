@@ -1,0 +1,43 @@
+grammar {
+    global {
+        start A
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            A {
+                {priority @LEX:@CLS:<0-1a-|> 0
+                        action {array values}
+                        assoc left
+                        bless {special undef}
+                        mask 0}
+                {priority @LEX:@RAN:<09> 0
+                        action {array values}
+                        assoc left
+                        bless {special undef}
+                        mask 0}
+            }
+        }
+        terminal {
+            @LEX:@CLS:<0-1a-|> { terminal }
+            @LEX:@RAN:<09> { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        latm {
+            @LEX:@CLS:<0-1a-|> 1
+            @LEX:@RAN:<09> 1
+        }
+        lexeme {
+            @LEX:@CLS:<0-1a-|> { {priority @CLS:<0-1a-|> 0} }
+            @LEX:@RAN:<09> { {priority @RAN:<09> 0} }
+        }
+        literal {
+            @CLS:<0-1a-|> { {charclass {48 49} {97 124}} }
+            @RAN:<09> { {range 48 57} }
+        }
+    }
+}

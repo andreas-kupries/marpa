@@ -1,0 +1,64 @@
+grammar {
+    global {
+        start A
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            A { {priority {{@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        {} {
+            {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} { {priority {
+                    {@CHR:<\7>}
+                    {@CHR:<\10>}
+                    {@CHR:<\t>}
+                    {@CHR:<\n>}
+                    {@CHR:<\13>}
+                    {@CHR:<\14>}
+                    {@CHR:<\r>}
+                    {@CHR:<\134>}
+                    @CHR:<a>
+                    {@CHR:<\5>}
+                    @CHR:<7>
+                    {@CHR:<\u00ff>}
+                    {@CHR:<\u00ab>}
+                    {@CHR:<\u3456>}
+                    @CHR:<|>} 0} }
+        }
+        latm {
+            {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 1
+        }
+        lexeme {
+            {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} { {priority {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 0} }
+        }
+        literal {
+            @CHR:<7> { {character 55} }
+            {@CHR:<\5>} { {character 5} }
+            {@CHR:<\7>} { {character 7} }
+            {@CHR:<\10>} { {character 8} }
+            {@CHR:<\13>} { {character 11} }
+            {@CHR:<\14>} { {character 12} }
+            {@CHR:<\134>} { {character 92} }
+            {@CHR:<\n>} { {character 10} }
+            {@CHR:<\r>} { {character 13} }
+            {@CHR:<\t>} { {character 9} }
+            {@CHR:<\u00ab>} { {character 171} }
+            {@CHR:<\u00ff>} { {character 255} }
+            {@CHR:<\u3456>} { {character 13398} }
+            @CHR:<a> { {character 97} }
+            @CHR:<|> { {character 124} }
+        }
+    }
+}

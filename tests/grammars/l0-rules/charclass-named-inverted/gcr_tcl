@@ -1,0 +1,32 @@
+grammar {
+    global {
+        start lang
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            lang { {priority A 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            A { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        latm {
+            A 1
+        }
+        lexeme {
+            A { {priority {{@CLS:<:Q\133\135-^dgitx>}} 0} }
+        }
+        literal {
+            {@CLS:<:Q\133\135-^dgitx>} { {charclass 58 81 91 {93 94} 100 103 105 116 120} }
+        }
+    }
+}

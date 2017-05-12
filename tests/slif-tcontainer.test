@@ -116,7 +116,11 @@ test-grammar-files gcstate --> id gcstate {
 
 set k 0
 test-grammar-map gcstate --> id gcstate base {
-    set input    [dict get [string trimright [fget $gcstate]] grammar]
+    set input [dict get [string trimright [fget $gcstate]] grammar]
+
+    # Ignore containers without literals to reduce
+    if {![dict exists $input l0 literal]} continue
+
     set expected [string trimright [fget [file join $base gcr_tcl]]]
     set kd       [format $format $k]
 
@@ -124,11 +128,9 @@ test-grammar-map gcstate --> id gcstate base {
 	marpa::slif::container create GC
 	GC deserialize $input
     } -body {
-	# TODO: GC accessors for grammar parts
-
 	# Reduce literals for a Tcl engine
-	set works [dict get $input grammar l0 literal]
-	set works [concat {*}[lmap {sym rhs} $works {
+	set work [dict get $input l0 literal]
+	set work [concat {*}[lmap {sym rhs} $work {
 	    list $sym [lindex $rhs 0]
 	}]]
 	marpa::slif::literal r2container \
