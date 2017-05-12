@@ -208,36 +208,53 @@ critcl::ccode {
 	marpa_scr_rep_str,  marpa_scr_rep_from_any
     };
 
-    /* Accessor function (new, get)
+    /* Public creator/accessor functions
     */
 
-    #if 0 /* Snarfed from crimp, TODO to modify to suit */
     Tcl_Obj*
-    crimp_new_image_obj (crimp_image* image)
+    marpa_new_scr_obj (SCR* scr)
     {
 	Tcl_Obj* obj = Tcl_NewObj ();
+	OTSCR* otscr = (OTSCR*) ckalloc(sizeof(OTSCR));
+
+	otscr->refCount = 1;
+	otscr->scr = scr;
 
 	Tcl_InvalidateStringRep (obj);
-	obj->internalRep.otherValuePtr = image;
-	obj->typePtr                   = &ImageType;
+	obj->internalRep.otherValuePtr = otscr;
+	obj->typePtr                   = &marpa_scr_objtype;
 
 	return obj;
     }
 
     int
-    crimp_get_image_from_obj (Tcl_Interp* interp, Tcl_Obj* imageObj, crimp_image** image)
+    marpa_get_scr_from_obj (Tcl_Interp* interp, Tcl_Obj* o, SCR** scrPtr)
     {
-	if (imageObj->typePtr != &ImageType) {
-	    if (ImageFromAny (interp, imageObj) != TCL_OK) {
+	if (o->typePtr != &marpa_scr_objtype) {
+	    if (marpa_scr_rep_from_any (interp, o) != TCL_OK) {
 		return TCL_ERROR;
 	    }
 	}
 
-	*image = (crimp_image*) imageObj->internalRep.otherValuePtr;
+	*scrPtr = (SCR*) o->internalRep.otherValuePtr;
 	return TCL_OK;
     }
-    #endif
 }
+
+# Glue to critcl::cproc
+
+critcl::argtype Marpa_CharClass {
+    if (marpa_get_scr_from_obj (interp, @@, &@A) != TCL_OK) {
+	return TCL_ERROR;
+    }
+} SCR* SCR*
+
+critcl::resulttype Marpa_CharClass {
+    if (rv == NULL) { return TCL_ERROR; }
+    Tcl_SetObjResult(interp, marpa_new_scr_obj (rv));
+    /* No refcount adjustment */
+    return TCL_OK;
+} SCR*
 
 # # ## ### ##### ######## #############
 return
