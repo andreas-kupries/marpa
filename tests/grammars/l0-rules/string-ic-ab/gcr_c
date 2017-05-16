@@ -1,0 +1,62 @@
+grammar {
+    global {
+        start Language
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            Language { {priority A 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            A { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        {} {
+            @%CHR:<F> {
+                {priority @BYTE:<F> 0}
+                {priority @BYTE:<f> 0}
+            }
+            @%CHR:<O> {
+                {priority @BYTE:<O> 0}
+                {priority @BYTE:<o> 0}
+            }
+            @%CHR:<X> {
+                {priority @BYTE:<X> 0}
+                {priority @BYTE:<x> 0}
+            }
+            @%CHR:<Y> {
+                {priority @BYTE:<Y> 0}
+                {priority @BYTE:<y> 0}
+            }
+            @%STR:<FOXY> { {priority {
+                    @%CHR:<F>
+                    @%CHR:<O>
+                    @%CHR:<X>
+                    @%CHR:<Y>} 0} }
+        }
+        latm {
+            A 1
+        }
+        lexeme {
+            A { {priority @%STR:<FOXY> 0} }
+        }
+        literal {
+            @BYTE:<F> { {byte 70} }
+            @BYTE:<f> { {byte 102} }
+            @BYTE:<O> { {byte 79} }
+            @BYTE:<o> { {byte 111} }
+            @BYTE:<X> { {byte 88} }
+            @BYTE:<x> { {byte 120} }
+            @BYTE:<Y> { {byte 89} }
+            @BYTE:<y> { {byte 121} }
+        }
+    }
+}

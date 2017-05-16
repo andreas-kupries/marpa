@@ -168,10 +168,8 @@ foreach {literal toexpect} {
 	    <symbol> {composite {@CHR:<A> @CHR:<B> {@CHR:<\u012c>}}}
 	}
 	{D-STR1 D-CHR} ok {
-	    @BYTE:<A> {byte 65}
-	    @CHR:<A> {composite @BYTE:<A>}
-	    @BYTE:<B> {byte 66}
-	    @CHR:<B> {composite @BYTE:<B>}
+	    @CHR:<A> {byte 65}
+	    @CHR:<B> {byte 66}
 	    {@BYTE:<\u00c4>} {byte 196}
 	    {@BYTE:<\u00ac>} {byte 172}
 	    {@CHR:<\u012c>} {composite {{@BYTE:<\u00c4>} {@BYTE:<\u00ac>}}}
@@ -195,10 +193,8 @@ foreach {literal toexpect} {
 	    <symbol> {composite @CHR:<A> @CHR:<C>}
 	}
 	{D-CLS1 D-CHR} ok {
-	    @BYTE:<A> {byte 65}
-	    @CHR:<A> {composite @BYTE:<A>}
-	    @BYTE:<C> {byte 67}
-	    @CHR:<C> {composite @BYTE:<C>}
+	    @CHR:<A> {byte 65}
+	    @CHR:<C> {byte 67}
 	    <symbol> {composite @CHR:<A> @CHR:<C>}
 	}
 	D-CLS2 ok {
@@ -280,7 +276,7 @@ foreach {literal toexpect} {
     {character 65} {
 	{}    error RT
 	K-CHR ok    {@q {character 65}}
-	D-CHR ok    {@! {composite {{byte 65}}}}
+	D-CHR ok    {@q {byte 65}}
     }
     {character 300} {
 	{}    error RT
@@ -460,7 +456,7 @@ foreach {literal toexpect} {
 	{}     error RT
 	K-RAN  ok    {@q {range 10 11}}
 	D-RAN1 ok    {@! {composite {{character 10}} {{character 11}}}}
-	D-RAN2 ok    {@! {composite {{brange 10 11}}}}
+	D-RAN2 ok    {@q {brange 10 11}}
     }
     %range {
 	{}     error RIL
@@ -504,7 +500,7 @@ foreach {literal toexpect} {
 	{}      error RT
 	K-^RAN  ok    {@q {^range 20 @@@}}
 	D-^RAN1 ok    {@x {range 0 19}}
-	D-^RAN2 ok    {@! {composite {{brange 0 19}}}}
+	D-^RAN2 ok    {@q {brange 0 19}}
     }
     {^range 10 20} {
 	{}      error RT

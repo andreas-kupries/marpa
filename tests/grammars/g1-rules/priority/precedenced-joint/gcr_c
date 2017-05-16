@@ -1,0 +1,115 @@
+grammar {
+    global {
+        start E
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            E {
+                {priority N 0
+                        action {array values}
+                        assoc left
+                        bless {special undef}
+                        mask 0}
+                {priority {
+                        PO
+                        E
+                        PC} 0
+                            action {array values}
+                            assoc group
+                            bless {special undef}
+                            mask {0 0 0}}
+                {priority {
+                        E
+                        POW
+                        E} -1
+                            action {array values}
+                            assoc right
+                            bless {special undef}
+                            mask {0 0 0}}
+                {priority {
+                        E
+                        MUL
+                        E} -2
+                            action {array values}
+                            assoc left
+                            bless {special undef}
+                            mask {0 0 0}}
+                {priority {
+                        E
+                        DIV
+                        E} -2
+                            action {array values}
+                            assoc left
+                            bless {special undef}
+                            mask {0 0 0}}
+                {priority {
+                        E
+                        ADD
+                        E} -3
+                            action {array values}
+                            assoc left
+                            bless {special undef}
+                            mask {0 0 0}}
+                {priority {
+                        E
+                        SUB
+                        E} -3
+                            action {array values}
+                            assoc left
+                            bless {special undef}
+                            mask {0 0 0}}
+            }
+        }
+        terminal {
+            ADD { terminal }
+            DIV { terminal }
+            MUL { terminal }
+            N { terminal }
+            PC { terminal }
+            PO { terminal }
+            POW { terminal }
+            SUB { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        {} {
+            @STR:<**> { {priority {
+                    @BYTE:<*>
+                    @BYTE:<*>} 0} }
+        }
+        latm {
+            ADD 1
+            DIV 1
+            MUL 1
+            N 1
+            PC 1
+            PO 1
+            POW 1
+            SUB 1
+        }
+        lexeme {
+            ADD { {priority @CHR:<+> 0} }
+            DIV { {priority @CHR:</> 0} }
+            MUL { {priority @CHR:<*> 0} }
+            N { {quantified @RAN:<09> 1} }
+            PC { {priority {{@CHR:<\51>}} 0} }
+            PO { {priority {{@CHR:<\50>}} 0} }
+            POW { {priority @STR:<**> 0} }
+            SUB { {priority @CHR:<-> 0} }
+        }
+        literal {
+            @BYTE:<*> { {byte 42} }
+            @CHR:<*> { {byte 42} }
+            @CHR:<+> { {byte 43} }
+            @CHR:<-> { {byte 45} }
+            @CHR:</> { {byte 47} }
+            {@CHR:<\50>} { {byte 40} }
+            {@CHR:<\51>} { {byte 41} }
+            @RAN:<09> { {brange 48 57} }
+        }
+    }
+}

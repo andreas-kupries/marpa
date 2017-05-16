@@ -1,0 +1,44 @@
+grammar {
+    global {
+        start A
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            A { {priority {
+                    foo
+                    bar} 0
+                        action {array values}
+                        assoc left
+                        bless {special undef}
+                        mask {0 0}} }
+        }
+        terminal {
+            bar { terminal }
+            foo { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        {} {
+            @STR:<ab> { {priority {
+                    @BYTE:<a>
+                    @BYTE:<b>} 0} }
+        }
+        latm {
+            bar 0
+            foo 0
+        }
+        lexeme {
+            bar { {priority @CHR:<a> 0} }
+            foo { {priority @STR:<ab> 0} }
+        }
+        literal {
+            @BYTE:<a> { {byte 97} }
+            @BYTE:<b> { {byte 98} }
+            @CHR:<a> { {byte 97} }
+        }
+    }
+}

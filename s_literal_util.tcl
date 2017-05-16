@@ -266,7 +266,13 @@ proc ::marpa::slif::literal::ccranges {data} {
     debug.marpa/slif/literal {}
     lassign [ccsplit $data] codes names
     foreach name $names {
-	lappend codes {*}[marpa unicode data cc ranges $name]
+	if {[regexp {^%(.*)$} $name -> base]} {
+	    set ccodes [marpa unicode data cc ranges $base]
+	    set ccodes [marpa unicode unfold $ccodes]
+	} else {
+	    set ccodes [marpa unicode data cc ranges $name]
+	}
+	lappend codes {*}$ccodes
     }
     return [marpa unicode norm-class $codes]
 }
@@ -475,6 +481,12 @@ proc ::marpa::slif::literal::reduce1 {litsymbol literal rules state} {
     # CC-ASBR    - Save an ASBR. Already in alt/seq format,
     #              only ranges need conversion to proper literals.
     # CC-GRAMMAR - Save a GRAMMAR
+    #
+    # Notes:
+    # - RULES/DEF inserts a new layer of symbols.
+    # - IS-A keeps the existing symbol and changes its definition,
+    #   without a new layer. Prevents formation of definition chains
+    #   like A -> B -> C ...
     
     switch -exact -- $type {
 	byte - brange {
@@ -690,8 +702,15 @@ proc ::marpa::slif::literal::reduce1 {litsymbol literal rules state} {
 	character {
 	    ON D-CHR {
 		# character == sequence (byte) [utf-8 encoding]
-		RULES {
-		    DEF* [lmap byte [marpa unicode 2utf $data] { L byte $byte }]
+		set bytes [marpa unicode 2utf $data]
+		if {[llength $bytes] == 1} {
+		    # Rewrite directly to byte.
+		    IS-A/ byte {*}$bytes
+		} else {
+		    # Sequence of several bytes
+		    RULES {
+			DEF* [lmap byte $bytes { L byte $byte }]
+		    }
 		}
 	    }
 	    ON K-CHR KEEP
@@ -759,6 +778,15 @@ proc ::marpa::slif::literal::CC-ASBR {asbr} {
     # asbr      :: list (alternate)
     # alternate :: list (range)
     # range     :: pair (from to)
+
+    if {([llength $asbr] == 1) && ([llength [lindex $asbr 0]] == 1)} {
+	# asbr has one alternate, having only one element in the
+	# sequence. No need to inject a priority rule. We can rewrite
+	# the main symbol.
+	IS-A/ brange {*}[lindex $asbr 0 0]
+	return
+    }
+    
     RULES {
 	foreach rhs $asbr {
 	    DEF* [lmap range $rhs { MK-RANGE $range }]
@@ -866,15 +894,15 @@ proc ::marpa::slif::literal::CC-TCL {charclass} {
 oo::class create marpa::slif::literal::rstate {
     marpa::E marpa/slif/literal SLIF LITERAL
 
-    variable mywork
-    variable myresults
-    variable mydef
+    variable mywork    ; # list (symbol) - stack of symbols to reduce
+    variable myresults ; # list (symbol) - queue of completed symbols
+    variable mydef     ; # dict (symbol -> literal) - definition database
 
     # # ## ### ##### ######## #############
 
     constructor {worklist} {
 	debug.marpa/slif/literal {}
-	set mywork {}
+	set mywork    {}
 	set myresults {}
 	set mydef     {}
 	#my XB
@@ -959,6 +987,7 @@ oo::class create marpa::slif::literal::rstate {
 		lmap child $alternate {
 		    set cdata [lassign $child ctype]
 		    if {$ctype eq "symbol"} {
+			# Direct symbol reference.
 			set cdata
 		    } else {
 			set childsym [my SYM $child]
