@@ -421,11 +421,18 @@ proc ::marpa::slif::literal::tags {litstring} {
 
 # # ## ### ##### ######## #############
 
-proc ::marpa::slif::literal::r2container {worklist container} {
+proc ::marpa::slif::literal::r2container {reductions container} {
     debug.marpa/slif/literal {}
+    lassign $reductions worklist aliases
+
     foreach {litsymbol literal} $worklist {
-	set data [lassign $literal type]
 	$container l0 remove $litsymbol
+
+	# Do not re-create symbols without definition. This is how
+	# they symbols optimized away get removed.
+	if {$literal eq {}} continue
+
+	set data [lassign $literal type]
 	switch -exact -- $type {
 	    composite {
 		# Alternation of sequences of elements
@@ -440,6 +447,11 @@ proc ::marpa::slif::literal::r2container {worklist container} {
 	    }
 	}
     }
+
+    if {![dict size $aliases]} return
+    # Pass the alias table to the relevant grammar so that it can
+    # rewrite the rules which have the aliased symbols in their RHS.
+    $container l0 fixup $aliases
     return
 }
 
@@ -1007,15 +1019,70 @@ oo::class create marpa::slif::literal::rstate {
 
     method results {} {
 	debug.marpa/slif/literal {}
+
+	# Look for literals which exist as multiple symbols, which
+	# we can and should merge.
+	##
+	# I. Invert, key by definition.
+	# II. Choose one symbol for the multi-def literals, remember
+	#     the aliases.
+	# III. During result assembly suppress the secondaries, and
+	#      rewrite other definitions to use the primary.
+	
+	set syms {}
+	dict for {sym def} $mydef {
+	    dict lappend syms $def $sym
+	}
+
+	# syms :: dict (def -> list(sym))
+	#array set _XXX_syms $syms ; parray _XXX_syms ; unset _XXX_syms
+
+	set ralias {}
+	set alias  {}
+	set keep   {}
+	dict for {def symlist} $syms {
+	    # For simplicity we map everything, even the unique
+	    # definitions I.e. we can avoid conditionals. We still
+	    # have to check to get proper supression.
+	    if {[llength $symlist] == 1} {
+		lassign $symlist primary
+	    } else {
+		foreach secondary [lassign [lsort -dict $symlist] primary] {
+		    dict set ralias $secondary $primary ;# Needed mappings, for result
+		    dict set alias  $secondary $primary ;# (1) Mapping for unconditional use
+		    dict set keep   $secondary no
+		}
+	    }
+	    dict set alias $primary $primary ;# See (1)
+	    dict set keep  $primary yes
+	}
+
+	# alias :: dict (sym -> sym)  - Rewrite A to primary B
+	# keep  :: dict (sym -> bool) - Flag if we keep a symbol or not.
+	#array set _XXX_alias $alias ; parray _XXX_alias ; unset _XXX_alias
+	#array set _XXX_keep  $keep  ; parray _XXX_keep  ; unset _XXX_keep
 	set result {}
 	foreach litsymbol [lreverse $myresults] {
 	    # Reverse order, bottom up from atoms to composites
-	    set literal [dict get $mydef $litsymbol]
-	    set data    [lassign $literal type]
+	    # Skip duplicate definitions.
+	    if {[dict get $keep $litsymbol]} {
+		set literal [dict get $mydef $litsymbol]
+		set data    [lassign $literal type]
+
+		if {$type eq "composite"} {
+		    # Symbols on the RHS, map them over to chosen definitions.
+		    set literal [list $type {*}[lmap alternate $data {
+			lmap el $alternate { dict get $alias $el }
+		    }]]
+		}
+	    } else {
+		# Signal that this symbol should be destroyed.
+		set literal {}
+	    }
 
 	    lappend result $litsymbol $literal
 	}
-	return $result
+	return [list $result $ralias]
     }
 
     # # ## ### ##### ######## #############

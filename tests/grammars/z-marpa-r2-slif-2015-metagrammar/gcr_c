@@ -3408,16 +3408,16 @@ grammar {
                     @BYTE:<|>
                     @BYTE:<|>} 0} }
             {array descriptor left bracket} {
-                {priority {{@CHR:<\133>}} 0}
+                {priority {{@BYTE:<\133>}} 0}
                 {priority {
-                        {@CHR:<\133>}
+                        {@BYTE:<\133>}
                         whitespace} 0}
             }
             {array descriptor right bracket} {
-                {priority {{@CHR:<\135>}} 0}
+                {priority {{@BYTE:<\135>}} 0}
                 {priority {
                         whitespace
-                        {@CHR:<\135>}} 0}
+                        {@BYTE:<\135>}} 0}
             }
             {bracketed name string} { {quantified @CLS:<sw> 1} }
             {cc element} {
@@ -3439,13 +3439,13 @@ grammar {
             {hash comment body} { {quantified {hash comment char} 0} }
             {hash comment char} { {priority {{@^CLS:<\n-\r\u2028-\u2029>}} 0} }
             {horizontal character} { {priority {{@^CLS:<\n-\r\u2028-\u2029>}} 0} }
-            integer { {quantified @CHR:<d> 1} }
+            integer { {quantified @BYTE:<d> 1} }
             {negated posix char class} { {priority {
                     {@STR:<\133:^>}
                     {posix char class name}
                     {@STR:<:\135>}} 0} }
-            {one or more word characters} { {quantified @CHR:<w> 1} }
-            {Perl identifier} { {quantified @CHR:<w> 1} }
+            {one or more word characters} { {quantified @BYTE:<w> 1} }
+            {Perl identifier} { {quantified @BYTE:<w> 1} }
             {posix char class} { {priority {
                     {@STR:<\133:>}
                     {posix char class name}
@@ -3483,14 +3483,14 @@ grammar {
                     @CHR:<#>
                     {hash comment body}} 0} }
             {vertical space char} { {priority {{@CLS:<\n-\r\u2028-\u2029>}} 0} }
-            {zero or more word characters} { {quantified @CHR:<w> 0} }
+            {zero or more word characters} { {quantified @BYTE:<w> 0} }
         }
         discard {
             {hash comment} {
                 {priority {{terminated hash comment}} 0}
                 {priority {{unterminated final hash comment}} 0}
             }
-            whitespace { {quantified @CHR:<s> 1} }
+            whitespace { {quantified @BYTE:<s> 1} }
         }
         latm {
             @LEX:@CHR:<*> 1
@@ -3565,14 +3565,14 @@ grammar {
         }
         lexeme {
             @LEX:@CHR:<*> { {priority @CHR:<*> 0} }
-            @LEX:@CHR:<+> { {priority @CHR:<+> 0} }
+            @LEX:@CHR:<+> { {priority @BYTE:<+> 0} }
             @LEX:@CHR:<,> { {priority @CHR:<,> 0} }
-            @LEX:@CHR:<=> { {priority @CHR:<=> 0} }
-            {@LEX:@CHR:<\50>} { {priority {@CHR:<\50>} 0} }
-            {@LEX:@CHR:<\51>} { {priority {@CHR:<\51>} 0} }
-            {@LEX:@CHR:<\73>} { {priority {@CHR:<\73>} 0} }
-            {@LEX:@CHR:<\173>} { {priority {@CHR:<\173>} 0} }
-            {@LEX:@CHR:<\175>} { {priority {@CHR:<\175>} 0} }
+            @LEX:@CHR:<=> { {priority @BYTE:<=> 0} }
+            {@LEX:@CHR:<\50>} { {priority {{@CHR:<\50>}} 0} }
+            {@LEX:@CHR:<\51>} { {priority {{@CHR:<\51>}} 0} }
+            {@LEX:@CHR:<\73>} { {priority {{@CHR:<\73>}} 0} }
+            {@LEX:@CHR:<\173>} { {priority {{@CHR:<\173>}} 0} }
+            {@LEX:@CHR:<\175>} { {priority {{@CHR:<\175>}} 0} }
             @LEX:@STR:<:default> { {priority @STR:<:default> 0} }
             @LEX:@STR:<:discard> { {priority @STR:<:discard> 0} }
             @LEX:@STR:<:lexeme> { {priority @STR:<:lexeme> 0} }
@@ -3619,7 +3619,7 @@ grammar {
                     {array descriptor left bracket}
                     {result item descriptor list}
                     {array descriptor right bracket}} 0} }
-            {bare name} { {quantified @CHR:<w> 1} }
+            {bare name} { {quantified @BYTE:<w> 1} }
             {before or after} {
                 {priority @STR:<before> 0}
                 {priority @STR:<after> 0}
@@ -3628,15 +3628,15 @@ grammar {
             {bracketed name} { {priority {
                     @CHR:<<>
                     {bracketed name string}
-                    @CHR:<>>} 0} }
+                    @BYTE:<>>} 0} }
             {character class} { {priority {
-                    {@CHR:<\133>}
+                    {@BYTE:<\133>}
                     {cc elements}
-                    {@CHR:<\135>}
+                    {@BYTE:<\135>}
                     {character class modifiers}} 0} }
             {op declare bnf} { {priority @STR:<::=> 0} }
             {op declare match} { {priority @CHR:<~> 0} }
-            {op equal priority} { {priority @CHR:<|> 0} }
+            {op equal priority} { {priority @BYTE:<|> 0} }
             {op loosen} { {priority @STR:<||> 0} }
             {Perl name} { {quantified {Perl identifier} 1
                     separator {{double colon} 1}} }
@@ -4046,23 +4046,14 @@ grammar {
             @CHR:<#> { {byte 35} }
             @CHR:<'> { {byte 39} }
             @CHR:<*> { {byte 42} }
-            @CHR:<+> { {byte 43} }
             @CHR:<,> { {byte 44} }
             @CHR:<<> { {byte 60} }
-            @CHR:<=> { {byte 61} }
-            @CHR:<>> { {byte 62} }
             {@CHR:<\50>} { {byte 40} }
             {@CHR:<\51>} { {byte 41} }
             {@CHR:<\73>} { {byte 59} }
-            {@CHR:<\133>} { {byte 91} }
             {@CHR:<\134>} { {byte 92} }
-            {@CHR:<\135>} { {byte 93} }
             {@CHR:<\173>} { {byte 123} }
             {@CHR:<\175>} { {byte 125} }
-            @CHR:<d> { {byte 100} }
-            @CHR:<s> { {byte 115} }
-            @CHR:<w> { {byte 119} }
-            @CHR:<|> { {byte 124} }
             @CHR:<~> { {byte 126} }
             @RAN:<01> { {brange 48 49} }
         }

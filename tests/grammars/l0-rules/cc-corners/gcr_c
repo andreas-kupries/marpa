@@ -43,7 +43,7 @@ grammar {
         }
         lexeme {
             @LEX:@CLS:<-b> { {priority @CLS:<-b> 0} }
-            {@LEX:@CLS:<\135b>} { {priority {@CLS:<\135b>} 0} }
+            {@LEX:@CLS:<\135b>} { {priority {{@CLS:<\135b>}} 0} }
         }
         literal {
             @BYTE:<-> { {byte 45} }

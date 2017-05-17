@@ -42,6 +42,20 @@ oo::class create marpa::slif::container::quantified {
 	return
     }
 
+    method fixup {aliases} {
+	debug.marpa/slif/container/quantified {}
+
+	if {[dict exists $aliases $myrhs]} {
+	    set myrhs [dict get $aliases $myrhs]
+	}
+	if {![A has separator]} return
+	lassign [A get separator] sym proper
+
+	if {![dict exists $aliases $sym]} return
+	A set separator [list [dict get $aliases $sym] $proper]
+	return
+    }
+    
     method extend {args} {
 	debug.marpa/slif/container/quantified {}
 	my E "Quantified rule cannot be extended" \

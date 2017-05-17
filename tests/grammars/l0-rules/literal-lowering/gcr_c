@@ -5894,10 +5894,6 @@ grammar {
                         {@BYTE:<\204>}
                         {@BYTE:<\u00aa>}} 0}
             }
-            @CLS:<Aa> {
-                {priority @BYTE:<A> 0}
-                {priority @BYTE:<a> 0}
-            }
             {@NCC:<[:alnum:]>} {
                 {priority @BRAN:<09> 0}
                 {priority @BRAN:<AZ> 0}
@@ -7763,23 +7759,23 @@ grammar {
             @LEX:@STR:<abc> 1
         }
         lexeme {
-            {@LEX:@%NCC:<[:alnum:]>} { {priority {@%NCC:<[:alnum:]>} 0} }
+            {@LEX:@%NCC:<[:alnum:]>} { {priority {{@%NCC:<[:alnum:]>}} 0} }
             @LEX:@%STR:<ABC> { {priority @%STR:<ABC> 0} }
-            {@LEX:@^%NCC:<[:alnum:]>} { {priority {@^%NCC:<[:alnum:]>} 0} }
+            {@LEX:@^%NCC:<[:alnum:]>} { {priority {{@^%NCC:<[:alnum:]>}} 0} }
             @LEX:@^CHR:<a> { {priority @^CHR:<a> 0} }
-            {@LEX:@^CLS:<0-9a[:braille:]>} { {priority {@^CLS:<0-9a[:braille:]>} 0} }
-            {@LEX:@^CLS:<0-9Aa[:%braille:]>} { {priority {@^CLS:<0-9Aa[:%braille:]>} 0} }
-            {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {priority {@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 0} }
+            {@LEX:@^CLS:<0-9a[:braille:]>} { {priority {{@^CLS:<0-9a[:braille:]>}} 0} }
+            {@LEX:@^CLS:<0-9Aa[:%braille:]>} { {priority {{@^CLS:<0-9Aa[:%braille:]>}} 0} }
+            {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {priority {{@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0} }
             @LEX:@^CLS:<Aa> { {priority @^CLS:<Aa> 0} }
-            {@LEX:@^NCC:<[:alnum:]>} { {priority {@^NCC:<[:alnum:]>} 0} }
+            {@LEX:@^NCC:<[:alnum:]>} { {priority {{@^NCC:<[:alnum:]>}} 0} }
             @LEX:@^RAN:<az> { {priority @^RAN:<az> 0} }
-            @LEX:@CHR:<a> { {priority @CHR:<a> 0} }
-            {@LEX:@CLS:<0-9a[:braille:]>} { {priority {@CLS:<0-9a[:braille:]>} 0} }
-            {@LEX:@CLS:<0-9Aa[:%braille:]>} { {priority {@CLS:<0-9Aa[:%braille:]>} 0} }
-            {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {priority {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 0} }
-            @LEX:@CLS:<Aa> { {priority @CLS:<Aa> 0} }
-            {@LEX:@NCC:<[:alnum:]>} { {priority {@NCC:<[:alnum:]>} 0} }
-            @LEX:@RAN:<az> { {priority @RAN:<az> 0} }
+            @LEX:@CHR:<a> { {priority @BYTE:<a> 0} }
+            {@LEX:@CLS:<0-9a[:braille:]>} { {priority {{@CLS:<0-9a[:braille:]>}} 0} }
+            {@LEX:@CLS:<0-9Aa[:%braille:]>} { {priority {{@CLS:<0-9Aa[:%braille:]>}} 0} }
+            {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {priority {{@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0} }
+            @LEX:@CLS:<Aa> { {priority @%CHR:<A> 0} }
+            {@LEX:@NCC:<[:alnum:]>} { {priority {{@NCC:<[:alnum:]>}} 0} }
+            @LEX:@RAN:<az> { {priority @BRAN:<az> 0} }
             @LEX:@STR:<abc> { {priority @STR:<abc> 0} }
         }
         literal {
@@ -8271,8 +8267,6 @@ grammar {
             @BYTE:<b> { {byte 98} }
             @BYTE:<C> { {byte 67} }
             @BYTE:<c> { {byte 99} }
-            @CHR:<a> { {byte 97} }
-            @RAN:<az> { {brange 97 122} }
         }
     }
 }

@@ -43,7 +43,13 @@ oo::class create marpa::slif::container::atom {
 	return
     }
 
-
+    method fixup {aliases} {
+	debug.marpa/slif/container/atom {}
+	# Nothing to do. Atoms are literals, they do not have symbols
+	# in their definition.
+	return
+    }
+    
     method serialize {} {
 	debug.marpa/slif/container/atom {}
 	return [list [list $mytype {*}$mydetails]]

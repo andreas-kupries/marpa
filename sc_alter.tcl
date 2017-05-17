@@ -42,6 +42,20 @@ oo::class create marpa::slif::container::alter {
 	return
     }
 
+    method fixup {aliases} {
+	debug.marpa/slif/container/alter {}
+	set myrhs [lmap sym $myrhs {
+	    if {[dict exists $aliases $sym]} {
+		# Pass mapping
+		dict get $aliases $sym
+	    } else {
+		# Pass unchanged
+		set sym
+	    }
+	}]
+	return
+    }
+    
     method serialize {} {
 	debug.marpa/slif/container/alter {}
 	set serial [list priority $myrhs $myprecedence {*}[A serialize]]

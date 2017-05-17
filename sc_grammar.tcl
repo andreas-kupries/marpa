@@ -64,11 +64,22 @@ oo::class create marpa::slif::container::grammar {
 
     method remove {symbol} {
 	debug.marpa/slif/container/grammar {}
+	catch {
+	    [dict get $mysymbol $symbol] destroy
+	}
 	dict unset mysymbol $symbol
 	dict unset mysclass $symbol
 	return
     }
-    
+
+    method fixup {aliases} {
+	debug.marpa/slif/container/grammar {}
+	dict for {sym si} $mysymbol {
+	    $si fixup $aliases
+	}
+	return
+    }
+
     # - -- --- ----- -------- -------------
     ## Fill serdes virtual abstract methods
 

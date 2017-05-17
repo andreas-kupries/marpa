@@ -61,9 +61,18 @@ oo::class create marpa::slif::container::priority {
 	    FORBIDDEN
     }
 
-    method extend {rhs precedence args} {
+    method fixup {aliases} {
 	debug.marpa/slif/container/priority {}
 
+	foreach alter $myalternatives {
+	    $alter fixup $aliases
+	}
+	return
+    }
+    
+    method extend {rhs precedence args} {
+	debug.marpa/slif/container/priority {}
+	
 	if {[dict exists $myalt $rhs]} {
 	    my E "Cannot extend with identical rhs ($rhs)" MULTI RHS
 	}

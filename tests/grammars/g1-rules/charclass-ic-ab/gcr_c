@@ -40,7 +40,7 @@ grammar {
             {@LEX:@CLS:<4A-Za-z\u0130-\u0131\u017f\u212a>} 1
         }
         lexeme {
-            {@LEX:@CLS:<4A-Za-z\u0130-\u0131\u017f\u212a>} { {priority {@CLS:<4A-Za-z\u0130-\u0131\u017f\u212a>} 0} }
+            {@LEX:@CLS:<4A-Za-z\u0130-\u0131\u017f\u212a>} { {priority {{@CLS:<4A-Za-z\u0130-\u0131\u017f\u212a>}} 0} }
         }
         literal {
             {@BRAN:<\u00b0\u00b1>} { {brange 176 177} }

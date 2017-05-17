@@ -72,6 +72,11 @@ oo::class create marpa::slif::container::attribute {
 	return [dict get $myattr $attribute]
     }
 
+    method has {attribute} {
+	debug.marpa/slif/container/attribute {}
+	return [dict exists $myattr $attribute]
+    }
+
     # # -- --- ----- -------- -------------
     ## Public API - (de)serialization, assignment, copying
 

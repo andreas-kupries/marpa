@@ -94,7 +94,7 @@ grammar {
         lexeme {
             ADD { {priority @CHR:<+> 0} }
             DIV { {priority @CHR:</> 0} }
-            MUL { {priority @CHR:<*> 0} }
+            MUL { {priority @BYTE:<*> 0} }
             N { {quantified @RAN:<09> 1} }
             PC { {priority {{@CHR:<\51>}} 0} }
             PO { {priority {{@CHR:<\50>}} 0} }
@@ -103,7 +103,6 @@ grammar {
         }
         literal {
             @BYTE:<*> { {byte 42} }
-            @CHR:<*> { {byte 42} }
             @CHR:<+> { {byte 43} }
             @CHR:<-> { {byte 45} }
             @CHR:</> { {byte 47} }

@@ -32,13 +32,12 @@ grammar {
             foo 0
         }
         lexeme {
-            bar { {priority @CHR:<a> 0} }
+            bar { {priority @BYTE:<a> 0} }
             foo { {priority @STR:<ab> 0} }
         }
         literal {
             @BYTE:<a> { {byte 97} }
             @BYTE:<b> { {byte 98} }
-            @CHR:<a> { {byte 97} }
         }
     }
 }

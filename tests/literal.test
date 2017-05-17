@@ -104,15 +104,15 @@ foreach {data result} {
 
 test marpa-slif-literal-r2container-1.0 {r2container, wrong args, not enough} -body {
     marpa::slif::literal r2container
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal r2container worklist container"}
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal r2container reductions container"}
 
 test marpa-slif-literal-r2container-1.1 {r2container, wrong args, not enough} -body {
     marpa::slif::literal r2container W
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal r2container worklist container"}
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal r2container reductions container"}
 
 test marpa-slif-literal-r2container-1.2 {r2container, wrong args, too many} -body {
     marpa::slif::literal r2container W C X
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal r2container worklist container"}
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal r2container reductions container"}
 
 test marpa-slif-literal-r2container-2.0 {r2container, nothing} -setup {
     set c [log GC] ; /trace GC
@@ -126,12 +126,12 @@ test marpa-slif-literal-r2container-2.0 {r2container, nothing} -setup {
 test marpa-slif-literal-r2container-2.1 {r2container, all cases} -setup {
     set c [log GC] ; /trace GC
 } -body {
-    marpa::slif::literal r2container {
+    marpa::slif::literal r2container {{
 	C {composite {A} {B}}
 	S {composite {A B}}
 	A {character 65}
 	B {character 66}
-    } $c
+    } {}} $c
     string trim [logged "\n"]
 } -cleanup {
     unset c
@@ -214,10 +214,18 @@ foreach {literal toexpect} {
     foreach {rules code result} $toexpect {
 	incr j
 
-	test marpa-slif-literal-reduce-2.$k.$j "reduce $code ($literal) $rules" -body {
-	    F [marpa::slif::literal reduce [list <symbol> $literal] $rules]
+	test marpa-slif-literal-reduce-2.$k.$j "reduce $code ($literal) $rules, worklist" -body {
+	    F [lindex [marpa::slif::literal reduce [list <symbol> $literal] $rules] 0]
+	    # Access worklist, ignore the aliases, supposed to be empty
 	} -returnCodes $code -result [RR $result $rules $literal]
-    }
+
+	if {$code eq "error"} continue
+    
+	test marpa-slif-literal-reduce-3.$k.$j "reduce $code ($literal) $rules, aliases" -body {
+	    lindex [marpa::slif::literal reduce [list <symbol> $literal] $rules] 1
+	    # Access aliases, always empty
+	} -result {}
+}
 }
 
 # # ## ### ##### ######## ############# #####################
@@ -706,7 +714,7 @@ test marpa-slif-literal-rstate-place-2.0.1 {rstate, place (literal), results, st
     R results
 } -cleanup {
     R destroy
-} -result {S {character 45}}
+} -result {{S {character 45}} {}}
 
 test marpa-slif-literal-rstate-place-2.1.0 {rstate, place (literal), work} -setup {
     marpa::slif::literal rstate create R {}
@@ -740,7 +748,7 @@ test marpa-slif-literal-rstate-place-2.2.1 {rstate, place (composite), results, 
     list [R work?] --- [R results]
 } -cleanup {
     R destroy
-} -result {0 --- {S {composite @CHR:<-> @CHR:<.>} @CHR:<.> {character 46} @CHR:<-> {character 45}}}
+} -result {0 --- {{S {composite @CHR:<-> @CHR:<.>} @CHR:<.> {character 46} @CHR:<-> {character 45}} {}}}
 
 test marpa-slif-literal-rstate-place-2.3.0 {rstate, place (composite), work} -setup {
     marpa::slif::literal rstate create R {}
@@ -757,7 +765,7 @@ test marpa-slif-literal-rstate-place-2.3.1 {rstate, place (composite), work, sta
     list [R work?] --- [R results] --- [R take] --- [R take]
 } -cleanup {
     R destroy
-} -result {2 --- {S {composite @CHR:<-> @CHR:<.>}} --- {@CHR:<.> {character 46}} --- {@CHR:<-> {character 45}}}
+} -result {2 --- {{S {composite @CHR:<-> @CHR:<.>}} {}} --- {@CHR:<.> {character 46}} --- {@CHR:<-> {character 45}}}
 
 # # ## ### ##### ######## ############# #####################
 ## rstate queue
@@ -809,7 +817,7 @@ test marpa-slif-literal-rstate-queue-2.0.1 {rstate, queue, results, state} -setu
     R results
 } -cleanup {
     R destroy
-} -result {S {character 45}}
+} -result {{S {character 45}} {}}
 
 test marpa-slif-literal-rstate-queue-2.1.0 {rstate, queue, work} -setup {
     marpa::slif::literal rstate create R {}
@@ -844,12 +852,12 @@ test marpa-slif-literal-rstate-results-2.0 {rstate, results} -setup {
 	A {character 12}
 	B {string 65 66 67}
     }
-    # No results. Because this is all in the work-queue.
+    # Empty results. Because this is all in the work-queue.
 } -body {
     R results
 } -cleanup {
     R destroy
-} -result {}
+} -result {{} {}}
 
 test marpa-slif-literal-rstate-results-2.1 {rstate, results} -setup {
     marpa::slif::literal rstate create R {
@@ -863,7 +871,7 @@ test marpa-slif-literal-rstate-results-2.1 {rstate, results} -setup {
     R results
 } -cleanup {
     R destroy
-} -result {A {character 12} B {string 65 66 67}}
+} -result {{A {character 12} B {string 65 66 67}} {}}
 
 # # ## ### ##### ######## ############# #####################
 ## symbol - Generate a symbol for a literal from its representation.
