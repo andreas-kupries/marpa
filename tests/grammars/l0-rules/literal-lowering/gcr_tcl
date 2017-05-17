@@ -187,22 +187,22 @@ grammar {
             @LEX:@STR:<abc> 1
         }
         lexeme {
-            {@LEX:@%NCC:<[:alnum:]>} { {priority {@%NCC:<[:alnum:]>} 0} }
+            {@LEX:@%NCC:<[:alnum:]>} { {priority {{@%NCC:<[:alnum:]>}} 0} }
             @LEX:@%STR:<ABC> { {priority @%STR:<ABC> 0} }
-            {@LEX:@^%NCC:<[:alnum:]>} { {priority {@^%NCC:<[:alnum:]>} 0} }
+            {@LEX:@^%NCC:<[:alnum:]>} { {priority {{@^%NCC:<[:alnum:]>}} 0} }
             @LEX:@^CHR:<a> { {priority @^CHR:<a> 0} }
-            {@LEX:@^CLS:<0-9a[:braille:]>} { {priority {@^CLS:<0-9a[:braille:]>} 0} }
-            {@LEX:@^CLS:<0-9Aa[:%braille:]>} { {priority {@^CLS:<0-9Aa[:%braille:]>} 0} }
-            {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {priority {@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 0} }
+            {@LEX:@^CLS:<0-9a[:braille:]>} { {priority {{@^CLS:<0-9a[:braille:]>}} 0} }
+            {@LEX:@^CLS:<0-9Aa[:%braille:]>} { {priority {{@^CLS:<0-9Aa[:%braille:]>}} 0} }
+            {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {priority {{@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0} }
             @LEX:@^CLS:<Aa> { {priority @^CLS:<Aa> 0} }
-            {@LEX:@^NCC:<[:alnum:]>} { {priority {@^NCC:<[:alnum:]>} 0} }
+            {@LEX:@^NCC:<[:alnum:]>} { {priority {{@^NCC:<[:alnum:]>}} 0} }
             @LEX:@^RAN:<az> { {priority @^RAN:<az> 0} }
             @LEX:@CHR:<a> { {priority @CHR:<a> 0} }
-            {@LEX:@CLS:<0-9a[:braille:]>} { {priority {@CLS:<0-9a[:braille:]>} 0} }
-            {@LEX:@CLS:<0-9Aa[:%braille:]>} { {priority {@CLS:<0-9Aa[:%braille:]>} 0} }
-            {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {priority {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 0} }
-            @LEX:@CLS:<Aa> { {priority @CLS:<Aa> 0} }
-            {@LEX:@NCC:<[:alnum:]>} { {priority {@NCC:<[:alnum:]>} 0} }
+            {@LEX:@CLS:<0-9a[:braille:]>} { {priority {{@CLS:<0-9a[:braille:]>}} 0} }
+            {@LEX:@CLS:<0-9Aa[:%braille:]>} { {priority {{@CLS:<0-9Aa[:%braille:]>}} 0} }
+            {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {priority {{@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0} }
+            @LEX:@CLS:<Aa> { {priority @%CHR:<A> 0} }
+            {@LEX:@NCC:<[:alnum:]>} { {priority {{@NCC:<[:alnum:]>}} 0} }
             @LEX:@RAN:<az> { {priority @RAN:<az> 0} }
             @LEX:@STR:<abc> { {priority @STR:<abc> 0} }
         }
@@ -225,7 +225,6 @@ grammar {
             {@CLS:<0-9a[:braille:]>} { {charclass {48 57} 97 {0x2800 0x28FF}} }
             {@CLS:<0-9Aa[:%braille:]>} { {charclass {48 57} 65 97 {10240 10495}} }
             {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {charclass {65 90} {97 122} {304 305} 383 8490} }
-            @CLS:<Aa> { {charclass 65 97} }
             {@NCC:<[:alnum:]>} { {named-class alnum} }
             @RAN:<az> { {range 97 122} }
         }

@@ -1585,11 +1585,11 @@ grammar {
             @LEX:@CHR:<+> { {priority @CHR:<+> 0} }
             @LEX:@CHR:<,> { {priority @CHR:<,> 0} }
             @LEX:@CHR:<=> { {priority @CHR:<=> 0} }
-            {@LEX:@CHR:<\50>} { {priority {@CHR:<\50>} 0} }
-            {@LEX:@CHR:<\51>} { {priority {@CHR:<\51>} 0} }
-            {@LEX:@CHR:<\73>} { {priority {@CHR:<\73>} 0} }
-            {@LEX:@CHR:<\173>} { {priority {@CHR:<\173>} 0} }
-            {@LEX:@CHR:<\175>} { {priority {@CHR:<\175>} 0} }
+            {@LEX:@CHR:<\50>} { {priority {{@CHR:<\50>}} 0} }
+            {@LEX:@CHR:<\51>} { {priority {{@CHR:<\51>}} 0} }
+            {@LEX:@CHR:<\73>} { {priority {{@CHR:<\73>}} 0} }
+            {@LEX:@CHR:<\173>} { {priority {{@CHR:<\173>}} 0} }
+            {@LEX:@CHR:<\175>} { {priority {{@CHR:<\175>}} 0} }
             @LEX:@STR:<:default> { {priority @STR:<:default> 0} }
             @LEX:@STR:<:discard> { {priority @STR:<:discard> 0} }
             @LEX:@STR:<:lexeme> { {priority @STR:<:lexeme> 0} }

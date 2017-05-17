@@ -23,7 +23,7 @@ grammar {
             {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} 1
         }
         lexeme {
-            {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} { {priority {@%STR:<CASE-INSENSITIVE\40STRING>} 0} }
+            {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} { {priority {{@%STR:<CASE-INSENSITIVE\40STRING>}} 0} }
         }
         literal {
             {@%STR:<CASE-INSENSITIVE\40STRING>} { {%string 67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71} }

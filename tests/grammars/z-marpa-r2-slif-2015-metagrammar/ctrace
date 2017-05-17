@@ -86,7 +86,7 @@ GC comment :lexeme {@LEX:@CHR:<\73>} match --> {JMP lexeme make-lexeme}
 GC l0 lexeme {@LEX:@CHR:<\73>}
 GC g1 terminal {@LEX:@CHR:<\73>}
 GC comment l0-usage {@CHR:<\73>} literal --> NOP
-GC l0 priority-rule {@LEX:@CHR:<\73>} {@CHR:<\73>} 0
+GC l0 priority-rule {@LEX:@CHR:<\73>} {{@CHR:<\73>}} 0
 GC comment g1-usage {@LEX:@CHR:<\73>} lexeme --> NOP
 GC g1 priority-rule {null statement} {{@LEX:@CHR:<\73>}} 0 action {array {start length values}} bless {special lhs} mask 0
 GC comment definition {statement group} 1560 17
@@ -102,7 +102,7 @@ GC comment :lexeme {@LEX:@CHR:<\173>} match --> {JMP lexeme make-lexeme}
 GC l0 lexeme {@LEX:@CHR:<\173>}
 GC g1 terminal {@LEX:@CHR:<\173>}
 GC comment l0-usage {@CHR:<\173>} literal --> NOP
-GC l0 priority-rule {@LEX:@CHR:<\173>} {@CHR:<\173>} 0
+GC l0 priority-rule {@LEX:@CHR:<\173>} {{@CHR:<\173>}} 0
 GC comment usage statements 1588 10
 GC comment usage {@CHR:<\175>} 1599 3
 GC comment definition {@CHR:<\175>} 1599 3
@@ -115,7 +115,7 @@ GC comment :lexeme {@LEX:@CHR:<\175>} match --> {JMP lexeme make-lexeme}
 GC l0 lexeme {@LEX:@CHR:<\175>}
 GC g1 terminal {@LEX:@CHR:<\175>}
 GC comment l0-usage {@CHR:<\175>} literal --> NOP
-GC l0 priority-rule {@LEX:@CHR:<\175>} {@CHR:<\175>} 0
+GC l0 priority-rule {@LEX:@CHR:<\175>} {{@CHR:<\175>}} 0
 GC comment g1-usage {@LEX:@CHR:<\173>} lexeme --> NOP
 GC comment g1-usage statements brick --> NOP
 GC comment g1-usage {@LEX:@CHR:<\175>} lexeme --> NOP
@@ -1651,7 +1651,7 @@ GC comment :lexeme {@LEX:@CHR:<\50>} match --> {JMP lexeme make-lexeme}
 GC l0 lexeme {@LEX:@CHR:<\50>}
 GC g1 terminal {@LEX:@CHR:<\50>}
 GC comment l0-usage {@CHR:<\50>} literal --> NOP
-GC l0 priority-rule {@LEX:@CHR:<\50>} {@CHR:<\50>} 0
+GC l0 priority-rule {@LEX:@CHR:<\50>} {{@CHR:<\50>}} 0
 GC comment usage {rhs primary list} 8475 18
 GC comment usage {@CHR:<\51>} 8495 3
 GC comment definition {@CHR:<\51>} 8495 3
@@ -1664,7 +1664,7 @@ GC comment :lexeme {@LEX:@CHR:<\51>} match --> {JMP lexeme make-lexeme}
 GC l0 lexeme {@LEX:@CHR:<\51>}
 GC g1 terminal {@LEX:@CHR:<\51>}
 GC comment l0-usage {@CHR:<\51>} literal --> NOP
-GC l0 priority-rule {@LEX:@CHR:<\51>} {@CHR:<\51>} 0
+GC l0 priority-rule {@LEX:@CHR:<\51>} {{@CHR:<\51>}} 0
 GC comment g1-usage {@LEX:@CHR:<\50>} lexeme --> NOP
 GC comment g1-usage {rhs primary list} undef --> {JMP floater}
 GC comment g1-usage {@LEX:@CHR:<\51>} lexeme --> NOP

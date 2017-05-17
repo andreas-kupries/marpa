@@ -975,9 +975,10 @@ oo::class create marpa::slif::semantics {
 					      # literal lowering
 
 	# Create the lexeme (rule|definition) only once, when it is
-	# encountered the 1st time.
+	# encountered the 1st time. Remember that the RHS must be a
+	# list, even if it contains only a single element.
 	if {$pre eq "undef"} {
-	    Container l0 priority-rule $lexeme $litsymbol 0
+	    Container l0 priority-rule $lexeme [list $litsymbol] 0
 	}
 
 	return $lexeme

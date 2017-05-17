@@ -41,7 +41,7 @@ grammar {
             {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 1
         }
         lexeme {
-            {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} { {priority {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 0} }
+            {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} { {priority {{@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}} 0} }
         }
         literal {
             @CHR:<7> { {character 55} }

@@ -49,7 +49,7 @@ grammar {
             {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} 1
         }
         lexeme {
-            {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} { {priority {@%STR:<CASE-INSENSITIVE\40STRING>} 0} }
+            {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} { {priority {{@%STR:<CASE-INSENSITIVE\40STRING>}} 0} }
         }
         literal {
             @%CHR:<-> { {character 45} }

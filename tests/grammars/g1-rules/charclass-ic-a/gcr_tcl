@@ -23,7 +23,7 @@ grammar {
             {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 1
         }
         lexeme {
-            {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {priority {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 0} }
+            {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {priority {{@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0} }
         }
         literal {
             {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {charclass {65 90} {97 122} {304 305} 383 8490} }
