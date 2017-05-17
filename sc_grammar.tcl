@@ -34,10 +34,12 @@ oo::class create marpa::slif::container::grammar {
     # - -- --- ----- -------- -------------
     ## lifecycle
 
-    constructor {spec p q} {
+    constructor {container spec p q} {
 	debug.marpa/slif/container/grammar {}
+	# container = marpa::slif::grammar
+	lappend p [self]
+	lappend q [self]
 
-	#marpa::import $container Container
 	set mysymbol {}
 	set mysclass {}
 	set mytype   $spec
@@ -54,6 +56,14 @@ oo::class create marpa::slif::container::grammar {
     forward quantified-rule   my Symbol: {} quantified
     forward priority-rule     my Symbol: {} priority
 
+    method validate {} {
+	debug.marpa/slif/container/grammar {}
+	dict for {sym si} $mysymbol {
+	    $si validate
+	}
+	return
+    }
+    
     method must-have {symbol} {
 	debug.marpa/slif/container/grammar {}
 	if {![dict exists $mysymbol $symbol]} {
@@ -128,6 +138,9 @@ oo::class create marpa::slif::container::grammar {
 	if {![dict exists $mysymbol $symbol]} {
 	    set targs [lassign $type type]
 	    set fargs [lassign [dict get $mytype $type] factory]
+
+#puts XXX:[join [list |F {*}$factory | new |FA {*}$fargs |TA {*}$targs |A {*}$args]]
+
 	    set obj [{*}$factory new {*}$fargs {*}$targs {*}$args]
 	    dict set mysymbol $symbol $obj
 	} else {

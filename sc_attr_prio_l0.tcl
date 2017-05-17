@@ -28,12 +28,12 @@ oo::class create marpa::slif::container::attribute::priority::l0 {
     marpa::E marpa/slif/container/attribute/priority/l0 \
 	SLIF CONTAINER ATTRIBUTE PRIORITY L0
 
-    constructor {} {
+    constructor {grammar} {
 	debug.marpa/slif/container/attribute/priority/l0 {}
 
 	# empty, alternative: name
 
-	next name {}
+	next $grammar name {}
     }
 
     # # ## ### ##### ######## #############

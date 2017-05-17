@@ -32,9 +32,9 @@ oo::class create marpa::slif::container::grammar::l0 {
     # - -- --- ----- -------- -------------
     # Lifecycle
 
-    constructor {} {
+    constructor {container} {
 	debug.marpa/slif/container/grammar/l0 {}
-	next {
+	next $container {
 	    atom       ::marpa::slif::container::atom
 
 	    %named-class  {::marpa::slif::container::atom %named-class}

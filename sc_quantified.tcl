@@ -29,16 +29,32 @@ oo::class create marpa::slif::container::quantified {
 
     marpa::E marpa/slif/container/quantified GRAMMAR CONTAINER QUANTIFIED
 
-    constructor {attrfactory rhs positive args} {
+    constructor {grammar attrfactory rhs positive args} {
 	debug.marpa/slif/container/quantified {}
+	# grammar = marpa::slif::container::grammar
+	marpa::import $grammar Grammar
 
 	set myrhs      $rhs
 	set mypositive $positive
 
-	$attrfactory create A
+	$attrfactory create A $grammar
 	A set {*}$args
 
 	debug.marpa/slif/container/quantified {/ok}
+	return
+    }
+
+    method validate {} {
+	debug.marpa/slif/container/quantified {}
+	Grammar must-have $myrhs
+	A validate
+	if {![A has separator]} return
+	# Separator symbol (if specified) validated here, attributes
+	# has it disabled.  The latter because the semantics does not
+	# top-sort definitions, i.e. the separator may not be defined
+	# at construction time. But here now it must be.
+	lassign [A get separator] sep __
+	Grammar must-have $sep
 	return
     }
 

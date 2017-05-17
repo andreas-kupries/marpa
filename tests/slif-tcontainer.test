@@ -15,7 +15,7 @@ kt require support fileutil ;# cat
 kt local   testing marpa
 
 # # ## ### ##### ######## ############# #####################
-## TODO: Testing inspection, serialization
+## TODO: Testing inspection
 
 # # ## ### ##### ######## ############# #####################
 
@@ -72,9 +72,13 @@ test-grammar-map ctrace --> id ctrace base {
 	    # Trace of GC method calls filling the container.
 	    eval $input
 	} msg]} {
-	    #puts $::errorInfo
+	    puts $::errorInfo
 	    set msg
 	} else {
+	    GC validate ;# Semantics should create only valid containers.
+	    # This performs checks beyond what is done during the
+	    # incremental construction from the trace. Like ensuring
+	    # that all RHS are defined.
 	    gc-format [GC serialize]
 	}
     } -cleanup {
@@ -102,7 +106,12 @@ test-grammar-files gcstate --> id gcstate {
 	marpa::slif::container create GC
     } -body {
 	GC deserialize [dict get $input grammar]
+	GC validate ;# Deserialize should create only valid
+		     # containers, if serialization is from a valid
+		     # container.
 	gc-format [GC serialize]
+	# The container created from deserialization should regenerate
+	# the input when serialized again.
     } -cleanup {
 	GC destroy
     } -result $input
@@ -140,6 +149,7 @@ test-grammar-map gcstate --> id gcstate base {
 		K-RAN  D-%RAN  K-^RAN  K-CHR
 		K-^CHR
 	    }] GC
+	GC validate ;# Reduction should not invalidate the container
 	gc-format [GC serialize]
     } -cleanup {
 	unset -nocomplain msg
@@ -183,6 +193,7 @@ test-grammar-map gcstate --> id gcstate base {
 		D-RAN2 D-%RAN  D-^RAN2 D-CHR		
 		D-^CHR
 	    }] GC
+	GC validate ;# Reduction should not invalidate the container
 	gc-format [GC serialize]
     } -cleanup {
 	unset -nocomplain msg

@@ -29,16 +29,29 @@ oo::class create marpa::slif::container::alter {
 
     marpa::E marpa/slif/container/alter GRAMMAR CONTAINER ALTER
 
-    constructor {attrfactory rhs precedence args} {
+    constructor {rule attrfactory rhs precedence args} {
 	debug.marpa/slif/container/alter {}
+	# rule = marpa::slif::container::priority
+	marpa::import $rule Rule
+
+	# Validate precedence (min-precedence <= x <= 0)
 
 	set myrhs        $rhs
 	set myprecedence $precedence
 
-	$attrfactory create A
+	$attrfactory create A [Rule grammar]
 	A set {*}$args
 
 	debug.marpa/slif/container/alter {/ok}
+	return
+    }
+
+    method validate {} {
+	debug.marpa/slif/container/alter {}
+	foreach rhs $myrhs {
+	    Rule grammar must-have $rhs
+	}
+	A validate
 	return
     }
 

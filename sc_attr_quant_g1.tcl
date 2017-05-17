@@ -28,8 +28,9 @@ oo::class create marpa::slif::container::attribute::quantified::g1 {
     marpa::E marpa/slif/container/attribute/quantified/g1 \
 	SLIF CONTAINER ATTRIBUTE QUANTIFIED G1
 
-    constructor {} {
+    constructor {grammar} {
 	debug.marpa/slif/container/attribute/quantified/g1 {}
+	marpa::import $grammar Grammar
 
 	# quantified: action, blessing, separator
 
@@ -38,9 +39,10 @@ oo::class create marpa::slif::container::attribute::quantified::g1 {
 	marpa C action
 	marpa A   validate [mymethod v-bless]
 	marpa C bless
-	marpa C* separator
+	marpa A   validate [mymethod v-separator]
+	marpa C separator
 
-	next {*}$spec
+	next $grammar {*}$spec
 	return
     }
 
@@ -79,6 +81,16 @@ oo::class create marpa::slif::container::attribute::quantified::g1 {
 	return
     }
 
+    method v-separator {_validate_ value} {
+	debug.marpa/slif/container/attribute/quantified/g1 {}
+	lassign $value symbol proper
+	#Grammar must-have $symbol -- Semantics is not written to top-sort definitions.
+	if {![string is bool -strict $proper]} {
+	    my E "Bad flag proper in separator definition, expected boolean, got \"$proper\""
+	}
+	return $value
+    }
+    
     # # ## ### ##### ######## #############
 }
 

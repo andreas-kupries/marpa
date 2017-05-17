@@ -30,9 +30,9 @@ oo::class create marpa::slif::container::grammar::g1 {
     # - -- --- ----- -------- -------------
     # Lifecycle
 
-    constructor {} {
+    constructor {container} {
 	debug.marpa/slif/container/grammar/g1 {}
-	next {
+	next $container {
 	    terminal {::marpa::slif::container::atom terminal}
 	}   ::marpa::slif::container::priority::g1 \
 	    ::marpa::slif::container::quantified::g1

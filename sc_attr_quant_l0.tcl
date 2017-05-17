@@ -28,12 +28,28 @@ oo::class create marpa::slif::container::attribute::quantified::l0 {
     marpa::E marpa/slif/container/attribute/quantified/l0 \
 	SLIF CONTAINER ATTRIBUTE QUANTIFIED L0
 
-    constructor {} {
+    constructor {grammar} {
 	debug.marpa/slif/container/attribute/quantified/l0 {}
+	marpa::import $grammar Grammar
 
 	# quantified: separator (includes proper)
 
-	next separator {}
+	marpa A   validate [mymethod v-separator]
+	marpa C separator
+
+	next $grammar {*}$spec
+    }
+
+    # # ## ### ##### ######## #############
+
+    method v-separator {_validate_ value} {
+	debug.marpa/slif/container/attribute/quantified/g1 {}
+	lassign $value symbol proper
+	#Grammar must-have $symbol -- Semantics is not written to top-sort definitions.
+	if {![string is bool -strict $proper]} {
+	    my E "Bad flag proper in separator definition, expected boolean, got \"$proper\""
+	}
+	return $value
     }
 
     # # ## ### ##### ######## #############

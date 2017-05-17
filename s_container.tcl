@@ -30,14 +30,16 @@ oo::class create marpa::slif::container {
 
     constructor {} {
 	debug.marpa/slif/container {}
+	# Note, all subordinate objects get a reference back to the
+	# container they are a part of.
 
 	# Attributes, global and lexeme semantics
 	marpa::slif::container::attribute::global create GA [self]
-	marpa::slif::container::attribute::lexsem create LS
+	marpa::slif::container::attribute::lexsem create LS [self]
 
 	# Grammars for the two levels.
-	marpa::slif::container::grammar::g1 create G1
-	marpa::slif::container::grammar::l0 create L0
+	marpa::slif::container::grammar::g1 create G1 [self]
+	marpa::slif::container::grammar::l0 create L0 [self]
 
 	# TODO? semstore, used as a string pool
 	debug.marpa/slif/container {/ok}
@@ -98,7 +100,14 @@ oo::class create marpa::slif::container {
 	return
     }
 
-    # TODO: Validation.
+    method validate {} {
+	debug.marpa/slif/container {}
+	LS validate
+	G1 validate
+	L0 validate
+	GA validate
+	return
+    }
 
     # # -- --- ----- -------- -------------
     ## Internal methods

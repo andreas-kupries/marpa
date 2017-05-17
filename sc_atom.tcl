@@ -29,7 +29,6 @@ oo::class create marpa::slif::container::atom {
     variable mytype    ;# 
     variable mydetails ;# type-dependent
 
-
     # - -- --- ----- -------- -------------
     ## lifecycle
 
@@ -40,6 +39,12 @@ oo::class create marpa::slif::container::atom {
 	set mydetails $args
 
 	debug.marpa/slif/container/atom {/ok}
+	return
+    }
+
+    method validate {} {
+	debug.marpa/slif/container/atom {}
+	# Nothing ... Future: Type-dependent validation ?
 	return
     }
 

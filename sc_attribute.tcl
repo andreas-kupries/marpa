@@ -35,8 +35,12 @@ oo::class create marpa::slif::container::attribute {
     #                            ?validate -> cmd?
     variable myattr  ;# :: dict (name -> value)
 
-    constructor {args} {
+    constructor {container args} {
 	debug.marpa/slif/container/attribute {}
+	marpa::import $container Container
+	# Depending on context a marpa::slif::container
+	#                   or a marpa::slif::container::grammar
+
 	# args = dict (name -> dict(...))
 	set myspec $args
 
@@ -98,6 +102,15 @@ oo::class create marpa::slif::container::attribute {
 	# through the proper API method for all of that.
 	set myattr {}
 	my set {*}$blob
+	return
+    }
+
+    method validate {} {
+	debug.marpa/slif/container/attribute {}
+	dict for {attr value} $myattr {
+	    my ValidateA $attr
+	    my ValidateV $attr $value
+	}
 	return
     }
 

@@ -28,20 +28,32 @@ oo::class create marpa::slif::container::priority {
     variable myminprecedence ;# Lowest precedence seen among the known alternatives
     variable myaf            ;# Attribute factory to pass to the alternatives.
     variable myalt           ;# Alternatives by rhs (find and reject identicals)
+    variable mygrammar       ;# Grammar holding the symbol and rules.
 
     marpa::E marpa/slif/container/priority GRAMMAR CONTAINER PRIORITY
 
-    constructor {attrfactory rhs precedence args} {
+    constructor {grammar attrfactory rhs precedence args} {
 	debug.marpa/slif/container/priority {}
+	# grammar = marpa::slif::container::grammar
+	marpa::import $grammar Grammar
 
 	set myalternatives  {}
 	set myminprecedence 0
 	set myaf            $attrfactory
 	set myalt           {}
+	set mygrammar       $grammar
 
 	my extend $rhs $precedence {*}$args
 
 	debug.marpa/slif/container/priority {/ok}
+	return
+    }
+
+    method validate {} {
+	debug.marpa/slif/container/priority {}
+	foreach alter $myalternatives {
+	    $alter validate
+	}
 	return
     }
 
@@ -81,7 +93,7 @@ oo::class create marpa::slif::container::priority {
 	    set myminprecedence $precedence
 	}
 
-	set alter [marpa::slif::container::alter new $myaf \
+	set alter [marpa::slif::container::alter new [self] $myaf \
 		       $rhs $precedence {*}$args]
 
 	lappend myalternatives $alter
@@ -94,6 +106,17 @@ oo::class create marpa::slif::container::priority {
 	#dict set myprecedence $id $precedence
 
 	debug.marpa/slif/container/priority {/ok}
+    }
+
+    # # ## ### ##### ######## #############
+
+    method grammar {args} {
+	debug.marpa/slif/container/priority {}
+	if {[llength $args]} {
+	    return [Grammar {*}$args]
+	} else {
+	    return $mygrammar
+	}
     }
 
     # # ## ### ##### ######## #############

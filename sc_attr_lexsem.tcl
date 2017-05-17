@@ -28,8 +28,9 @@ oo::class create marpa::slif::container::attribute::lexsem {
     marpa::E marpa/slif/container/attribute/lexsem \
 	SLIF CONTAINER ATTRIBUTE LEXSEM
 
-    constructor {} {
+    constructor {container} {
 	debug.marpa/slif/container/attribute/lexsem {}
+	# container = marpa::slif::container
 
 	marpa A   default  {array values}	 
 	marpa A   validate [mymethod v-action]
@@ -37,7 +38,7 @@ oo::class create marpa::slif::container::attribute::lexsem {
 	marpa A   validate [mymethod v-bless]
 	marpa C bless
 
-	next {*}$spec
+	next $container {*}$spec
 	return
     }
 

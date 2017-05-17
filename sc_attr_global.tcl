@@ -30,7 +30,8 @@ oo::class create marpa::slif::container::attribute::global {
 
     constructor {container} {
 	debug.marpa/slif/container/attribute/global {}
-	marpa::import $container Container
+	# container = marpa::slif::container
+	#marpa::import $container Container
 
 	marpa A   default  warn
 	marpa A   validate [mymethod v-inaccessible]
@@ -38,7 +39,7 @@ oo::class create marpa::slif::container::attribute::global {
 	marpa A   validate [mymethod v-start]
 	marpa C start
 
-	next {*}$spec
+	next $container {*}$spec
 	return
     }
 

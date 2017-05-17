@@ -26,10 +26,10 @@ oo::class create marpa::slif::container::priority::l0 {
 
     marpa::E marpa/slif/container/priority/l0 GRAMMAR CONTAINER PRIORITY L0
 
-    constructor {rhs positive args} {
+    constructor {grammar rhs positive args} {
 	debug.marpa/slif/container/priority/l0 {}
 
-	next marpa::slif::container::attribute::priority::l0 \
+	next $grammar marpa::slif::container::attribute::priority::l0 \
 	    $rhs $positive {*}$args
 
 	debug.marpa/slif/container/priority/l0 {/ok}

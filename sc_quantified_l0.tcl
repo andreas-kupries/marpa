@@ -26,10 +26,10 @@ oo::class create marpa::slif::container::quantified::l0 {
 
     marpa::E marpa/slif/container/quantified/l0 GRAMMAR CONTAINER QUANTIFIED L0
 
-    constructor {rhs positive args} {
+    constructor {grammar rhs positive args} {
 	debug.marpa/slif/container/quantified/l0 {}
 
-	next marpa::slif::container::attribute::quantified::l0 \
+	next $grammar marpa::slif::container::attribute::quantified::l0 \
 	    $rhs $positive {*}$args
 
 	debug.marpa/slif/container/quantified/l0 {/ok}
