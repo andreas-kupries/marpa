@@ -42,10 +42,15 @@ oo::class create marpa::slif::container::atom {
 	return
     }
 
-    method validate {} {
+    method validate {lhs} {
 	debug.marpa/slif/container/atom {}
 	# Nothing ... Future: Type-dependent validation ?
 	return
+    }
+
+    method recursive {lhs} {
+	debug.marpa/slif/container/atom {}
+	return 0
     }
 
     method fixup {aliases} {

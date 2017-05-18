@@ -44,9 +44,21 @@ oo::class create marpa::slif::container::quantified {
 	return
     }
 
-    method validate {} {
+    method recursive {lhs} {
+	debug.marpa/slif/container/quantified {}
+	if {$lhs eq $myrhs}     { return 1 }
+	if {![A has separator]} { return 0 }
+	lassign [A get separator] sep __
+	if {$lhs eq $sep} { return 1 }
+	return 0
+    }
+    
+    method validate {lhs} {
 	debug.marpa/slif/container/quantified {}
 	Grammar must-have $myrhs
+	if {$lhs eq $myrhs} {
+	    my E "Quantified rule '$lhs': Recursion" RECURSION RHS
+	}
 	A validate
 	if {![A has separator]} return
 	# Separator symbol (if specified) validated here, attributes
@@ -55,6 +67,10 @@ oo::class create marpa::slif::container::quantified {
 	# at construction time. But here now it must be.
 	lassign [A get separator] sep __
 	Grammar must-have $sep
+	if {$lhs eq $sep} {
+	    my E "Quantified rule '$lhs': Recursion through separator" \
+		RECURSION SEPARATOR
+	}
 	return
     }
 

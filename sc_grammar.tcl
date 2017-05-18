@@ -59,24 +59,21 @@ oo::class create marpa::slif::container::grammar {
     method validate {} {
 	debug.marpa/slif/container/grammar {}
 	dict for {sym si} $mysymbol {
-	    $si validate
+	    $si validate $sym
 	}
 	return
     }
     
     method must-have {symbol} {
 	debug.marpa/slif/container/grammar {}
-	if {![dict exists $mysymbol $symbol]} {
-	    my E "Unknown symbol '$symbol'" BAD SYMBOL
-	}
+	my ValidateSym $symbol
 	return [dict get $mysymbol $symbol]
     }
 
     method remove {symbol} {
 	debug.marpa/slif/container/grammar {}
-	catch {
-	    [dict get $mysymbol $symbol] destroy
-	}
+	if {![dict exists $mysymbol $symbol]} return
+	[dict get $mysymbol $symbol] destroy
 	dict unset mysymbol $symbol
 	dict unset mysclass $symbol
 	return
@@ -88,6 +85,18 @@ oo::class create marpa::slif::container::grammar {
 	    $si fixup $aliases
 	}
 	return
+    }
+
+    method recursive {symbol} {
+	debug.marpa/slif/container/grammar {}
+	my ValidateSym $symbol
+	return [[dict get $mysymbol $symbol] recursive $symbol]
+    }
+
+    method get {symbol} {
+	debug.marpa/slif/container/grammar {}
+	my ValidateSym $symbol
+	return [[dict get $mysymbol $symbol] serialize]
     }
 
     # - -- --- ----- -------- -------------
@@ -138,9 +147,6 @@ oo::class create marpa::slif::container::grammar {
 	if {![dict exists $mysymbol $symbol]} {
 	    set targs [lassign $type type]
 	    set fargs [lassign [dict get $mytype $type] factory]
-
-#puts XXX:[join [list |F {*}$factory | new |FA {*}$fargs |TA {*}$targs |A {*}$args]]
-
 	    set obj [{*}$factory new {*}$fargs {*}$targs {*}$args]
 	    dict set mysymbol $symbol $obj
 	} else {
@@ -166,6 +172,14 @@ oo::class create marpa::slif::container::grammar {
 	return
     }
 
+    method ValidateSym {sym} {
+	debug.marpa/slif/container/grammar {}
+	if {![dict exists $mysymbol $sym]} {
+	    my E "Unknown symbol '$sym'" BAD SYMBOL
+	}
+	return
+    }
+    
     method ValidateEvent {event types} {
 	debug.marpa/slif/container/grammar {}
 	if {[llength $event] != 3} {

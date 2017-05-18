@@ -238,7 +238,11 @@ oo::class create marpa::slif::semantics {
 
 	SymCo usage
 	set rhs [lindex [UNMASK [SINGLE 1]] 0]
-	Symbol context1 g1-usage      $rhs
+	Symbol context1 g1-usage $rhs
+
+	if {$lhs eq $rhs} {
+	    my E "Recursive quantified G1 rule for <$lhs>" QUANTIFIED RECURSION
+	}
 
 	# SymCo usage, still
 	set adverbs [G1 defaults [SINGLE 3]]
@@ -248,6 +252,11 @@ oo::class create marpa::slif::semantics {
 	    # The separator symbol is used as well.
 	    set sep [lindex [dict get $adverbs separator] 0]
 	    Symbol context1 g1-usage $sep
+
+	    if {$lhs eq $sep} {
+		my E "Recursive quantified G1 rule (separator) for <$lhs>" \
+		    QUANTIFIED RECURSION SEPARATOR
+	    }
 	}
 
 	set positive [SINGLE 2]
@@ -275,6 +284,10 @@ oo::class create marpa::slif::semantics {
 	set rhs [lindex [UNMASK [SINGLE 1]] 0]
 	Symbol context1 l0-usage $rhs
 
+	if {$lhs eq $rhs} {
+	    my E "Recursive quantified L0 rule for <$lhs>" QUANTIFIED RECURSION
+	}
+
 	set adverbs  [SINGLE 3] ;# still /usage
 	ADVQ adverbs
 
@@ -282,6 +295,11 @@ oo::class create marpa::slif::semantics {
 	    # The separator symbol is used as well.
 	    set sep [lindex [dict get $adverbs separator] 0]
 	    Symbol context1 l0-usage $sep
+
+	    if {$lhs eq $sep} {
+		my E "Recursive quantified L0 rule (separator) for <$lhs>" \
+		    QUANTIFIED RECURSION SEPARATOR
+	    }
 	}
 
 	set positive [SINGLE 2]

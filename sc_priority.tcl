@@ -49,10 +49,18 @@ oo::class create marpa::slif::container::priority {
 	return
     }
 
-    method validate {} {
+    method recursive {lhs} {
 	debug.marpa/slif/container/priority {}
 	foreach alter $myalternatives {
-	    $alter validate
+	    if {[$alter recursive $lhs]} { return 1 }
+	}
+	return 0
+    }
+
+    method validate {lhs} {
+	debug.marpa/slif/container/priority {}
+	foreach alter $myalternatives {
+	    $alter validate $lhs
 	}
 	return
     }

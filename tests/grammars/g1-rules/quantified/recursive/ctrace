@@ -1,0 +1,5 @@
+GC comment definition A 0 1
+GC comment g1-definition A undef --> {JMP brick}
+GC comment usage A 6 1
+GC comment g1-usage A brick --> NOP
+GC error {Recursive quantified G1 rule for <A>}

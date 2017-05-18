@@ -46,7 +46,15 @@ oo::class create marpa::slif::container::alter {
 	return
     }
 
-    method validate {} {
+    method recursive {lhs} {
+	debug.marpa/slif/container/alter {}
+	foreach rhs $myrhs {
+	    if {$rhs eq $lhs} { return 1 }
+	}
+	return 0
+    }
+
+    method validate {lhs} {
 	debug.marpa/slif/container/alter {}
 	foreach rhs $myrhs {
 	    Rule grammar must-have $rhs
