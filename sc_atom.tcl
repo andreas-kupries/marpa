@@ -48,6 +48,12 @@ oo::class create marpa::slif::container::atom {
 	return
     }
 
+    method min-precedence {} {
+	debug.marpa/slif/container/atom {}
+	# Atoms of any kind have no precedence.
+	return 0
+    }
+
     method recursive {lhs} {
 	debug.marpa/slif/container/atom {}
 	return 0

@@ -44,12 +44,17 @@ oo::class create marpa::slif::container::quantified {
 	return
     }
 
+    method min-precedence {} {
+	debug.marpa/slif/container/quantified {}
+	# Quantified rules have no precedence.
+	return 0
+    }
+    
     method recursive {lhs} {
 	debug.marpa/slif/container/quantified {}
-	if {$lhs eq $myrhs}     { return 1 }
-	if {![A has separator]} { return 0 }
-	lassign [A get separator] sep __
-	if {$lhs eq $sep} { return 1 }
+	# Logically speaking quantified rules are never recursive.
+	# Even if the rule is indeed such. That is invalidate, see
+	# validate below.
 	return 0
     }
     

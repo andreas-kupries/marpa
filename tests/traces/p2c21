@@ -1,0 +1,4 @@
+GC g1 remove X
+GC g1 priority-rule X {A B}
+GC l0 remove Y
+GC l0 priority-rule Y {C D}

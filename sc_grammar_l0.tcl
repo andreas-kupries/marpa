@@ -26,7 +26,7 @@ oo::class create marpa::slif::container::grammar::l0 {
     marpa::E marpa/slif/container/grammar/l0 SLIF CONTAINER GRAMMAR L0
 
     variable mylatm  ; # symbol -> bool
-    variable myevent ; # symbol -> when -> name -> state
+    variable myevent ; # symbol -> (when -> (name -> state))
     variable myprio  ; # symbol -> int
 
     # - -- --- ----- -------- -------------
@@ -113,6 +113,19 @@ oo::class create marpa::slif::container::grammar::l0 {
 
     # - -- --- ----- -------- -------------
     # Public API
+
+    method validate {} {
+	debug.marpa/slif/container/grammar/l0 {}
+	next ;# common superclass checks
+	# G1: Check lexeme symbols for presence in G1 as terminals
+	dict for {sym si} [my SYM] {
+	    if {[my get-class $sym] ne "lexeme"} continue
+	    Container g1 must-have $sym
+	    if {[Container g1 get-class $sym] eq "terminal"} continue
+	    my E "Lexeme <$sym> missing in G1" LEXEME MISSING
+	}
+	return
+    }
 
     method configure {symbol args} {
 	debug.marpa/slif/container/grammar/l0 {}

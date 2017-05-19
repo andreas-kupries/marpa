@@ -49,6 +49,11 @@ oo::class create marpa::slif::container::priority {
 	return
     }
 
+    method min-precedence {} {
+	debug.marpa/slif/container/priority {}
+	return $myminprecedence
+    }
+    
     method recursive {lhs} {
 	debug.marpa/slif/container/priority {}
 	foreach alter $myalternatives {

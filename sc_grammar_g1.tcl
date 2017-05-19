@@ -44,7 +44,8 @@ oo::class create marpa::slif::container::grammar::g1 {
     }
 
     # - -- --- ----- -------- -------------
-    # Public API - Inherited, override - TODO: Move to superclass, shared g1/l0 - different events however
+    # Public API - Inherited, override
+    # - TODO: Move to superclass, shared g1/l0 - different events however
 
     method serialize {} {
 	debug.marpa/slif/container/grammar/l0 {}
@@ -73,6 +74,19 @@ oo::class create marpa::slif::container::grammar::g1 {
     # - -- --- ----- -------- -------------
     # Public API
 
+    method validate {} {
+	debug.marpa/slif/container/grammar/g1 {}
+	next ;# common superclass checks
+	# G1: Check terminal symbols for presence in L0 as lexemes
+	dict for {sym si} [my SYM] {
+	    if {[my get-class $sym] ne "terminal"} continue
+	    Container l0 must-have $sym
+	    if {[Container l0 get-class $sym] eq "lexeme"} continue
+	    my E "Terminal <$sym> missing in L0" TERMINAL MISSING
+	}
+	return
+    }
+    
     method event {symbol spec} {
 	debug.marpa/slif/container/grammar/g1 {}
 

@@ -171,10 +171,7 @@ critcl::tsources sc_attr_prio_g1.tcl   ; #   - Priority G1 rule attributes
 critcl::tsources sc_attr_prio_l0.tcl   ; #   - Priority L0 rule attributes
 critcl::tsources sc_attr_quant_g1.tcl  ; #   - Quantified G1 rule attributes
 critcl::tsources sc_attr_quant_l0.tcl  ; #   - Quantified L0 rule attributes
-
-# Experimental work on an alternate grammar container (vs
-# p_grammar.tcl) ...
-#critcl::tsources g_id.tcl         ; # Id generator
+critcl::tsources s_precedence.tcl      ; # SLIF, precedence utilities, rewrite
 
 # # ## ### ##### ######## #############
 ## Main C section.

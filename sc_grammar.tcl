@@ -36,7 +36,8 @@ oo::class create marpa::slif::container::grammar {
 
     constructor {container spec p q} {
 	debug.marpa/slif/container/grammar {}
-	# container = marpa::slif::grammar
+	# container = marpa::slif::container
+	marpa::import $container Container
 	lappend p [self]
 	lappend q [self]
 
@@ -63,7 +64,7 @@ oo::class create marpa::slif::container::grammar {
 	}
 	return
     }
-    
+
     method must-have {symbol} {
 	debug.marpa/slif/container/grammar {}
 	my ValidateSym $symbol
@@ -93,10 +94,27 @@ oo::class create marpa::slif::container::grammar {
 	return [[dict get $mysymbol $symbol] recursive $symbol]
     }
 
+    method symbols {} {
+	debug.marpa/slif/container/grammar {}
+	return [dict keys $mysymbol]
+    }
+    
     method get {symbol} {
 	debug.marpa/slif/container/grammar {}
 	my ValidateSym $symbol
 	return [[dict get $mysymbol $symbol] serialize]
+    }
+
+    method get-class {symbol} {
+	debug.marpa/slif/container/grammar {}
+	my ValidateSym $symbol
+	return [dict get $mysclass $symbol]
+    }
+
+    method min-precedence {symbol} {
+	debug.marpa/slif/container/grammar {}
+	my ValidateSym $symbol
+	return [[dict get $mysymbol $symbol] min-precedence]
     }
 
     # - -- --- ----- -------- -------------
@@ -179,7 +197,7 @@ oo::class create marpa::slif::container::grammar {
 	}
 	return
     }
-    
+
     method ValidateEvent {event types} {
 	debug.marpa/slif/container/grammar {}
 	if {[llength $event] != 3} {
@@ -195,6 +213,8 @@ oo::class create marpa::slif::container::grammar {
 	}
 	return $event
     }
+
+    method SYM {} { return $mysymbol }
 
     # # ## ### ##### ######## #############
 }

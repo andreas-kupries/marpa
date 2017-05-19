@@ -203,6 +203,38 @@ test-grammar-map gcstate --> id gcstate base {
     incr k
 }
 
+
+# # ## ### ##### ######## ############# #####################
+## Precedence rewrite
+
+set max 0
+test-grammar-files prewrite --> __ __ { incr max }
+set format %0[string length $max]d
+unset max
+
+set k 0
+test-grammar-map prewrite --> id prewrite base {
+    set expected [string trimright [fget $prewrite]]
+    set input    [dict get [string trimright [fget [file join $base gcstate]]] grammar]
+    set kd       [format $format $k]
+
+    test marpa-slif-container-prewrite-1.${kd}---${id} "precedence rewrite $id" -setup {
+	marpa::slif::container create GC
+	GC deserialize $input
+    } -body {
+	marpa::slif::precedence 2container \
+	    [marpa::slif::precedence rewrite GC] \
+	    GC
+	GC validate ;# Rewrite should not invalidate the container
+	gc-format [GC serialize]
+    } -cleanup {
+	unset -nocomplain msg
+	GC destroy
+    } -result $expected
+
+    incr k
+}
+
 # # ## ### ##### ######## ############# #####################
 ## TODO slif::container -- Test individual methods
 
