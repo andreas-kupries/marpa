@@ -24,7 +24,7 @@ debug define marpa/slif/semantics
 #debug prefix marpa/slif/semantics {[debug caller] | }
 
 # # ## ### ##### ######## #############
-## 
+##
 
 oo::class create marpa::slif::semantics::Symbol {
     # # ## ### ##### ######## #############

@@ -111,7 +111,7 @@ proc marpa::unicode::norm-class {charclass} {
     }
     # assert: llength $charclass >= 2
     foreach spec $charclass {
-	if {[llength $spec] == 1} { 
+	if {[llength $spec] == 1} {
 	    lappend spec [lindex $spec 0]
 	}
 	lappend tmp $spec
@@ -225,7 +225,7 @@ proc marpa::unicode::unfold {codes} {
     debug.marpa/unicode {}
     set result {}
     foreach el $codes {
-	if {[llength $el] == 1} { 
+	if {[llength $el] == 1} {
 	    lappend result {*}[data fold $el]
 	} else {
 	    lassign $el s e
@@ -306,9 +306,9 @@ proc marpa::unicode::data::cc::have-tcl {cclass} {
 
 proc marpa::unicode::data::cc::tcl-names {} {
     return {
-	alnum alpha blank cntrl 
-	digit graph lower print 
-	punct space upper xdigit 
+	alnum alpha blank cntrl
+	digit graph lower print
+	punct space upper xdigit
     }
 }
 
@@ -362,7 +362,7 @@ proc marpa::unicode::data::cc::grammar {cclass {base {}}} {
     # base (for uniqueness in the caller's context (if needed))
     set cbase $base
     if {$base ne {}} { set cbase ${base}: }
-    
+
     return [lmap rule [dict get $gr $cclass] {
 	set sequence [lassign $rule sym _]
 	if {$sym eq {}} {

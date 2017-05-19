@@ -91,7 +91,7 @@ proc marpa::semstd::builtin {parts id args} {
 	    }
 	    rule   { lappend result $id }
 	    name   -
-	    symbol - 
+	    symbol -
 	    lhs    { lappend result $detail }
 	}
     }

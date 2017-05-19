@@ -26,7 +26,7 @@ oo::class create marpa::slif::container::atom {
 
     marpa::E marpa/slif/container/atom SLIF CONTAINER ATOM
 
-    variable mytype    ;# 
+    variable mytype    ;#
     variable mydetails ;# type-dependent
 
     # - -- --- ----- -------- -------------
@@ -65,7 +65,7 @@ oo::class create marpa::slif::container::atom {
 	# in their definition.
 	return
     }
-    
+
     method serialize {} {
 	debug.marpa/slif/container/atom {}
 	return [list [list $mytype {*}$mydetails]]

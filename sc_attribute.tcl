@@ -23,7 +23,7 @@ debug define marpa/slif/container/attribute
 #debug prefix marpa/slif/container/attribute {[debug caller] | }
 
 # # ## ### ##### ######## #############
-## 
+##
 
 oo::class create marpa::slif::container::attribute {
     superclass marpa::slif::container::serdes
@@ -89,7 +89,7 @@ oo::class create marpa::slif::container::attribute {
 	set myattr {}
 	return
     }
-    
+
     method serialize {} {
 	debug.marpa/slif/container/attribute {}
 	return $myattr

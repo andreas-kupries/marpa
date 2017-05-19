@@ -139,7 +139,7 @@ proc ::marpa::slif::precedence::rewrite1 {grcode lhs min alternatives} {
     # assoc defaults to "left".
 
     # result :: list(commands)
-    
+
     set result {}
     R $lhs
 

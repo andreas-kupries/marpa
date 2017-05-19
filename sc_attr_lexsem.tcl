@@ -20,7 +20,7 @@ debug define marpa/slif/container/attribute/lexsem
 #debug prefix marpa/slif/container/attribute/lexsem {[debug caller] | }
 
 # # ## ### ##### ######## #############
-## 
+##
 
 oo::class create marpa::slif::container::attribute::lexsem {
     superclass marpa::slif::container::attribute
@@ -32,7 +32,7 @@ oo::class create marpa::slif::container::attribute::lexsem {
 	debug.marpa/slif/container/attribute/lexsem {}
 	# container = marpa::slif::container
 
-	marpa A   default  {array values}	 
+	marpa A   default  {array values}
 	marpa A   validate [mymethod v-action]
 	marpa C action
 	marpa A   validate [mymethod v-bless]

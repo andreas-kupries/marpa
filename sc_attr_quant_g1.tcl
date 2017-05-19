@@ -20,7 +20,7 @@ debug define marpa/slif/container/attribute/quantified/g1
 #debug prefix marpa/slif/container/attribute/quantified/g1 {[debug caller] | }
 
 # # ## ### ##### ######## #############
-## 
+##
 
 oo::class create marpa::slif::container::attribute::quantified::g1 {
     superclass marpa::slif::container::attribute
@@ -34,7 +34,7 @@ oo::class create marpa::slif::container::attribute::quantified::g1 {
 
 	# quantified: action, blessing, separator
 
-	marpa A   default  {array values}	 
+	marpa A   default  {array values}
 	marpa A   validate [mymethod v-action]
 	marpa C action
 	marpa A   validate [mymethod v-bless]
@@ -90,7 +90,7 @@ oo::class create marpa::slif::container::attribute::quantified::g1 {
 	}
 	return $value
     }
-    
+
     # # ## ### ##### ######## #############
 }
 

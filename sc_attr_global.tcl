@@ -20,7 +20,7 @@ debug define marpa/slif/container/attribute/global
 #debug prefix marpa/slif/container/attribute/global {[debug caller] | }
 
 # # ## ### ##### ######## #############
-## 
+##
 
 oo::class create marpa::slif::container::attribute::global {
     superclass marpa::slif::container::attribute

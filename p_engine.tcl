@@ -26,7 +26,7 @@ debug define marpa/engine
 #debug prefix marpa/engine {[debug caller] | }
 
 # # ## ### ##### ######## #############
-## 
+##
 
 oo::class create marpa::engine {
     marpa::E marpa/engine ENGINE

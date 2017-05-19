@@ -259,7 +259,7 @@ proc ::marpa::slif::literal::ccunfold {data} {
     # inlined cc, dropped superfluous norm-class
     set     codes [marpa unicode unfold $codes]
     lappend codes {*}[lsort -dict -unique [lmap n $named { set _ %$n }]]
-    return $codes 
+    return $codes
 }
 
 proc ::marpa::slif::literal::ccranges {data} {
@@ -358,7 +358,7 @@ proc ::marpa::slif::literal::cc {codes named} {
     debug.marpa/slif/literal {}
     set     codes [marpa unicode norm-class $codes]
     lappend codes {*}[lsort -dict -unique $named]
-    return $codes 
+    return $codes
 }
 
 proc ::marpa::slif::literal::type {litstring nocase} {
@@ -499,7 +499,7 @@ proc ::marpa::slif::literal::reduce1 {litsymbol literal rules state} {
     # - IS-A keeps the existing symbol and changes its definition,
     #   without a new layer. Prevents formation of definition chains
     #   like A -> B -> C ...
-    
+
     switch -exact -- $type {
 	byte - brange {
 	    KEEP
@@ -737,7 +737,7 @@ proc ::marpa::slif::literal::reduce1 {litsymbol literal rules state} {
 	    ON K-^CHR KEEP
 	}
     }
-    FAILR    
+    FAILR
     return
 }
 
@@ -798,7 +798,7 @@ proc ::marpa::slif::literal::CC-ASBR {asbr} {
 	IS-A/ brange {*}[lindex $asbr 0 0]
 	return
     }
-    
+
     RULES {
 	foreach rhs $asbr {
 	    DEF* [lmap range $rhs { MK-RANGE $range }]
@@ -1028,7 +1028,7 @@ oo::class create marpa::slif::literal::rstate {
 	#     the aliases.
 	# III. During result assembly suppress the secondaries, and
 	#      rewrite other definitions to use the primary.
-	
+
 	set syms {}
 	dict for {sym def} $mydef {
 	    dict lappend syms $def $sym

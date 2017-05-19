@@ -49,7 +49,7 @@ oo::class create marpa::slif::container::quantified {
 	# Quantified rules have no precedence.
 	return 0
     }
-    
+
     method recursive {lhs} {
 	debug.marpa/slif/container/quantified {}
 	# Logically speaking quantified rules are never recursive.
@@ -57,7 +57,7 @@ oo::class create marpa::slif::container::quantified {
 	# validate below.
 	return 0
     }
-    
+
     method validate {lhs} {
 	debug.marpa/slif/container/quantified {}
 	Grammar must-have $myrhs
@@ -92,7 +92,7 @@ oo::class create marpa::slif::container::quantified {
 	A set separator [list [dict get $aliases $sym] $proper]
 	return
     }
-    
+
     method extend {args} {
 	debug.marpa/slif/container/quantified {}
 	my E "Quantified rule cannot be extended" \

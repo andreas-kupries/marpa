@@ -174,7 +174,7 @@ critcl::class def ::marpa::Bocage {
 		** should be executed on these child values, and the result placed
 		** in   marpa_v_result(v).
 		** In the case of a MARPA_STEP_RULE step, the stack location of marpa_v_result(v)
-		** is guaranteed to be equal to marpa_v_arg_0(v). 
+		** is guaranteed to be equal to marpa_v_arg_0(v).
 		*/
 
 		step = Tcl_NewDictObj ();
@@ -205,15 +205,15 @@ critcl::class def ::marpa::Bocage {
 		** should be placed in stack
 		** location marpa_v_result(v).
 		** Its value according to Libmarpa will be
-		** in       marpa_v_token_value(v). 
+		** in       marpa_v_token_value(v).
 		*/
 
 		step = Tcl_NewDictObj ();
 		Tcl_DictObjPut (interp, step, MT_S_ID,       Tcl_NewIntObj (marpa_v_token(v)));
-		Tcl_DictObjPut (interp, step, MT_S_START_ES, Tcl_NewIntObj (marpa_v_token_start_es_id(v))); 
-		Tcl_DictObjPut (interp, step, MT_S_END_ES,   Tcl_NewIntObj (marpa_v_es_id(v))); 
-		Tcl_DictObjPut (interp, step, MT_S_RES,      Tcl_NewIntObj (marpa_v_result(v))); 
-		Tcl_DictObjPut (interp, step, MT_S_VALUE,    Tcl_NewIntObj (marpa_v_token_value(v)));  
+		Tcl_DictObjPut (interp, step, MT_S_START_ES, Tcl_NewIntObj (marpa_v_token_start_es_id(v)));
+		Tcl_DictObjPut (interp, step, MT_S_END_ES,   Tcl_NewIntObj (marpa_v_es_id(v)));
+		Tcl_DictObjPut (interp, step, MT_S_RES,      Tcl_NewIntObj (marpa_v_result(v)));
+		Tcl_DictObjPut (interp, step, MT_S_VALUE,    Tcl_NewIntObj (marpa_v_token_value(v)));
 
 		Tcl_ListObjAppendElement (interp, steps, MT_S_TOKEN);
 		Tcl_ListObjAppendElement (interp, steps, step);
@@ -227,9 +227,9 @@ critcl::class def ::marpa::Bocage {
 
 		step = Tcl_NewDictObj ();
 		Tcl_DictObjPut (interp, step, MT_S_ID,       Tcl_NewIntObj (marpa_v_symbol(v)));
-		Tcl_DictObjPut (interp, step, MT_S_START_ES, Tcl_NewIntObj (marpa_v_token_start_es_id(v))); 
-		Tcl_DictObjPut (interp, step, MT_S_END_ES,   Tcl_NewIntObj (marpa_v_es_id(v))); 
-		Tcl_DictObjPut (interp, step, MT_S_RES,      Tcl_NewIntObj (marpa_v_result(v))); 
+		Tcl_DictObjPut (interp, step, MT_S_START_ES, Tcl_NewIntObj (marpa_v_token_start_es_id(v)));
+		Tcl_DictObjPut (interp, step, MT_S_END_ES,   Tcl_NewIntObj (marpa_v_es_id(v)));
+		Tcl_DictObjPut (interp, step, MT_S_RES,      Tcl_NewIntObj (marpa_v_result(v)));
 
 		Tcl_ListObjAppendElement (interp, steps, MT_S_NULLING);
 		Tcl_ListObjAppendElement (interp, steps, step);

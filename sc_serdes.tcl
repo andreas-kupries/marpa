@@ -50,7 +50,7 @@ oo::class create marpa::slif::container::serdes {
 	return
     }
 
-    export := 
+    export :=
     export -->
 
     # # ## ### ##### ######## #############

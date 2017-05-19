@@ -86,7 +86,7 @@ oo::class create marpa::slif::container::grammar::g1 {
 	}
 	return
     }
-    
+
     method event {symbol spec} {
 	debug.marpa/slif/container/grammar/g1 {}
 

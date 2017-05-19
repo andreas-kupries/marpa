@@ -76,7 +76,7 @@ oo::class create marpa::slif::container::alter {
 	}]
 	return
     }
-    
+
     method serialize {} {
 	debug.marpa/slif/container/alter {}
 	set serial [list priority $myrhs $myprecedence {*}[A serialize]]

@@ -25,7 +25,7 @@ debug define marpa/slif/parser
 debug prefix marpa/slif/parser {[debug caller] | }
 
 # # ## ### ##### ######## #############
-## 
+##
 
 oo::class create marpa::slif::parser {
     # # ## ### ##### ######## #############
@@ -146,19 +146,19 @@ oo::class create marpa::slif::parser {
 	L0 action {start length value}
 
 	L0 export {
-	    @lex-(         @lex-)            @lex-*            @lex-+                
-	    @lex-,         @lex-:default     @lex-:discard     @lex-:lexeme          
-	    @lex-:start    @lex-\;           @lex-=            @lex-=>               
-	    @lex-action    @lex-assoc        @lex-bless        @lex-by               
-	    @lex-completed @lex-current      @lex-default      @lex-discard          
-	    @lex-event     @lex-fatal        @lex-forgiving    @lex-group            
-	    @lex-high      @lex-inaccessible @lex-is           @lex-latm             
-	    @lex-left      @lex-lexeme       @lex-lexer        @lex-low              
-	    @lex-name      @lex-null         @lex-null-ranking @lex-nulled           
-	    @lex-off       @lex-ok           @lex-on           @lex-pause            
-	    @lex-predicted @lex-priority     @lex-proper       @lex-rank             
-	    @lex-right     @lex-separator    @lex-start        @lex-symbol           
-	    @lex-warn      @lex-\{           @lex-\}               
+	    @lex-(         @lex-)            @lex-*            @lex-+
+	    @lex-,         @lex-:default     @lex-:discard     @lex-:lexeme
+	    @lex-:start    @lex-\;           @lex-=            @lex-=>
+	    @lex-action    @lex-assoc        @lex-bless        @lex-by
+	    @lex-completed @lex-current      @lex-default      @lex-discard
+	    @lex-event     @lex-fatal        @lex-forgiving    @lex-group
+	    @lex-high      @lex-inaccessible @lex-is           @lex-latm
+	    @lex-left      @lex-lexeme       @lex-lexer        @lex-low
+	    @lex-name      @lex-null         @lex-null-ranking @lex-nulled
+	    @lex-off       @lex-ok           @lex-on           @lex-pause
+	    @lex-predicted @lex-priority     @lex-proper       @lex-rank
+	    @lex-right     @lex-separator    @lex-start        @lex-symbol
+	    @lex-warn      @lex-\{           @lex-\}
 
 	    {reserved event name}    {op declare bnf}	  {op declare match}
 	    {op loosen}              {op equal priority}  {before or after}
@@ -424,8 +424,8 @@ oo::class create marpa::slif::parser {
 	    {{alternative match}		:= rhs {adverb list match alternative}}
 
 	    {{adverb list default}		:= {adverb list items default}}
-	    {{adverb list discard}		:= {adverb list items discard}}	    
-	    {{adverb list lexeme}		:= {adverb list items lexeme}}	    
+	    {{adverb list discard}		:= {adverb list items discard}}
+	    {{adverb list lexeme}		:= {adverb list items lexeme}}
 	    {{adverb list discard default}	:= {adverb list items discard default}}
 	    {{adverb list lexeme default}	:= {adverb list items lexeme default}}
 	    {{adverb list bnf alternative}	:= {adverb list items bnf alternative}}

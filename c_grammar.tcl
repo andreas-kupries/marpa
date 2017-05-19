@@ -114,7 +114,7 @@ critcl::class def ::marpa::Grammar {
 
     method sym-start    proc {}                    Marpa_StartSymbol_ID { return marpa_g_start_symbol      (instance->grammar);      }
     method sym-start:   proc {Marpa_Symbol_ID sym} Marpa_Symbol_ID      { return marpa_g_start_symbol_set  (instance->grammar, sym); }
-    method sym-new      proc {}                    Marpa_Symbol_ID      { return marpa_g_symbol_new        (instance->grammar); } 
+    method sym-new      proc {}                    Marpa_Symbol_ID      { return marpa_g_symbol_new        (instance->grammar); }
     method sym-highest  proc {}                    Marpa_Symbol_ID      { return marpa_g_highest_symbol_id (instance->grammar); }
 
     method sym-rank:    proc {Marpa_Symbol_ID sym   Marpa_Rank rank} Marpa_Rank { return marpa_g_symbol_rank_set (instance->grammar, sym, rank); }
@@ -198,7 +198,7 @@ critcl::class def ::marpa::Grammar {
     method cycle?  proc {} Marpa_Boolean { return marpa_g_has_cycle      (instance->grammar); }
 
     # # ## ### ##### ######## #############
-    ## 
+    ##
 
     # # ## ### ##### ######## #############
     ## zero-width assertions -- not exposing these

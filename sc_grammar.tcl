@@ -98,7 +98,7 @@ oo::class create marpa::slif::container::grammar {
 	debug.marpa/slif/container/grammar {}
 	return [dict keys $mysymbol]
     }
-    
+
     method get {symbol} {
 	debug.marpa/slif/container/grammar {}
 	my ValidateSym $symbol

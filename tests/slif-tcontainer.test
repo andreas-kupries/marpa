@@ -173,7 +173,7 @@ test-grammar-map gcstate --> id gcstate base {
     if 0 {if {![file exists [file join $base gcr_c]]} {
 	file copy $gcstate [file join $base gcr_c]
     }}
-    
+
     set expected [string trimright [fget [file join $base gcr_c]]]
     set kd       [format $format $k]
 
@@ -190,7 +190,7 @@ test-grammar-map gcstate --> id gcstate base {
 	    [marpa::slif::literal reduce $work {
 		D-STR2 D-%STR  D-CLS2  D-^CLS1
 		D-NCC2 D-%NCC2 D-^NCC1 D-^%NCC2
-		D-RAN2 D-%RAN  D-^RAN2 D-CHR		
+		D-RAN2 D-%RAN  D-^RAN2 D-CHR
 		D-^CHR
 	    }] GC
 	GC validate ;# Reduction should not invalidate the container

@@ -46,14 +46,14 @@ critcl::ccode {
 ## This mapping is for debugging only.
 
 critcl::emap::def marpatcl_steptype {
-    step-rule      MARPA_STEP_RULE           
-    step-token     MARPA_STEP_TOKEN          
-    step-nulling   MARPA_STEP_NULLING_SYMBOL 
-    step-inactive  MARPA_STEP_INACTIVE       
-    step-initial   MARPA_STEP_INITIAL        
-    step-internal1 MARPA_STEP_INTERNAL1      
-    step-internal2 MARPA_STEP_INTERNAL2      
-    step-trace     MARPA_STEP_TRACE          
+    step-rule      MARPA_STEP_RULE
+    step-token     MARPA_STEP_TOKEN
+    step-nulling   MARPA_STEP_NULLING_SYMBOL
+    step-inactive  MARPA_STEP_INACTIVE
+    step-initial   MARPA_STEP_INITIAL
+    step-internal1 MARPA_STEP_INTERNAL1
+    step-internal2 MARPA_STEP_INTERNAL2
+    step-trace     MARPA_STEP_TRACE
 }
 
 # API pieces

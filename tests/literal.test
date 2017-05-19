@@ -34,7 +34,7 @@ proc FE {str} {
 proc RR {result rules literal} {
     set data [lassign $literal type]
     set dlit "($type ($data))"
-    
+
     lappend map @@@ [marpa unicode max]
     lappend map @!  {STATE place done work <symbol>}
     lappend map @=  {STATE place done done <symbol>}
@@ -66,7 +66,7 @@ proc RR {result rules literal} {
 ## [ok] decode-class  |
 ## [ok] type          |
 ## [ok] unescape      |
-## [ok] tags          
+## [ok] tags
 #
 ## [ok] r2container \
 ## [ok] reduce      / API (reduction)
@@ -208,7 +208,7 @@ foreach {literal toexpect} {
     # is covered by what we have now. Extending this is not about
     # coverage anymore, but about seeing the whole deconstruction for
     # all literal types and possible rule-sets.
-    
+
     incr k
     set j 0
     foreach {rules code result} $toexpect {
@@ -220,7 +220,7 @@ foreach {literal toexpect} {
 	} -returnCodes $code -result [RR $result $rules $literal]
 
 	if {$code eq "error"} continue
-    
+
 	test marpa-slif-literal-reduce-3.$k.$j "reduce $code ($literal) $rules, aliases" -body {
 	    lindex [marpa::slif::literal reduce [list <symbol> $literal] $rules] 1
 	    # Access aliases, always empty
@@ -970,7 +970,7 @@ foreach {rule litstring res} {
     N12 {[[:braille:]a-f]:i}         {charclass {65 70} {97 102} %braille}
     N12 {[\055-/[:braille:]]:i}      {charclass {45 47} %braille}
     N12 {[\055[:braille:]a-f]:i}     {charclass 45 {65 70} {97 102} %braille}
-	                 
+
     N13 {[^a]}                       {^character 97}
     N14 {[^abcdef]}                  {^range 97 102}
     N15 {[^[:braille:]]}             {^named-class braille}
@@ -978,7 +978,7 @@ foreach {rule litstring res} {
     N16 {[^a-c\055d-f]}              {^charclass 45 {97 102}}
     N16 {[^d-f[:braille:]a-e]}       {^charclass {97 102} braille}
     N16 {[^a-c\055[:braille:]b-f]}  {^charclass 45 {97 102} braille}
-	                
+
     N17 {[^a]:i}                     {^charclass 65 97}
     N17 {[^\x2d]:i}                  {^character 45}
     N18 {[^a-f]:i}                   {^charclass {65 70} {97 102}}

@@ -85,7 +85,7 @@ oo::class create sequencer {
 	    debug.util/sequencing {@:$__state:[info level -2]}
 	    #puts @:$__state:[info level -2]
 	    if {$__state in [linsert $args 0 $initial]} return
-	    my E "" SEQUENCER INVALID STATE $__state 
+	    my E "" SEQUENCER INVALID STATE $__state
 	}
 	set __state $initial
 	#puts I:$__state:[info level -2]

@@ -53,7 +53,7 @@ oo::class create marpa::slif::container::priority {
 	debug.marpa/slif/container/priority {}
 	return $myminprecedence
     }
-    
+
     method recursive {lhs} {
 	debug.marpa/slif/container/priority {}
 	foreach alter $myalternatives {
@@ -80,7 +80,7 @@ oo::class create marpa::slif::container::priority {
 	return $result
     }
 
-    method deserialize {blob} { 
+    method deserialize {blob} {
 	debug.marpa/slif/container/priority {}
 	my E "Priority rule deserialization forbidden, go through constructor" \
 	    FORBIDDEN
@@ -94,10 +94,10 @@ oo::class create marpa::slif::container::priority {
 	}
 	return
     }
-    
+
     method extend {rhs precedence args} {
 	debug.marpa/slif/container/priority {}
-	
+
 	if {[dict exists $myalt $rhs]} {
 	    my E "Cannot extend with identical rhs ($rhs)" MULTI RHS
 	}

@@ -208,7 +208,7 @@ set E_l0_trace_B {
 #   FACTOR (-2)::= FACTOR * POWER  |  POWER
 #   POWER  (-1)::= ATOM   ^ POWER  |  ATOM
 #   ATOM       ::= ( TERM )        |  N
-#                  ^rule              ^spine   
+#                  ^rule              ^spine
 # where
 #   TERM   == E((3))
 #   FACTOR == E((2))

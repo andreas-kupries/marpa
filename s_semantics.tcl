@@ -33,7 +33,7 @@ debug define marpa/slif/semantics
 #debug prefix marpa/slif/semantics {[debug caller] | }
 
 # # ## ### ##### ######## #############
-## 
+##
 
 oo::class create marpa::slif::semantics {
     marpa::E marpa/slif/semantics SLIF SEMANTICS

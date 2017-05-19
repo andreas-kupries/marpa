@@ -177,27 +177,27 @@ oo::class create marpa::inbound::sequencer {
     # State machine for marpa::inbound
     ##
     # Sequence = 1[23]*4      # 1: construction
-    # See mark <<s>>	      # 2: eof         
-    #			      # 3: enter, read 
+    # See mark <<s>>	      # 2: eof
+    #			      # 3: enter, read
     # *-1-> ready -2-> done|  #
     #       ^ |               #
     #       \-/3              #
     #
     # Determin. state machine # Table re-sorted, by method _=
-    # Current  Method  New    # Current  Method  New   
+    # Current  Method  New    # Current  Method  New
     # ~~~~~~~  ~~~~~~  ~~~~~~ # ~~~~~~~  ~~~~~~  ~~~~~~
-    # -        <cons>  ready  # -        <cons>  ready 
+    # -        <cons>  ready  # -        <cons>  ready
     # ~~~~~~~  ~~~~~~  ~~~~~~ # ~~~~~~~  ~~~~~~  ~~~~~~
-    # ready    enter   /KEEP  # ready    enter   /KEEP 
-    #          read    /KEEP  # done     enter   /FAIL 
+    # ready    enter   /KEEP  # ready    enter   /KEEP
+    #          read    /KEEP  # done     enter   /FAIL
     #          eof     done   # ~~~~~~~  ~~~~~~  ~~~~~~
-    # ~~~~~~~  ~~~~~~  ~~~~~~ # ready    read    /KEEP 
-    # done     enter   /FAIL  # done     read    /FAIL 
+    # ~~~~~~~  ~~~~~~  ~~~~~~ # ready    read    /KEEP
+    # done     enter   /FAIL  # done     read    /FAIL
     #          read    /FAIL  # ~~~~~~~  ~~~~~~  ~~~~~~
-    #          eof     /FAIL  # ready    eof     done	
-    # ~~~~~~~  ~~~~~~  ~~~~~~ # done     eof     /FAIL 
+    #          eof     /FAIL  # ready    eof     done
+    # ~~~~~~~  ~~~~~~  ~~~~~~ # done     eof     /FAIL
     # *        *       /KEEP  # ~~~~~~~  ~~~~~~  ~~~~~~
-    # ~~~~~~~  ~~~~~~  ~~~~~~ # *        *       /KEEP 
+    # ~~~~~~~  ~~~~~~  ~~~~~~ # *        *       /KEEP
     #                         # ~~~~~~~  ~~~~~~  ~~~~~~
 
     # # -- --- ----- -------- -------------

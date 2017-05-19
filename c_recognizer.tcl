@@ -134,7 +134,7 @@ critcl::class def ::marpa::Recognizer {
     }
 
     # # ## ### ##### ######## #############
-    ## 
+    ##
 
     method current-earleme   proc {}                        Marpa_Earleme       { return marpa_r_current_earleme   ( instance->recognizer); }
     method earleme           proc {Marpa_Earley_Set_ID set} Marpa_Earleme       { return marpa_r_earleme           ( instance->recognizer, set); }

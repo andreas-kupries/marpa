@@ -21,7 +21,7 @@ debug define marpa/slif/container
 #debug prefix marpa/slif/container {[debug caller] | }
 
 # # ## ### ##### ######## #############
-## 
+##
 
 oo::class create marpa::slif::container {
     superclass marpa::slif::container::serdes

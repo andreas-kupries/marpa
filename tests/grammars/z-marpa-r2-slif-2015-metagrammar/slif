@@ -78,19 +78,19 @@ statement ::= <start rule> | <empty rule>
 <alternative bnf> ::= rhs <adverb list bnf alternative>
 <alternative match> ::= rhs <adverb list match alternative>
 
-<adverb list default>		::= <adverb list items default>	    
-<adverb list discard>		::= <adverb list items discard>	    
-<adverb list lexeme>		::= <adverb list items lexeme>	    
-<adverb list discard default>	::= <adverb list items discard default> 
-<adverb list lexeme default>	::= <adverb list items lexeme default>  
-<adverb list bnf alternative>	::= <adverb list items bnf alternative> 
-<adverb list bnf empty>		::= <adverb list items bnf empty>	    
-<adverb list bnf quantified>	::= <adverb list items bnf quantified>  
+<adverb list default>		::= <adverb list items default>
+<adverb list discard>		::= <adverb list items discard>
+<adverb list lexeme>		::= <adverb list items lexeme>
+<adverb list discard default>	::= <adverb list items discard default>
+<adverb list lexeme default>	::= <adverb list items lexeme default>
+<adverb list bnf alternative>	::= <adverb list items bnf alternative>
+<adverb list bnf empty>		::= <adverb list items bnf empty>
+<adverb list bnf quantified>	::= <adverb list items bnf quantified>
 <adverb list match alternative>	::= <adverb list items match alternative>
-<adverb list match empty> 	::= <adverb list items match empty>	    
+<adverb list match empty> 	::= <adverb list items match empty>
 <adverb list match quantified>	::= <adverb list items match quantified>
 
-<adverb list items default>		::= <adverb item default>* 
+<adverb list items default>		::= <adverb item default>*
 <adverb list items discard>	    	::= <adverb item discard>*
 <adverb list items lexeme>	    	::= <adverb item lexeme>*
 <adverb list items discard default> 	::= <adverb item discard default>*
@@ -223,11 +223,11 @@ boolean ~ [01]
 
 <array descriptor> ~ <array descriptor left bracket> <result item descriptor list> <array descriptor right bracket>
 
-<array descriptor left bracket> ~ '[' 
+<array descriptor left bracket> ~ '['
 <array descriptor left bracket> ~ '[' whitespace
 
-<array descriptor right bracket> ~ ']' 
-<array descriptor right bracket> ~ whitespace ']' 
+<array descriptor right bracket> ~ ']'
+<array descriptor right bracket> ~ whitespace ']'
 
 <result item descriptor list> ~ <result item descriptor>* separator => <result item descriptor separator>
 
@@ -236,7 +236,7 @@ boolean ~ [01]
 
 <result item descriptor> ~ 'start' | 'length'
   | 'g1start' | 'g1length'
-  | 'name' | 'lhs' | 'symbol' | 'rule' 
+  | 'name' | 'lhs' | 'symbol' | 'rule'
   | 'value' | 'values'
 
 # In single quoted strings and character classes

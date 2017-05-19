@@ -24,7 +24,7 @@ debug define marpa/semcore
 debug prefix marpa/semcore {} ;# eval takes large argument, keep out.
 
 # # ## ### ##### ######## #############
-## Semantic core. 
+## Semantic core.
 
 oo::class create marpa::semcore {
     marpa::E marpa/semcore SEMCORE

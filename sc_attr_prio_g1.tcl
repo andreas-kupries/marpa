@@ -20,7 +20,7 @@ debug define marpa/slif/container/attribute/priority/g1
 #debug prefix marpa/slif/container/attribute/priority/g1 {[debug caller] | }
 
 # # ## ### ##### ######## #############
-## 
+##
 
 oo::class create marpa::slif::container::attribute::priority::g1 {
     superclass marpa::slif::container::attribute
@@ -35,12 +35,12 @@ oo::class create marpa::slif::container::attribute::priority::g1 {
 	# - action, blessing, naming, assoc
 	# - mask [system attribute]
 
-	marpa A   default  {array values}	 
+	marpa A   default  {array values}
 	marpa A   validate [mymethod v-action]
 	marpa C action
 	marpa A   validate [mymethod v-bless]
 	marpa C bless
-	marpa A   default  left		
+	marpa A   default  left
 	marpa A   validate [mymethod v-assoc]
 	marpa C assoc
 	marpa C* mask

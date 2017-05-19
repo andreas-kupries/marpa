@@ -20,7 +20,7 @@ debug define marpa/slif/container/attribute/priority/l0
 #debug prefix marpa/slif/container/attribute/priority/l0 {[debug caller] | }
 
 # # ## ### ##### ######## #############
-## 
+##
 
 oo::class create marpa::slif::container::attribute::priority::l0 {
     superclass marpa::slif::container::attribute
