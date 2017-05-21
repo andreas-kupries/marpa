@@ -26,6 +26,12 @@ kt source support/grammars.tcl
 kt source support/textutils.tcl
 
 # # ## ### ##### ######## ############# #####################
+## Setup dynamic parts of the testsuite
+## Currently only importing the `bootstrap/marpa-tcl-slif`
+
+exec [td]/grammars/setup.sh
+
+# # ## ### ##### ######## ############# #####################
 ##  1 constructor/0
 
 # # ## ### ##### ######## ############# #####################

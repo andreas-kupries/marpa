@@ -6,11 +6,7 @@ statements/0
           adverb item default/0
             action/0
               action name/2
-                @963 21 {'[start,length,values]'}
-          adverb item default/1
-            blessing/0
-              blessing name/1
-                @994 5 '::lhs'
+                @1747 21 {'[start,length,values]'}
   statement/8
     lexeme default statement/0
       adverb list lexeme default/0
@@ -18,36 +14,32 @@ statements/0
           adverb item lexeme default/0
             action/0
               action name/2
-                @1029 20 {'[start,length,value]'}
-          adverb item lexeme default/1
-            blessing/0
-              blessing name/1
-                @1061 6 '::name'
+                @1799 20 {'[start,length,value]'}
           adverb item lexeme default/2
-            latm specification/0
-              @1083 1 '1'
+            latm specification/1
+              @1832 1 '1'
   statement/0
     start rule/0
       symbol/0
         symbol name/0
-          @1097 10 'statements'
+          @1846 10 'statements'
   statement/5
     quantified rule/0
       lhs/0
         symbol name/0
-          @1108 10 'statements'
+          @1858 10 'statements'
       single symbol/0
         symbol/0
           symbol name/0
-            @1123 9 'statement'
+            @1873 9 'statement'
       quantifier/1
-        @1132 1 '+'
+        @1882 1 '+'
       @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/0
-          @1134 9 'statement'
+          @1884 9 'statement'
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -56,160 +48,160 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1148 12 {'<start rule>'}
+                      @1902 12 {'<start rule>'}
             @{} {} ''
-          @1161 1 '|'
+          @1917 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1163 12 {'<empty rule>'}
+                      @1919 12 {'<empty rule>'}
             @{} {} ''
-          @1178 1 '|'
+          @1934 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1180 16 {'<null statement>'}
+                      @1936 16 {'<null statement>'}
             @{} {} ''
-          @1197 1 '|'
+          @1955 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1199 17 {'<statement group>'}
+                      @1957 17 {'<statement group>'}
             @{} {} ''
-          @1219 1 '|'
+          @1977 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1221 15 {'<priority rule>'}
+                      @1979 15 {'<priority rule>'}
             @{} {} ''
-          @1237 1 '|'
+          @1997 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1239 17 {'<quantified rule>'}
+                      @1999 17 {'<quantified rule>'}
             @{} {} ''
-          @1259 1 '|'
+          @2019 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1261 14 {'<discard rule>'}
+                      @2021 14 {'<discard rule>'}
             @{} {} ''
-          @1276 1 '|'
+          @2038 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1278 14 {'<default rule>'}
+                      @2040 14 {'<default rule>'}
             @{} {} ''
-          @1295 1 '|'
+          @2057 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1297 26 {'<lexeme default statement>'}
+                      @2059 26 {'<lexeme default statement>'}
             @{} {} ''
-          @1326 1 '|'
+          @2088 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1328 27 {'<discard default statement>'}
+                      @2090 27 {'<discard default statement>'}
             @{} {} ''
-          @1358 1 '|'
+          @2120 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1360 13 {'<lexeme rule>'}
+                      @2122 13 {'<lexeme rule>'}
             @{} {} ''
-          @1376 1 '|'
+          @2138 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1378 30 {'<completion event declaration>'}
+                      @2140 30 {'<completion event declaration>'}
             @{} {} ''
-          @1411 1 '|'
+          @2173 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1413 26 {'<nulled event declaration>'}
+                      @2175 26 {'<nulled event declaration>'}
             @{} {} ''
-          @1442 1 '|'
+          @2204 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1444 30 {'<prediction event declaration>'}
+                      @2206 30 {'<prediction event declaration>'}
             @{} {} ''
-          @1477 1 '|'
+          @2239 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1479 25 {'<current lexer statement>'}
+                      @2241 25 {'<current lexer statement>'}
             @{} {} ''
-          @1507 1 '|'
+          @2269 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1509 24 {'<inaccessible statement>'}
+                      @2271 24 {'<inaccessible statement>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @1535 16 {'<null statement>'}
+          @2297 16 {'<null statement>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
             rhs/0
               rhs primary/1
-                @1556 3 {'';''}
+                @2318 3 {'';''}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @1560 17 {'<statement group>'}
+          @2322 17 {'<statement group>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -218,20 +210,20 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @1583 3 {''\173''}
+                      @2345 3 {''\173''}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @1588 10 'statements'
+                      @2350 10 'statements'
               rhs primary/1
-                @1599 3 {''\175''}
+                @2361 3 {''\175''}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @1603 12 {'<start rule>'}
+          @2365 12 {'<start rule>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -240,23 +232,23 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @1621 8 '':start''
+                      @2383 8 '':start''
                     rhs primary/0
                       single symbol/0
                         symbol/0
                           symbol name/1
-                            @1630 16 {'<op declare bnf>'}
+                            @2392 16 {'<op declare bnf>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @1648 6 'symbol'
+                      @2410 6 'symbol'
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @1655 12 {'<start rule>'}
+          @2417 12 {'<start rule>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -265,44 +257,44 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @1673 7 ''start''
+                      @2435 7 ''start''
                     rhs primary/1
-                      @1681 8 ''symbol''
+                      @2443 8 ''symbol''
                     rhs primary/1
-                      @1690 4 ''is''
+                      @2452 4 ''is''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @1696 6 'symbol'
+                      @2458 6 'symbol'
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @1703 14 {'<default rule>'}
+          @2465 14 {'<default rule>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
             rhs/0
               rhs primary/1
-                @1722 10 '':default''
+                @2484 10 '':default''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1733 16 {'<op declare bnf>'}
+                      @2495 16 {'<op declare bnf>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1750 21 {'<adverb list default>'}
+                      @2512 21 {'<adverb list default>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @1772 26 {'<lexeme default statement>'}
+          @2534 26 {'<lexeme default statement>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -311,22 +303,22 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @1804 8 ''lexeme''
+                      @2566 8 ''lexeme''
                     rhs primary/1
-                      @1813 9 ''default''
+                      @2575 9 ''default''
                     rhs primary/1
-                      @1823 3 ''=''
+                      @2585 3 ''=''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1828 28 {'<adverb list lexeme default>'}
+                      @2590 28 {'<adverb list lexeme default>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @1857 27 {'<discard default statement>'}
+          @2619 27 {'<discard default statement>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -335,22 +327,22 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @1890 9 ''discard''
+                      @2652 9 ''discard''
                     rhs primary/1
-                      @1900 9 ''default''
+                      @2662 9 ''default''
                     rhs primary/1
-                      @1910 3 ''=''
+                      @2672 3 ''=''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1915 29 {'<adverb list discard default>'}
+                      @2677 29 {'<adverb list discard default>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @1946 12 {'<empty rule>'}
+          @2708 12 {'<empty rule>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -359,23 +351,23 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @1963 3 'lhs'
+                      @2725 3 'lhs'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1967 16 {'<op declare bnf>'}
+                      @2729 16 {'<op declare bnf>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @1984 23 {'<adverb list bnf empty>'}
+                      @2748 23 {'<adverb list bnf empty>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @2008 12 {'<empty rule>'}
+          @2772 12 {'<empty rule>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -384,23 +376,23 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @2025 3 'lhs'
+                      @2789 3 'lhs'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2029 18 {'<op declare match>'}
+                      @2793 18 {'<op declare match>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2048 25 {'<adverb list match empty>'}
+                      @2812 25 {'<adverb list match empty>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @2075 17 {'<quantified rule>'}
+          @2839 17 {'<quantified rule>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -409,33 +401,33 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @2097 3 'lhs'
+                      @2861 3 'lhs'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2101 16 {'<op declare bnf>'}
+                      @2865 16 {'<op declare bnf>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2118 15 {'<single symbol>'}
+                      @2882 15 {'<single symbol>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @2134 10 'quantifier'
+                      @2898 10 'quantifier'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2145 28 {'<adverb list bnf quantified>'}
+                      @2909 28 {'<adverb list bnf quantified>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @2174 17 {'<quantified rule>'}
+          @2938 17 {'<quantified rule>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -444,33 +436,33 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @2196 3 'lhs'
+                      @2960 3 'lhs'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2200 18 {'<op declare match>'}
+                      @2964 18 {'<op declare match>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2219 15 {'<single symbol>'}
+                      @2983 15 {'<single symbol>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @2235 10 'quantifier'
+                      @2999 10 'quantifier'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2246 30 {'<adverb list match quantified>'}
+                      @3010 30 {'<adverb list match quantified>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @2278 14 {'<discard rule>'}
+          @3042 14 {'<discard rule>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -479,28 +471,28 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @2298 10 '':discard''
+                      @3062 10 '':discard''
                     rhs primary/0
                       single symbol/0
                         symbol/0
                           symbol name/1
-                            @2309 18 {'<op declare match>'}
+                            @3073 18 {'<op declare match>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @2329 6 'symbol'
+                      @3093 6 'symbol'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2336 21 {'<adverb list discard>'}
+                      @3100 21 {'<adverb list discard>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @2358 14 {'<discard rule>'}
+          @3122 14 {'<discard rule>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -509,28 +501,28 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @2378 10 '':discard''
+                      @3142 10 '':discard''
                     rhs primary/0
                       single symbol/0
                         symbol/0
                           symbol name/1
-                            @2389 18 {'<op declare match>'}
+                            @3153 18 {'<op declare match>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2409 17 {'<character class>'}
+                      @3173 17 {'<character class>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2427 21 {'<adverb list discard>'}
+                      @3191 21 {'<adverb list discard>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @2504 13 {'<lexeme rule>'}
+          @3315 13 {'<lexeme rule>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -539,28 +531,28 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @2523 9 '':lexeme''
+                      @3334 9 '':lexeme''
                     rhs primary/0
                       single symbol/0
                         symbol/0
                           symbol name/1
-                            @2533 18 {'<op declare match>'}
+                            @3344 18 {'<op declare match>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @2553 6 'symbol'
+                      @3364 6 'symbol'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2560 20 {'<adverb list lexeme>'}
+                      @3371 20 {'<adverb list lexeme>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @2581 30 {'<completion event declaration>'}
+          @3392 30 {'<completion event declaration>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -569,30 +561,30 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @2617 7 ''event''
+                      @3428 7 ''event''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2626 22 {'<event initialization>'}
+                      @3437 22 {'<event initialization>'}
               rhs primary/2
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @2650 3 ''=''
+                      @3461 3 ''=''
                     rhs primary/1
-                      @2654 11 ''completed''
+                      @3465 11 ''completed''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2667 13 {'<symbol name>'}
+                      @3478 13 {'<symbol name>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @2681 26 {'<nulled event declaration>'}
+          @3492 26 {'<nulled event declaration>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -601,30 +593,30 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @2713 7 ''event''
+                      @3524 7 ''event''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2722 22 {'<event initialization>'}
+                      @3533 22 {'<event initialization>'}
               rhs primary/2
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @2746 3 ''=''
+                      @3557 3 ''=''
                     rhs primary/1
-                      @2750 8 ''nulled''
+                      @3561 8 ''nulled''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2760 13 {'<symbol name>'}
+                      @3571 13 {'<symbol name>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @2774 30 {'<prediction event declaration>'}
+          @3585 30 {'<prediction event declaration>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -633,30 +625,30 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @2810 7 ''event''
+                      @3621 7 ''event''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2819 22 {'<event initialization>'}
+                      @3630 22 {'<event initialization>'}
               rhs primary/2
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @2843 3 ''=''
+                      @3654 3 ''=''
                     rhs primary/1
-                      @2847 11 ''predicted''
+                      @3658 11 ''predicted''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2860 13 {'<symbol name>'}
+                      @3671 13 {'<symbol name>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @2874 25 {'<current lexer statement>'}
+          @3685 25 {'<current lexer statement>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -665,22 +657,22 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @2905 9 ''current''
+                      @3716 9 ''current''
                     rhs primary/1
-                      @2915 7 ''lexer''
+                      @3726 7 ''lexer''
                     rhs primary/1
-                      @2923 4 ''is''
+                      @3734 4 ''is''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2929 12 {'<lexer name>'}
+                      @3740 12 {'<lexer name>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @2943 24 {'<inaccessible statement>'}
+          @3754 24 {'<inaccessible statement>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -689,76 +681,51 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @2973 14 ''inaccessible''
+                      @3784 14 ''inaccessible''
                     rhs primary/1
-                      @2988 4 ''is''
+                      @3799 4 ''is''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @2994 24 {'<inaccessible treatment>'}
+                      @3805 24 {'<inaccessible treatment>'}
               rhs primary/2
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @3020 4 ''by''
+                      @3831 4 ''by''
                     rhs primary/1
-                      @3025 9 ''default''
+                      @3836 9 ''default''
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @3036 24 {'<inaccessible treatment>'}
+          @3847 24 {'<inaccessible treatment>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
             rhs/0
               rhs primary/1
-                @3065 6 ''warn''
+                @3876 6 ''warn''
             @{} {} ''
-          @3072 1 '|'
+          @3883 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/1
-                @3074 4 ''ok''
+                @3885 4 ''ok''
             @{} {} ''
-          @3079 1 '|'
+          @3890 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/1
-                @3081 7 ''fatal''
+                @3892 7 ''fatal''
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @3090 15 {'<priority rule>'}
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/0
-                      @3110 3 'lhs'
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @3114 16 {'<op declare bnf>'}
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @3131 16 {'<priorities bnf>'}
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @3148 15 {'<priority rule>'}
+          @3901 15 {'<priority rule>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -767,29 +734,54 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @3168 3 'lhs'
+                      @3921 3 'lhs'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @3172 18 {'<op declare match>'}
+                      @3925 16 {'<op declare bnf>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @3191 18 {'<priorities match>'}
+                      @3942 16 {'<priorities bnf>'}
+            @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/1
+          @3959 15 {'<priority rule>'}
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @3979 3 'lhs'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @3983 18 {'<op declare match>'}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @4002 18 {'<priorities match>'}
             @{} {} ''
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @3211 16 {'<priorities bnf>'}
+          @4022 16 {'<priorities bnf>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @3232 18 {'<alternatives bnf>'}
+            @4045 18 {'<alternatives bnf>'}
       quantifier/1
-        @3250 1 '+'
+        @4063 1 '+'
       adverb list bnf quantified/0
         adverb list items bnf quantified/0
           adverb item bnf quantified/2
@@ -797,21 +789,21 @@ statements/0
               single symbol/0
                 symbol/0
                   symbol name/1
-                    @3268 11 {'<op loosen>'}
+                    @4080 11 {'<op loosen>'}
           adverb item bnf quantified/3
             proper specification/0
-              @3290 1 '1'
+              @4104 1 '1'
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @3292 18 {'<priorities match>'}
+          @4106 18 {'<priorities match>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @3315 20 {'<alternatives match>'}
+            @4129 20 {'<alternatives match>'}
       quantifier/1
-        @3335 1 '+'
+        @4149 1 '+'
       adverb list bnf quantified/0
         adverb list items bnf quantified/0
           adverb item bnf quantified/2
@@ -819,21 +811,21 @@ statements/0
               single symbol/0
                 symbol/0
                   symbol name/1
-                    @3353 11 {'<op loosen>'}
+                    @4166 11 {'<op loosen>'}
           adverb item bnf quantified/3
             proper specification/0
-              @3375 1 '1'
+              @4190 1 '1'
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @3378 18 {'<alternatives bnf>'}
+          @4193 18 {'<alternatives bnf>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @3401 17 {'<alternative bnf>'}
+            @4216 17 {'<alternative bnf>'}
       quantifier/1
-        @3418 1 '+'
+        @4233 1 '+'
       adverb list bnf quantified/0
         adverb list items bnf quantified/0
           adverb item bnf quantified/2
@@ -841,21 +833,21 @@ statements/0
               single symbol/0
                 symbol/0
                   symbol name/1
-                    @3436 19 {'<op equal priority>'}
+                    @4250 19 {'<op equal priority>'}
           adverb item bnf quantified/3
             proper specification/0
-              @3466 1 '1'
+              @4282 1 '1'
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @3468 20 {'<alternatives match>'}
+          @4284 20 {'<alternatives match>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @3493 19 {'<alternative match>'}
+            @4309 19 {'<alternative match>'}
       quantifier/1
-        @3512 1 '+'
+        @4328 1 '+'
       adverb list bnf quantified/0
         adverb list items bnf quantified/0
           adverb item bnf quantified/2
@@ -863,15 +855,15 @@ statements/0
               single symbol/0
                 symbol/0
                   symbol name/1
-                    @3530 19 {'<op equal priority>'}
+                    @4345 19 {'<op equal priority>'}
           adverb item bnf quantified/3
             proper specification/0
-              @3560 1 '1'
+              @4377 1 '1'
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @3563 17 {'<alternative bnf>'}
+          @4380 17 {'<alternative bnf>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -880,18 +872,18 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @3585 3 'rhs'
+                      @4404 3 'rhs'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @3589 29 {'<adverb list bnf alternative>'}
+                      @4408 29 {'<adverb list bnf alternative>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @3619 19 {'<alternative match>'}
+          @4438 19 {'<alternative match>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -900,18 +892,18 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @3643 3 'rhs'
+                      @4462 3 'rhs'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @3647 31 {'<adverb list match alternative>'}
+                      @4466 31 {'<adverb list match alternative>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @3680 21 {'<adverb list default>'}
+          @4499 21 {'<adverb list default>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -920,13 +912,13 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @3707 27 {'<adverb list items default>'}
+                      @4526 27 {'<adverb list items default>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @3740 21 {'<adverb list discard>'}
+          @4554 21 {'<adverb list discard>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -935,13 +927,13 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @3767 27 {'<adverb list items discard>'}
+                      @4581 27 {'<adverb list items discard>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @3800 20 {'<adverb list lexeme>'}
+          @4609 20 {'<adverb list lexeme>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -950,13 +942,13 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @3826 26 {'<adverb list items lexeme>'}
+                      @4635 26 {'<adverb list items lexeme>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @3858 29 {'<adverb list discard default>'}
+          @4662 29 {'<adverb list discard default>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -965,13 +957,13 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @3892 35 {'<adverb list items discard default>'}
+                      @4696 35 {'<adverb list items discard default>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @3929 28 {'<adverb list lexeme default>'}
+          @4732 28 {'<adverb list lexeme default>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -980,13 +972,13 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @3962 34 {'<adverb list items lexeme default>'}
+                      @4765 34 {'<adverb list items lexeme default>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @3999 29 {'<adverb list bnf alternative>'}
+          @4800 29 {'<adverb list bnf alternative>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -995,13 +987,13 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @4033 35 {'<adverb list items bnf alternative>'}
+                      @4834 35 {'<adverb list items bnf alternative>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @4070 23 {'<adverb list bnf empty>'}
+          @4870 23 {'<adverb list bnf empty>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1010,13 +1002,13 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @4099 29 {'<adverb list items bnf empty>'}
+                      @4899 29 {'<adverb list items bnf empty>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @4134 28 {'<adverb list bnf quantified>'}
+          @4929 28 {'<adverb list bnf quantified>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1025,13 +1017,13 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @4167 34 {'<adverb list items bnf quantified>'}
+                      @4962 34 {'<adverb list items bnf quantified>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @4204 31 {'<adverb list match alternative>'}
+          @4997 31 {'<adverb list match alternative>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1040,13 +1032,13 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @4240 37 {'<adverb list items match alternative>'}
+                      @5033 37 {'<adverb list items match alternative>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @4278 25 {'<adverb list match empty>'}
+          @5071 25 {'<adverb list match empty>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1055,13 +1047,13 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @4309 31 {'<adverb list items match empty>'}
+                      @5102 31 {'<adverb list items match empty>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @4346 30 {'<adverb list match quantified>'}
+          @5134 30 {'<adverb list match quantified>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1070,145 +1062,145 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @4381 36 {'<adverb list items match quantified>'}
+                      @5169 36 {'<adverb list items match quantified>'}
             @{} {} ''
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @4419 27 {'<adverb list items default>'}
+          @5207 27 {'<adverb list items default>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @4452 21 {'<adverb item default>'}
+            @5240 21 {'<adverb item default>'}
       quantifier/0
-        @4473 1 '*'
+        @5261 1 '*'
       @{} {} ''
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @4476 27 {'<adverb list items discard>'}
+          @5263 27 {'<adverb list items discard>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @4513 21 {'<adverb item discard>'}
+            @5300 21 {'<adverb item discard>'}
       quantifier/0
-        @4534 1 '*'
+        @5321 1 '*'
       @{} {} ''
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @4536 26 {'<adverb list items lexeme>'}
+          @5323 26 {'<adverb list items lexeme>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @4572 20 {'<adverb item lexeme>'}
+            @5359 20 {'<adverb item lexeme>'}
       quantifier/0
-        @4592 1 '*'
+        @5379 1 '*'
       @{} {} ''
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @4594 35 {'<adverb list items discard default>'}
+          @5381 35 {'<adverb list items discard default>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @4635 29 {'<adverb item discard default>'}
+            @5422 29 {'<adverb item discard default>'}
       quantifier/0
-        @4664 1 '*'
+        @5451 1 '*'
       @{} {} ''
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @4666 34 {'<adverb list items lexeme default>'}
+          @5453 34 {'<adverb list items lexeme default>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @4707 28 {'<adverb item lexeme default>'}
+            @5494 28 {'<adverb item lexeme default>'}
       quantifier/0
-        @4735 1 '*'
+        @5522 1 '*'
       @{} {} ''
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @4737 35 {'<adverb list items bnf alternative>'}
+          @5524 35 {'<adverb list items bnf alternative>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @4778 29 {'<adverb item bnf alternative>'}
+            @5565 29 {'<adverb item bnf alternative>'}
       quantifier/0
-        @4807 1 '*'
+        @5594 1 '*'
       @{} {} ''
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @4809 29 {'<adverb list items bnf empty>'}
+          @5596 29 {'<adverb list items bnf empty>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @4844 23 {'<adverb item bnf empty>'}
+            @5631 23 {'<adverb item bnf empty>'}
       quantifier/0
-        @4867 1 '*'
+        @5654 1 '*'
       @{} {} ''
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @4869 34 {'<adverb list items bnf quantified>'}
+          @5656 34 {'<adverb list items bnf quantified>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @4908 28 {'<adverb item bnf quantified>'}
+            @5695 28 {'<adverb item bnf quantified>'}
       quantifier/0
-        @4936 1 '*'
+        @5723 1 '*'
       @{} {} ''
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @4938 37 {'<adverb list items match alternative>'}
+          @5725 37 {'<adverb list items match alternative>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @4980 31 {'<adverb item match alternative>'}
+            @5767 31 {'<adverb item match alternative>'}
       quantifier/0
-        @5011 1 '*'
+        @5798 1 '*'
       @{} {} ''
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @5013 31 {'<adverb list items match empty>'}
+          @5800 31 {'<adverb list items match empty>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @5050 25 {'<adverb item match empty>'}
+            @5837 25 {'<adverb item match empty>'}
       quantifier/0
-        @5075 1 '*'
+        @5862 1 '*'
       @{} {} ''
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @5077 36 {'<adverb list items match quantified>'}
+          @5864 36 {'<adverb list items match quantified>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @5118 30 {'<adverb item match quantified>'}
+            @5905 30 {'<adverb item match quantified>'}
       quantifier/0
-        @5148 1 '*'
+        @5935 1 '*'
       @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @5151 21 {'<adverb item default>'}
+          @5938 21 {'<adverb item default>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1217,31 +1209,22 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @5178 6 'action'
+                      @5965 6 'action'
             @{} {} ''
-          @5185 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/0
-                      @5187 8 'blessing'
-            @{} {} ''
-          @5206 1 '|'
+          @5994 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5208 13 {'<null adverb>'}
+                      @5996 13 {'<null adverb>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @5222 21 {'<adverb item discard>'}
+          @6010 21 {'<adverb item discard>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1250,22 +1233,22 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5253 21 {'<event specification>'}
+                      @6041 21 {'<event specification>'}
             @{} {} ''
-          @5284 1 '|'
+          @6072 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5286 13 {'<null adverb>'}
+                      @6074 13 {'<null adverb>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @5300 20 {'<adverb item lexeme>'}
+          @6088 20 {'<adverb item lexeme>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1274,49 +1257,49 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5330 21 {'<event specification>'}
+                      @6118 21 {'<event specification>'}
             @{} {} ''
-          @5352 1 '|'
+          @6140 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5354 20 {'<latm specification>'}
+                      @6142 20 {'<latm specification>'}
             @{} {} ''
-          @5375 1 '|'
+          @6163 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5377 24 {'<priority specification>'}
+                      @6165 24 {'<priority specification>'}
             @{} {} ''
-          @5402 1 '|'
+          @6190 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5404 21 {'<pause specification>'}
+                      @6192 21 {'<pause specification>'}
             @{} {} ''
-          @5426 1 '|'
+          @6214 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5428 13 {'<null adverb>'}
+                      @6216 13 {'<null adverb>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @5442 29 {'<adverb item discard default>'}
+          @6230 29 {'<adverb item discard default>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1325,22 +1308,22 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5477 21 {'<event specification>'}
+                      @6265 21 {'<event specification>'}
             @{} {} ''
-          @5508 1 '|'
+          @6296 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5510 13 {'<null adverb>'}
+                      @6298 13 {'<null adverb>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @5524 28 {'<adverb item lexeme default>'}
+          @6312 28 {'<adverb item lexeme default>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1349,40 +1332,31 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @5559 6 'action'
+                      @6347 6 'action'
             @{} {} ''
-          @5566 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/0
-                      @5568 8 'blessing'
-            @{} {} ''
-          @5577 1 '|'
+          @6365 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5579 20 {'<latm specification>'}
+                      @6367 20 {'<latm specification>'}
             @{} {} ''
-          @5607 1 '|'
+          @6395 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5609 13 {'<null adverb>'}
+                      @6397 13 {'<null adverb>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @5623 29 {'<adverb item bnf alternative>'}
+          @6411 29 {'<adverb item bnf alternative>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1391,67 +1365,58 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @5658 6 'action'
+                      @6446 6 'action'
             @{} {} ''
-          @5665 1 '|'
+          @6464 1 '|'
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @6466 18 {'<left association>'}
+            @{} {} ''
+          @6485 1 '|'
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @6487 19 {'<right association>'}
+            @{} {} ''
+          @6507 1 '|'
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @6509 19 {'<group association>'}
+            @{} {} ''
+          @6529 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @5667 8 'blessing'
+                      @6531 6 'naming'
             @{} {} ''
-          @5676 1 '|'
+          @6539 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5678 18 {'<left association>'}
-            @{} {} ''
-          @5697 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @5699 19 {'<right association>'}
-            @{} {} ''
-          @5719 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @5721 19 {'<group association>'}
-            @{} {} ''
-          @5741 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/0
-                      @5743 6 'naming'
-            @{} {} ''
-          @5751 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @5753 13 {'<null adverb>'}
+                      @6541 13 {'<null adverb>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @5767 23 {'<adverb item bnf empty>'}
+          @6555 23 {'<adverb item bnf empty>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1460,67 +1425,58 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @5796 6 'action'
+                      @6584 6 'action'
             @{} {} ''
-          @5803 1 '|'
+          @6602 1 '|'
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @6604 18 {'<left association>'}
+            @{} {} ''
+          @6623 1 '|'
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @6625 19 {'<right association>'}
+            @{} {} ''
+          @6645 1 '|'
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @6647 19 {'<group association>'}
+            @{} {} ''
+          @6667 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @5805 8 'blessing'
+                      @6669 6 'naming'
             @{} {} ''
-          @5814 1 '|'
+          @6677 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5816 18 {'<left association>'}
-            @{} {} ''
-          @5835 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @5837 19 {'<right association>'}
-            @{} {} ''
-          @5857 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @5859 19 {'<group association>'}
-            @{} {} ''
-          @5879 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/0
-                      @5881 6 'naming'
-            @{} {} ''
-          @5889 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @5891 13 {'<null adverb>'}
+                      @6679 13 {'<null adverb>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @5905 28 {'<adverb item bnf quantified>'}
+          @6693 28 {'<adverb item bnf quantified>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1529,49 +1485,40 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @5938 6 'action'
+                      @6726 6 'action'
             @{} {} ''
-          @5945 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/0
-                      @5947 8 'blessing'
-            @{} {} ''
-          @5956 1 '|'
+          @6744 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5958 25 {'<separator specification>'}
+                      @6746 25 {'<separator specification>'}
             @{} {} ''
-          @5984 1 '|'
+          @6772 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @5986 22 {'<proper specification>'}
+                      @6774 22 {'<proper specification>'}
             @{} {} ''
-          @6012 1 '|'
+          @6800 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @6014 13 {'<null adverb>'}
+                      @6802 13 {'<null adverb>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @6028 31 {'<adverb item match alternative>'}
+          @6816 31 {'<adverb item match alternative>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1580,22 +1527,22 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @6064 6 'naming'
+                      @6852 6 'naming'
             @{} {} ''
-          @6082 1 '|'
+          @6870 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @6084 13 {'<null adverb>'}
+                      @6872 13 {'<null adverb>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @6098 25 {'<adverb item match empty>'}
+          @6886 25 {'<adverb item match empty>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1604,22 +1551,22 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @6128 6 'naming'
+                      @6916 6 'naming'
             @{} {} ''
-          @6146 1 '|'
+          @6934 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @6148 13 {'<null adverb>'}
+                      @6936 13 {'<null adverb>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @6162 30 {'<adverb item match quantified>'}
+          @6950 30 {'<adverb item match quantified>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1628,43 +1575,43 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @6197 25 {'<separator specification>'}
+                      @6985 25 {'<separator specification>'}
             @{} {} ''
-          @6223 1 '|'
+          @7011 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @6225 22 {'<proper specification>'}
+                      @7013 22 {'<proper specification>'}
             @{} {} ''
-          @6254 1 '|'
+          @7042 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @6256 13 {'<null adverb>'}
+                      @7044 13 {'<null adverb>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @6794 13 {'<null adverb>'}
+          @7129 13 {'<null adverb>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
             rhs/0
               rhs primary/1
-                @6812 3 '',''
+                @7162 3 '',''
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/0
-          @6816 6 'action'
+          @7166 6 'action'
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1673,20 +1620,20 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @6828 8 ''action''
+                      @7200 8 ''action''
                     rhs primary/1
-                      @6837 4 ''=>''
+                      @7215 4 ''=>''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @6843 13 {'<action name>'}
+                      @7221 13 {'<action name>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @6857 18 {'<left association>'}
+          @7235 18 {'<left association>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1695,17 +1642,17 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @6881 7 ''assoc''
+                      @7269 7 ''assoc''
                     rhs primary/1
-                      @6889 4 ''=>''
+                      @7284 4 ''=>''
                     rhs primary/1
-                      @6894 6 ''left''
+                      @7289 6 ''left''
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @6902 19 {'<right association>'}
+          @7297 19 {'<right association>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1714,17 +1661,17 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @6927 7 ''assoc''
+                      @7331 7 ''assoc''
                     rhs primary/1
-                      @6935 4 ''=>''
+                      @7346 4 ''=>''
                     rhs primary/1
-                      @6940 7 ''right''
+                      @7351 7 ''right''
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @6949 19 {'<group association>'}
+          @7360 19 {'<group association>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1733,169 +1680,17 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @6974 7 ''assoc''
-                    rhs primary/1
-                      @6982 4 ''=>''
-                    rhs primary/1
-                      @6987 7 ''group''
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @6996 25 {'<separator specification>'}
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/2
-                parenthesized rhs primary list/0
-                  rhs primary list/0
-                    rhs primary/1
-                      @7027 11 ''separator''
-                    rhs primary/1
-                      @7039 4 ''=>''
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @7045 15 {'<single symbol>'}
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @7061 22 {'<proper specification>'}
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/2
-                parenthesized rhs primary list/0
-                  rhs primary list/0
-                    rhs primary/1
-                      @7089 8 ''proper''
-                    rhs primary/1
-                      @7098 4 ''=>''
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/0
-                      @7104 7 'boolean'
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @7112 20 {'<rank specification>'}
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/2
-                parenthesized rhs primary list/0
-                  rhs primary list/0
-                    rhs primary/1
-                      @7138 6 ''rank''
-                    rhs primary/1
-                      @7145 4 ''=>''
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @7151 16 {'<signed integer>'}
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @7168 28 {'<null ranking specification>'}
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/2
-                parenthesized rhs primary list/0
-                  rhs primary list/0
-                    rhs primary/1
-                      @7202 14 ''null-ranking''
-                    rhs primary/1
-                      @7217 4 ''=>''
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @7223 23 {'<null ranking constant>'}
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @7247 28 {'<null ranking specification>'}
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/2
-                parenthesized rhs primary list/0
-                  rhs primary list/0
-                    rhs primary/1
-                      @7281 6 ''null''
-                    rhs primary/1
-                      @7288 6 ''rank''
-                    rhs primary/1
-                      @7295 4 ''=>''
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @7301 23 {'<null ranking constant>'}
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @7325 23 {'<null ranking constant>'}
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/1
-                @7353 5 ''low''
-            @{} {} ''
-          @7359 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/1
-                @7361 6 ''high''
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @7368 24 {'<priority specification>'}
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/2
-                parenthesized rhs primary list/0
-                  rhs primary list/0
-                    rhs primary/1
-                      @7398 10 ''priority''
+                      @7394 7 ''assoc''
                     rhs primary/1
                       @7409 4 ''=>''
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @7415 16 {'<signed integer>'}
+                    rhs primary/1
+                      @7414 7 ''group''
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @7432 21 {'<pause specification>'}
+          @7423 25 {'<separator specification>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1904,20 +1699,20 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @7459 7 ''pause''
+                      @7457 11 ''separator''
                     rhs primary/1
-                      @7467 4 ''=>''
+                      @7472 4 ''=>''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @7473 17 {'<before or after>'}
+                      @7478 15 {'<single symbol>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @7492 21 {'<event specification>'}
+          @7494 22 {'<proper specification>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1926,40 +1721,20 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @7519 7 ''event''
+                      @7528 8 ''proper''
                     rhs primary/1
-                      @7527 4 ''=>''
+                      @7543 4 ''=>''
               rhs primary/0
                 single symbol/0
                   symbol/0
-                    symbol name/1
-                      @7533 22 {'<event initialization>'}
+                    symbol name/0
+                      @7549 7 'boolean'
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @7556 22 {'<event initialization>'}
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @7583 12 {'<event name>'}
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @7596 19 {'<event initializer>'}
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @7616 19 {'<event initializer>'}
+          @7557 20 {'<rank specification>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -1968,130 +1743,328 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @7641 3 ''=''
+                      @7591 6 ''rank''
+                    rhs primary/1
+                      @7606 4 ''=>''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @7646 11 {'<on or off>'}
+                      @7612 16 {'<signed integer>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @7658 11 {'<on or off>'}
+          @7629 24 {'<priority specification>'}
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/2
+                parenthesized rhs primary list/0
+                  rhs primary list/0
+                    rhs primary/1
+                      @7663 10 ''priority''
+                    rhs primary/1
+                      @7678 4 ''=>''
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @7684 16 {'<signed integer>'}
+            @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/1
+          @7701 21 {'<pause specification>'}
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/2
+                parenthesized rhs primary list/0
+                  rhs primary list/0
+                    rhs primary/1
+                      @7735 7 ''pause''
+                    rhs primary/1
+                      @7750 4 ''=>''
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @7756 17 {'<before or after>'}
+            @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/1
+          @7774 28 {'<null ranking specification>'}
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/2
+                parenthesized rhs primary list/0
+                  rhs primary list/0
+                    rhs primary/1
+                      @7808 14 ''null-ranking''
+                    rhs primary/1
+                      @7823 4 ''=>''
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @7829 23 {'<null ranking constant>'}
+            @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/1
+          @7853 28 {'<null ranking specification>'}
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/2
+                parenthesized rhs primary list/0
+                  rhs primary list/0
+                    rhs primary/1
+                      @7887 6 ''null''
+                    rhs primary/1
+                      @7894 6 ''rank''
+                    rhs primary/1
+                      @7902 4 ''=>''
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @7908 23 {'<null ranking constant>'}
+            @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/1
+          @7932 21 {'<event specification>'}
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/2
+                parenthesized rhs primary list/0
+                  rhs primary list/0
+                    rhs primary/1
+                      @7966 7 ''event''
+                    rhs primary/1
+                      @7981 4 ''=>''
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @7987 22 {'<event initialization>'}
+            @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/1
+          @8010 20 {'<latm specification>'}
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/2
+                parenthesized rhs primary list/0
+                  rhs primary list/0
+                    rhs primary/1
+                      @8044 11 ''forgiving''
+                    rhs primary/1
+                      @8059 4 ''=>''
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @8065 7 'boolean'
+            @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/1
+          @8073 20 {'<latm specification>'}
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/2
+                parenthesized rhs primary list/0
+                  rhs primary list/0
+                    rhs primary/1
+                      @8107 6 ''latm''
+                    rhs primary/1
+                      @8122 4 ''=>''
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @8128 7 'boolean'
+            @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/1
+          @8136 8 '<naming>'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/2
+                parenthesized rhs primary list/0
+                  rhs primary list/0
+                    rhs primary/1
+                      @8170 6 ''name''
+                    rhs primary/1
+                      @8185 4 ''=>''
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @8191 18 {'<alternative name>'}
+            @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/1
+          @8211 23 {'<null ranking constant>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
             rhs/0
               rhs primary/1
-                @7674 4 ''on''
+                @8244 5 ''low''
             @{} {} ''
-          @7679 1 '|'
+          @8250 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/1
-                @7681 5 ''off''
+                @8252 6 ''high''
+            @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/1
+          @8260 22 {'<event initialization>'}
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @8287 12 {'<event name>'}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @8300 19 {'<event initializer>'}
+            @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/1
+          @8320 19 {'<event initializer>'}
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/2
+                parenthesized rhs primary list/0
+                  rhs primary list/0
+                    rhs primary/1
+                      @8345 3 ''=''
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @8350 11 {'<on or off>'}
+            @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/1
+          @8362 11 {'<on or off>'}
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/1
+                @8378 4 ''on''
+            @{} {} ''
+          @8383 1 '|'
+          alternative bnf/0
+            rhs/0
+              rhs primary/1
+                @8385 5 ''off''
             @{} {} ''
   statement/1
     empty rule/0
       lhs/0
         symbol name/1
-          @7687 19 {'<event initializer>'}
+          @8391 19 {'<event initializer>'}
       @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @7720 20 {'<latm specification>'}
+          @8424 18 {'<alternative name>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
             rhs/0
-              rhs primary/2
-                parenthesized rhs primary list/0
-                  rhs primary list/0
-                    rhs primary/1
-                      @7746 11 ''forgiving''
-                    rhs primary/1
-                      @7758 4 ''=>''
               rhs primary/0
                 single symbol/0
                   symbol/0
-                    symbol name/0
-                      @7764 7 'boolean'
+                    symbol name/1
+                      @8447 15 {'<standard name>'}
+            @{} {} ''
+          @8463 1 '|'
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @8465 20 {'<single quoted name>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @7772 20 {'<latm specification>'}
+          @8486 12 {'<lexer name>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
             rhs/0
-              rhs primary/2
-                parenthesized rhs primary list/0
-                  rhs primary list/0
-                    rhs primary/1
-                      @7798 6 ''latm''
-                    rhs primary/1
-                      @7805 4 ''=>''
               rhs primary/0
                 single symbol/0
                   symbol/0
-                    symbol name/0
-                      @7811 7 'boolean'
+                    symbol name/1
+                      @8509 15 {'<standard name>'}
+            @{} {} ''
+          @8525 1 '|'
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @8527 20 {'<single quoted name>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @7819 10 '<blessing>'
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/2
-                parenthesized rhs primary list/0
-                  rhs primary list/0
-                    rhs primary/1
-                      @7835 7 ''bless''
-                    rhs primary/1
-                      @7843 4 ''=>''
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @7849 15 {'<blessing name>'}
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @7865 8 '<naming>'
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/2
-                parenthesized rhs primary list/0
-                  rhs primary list/0
-                    rhs primary/1
-                      @7879 6 ''name''
-                    rhs primary/1
-                      @7886 4 ''=>''
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @7892 18 {'<alternative name>'}
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @7912 18 {'<alternative name>'}
+          @8549 12 {'<event name>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -2100,126 +2073,31 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @7935 15 {'<standard name>'}
+                      @8569 15 {'<standard name>'}
             @{} {} ''
-          @7951 1 '|'
+          @8586 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @7953 20 {'<single quoted name>'}
+                      @8588 20 {'<single quoted name>'}
             @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @7974 12 {'<lexer name>'}
-      priorities bnf/0
-        alternatives bnf/0
+          @8610 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @7991 15 {'<standard name>'}
-            @{} {} ''
-          @8007 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @8009 20 {'<single quoted name>'}
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @8031 12 {'<event name>'}
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @8048 15 {'<standard name>'}
-            @{} {} ''
-          @8068 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @8070 20 {'<single quoted name>'}
-            @{} {} ''
-          @8095 1 '|'
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @8097 21 {'<reserved event name>'}
-            @{} {} ''
-  statement/4
-    priority rule/1
-      lhs/0
-        symbol name/1
-          @8119 21 {'<reserved event name>'}
-      priorities match/0
-        alternatives match/0
-          alternative match/0
-            rhs/0
-              rhs primary/1
-                @8143 4 ''::''
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @8148 29 {'<one or more word characters>'}
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @8179 15 {'<blessing name>'}
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @8199 15 {'<standard name>'}
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @8215 15 {'<blessing name>'}
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @8235 24 {'<reserved blessing name>'}
+                      @8612 21 {'<reserved event name>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/0
-          @8261 3 'lhs'
+          @8635 3 'lhs'
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -2228,25 +2106,25 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @8269 13 {'<symbol name>'}
+                      @8643 13 {'<symbol name>'}
             @{} {} ''
   statement/5
     quantified rule/0
       lhs/0
         symbol name/0
-          @8283 3 'rhs'
+          @8657 3 'rhs'
       single symbol/0
         symbol/0
           symbol name/1
-            @8291 13 {'<rhs primary>'}
+            @8665 13 {'<rhs primary>'}
       quantifier/1
-        @8304 1 '+'
+        @8678 1 '+'
       @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @8306 13 {'<rhs primary>'}
+          @8680 13 {'<rhs primary>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -2255,13 +2133,13 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @8324 15 {'<single symbol>'}
+                      @8698 15 {'<single symbol>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @8340 13 {'<rhs primary>'}
+          @8714 13 {'<rhs primary>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -2270,13 +2148,13 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @8358 22 {'<single quoted string>'}
+                      @8732 22 {'<single quoted string>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @8381 13 {'<rhs primary>'}
+          @8755 13 {'<rhs primary>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -2285,13 +2163,13 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @8399 32 {'<parenthesized rhs primary list>'}
+                      @8773 32 {'<parenthesized rhs primary list>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @8432 32 {'<parenthesized rhs primary list>'}
+          @8806 32 {'<parenthesized rhs primary list>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -2300,35 +2178,35 @@ statements/0
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @8470 3 ''(''
+                      @8844 3 ''(''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @8475 18 {'<rhs primary list>'}
+                      @8849 18 {'<rhs primary list>'}
               rhs primary/2
                 parenthesized rhs primary list/0
                   rhs primary list/0
                     rhs primary/1
-                      @8495 3 '')''
+                      @8869 3 '')''
             @{} {} ''
   statement/5
     quantified rule/0
       lhs/0
         symbol name/1
-          @8500 18 {'<rhs primary list>'}
+          @8874 18 {'<rhs primary list>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @8523 13 {'<rhs primary>'}
+            @8897 13 {'<rhs primary>'}
       quantifier/1
-        @8536 1 '+'
+        @8910 1 '+'
       @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @8538 15 {'<single symbol>'}
+          @8913 15 {'<single symbol>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -2337,22 +2215,22 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @8562 6 'symbol'
+                      @8937 6 'symbol'
             @{} {} ''
-          @8571 1 '|'
+          @8946 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @8573 17 {'<character class>'}
+                      @8948 17 {'<character class>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/0
-          @8591 6 'symbol'
+          @8967 6 'symbol'
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -2361,13 +2239,13 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @8602 13 {'<symbol name>'}
+                      @8978 13 {'<symbol name>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @8616 13 {'<symbol name>'}
+          @8993 13 {'<symbol name>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -2376,13 +2254,22 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @8634 11 {'<bare name>'}
+                      @9011 11 {'<bare name>'}
+            @{} {} ''
+          @9023 1 '|'
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @9025 16 {'<bracketed name>'}
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/1
-          @8646 13 {'<symbol name>'}
+          @9042 13 {'<action name>'}
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
@@ -2391,80 +2278,53 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @8664 16 {'<bracketed name>'}
+                      @9060 11 {'<Perl name>'}
             @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @8681 13 {'<action name>'}
-      priorities bnf/0
-        alternatives bnf/0
+          @9072 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @8699 11 {'<Perl name>'}
+                      @9074 22 {'<reserved action name>'}
             @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @8711 13 {'<action name>'}
-      priorities bnf/0
-        alternatives bnf/0
+          @9097 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @8729 22 {'<reserved action name>'}
-            @{} {} ''
-  statement/4
-    priority rule/0
-      lhs/0
-        symbol name/1
-          @8752 13 {'<action name>'}
-      priorities bnf/0
-        alternatives bnf/0
-          alternative bnf/0
-            rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @8770 18 {'<array descriptor>'}
+                      @9099 18 {'<array descriptor>'}
             @{} {} ''
   statement/6
     discard rule/0
       symbol/0
         symbol name/0
-          @8801 10 'whitespace'
+          @9130 10 'whitespace'
       @{} {} ''
   statement/5
     quantified rule/1
       lhs/0
         symbol name/0
-          @8812 10 'whitespace'
+          @9141 10 'whitespace'
       single symbol/1
-        @8825 4 {'[\\s]'}
+        @9154 11 {'[[:space:]]'}
       quantifier/1
-        @8829 1 '+'
+        @9165 1 '+'
       @{} {} ''
   statement/6
     discard rule/0
       symbol/0
         symbol name/1
-          @8860 14 {'<hash comment>'}
+          @9196 14 {'<hash comment>'}
       @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @8875 14 {'<hash comment>'}
+          @9212 14 {'<hash comment>'}
       priorities match/0
         alternatives match/0
           alternative match/0
@@ -2473,183 +2333,183 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @8892 25 {'<terminated hash comment>'}
+                      @9232 25 {'<terminated hash comment>'}
             @{} {} ''
-          @8918 1 '|'
+          @9259 1 '|'
           alternative match/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @8920 36 {'<unterminated\n   final hash comment>'}
-            @{} {} ''
-  statement/4
-    priority rule/1
-      lhs/0
-        symbol name/1
-          @8957 25 {'<terminated hash comment>'}
-      priorities match/0
-        alternatives match/0
-          alternative match/0
-            rhs/0
-              rhs primary/1
-                @8985 3 ''#''
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @8989 19 {'<hash comment body>'}
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @9009 21 {'<vertical space char>'}
+                      @9261 33 {'<unterminated final hash comment>'}
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @9031 33 {'<unterminated final hash comment>'}
+          @9296 25 {'<terminated hash comment>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @9067 3 ''#''
+                @9332 3 ''#''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @9071 19 {'<hash comment body>'}
+                      @9336 19 {'<hash comment body>'}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @9356 21 {'<vertical space char>'}
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/1
+          @9378 33 {'<unterminated final hash comment>'}
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @9414 3 ''#''
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @9418 19 {'<hash comment body>'}
             @{} {} ''
   statement/5
     quantified rule/1
       lhs/0
         symbol name/1
-          @9091 19 {'<hash comment body>'}
+          @9439 19 {'<hash comment body>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @9113 19 {'<hash comment char>'}
+            @9461 19 {'<hash comment char>'}
       quantifier/0
-        @9132 1 '*'
+        @9480 1 '*'
       @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @9134 21 {'<vertical space char>'}
+          @9483 21 {'<vertical space char>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/0
                 single symbol/1
-                  @9158 22 {'[\\n\\v\\f\\r\\u2028\\u2029]'}
+                  @9508 22 {'[\\n\\v\\f\\r\\u2028\\u2029]'}
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @9181 19 {'<hash comment char>'}
+          @9531 19 {'<hash comment char>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/0
                 single symbol/1
-                  @9204 23 {'[^\\n\\v\\f\\r\\u2028\\u2029]'}
+                  @9555 23 {'[^\\n\\v\\f\\r\\u2028\\u2029]'}
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @9229 16 {'<op declare bnf>'}
+          @9580 16 {'<op declare bnf>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @9248 5 ''::=''
+                @9599 5 ''::=''
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @9254 18 {'<op declare match>'}
+          @9605 18 {'<op declare match>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @9275 3 ''~''
+                @9626 3 ''~''
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @9279 11 {'<op loosen>'}
+          @9630 11 {'<op loosen>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @9293 4 ''||''
+                @9644 4 ''||''
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @9298 19 {'<op equal priority>'}
+          @9649 19 {'<op equal priority>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @9320 3 ''|''
+                @9671 3 ''|''
             @{} {} ''
   statement/4
     priority rule/0
       lhs/0
         symbol name/0
-          @9324 10 'quantifier'
+          @9675 10 'quantifier'
       priorities bnf/0
         alternatives bnf/0
           alternative bnf/0
             rhs/0
               rhs primary/1
-                @9339 3 ''*''
+                @9690 3 ''*''
             @{} {} ''
-          @9343 1 '|'
+          @9694 1 '|'
           alternative bnf/0
             rhs/0
               rhs primary/1
-                @9345 3 ''+''
+                @9696 3 ''+''
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @9349 17 {'<before or after>'}
+          @9700 17 {'<before or after>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @9369 8 ''before''
+                @9720 8 ''before''
             @{} {} ''
-          @9378 1 '|'
+          @9729 1 '|'
           alternative match/0
             rhs/0
               rhs primary/1
-                @9380 7 ''after''
+                @9731 7 ''after''
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @9389 16 {'<signed integer>'}
+          @9740 16 {'<signed integer>'}
       priorities match/0
         alternatives match/0
           alternative match/0
@@ -2658,145 +2518,156 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @9408 9 '<integer>'
+                      @9759 9 '<integer>'
             @{} {} ''
-          @9418 1 '|'
+          @9769 1 '|'
           alternative match/0
             rhs/0
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @9420 6 '<sign>'
+                      @9771 6 '<sign>'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @9427 9 '<integer>'
+                      @9778 9 '<integer>'
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @9437 6 '<sign>'
+          @9788 6 '<sign>'
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/0
                 single symbol/1
-                  @9446 4 {'[+-]'}
+                  @9797 4 {'[+-]'}
             @{} {} ''
   statement/5
     quantified rule/1
       lhs/0
         symbol name/1
-          @9451 9 '<integer>'
+          @9802 9 '<integer>'
       single symbol/1
-        @9463 4 {'[\\d]'}
+        @9814 11 {'[[:digit:]]'}
       quantifier/1
-        @9467 1 '+'
+        @9825 1 '+'
       @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/0
-          @9470 7 'boolean'
+          @9828 7 'boolean'
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/0
                 single symbol/1
-                  @9480 4 {'[01]'}
+                  @9838 4 {'[01]'}
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @9486 22 {'<reserved action name>'}
+          @9844 21 {'<reserved event name>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
-              rhs primary/1
-                @9511 4 ''::''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @9516 29 {'<one or more word characters>'}
+                      @9877 14 {'<double colon>'}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @9892 29 {'<one or more word characters>'}
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @9546 24 {'<reserved blessing name>'}
+          @9922 22 {'<reserved action name>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
-              rhs primary/1
-                @9573 4 ''::''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @9578 29 {'<one or more word characters>'}
+                      @9955 14 {'<double colon>'}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @9970 29 {'<one or more word characters>'}
             @{} {} ''
   statement/5
     quantified rule/1
       lhs/0
         symbol name/1
-          @9608 29 {'<one or more word characters>'}
+          @10000 29 {'<one or more word characters>'}
       single symbol/1
-        @9640 4 {'[\\w]'}
+        @10033 12 {'[[:alnum:]_]'}
       quantifier/1
-        @9644 1 '+'
+        @10045 1 '+'
       @{} {} ''
   statement/5
     quantified rule/1
       lhs/0
         symbol name/1
-          @9646 30 {'<zero or more word characters>'}
+          @10047 30 {'<zero or more word characters>'}
       single symbol/1
-        @9679 4 {'[\\w]'}
+        @10080 12 {'[[:alnum:]_]'}
       quantifier/0
-        @9683 1 '*'
-      @{} {} ''
-  statement/5
-    quantified rule/1
-      lhs/0
-        symbol name/1
-          @9833 17 {'<Perl identifier>'}
-      single symbol/1
-        @9853 4 {'[\\w]'}
-      quantifier/1
-        @9857 1 '+'
+        @10092 1 '*'
       @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @9859 14 {'<double colon>'}
+          @10245 17 {'<Perl identifier>'}
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @10265 29 {'<one or more word characters>'}
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/1
+          @10295 14 {'<double colon>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @9876 4 ''::''
+                @10312 4 ''::''
             @{} {} ''
   statement/5
     quantified rule/1
       lhs/0
         symbol name/1
-          @9881 11 {'<Perl name>'}
+          @10317 11 {'<Perl name>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @9895 17 {'<Perl identifier>'}
+            @10331 17 {'<Perl identifier>'}
       quantifier/1
-        @9912 1 '+'
+        @10348 1 '+'
       adverb list match quantified/0
         adverb list items match quantified/0
           adverb item match quantified/0
@@ -2804,72 +2675,77 @@ statements/0
               single symbol/0
                 symbol/0
                   symbol name/1
-                    @9927 14 {'<double colon>'}
+                    @10365 14 {'<double colon>'}
           adverb item match quantified/1
             proper specification/0
-              @9952 1 '1'
-  statement/5
-    quantified rule/1
-      lhs/0
-        symbol name/1
-          @9955 11 {'<bare name>'}
-      single symbol/1
-        @9969 4 {'[\\w]'}
-      quantifier/1
-        @9973 1 '+'
-      @{} {} ''
+              @10395 1 '1'
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @9975 15 {'<standard name>'}
+          @10398 11 {'<bare name>'}
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @10417 29 {'<one or more word characters>'}
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/1
+          @10447 15 {'<standard name>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/0
                 single symbol/1
-                  @9993 8 {'[a-zA-Z]'}
+                  @10466 8 {'[a-zA-Z]'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @10002 30 {'<zero or more word characters>'}
+                      @10475 30 {'<zero or more word characters>'}
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @10033 16 {'<bracketed name>'}
+          @10506 16 {'<bracketed name>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @10052 3 ''<''
+                @10525 3 ''<''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @10056 23 {'<bracketed name string>'}
+                      @10529 23 {'<bracketed name string>'}
               rhs primary/1
-                @10080 3 ''>''
+                @10553 3 ''>''
             @{} {} ''
   statement/5
     quantified rule/1
       lhs/0
         symbol name/1
-          @10084 23 {'<bracketed name string>'}
+          @10557 23 {'<bracketed name string>'}
       single symbol/1
-        @10110 6 {'[\\s\\w]'}
+        @10583 21 {'[[:alnum:]_[:space:]]'}
       quantifier/1
-        @10116 1 '+'
+        @10604 1 '+'
       @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @10119 18 {'<array descriptor>'}
+          @10607 18 {'<array descriptor>'}
       priorities match/0
         alternatives match/0
           alternative match/0
@@ -2878,64 +2754,64 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @10140 31 {'<array descriptor left bracket>'}
+                      @10628 31 {'<array descriptor left bracket>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @10172 29 {'<result item descriptor list>'}
+                      @10683 29 {'<result item descriptor list>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @10202 32 {'<array descriptor right bracket>'}
+                      @10720 32 {'<array descriptor right bracket>'}
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @10236 31 {'<array descriptor left bracket>'}
+          @10754 31 {'<array descriptor left bracket>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @10270 3 {''[''}
+                @10788 3 {''[''}
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @10275 31 {'<array descriptor left bracket>'}
+          @10792 31 {'<array descriptor left bracket>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @10309 3 {''[''}
+                @10826 3 {''[''}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @10313 10 'whitespace'
+                      @10830 10 'whitespace'
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @10325 32 {'<array descriptor right bracket>'}
+          @10842 32 {'<array descriptor right bracket>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @10360 3 ''\]''
+                @10877 3 ''\]''
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @10365 32 {'<array descriptor right bracket>'}
+          @10881 32 {'<array descriptor right bracket>'}
       priorities match/0
         alternatives match/0
           alternative match/0
@@ -2944,21 +2820,21 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @10400 10 'whitespace'
+                      @10916 10 'whitespace'
               rhs primary/1
-                @10411 3 ''\]''
+                @10927 3 ''\]''
             @{} {} ''
   statement/5
     quantified rule/1
       lhs/0
         symbol name/1
-          @10417 29 {'<result item descriptor list>'}
+          @10932 29 {'<result item descriptor list>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @10449 24 {'<result item descriptor>'}
+            @10964 24 {'<result item descriptor>'}
       quantifier/0
-        @10473 1 '*'
+        @10988 1 '*'
       adverb list match quantified/0
         adverb list items match quantified/0
           adverb item match quantified/0
@@ -2966,120 +2842,120 @@ statements/0
               single symbol/0
                 symbol/0
                   symbol name/1
-                    @10488 34 {'<result item descriptor separator>'}
+                    @11005 34 {'<result item descriptor separator>'}
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @10524 34 {'<result item descriptor separator>'}
+          @11041 34 {'<result item descriptor separator>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @10561 3 '',''
+                @11078 3 '',''
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @10565 34 {'<result item descriptor separator>'}
+          @11082 34 {'<result item descriptor separator>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @10602 3 '',''
+                @11119 3 '',''
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @10606 10 'whitespace'
+                      @11123 10 'whitespace'
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @10618 24 {'<result item descriptor>'}
+          @11135 24 {'<result item descriptor>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @10645 7 ''start''
+                @11166 7 ''start''
             @{} {} ''
-          @10653 1 '|'
+          @11176 1 '|'
           alternative match/0
             rhs/0
               rhs primary/1
-                @10655 8 ''length''
+                @11178 8 ''length''
             @{} {} ''
-          @10666 1 '|'
+          @11189 1 '|'
           alternative match/0
             rhs/0
               rhs primary/1
-                @10668 9 ''g1start''
+                @11191 9 ''g1start''
             @{} {} ''
-          @10678 1 '|'
+          @11203 1 '|'
           alternative match/0
             rhs/0
               rhs primary/1
-                @10680 10 ''g1length''
+                @11205 10 ''g1length''
             @{} {} ''
-          @10693 1 '|'
+          @11218 1 '|'
           alternative match/0
             rhs/0
               rhs primary/1
-                @10695 6 ''name''
+                @11220 6 ''name''
             @{} {} ''
-          @10702 1 '|'
+          @11229 1 '|'
           alternative match/0
             rhs/0
               rhs primary/1
-                @10704 5 ''lhs''
+                @11231 5 ''lhs''
             @{} {} ''
-          @10710 1 '|'
+          @11239 1 '|'
           alternative match/0
             rhs/0
               rhs primary/1
-                @10712 8 ''symbol''
+                @11241 8 ''symbol''
             @{} {} ''
-          @10721 1 '|'
+          @11252 1 '|'
           alternative match/0
             rhs/0
               rhs primary/1
-                @10723 6 ''rule''
+                @11254 6 ''rule''
             @{} {} ''
-          @10733 1 '|'
+          @11263 1 '|'
           alternative match/0
             rhs/0
               rhs primary/1
-                @10735 7 ''value''
+                @11265 7 ''value''
             @{} {} ''
-          @10743 1 '|'
+          @11275 1 '|'
           alternative match/0
             rhs/0
               rhs primary/1
-                @10745 8 ''values''
+                @11277 8 ''values''
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/0
-          @11203 5 'quote'
+          @11287 5 'quote'
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/0
                 single symbol/1
-                  @11211 3 {'[']'}
+                  @11295 3 {'[']'}
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @11215 22 {'<single quoted string>'}
+          @11300 22 {'<single quoted string>'}
       priorities match/0
         alternatives match/0
           alternative match/0
@@ -3088,28 +2964,28 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @11240 5 'quote'
+                      @11327 5 'quote'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @11246 47 {'<string without single quote or vertical space>'}
+                      @11337 47 {'<string without single quote or vertical space>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @11294 5 'quote'
+                      @11387 5 'quote'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @11300 27 {'<character class modifiers>'}
+                      @11397 27 {'<character class modifiers>'}
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @11328 20 {'<single quoted name>'}
+          @11426 20 {'<single quoted name>'}
       priorities match/0
         alternatives match/0
           alternative match/0
@@ -3118,61 +2994,27 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @11351 5 'quote'
+                      @11451 5 'quote'
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @11357 47 {'<string without single quote or vertical space>'}
+                      @11461 47 {'<string without single quote or vertical space>'}
               rhs primary/0
                 single symbol/0
                   symbol/0
                     symbol name/0
-                      @11405 5 'quote'
+                      @11511 5 'quote'
             @{} {} ''
   statement/5
     quantified rule/1
       lhs/0
         symbol name/1
-          @11411 47 {'<string without single quote or vertical space>'}
-      single symbol/1
-        @11461 24 {'[^'\\n\\v\\f\\r\\u2028\\u2029]'}
-      quantifier/1
-        @11485 1 '+'
-      @{} {} ''
-  statement/4
-    priority rule/1
-      lhs/0
-        symbol name/1
-          @11488 17 {'<character class>'}
-      priorities match/0
-        alternatives match/0
-          alternative match/0
-            rhs/0
-              rhs primary/1
-                @11508 3 {''[''}
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @11512 13 {'<cc elements>'}
-              rhs primary/1
-                @11526 3 ''\]''
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @11530 27 {'<character class modifiers>'}
-            @{} {} ''
-  statement/5
-    quantified rule/1
-      lhs/0
-        symbol name/1
-          @11558 13 {'<cc elements>'}
+          @11518 47 {'<string without single quote or vertical space>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @11574 12 {'<cc element>'}
+            @11568 18 {'<string character>'}
       quantifier/1
         @11586 1 '+'
       @{} {} ''
@@ -3180,7 +3022,7 @@ statements/0
     priority rule/1
       lhs/0
         symbol name/1
-          @11588 12 {'<cc element>'}
+          @11588 18 {'<string character>'}
       priorities match/0
         alternatives match/0
           alternative match/0
@@ -3188,27 +3030,21 @@ statements/0
               rhs primary/0
                 single symbol/0
                   symbol/0
-                    symbol name/1
-                      @11603 19 {'<safe cc character>'}
+                    symbol name/0
+                      @11609 7 'escaped'
             @{} {} ''
-  statement/4
-    priority rule/1
-      lhs/0
-        symbol name/1
-          @11656 19 {'<safe cc character>'}
-      priorities match/0
-        alternatives match/0
+          @11617 1 '|'
           alternative match/0
             rhs/0
               rhs primary/0
                 single symbol/1
-                  @11678 33 {'[^\\135\\n\\v\\f\\r\\u2028\\u2029\\u0085]'}
+                  @11619 24 {'[^'\\n\\v\\f\\r\\u2028\\u2029]'}
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @11713 12 {'<cc element>'}
+          @11711 17 {'<character class>'}
       priorities match/0
         alternatives match/0
           alternative match/0
@@ -3217,149 +3053,534 @@ statements/0
                 single symbol/0
                   symbol/0
                     symbol name/1
-                      @11728 22 {'<escaped cc character>'}
+                      @11733 9 {'<cc open>'}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @11747 13 {'<cc elements>'}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @11763 12 {'<cc closing>'}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @11780 27 {'<character class modifiers>'}
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @11751 22 {'<escaped cc character>'}
+          @11809 9 {'<cc open>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/1
-                @11776 3 {''\\''}
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @11780 22 {'<horizontal character>'}
+                @11824 3 {''[''}
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @11803 12 {'<cc element>'}
+          @11845 9 {'<cc open>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @11818 18 {'<posix char class>'}
+              rhs primary/1
+                @11860 4 {''[^''}
             @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @11837 12 {'<cc element>'}
+          @11882 12 {'<cc closing>'}
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @11852 26 {'<negated posix char class>'}
+              rhs primary/1
+                @11897 3 ''\]''
             @{} {} ''
   statement/5
     quantified rule/1
       lhs/0
         symbol name/1
-          @11879 27 {'<character class modifiers>'}
+          @11902 13 {'<cc elements>'}
       single symbol/0
         symbol/0
           symbol name/1
-            @11909 26 {'<character class modifier>'}
-      quantifier/0
-        @11935 1 '*'
-      @{} {} ''
-  statement/4
-    priority rule/1
-      lhs/0
-        symbol name/1
-          @11937 26 {'<character class modifier>'}
-      priorities match/0
-        alternatives match/0
-          alternative match/0
-            rhs/0
-              rhs primary/1
-                @11966 5 '':ic''
-            @{} {} ''
-  statement/4
-    priority rule/1
-      lhs/0
-        symbol name/1
-          @11972 26 {'<character class modifier>'}
-      priorities match/0
-        alternatives match/0
-          alternative match/0
-            rhs/0
-              rhs primary/1
-                @12001 4 '':i''
-            @{} {} ''
-  statement/4
-    priority rule/1
-      lhs/0
-        symbol name/1
-          @12185 18 {'<posix char class>'}
-      priorities match/0
-        alternatives match/0
-          alternative match/0
-            rhs/0
-              rhs primary/1
-                @12206 4 {''[:''}
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @12211 23 {'<posix char class name>'}
-              rhs primary/1
-                @12235 4 '':\]''
-            @{} {} ''
-  statement/4
-    priority rule/1
-      lhs/0
-        symbol name/1
-          @12240 26 {'<negated posix char class>'}
-      priorities match/0
-        alternatives match/0
-          alternative match/0
-            rhs/0
-              rhs primary/1
-                @12269 5 {''[:^''}
-              rhs primary/0
-                single symbol/0
-                  symbol/0
-                    symbol name/1
-                      @12275 23 {'<posix char class name>'}
-              rhs primary/1
-                @12299 4 '':\]''
-            @{} {} ''
-  statement/5
-    quantified rule/1
-      lhs/0
-        symbol name/1
-          @12304 23 {'<posix char class name>'}
-      single symbol/1
-        @12330 11 {'[[:alnum:]]'}
+            @11918 12 {'<cc element>'}
       quantifier/1
-        @12341 1 '+'
+        @11930 1 '+'
       @{} {} ''
   statement/4
     priority rule/1
       lhs/0
         symbol name/1
-          @12413 22 {'<horizontal character>'}
+          @11933 12 {'<cc element>'}
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @11949 10 {'<cc range>'}
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/1
+          @11960 12 {'<cc element>'}
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @11976 14 {'<cc character>'}
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/1
+          @11992 10 {'<cc range>'}
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @12005 21 {'<cc single character>'}
+              rhs primary/1
+                @12027 3 ''-''
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @12031 21 {'<cc single character>'}
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/1
+          @12054 14 {'<cc character>'}
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @12071 21 {'<cc single character>'}
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/1
+          @12093 14 {'<cc character>'}
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @12110 18 {'<posix char class>'}
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/1
+          @12130 21 {'<cc single character>'}
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12154 7 'escaped'
+            @{} {} ''
+          @12162 1 '|'
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12164 6 'normal'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @12172 6 'normal'
       priorities match/0
         alternatives match/0
           alternative match/0
             rhs/0
               rhs primary/0
                 single symbol/1
-                  @12438 23 {'[^\\n\\v\\f\\r\\u2028\\u2029]'}
+                  @12181 31 {'[^\\f\\n\\r\\t\\v\\u2028\\u2029\\\\\\135]'}
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @12590 7 'escaped'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12600 7 'special'
+            @{} {} ''
+          @12608 1 '|'
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12610 5 'octal'
+            @{} {} ''
+          @12616 1 '|'
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12618 7 'unicode'
+            @{} {} ''
+          @12626 1 '|'
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12628 6 'unihex'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @12636 7 'special'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @12646 4 {''\\\\''}
+              rhs primary/0
+                single symbol/1
+                  @12651 11 {'[abfnrtv\\\\]'}
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @12664 6 'odigit'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/1
+                  @12674 5 {'[0-7]'}
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @12680 7 'lodigit'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/1
+                  @12690 5 {'[0-3]'}
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @12697 5 'octal'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @12705 4 {''\\\\''}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12710 6 'odigit'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @12717 5 'octal'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @12725 4 {''\\\\''}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12730 6 'odigit'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12737 6 'odigit'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @12744 5 'octal'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @12752 4 {''\\\\''}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12757 7 'lodigit'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12765 6 'odigit'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12772 6 'odigit'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @12780 3 'hex'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/1
+                  @12786 12 {'[[:xdigit:]]'}
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @12799 7 'unicode'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @12809 5 {''\\\\u''}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12815 3 'hex'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @12819 7 'unicode'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @12829 5 {''\\\\u''}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12835 3 'hex'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12839 3 'hex'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @12843 7 'unicode'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @12853 5 {''\\\\u''}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12859 3 'hex'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12863 3 'hex'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12867 3 'hex'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @12871 7 'unicode'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @12881 5 {''\\\\u''}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12887 3 'hex'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12891 3 'hex'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12895 3 'hex'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12899 3 'hex'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @12904 6 'unihex'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @12913 5 {''\\\\x''}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12919 3 'hex'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12923 3 'hex'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/1
+          @13073 18 {'<posix char class>'}
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @13099 4 {''[:''}
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @13104 23 {'<posix char class name>'}
+              rhs primary/1
+                @13128 4 '':\]''
+            @{} {} ''
+  statement/5
+    quantified rule/1
+      lhs/0
+        symbol name/1
+          @13133 23 {'<posix char class name>'}
+      single symbol/1
+        @13159 11 {'[[:alnum:]]'}
+      quantifier/1
+        @13170 1 '+'
+      @{} {} ''
+  statement/5
+    quantified rule/1
+      lhs/0
+        symbol name/1
+          @13363 27 {'<character class modifiers>'}
+      single symbol/0
+        symbol/0
+          symbol name/1
+            @13393 26 {'<character class modifier>'}
+      quantifier/0
+        @13419 1 '*'
+      @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/1
+          @13421 26 {'<character class modifier>'}
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @13450 5 '':ic''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/1
+          @13456 26 {'<character class modifier>'}
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @13485 4 '':i''
             @{} {} ''

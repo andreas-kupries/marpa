@@ -901,8 +901,8 @@ oo::class create marpa::slif::semantics {
 	LITERAL
     }
     method {alternative name/1} {children} {
-	# single quoted name
-	string range [LITERAL] 1 end-1
+	# single quoted name - Note, normalize Tcl escapes
+	subst -nocommands -novariables [string range [LITERAL] 1 end-1]
     }
 
     # # ## ### ##### ######## #############
