@@ -198,7 +198,7 @@ proc add-to-folding {codepoint upcase downcase} {
 }
 
 proc fold {code fold} {
-    global foldmap foldid foldset    
+    global foldmap foldid foldset
 
     incr code 0 ;# normalize code points to decimal integer, no leading zeros.
     incr fold 0 ;# more portable than 4/6 character hex, and less conversion
@@ -512,7 +512,7 @@ proc get-grammar {cc} {
 }
 
 proc clean-folds {} {
-    global foldmap foldset    
+    global foldmap foldset
 
     # Check that all characters mapping to a fold set (class) are in
     # that class.
