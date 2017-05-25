@@ -37,13 +37,6 @@ proc FILL {container grcode spec} {
     return
 }
 
-proc dict-sort {dict} {
-    if {[dict size $dict] < 2} { return $dict }
-    concat {*}[lmap k [lsort -dict [dict keys $dict]] {
-	list $k	[dict get $dict $k]
-    }]
-}
-
 proc NORM {grcode rewrite} {
     if {$grcode eq "l0"} {
 	return [join [lrange $rewrite 0 end] \n]
@@ -55,7 +48,7 @@ proc NORM {grcode rewrite} {
 	} else {
 	    # normalize the attribute order
 	    set attr [lassign $command code type lhs rhs prec]
-	    list $code $type $lhs $rhs $prec {*}[dict-sort $attr]
+	    list $code $type $lhs $rhs $prec {*}[kt dictsort $attr]
 	}
     }] \n
 }
@@ -280,6 +273,5 @@ foreach {grcode specvar rvar rstate} {
 # # ## ### ##### ######## ############# #####################
 rename FILL {}
 rename NORM {}
-rename dict-sort {}
 cleanupTests
 return
