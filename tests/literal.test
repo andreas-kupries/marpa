@@ -34,7 +34,7 @@ proc FE {str} {
 proc RR {result rules literal} {
     set data [lassign $literal type]
     set dlit "($type ($data))"
-    
+
     lappend map @@@ [marpa unicode max]
     lappend map @!  {STATE place done work <symbol>}
     lappend map @=  {STATE place done done <symbol>}
@@ -66,7 +66,7 @@ proc RR {result rules literal} {
 ## [ok] decode-class  |
 ## [ok] type          |
 ## [ok] unescape      |
-## [ok] tags          
+## [ok] tags
 #
 ## [ok] r2container \
 ## [ok] reduce      / API (reduction)
@@ -104,15 +104,15 @@ foreach {data result} {
 
 test marpa-slif-literal-r2container-1.0 {r2container, wrong args, not enough} -body {
     marpa::slif::literal r2container
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal r2container worklist container"}
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal r2container reductions container"}
 
 test marpa-slif-literal-r2container-1.1 {r2container, wrong args, not enough} -body {
     marpa::slif::literal r2container W
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal r2container worklist container"}
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal r2container reductions container"}
 
 test marpa-slif-literal-r2container-1.2 {r2container, wrong args, too many} -body {
     marpa::slif::literal r2container W C X
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal r2container worklist container"}
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal r2container reductions container"}
 
 test marpa-slif-literal-r2container-2.0 {r2container, nothing} -setup {
     set c [log GC] ; /trace GC
@@ -126,12 +126,12 @@ test marpa-slif-literal-r2container-2.0 {r2container, nothing} -setup {
 test marpa-slif-literal-r2container-2.1 {r2container, all cases} -setup {
     set c [log GC] ; /trace GC
 } -body {
-    marpa::slif::literal r2container {
+    marpa::slif::literal r2container {{
 	C {composite {A} {B}}
 	S {composite {A B}}
 	A {character 65}
 	B {character 66}
-    } $c
+    } {}} $c
     string trim [logged "\n"]
 } -cleanup {
     unset c
@@ -168,10 +168,8 @@ foreach {literal toexpect} {
 	    <symbol> {composite {@CHR:<A> @CHR:<B> {@CHR:<\u012c>}}}
 	}
 	{D-STR1 D-CHR} ok {
-	    @BYTE:<A> {byte 65}
-	    @CHR:<A> {composite @BYTE:<A>}
-	    @BYTE:<B> {byte 66}
-	    @CHR:<B> {composite @BYTE:<B>}
+	    @CHR:<A> {byte 65}
+	    @CHR:<B> {byte 66}
 	    {@BYTE:<\u00c4>} {byte 196}
 	    {@BYTE:<\u00ac>} {byte 172}
 	    {@CHR:<\u012c>} {composite {{@BYTE:<\u00c4>} {@BYTE:<\u00ac>}}}
@@ -195,10 +193,8 @@ foreach {literal toexpect} {
 	    <symbol> {composite @CHR:<A> @CHR:<C>}
 	}
 	{D-CLS1 D-CHR} ok {
-	    @BYTE:<A> {byte 65}
-	    @CHR:<A> {composite @BYTE:<A>}
-	    @BYTE:<C> {byte 67}
-	    @CHR:<C> {composite @BYTE:<C>}
+	    @CHR:<A> {byte 65}
+	    @CHR:<C> {byte 67}
 	    <symbol> {composite @CHR:<A> @CHR:<C>}
 	}
 	D-CLS2 ok {
@@ -212,16 +208,24 @@ foreach {literal toexpect} {
     # is covered by what we have now. Extending this is not about
     # coverage anymore, but about seeing the whole deconstruction for
     # all literal types and possible rule-sets.
-    
+
     incr k
     set j 0
     foreach {rules code result} $toexpect {
 	incr j
 
-	test marpa-slif-literal-reduce-2.$k.$j "reduce $code ($literal) $rules" -body {
-	    F [marpa::slif::literal reduce [list <symbol> $literal] $rules]
+	test marpa-slif-literal-reduce-2.$k.$j "reduce $code ($literal) $rules, worklist" -body {
+	    F [lindex [marpa::slif::literal reduce [list <symbol> $literal] $rules] 0]
+	    # Access worklist, ignore the aliases, supposed to be empty
 	} -returnCodes $code -result [RR $result $rules $literal]
-    }
+
+	if {$code eq "error"} continue
+
+	test marpa-slif-literal-reduce-3.$k.$j "reduce $code ($literal) $rules, aliases" -body {
+	    lindex [marpa::slif::literal reduce [list <symbol> $literal] $rules] 1
+	    # Access aliases, always empty
+	} -result {}
+}
 }
 
 # # ## ### ##### ######## ############# #####################
@@ -280,7 +284,7 @@ foreach {literal toexpect} {
     {character 65} {
 	{}    error RT
 	K-CHR ok    {@q {character 65}}
-	D-CHR ok    {@! {composite {{byte 65}}}}
+	D-CHR ok    {@q {byte 65}}
     }
     {character 300} {
 	{}    error RT
@@ -460,7 +464,7 @@ foreach {literal toexpect} {
 	{}     error RT
 	K-RAN  ok    {@q {range 10 11}}
 	D-RAN1 ok    {@! {composite {{character 10}} {{character 11}}}}
-	D-RAN2 ok    {@! {composite {{brange 10 11}}}}
+	D-RAN2 ok    {@q {brange 10 11}}
     }
     %range {
 	{}     error RIL
@@ -504,7 +508,7 @@ foreach {literal toexpect} {
 	{}      error RT
 	K-^RAN  ok    {@q {^range 20 @@@}}
 	D-^RAN1 ok    {@x {range 0 19}}
-	D-^RAN2 ok    {@! {composite {{brange 0 19}}}}
+	D-^RAN2 ok    {@q {brange 0 19}}
     }
     {^range 10 20} {
 	{}      error RT
@@ -710,7 +714,7 @@ test marpa-slif-literal-rstate-place-2.0.1 {rstate, place (literal), results, st
     R results
 } -cleanup {
     R destroy
-} -result {S {character 45}}
+} -result {{S {character 45}} {}}
 
 test marpa-slif-literal-rstate-place-2.1.0 {rstate, place (literal), work} -setup {
     marpa::slif::literal rstate create R {}
@@ -744,7 +748,7 @@ test marpa-slif-literal-rstate-place-2.2.1 {rstate, place (composite), results, 
     list [R work?] --- [R results]
 } -cleanup {
     R destroy
-} -result {0 --- {S {composite @CHR:<-> @CHR:<.>} @CHR:<.> {character 46} @CHR:<-> {character 45}}}
+} -result {0 --- {{S {composite @CHR:<-> @CHR:<.>} @CHR:<.> {character 46} @CHR:<-> {character 45}} {}}}
 
 test marpa-slif-literal-rstate-place-2.3.0 {rstate, place (composite), work} -setup {
     marpa::slif::literal rstate create R {}
@@ -761,7 +765,7 @@ test marpa-slif-literal-rstate-place-2.3.1 {rstate, place (composite), work, sta
     list [R work?] --- [R results] --- [R take] --- [R take]
 } -cleanup {
     R destroy
-} -result {2 --- {S {composite @CHR:<-> @CHR:<.>}} --- {@CHR:<.> {character 46}} --- {@CHR:<-> {character 45}}}
+} -result {2 --- {{S {composite @CHR:<-> @CHR:<.>}} {}} --- {@CHR:<.> {character 46}} --- {@CHR:<-> {character 45}}}
 
 # # ## ### ##### ######## ############# #####################
 ## rstate queue
@@ -813,7 +817,7 @@ test marpa-slif-literal-rstate-queue-2.0.1 {rstate, queue, results, state} -setu
     R results
 } -cleanup {
     R destroy
-} -result {S {character 45}}
+} -result {{S {character 45}} {}}
 
 test marpa-slif-literal-rstate-queue-2.1.0 {rstate, queue, work} -setup {
     marpa::slif::literal rstate create R {}
@@ -848,12 +852,12 @@ test marpa-slif-literal-rstate-results-2.0 {rstate, results} -setup {
 	A {character 12}
 	B {string 65 66 67}
     }
-    # No results. Because this is all in the work-queue.
+    # Empty results. Because this is all in the work-queue.
 } -body {
     R results
 } -cleanup {
     R destroy
-} -result {}
+} -result {{} {}}
 
 test marpa-slif-literal-rstate-results-2.1 {rstate, results} -setup {
     marpa::slif::literal rstate create R {
@@ -867,7 +871,7 @@ test marpa-slif-literal-rstate-results-2.1 {rstate, results} -setup {
     R results
 } -cleanup {
     R destroy
-} -result {A {character 12} B {string 65 66 67}}
+} -result {{A {character 12} B {string 65 66 67}} {}}
 
 # # ## ### ##### ######## ############# #####################
 ## symbol - Generate a symbol for a literal from its representation.
@@ -966,7 +970,7 @@ foreach {rule litstring res} {
     N12 {[[:braille:]a-f]:i}         {charclass {65 70} {97 102} %braille}
     N12 {[\055-/[:braille:]]:i}      {charclass {45 47} %braille}
     N12 {[\055[:braille:]a-f]:i}     {charclass 45 {65 70} {97 102} %braille}
-	                 
+
     N13 {[^a]}                       {^character 97}
     N14 {[^abcdef]}                  {^range 97 102}
     N15 {[^[:braille:]]}             {^named-class braille}
@@ -974,7 +978,7 @@ foreach {rule litstring res} {
     N16 {[^a-c\055d-f]}              {^charclass 45 {97 102}}
     N16 {[^d-f[:braille:]a-e]}       {^charclass {97 102} braille}
     N16 {[^a-c\055[:braille:]b-f]}  {^charclass 45 {97 102} braille}
-	                
+
     N17 {[^a]:i}                     {^charclass 65 97}
     N17 {[^\x2d]:i}                  {^character 45}
     N18 {[^a-f]:i}                   {^charclass {65 70} {97 102}}

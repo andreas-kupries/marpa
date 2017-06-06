@@ -1,0 +1,129 @@
+grammar {
+    global {
+        start A
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            A { {priority {{@LEX:@%STR:<CASE-INSENSITIVE\40STRING>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        {} {
+            @%CHR:<A> {
+                {priority @BYTE:<A> 0}
+                {priority @BYTE:<a> 0}
+            }
+            @%CHR:<C> {
+                {priority @BYTE:<C> 0}
+                {priority @BYTE:<c> 0}
+            }
+            @%CHR:<E> {
+                {priority @BYTE:<E> 0}
+                {priority @BYTE:<e> 0}
+            }
+            @%CHR:<G> {
+                {priority @BYTE:<G> 0}
+                {priority @BYTE:<g> 0}
+            }
+            @%CHR:<I> {
+                {priority @BYTE:<I> 0}
+                {priority @BYTE:<i> 0}
+                {priority {
+                        {@BYTE:<\u00c4>}
+                        {@BRAN:<\u00b0\u00b1>}} 0}
+            }
+            @%CHR:<N> {
+                {priority @BYTE:<N> 0}
+                {priority @BYTE:<n> 0}
+            }
+            @%CHR:<R> {
+                {priority @BYTE:<R> 0}
+                {priority @BYTE:<r> 0}
+            }
+            @%CHR:<S> {
+                {priority @BYTE:<S> 0}
+                {priority @BYTE:<s> 0}
+                {priority {
+                        {@BYTE:<\u00c5>}
+                        {@BYTE:<\u00bf>}} 0}
+            }
+            @%CHR:<T> {
+                {priority @BYTE:<T> 0}
+                {priority @BYTE:<t> 0}
+            }
+            @%CHR:<V> {
+                {priority @BYTE:<V> 0}
+                {priority @BYTE:<v> 0}
+            }
+            {@%STR:<CASE-INSENSITIVE\40STRING>} { {priority {
+                    @%CHR:<C>
+                    @%CHR:<A>
+                    @%CHR:<S>
+                    @%CHR:<E>
+                    @%CHR:<->
+                    @%CHR:<I>
+                    @%CHR:<N>
+                    @%CHR:<S>
+                    @%CHR:<E>
+                    @%CHR:<N>
+                    @%CHR:<S>
+                    @%CHR:<I>
+                    @%CHR:<T>
+                    @%CHR:<I>
+                    @%CHR:<V>
+                    @%CHR:<E>
+                    {@%CHR:<\40>}
+                    @%CHR:<S>
+                    @%CHR:<T>
+                    @%CHR:<R>
+                    @%CHR:<I>
+                    @%CHR:<N>
+                    @%CHR:<G>} 0} }
+        }
+        latm {
+            {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} 1
+        }
+        lexeme {
+            {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} { {priority {{@%STR:<CASE-INSENSITIVE\40STRING>}} 0} }
+        }
+        literal {
+            @%CHR:<-> { {byte 45} }
+            {@%CHR:<\40>} { {byte 32} }
+            {@BRAN:<\u00b0\u00b1>} { {brange 176 177} }
+            {@BYTE:<\u00bf>} { {byte 191} }
+            {@BYTE:<\u00c4>} { {byte 196} }
+            {@BYTE:<\u00c5>} { {byte 197} }
+            @BYTE:<A> { {byte 65} }
+            @BYTE:<a> { {byte 97} }
+            @BYTE:<C> { {byte 67} }
+            @BYTE:<c> { {byte 99} }
+            @BYTE:<E> { {byte 69} }
+            @BYTE:<e> { {byte 101} }
+            @BYTE:<G> { {byte 71} }
+            @BYTE:<g> { {byte 103} }
+            @BYTE:<I> { {byte 73} }
+            @BYTE:<i> { {byte 105} }
+            @BYTE:<N> { {byte 78} }
+            @BYTE:<n> { {byte 110} }
+            @BYTE:<R> { {byte 82} }
+            @BYTE:<r> { {byte 114} }
+            @BYTE:<S> { {byte 83} }
+            @BYTE:<s> { {byte 115} }
+            @BYTE:<T> { {byte 84} }
+            @BYTE:<t> { {byte 116} }
+            @BYTE:<V> { {byte 86} }
+            @BYTE:<v> { {byte 118} }
+        }
+    }
+}

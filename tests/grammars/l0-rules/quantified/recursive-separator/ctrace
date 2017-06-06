@@ -1,0 +1,7 @@
+GC comment definition A 0 1
+GC comment l0-definition A undef --> {JMP match}
+GC comment usage B 6 1
+GC comment l0-usage B undef --> {JMP strict:u}
+GC comment usage A 22 1
+GC comment l0-usage A match --> {JMP strict}
+GC error {Recursive quantified L0 rule (separator) for <A>}

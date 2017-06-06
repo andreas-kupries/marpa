@@ -3,7 +3,7 @@
 ## Precedences
 
 Precedences are integers <= 0.
-Tighest precedence is 0.
+Tightest precedence is 0.
 Loosest precedence is some K <= 0 (dependent on the LHS)
 
 looser(x) = x-1 for x > K,	x in [K, 0]
@@ -112,7 +112,7 @@ course, they actually surround their contents lexically.
 Let `curr` be the precedence of the RHS alternative.
 
 If a RHS alternative has group association, we rewrite the RHS,
-replacing all occurrences of `E` with `E[0]`, We then add a rule
+replacing all occurrences of `E` with `E[K]`, We then add a rule
 with the rewritten RHS, and `E[curr]` as the LHS.
 
 For example, if the RHS alternative is

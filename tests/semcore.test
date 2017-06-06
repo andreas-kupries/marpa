@@ -306,7 +306,7 @@ test marpa-semcore-13.0.0 {map, wrong args, too many} -setup {
 test marpa-semcore-14.0.0 {map, result} -setup {
     marpa::semcore create SC [log SEM]
 } -body {
-    SC add-token 0 {token command}    
+    SC add-token 0 {token command}
     SC add-null  0 {null symbol command}
     SC add-rule  0 {rule command}
     kt dictsort [SC map]

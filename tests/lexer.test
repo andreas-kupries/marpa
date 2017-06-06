@@ -76,7 +76,7 @@ kt source support/fake-store.tcl
 # accept | OK	  | 9.1.0, 9.1.1, 9.1.2
 # enter  |  FAIL  | 8.5.7
 # eof    | OK	  | 11.2.0, 11.2.1, 11.2.2
-# redo   |  FAIL  | 8.5.8 
+# redo   |  FAIL  | 8.5.8
 # -------+--------+
 # method |gated   |
 # -------+--------+-------------------------

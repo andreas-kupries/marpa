@@ -15,7 +15,7 @@ kt require support fileutil ;# cat
 kt local   testing marpa
 
 # # ## ### ##### ######## ############# #####################
-## TODO: Testing inspection, serialization
+## TODO: Testing inspection
 
 # # ## ### ##### ######## ############# #####################
 
@@ -24,6 +24,12 @@ kt source support/dirs.tcl
 kt source support/gcontainer_state.tcl
 kt source support/grammars.tcl
 kt source support/textutils.tcl
+
+# # ## ### ##### ######## ############# #####################
+## Setup dynamic parts of the testsuite
+## Currently only importing the `bootstrap/marpa-tcl-slif`
+
+exec [td]/grammars/setup.sh
 
 # # ## ### ##### ######## ############# #####################
 ##  1 constructor/0
@@ -72,9 +78,13 @@ test-grammar-map ctrace --> id ctrace base {
 	    # Trace of GC method calls filling the container.
 	    eval $input
 	} msg]} {
-	    #puts $::errorInfo
+	    puts $::errorInfo
 	    set msg
 	} else {
+	    GC validate ;# Semantics should create only valid containers.
+	    # This performs checks beyond what is done during the
+	    # incremental construction from the trace. Like ensuring
+	    # that all RHS are defined.
 	    gc-format [GC serialize]
 	}
     } -cleanup {
@@ -102,10 +112,131 @@ test-grammar-files gcstate --> id gcstate {
 	marpa::slif::container create GC
     } -body {
 	GC deserialize [dict get $input grammar]
+	GC validate ;# Deserialize should create only valid
+		     # containers, if serialization is from a valid
+		     # container.
 	gc-format [GC serialize]
+	# The container created from deserialization should regenerate
+	# the input when serialized again.
     } -cleanup {
 	GC destroy
     } -result $input
+
+    incr k
+}
+
+# # ## ### ##### ######## ############# #####################
+## Reduction I [Tcl]: Tcl engine, see "s_parser.tcl", generalized
+## Note, based on gcstate, reuse format.
+
+set k 0
+test-grammar-map gcstate --> id gcstate base {
+    set input [dict get [string trimright [fget $gcstate]] grammar]
+
+    # Ignore containers without literals to reduce
+    if {![dict exists $input l0 literal]} continue
+
+    set expected [string trimright [fget [file join $base gcr_tcl]]]
+    set kd       [format $format $k]
+
+    test marpa-slif-container-reduce-tcl-1.${kd}---${id} "reduce-tcl $id" -setup {
+	marpa::slif::container create GC
+	GC deserialize $input
+    } -body {
+	# Reduce literals for a Tcl engine
+	set work [dict get $input l0 literal]
+	set work [concat {*}[lmap {sym rhs} $work {
+	    list $sym [lindex $rhs 0]
+	}]]
+	marpa::slif::literal r2container \
+	    [marpa::slif::literal reduce $work {
+		D-STR1 D-%STR  D-CLS3  D-^CLS2
+		D-NCC3 D-%NCC1 D-^NCC2 D-^%NCC1
+		K-RAN  D-%RAN  K-^RAN  K-CHR
+		K-^CHR
+	    }] GC
+	GC validate ;# Reduction should not invalidate the container
+	gc-format [GC serialize]
+    } -cleanup {
+	unset -nocomplain msg
+	GC destroy
+    } -result $expected
+
+    incr k
+}
+
+# # ## ### ##### ######## ############# #####################
+## Reduction II [C-lang]: Byte-based engine on UTF-8 input.
+## Note, based on gcstate, reuse format.
+
+set k 0
+test-grammar-map gcstate --> id gcstate base {
+    set input [dict get [string trimright [fget $gcstate]] grammar]
+
+    # Ignore containers without literals to reduce
+    if {![dict exists $input l0 literal]} continue
+
+    if 0 {if {![file exists [file join $base gcr_c]]} {
+	file copy $gcstate [file join $base gcr_c]
+    }}
+
+    set expected [string trimright [fget [file join $base gcr_c]]]
+    set kd       [format $format $k]
+
+    test marpa-slif-container-reduce-c-1.${kd}---${id} "reduce-c $id" -setup {
+	marpa::slif::container create GC
+	GC deserialize $input
+    } -body {
+	# Reduce literals for a Tcl engine
+	set work [dict get $input l0 literal]
+	set work [concat {*}[lmap {sym rhs} $work {
+	    list $sym [lindex $rhs 0]
+	}]]
+	marpa::slif::literal r2container \
+	    [marpa::slif::literal reduce $work {
+		D-STR2 D-%STR  D-CLS2  D-^CLS1
+		D-NCC2 D-%NCC2 D-^NCC1 D-^%NCC2
+		D-RAN2 D-%RAN  D-^RAN2 D-CHR
+		D-^CHR
+	    }] GC
+	GC validate ;# Reduction should not invalidate the container
+	gc-format [GC serialize]
+    } -cleanup {
+	unset -nocomplain msg
+	GC destroy
+    } -result $expected
+
+    incr k
+}
+
+
+# # ## ### ##### ######## ############# #####################
+## Precedence rewrite
+
+set max 0
+test-grammar-files prewrite --> __ __ { incr max }
+set format %0[string length $max]d
+unset max
+
+set k 0
+test-grammar-map prewrite --> id prewrite base {
+    set expected [string trimright [fget $prewrite]]
+    set input    [dict get [string trimright [fget [file join $base gcstate]]] grammar]
+    set kd       [format $format $k]
+
+    test marpa-slif-container-prewrite-1.${kd}---${id} "precedence rewrite $id" -setup {
+	marpa::slif::container create GC
+	GC deserialize $input
+    } -body {
+	marpa::slif::precedence 2container \
+	    [marpa::slif::precedence rewrite GC] \
+	    GC
+	GC validate ;# Rewrite should not invalidate the container
+	gc-format [GC serialize]
+    } -cleanup {
+	unset -nocomplain msg
+	GC destroy
+    } -result $expected
 
     incr k
 }

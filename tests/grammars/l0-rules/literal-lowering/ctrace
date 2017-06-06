@@ -202,7 +202,7 @@ GC comment :lexeme {@LEX:@NCC:<[:alnum:]>} match --> {JMP lexeme make-lexeme}
 	GC l0 lexeme {@LEX:@NCC:<[:alnum:]>}
 	GC g1 terminal {@LEX:@NCC:<[:alnum:]>}
 	GC comment l0-usage {@NCC:<[:alnum:]>} literal --> NOP
-	GC l0 priority-rule {@LEX:@NCC:<[:alnum:]>} {@NCC:<[:alnum:]>} 0
+	GC l0 priority-rule {@LEX:@NCC:<[:alnum:]>} {{@NCC:<[:alnum:]>}} 0
 
 GC comment g1-usage {@LEX:@NCC:<[:alnum:]>} lexeme --> NOP
 
@@ -227,7 +227,7 @@ GC comment :lexeme {@LEX:@CLS:<0-9a[:braille:]>} match --> {JMP lexeme make-lexe
 	GC l0 lexeme {@LEX:@CLS:<0-9a[:braille:]>}
 	GC g1 terminal {@LEX:@CLS:<0-9a[:braille:]>}
 	GC comment l0-usage {@CLS:<0-9a[:braille:]>} literal --> NOP
-	GC l0 priority-rule {@LEX:@CLS:<0-9a[:braille:]>} {@CLS:<0-9a[:braille:]>} 0
+	GC l0 priority-rule {@LEX:@CLS:<0-9a[:braille:]>} {{@CLS:<0-9a[:braille:]>}} 0
 
 GC comment g1-usage {@LEX:@CLS:<0-9a[:braille:]>} lexeme --> NOP
 
@@ -270,7 +270,7 @@ GC comment :lexeme {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} match --> {JMP 
 	GC l0 lexeme {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}
 	GC g1 terminal {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}
 	GC comment l0-usage {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} literal --> NOP
-	GC l0 priority-rule {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 0
+	GC l0 priority-rule {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} {{@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0
 
 GC comment g1-usage {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} lexeme --> NOP
 
@@ -295,7 +295,7 @@ GC comment :lexeme {@LEX:@%NCC:<[:alnum:]>} match --> {JMP lexeme make-lexeme}
 	GC l0 lexeme {@LEX:@%NCC:<[:alnum:]>}
 	GC g1 terminal {@LEX:@%NCC:<[:alnum:]>}
 	GC comment l0-usage {@%NCC:<[:alnum:]>} literal --> NOP
-	GC l0 priority-rule {@LEX:@%NCC:<[:alnum:]>} {@%NCC:<[:alnum:]>} 0
+	GC l0 priority-rule {@LEX:@%NCC:<[:alnum:]>} {{@%NCC:<[:alnum:]>}} 0
 
 GC comment g1-usage {@LEX:@%NCC:<[:alnum:]>} lexeme --> NOP
 
@@ -320,7 +320,7 @@ GC comment :lexeme {@LEX:@CLS:<0-9Aa[:%braille:]>} match --> {JMP lexeme make-le
 	GC l0 lexeme {@LEX:@CLS:<0-9Aa[:%braille:]>}
 	GC g1 terminal {@LEX:@CLS:<0-9Aa[:%braille:]>}
 	GC comment l0-usage {@CLS:<0-9Aa[:%braille:]>} literal --> NOP
-	GC l0 priority-rule {@LEX:@CLS:<0-9Aa[:%braille:]>} {@CLS:<0-9Aa[:%braille:]>} 0
+	GC l0 priority-rule {@LEX:@CLS:<0-9Aa[:%braille:]>} {{@CLS:<0-9Aa[:%braille:]>}} 0
 
 GC comment g1-usage {@LEX:@CLS:<0-9Aa[:%braille:]>} lexeme --> NOP
 
@@ -392,7 +392,7 @@ GC comment :lexeme {@LEX:@^NCC:<[:alnum:]>} match --> {JMP lexeme make-lexeme}
 	GC l0 lexeme {@LEX:@^NCC:<[:alnum:]>}
 	GC g1 terminal {@LEX:@^NCC:<[:alnum:]>}
 	GC comment l0-usage {@^NCC:<[:alnum:]>} literal --> NOP
-	GC l0 priority-rule {@LEX:@^NCC:<[:alnum:]>} {@^NCC:<[:alnum:]>} 0
+	GC l0 priority-rule {@LEX:@^NCC:<[:alnum:]>} {{@^NCC:<[:alnum:]>}} 0
 
 GC comment g1-usage {@LEX:@^NCC:<[:alnum:]>} lexeme --> NOP
 
@@ -416,7 +416,7 @@ GC comment :lexeme {@LEX:@^CLS:<0-9a[:braille:]>} match --> {JMP lexeme make-lex
 	GC l0 lexeme {@LEX:@^CLS:<0-9a[:braille:]>}
 	GC g1 terminal {@LEX:@^CLS:<0-9a[:braille:]>}
 	GC comment l0-usage {@^CLS:<0-9a[:braille:]>} literal --> NOP
-	GC l0 priority-rule {@LEX:@^CLS:<0-9a[:braille:]>} {@^CLS:<0-9a[:braille:]>} 0
+	GC l0 priority-rule {@LEX:@^CLS:<0-9a[:braille:]>} {{@^CLS:<0-9a[:braille:]>}} 0
 
 GC comment g1-usage {@LEX:@^CLS:<0-9a[:braille:]>} lexeme --> NOP
 
@@ -464,7 +464,7 @@ GC comment :lexeme {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} match --> {JMP
 	GC l0 lexeme {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}
 	GC g1 terminal {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}
 	GC comment l0-usage {@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} literal --> NOP
-	GC l0 priority-rule {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} {@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 0
+	GC l0 priority-rule {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} {{@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0
 
 GC comment g1-usage {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} lexeme --> NOP
 
@@ -488,7 +488,7 @@ GC comment :lexeme {@LEX:@^%NCC:<[:alnum:]>} match --> {JMP lexeme make-lexeme}
 	GC l0 lexeme {@LEX:@^%NCC:<[:alnum:]>}
 	GC g1 terminal {@LEX:@^%NCC:<[:alnum:]>}
 	GC comment l0-usage {@^%NCC:<[:alnum:]>} literal --> NOP
-	GC l0 priority-rule {@LEX:@^%NCC:<[:alnum:]>} {@^%NCC:<[:alnum:]>} 0
+	GC l0 priority-rule {@LEX:@^%NCC:<[:alnum:]>} {{@^%NCC:<[:alnum:]>}} 0
 
 GC comment g1-usage {@LEX:@^%NCC:<[:alnum:]>} lexeme --> NOP
 
@@ -512,7 +512,7 @@ GC comment :lexeme {@LEX:@^CLS:<0-9Aa[:%braille:]>} match --> {JMP lexeme make-l
 	GC l0 lexeme {@LEX:@^CLS:<0-9Aa[:%braille:]>}
 	GC g1 terminal {@LEX:@^CLS:<0-9Aa[:%braille:]>}
 	GC comment l0-usage {@^CLS:<0-9Aa[:%braille:]>} literal --> NOP
-	GC l0 priority-rule {@LEX:@^CLS:<0-9Aa[:%braille:]>} {@^CLS:<0-9Aa[:%braille:]>} 0
+	GC l0 priority-rule {@LEX:@^CLS:<0-9Aa[:%braille:]>} {{@^CLS:<0-9Aa[:%braille:]>}} 0
 
 GC comment g1-usage {@LEX:@^CLS:<0-9Aa[:%braille:]>} lexeme --> NOP
 
