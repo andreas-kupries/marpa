@@ -22,7 +22,7 @@ set     selfdir [file dirname [file normalize [info script]]]
 source $selfdir/unicode_reader.tcl
 
 # direct use of the marpa unicode commands, without installed
-source $selfdir/../p_unicode.tcl
+source $selfdir/../generic/unicode.tcl
 
 set pongchan stderr
 #set pongchan stdout

@@ -30,9 +30,55 @@
 
 critcl::ccode {
     /*
-    * Helper macro for dealing with Tcl_ObjType's.
+    // The structure we use for the int rep
+    */
+    
+    typedef struct OTSCR {
+	int  refCount; /* Counter indicating sharing status of the structure */
+	SCR* scr;      /* Actual intrep */
+    } OTSCR;
+
+    /*
+    // Helper functions for intrep lifecycle and use.
+    */
+    
+    OTSCR*
+    marpa_otscr_new (SCR* scr)
+    {
+	OTSCR* otscr = (OTSCR*) ckalloc (sizeof (OTSCR));
+	otscr->refCount = 0;
+	otscr->scr = scr;
+	return otscr;
+    }
+
+    void
+    marpa_otscr_destroy (OTSCR* otscr)
+    {
+	marpa_scr_destroy (otscr->scr);
+	ckfree((char*) otscr);
+	return;
+    }
+
+    OTSCR*
+    marpa_otscr_take (OTSCR* otscr)
+    {
+	otscr->refCount ++;
+	return otscr;
+    }
+    
+    void
+    marpa_otscr_release (OTSCR* otscr)
+    {
+	otscr->refCount --;
+	if (otscr->refCount > 0) return;
+	marpa_otscr_destroy (otscr);
+    }
+
+    /*
+    // Helper macro for dealing with Tcl_ObjType's.
     */
 
+    #undef  FreeIntRep
     #define FreeIntRep(objPtr) \
 	if ((objPtr)->typePtr != NULL && \
 		(objPtr)->typePtr->freeIntRepProc != NULL) { \
@@ -40,33 +86,30 @@ critcl::ccode {
 	    (objPtr)->typePtr = NULL; \
 	}
 
-    /* Forward declare the type structure
+    /*
+    // Forward declare the type structure
     */
+    
     static Tcl_ObjType marpa_scr_objtype;
 
-    /* The structure we use for the int rep
+    /*
+    // Tcl_ObjType vectors implementing it
     */
-    typedef struct OTSCR {
-	int  refCount; /* Counter indicating sharing status of the structure */
-	SCR* scr;      /* Actual intrep */
-    } OTSCR;
-
-    /* Tcl_ObjType vectors implementing it
-    */
+    
     static void
     marpa_scr_rep_free (Tcl_Obj* o)
     {
 	OTSCR* intRep = (OTSCR*) o->internalRep.otherValuePtr;
 	intRep->refCount --;
 	if (intRep->refCount > 0) return;
-	ckfree ((char*) intRep);
+	marpa_otscr_release (intRep);
     }
     
     static void
     marpa_scr_rep_dup (Tcl_Obj* src, Tcl_Obj* dst)
     {
 	OTSCR* intRep = (OTSCR*) src->internalRep.otherValuePtr;
-	intRep->refCount ++;
+	marpa_otscr_take (intRep);
 	dst->internalRep.otherValuePtr = src->internalRep.otherValuePtr;
 	dst->typePtr = &marpa_scr_objtype;
     }
@@ -74,8 +117,9 @@ critcl::ccode {
     static void
     marpa_scr_rep_str (Tcl_Obj* o)
     {
-	/* Generate a string for a list, using the CC as basis
-	** We ensure that the CC is canonical first.
+	/*
+	// Generate a string for a list, using the CC as basis.
+	// We ensure that the CC is canonical first.
 	*/
 	char        buf [20];
 	OTSCR*      intRep = (OTSCR*) o->internalRep.otherValuePtr;
@@ -117,7 +161,9 @@ critcl::ccode {
     static int
     marpa_scr_rep_from_any (Tcl_Interp* ip, Tcl_Obj* o)
     {
-	/* Conversion goes through a list intrep avoiding manual parsing
+	/*
+	// The conversion goes through a list intrep, avoiding manual
+	// parsing of the structure.
 	*/
 	int       objc;
 	Tcl_Obj **objv;
@@ -127,13 +173,16 @@ critcl::ccode {
 	OTSCR*    otscr = NULL;
 	int       start, end, i;
 
-	/* The clas is a list of codepoints and ranges (2-element lists).
+	TRACE_ENTER ("marpa_scr_rep_from_any");
+	/*
+	// The class is a list of codepoints and ranges (2-element lists).
 	*/
 	if (Tcl_ListObjGetElements(ip, o, &objc, &objv) != TCL_OK) {
 	    goto fail;
 	}
 
 	scr = marpa_scr_new (objc);
+	TRACE (("CAP %d", objc));
 	for (i = 0; i < objc; i++) {
 	    /* Extract and validate each element of the CC
 	    */
@@ -141,53 +190,60 @@ critcl::ccode {
 		goto fail;
 	    }
 	    switch (robjc) {
-		case 1:
-		if (Tcl_GetIntFromObj(ip, robjv[0], &start) != TCL_OK) {
-		    /* TODO: Proper error message for broken item */
+		case 1: {
+		    if (Tcl_GetIntFromObj(ip, robjv[0], &start) != TCL_OK) {
+			goto fail;
+		    }
+		    if ((start < 0) || (start > UNI_MAX)) {
+			Tcl_SetErrorCode (ip, "MARPA", NULL);
+			Tcl_SetObjResult (ip, Tcl_NewStringObj("Codepoint out of range (0..." XSTR (UNI_MAX) ")",-1));
+			goto fail;
+		    }
+		    end = start;
+		    break;
+		}
+		case 2: {
+		    if (Tcl_GetIntFromObj(ip, robjv[0], &start) != TCL_OK) {
+			goto fail;
+		    }
+		    if ((start < 0) || (start > UNI_MAX)) {
+			Tcl_SetErrorCode (ip, "MARPA", NULL);
+			Tcl_SetObjResult (ip, Tcl_NewStringObj("Codepoint (start of range) out of range (0..." XSTR (UNI_MAX) ")",-1));
+			goto fail;
+		    }
+		    if (Tcl_GetIntFromObj(ip, robjv[1], &end) != TCL_OK) {
+			goto fail;
+		    }
+		    if ((end < 0) || (end > UNI_MAX) || (end < start)) {
+			Tcl_SetErrorCode (ip, "MARPA", NULL);
+			Tcl_SetObjResult (ip, Tcl_NewStringObj("Codepoint (end of range) out of range (0..." XSTR (UNI_MAX) ")" ,-1));
+			goto fail;
+		    }
+		    break;
+		}
+		default: {
+		    Tcl_SetErrorCode (ip, "MARPA", NULL);
+		    Tcl_SetObjResult (ip, Tcl_NewStringObj("Expected codepoint or range, got neither",-1));
 		    goto fail;
 		}
-		if ((start < 0) || (start < UNI_MAX)) {
-		    /* TODO: Proper error message for broken item */
-		    goto fail;
-		}
-		end = start;
-		break;
-		case 2:
-		if (Tcl_GetIntFromObj(ip, robjv[0], &start) != TCL_OK) {
-		    /* TODO: Proper error message for broken item */
-		    goto fail;
-		}
-		if ((start < 0) || (start < UNI_MAX)) {
-		    /* TODO: Proper error message for broken item */
-		    goto fail;
-		}
-		if (Tcl_GetIntFromObj(ip, robjv[1], &end) != TCL_OK) {
-		    /* TODO: Proper error message for broken item */
-		    goto fail;
-		}
-		if ((end < 0) || (end < UNI_MAX) || (end < start)) {
-		    /* TODO: Proper error message for broken item */
-		    goto fail;
-		}
-		break;
-		default:
-		/* TODO: Proper error message for broken item */
-		goto fail;
 	    }
 
-	    /* Add the validated element to the intrep under
-	    ** construction.
+	    /*
+	    // Add the validated element to the intrep under construction.
 	    */
+	    TRACE (("++ (%d...%d)", start, end));
 	    marpa_scr_add_range(&scr, start, end);
 	}
 
+	TRACE (("USE %d", scr->n));
+	
 	otscr = (OTSCR*) ckalloc(sizeof(OTSCR));
 	otscr->refCount = 1;
 	otscr->scr = scr;
 
 	/*
-	** Kill the old intrep (a list). This was delayed as much as
-	** possible. Afterward we can put in our own intrep.
+	// Kill the old intrep (a list). This was delayed as much as
+	// possible. Afterward we can put in our own intrep.
 	*/
 
 	FreeIntRep (o);
@@ -195,40 +251,37 @@ critcl::ccode {
 	o->internalRep.otherValuePtr = otscr;
 	o->typePtr                   = &marpa_scr_objtype;
 
-	return TCL_OK;
+	TRACE_RETURN ("ok: %d", TCL_OK);
 
     fail:
 	if (scr) marpa_scr_destroy(scr);
-	return TCL_ERROR;
+	TRACE_RETURN ("err: %d", TCL_ERROR);
     }
-
+    
     static Tcl_ObjType marpa_scr_objtype = {
 	"marpa::cc::scr",
-	marpa_scr_rep_free, marpa_scr_rep_dup,
-	marpa_scr_rep_str,  marpa_scr_rep_from_any
+	marpa_scr_rep_free,
+	marpa_scr_rep_dup,
+	marpa_scr_rep_str,
+	marpa_scr_rep_from_any
     };
 
     /* Public creator/accessor functions
     */
 
     Tcl_Obj*
-    marpa_new_scr_obj (SCR* scr)
+    marpa_new_otscr_obj (OTSCR* otscr)
     {
 	Tcl_Obj* obj = Tcl_NewObj ();
-	OTSCR* otscr = (OTSCR*) ckalloc(sizeof(OTSCR));
-
-	otscr->refCount = 1;
-	otscr->scr = scr;
 
 	Tcl_InvalidateStringRep (obj);
-	obj->internalRep.otherValuePtr = otscr;
+	obj->internalRep.otherValuePtr = marpa_otscr_take (otscr);
 	obj->typePtr                   = &marpa_scr_objtype;
-
 	return obj;
     }
 
     int
-    marpa_get_scr_from_obj (Tcl_Interp* interp, Tcl_Obj* o, SCR** scrPtr)
+    marpa_get_otscr_from_obj (Tcl_Interp* interp, Tcl_Obj* o, OTSCR** otscrPtr)
     {
 	if (o->typePtr != &marpa_scr_objtype) {
 	    if (marpa_scr_rep_from_any (interp, o) != TCL_OK) {
@@ -236,7 +289,7 @@ critcl::ccode {
 	    }
 	}
 
-	*scrPtr = (SCR*) o->internalRep.otherValuePtr;
+	*otscrPtr = (OTSCR*) o->internalRep.otherValuePtr;
 	return TCL_OK;
     }
 }
@@ -245,38 +298,42 @@ critcl::ccode {
 # Glue to critcl::cproc
 
 critcl::argtype Marpa_CharClass {
-    if (marpa_get_scr_from_obj (interp, @@, &@A) != TCL_OK) {
+    if (marpa_get_otscr_from_obj (interp, @@, &@A) != TCL_OK) {
 	return TCL_ERROR;
     }
-} SCR* SCR*
+} OTSCR* OTSCR*
 
 critcl::resulttype Marpa_CharClass {
     if (rv == NULL) { return TCL_ERROR; }
-    Tcl_SetObjResult(interp, marpa_new_scr_obj (rv));
+    Tcl_SetObjResult(interp, marpa_new_otscr_obj (rv));
     /* No refcount adjustment */
     return TCL_OK;
-} SCR*
+} OTSCR*
 
 # # ## ### ##### ######## #############
 ## API exposed to Tcl level
-#@ Supercedes original procs in p_unicode.tcl
+## Supercedes original procs in p_unicode.tcl
 
 critcl::cproc marpa::unicode::negate-class {
     Tcl_Interp*     interp
     Marpa_CharClass charclass
 } Marpa_CharClass {
-    return marpa_scr_complement (charclass);
+    /* charclass :: OTSCR* */
+    return marpa_otscr_new (marpa_scr_complement (charclass->scr));
 }
 
 critcl::cproc marpa::unicode::norm-class {
     Tcl_Interp*     interp
     Marpa_CharClass charclass
 } Marpa_CharClass {
-xxx - refcount accounting
-    marpa_scr_norm (charclass);
+    /*
+    // charclass :: OTSCR*
+    // The deeper intrep is modified.
+    // A possible string rep is not.
+    */
+    marpa_scr_norm (charclass->scr);
     return charclass;
 }
-
 
 # # ## ### ##### ######## #############
 return

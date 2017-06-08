@@ -97,7 +97,7 @@ proc marpa::unicode::2utf {code} {
     return [list $a $b $c $d]
 }
 
-proc marpa::unicode::norm-class {charclass} {
+if 0 {proc marpa::unicode::norm-class {charclass} {
     debug.marpa/unicode {}
     # Each item is either a code point, or a range (specified by a
     # pair of codepoints, low and high borders, inclusive). The result
@@ -153,7 +153,7 @@ proc marpa::unicode::norm-class {charclass} {
 
     NA $previous
     return $result
-}
+}}
 
 proc marpa::unicode::NA {range} {
     upvar 1 result result
@@ -178,7 +178,7 @@ proc marpa::unicode::fold/c {codes} {
     lmap codepoint $codes { data fold/c $codepoint }
 }
 
-proc ::marpa::unicode::negate-class {charclass} {
+if 0 {proc ::marpa::unicode::negate-class {charclass} {
     debug.marpa/slif/literal {}
     set charclass [norm-class $charclass]
 
@@ -219,7 +219,7 @@ proc ::marpa::unicode::negate-class {charclass} {
     # are in ascending order, and do not overlap.
 
     return $result
-}
+}}
 
 proc marpa::unicode::unfold {codes} {
     debug.marpa/unicode {}
@@ -237,14 +237,14 @@ proc marpa::unicode::unfold {codes} {
     norm-class $result
 }
 
-proc marpa::unicode::2asbr {charclass} {
+if 0 {proc marpa::unicode::2asbr {charclass} {
     debug.marpa/unicode {}
     u8c mk
     u8c add-cc $charclass
     set utf [u8c get]
     debug.marpa/unicode {==> ($utf)}
     return $utf
-}
+}}
 
 proc marpa::unicode::asbr-format {asbr {compact 0}} {
     debug.marpa/unicode {}
