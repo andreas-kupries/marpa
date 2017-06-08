@@ -3,7 +3,7 @@ clear
 echo
 ftilde
 rtilde
-rm -rf X.* BUILD-marpa0 tests/core*
+rm -rf X.* BUILD-marpa0 tests/core* DEBUG
 
 # # Create all missing result files for new .slif test cases.
 # (   cd tests/grammars
@@ -14,10 +14,9 @@ rm -rf X.* BUILD-marpa0 tests/core*
 #     done
 # )
 
-./build.tcl test --log X
+./build.tcl test --log X --prefix DEBUG
 #exit
-
-rm -rf BUILD-marpa0
+#rm -rf BUILD-marpa0
 
 show=0
 if [ -s X.stacktrace ]
