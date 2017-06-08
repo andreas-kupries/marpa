@@ -18,7 +18,17 @@ critcl::buildrequirement {
     package require critcl::class 1
     package require critcl::emap
     package require critcl::literals
+    package require critcl::cutil
 }
+
+critcl::cutil::assertions
+critcl::cutil::tracer
+critcl::cflags -DCRITCL_ASSERT
+#critcl::cflags -DCRITCL_TRACER
+
+critcl::debug symbols
+#critcl::debug memory
+#critcl::debug symbols memory
 
 # # ## ### ##### ######## #############
 
@@ -190,7 +200,8 @@ critcl::tsources slif/container/precedence.tcl    ; # SLIF, precedence utilities
 ##       symbols.
 
 critcl::source c/unicode.tcl          ; # Unicode support functions.
-critcl::source c/cc_objtype.tcl       ; # Tcl_ObjType for uni char classes.
+critcl::source c/cc_objtype.tcl       ; # Tcl_ObjType for uni char classes (SCR).
+critcl::source c/asbr_objtype.tcl     ; # Tcl_ObjType for ASBR char class format.
 
 critcl::source c/utilities.tcl        ; # Utilities for debug narrative - TRACE.
 critcl::source c/errors.tcl           ; # Mapping marpa error codes to strings.
