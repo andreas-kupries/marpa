@@ -15,14 +15,19 @@
 package require Tcl 8.5
 package require fileutil
 package require lambda
-#package require marpa
 
 # Get the generic reader
 set     selfdir [file dirname [file normalize [info script]]]
 source $selfdir/unicode_reader.tcl
 
-# direct use of the marpa unicode commands, without installed
-source $selfdir/../generic/unicode.tcl
+# Get pure-Tcl implementations of norm-class, negate-class, and 2asbr.
+# While these are slower (especially 2asbr, for large classes) they
+# are also not dependent on the unicode mode/max setting of an
+# installed marpa. And we cannot use the uninstalled marpa code
+# because these operations are in C and thus only available after
+# building, and as this tool generates a piece needed for building,
+# well.
+source $selfdir/unicode_ops.tcl
 
 set pongchan stderr
 #set pongchan stdout
@@ -300,7 +305,7 @@ proc get-label {key} {
 proc normalize-classes {} {
     foreach cc [classes] {
 	pong "Normalizing $cc"
-	set-class $cc [marpa unicode norm [get-class $cc]]
+	set-class $cc [norm-class [get-class $cc]]
     }
     return
 }
@@ -308,9 +313,9 @@ proc normalize-classes {} {
 proc compile-to-asbrs {} {
     foreach cc [lsort -dict [classes]] {
 	pong "Compiling ASBR $cc"
-	set asbr [marpa unicode 2asbr [get-class $cc]]
-	set pretty [marpa unicode asbr-format $asbr 1]
-	set asbr [encode-ranges $asbr]
+	set asbr   [2asbr [get-class $cc]]
+	set pretty [asbr-format $asbr 1]
+	set asbr   [encode-ranges $asbr]
 	set-asbr $cc [list $asbr $pretty]
     }
     return
@@ -552,7 +557,7 @@ proc compile-folds {} {
     dict for {fid spec} $foldset {
 	pong "Compiling fold class $fid"
 
-	set asbr [marpa unicode 2asbr $spec]
+	set asbr [2asbr $spec]
 	set asbr [encode-ranges $asbr]
 	set gr   [asbr-to-grammar $asbr]
 
