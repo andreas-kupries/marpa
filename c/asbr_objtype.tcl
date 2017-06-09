@@ -143,7 +143,7 @@ critcl::ccode {
 	     	Tcl_DStringStartSublist(&ds);
 		sprintf(buf, "%d", br->start);
 		Tcl_DStringAppendElement (&ds, buf);
-		sprintf(buf, "%d", br->start); 
+		sprintf(buf, "%d", br->end); 
 		Tcl_DStringAppendElement (&ds, buf);
 	     	Tcl_DStringEndSublist(&ds);
 	    }
