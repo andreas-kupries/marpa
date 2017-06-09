@@ -1,2 +1,7 @@
 p_unidata.tcl
 generic/unidata.tcl
+DEBUG
+X.*
+ex/*
+BUILD-marpa*
+tests/grammars/z-marpa-tcl
