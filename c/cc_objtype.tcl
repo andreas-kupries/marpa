@@ -157,6 +157,20 @@ critcl::ccode {
 
 	Tcl_DStringFree (&ds);
     }
+
+    static int
+    marpa_scr_bad_codepoint (Tcl_Interp* ip, const char* msg, int codepoint) {
+	char buf [100];
+	if ((codepoint >= 0) &&
+	    (codepoint <= UNI_MAX)) {
+	    return 0;
+	}
+	sprintf (buf, "%s out of range (0...%d): %d",
+		 msg, UNI_MAX, codepoint);
+	Tcl_SetErrorCode (ip, "MARPA", NULL);
+	Tcl_SetObjResult (ip, Tcl_NewStringObj(buf,-1));
+	return 1;
+    }
     
     static int
     marpa_scr_rep_from_any (Tcl_Interp* ip, Tcl_Obj* o)
@@ -191,32 +205,23 @@ critcl::ccode {
 	    }
 	    switch (robjc) {
 		case 1: {
-		    if (Tcl_GetIntFromObj(ip, robjv[0], &start) != TCL_OK) {
-			goto fail;
-		    }
-		    if ((start < 0) || (start > UNI_MAX)) {
-			Tcl_SetErrorCode (ip, "MARPA", NULL);
-			Tcl_SetObjResult (ip, Tcl_NewStringObj("Codepoint out of range (0..." XSTR (UNI_MAX) ")",-1));
+		    if ((Tcl_GetIntFromObj(ip, robjv[0], &start) != TCL_OK) ||
+			marpa_scr_bad_codepoint (ip, "Point", start)) {
 			goto fail;
 		    }
 		    end = start;
 		    break;
 		}
 		case 2: {
-		    if (Tcl_GetIntFromObj(ip, robjv[0], &start) != TCL_OK) {
+		    if ((Tcl_GetIntFromObj(ip, robjv[0], &start) != TCL_OK) ||
+			marpa_scr_bad_codepoint (ip, "Range (start)", start) ||
+			(Tcl_GetIntFromObj(ip, robjv[1], &end) != TCL_OK) ||
+			marpa_scr_bad_codepoint (ip, "Range (end)", end)) {
 			goto fail;
 		    }
-		    if ((start < 0) || (start > UNI_MAX)) {
+		    if (end < start) {
 			Tcl_SetErrorCode (ip, "MARPA", NULL);
-			Tcl_SetObjResult (ip, Tcl_NewStringObj("Codepoint (start of range) out of range (0..." XSTR (UNI_MAX) ")",-1));
-			goto fail;
-		    }
-		    if (Tcl_GetIntFromObj(ip, robjv[1], &end) != TCL_OK) {
-			goto fail;
-		    }
-		    if ((end < 0) || (end > UNI_MAX) || (end < start)) {
-			Tcl_SetErrorCode (ip, "MARPA", NULL);
-			Tcl_SetObjResult (ip, Tcl_NewStringObj("Codepoint (end of range) out of range (0..." XSTR (UNI_MAX) ")" ,-1));
+			Tcl_SetObjResult (ip, Tcl_NewStringObj("Range empty (end before start)" ,-1));
 			goto fail;
 		    }
 		    break;
