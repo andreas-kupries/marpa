@@ -212,6 +212,8 @@ foreach {charclass asbr pretty} {
     {{{0 127}} {{194 223} {128 191}} {{224 224} {160 191} {128 191}} {{225 236} {128 191} {128 191}} {{237 237} {128 159} {128 191}} {{238 239} {128 191} {128 191}} {{240 240} {144 191} {128 191} {128 191}} {{241 243} {128 191} {128 191} {128 191}} {{244 244} {128 143} {128 191} {128 191}}}
     " [00-7f]\n|[c2-df][80-bf]\n|[e0]   [a0-bf][80-bf]\n|[e1-ec][80-bf][80-bf]\n|[ed]   [80-9f][80-bf]\n|[ee-ef][80-bf][80-bf]\n|[f0]   [90-bf][80-bf][80-bf]\n|[f1-f3][80-bf][80-bf][80-bf]\n|[f4]   [80-8f][80-bf][80-bf]\n"
 } {
+    if {[lindex $charclass end end] > [marpa unicode max]} continue
+    
     incr k
     test marpa-unicode-2asbr-2.$k "2asbr, $charclass" -body {
 	marpa unicode 2asbr $charclass
