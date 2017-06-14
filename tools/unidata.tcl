@@ -1,6 +1,9 @@
 #!/usr/bin/env tclsh
 # -*- tcl -*-
-# Process UnicodeData.txt and Scripts.txt
+#
+# Process
+#     UnicodeData.txt
+# and Scripts.txt
 # to get categories, scripts, and basic case-folding information.
 #
 # The information is collected in memory first, and then written as a
@@ -134,25 +137,30 @@ proc main {selfdir} {
     write-folding
     write-sep {unidata done}
 
+    write-c-header
+    write-c-limits
+    write-c-sep {unidata done}
+    
     pong-done
     return
 }
 
 proc cmdline {} {
     # Syntax ==> See usage
-    global argv out pong unimax mode
-    if {[llength $argv] ni {2 3}} usage
-    lassign $argv out mode pong
+    global argv outtcl outc pong unimax mode
+    if {[llength $argv] ni {3 4}} usage
+    lassign $argv mode outtcl outc pong
     if {$mode ni {bmp full}} usage
     if {$pong eq {}} { set pong 1 }
-    set out [open $out w]
+    set outtcl [open $outtcl w]
+    set outc   [open $outc w]
     set unimax [expr {$mode eq "bmp" ? 0xFFFF : 0x10FFFF }]
     return
 }
 
 proc usage {} {
     global argv0
-    puts stderr "Usage: $argv0 output bmp|full ?pong?"
+    puts stderr "Usage: $argv0 bmp|full output-for-tcl output-for-c ?pong?"
     exit 1
 }
 
@@ -583,20 +591,49 @@ proc pong-done {} {
 }
 
 proc wr {text} {
-    global out
-    puts $out $text
+    global outtcl
+    puts $outtcl $text
     return
 }
 
 proc wr* {text} {
-    global out
-    puts -nonewline $out $text
+    global outtcl
+    puts -nonewline $outtcl $text
     return
 }
 
 proc write-comment {text} {
     wr "# [join [split $text \n] "\n# "]"
     return
+}
+
+proc wrc {text} {
+    global outc
+    puts $outc $text
+    return
+}
+
+proc wrc* {text} {
+    global outc
+    puts -nonewline $outc $text
+    return
+}
+
+proc write-c-comment {text} {
+    wrc "/* [join [split $text \n] "\n# "] */"
+    return
+}
+
+proc write-c-header {} {
+    global mode unimax
+    set m $unimax ; incr m 0
+    wrc "/* -*- c -*-"
+    wrc "** Generator       tools/unidata.tcl"
+    wrc "** Data sources    unidata/{UnicodeData,Scripts}.txt"
+    wrc "** Build-Time      [clock format [clock seconds]]"
+    wrc "** Supported range $mode ($m codepoints)"
+    wrc "*/"
+    wrc ""
 }
 
 proc write-header {} {
@@ -629,6 +666,18 @@ proc write-limits {} {
     wr "set marpa::unicode::mode $mode"
     wr "set marpa::unicode::max  $unimax ;# $mode range"
     wr ""
+    return
+}
+
+proc write-c-limits {} {
+    global mode unimax
+    write-c-sep "unicode limits: $mode = $unimax"
+    lappend map <<unimax>>  $unimax
+    lappend map <<unimode>> $mode
+    wrc [string map $map {
+#define UNI_MODE "<<unimode>>" /* <<unimax>> codepoints */
+#define UNI_MAX  <<unimax>>
+}]
     return
 }
 
@@ -699,6 +748,13 @@ proc write-sep {label} {
     wr "# _ __ ___ _____ ________ _____________ _____________________ $label"
     wr "##"
     wr ""
+    return
+}
+
+proc write-c-sep {label} {
+    wrc "/* _ __ ___ _____ ________ _____________ _____________________ $label"
+    wrc "*/"
+    wrc ""
     return
 }
 

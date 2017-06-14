@@ -9,9 +9,18 @@
 ##
 # This code is BSD-licensed.
 
+# Choose the unicode range to support. Default is BMP, because that is
+# what Tcl does, currently. When it supports more we can go to full
+# range.  When making the switch remove $codefortcl above to force its
+# regeneration.
+
+set urange bmp   ;# Basic Multilingual Plane
+#set urange full  ;# Full support
+
 # # ## ### ##### ######## #############
 ## Requisites
 
+package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
 critcl::buildrequirement {
     package require critcl::util 1
@@ -21,10 +30,9 @@ critcl::buildrequirement {
     package require critcl::cutil
 }
 
-critcl::cutil::assertions
-critcl::cutil::tracer
-critcl::cflags -DCRITCL_ASSERT
-#critcl::cflags -DCRITCL_TRACER
+critcl::cutil::alloc
+critcl::cutil::assertions on
+critcl::cutil::tracer     off
 
 critcl::debug symbols
 #critcl::debug memory
@@ -39,41 +47,50 @@ if {![critcl::compiling]} {
 # # ## ### ##### ######## #############
 ## Generate unicode data tables.
 
-set selfdir [file dirname [file normalize [info script]]]
-set dud $selfdir/generic/unidata.tcl
-set tud $selfdir/tools/unidata.tcl
+apply {{selfdir} {
+    global urange
 
-# Choose the unicode range to support. Default is BMP, because that is
-# what Tcl does, currently. When it supports more we can go to full range.
-# When making the switch remove $dud above to force its regeneration.
+    set generator  $selfdir/tools/unidata.tcl
+    set unitables  $selfdir/unidata/UnicodeData.txt
+    set uniscripts $selfdir/unidata/Scripts.txt
 
-set urange bmp   ;# Basic Multilingual Plane
-#set urange full  ;# Full support
+    set outdir     $selfdir/generated
+    set codefortcl $selfdir/generated/unidata.tcl ;# Data, commands in Tcl
+    set codeforc   $selfdir/generated/unidata.h   ;# Declarations: Constants, data structures
+    #set codeforc   $selfdir/generated/unidata.c  ;# Definitions --TODO--
 
-if {![file exists $dud] ||
-    ([file mtime $dud] < [file mtime $tud]) ||
-    ([file mtime $dud] < [file mtime $selfdir/unidata/UnicodeData.txt]) ||
-    ([file mtime $dud] < [file mtime $selfdir/unidata/Scripts.txt])} {
+    if {
+	[file exists $codefortcl] &&
+	([file mtime $codefortcl] >= [file mtime $generator]) &&
+	([file mtime $codefortcl] >= [file mtime $unitables]) &&
+	([file mtime $codefortcl] >= [file mtime $uniscripts]) &&
+	[file exists $codeforc] &&
+	([file mtime $codeforc] >= [file mtime $generator]) &&
+	([file mtime $codeforc] >= [file mtime $unitables]) &&
+	([file mtime $codeforc] >= [file mtime $uniscripts]) &&
+	1
+    } {
+	critcl::msg -nonewline { (Up-to-date unicode data tables available, skipping generation)}
+	return
+    }
 
     critcl::msg -nonewline { (Generating unicode data tables, please wait (about 2min) ...}
+
     # It usually takes about two minutes and change to process the
-    # unidata files.  The majority of that time is taken by the
+    # unidata files. The majority of that time is taken by the
     # conversion of unicode char classes to ASBR form, with the
     # majority of that centered on a few but large categories like the
     # various type of Letters (Ll, Lo, Lu), and derived categories
-    # including them.
+    # including them. ( The price of a Tcl implementation for 2asbr)
 
     set start [clock seconds]
-    exec {*}[info nameofexecutable] $tud $dud $urange 0
+    exec {*}[info nameofexecutable] $generator $urange $codefortcl $codeforc 0
     set delta [expr { [clock seconds] - $start}]
-    critcl::msg -nonewline " Done in $delta seconds: [file size $dud] bytes)"
-    unset start delta
-} else {
-    critcl::msg -nonewline { (Up-to-date unicode data tables available, skipping generation)}
-}
+    critcl::msg -nonewline " Done in $delta seconds: Tcl: [file size $codefortcl] bytes,  C: [file size $codeforc] bytes)"
+    return
 
-unset selfdir tud dud urange
-
+}} [file dirname [file normalize [info script]]]
+    
 # # ## ### ##### ######## #############
 ## Administrivia
 
@@ -133,7 +150,7 @@ critcl::include    marpa.h
 critcl::tsources generic/sequencing.tcl ; # Method call sequence validation
 critcl::tsources generic/support.tcl    ; # General Tcl level
 critcl::tsources generic/unicode.tcl    ; # Unicode / UTF-8
-critcl::tsources generic/unidata.tcl    ; # Unicode Tables (character classes in various forms, folding)
+critcl::tsources generated/unidata.tcl  ; # Unicode Tables (character classes in various forms, folding)
 					  # This is a generated file (See tools/unidata.tcl)
 critcl::tsources generic/location.tcl   ; # Location/Range handling
 
@@ -198,6 +215,12 @@ critcl::tsources slif/container/precedence.tcl    ; # SLIF, precedence utilities
 ## NOTE: We use the prefix "marpatcl_" / "MarpaTcl_" for our
 ##       declarations, to avoid conflicts with libmarpa's public
 ##       symbols.
+
+#critcl::cheaders mc/*.h
+#critcl::csources mc/*.c
+
+critcl::cheaders generated/unidata.h
+critcl::include  unidata.h            ; # Generated unicode information (See tools/unidata.tcl)
 
 critcl::source c/unicode.tcl          ; # Unicode support functions.
 critcl::source c/cc_objtype.tcl       ; # Tcl_ObjType for uni char classes (SCR).

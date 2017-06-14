@@ -1,7 +1,9 @@
-p_unidata.tcl
-generic/unidata.tcl
+BUILD-marpa*
 DEBUG
 X.*
-ex/*
-BUILD-marpa*
+core*
+ex
+generated
+tests/core*
 tests/grammars/z-marpa-tcl
+WORK
