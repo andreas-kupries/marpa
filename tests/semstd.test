@@ -14,6 +14,10 @@ kt require support TclOO
 kt local   testing marpa
 
 # # ## ### ##### ######## ############# #####################\
+
+kt source support/tcl-core.tcl
+
+# # ## ### ##### ######## ############# #####################
 ## - nop
 ## - K
 ## - locmerge
@@ -35,7 +39,7 @@ test marpa-semstd-nop-1.1 {nop} -body {
 
 test marpa-semstd-k-1.0 {K, wrong args, not enough} -body {
     marpa::semstd::K
-} -returnCodes error -result {wrong # args: should be "marpa::semstd::K x ..."}
+} -returnCodes error -result [ARGS {wrong # args: should be "marpa::semstd::K x ..."}]
 
 test marpa-semstd-k-2.0 {K} -body {
     marpa::semstd::K x
@@ -50,7 +54,7 @@ test marpa-semstd-k-2.1 {K} -body {
 
 test marpa-semstd-locmerge-1.0 {locmerge, wrong args, not enough} -body {
     marpa semstd locmerge
-} -returnCodes error -result {wrong # args: should be "marpa semstd locmerge id ..."}
+} -returnCodes error -result [ARGS {wrong # args: should be "marpa semstd locmerge id ..."}]
 
 # Taken from location.test, merge2
 
@@ -84,11 +88,13 @@ test marpa-semdstd-locmerge-3.3 {merge2} -body {
 
 test marpa-semstd-builtin-1.0 {builtin, wrong args, not enough} -body {
     marpa semstd builtin
-} -returnCodes error -result {wrong # args: should be "marpa semstd builtin parts id ..."}
+} -returnCodes error \
+    -result [ARGS {wrong # args: should be "marpa semstd builtin parts id ..."}]
 
 test marpa-semstd-builtin-1.1 {builtin, wrong args, not enough} -body {
     marpa semstd builtin PARTS
-} -returnCodes error -result {wrong # args: should be "marpa semstd builtin parts id ..."}
+} -returnCodes error \
+    -result [ARGS {wrong # args: should be "marpa semstd builtin parts id ..."}]
 
 # args = locations
 

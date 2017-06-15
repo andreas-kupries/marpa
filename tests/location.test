@@ -14,6 +14,10 @@ kt require support TclOO
 kt local   testing marpa
 
 # # ## ### ##### ######## ############# #####################
+
+kt source support/tcl-core.tcl
+
+# # ## ### ##### ######## ############# #####################
 ## - null
 ## - atom
 ## - merge
@@ -118,7 +122,8 @@ test marpa-location-merge2-3.3 {merge2} -body {
 
 test marpa-location-merge-1.0 {merge, wrong args, not enough} -body {
     marpa location merge
-} -returnCodes error -result {wrong # args: should be "marpa location merge a ..."}
+} -returnCodes error \
+    -result [ARGS {wrong # args: should be "marpa location merge a ..."}]
 
 # TODO: Same as for merge2 for mere results ...
 

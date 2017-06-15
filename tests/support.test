@@ -13,6 +13,10 @@ kt require support TclOO
 
 kt local   testing marpa
 
+# # ## ### ##### ######## ############# #####################\
+
+kt source support/tcl-core.tcl
+
 # # ## ### ##### ######## ############# #####################
 ## - D
 ## - DX
@@ -62,7 +66,7 @@ test marpa-support-dx-2.0 {DX run} -body {
 
 test marpa-support-x-1.0 {X, wrong args, not enough} -body {
     marpa X
-} -returnCodes error -result {wrong # args: should be "marpa X msg ..."}
+} -returnCodes error -result [ARGS {wrong # args: should be "marpa X msg ..."}]
 
 test marpa-support-x-2.0 {X, message} -body {
     marpa X message

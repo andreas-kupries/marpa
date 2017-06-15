@@ -18,6 +18,7 @@ kt local   testing marpa
 kt source support/common.tcl
 kt source support/dirs.tcl
 kt source support/textutils.tcl
+kt source support/tcl-core.tcl
 
 # # ## ### ##### ######## ############# #####################
 
@@ -1291,15 +1292,16 @@ test marpa-slif-literal-unescape-1.0 {unescape, wrong args, not enough} -body {
 test marpa-slif-literal-unescape-1.1 {unescape, wrong args, too many} -body {
     marpa::slif::literal unescape LITSTRING X
 } -returnCodes error -result {wrong # args: should be "marpa::slif::literal unescape litstring"}
-
+  
 set k 0
-foreach {lit res} {
-    "\\n\\r\\t\\f\\v\\a\\'\\\]\\-\\\\"  "\n\r\t\f\v\a'\]-\\"
-    "\\377"                             "\377"
-    "\xFFFFFFFFFFFF"                    "\xFF"
-    "\\u2202"                           "\u2202"
-    "abcdef"                            "abcdef"
-} {
+foreach {lit res} [apply {{} {
+    lappend tcases "\\n\\r\\t\\f\\v\\a\\'\\\]\\-\\\\"  "\n\r\t\f\v\a'\]-\\"
+    lappend tcases "\\377"                             "\377"
+    lappend tcases "\xFFFFFFFFFFFF"                    [CORE "\xFF" "\377FFFFFFFFFF"]
+    lappend tcases "\\u2202"                           "\u2202"
+    lappend tcases "abcdef"                            "abcdef"
+    set tcases
+}}] {
     incr k
     test marpa-slif-literal-unescape-2.$k "unescape, $lit" -body {
 	marpa::slif::literal unescape $lit
