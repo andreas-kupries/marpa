@@ -84,6 +84,7 @@ apply {{selfdir} {
     # including them. ( The price of a Tcl implementation for 2asbr)
 
     set start [clock seconds]
+    file mkdir $outdir
     exec {*}[info nameofexecutable] $generator $urange $codefortcl $codeforc 0
     set delta [expr { [clock seconds] - $start}]
     critcl::msg -nonewline " Done in $delta seconds: Tcl: [file size $codefortcl] bytes,  C: [file size $codeforc] bytes)"
