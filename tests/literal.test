@@ -89,9 +89,9 @@ set k 0
 foreach {data result} {
     10              10
     {{10 20}}       {{10 20}}
-    braille         {{0x2800 0x28FF}}
-    {10 braille}    {10 {0x2800 0x28FF}}
-    {10245 braille} {{0x2800 0x28FF}}
+    braille         {{10240 10495}}
+    {10 braille}    {10 {10240 10495}}
+    {10245 braille} {{10240 10495}}
 } {
     incr k
     test marpa-slif-literal-ccranges-2.$k "ccranges, $data" -body {
@@ -313,14 +313,14 @@ foreach {literal toexpect} {
 	K-CLS  ok    {@q {charclass {10 20} braille}}
 	D-CLS1 ok    {@! {composite {{range 10 20}} {{named-class braille}}}}
 	D-CLS2 ok    {@! {composite {{brange 10 20}} {{byte 226} {brange 160 163} {brange 128 191}}}}
-	D-CLS3 ok    {@q {charclass {10 20} {0x2800 0x28FF}}}
+	D-CLS3 ok    {@q {charclass {10 20} {10240 10495}}}
     }
     {charclass 300 braille} {
 	{}     error RT
 	K-CLS  ok    {@q {charclass 300 braille}}
 	D-CLS1 ok    {@! {composite {{character 300}} {{named-class braille}}}}
 	D-CLS2 ok    {@! {composite {{byte 196} {byte 172}} {{byte 226} {brange 160 163} {brange 128 191}}}}
-	D-CLS3 ok    {@q {charclass 300 {0x2800 0x28FF}}}
+	D-CLS3 ok    {@q {charclass 300 {10240 10495}}}
     }
     {charclass 300 print} {
 	{}     error RT
@@ -334,7 +334,7 @@ foreach {literal toexpect} {
 	K-CLS  ok    {@q {charclass {10 20} 300 braille}}
 	D-CLS1 ok    {@! {composite {{range 10 20}} {{character 300}} {{named-class braille}}}}
 	D-CLS2 ok    {@! {composite {{brange 10 20}} {{byte 196} {byte 172}} {{byte 226} {brange 160 163} {brange 128 191}}}}
-	D-CLS3 ok    {@q {charclass {10 20} 300 {0x2800 0x28FF}}}
+	D-CLS3 ok    {@q {charclass {10 20} 300 {10240 10495}}}
     }
     ^charclass {
 	{}      error RIL
@@ -352,19 +352,19 @@ foreach {literal toexpect} {
 	{}      error RT
 	K-^CLS  ok    {@q {^charclass {10 20} braille}}
 	D-^CLS1 ok    {@x {charclass {0 9} {21 10239} {10496 @@@}}}
-	D-^CLS2 ok    {@q {^charclass {10 20} {0x2800 0x28FF}}}
+	D-^CLS2 ok    {@q {^charclass {10 20} {10240 10495}}}
     }
     {^charclass 300 braille} {
 	{}      error RT
 	K-^CLS  ok    {@q {^charclass 300 braille}}
 	D-^CLS1 ok    {@x {charclass {0 299} {301 10239} {10496 @@@}}}
-	D-^CLS2 ok    {@q {^charclass 300 {0x2800 0x28FF}}}
+	D-^CLS2 ok    {@q {^charclass 300 {10240 10495}}}
     }
     {^charclass {10 20} 300 braille} {
 	{}      error RT
 	K-^CLS  ok    {@q {^charclass {10 20} 300 braille}}
 	D-^CLS1 ok    {@x {charclass {0 9} {21 299} {301 10239} {10496 @@@}}}
-	D-^CLS2 ok    {@q {^charclass {10 20} 300 {0x2800 0x28FF}}}
+	D-^CLS2 ok    {@q {^charclass {10 20} 300 {10240 10495}}}
     }
     {^charclass 20 punct} {
 	D-^CLS2 ok {@q {^charclass 20 punct}}

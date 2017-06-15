@@ -20,8 +20,8 @@
 # 
 ## User Constructor, Accessor Functionality
 # 
-##   int GetCharClassFromObj (Tcl_Obj* o, SCR** scrPtr) - Retrieve SCR from Tcl_Obj
-##   ... NewCharClass (Tcl_Obj* o, SCR* scr)            - Wrap SCR into Tcl_Obj (takes ownership)
+##   int marpa_get_otasbr_from_obj (Tcl_Obj* o, OTASBR** otasbrPtr) - Retrieve OTASBR from Tcl_Obj
+##   ... marpa_new_otasbr_obj (Tcl_Obj* o, OTASBR* otasbr)          - Wrap OTASBR into Tcl_Obj (+1 ref)
 #
 ## CriTcl Glue
 #
@@ -29,6 +29,9 @@
 ## - cproc result type
 
 critcl::ccode {
+    #define INT_REP       internalRep.otherValuePtr
+    #define OTASBR_REP(o) ((OTASBR*) (o)->INT_REP)
+
     /*
     ** The structure we use for the int rep
     */
@@ -45,33 +48,54 @@ critcl::ccode {
     OTASBR*
     marpa_otasbr_new (ASBR* asbr)
     {
-	OTASBR* otasbr = (OTASBR*) ckalloc (sizeof (OTASBR));
+	OTASBR* otasbr;
+	TRACE_ENTER("marpa_otasbr_new");
+
+	otasbr = (OTASBR*) ckalloc (sizeof (OTASBR));
+	TRACE (("NEW otasbr = %p", otasbr));
+
 	otasbr->refCount = 0;
 	otasbr->asbr = asbr;
-	return otasbr;
+
+	TRACE_RETURN("==> otasbr :: %p", otasbr);
     }
 
     void
     marpa_otasbr_destroy (OTASBR* otasbr)
     {
+	TRACE_ENTER("marpa_otasbr_destroy");
 	marpa_asbr_destroy (otasbr->asbr);
+
+	TRACE (("DEL otasbr = %p", otasbr));
 	ckfree((char*) otasbr);
-	return;
+
+	TRACE_RETURN_VOID;
     }
 
     OTASBR*
     marpa_otasbr_take (OTASBR* otasbr)
     {
+	TRACE_ENTER("marpa_otasbr_take");
+	
 	otasbr->refCount ++;
-	return otasbr;
+	TRACE (("%p RC %d", otasbr, otasbr ? otasbr->refCount : -5));
+	TRACE_RETURN("==> otscr :: %p", otasbr);
     }
     
     void
     marpa_otasbr_release (OTASBR* otasbr)
     {
+	TRACE_ENTER("marpa_otasbr_release");
+
 	otasbr->refCount --;
-	if (otasbr->refCount > 0) return;
+	TRACE (("%p RC %d", otasbr, otasbr ? otasbr->refCount : -5));
+
+	if (otasbr->refCount > 0) {
+	    TRACE_RETURN_VOID;
+	}
+
 	marpa_otasbr_destroy (otasbr);
+	TRACE_RETURN_VOID;
     }
 
     /*
@@ -99,19 +123,22 @@ critcl::ccode {
     static void
     marpa_asbr_rep_free (Tcl_Obj* o)
     {
-	OTASBR* intRep = (OTASBR*) o->internalRep.otherValuePtr;
-	intRep->refCount --;
-	if (intRep->refCount > 0) return;
-	marpa_otasbr_release (intRep);
+	TRACE_ENTER("marpa_asbr_rep_free");
+	marpa_otasbr_release (OTASBR_REP(o));
+	TRACE_RETURN_VOID;
     }
     
     static void
     marpa_asbr_rep_dup (Tcl_Obj* src, Tcl_Obj* dst)
     {
-	OTASBR* intRep = (OTASBR*) src->internalRep.otherValuePtr;
-	marpa_otasbr_take (intRep);
-	dst->internalRep.otherValuePtr = src->internalRep.otherValuePtr;
+	TRACE_ENTER("marpa_asbr_rep_dup");
+	TRACE (("Tcl_Obj %p RC %d", src, src ? src->refCount : -5));
+
+	marpa_otasbr_take (OTASBR_REP(src));
+	dst->INT_REP = src->INT_REP;
 	dst->typePtr = &marpa_asbr_objtype;
+
+	TRACE_RETURN_VOID;
     }
     
     static void
@@ -121,13 +148,15 @@ critcl::ccode {
 	** Generate a string for a nested list, using the ASBR as basis
 	*/
 	char        buf [20];
-	OTASBR*     intRep = (OTASBR*) o->internalRep.otherValuePtr;
-	ASBR*       asbr   = intRep->asbr;
+	ASBR*       asbr = OTASBR_REP(o)->asbr;
 	Tcl_DString ds;
-	int         i, k, length;
+	int         i, k;
 	SBR*        sbr;
 	BR*         br;
 	
+	TRACE_ENTER("marpa_asbr_rep_str");
+	TRACE (("Tcl_Obj %p RC %d", o, o ? o->refCount : -5));
+
 	Tcl_DStringInit (&ds);
 
 	/* Iterate over the alternates */
@@ -149,14 +178,11 @@ critcl::ccode {
 	    }
 	    Tcl_DStringEndSublist(&ds);
 	}
-	
-	length = Tcl_DStringLength (&ds);
-	
-	o->length = length;
-	o->bytes  = ckalloc(length);
-	memcpy (o->bytes, Tcl_DStringValue (&ds), length+1);
+
+	STREP_DS (o, &ds);
 
 	Tcl_DStringFree (&ds);
+	TRACE_RETURN_VOID;
     }
     
     static int
@@ -169,10 +195,11 @@ critcl::ccode {
 	Tcl_Obj **objv;
 	int       robjc;
 	Tcl_Obj **robjv;
-	ASBR*      asbr   = NULL;
-	OTASBR*    otasbr = NULL;
+	ASBR*     asbr   = NULL;
+	OTASBR*   otasbr = NULL;
 	int       start, end, i;
 
+	TRACE_ENTER ("marpa_asbr_rep_from_any");
 	/*
 	** The ASBR is a list of alternates. Each alternate is a
 	** sequence, i.e. a list of pairs. Each pair is a list of two
@@ -215,7 +242,7 @@ critcl::ccode {
 	marpa_asbr_rep_free,
 	marpa_asbr_rep_dup,
 	marpa_asbr_rep_str,
-	NULL,
+	NULL /* from_any not supported, only via 2asbr from OTSCR */,
     };
 
     /* Public creator/accessor functions
@@ -225,24 +252,28 @@ critcl::ccode {
     marpa_new_otasbr_obj (OTASBR* otasbr)
     {
 	Tcl_Obj* obj = Tcl_NewObj ();
-
+	TRACE_ENTER("marpa_new_otasbr_obj");
+	
 	Tcl_InvalidateStringRep (obj);
 	obj->internalRep.otherValuePtr = marpa_otasbr_take (otasbr);
 	obj->typePtr                   = &marpa_asbr_objtype;
-	return obj;
+
+	TRACE_RETURN("==> obj :: %p", obj);
     }
 
     int
     marpa_get_otasbr_from_obj (Tcl_Interp* interp, Tcl_Obj* o, OTASBR** otasbrPtr)
     {
+	TRACE_ENTER("marpa_get_otscr_from_obj");
 	if (o->typePtr != &marpa_asbr_objtype) {
 	    if (marpa_asbr_rep_from_any (interp, o) != TCL_OK) {
-		return TCL_ERROR;
+		TRACE_RETURN("==> ERROR", TCL_ERROR);
 	    }
 	}
 
-	*otasbrPtr = (OTASBR*) o->internalRep.otherValuePtr;
-	return TCL_OK;
+	*otasbrPtr = OTASBR_REP(o);
+	TRACE (("==> otasbr :: %p", *otasbrPtr));
+	TRACE_RETURN("==> OK", TCL_OK);
     }
 }
 
@@ -250,14 +281,17 @@ critcl::ccode {
 # Glue to critcl::cproc
 
 critcl::argtype Marpa_ASBR {
+        TRACE (("A(Marpa_ASBR): obj %p/%d, otscr %p/%d", @@, @@->refCount, @A, @A ? @A->refCount : -5));
     if (marpa_get_otasbr_from_obj (interp, @@, &@A) != TCL_OK) {
 	return TCL_ERROR;
     }
 } OTASBR* OTASBR*
 
 critcl::resulttype Marpa_ASBR {
+    TRACE (("R(Marpa_ASBR): otscr %p/%d", rv, rv ? rv->refCount : -5));
     if (rv == NULL) { return TCL_ERROR; }
     Tcl_SetObjResult(interp, marpa_new_otasbr_obj (rv));
+    TRACE (("R(Marpa_ASBR): obj %p/%d", Tcl_GetObjResult(interp), Tcl_GetObjResult(interp)->refCount));
     /* No refcount adjustment */
     return TCL_OK;
 } OTASBR*
@@ -271,7 +305,8 @@ critcl::cproc marpa::unicode::2asbr {
     Marpa_CharClass charclass
 } Marpa_ASBR {
     /* charclass :: OTSCR* */
-    return marpa_otasbr_new (marpa_asbr_new (charclass->scr));
+    TRACE_ENTER("marpa::unicode::2asbr");
+    TRACE_RETURN("==> otasbr :: %p", marpa_otasbr_new (marpa_asbr_new (charclass->scr)));
 }
 
 # # ## ### ##### ######## #############

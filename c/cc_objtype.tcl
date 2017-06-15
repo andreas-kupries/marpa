@@ -20,8 +20,8 @@
 # 
 ## User Constructor, Accessor Functionality
 # 
-##   int GetCharClassFromObj (Tcl_Obj* o, SCR** scrPtr) - Retrieve SCR from Tcl_Obj
-##   ... NewCharClass (Tcl_Obj* o, SCR* scr)            - Wrap SCR into Tcl_Obj (takes ownership)
+##   int marpa_get_otscr_from_obj (Tcl_Obj* o, OTSCR** otscrPtr) - Retrieve OTSCR from Tcl_Obj
+##   ... marpa_new_otscr_obj (Tcl_Obj* o, OTSCR* otscr)          - Wrap OTSCR into Tcl_Obj (+1 ref)
 #
 ## CriTcl Glue
 #
@@ -29,6 +29,9 @@
 ## - cproc result type
 
 critcl::ccode {
+    #define INT_REP       internalRep.otherValuePtr
+    #define OTSCR_REP(o) ((OTSCR*) (o)->INT_REP)
+
     /*
     // The structure we use for the int rep
     */
@@ -45,33 +48,57 @@ critcl::ccode {
     OTSCR*
     marpa_otscr_new (SCR* scr)
     {
-	OTSCR* otscr = (OTSCR*) ckalloc (sizeof (OTSCR));
+	OTSCR* otscr;
+	TRACE_ENTER("marpa_otscr_new");
+	TRACE (("scr :: %p (%d)", scr, scr->n));
+
+	otscr = (OTSCR*) ckalloc (sizeof (OTSCR));
+	TRACE (("NEW otscr  = %p (rc=0) [%d]", otscr, sizeof (OTSCR)));
+
 	otscr->refCount = 0;
 	otscr->scr = scr;
-	return otscr;
+
+	TRACE_RETURN("otscr :: %p", otscr);
     }
 
     void
     marpa_otscr_destroy (OTSCR* otscr)
     {
+	TRACE_ENTER("marpa_otscr_destroy");
+	TRACE (("otscr :: %p (rc=%d), scr :: %p", otscr, otscr->refCount, otscr->scr));
+	
 	marpa_scr_destroy (otscr->scr);
+
+	TRACE (("DEL otscr  = %p", otscr));
 	ckfree((char*) otscr);
-	return;
+
+	TRACE_RETURN_VOID;
     }
 
     OTSCR*
     marpa_otscr_take (OTSCR* otscr)
     {
+	TRACE_ENTER("marpa_otscr_take");
+
 	otscr->refCount ++;
-	return otscr;
+	TRACE (("otscr :: %p (rc=%d)", otscr, otscr ? otscr->refCount : -5));
+	TRACE_RETURN("otscr :: %p", otscr);
     }
     
     void
     marpa_otscr_release (OTSCR* otscr)
     {
+	TRACE_ENTER("marpa_otscr_release");
+
 	otscr->refCount --;
-	if (otscr->refCount > 0) return;
+	TRACE (("otscr :: %p (rc=%d)", otscr, otscr ? otscr->refCount : -5));
+
+	if (otscr->refCount > 0) {
+	    TRACE_RETURN_VOID;
+	}
+
 	marpa_otscr_destroy (otscr);
+	TRACE_RETURN_VOID;
     }
 
     /*
@@ -99,19 +126,27 @@ critcl::ccode {
     static void
     marpa_scr_rep_free (Tcl_Obj* o)
     {
-	OTSCR* intRep = (OTSCR*) o->internalRep.otherValuePtr;
-	intRep->refCount --;
-	if (intRep->refCount > 0) return;
-	marpa_otscr_release (intRep);
+	TRACE_ENTER("marpa_scr_rep_free");
+	TRACE (("obj :: %p (rc=%d)", o, o->refCount));
+	TRACE (("otscr :: %p (rc=%d)", OTSCR_REP(o), OTSCR_REP(o)->refCount));
+	TRACE (("scr :: %p", OTSCR_REP(o)->scr));
+
+	marpa_otscr_release (OTSCR_REP(o));
+
+	TRACE_RETURN_VOID;
     }
     
     static void
     marpa_scr_rep_dup (Tcl_Obj* src, Tcl_Obj* dst)
     {
-	OTSCR* intRep = (OTSCR*) src->internalRep.otherValuePtr;
-	marpa_otscr_take (intRep);
-	dst->internalRep.otherValuePtr = src->internalRep.otherValuePtr;
+	TRACE_ENTER("marpa_scr_rep_dup");
+	TRACE (("obj :: %p (rc=%d)", src, src ? src->refCount : -5));
+	
+	marpa_otscr_take (OTSCR_REP(src));
+	dst->INT_REP = src->INT_REP;
 	dst->typePtr = &marpa_scr_objtype;
+
+	TRACE_RETURN_VOID;
     }
     
     static void
@@ -122,12 +157,16 @@ critcl::ccode {
 	// We ensure that the CC is canonical first.
 	*/
 	char        buf [20];
-	OTSCR*      intRep = (OTSCR*) o->internalRep.otherValuePtr;
-	SCR*        scr    = intRep->scr;
+	SCR*        scr = OTSCR_REP(o)->scr;
 	Tcl_DString ds;
-	int         i, length;
+	int         i;
 	CR*         cr;
-	
+
+	TRACE_ENTER("marpa_scr_rep_str");
+	TRACE (("obj :: %p (rc=%d)", o, o->refCount));
+	TRACE (("otscr :: %p (rc=%d)", OTSCR_REP(o), OTSCR_REP(o)->refCount));
+	TRACE (("scr :: %p", OTSCR_REP(o)->scr));
+
 	marpa_scr_norm (scr);
 	Tcl_DStringInit (&ds);
 
@@ -148,14 +187,11 @@ critcl::ccode {
 		Tcl_DStringEndSublist(&ds);
 	    }
 	}
-	
-	length = Tcl_DStringLength (&ds);
-	
-	o->length = length;
-	o->bytes  = ckalloc(length);
-	memcpy (o->bytes, Tcl_DStringValue (&ds), length+1);
+
+	STREP_DS (o, &ds);
 
 	Tcl_DStringFree (&ds);
+	TRACE_RETURN_VOID;
     }
 
     static int
@@ -198,11 +234,13 @@ critcl::ccode {
 	scr = marpa_scr_new (objc);
 	TRACE (("CAP %d", objc));
 	for (i = 0; i < objc; i++) {
-	    /* Extract and validate each element of the CC
+	    /*
+	    // Extract and validate each element of the CC
 	    */
 	    if (Tcl_ListObjGetElements(ip, objv[i], &robjc, &robjv) != TCL_OK) {
 		goto fail;
 	    }
+	    /* TODO: Rework this to avoid unnecessary shimmering */
 	    switch (robjc) {
 		case 1: {
 		    if ((Tcl_GetIntFromObj(ip, robjv[0], &start) != TCL_OK) ||
@@ -232,19 +270,16 @@ critcl::ccode {
 		    goto fail;
 		}
 	    }
-
 	    /*
 	    // Add the validated element to the intrep under construction.
 	    */
 	    TRACE (("++ (%d...%d)", start, end));
-	    marpa_scr_add_range(&scr, start, end);
+	    marpa_scr_add_range(scr, start, end);
 	}
 
 	TRACE (("USE %d", scr->n));
 	
-	otscr = (OTSCR*) ckalloc(sizeof(OTSCR));
-	otscr->refCount = 1;
-	otscr->scr = scr;
+	otscr = marpa_otscr_take (marpa_otscr_new (scr));
 
 	/*
 	// Kill the old intrep (a list). This was delayed as much as
@@ -253,13 +288,16 @@ critcl::ccode {
 
 	FreeIntRep (o);
 
-	o->internalRep.otherValuePtr = otscr;
-	o->typePtr                   = &marpa_scr_objtype;
+	o->INT_REP = otscr;
+	o->typePtr = &marpa_scr_objtype;
 
 	TRACE_RETURN ("ok: %d", TCL_OK);
 
     fail:
-	if (scr) marpa_scr_destroy(scr);
+	TRACE (("FAIL"));
+	if (scr) {
+	    marpa_scr_destroy(scr);
+	}
 	TRACE_RETURN ("err: %d", TCL_ERROR);
     }
     
@@ -278,24 +316,31 @@ critcl::ccode {
     marpa_new_otscr_obj (OTSCR* otscr)
     {
 	Tcl_Obj* obj = Tcl_NewObj ();
-
+	TRACE_ENTER("marpa_new_otscr_obj");
+	TRACE (("obj :: %p (rc=%d)", obj, obj->refCount));
+	
 	Tcl_InvalidateStringRep (obj);
-	obj->internalRep.otherValuePtr = marpa_otscr_take (otscr);
-	obj->typePtr                   = &marpa_scr_objtype;
-	return obj;
+	obj->INT_REP = marpa_otscr_take (otscr);
+	obj->typePtr = &marpa_scr_objtype;
+
+	TRACE_RETURN("obj :: %p", obj);
     }
 
     int
     marpa_get_otscr_from_obj (Tcl_Interp* interp, Tcl_Obj* o, OTSCR** otscrPtr)
     {
+	TRACE_ENTER("marpa_get_otscr_from_obj");
+	TRACE (("obj :: %p (rc=%d)", o, o->refCount));
+
 	if (o->typePtr != &marpa_scr_objtype) {
 	    if (marpa_scr_rep_from_any (interp, o) != TCL_OK) {
-		return TCL_ERROR;
+		TRACE_RETURN("ERROR", TCL_ERROR);
 	    }
 	}
 
-	*otscrPtr = (OTSCR*) o->internalRep.otherValuePtr;
-	return TCL_OK;
+	*otscrPtr = OTSCR_REP(o);
+	TRACE (("otscr :: %p (rc=%d)", *otscrPtr, (*otscrPtr)->refCount));
+	TRACE_RETURN("OK", TCL_OK);
     }
 }
 
@@ -303,15 +348,23 @@ critcl::ccode {
 # Glue to critcl::cproc
 
 critcl::argtype Marpa_CharClass {
+    @A = NULL;
+    TRACE (("A(Marpa_CharClass): obj %p (rc=%d)", @@, @@->refCount));
     if (marpa_get_otscr_from_obj (interp, @@, &@A) != TCL_OK) {
+	TRACE (("A(Marpa_CharClass): ERROR"));
 	return TCL_ERROR;
     }
+    TRACE (("A(Marpa_CharClass): otscr %p (rc=%d)", @A, @A->refCount));
+    TRACE (("A(Marpa_CharClass): DONE"));
 } OTSCR* OTSCR*
 
 critcl::resulttype Marpa_CharClass {
+    TRACE (("R(Marpa_CharClass): otscr :: %p (rc=%d)", rv, rv ? rv->refCount : -5));
     if (rv == NULL) { return TCL_ERROR; }
     Tcl_SetObjResult(interp, marpa_new_otscr_obj (rv));
+    TRACE (("R(Marpa_CharClass): obj :: %p (rc=%d)", Tcl_GetObjResult(interp), Tcl_GetObjResult(interp)->refCount));
     /* No refcount adjustment */
+    TRACE (("R(Marpa_CharClass): DONE"));
     return TCL_OK;
 } OTSCR*
 
@@ -324,7 +377,10 @@ critcl::cproc marpa::unicode::negate-class {
     Marpa_CharClass charclass
 } Marpa_CharClass {
     /* charclass :: OTSCR* */
-    return marpa_otscr_new (marpa_scr_complement (charclass->scr));
+    TRACE_ENTER("marpa::unicode::negate-class");
+    TRACE (("otscr :: %p (rc=%d)", charclass, charclass->refCount));
+    TRACE (("scr :: %p", charclass->scr));
+    TRACE_RETURN("otscr :: %p", marpa_otscr_new (marpa_scr_complement (charclass->scr)));
 }
 
 critcl::cproc marpa::unicode::norm-class {
@@ -336,8 +392,11 @@ critcl::cproc marpa::unicode::norm-class {
     // The deeper intrep is modified.
     // A possible string rep is not.
     */
+    TRACE_ENTER("marpa::unicode::norm-class");
+    TRACE (("otscr :: %p (rc=%d)", charclass, charclass->refCount));
+    TRACE (("scr :: %p", charclass->scr));
     marpa_scr_norm (charclass->scr);
-    return charclass;
+    TRACE_RETURN("otscr :: %p", charclass);
 }
 
 # # ## ### ##### ######## #############

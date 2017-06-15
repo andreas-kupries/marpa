@@ -1,9 +1,5 @@
 BUILD-marpa*
-DEBUG
-X.*
 core*
-ex
 generated
 tests/core*
 tests/grammars/z-marpa-tcl
-WORK

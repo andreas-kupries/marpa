@@ -29,13 +29,12 @@
 #   SBR  :: Sequence of BRs (max length 6 - full utf character)
 #   ASBR :: Alternations of SBR (char class as utf8 automaton/trie)
 
+# Note: UNI_MAX is defined in generated/unidata.c,
+#       critcl::include'd first by marpa.tcl
+
 critcl::ccode {
-    #include <string.h> /* memcopy */
-
-    #ifndef UNI_MAX
-    #define UNI_MAX 65535 /* BMP by default */
-    #endif
-
+    #include <string.h> /* memcpy */
+    
     #undef  MAX
     #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 
@@ -49,21 +48,22 @@ critcl::ccode {
     } CR;
 
     typedef struct SCR {
-	int n;     /* #ranges in the class */
+	int n;     /* #ranges in the class, cr[0...n-1] */
 	int max;   /* Allocated #ranges (n <= max) */
 	int canon; /* Boolean flag, class is normalized, in canonical form */
 	CR  cr[1]; /* Ranges allocated as part of the structure */
     } SCR;
 
     #ifdef CRITCL_TRACER
-    #define SCR_DUMP(m,scr) { \
-	int i; \
-	for (i=0; i < (scr)->n; i++) { \
-	   TRACE ((m " (%6d): %8d...%8d", i, \
-		   (scr)->cr[i].start, \
-		   (scr)->cr[i].end)); \
-        } \
+    static void __SCR_DUMP (const char* msg, SCR* scr) {
+	int i;
+	for (i=0; i < (scr)->n; i++) {
+	    TRACE (("SCR %s (%6d): %8d...%8d", msg, i,
+		    (scr)->cr[i].start,
+		    (scr)->cr[i].end));
+	}
     }
+    #define SCR_DUMP(m,scr) __SCR_DUMP(m,scr)
     #else
     #define SCR_DUMP(m,scr)
     #endif
@@ -79,8 +79,40 @@ critcl::ccode {
 
     typedef struct SBR {
 	unsigned char n;      /* Length of the sequence */
-	BR  br[6];            /* Ranges of the sequence */
+	BR  br[4];            /* Ranges of the sequence */
     } SBR;
+
+    #ifdef CRITCL_TRACER
+    static void __SBR_DUMP (const char* msg, SBR* sbr) {
+	#define BR(i) sbr->br[i].start, sbr->br[i].end
+	switch (sbr->n) {
+	    case 1: {
+		TRACE (("SBR %s (1): %3d-%3d", msg, BR(0)));
+		break;
+	    }
+	    case 2: {
+		TRACE (("SBR %s (2): %3d-%3d %3d-%3d", msg, BR(0), BR(1)));
+		break;
+	    }
+	    case 3: {
+		TRACE (("SBR %s (3): %3d-%3d %3d-%3d %3d-%3d", msg, BR(0), BR(1), BR(2)));
+		break;
+	    }
+	    case 4: {
+		TRACE (("SBR %s (4): %3d-%3d %3d-%3d %3d-%3d %3d-%3d", msg, BR(0), BR(1), BR(2), BR(3)));
+		break;
+	    }
+	    default: {
+		ASSERT (0, "Illegal SBR size")
+		break;
+	    }
+	}
+	#undef BR
+    }
+    #define SBR_DUMP(m,sbr) __SBR_DUMP(m,sbr)
+    #else
+    #define SBR_DUMP(m,sbr)
+    #endif
 
     typedef struct ccSBR {
 	unsigned char closed; /* Bool flag. True stops further merging */
@@ -88,10 +120,44 @@ critcl::ccode {
 	SBR           sbr;    /* SBR to handle */
     } ccSBR;
 
+    typedef struct ASBRState {
+	ccSBR* top;
+	int    depth;
+    } ASBRState;
+    
+    #ifdef CRITCL_TRACER
+    static void __CCSBR_DUMP (const char* msg, ccSBR* ccsbr) {
+	int i = 0;
+	char buf [60]; /* ATTENTION: Size of msg limited by this to 46 chars */
+	while (ccsbr) {
+	    sprintf(buf, "CCSBR %s %4d %s", msg, i, ccsbr->closed ? "-" : " ");
+	    __SBR_DUMP (buf, &ccsbr->sbr);
+	    ccsbr = ccsbr->next;
+	}
+    }
+    #define CCSBR_DUMP(m,ccsbr) __CCSBR_DUMP(m,ccsbr)
+    #else
+    #define CCSBR_DUMP(m,ccsbr)
+    #endif
+	
     typedef struct ASBR {
 	int n;      /* Number of alternates in the class */
 	SBR sbr[1]; /* Alternates allocated as part of structure */
     } ASBR;
+
+    #ifdef CRITCL_TRACER
+    static void __ASBR_DUMP (const char* msg, ASBR* asbr) {
+	int i;
+	char buf [30]; /* ATTENTION: msg limited by this to 19 chars */
+	for (i=0; i < asbr->n ; i++) {
+	    sprintf(buf, "ASBR %s %4d", msg, i);
+	    __SBR_DUMP (buf, &asbr->sbr[i]);
+	}
+    }
+    #define ASBR_DUMP(m,asbr) __ASBR_DUMP(m,asbr)
+    #else
+    #define ASBR_DUMP(m,asbr)
+    #endif
 
     /*
     // SCR
@@ -105,53 +171,50 @@ critcl::ccode {
     static SCR*
     marpa_scr_new (int n) {
 	SCR* scr;
+	TRACE_ENTER("marpa_scr_new");
+	TRACE (("Requested  %d", n));
 
 	if (n < 1) { n = 1; }
-
-	scr = (SCR*) ckalloc (sizeof(SCR) + n*sizeof(CR));
-	scr->n     = 0;   /* Nothing stored yet */
-	scr->max   = n+1; /* Space for one more because of 'cr[1]' in SCR itself */
-	scr->canon = 0;   /* Not normalized */
-	return scr;
+	TRACE (("Allocating %d", n));
+	
+	scr = (SCR*) ckalloc (sizeof(SCR) + (n-1)*sizeof(CR));
+	TRACE (("NEW scr    = %p .. %p [%d] [%d+%d*%d]", scr,
+		((char*) scr)+sizeof(SCR)+(n-1)*sizeof(CR),
+		sizeof(SCR)+(n-1)*sizeof(CR),
+		sizeof(SCR), n-1, sizeof(CR)));
+	scr->n     = 0;  /* Nothing stored yet */
+	scr->max   = n;  /* Note the 'cr[1]' in SCR itself */
+	scr->canon = 0;  /* Not normalized */
+	TRACE_RETURN("scr :: %p", scr);
     }
 
     static void
     marpa_scr_destroy (SCR* scr) {
-	/* Trivial because the ranges are allocated as part of the structure */
+	/*
+	// Trivial because the ranges are allocated as part of the structure
+	*/
+	TRACE_ENTER("marpa_scr_destroy");
+	TRACE (("DEL scr    = %p (elt %d)", scr, scr->n));
 	ckfree ((char*) scr);
+	TRACE_RETURN_VOID;
     }
 
     static void
-    marpa_scr_add_range (SCR** pscr, int first, int last) {
-	/* SCR** because the structure might be reallocated to make space */
-	SCR* scr = *pscr;
+    marpa_scr_add_range (SCR* scr, int first, int last) {
+	TRACE_ENTER("marpa_scr_add_range");
+	TRACE (("scr :: %p [%d/%d] += (%d...%d)", scr, scr->n, scr->max, first, last));
+	
+	ASSERT (scr->n < scr->max, "Unable to add range to full SCR");
 
-	if (scr->n == scr->max) {
-	    /* Double the space */
-	    SCR* new = marpa_scr_new(2 * scr->max);
-	    new->n = scr->n;
-
-	    /* Copy content over */
-	    memcpy (new->cr, scr->cr, scr->n * sizeof(CR));
-
-	    /* Release old structure */
-	    marpa_scr_destroy(scr);
-	    scr = *pscr = new;
-	}
-
-	{
-	    CR* cr = &scr->cr[scr->n];
-	    cr->start = first;
-	    cr->end   = last;
-	    scr->n ++;
-	}
-
+	scr->cr[scr->n].start = first;
+	scr->cr[scr->n].end   = last;
+	scr->n ++;
 	scr->canon = 0; /* If it was normalized before it may not be anymore */
+	TRACE_RETURN_VOID;
     }
 
     static void
-    marpa_scr_add_code (SCR** scr, int codepoint) {
-	/* SCR** because the structure might be reallocated to make space */
+    marpa_scr_add_code (SCR* scr, int codepoint) {
 	marpa_scr_add_range (scr, codepoint, codepoint);
     }
 
@@ -180,7 +243,7 @@ critcl::ccode {
     static void
     marpa_scr_norm (SCR* scr) {
 	TRACE_ENTER ("marpa_scr_norm");
-	TRACE (("#elements: %d", scr->n));
+	TRACE (("scr in  %p :: #elements: %d", scr, scr->n));
 	
 	/*
 	// Normalization is done in place. The resulting class
@@ -283,6 +346,7 @@ critcl::ccode {
 
 	scr->canon = 1;
 	TRACE (("done"));
+	TRACE (("scr out %p :: #elements: %d", scr, scr->n));
 	TRACE_RETURN_VOID;
     }
 
@@ -298,15 +362,16 @@ critcl::ccode {
 	CR *current, *sentinel, *store;
 
 	TRACE_ENTER ("marpa_scr_complement");
-	TRACE (("#elements: %d", scr->n));
+	TRACE (("scr in  %p :: #elements: %d", scr, scr->n));
 	
 	if (scr->n == 0) {
 	    /*
 	    // Negating an empty class yields the full range.
 	    */
 	    ncr = marpa_scr_new (1);
-	    marpa_scr_add_range(&ncr, 0, UNI_MAX);
+	    marpa_scr_add_range(ncr, 0, UNI_MAX);
 	    ncr->canon       = 1;
+	    TRACE (("ncr out %p :: #elements: %d, canonical", ncr, ncr->n));
 	    TRACE_RETURN ("ncr: %p", ncr);
 	}
 	
@@ -345,6 +410,7 @@ critcl::ccode {
 	    //
 	    */
 	    ncr->canon = 1;
+	    TRACE (("ncr out %p :: #elements: %d, canonical", ncr, ncr->n));
 	    TRACE_RETURN ("ncr: %p", ncr);
 	}
 	
@@ -380,6 +446,7 @@ critcl::ccode {
 
 	ASSERT (ncr->n <= nc, "Element overflow" );
 	ASSERT (ncr->n == nc, "Missing elements" );
+	TRACE (("ncr out %p :: #elements: %d, canonical", ncr, ncr->n));
 	TRACE_RETURN ("ncr: %p", ncr);
     }
 
@@ -429,21 +496,24 @@ critcl::ccode {
     }
     
     static void
-    finalize (ccSBR* state)
+    finalize (ASBRState* state)
     {
-	if (state == NULL) return;
-	state->closed = 1;
+	TRACE_ENTER("finalize");
+	if (state->top == NULL) { TRACE_RETURN_VOID; }
+	state->top->closed = 1;
+	TRACE_RETURN_VOID;
     }
 
     static void
-    push (ccSBR** statePtr, int* depthPtr, SBR* current)
+    push (ASBRState* state, SBR* current)
     {
-	ccSBR* state = (ccSBR*) ckalloc (sizeof (ccSBR));
-	state->closed = 0;
-	state->next = *statePtr;
-	memcpy (&state->sbr, current, sizeof(SBR));
-	*statePtr = state;
-	*depthPtr ++;
+	SBR_DUMP("push", current);
+	ccSBR* ccsbr = (ccSBR*) ckalloc (sizeof (ccSBR));
+	ccsbr->sbr    = *current;
+	ccsbr->closed = 0;
+	ccsbr->next   = state->top;
+	state->top = ccsbr;
+	state->depth ++;
     }
 
     #define R_EQU(a,b) (((a).start == (b).start) && ((a).end == (b).end))
@@ -451,11 +521,12 @@ critcl::ccode {
 
     #define EQ(i) R_EQU(prev->br[i],top->br[i])
     #define UP(i) R_ADJ(prev->br[i],top->br[i])
-    #define EX(i) prev->br[i].end = top->br[i].end; return 1
+    #define EX(i) prev->br[i].end = top->br[i].end; TRACE (("@ %d", i)); return 1
 
     static int
     merging (SBR* prev, SBR* top)
     {
+	TRACE(("merging p (%p) c (%p)", prev, top));
 	/* assert: prev-n == top->n, caller ensured */
 	/* See merge2 below */
 	switch (prev->n) {
@@ -499,53 +570,67 @@ critcl::ccode {
 	    /* Assert false - must not happen */
 	    break;
 	}
+	TRACE (("no"));
 	return 0;
     }
     
     static int
-    merge2 (ccSBR** statePtr, int* depthPtr)
+    merge2 (ASBRState* state)
     {
 	ccSBR *top, *prev;
 	/* Not enough in the state to merge */
-	if (*depthPtr < 2) {
-	    return 0 ;
+	if (state->depth < 2) {
+	    TRACE (("merge2 (%d): not enough", state->depth));
+	    return 0;
 	}
 	/* Do not merge across a gap */
-	top = *statePtr;
+	top  = state->top;
 	prev = top->next;
 	if (prev->closed) {
+	    TRACE (("merge2 (%d): previous closed", state->depth));
 	    return 0;
 	}
 	/* Do not merge states of different length (hoisted out of `merging`). */
 	if (prev->sbr.n != top->sbr.n) {
+	    TRACE (("merge2 (%d): length mismatch", state->depth));
 	    return 0;
 	}
 	if (!merging(&prev->sbr,&top->sbr)) {
+	    TRACE (("merge2 (%d): cannot merge", state->depth));
 	    return 0;
 	}
-	*statePtr = prev;
-	*depthPtr --;
 	ckfree ((char*) top);
+	state->top = prev;
+	state->depth --;
+	TRACE (("merge2 (%d): merged, pop", state->depth));
 	return 1;
     }
     
     static void
-    merge (ccSBR** statePtr, int* depthPtr, SBR* current)
+    merge (ASBRState* state, SBR* current)
     {
-	push (statePtr, depthPtr, current);
-	while (merge2 (statePtr, depthPtr));
+	push (state, current);
+	while (merge2 (state));
     }
     
     static ASBR*
     marpa_asbr_new (SCR* scr) {
+	ASBRState state;
 	SBR    current;
-	ccSBR* state = NULL;
-	int i, lastcode, depth = 0, code;
+	int i, lastcode, code;
 	CR* cr;
+	ASBR* asbr;
+	ccSBR* next;
+
+	state.top   = NULL;
+	state.depth = 0;
+	
+	TRACE_ENTER("marpa_asbr_new");
 
 	marpa_scr_norm (scr);
+	SCR_DUMP ("marpa_asbr_new", scr);
 	
-	for (cr = &scr->cr[0], i = 0, depth = 0, lastcode = 0;
+	for (cr = &scr->cr[0], i = 0, lastcode = 0;
 	     i < scr->n;
 	     cr++, i++)	{
 	    for (code = cr->start; code <= cr->end; code ++) {
@@ -553,23 +638,50 @@ critcl::ccode {
 		if ((0xD7FF < code) && (code < 0xE000)) continue;
 		if (code > (lastcode+1)) {
 		    /* Gap between codes, prevent merging */
-		    finalize(state);
+		    finalize(&state);
 		}
 		decode (&current, code);
-		merge (&state, &depth, &current);
+		merge (&state, &current);
 		lastcode = code;
 	    }
 	}
 
-	return NULL; // TODO
+	CCSBR_DUMP ("marpa_asbr_new", state.top);
+	TRACE (("ccsbr = %p /%d", state.top, state.depth));
+	
+	/*
+	// Convert state to asbr
+	// ATTENTION: top becomes last, iterate backward
+	*/
+	asbr = (ASBR*) ckalloc (sizeof(ASBR) + (state.depth-1) * sizeof(SBR));
+	TRACE (("NEW asbr   = %p [%d] [%d+%d*%d]", asbr,
+		sizeof(ASBR) + (state.depth-1) * sizeof(SBR),
+		sizeof(ASBR), state.depth-1, sizeof(SBR)));
+	asbr->n = state.depth;
+	for (state.depth--;
+	     state.depth >=0;
+	     state.depth--, state.top = next) {
+	    next = state.top->next;
+	    /* TODO: Assert bounds */
+	    asbr->sbr[state.depth] = state.top->sbr;
+	    ckfree ((char*) state.top);
+	}
+	ASBR_DUMP ("marpa_asbr_new", asbr);
+	TRACE (("asbr = %p (%d)", asbr, asbr->n));
+	TRACE_RETURN("asbr :: %p", asbr);
     }
 
     static void
     marpa_asbr_destroy (ASBR* asbr) {
-	/* Trivial because the alternates are allocated as part of the structure */
+	/*
+	// Trivial because the alternates are allocated as part of the
+	// structure
+	*/
+	TRACE_ENTER("marpa_asbr_destroy");
+	TRACE (("DEL asbr   = %p", asbr));
 	ckfree ((char*) asbr);
+	TRACE_RETURN_VOID;
     }
-
 }
 
 # # ## ### ##### ######## #############
