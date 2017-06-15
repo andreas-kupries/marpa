@@ -16,9 +16,14 @@
 
 package require Tcl 8.5
 package require TclOO ;# Implies Tcl 8.5 requirement.
-package require try   ;# Don't for 8.6+ ?
 package require debug
 package require debug::caller
+
+if {![llength [info commands try]]} {
+    # Builtin "try" exists from Tcl 8.6 forward. Before that use the
+    # 8.5+ compatibility implementation found in Tcllib
+    package require try
+}
 
 debug define marpa/inbound
 #debug prefix marpa/inbound {[debug caller] | }

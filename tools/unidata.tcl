@@ -1,6 +1,9 @@
 #!/usr/bin/env tclsh
 # -*- tcl -*-
-# Process UnicodeData.txt and Scripts.txt
+#
+# Process
+#     UnicodeData.txt
+# and Scripts.txt
 # to get categories, scripts, and basic case-folding information.
 #
 # The information is collected in memory first, and then written as a
@@ -15,14 +18,19 @@
 package require Tcl 8.5
 package require fileutil
 package require lambda
-#package require marpa
 
 # Get the generic reader
 set     selfdir [file dirname [file normalize [info script]]]
 source $selfdir/unicode_reader.tcl
 
-# direct use of the marpa unicode commands, without installed
-source $selfdir/../p_unicode.tcl
+# Get pure-Tcl implementations of norm-class, negate-class, and 2asbr.
+# While these are slower (especially 2asbr, for large classes) they
+# are also not dependent on the unicode mode/max setting of an
+# installed marpa. And we cannot use the uninstalled marpa code
+# because these operations are in C and thus only available after
+# building, and as this tool generates a piece needed for building,
+# well.
+source $selfdir/unicode_ops.tcl
 
 set pongchan stderr
 #set pongchan stdout
@@ -129,25 +137,30 @@ proc main {selfdir} {
     write-folding
     write-sep {unidata done}
 
+    write-c-header
+    write-c-limits
+    write-c-sep {unidata done}
+    
     pong-done
     return
 }
 
 proc cmdline {} {
     # Syntax ==> See usage
-    global argv out pong unimax mode
-    if {[llength $argv] ni {2 3}} usage
-    lassign $argv out mode pong
+    global argv outtcl outc pong unimax mode
+    if {[llength $argv] ni {3 4}} usage
+    lassign $argv mode outtcl outc pong
     if {$mode ni {bmp full}} usage
     if {$pong eq {}} { set pong 1 }
-    set out [open $out w]
+    set outtcl [open $outtcl w]
+    set outc   [open $outc w]
     set unimax [expr {$mode eq "bmp" ? 0xFFFF : 0x10FFFF }]
     return
 }
 
 proc usage {} {
     global argv0
-    puts stderr "Usage: $argv0 output bmp|full ?pong?"
+    puts stderr "Usage: $argv0 bmp|full output-for-tcl output-for-c ?pong?"
     exit 1
 }
 
@@ -300,7 +313,7 @@ proc get-label {key} {
 proc normalize-classes {} {
     foreach cc [classes] {
 	pong "Normalizing $cc"
-	set-class $cc [marpa unicode norm [get-class $cc]]
+	set-class $cc [norm-class [get-class $cc]]
     }
     return
 }
@@ -308,9 +321,9 @@ proc normalize-classes {} {
 proc compile-to-asbrs {} {
     foreach cc [lsort -dict [classes]] {
 	pong "Compiling ASBR $cc"
-	set asbr [marpa unicode 2asbr [get-class $cc]]
-	set pretty [marpa unicode asbr-format $asbr 1]
-	set asbr [encode-ranges $asbr]
+	set asbr   [2asbr [get-class $cc]]
+	set pretty [asbr-format $asbr 1]
+	set asbr   [encode-ranges $asbr]
 	set-asbr $cc [list $asbr $pretty]
     }
     return
@@ -552,7 +565,7 @@ proc compile-folds {} {
     dict for {fid spec} $foldset {
 	pong "Compiling fold class $fid"
 
-	set asbr [marpa unicode 2asbr $spec]
+	set asbr [2asbr $spec]
 	set asbr [encode-ranges $asbr]
 	set gr   [asbr-to-grammar $asbr]
 
@@ -578,20 +591,49 @@ proc pong-done {} {
 }
 
 proc wr {text} {
-    global out
-    puts $out $text
+    global outtcl
+    puts $outtcl $text
     return
 }
 
 proc wr* {text} {
-    global out
-    puts -nonewline $out $text
+    global outtcl
+    puts -nonewline $outtcl $text
     return
 }
 
 proc write-comment {text} {
     wr "# [join [split $text \n] "\n# "]"
     return
+}
+
+proc wrc {text} {
+    global outc
+    puts $outc $text
+    return
+}
+
+proc wrc* {text} {
+    global outc
+    puts -nonewline $outc $text
+    return
+}
+
+proc write-c-comment {text} {
+    wrc "/* [join [split $text \n] "\n# "] */"
+    return
+}
+
+proc write-c-header {} {
+    global mode unimax
+    set m $unimax ; incr m 0
+    wrc "/* -*- c -*-"
+    wrc "** Generator       tools/unidata.tcl"
+    wrc "** Data sources    unidata/{UnicodeData,Scripts}.txt"
+    wrc "** Build-Time      [clock format [clock seconds]]"
+    wrc "** Supported range $mode ($m codepoints)"
+    wrc "*/"
+    wrc ""
 }
 
 proc write-header {} {
@@ -624,6 +666,18 @@ proc write-limits {} {
     wr "set marpa::unicode::mode $mode"
     wr "set marpa::unicode::max  $unimax ;# $mode range"
     wr ""
+    return
+}
+
+proc write-c-limits {} {
+    global mode unimax
+    write-c-sep "unicode limits: $mode = $unimax"
+    lappend map <<unimax>>  $unimax
+    lappend map <<unimode>> $mode
+    wrc [string map $map {
+#define UNI_MODE "<<unimode>>" /* <<unimax>> codepoints */
+#define UNI_MAX  <<unimax>>
+}]
     return
 }
 
@@ -694,6 +748,13 @@ proc write-sep {label} {
     wr "# _ __ ___ _____ ________ _____________ _____________________ $label"
     wr "##"
     wr ""
+    return
+}
+
+proc write-c-sep {label} {
+    wrc "/* _ __ ___ _____ ________ _____________ _____________________ $label"
+    wrc "*/"
+    wrc ""
     return
 }
 

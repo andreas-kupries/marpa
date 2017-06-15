@@ -15,14 +15,11 @@ kt local   testing marpa
 
 # # ## ### ##### ######## ############# #####################
 
-if 0 {
-    # Trick: The mode string from the unicode sub-package is used as
-    # the name of the variable to read by `set`, which returns the
-    # value we want (argument). An implicit selection/choice instead
-    # of explicit via if/switch/...
-    proc MO {bmp full} { set [marpa unicode mode] }
-    rename MO {}
-}
+# Trick: The mode string from the unicode sub-package is used as the
+# name of the variable/argument to read by `set`, which returns the
+# value we want. An implicit selection/choice instead of explicit via
+# if/switch/...
+proc MO {bmp full} { set [marpa unicode mode] }
 
 ## Accessors on top of the generated unicode data tables
 # # ## ### ##### ######## ############# #####################
@@ -54,9 +51,9 @@ test marpa-unicode-data-cc-names-1.0 {names, wrong args, too many} -body {
     marpa unicode data cc names X
 } -returnCodes error -result {wrong # args: should be "marpa unicode data cc names"}
 
-test marpa-unicode-data-cc-names-2.0 {names, braille, no} -body {
+test marpa-unicode-data-cc-names-2.0 {names} -body {
     lsort -dict [marpa unicode data cc names]
-} -result {alnum alpha arabic armenian ascii balinese bamum batak bengali blank bopomofo braille buginese buhid canadian_aboriginal cc cf cham cherokee co common control coptic cyrillic devanagari digit ethiopic georgian glagolitic graph greek gujarati gurmukhi han hangul hanunoo hebrew hiragana inherited javanese kannada katakana kayah_li khmer lao latin lepcha limbu lisu ll lm lo lower lt lu malayalam mandaic mc me meetei_mayek mn mongolian myanmar nd new_tai_lue nko nl no ogham ol_chiki oriya pc pd pe pf phags_pa pi po print ps punct rejang runic samaritan saurashtra sc sinhala sk sm so space sundanese syloti_nagri syriac tagalog tagbanwa tai_le tai_tham tai_viet tamil telugu thaana thai tibetan tifinagh upper vai word xdigit yi zl zp zs}
+} -result [MO {alnum alpha arabic armenian ascii balinese bamum batak bengali blank bopomofo braille buginese buhid canadian_aboriginal cc cf cham cherokee co common control coptic cyrillic devanagari digit ethiopic georgian glagolitic graph greek gujarati gurmukhi han hangul hanunoo hebrew hiragana inherited javanese kannada katakana kayah_li khmer lao latin lepcha limbu lisu ll lm lo lower lt lu malayalam mandaic mc me meetei_mayek mn mongolian myanmar nd new_tai_lue nko nl no ogham ol_chiki oriya pc pd pe pf phags_pa pi po print ps punct rejang runic samaritan saurashtra sc sinhala sk sm so space sundanese syloti_nagri syriac tagalog tagbanwa tai_le tai_tham tai_viet tamil telugu thaana thai tibetan tifinagh upper vai word xdigit yi zl zp zs} {adlam ahom alnum alpha anatolian_hieroglyphs arabic armenian ascii avestan balinese bamum bassa_vah batak bengali bhaiksuki blank bopomofo brahmi braille buginese buhid canadian_aboriginal carian caucasian_albanian cc cf chakma cham cherokee co common control coptic cuneiform cypriot cyrillic deseret devanagari digit duployan egyptian_hieroglyphs elbasan ethiopic georgian glagolitic gothic grantha graph greek gujarati gurmukhi han hangul hanunoo hatran hebrew hiragana imperial_aramaic inherited inscriptional_pahlavi inscriptional_parthian javanese kaithi kannada katakana kayah_li kharoshthi khmer khojki khudawadi lao latin lepcha limbu linear_a linear_b lisu ll lm lo lower lt lu lycian lydian mahajani malayalam mandaic manichaean marchen mc me meetei_mayek mende_kikakui meroitic_cursive meroitic_hieroglyphs miao mn modi mongolian mro multani myanmar nabataean nd new_tai_lue newa nko nl no ogham ol_chiki old_hungarian old_italic old_north_arabian old_permic old_persian old_south_arabian old_turkic oriya osage osmanya pahawh_hmong palmyrene pau_cin_hau pc pd pe pf phags_pa phoenician pi po print ps psalter_pahlavi punct rejang runic samaritan saurashtra sc sharada shavian siddham signwriting sinhala sk sm so sora_sompeng space sundanese syloti_nagri syriac tagalog tagbanwa tai_le tai_tham tai_viet takri tamil tangut telugu thaana thai tibetan tifinagh tirhuta ugaritic upper vai warang_citi word xdigit yi zl zp zs}]
 
 # # ## ### ##### ######## ############# #####################
 ## data cc have-tcl - Test if a named cclass is supported by Tcl
@@ -225,5 +222,6 @@ foreach {label codepoint primary} {
 }
 
 # # ## ### ##### ######## ############# #####################
+rename MO {}
 cleanupTests
 return
