@@ -54,5 +54,23 @@ proc test-grammar-map {key __ iv varname basevar script} {
     return
 }
 
+proc test-grammar-result {base key} {
+    # Find the expected result. Look for mode-specific and plain
+    # files. Prefer mode-specific over plain.
+
+    set rfile  [file join $base $key]
+    set mode   [marpa unicode mode]
+    set rmfile ${rfile}-$mode
+
+    if {[file exists $rmfile]} {
+	return [string trimright [fget $rmfile]]
+    }
+    if {[file exists $rfile]} {
+	return [string trimright [fget $rfile]]
+    }
+
+    return -code error "No result file found for $base/$key"
+}
+
 # # ## ### ##### ######## #############
 return

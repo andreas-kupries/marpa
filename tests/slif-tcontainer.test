@@ -136,7 +136,7 @@ test-grammar-map gcstate --> id gcstate base {
     # Ignore containers without literals to reduce
     if {![dict exists $input l0 literal]} continue
 
-    set expected [string trimright [fget [file join $base gcr_tcl]]]
+    set expected [test-grammar-result $base gcr_tcl]
     set kd       [format $format $k]
 
     test marpa-slif-container-reduce-tcl-1.${kd}---${id} "reduce-tcl $id" -setup {
@@ -176,11 +176,7 @@ test-grammar-map gcstate --> id gcstate base {
     # Ignore containers without literals to reduce
     if {![dict exists $input l0 literal]} continue
 
-    if 0 {if {![file exists [file join $base gcr_c]]} {
-	file copy $gcstate [file join $base gcr_c]
-    }}
-
-    set expected [string trimright [fget [file join $base gcr_c]]]
+    set expected [test-grammar-result $base gcr_c]
     set kd       [format $format $k]
 
     test marpa-slif-container-reduce-c-1.${kd}---${id} "reduce-c $id" -setup {

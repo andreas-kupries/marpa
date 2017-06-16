@@ -36,6 +36,11 @@ proc RR {result rules literal} {
     set data [lassign $literal type]
     set dlit "($type ($data))"
 
+    # Before the resolution of file names in @result<...> clauses
+    lappend map <M> [marpa unicode mode]
+    set result [string map $map $result]
+    unset map
+
     lappend map @@@ [marpa unicode max]
     lappend map @!  {STATE place done work <symbol>}
     lappend map @=  {STATE place done done <symbol>}
@@ -407,8 +412,8 @@ foreach {literal toexpect} {
     {%named-class lu} {
 	{}      error RT
 	K-%NCC  ok    {@q {%named-class lu}}
-	D-%NCC1 ok    {@x {@result<lu.nocase.ncc1>}}
-	D-%NCC2 ok    {@! {@result<lu.nocase.ncc2>}}
+	D-%NCC1 ok    {@x {@result<lu.nocase.ncc1.<M>>}}
+	D-%NCC2 ok    {@! {@result<lu.nocase.ncc2.<M>>}}
     }
     ^named-class {
 	{}      error RIL
@@ -435,13 +440,13 @@ foreach {literal toexpect} {
 	{}       error RT
 	K-^%NCC  ok    {@q {^%named-class braille}}
 	D-^%NCC1 ok    {@x {charclass {0 10239} {10496 @@@}}}
-	D-^%NCC2 ok    {@! {@result<braille.neg.nocase.ncc2>}}
+	D-^%NCC2 ok    {@! {@result<braille.neg.nocase.ncc2.<M>>}}
     }
     {^%named-class lu} {
 	{}       error RT
 	K-^%NCC  ok    {@q {^%named-class lu}}
-	D-^%NCC1 ok    {@x {@result<lu.neg.nocase.ncc1>}}
-	D-^%NCC2 ok    {@! {@result<lu.neg.nocase.ncc2>}}
+	D-^%NCC1 ok    {@x {@result<lu.neg.nocase.ncc1.<M>>}}
+	D-^%NCC2 ok    {@! {@result<lu.neg.nocase.ncc2.<M>>}}
     }
     range {
 	{}     error RIL
@@ -503,7 +508,7 @@ foreach {literal toexpect} {
 	{}      error RT
 	K-^RAN  ok    {@q {^range 0 10}}
 	D-^RAN1 ok    {@x {range 11 @@@}}
-	D-^RAN2 ok    {@! {@result<range.0-10.neg.ran2>}}
+	D-^RAN2 ok    {@! {@result<range.0-10.neg.ran2.<M>>}}
     }
     {^range 20 @@@} {
 	{}      error RT
@@ -515,7 +520,7 @@ foreach {literal toexpect} {
 	{}      error RT
 	K-^RAN  ok    {@q {^range 10 20}}
 	D-^RAN1 ok    {@x {charclass {0 9} {21 @@@}}}
-	D-^RAN2 ok    {@! {@result<range.10-20.neg.ran2>}}
+	D-^RAN2 ok    {@! {@result<range.10-20.neg.ran2.<M>>}}
     }
     ^character {
 	{}     error RIL
