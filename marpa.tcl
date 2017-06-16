@@ -35,7 +35,7 @@ critcl::cutil::alloc
 # (2) Assertions, and tracing
 # (3) Debugging symbols, memory tracking
 
-generate-tables full ;# 'bmp' (default), or 'full'
+generate-tables ;# 'bmp' (default), or 'full'
 
 critcl::cutil::assertions on
 critcl::cutil::tracer     off
@@ -172,10 +172,6 @@ critcl::tsources slif/container/precedence.tcl    ; # SLIF, precedence utilities
 #critcl::cheaders mc/*.h
 #critcl::csources mc/*.c
 
-critcl::source c/unicode.tcl          ; # Unicode support functions.
-critcl::source c/cc_objtype.tcl       ; # Tcl_ObjType for uni char classes (SCR).
-critcl::source c/asbr_objtype.tcl     ; # Tcl_ObjType for ASBR char class format.
-
 critcl::source c/errors.tcl           ; # Mapping marpa error codes to strings.
 critcl::source c/events.tcl           ; # Mapping marpa event types to strings.
 critcl::source c/steps.tcl            ; # String pool for valuation-steps.
@@ -183,6 +179,10 @@ critcl::source c/support.tcl          ; # General utilities and types.
 critcl::source c/type_conversions.tcl ; # Custom argument & result types
 critcl::source c/context.tcl          ; # Per-interp package information, shared
 					# with all classes and instances.
+
+critcl::source c/unicode.tcl          ; # Unicode support functions.
+critcl::source c/cc_objtype.tcl       ; # Tcl_ObjType for uni char classes (SCR).
+critcl::source c/asbr_objtype.tcl     ; # Tcl_ObjType for ASBR char class format.
 
 # # ## ### ##### ######## #############
 ## C classes for the various types of objects.

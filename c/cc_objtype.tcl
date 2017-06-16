@@ -222,6 +222,7 @@ critcl::ccode {
 	SCR*      scr   = NULL;
 	OTSCR*    otscr = NULL;
 	int       start, end, i;
+	marpatcl_context_data ctx =  marpatcl_context (ip);
 
 	TRACE_ENTER ("marpa_scr_rep_from_any");
 	/*
@@ -234,47 +235,67 @@ critcl::ccode {
 	scr = marpa_scr_new (objc);
 	TRACE (("CAP %d", objc));
 	for (i = 0; i < objc; i++) {
+	    Tcl_Obj* elt = objv[i];
+
 	    /*
-	    // Extract and validate each element of the CC
+	    // First handle objects which already have a suitable type.
+	    // No conversions required, only data extraction and validation.
 	    */
-	    if (Tcl_ListObjGetElements(ip, objv[i], &robjc, &robjv) != TCL_OK) {
-		goto fail;
-	    }
-	    /* TODO: Rework this to avoid unnecessary shimmering */
-	    switch (robjc) {
-		case 1: {
-		    if ((Tcl_GetIntFromObj(ip, robjv[0], &start) != TCL_OK) ||
-			marpa_scr_bad_codepoint (ip, "Point", start)) {
-			goto fail;
-		    }
-		    end = start;
-		    break;
-		}
-		case 2: {
-		    if ((Tcl_GetIntFromObj(ip, robjv[0], &start) != TCL_OK) ||
-			marpa_scr_bad_codepoint (ip, "Range (start)", start) ||
-			(Tcl_GetIntFromObj(ip, robjv[1], &end) != TCL_OK) ||
-			marpa_scr_bad_codepoint (ip, "Range (end)", end)) {
-			goto fail;
-		    }
-		    if (end < start) {
-			Tcl_SetErrorCode (ip, "MARPA", NULL);
-			Tcl_SetObjResult (ip, Tcl_NewStringObj("Range empty (end before start)" ,-1));
-			goto fail;
-		    }
-		    break;
-		}
-		default: {
-		    Tcl_SetErrorCode (ip, "MARPA", NULL);
-		    Tcl_SetObjResult (ip, Tcl_NewStringObj("Expected codepoint or range, got neither",-1));
+
+	    if (elt->typePtr == ctx->intType) {
+		Tcl_GetIntFromObj(ip, elt, &start);
+
+	    process_int:
+		if (marpa_scr_bad_codepoint (ip, "Point", start)) {
 		    goto fail;
 		}
+		TRACE (("++ (%d)", start));
+		marpa_scr_add_range(scr, start, start);
+		continue;
+
 	    }
+
+	    if (elt->typePtr == ctx->listType) {
+		Tcl_ListObjGetElements(ip, elt, &robjc, &robjv);
+
+	    process_list:
+		if ((Tcl_GetIntFromObj (ip, robjv[0], &start) != TCL_OK) ||
+		    marpa_scr_bad_codepoint (ip, "Range (start)", start) ||
+		    (Tcl_GetIntFromObj (ip, robjv[1], &end) != TCL_OK) ||
+		    marpa_scr_bad_codepoint (ip, "Range (end)", end)) {
+		    goto fail;
+		}
+		if (end < start) {
+		    Tcl_SetErrorCode (ip, "MARPA", NULL);
+		    Tcl_SetObjResult (ip, Tcl_NewStringObj("Range empty (end before start)" ,-1));
+		    goto fail;
+		}
+		TRACE (("++ (%d...%d)", start, end));
+		marpa_scr_add_range(scr, start, end);
+		continue;
+	    }
+
 	    /*
-	    // Add the validated element to the intrep under construction.
+	    // While object has no suitable type, it may be
+	    // convertible to such. Those which are convertable get
+	    // dispatched to the handlers above.
 	    */
-	    TRACE (("++ (%d...%d)", start, end));
-	    marpa_scr_add_range(scr, start, end);
+
+	    if (Tcl_GetIntFromObj(ip, elt, &start) == TCL_OK) {
+		goto process_int;
+	    }
+
+	    if (Tcl_ListObjGetElements(ip, elt, &robjc, &robjv) == TCL_OK) {
+		goto process_list;
+	    }
+
+	    /*
+	    // No suitable type, and not convertible to such either.
+	    */
+
+	    Tcl_SetErrorCode (ip, "MARPA", NULL);
+	    Tcl_SetObjResult (ip, Tcl_NewStringObj("Expected codepoint or range, got neither",-1));
+	    goto fail;
 	}
 
 	TRACE (("USE %d", scr->n));
