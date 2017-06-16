@@ -1,0 +1,233 @@
+statements/0
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @0 1 'E'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @6 1 'N'
+            @{} {} ''
+          @12 1 '|'
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @14 2 'PO'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @17 1 'E'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @19 2 'PC'
+            adverb list bnf alternative/0
+              adverb list items bnf alternative/0
+                adverb item bnf alternative/4
+                  group association/0
+        @40 2 '||'
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @43 1 'E'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @45 3 'POW'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @49 1 'E'
+            adverb list bnf alternative/0
+              adverb list items bnf alternative/0
+                adverb item bnf alternative/3
+                  right association/0
+        @69 2 '||'
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @72 1 'E'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @74 3 'MUL'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @78 1 'E'
+            @{} {} ''
+          @84 1 '|'
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @86 1 'E'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @88 3 'DIV'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @92 1 'E'
+            @{} {} ''
+        @97 2 '||'
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @100 1 'E'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @102 3 'ADD'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @106 1 'E'
+            @{} {} ''
+          @112 1 '|'
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @114 1 'E'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @116 3 'SUB'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @120 1 'E'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @123 2 'PO'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @129 3 ''(''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @133 2 'PC'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @139 3 '')''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @143 3 'POW'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @149 4 ''**''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @154 3 'MUL'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @160 3 ''*''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @164 3 'DIV'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @170 3 ''/''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @174 3 'ADD'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @180 3 ''+''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @184 3 'SUB'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @190 3 ''-''
+            @{} {} ''
+  statement/5
+    quantified rule/1
+      lhs/0
+        symbol name/0
+          @194 1 'N'
+      single symbol/1
+        @200 5 {'[0-9]'}
+      quantifier/1
+        @205 1 '+'
+      @{} {} ''

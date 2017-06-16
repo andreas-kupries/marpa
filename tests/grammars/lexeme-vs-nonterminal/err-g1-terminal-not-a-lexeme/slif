@@ -1,0 +1,4 @@
+A ::= B
+# B is not defined in L0 (nor G1)
+
+:start ::= A

@@ -1,0 +1,4 @@
+discard default = event => ::symbol
+
+B ::= A
+A ~ 'a'

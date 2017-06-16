@@ -1,0 +1,6 @@
+A ~ B+ separator => C proper => 0
+
+:start ::= D
+D ::= A
+B ~ 'b'
+C ~ 'c'

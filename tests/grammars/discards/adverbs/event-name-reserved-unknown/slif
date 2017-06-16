@@ -1,0 +1,6 @@
+:discard ~ A event => ::bogus
+
+B ::= C
+C ~ 'c'
+A ~ 'a'
+

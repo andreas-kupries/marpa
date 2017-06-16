@@ -1,0 +1,227 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::unidata
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+
+# Trick: The mode string from the unicode sub-package is used as the
+# name of the variable/argument to read by `set`, which returns the
+# value we want. An implicit selection/choice instead of explicit via
+# if/switch/...
+proc MO {bmp full} { set [marpa unicode mode] }
+
+## Accessors on top of the generated unicode data tables
+# # ## ### ##### ######## ############# #####################
+## [ok] data cc have-tcl
+## [ok] data cc have
+## [ok] data cc tcl-names
+## [ok] data cc names
+## [ok] data cc ranges
+## [ok] data cc asbr
+## [ok] data cc grammar
+## [ok] data fold
+## [ok] data fold/c
+
+# # ## ### ##### ######## ############# #####################
+## data cc tcl-names - Return list of char classes supported by Tcl
+
+test marpa-unicode-data-cc-tcl-names-1.0 {tcl-names, wrong args, too many} -body {
+    marpa unicode data cc tcl-names X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc tcl-names"}
+
+test marpa-unicode-data-cc-tcl-names-2.0 {tcl-names, braille, no} -body {
+    lsort -dict [marpa unicode data cc tcl-names]
+} -result {alnum alpha blank cntrl digit graph lower print punct space upper xdigit}
+
+# # ## ### ##### ######## ############# #####################
+## data cc names - Return list of char classes supported by marpa unicode tables
+
+test marpa-unicode-data-cc-names-1.0 {names, wrong args, too many} -body {
+    marpa unicode data cc names X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc names"}
+
+test marpa-unicode-data-cc-names-2.0 {names} -body {
+    lsort -dict [marpa unicode data cc names]
+} -result [MO {alnum alpha arabic armenian ascii balinese bamum batak bengali blank bopomofo braille buginese buhid canadian_aboriginal cc cf cham cherokee co common control coptic cyrillic devanagari digit ethiopic georgian glagolitic graph greek gujarati gurmukhi han hangul hanunoo hebrew hiragana inherited javanese kannada katakana kayah_li khmer lao latin lepcha limbu lisu ll lm lo lower lt lu malayalam mandaic mc me meetei_mayek mn mongolian myanmar nd new_tai_lue nko nl no ogham ol_chiki oriya pc pd pe pf phags_pa pi po print ps punct rejang runic samaritan saurashtra sc sinhala sk sm so space sundanese syloti_nagri syriac tagalog tagbanwa tai_le tai_tham tai_viet tamil telugu thaana thai tibetan tifinagh upper vai word xdigit yi zl zp zs} {adlam ahom alnum alpha anatolian_hieroglyphs arabic armenian ascii avestan balinese bamum bassa_vah batak bengali bhaiksuki blank bopomofo brahmi braille buginese buhid canadian_aboriginal carian caucasian_albanian cc cf chakma cham cherokee co common control coptic cuneiform cypriot cyrillic deseret devanagari digit duployan egyptian_hieroglyphs elbasan ethiopic georgian glagolitic gothic grantha graph greek gujarati gurmukhi han hangul hanunoo hatran hebrew hiragana imperial_aramaic inherited inscriptional_pahlavi inscriptional_parthian javanese kaithi kannada katakana kayah_li kharoshthi khmer khojki khudawadi lao latin lepcha limbu linear_a linear_b lisu ll lm lo lower lt lu lycian lydian mahajani malayalam mandaic manichaean marchen mc me meetei_mayek mende_kikakui meroitic_cursive meroitic_hieroglyphs miao mn modi mongolian mro multani myanmar nabataean nd new_tai_lue newa nko nl no ogham ol_chiki old_hungarian old_italic old_north_arabian old_permic old_persian old_south_arabian old_turkic oriya osage osmanya pahawh_hmong palmyrene pau_cin_hau pc pd pe pf phags_pa phoenician pi po print ps psalter_pahlavi punct rejang runic samaritan saurashtra sc sharada shavian siddham signwriting sinhala sk sm so sora_sompeng space sundanese syloti_nagri syriac tagalog tagbanwa tai_le tai_tham tai_viet takri tamil tangut telugu thaana thai tibetan tifinagh tirhuta ugaritic upper vai warang_citi word xdigit yi zl zp zs}]
+
+# # ## ### ##### ######## ############# #####################
+## data cc have-tcl - Test if a named cclass is supported by Tcl
+
+test marpa-unicode-data-cc-have-tcl-1.0 {have-tcl, wrong args, not enough} -body {
+    marpa unicode data cc have-tcl
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc have-tcl cclass"}
+
+test marpa-unicode-data-cc-have-tcl-1.1 {have-tcl, wrong args, too many} -body {
+    marpa unicode data cc have-tcl CCLASS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc have-tcl cclass"}
+
+test marpa-unicode-data-cc-have-tcl-2.0 {have-tcl, braille, no} -body {
+    marpa unicode data cc have-tcl braille
+} -result 0
+
+test marpa-unicode-data-cc-have-tcl-2.0 {have-tcl, alnum, yes} -body {
+    marpa unicode data cc have-tcl alnum
+} -result 1
+
+# # ## ### ##### ######## ############# #####################
+## data cc have - Test if a named cclass is supported by the Marpa Unicode Tables
+
+test marpa-unicode-data-cc-have-1.0 {have, wrong args, not enough} -body {
+    marpa unicode data cc have
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc have cclass"}
+
+test marpa-unicode-data-cc-have-1.1 {have, wrong args, too many} -body {
+    marpa unicode data cc have CCLASS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc have cclass"}
+
+test marpa-unicode-data-cc-have-2.0 {have, bogus, no} -body {
+    marpa unicode data cc have bogus
+} -result 0
+
+test marpa-unicode-data-cc-have-2.0 {have, braille, yes} -body {
+    marpa unicode data cc have braille
+} -result 1
+
+
+
+# # ## ### ##### ######## ############# #####################
+## data cc ranges - Convert name of unicode class to set of uni(code)points and ranges.
+
+test marpa-unicode-data-cc-ranges-1.0 {ranges, wrong args, not enough} -body {
+    marpa unicode data cc ranges
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc ranges cclass"}
+
+test marpa-unicode-data-cc-ranges-1.1 {ranges, wrong args, too many} -body {
+    marpa unicode data cc ranges CCLASS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc ranges cclass"}
+
+test marpa-unicode-data-cc-ranges-2.0 {ranges, braille} -body {
+    lrange [marpa unicode data cc ranges braille] 0 end
+    # The lrange is used to strip formatting from the output of ranges.
+} -result {{0x2800 0x28FF}}
+
+test marpa-unicode-data-cc-ranges-2.1 {ranges, bogus} -body {
+    marpa unicode data cc ranges bogus
+} -returnCodes error -result {Bad character class bogus}
+
+# # ## ### ##### ######## ############# #####################
+## data cc asbr - Convert name of unicode class to ASBR form
+##                (Alternate Sequences of Byte Ranges)
+
+test marpa-unicode-data-cc-asbr-1.0 {asbr, wrong args, not enough} -body {
+    marpa unicode data cc asbr
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc asbr cclass"}
+
+test marpa-unicode-data-cc-asbr-1.1 {asbr, wrong args, too many} -body {
+    marpa unicode data cc asbr CCLASS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc asbr cclass"}
+
+test marpa-unicode-data-cc-asbr-2.0 {asbr, braille} -body {
+    lrange [marpa unicode data cc asbr braille] 0 end
+    # The lrange is used to strip formatting from the output of asbr.
+} -result {{{226 226} {160 163} {128 191}}}
+
+test marpa-unicode-data-cc-asbr-2.1 {asbr, bogus} -body {
+    marpa unicode data cc asbr bogus
+} -returnCodes error -result {Bad character class bogus}
+
+# # ## ### ##### ######## ############# #####################
+## data cc grammar - Convert name of unicode class to BNF grammar over byte ranges
+
+test marpa-unicode-data-cc-grammar-1.0 {grammar, wrong args, not enough} -body {
+    marpa unicode data cc grammar
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc grammar cclass ?base?"}
+
+test marpa-unicode-data-cc-grammar-1.1 {grammar, wrong args, too many} -body {
+    marpa unicode data cc grammar CCLASS PREFIX X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data cc grammar cclass ?base?"}
+
+test marpa-unicode-data-cc-grammar-2.0 {grammar, braille} -body {
+    lrange [marpa unicode data cc grammar braille] 0 end
+    # The lrange is used to strip formatting from the output of grammar.
+} -result {{{} := {symbol A0}} {A0 := {range 226 226} {range 160 163} {range 128 191}}}
+
+test marpa-unicode-data-cc-grammar-2.1 {grammar, braille} -body {
+    lrange [marpa unicode data cc grammar braille PREFIX] 0 end
+    # The lrange is used to strip formatting from the output of grammar.
+} -result {{PREFIX := {symbol PREFIX:A0}} {PREFIX:A0 := {range 226 226} {range 160 163} {range 128 191}}}
+
+test marpa-unicode-data-cc-grammar-2.2 {grammar, bogus} -body {
+    marpa unicode data cc grammar bogus
+} -returnCodes error -result {Bad character class bogus}
+
+# # ## ### ##### ######## ############# #####################
+## data fold - Convert uni(code)point to class of case-equivalent uni(code)points
+
+test marpa-unicode-data-fold-1.0 {fold, wrong args, not enough} -body {
+    marpa unicode data fold
+} -returnCodes error -result {wrong # args: should be "marpa unicode data fold codepoint"}
+
+test marpa-unicode-data-fold-1.1 {fold, wrong args, too many} -body {
+    marpa unicode data fold CODEPOINT X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data fold codepoint"}
+
+test marpa-unicode-data-fold-2.0 {fold, bogus} -body {
+    marpa unicode data fold bogus
+} -returnCodes error -result {expected integer but got "bogus"}
+
+set k 0
+foreach {label codepoint cclass} {
+    a  97 {65 97}
+    i 105 {73 105 304 305}
+    k 107 {75 107 8490}
+    s 115 {83 115 383}
+    @  64 64
+} {
+    # For the unexpected codepoints (>300), see (xx).
+    incr k
+    test marpa-unicode-data-fold-2.$k "fold, $label" -body {
+	marpa unicode data fold $codepoint
+    } -result $cclass
+}
+
+# # ## ### ##### ######## ############# #####################
+## data fold/c - Convert uni(code)point to case-equivalent primary uni(code)point
+
+test marpa-unicode-data-fold/c-1.0 {fold/c, wrong args, not enough} -body {
+    marpa unicode data fold/c
+} -returnCodes error -result {wrong # args: should be "marpa unicode data fold/c codepoint"}
+
+test marpa-unicode-data-fold/c-1.1 {fold/c, wrong args, too many} -body {
+    marpa unicode data fold/c CODEPOINT X
+} -returnCodes error -result {wrong # args: should be "marpa unicode data fold/c codepoint"}
+
+test marpa-unicode-data-fold/c-2.0 {fold/c, bogus} -body {
+    marpa unicode data fold/c bogus
+} -returnCodes error -result {expected integer but got "bogus"}
+
+set k 0
+foreach {label codepoint primary} {
+    a  97 65
+    i 105 73
+    k 107 75
+    s 115 83
+    @  64 64
+} {
+    # For the unexpected codepoints (>300), see (xx).
+    incr k
+    test marpa-unicode-data-fold/c-2.$k "fold/c, $label" -body {
+	marpa unicode data fold/c $codepoint
+    } -result $primary
+}
+
+# # ## ### ##### ######## ############# #####################
+rename MO {}
+cleanupTests
+return

@@ -1,0 +1,2 @@
+discard default =
+discard default = event => foo

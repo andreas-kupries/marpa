@@ -1,0 +1,58 @@
+grammar {
+    global {
+        start Language
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            Language { {priority A 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            A { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        {} {
+            {@CLS:<4A-Za-z\u0130-\u0131\u017f\u212a>} {
+                {priority @BYTE:<4> 0}
+                {priority @BRAN:<AZ> 0}
+                {priority @BRAN:<az> 0}
+                {priority {
+                        {@BYTE:<\u00c4>}
+                        {@BRAN:<\u00b0\u00b1>}} 0}
+                {priority {
+                        {@BYTE:<\u00c5>}
+                        {@BYTE:<\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\204>}
+                        {@BYTE:<\u00aa>}} 0}
+            }
+        }
+        latm {
+            A 1
+        }
+        lexeme {
+            A { {priority {{@CLS:<4A-Za-z\u0130-\u0131\u017f\u212a>}} 0} }
+        }
+        literal {
+            {@BRAN:<\u00b0\u00b1>} { {brange 176 177} }
+            @BRAN:<AZ> { {brange 65 90} }
+            @BRAN:<az> { {brange 97 122} }
+            @BYTE:<4> { {byte 52} }
+            {@BYTE:<\204>} { {byte 132} }
+            {@BYTE:<\u00aa>} { {byte 170} }
+            {@BYTE:<\u00bf>} { {byte 191} }
+            {@BYTE:<\u00c4>} { {byte 196} }
+            {@BYTE:<\u00c5>} { {byte 197} }
+            {@BYTE:<\u00e2>} { {byte 226} }
+        }
+    }
+}

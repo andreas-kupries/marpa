@@ -1,0 +1,47 @@
+statements/0
+  statement/5
+    quantified rule/0
+      lhs/0
+        symbol name/0
+          @0 1 'A'
+      single symbol/0
+        symbol/0
+          symbol name/0
+            @6 1 'B'
+      quantifier/1
+        @7 1 '+'
+      adverb list bnf quantified/0
+        adverb list items bnf quantified/0
+          adverb item bnf quantified/2
+            separator specification/0
+              single symbol/0
+                symbol/0
+                  symbol name/0
+                    @22 1 'C'
+          adverb item bnf quantified/3
+            proper specification/0
+              @34 1 '1'
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @37 1 'B'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @41 3 ''b''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @45 1 'C'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @49 3 ''c''
+            @{} {} ''

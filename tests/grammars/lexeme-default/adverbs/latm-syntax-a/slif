@@ -1,0 +1,4 @@
+lexeme default = latm => 0
+
+:start ::= A
+A ::= 'a'

@@ -1,0 +1,18 @@
+grammar {
+    global {
+        start A
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            A { {priority {} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    name reduction} }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+}

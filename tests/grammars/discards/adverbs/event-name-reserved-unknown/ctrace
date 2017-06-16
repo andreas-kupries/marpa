@@ -1,0 +1,5 @@
+GC comment usage A 11 1
+
+	GC comment :discard A undef --> {JMP discard:u make-discard}
+	GC l0 discard A
+	GC error {Unknown reserved name ::bogus}

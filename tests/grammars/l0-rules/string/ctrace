@@ -1,0 +1,24 @@
+GC comment definition A 0 1
+GC comment l0-definition A undef --> {JMP match}
+
+	GC comment usage @STR:<string> 4 8
+	GC comment definition @STR:<string> 4 8
+	GC comment <literal> @STR:<string> undef --> {JMP literal}
+
+	GC l0 literal @STR:<string> string 115 116 114 105 110 103
+
+	GC comment l0-usage @STR:<string> literal --> NOP
+
+GC l0 priority-rule A @STR:<string> 0
+GC comment definition Language 14 8
+GC comment g1-definition Language undef --> {JMP brick}
+GC comment usage A 27 1
+GC comment g1-usage A match --> {JMP lexeme make-lexeme}
+GC l0 lexeme A
+GC g1 terminal A
+GC g1 priority-rule Language A 0 action {array values} bless {special undef} mask 0
+GC comment Semantics completion processing
+GC start! Language
+GC comment LATM fix 1
+GC l0 configure A latm 1
+GC comment DDE fix {}

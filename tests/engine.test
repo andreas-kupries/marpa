@@ -1,0 +1,23 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::engine
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+
+## No separate test suite. The marpa::engine is always tested in
+## conjunction with derived classes, i.e. marpa::lexer and
+## marpa::parser. Required because it is not useful on its own.
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

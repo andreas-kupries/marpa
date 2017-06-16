@@ -1,0 +1,220 @@
+grammar {
+    global {
+        start A
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            A { {priority {
+                    B
+                    C
+                    D
+                    E
+                    F
+                    G
+                    H
+                    I
+                    J
+                    K
+                    L
+                    M
+                    N
+                    O
+                    P
+                    Q
+                    R
+                    S
+                    T
+                    U} 0
+                        action {array values}
+                        assoc left
+                        bless {special undef}
+                        mask {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0}} }
+            B { {priority @LEX:@CHR:<a> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            C { {priority @LEX:@STR:<abc> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            D { {priority @LEX:@CLS:<Aa> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            E { {priority @LEX:@%STR:<ABC> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            F { {priority @LEX:@CHR:<a> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            G { {priority @LEX:@RAN:<az> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            H { {priority {{@LEX:@NCC:<[:alnum:]>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            I { {priority {{@LEX:@CLS:<0-9a[:braille:]>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            J { {priority @LEX:@CLS:<Aa> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            K { {priority {{@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            L { {priority {{@LEX:@%NCC:<[:alnum:]>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            M { {priority {{@LEX:@CLS:<0-9Aa[:%braille:]>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            N { {priority @LEX:@^CHR:<a> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            O { {priority @LEX:@^RAN:<az> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            P { {priority {{@LEX:@^NCC:<[:alnum:]>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            Q { {priority {{@LEX:@^CLS:<0-9a[:braille:]>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            R { {priority @LEX:@^CLS:<Aa> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            S { {priority {{@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            T { {priority {{@LEX:@^%NCC:<[:alnum:]>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            U { {priority {{@LEX:@^CLS:<0-9Aa[:%braille:]>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            {@LEX:@%NCC:<[:alnum:]>} { terminal }
+            @LEX:@%STR:<ABC> { terminal }
+            {@LEX:@^%NCC:<[:alnum:]>} { terminal }
+            @LEX:@^CHR:<a> { terminal }
+            {@LEX:@^CLS:<0-9a[:braille:]>} { terminal }
+            {@LEX:@^CLS:<0-9Aa[:%braille:]>} { terminal }
+            {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { terminal }
+            @LEX:@^CLS:<Aa> { terminal }
+            {@LEX:@^NCC:<[:alnum:]>} { terminal }
+            @LEX:@^RAN:<az> { terminal }
+            @LEX:@CHR:<a> { terminal }
+            {@LEX:@CLS:<0-9a[:braille:]>} { terminal }
+            {@LEX:@CLS:<0-9Aa[:%braille:]>} { terminal }
+            {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { terminal }
+            @LEX:@CLS:<Aa> { terminal }
+            {@LEX:@NCC:<[:alnum:]>} { terminal }
+            @LEX:@RAN:<az> { terminal }
+            @LEX:@STR:<abc> { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        latm {
+            {@LEX:@%NCC:<[:alnum:]>} 1
+            @LEX:@%STR:<ABC> 1
+            {@LEX:@^%NCC:<[:alnum:]>} 1
+            @LEX:@^CHR:<a> 1
+            {@LEX:@^CLS:<0-9a[:braille:]>} 1
+            {@LEX:@^CLS:<0-9Aa[:%braille:]>} 1
+            {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 1
+            @LEX:@^CLS:<Aa> 1
+            {@LEX:@^NCC:<[:alnum:]>} 1
+            @LEX:@^RAN:<az> 1
+            @LEX:@CHR:<a> 1
+            {@LEX:@CLS:<0-9a[:braille:]>} 1
+            {@LEX:@CLS:<0-9Aa[:%braille:]>} 1
+            {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} 1
+            @LEX:@CLS:<Aa> 1
+            {@LEX:@NCC:<[:alnum:]>} 1
+            @LEX:@RAN:<az> 1
+            @LEX:@STR:<abc> 1
+        }
+        lexeme {
+            {@LEX:@%NCC:<[:alnum:]>} { {priority {{@%NCC:<[:alnum:]>}} 0} }
+            @LEX:@%STR:<ABC> { {priority @%STR:<ABC> 0} }
+            {@LEX:@^%NCC:<[:alnum:]>} { {priority {{@^%NCC:<[:alnum:]>}} 0} }
+            @LEX:@^CHR:<a> { {priority @^CHR:<a> 0} }
+            {@LEX:@^CLS:<0-9a[:braille:]>} { {priority {{@^CLS:<0-9a[:braille:]>}} 0} }
+            {@LEX:@^CLS:<0-9Aa[:%braille:]>} { {priority {{@^CLS:<0-9Aa[:%braille:]>}} 0} }
+            {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {priority {{@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0} }
+            @LEX:@^CLS:<Aa> { {priority @^CLS:<Aa> 0} }
+            {@LEX:@^NCC:<[:alnum:]>} { {priority {{@^NCC:<[:alnum:]>}} 0} }
+            @LEX:@^RAN:<az> { {priority @^RAN:<az> 0} }
+            @LEX:@CHR:<a> { {priority @CHR:<a> 0} }
+            {@LEX:@CLS:<0-9a[:braille:]>} { {priority {{@CLS:<0-9a[:braille:]>}} 0} }
+            {@LEX:@CLS:<0-9Aa[:%braille:]>} { {priority {{@CLS:<0-9Aa[:%braille:]>}} 0} }
+            {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {priority {{@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0} }
+            @LEX:@CLS:<Aa> { {priority @CLS:<Aa> 0} }
+            {@LEX:@NCC:<[:alnum:]>} { {priority {{@NCC:<[:alnum:]>}} 0} }
+            @LEX:@RAN:<az> { {priority @RAN:<az> 0} }
+            @LEX:@STR:<abc> { {priority @STR:<abc> 0} }
+        }
+        literal {
+            {@%NCC:<[:alnum:]>} { {%named-class alnum} }
+            @%STR:<ABC> { {%string 65 66 67} }
+            {@^%NCC:<[:alnum:]>} { {^%named-class alnum} }
+            @^CHR:<a> { {^character 97} }
+            {@^CLS:<0-9a[:braille:]>} { {^charclass {48 57} 97 braille} }
+            {@^CLS:<0-9Aa[:%braille:]>} { {^charclass {48 57} 65 97 %braille} }
+            {@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {^charclass {65 90} {97 122} {304 305} 383 8490} }
+            @^CLS:<Aa> { {^charclass 65 97} }
+            {@^NCC:<[:alnum:]>} { {^named-class alnum} }
+            @^RAN:<az> { {^range 97 122} }
+            @CHR:<a> { {character 97} }
+            {@CLS:<0-9a[:braille:]>} { {charclass {48 57} 97 braille} }
+            {@CLS:<0-9Aa[:%braille:]>} { {charclass {48 57} 65 97 %braille} }
+            {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {charclass {65 90} {97 122} {304 305} 383 8490} }
+            @CLS:<Aa> { {charclass 65 97} }
+            {@NCC:<[:alnum:]>} { {named-class alnum} }
+            @RAN:<az> { {range 97 122} }
+            @STR:<abc> { {string 97 98 99} }
+        }
+    }
+}

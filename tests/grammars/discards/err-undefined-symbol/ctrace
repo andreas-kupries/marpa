@@ -1,0 +1,25 @@
+GC comment usage A 11 1
+
+	GC comment :discard A undef --> {JMP discard:u make-discard}
+	GC l0 discard A
+
+GC comment definition C 14 1
+GC comment g1-definition C undef --> {JMP brick}
+GC comment usage B 20 1
+GC comment g1-usage B undef --> {JMP floater}
+GC g1 priority-rule C B 0 action {array values} bless {special undef} mask 0
+GC comment definition B 22 1
+GC comment l0-definition B floater --> {JMP lexeme make-lexeme}
+GC l0 lexeme B
+GC g1 terminal B
+GC comment usage @CHR:<b> 26 3
+GC comment definition @CHR:<b> 26 3
+GC comment <literal> @CHR:<b> undef --> {JMP literal}
+GC l0 literal @CHR:<b> character 98
+GC comment l0-usage @CHR:<b> literal --> NOP
+GC l0 priority-rule B @CHR:<b> 0
+GC comment Semantics completion processing
+
+	GC error {Grammar error. L0 discard <A> has no definition
+	Uses:
+	- @11..11}

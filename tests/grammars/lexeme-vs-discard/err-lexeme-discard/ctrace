@@ -1,0 +1,21 @@
+GC comment definition A 31 1
+GC comment l0-definition A undef --> {JMP match}
+GC comment usage @CHR:<a> 35 3
+GC comment definition @CHR:<a> 35 3
+GC comment <literal> @CHR:<a> undef --> {JMP literal}
+GC l0 literal @CHR:<a> character 97
+GC comment l0-usage @CHR:<a> literal --> NOP
+GC l0 priority-rule A @CHR:<a> 0
+GC comment usage A 50 1
+GC comment :lexeme A match --> {JMP lexeme make-lexeme}
+GC l0 lexeme A
+GC g1 terminal A
+GC comment usage A 63 1
+GC comment :discard A lexeme --> {ERR lexeme/discard}
+
+	GC error {Grammar error. Forbidden use of L0 lexeme <A> as L0 discard
+	Definitions:
+	- @31..31
+	Uses:
+	- @50..50
+	- @63..63}

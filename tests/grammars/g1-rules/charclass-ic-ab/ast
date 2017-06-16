@@ -1,0 +1,14 @@
+statements/0
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @0 1 'A'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/1
+                  @6 16 {'[a-z4]:ic:i:ic:i'}
+            @{} {} ''

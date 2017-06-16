@@ -1,0 +1,15 @@
+GC comment definition {op comma} 0 12
+GC comment g1-definition {op comma} undef --> {JMP brick}
+
+
+GC comment usage {op comma} 17 13
+GC comment g1-usage {op comma} brick --> NOP
+
+	GC g1 priority-rule {op comma} {{op comma}} 0 action {array values} bless {special undef} mask 0
+
+GC comment Semantics completion processing
+
+	GC start! {op comma}
+
+GC comment LATM fix 1
+GC comment DDE fix {}

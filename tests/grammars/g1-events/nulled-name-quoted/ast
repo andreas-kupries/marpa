@@ -1,0 +1,23 @@
+statements/0
+  statement/12
+    nulled event declaration/0
+      event initialization/0
+        event name/1
+          @6 10 {'' fo    x''}
+        event initializer/0
+          on or off/0
+            @19 2 'on'
+      symbol name/0
+        @31 1 'A'
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @34 1 'A'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/1
+                @40 3 ''a''
+            @{} {} ''

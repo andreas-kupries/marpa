@@ -1,0 +1,43 @@
+grammar {
+    global {
+        start B
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            B { {priority C 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            C { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        discard {
+            A { {priority @CHR:<a> 0} }
+        }
+        events {
+            A {
+                discard {
+                    A on
+                }
+            }
+        }
+        latm {
+            C 1
+        }
+        lexeme {
+            C { {priority @CHR:<c> 0} }
+        }
+        literal {
+            @CHR:<a> { {character 97} }
+            @CHR:<c> { {character 99} }
+        }
+    }
+}

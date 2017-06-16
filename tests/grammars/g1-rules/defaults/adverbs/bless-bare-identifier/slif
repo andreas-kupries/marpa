@@ -1,0 +1,3 @@
+:default ::= bless => foo
+
+B ::= 'b'

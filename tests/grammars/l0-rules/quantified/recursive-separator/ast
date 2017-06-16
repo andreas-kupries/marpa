@@ -1,0 +1,20 @@
+statements/0
+  statement/5
+    quantified rule/1
+      lhs/0
+        symbol name/0
+          @0 1 'A'
+      single symbol/0
+        symbol/0
+          symbol name/0
+            @6 1 'B'
+      quantifier/1
+        @7 1 '+'
+      adverb list match quantified/0
+        adverb list items match quantified/0
+          adverb item match quantified/0
+            separator specification/0
+              single symbol/0
+                symbol/0
+                  symbol name/0
+                    @22 1 'A'

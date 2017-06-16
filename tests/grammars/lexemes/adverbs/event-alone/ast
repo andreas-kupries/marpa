@@ -1,0 +1,31 @@
+statements/0
+  statement/10
+    lexeme rule/0
+      symbol/0
+        symbol name/0
+          @10 1 'A'
+      adverb list lexeme/0
+        adverb list items lexeme/0
+          adverb item lexeme/0
+            event specification/0
+              event initialization/0
+                event name/0
+                  @21 5 'snafu'
+                event initializer/0
+                  on or off/0
+                    @29 2 'on'
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @33 1 'B'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @39 1 'A'
+            @{} {} ''

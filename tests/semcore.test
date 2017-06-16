@@ -1,0 +1,555 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::semcore
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt local   testing marpa
+
+# TODO: add-* - tests - validate id argument as integer (or @default)
+
+# # ## ### ##### ######## ############# #####################
+## No state machine for this class
+#
+## The internal database of an instance can be loaded during
+## construction, any time after, and can be mixed with uses of the
+## database (processing of marpa instruction sequences describing a
+## parse tree).
+
+kt source support/common.tcl
+kt source support/misc.tcl
+
+# # ## ### ##### ######## ############# #####################
+## constructor - wrong args, initial state, calls
+
+test marpa-semcore-1.0.0 {constructor, wrong args, not enough} -body {
+    marpa::semcore new
+} -returnCodes error -result {wrong # args: should be "marpa::semcore new semstore ?actionmap?"}
+
+test marpa-semcore-1.0.1 {constructor, wrong args, too many} -body {
+    marpa::semcore new SEMSTORE MAP X
+} -returnCodes error -result {wrong # args: should be "marpa::semcore new semstore ?actionmap?"}
+
+test marpa-semcore-2.0.0 {constructor, default action map} -body {
+    marpa::semcore create SC [log SEM]
+    SC map
+} -cleanup {
+    SC destroy
+    logged
+} -result {}
+
+test marpa-semcore-2.0.1 {constructor, default mask map} -body {
+    marpa::semcore create SC [log SEM]
+    SC mask
+} -cleanup {
+    SC destroy
+    logged
+} -result {}
+
+test marpa-semcore-2.0.2 {constructor, initial map} -body {
+    marpa::semcore create SC [log SEM] {
+	tok:0  {token command}
+	sym:0  {null symbol command}
+	rule:0 {rule command}
+    }
+    kt dictsort [SC map]
+} -cleanup {
+    SC destroy
+    logged
+} -result {rule:0 {rule command} sym:0 {null symbol command} tok:0 {token command}}
+
+# # ## ### ##### ######## ############# #####################
+## Configuration - Masks
+
+test marpa-semcore-3.0.0 {add-mask, wrong args, not enough} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-mask
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC add-mask id mask"}
+
+test marpa-semcore-3.0.1 {add-mask, wrong args, not enough} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-mask ID
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC add-mask id mask"}
+
+test marpa-semcore-3.0.2 {add-mask, wrong args, too many} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-mask ID MASK X
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC add-mask id mask"}
+
+test marpa-semcore-4.0.0 {add-mask, result} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-mask 0 {5 3 7 10 2}
+} -cleanup {
+    SC destroy
+    logged
+} -result {}
+
+test marpa-semcore-4.0.1 {add-mask, state} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-mask 0 {5 3 7 10 2}
+    SC mask
+} -cleanup {
+    SC destroy
+    logged
+} -result {0 {10 7 5 3 2}}
+
+# # ## ### ##### ######## ############# #####################
+## Configuration - Token actions
+
+test marpa-semcore-5.0.0 {add-token, wrong args, not enough} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-token
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC add-token id cmd"}
+
+test marpa-semcore-5.0.1 {add-token, wrong args, not enough} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-token ID
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC add-token id cmd"}
+
+test marpa-semcore-5.0.2 {add-token, wrong args, too many} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-token ID CMD X
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC add-token id cmd"}
+
+test marpa-semcore-6.0.0 {add-token, result} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-token 0 {a cmd}
+} -cleanup {
+    SC destroy
+    logged
+} -result {}
+
+test marpa-semcore-6.0.1 {add-token, state} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-token 0 {a cmd}
+    SC map
+} -cleanup {
+    SC destroy
+    logged
+} -result {tok:0 {a cmd}}
+
+# # ## ### ##### ######## ############# #####################
+## Configuration - Rule actions
+
+test marpa-semcore-7.0.0 {add-rule, wrong args, not enough} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-rule
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC add-rule id cmd"}
+
+test marpa-semcore-7.0.1 {add-rule, wrong args, not enough} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-rule ID
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC add-rule id cmd"}
+
+test marpa-semcore-7.0.2 {add-rule, wrong args, too many} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-rule ID CMD X
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC add-rule id cmd"}
+
+test marpa-semcore-8.0.0 {add-rule, result} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-rule 0 {a cmd}
+} -cleanup {
+    SC destroy
+    logged
+} -result {}
+
+test marpa-semcore-8.0.1 {add-rule, state} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-rule 0 {a cmd}
+    SC map
+} -cleanup {
+    SC destroy
+    logged
+} -result {rule:0 {a cmd}}
+
+# # ## ### ##### ######## ############# #####################
+## Configuration - Null actions
+
+test marpa-semcore-9.0.0 {add-null, wrong args, not enough} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-null
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC add-null id cmd"}
+
+test marpa-semcore-9.0.1 {add-null, wrong args, not enough} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-null ID
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC add-null id cmd"}
+
+test marpa-semcore-9.0.2 {add-null, wrong args, too many} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-null ID CMD X
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC add-null id cmd"}
+
+test marpa-semcore-10.0.0 {add-null, result} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-null 0 {a cmd}
+} -cleanup {
+    SC destroy
+    logged
+} -result {}
+
+test marpa-semcore-10.0.1 {add-null, state} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-null 0 {a cmd}
+    SC map
+} -cleanup {
+    SC destroy
+    logged
+} -result {sym:0 {a cmd}}
+
+# # ## ### ##### ######## ############# #####################
+## Configuration - Engine
+
+# The engine: method is left untested. It is for debugging and has no
+# discernible effect during regular operation.
+
+# # ## ### ##### ######## ############# #####################
+## Introspection - Masks
+
+test marpa-semcore-11.0.0 {mask, wrong args, too many} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC mask X
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC mask"}
+
+test marpa-semcore-12.0.0 {mask, result} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-mask 2 {3 1 6}
+    SC add-mask 1 {7 2 9}
+    SC add-mask 3 {4 0 7 1}
+    kt dictsort [SC mask]
+} -cleanup {
+    SC destroy
+    logged
+} -result {1 {9 7 2} 2 {6 3 1} 3 {7 4 1 0}}
+
+# # ## ### ##### ######## ############# #####################
+## Introspection - Actions
+
+test marpa-semcore-13.0.0 {map, wrong args, too many} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC map X
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC map"}
+
+test marpa-semcore-14.0.0 {map, result} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC add-token 0 {token command}
+    SC add-null  0 {null symbol command}
+    SC add-rule  0 {rule command}
+    kt dictsort [SC map]
+} -cleanup {
+    SC destroy
+    logged
+} -result {rule:0 {rule command} sym:0 {null symbol command} tok:0 {token command}}
+
+# # ## ### ##### ######## ############# #####################
+## Use / Instruction processing
+
+test marpa-semcore-15.0.0 {eval, wrong args, not enough} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC eval
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC eval instructions"}
+
+test marpa-semcore-15.0.1 {eval, wrong args, too many} -setup {
+    marpa::semcore create SC [log SEM]
+} -body {
+    SC eval INSTRUCTIONS X
+} -cleanup {
+    SC destroy
+    logged
+}  -returnCodes error -result {wrong # args: should be "SC eval instructions"}
+
+# The following two test cases use the bootstrap setup of the
+# bootstrap lexer, instruction traces pulled from the debug log of a
+# bootstrap run, and associated excerpts from the semantic store of
+# the same run.
+
+test marpa-semcore-16.0 {eval, lexer trace, get symbol} -setup {
+    # - -- --- ----- -------- -------------
+    marpa::semstore create STORE
+    STORE put [marpa location null]       ;# -- 1
+    foreach n [iota 800] { STORE put $n } ;# -- filler 2-801
+    STORE put [marpa location atom 800 #] ;# -- 802
+    STORE put [marpa location atom 801 \n];# -- 803
+    # - -- --- ----- -------- -------------
+    marpa::semcore create SC STORE
+    # GetSymbol setup from SLIF lexer.
+    SC  add-rule  @default marpa::semstd::nop
+    SC  add-null  @default marpa::semstd::nop
+    SC  add-token @default marpa::semstd::nop
+    SC  add-rule 118 {marpa::semstd::K 0}
+    SC  add-rule 119 {marpa::semstd::K 1}
+    SC  add-rule 120 {marpa::semstd::K 2}
+    SC  add-rule 121 {marpa::semstd::K 3}
+    SC  add-rule 122 {marpa::semstd::K 4}
+    SC  add-rule 123 {marpa::semstd::K 5}
+    SC  add-rule 124 {marpa::semstd::K 6}
+    SC  add-rule 125 {marpa::semstd::K 7}
+    SC  add-rule 126 {marpa::semstd::K 8}
+    SC  add-rule 127 {marpa::semstd::K 9}
+    SC  add-rule 128 {marpa::semstd::K 10}
+    SC  add-rule 129 {marpa::semstd::K 11}
+    SC  add-rule 130 {marpa::semstd::K 12}
+    SC  add-rule 131 {marpa::semstd::K 13}
+    SC  add-rule 132 {marpa::semstd::K 14}
+    SC  add-rule 133 {marpa::semstd::K 15}
+    SC  add-rule 134 {marpa::semstd::K 16}
+    SC  add-rule 135 {marpa::semstd::K 17}
+    SC  add-rule 136 {marpa::semstd::K 18}
+    SC  add-rule 137 {marpa::semstd::K 19}
+    SC  add-rule 138 {marpa::semstd::K 20}
+    SC  add-rule 139 {marpa::semstd::K 21}
+    SC  add-rule 140 {marpa::semstd::K 22}
+    SC  add-rule 141 {marpa::semstd::K 23}
+    SC  add-rule 142 {marpa::semstd::K 24}
+    SC  add-rule 143 {marpa::semstd::K 25}
+    SC  add-rule 144 {marpa::semstd::K 26}
+    SC  add-rule 145 {marpa::semstd::K 27}
+    SC  add-rule 146 {marpa::semstd::K 28}
+    SC  add-rule 147 {marpa::semstd::K 29}
+    SC  add-rule 148 {marpa::semstd::K 30}
+    SC  add-rule 149 {marpa::semstd::K 31}
+    SC  add-rule 150 {marpa::semstd::K 32}
+    SC  add-rule 151 {marpa::semstd::K 33}
+    SC  add-rule 152 {marpa::semstd::K 34}
+    SC  add-rule 153 {marpa::semstd::K 35}
+    SC  add-rule 154 {marpa::semstd::K 36}
+    SC  add-rule 155 {marpa::semstd::K 37}
+    SC  add-rule 156 {marpa::semstd::K 38}
+    SC  add-rule 157 {marpa::semstd::K 39}
+    SC  add-rule 158 {marpa::semstd::K 40}
+    SC  add-rule 159 {marpa::semstd::K 41}
+    SC  add-rule 160 {marpa::semstd::K 42}
+    SC  add-rule 161 {marpa::semstd::K 43}
+    SC  add-rule 162 {marpa::semstd::K 44}
+    SC  add-rule 163 {marpa::semstd::K 45}
+    SC  add-rule 164 {marpa::semstd::K 46}
+    SC  add-rule 165 {marpa::semstd::K 47}
+    SC  add-rule 166 {marpa::semstd::K 48}
+    SC  add-rule 167 {marpa::semstd::K 49}
+    SC  add-rule 168 {marpa::semstd::K 50}
+    SC  add-rule 169 {marpa::semstd::K 51}
+    SC  add-rule 170 {marpa::semstd::K 52}
+    SC  add-rule 171 {marpa::semstd::K 53}
+    SC  add-rule 172 {marpa::semstd::K 54}
+    SC  add-rule 173 {marpa::semstd::K 55}
+    SC  add-rule 174 {marpa::semstd::K 56}
+    SC  add-rule 175 {marpa::semstd::K 57}
+    SC  add-rule 176 {marpa::semstd::K 58}
+    SC  add-rule 177 {marpa::semstd::K 59}
+    SC  add-rule 178 {marpa::semstd::K 60}
+    SC  add-rule 179 {marpa::semstd::K 61}
+    SC  add-rule 180 {marpa::semstd::K 62}
+    SC  add-rule 181 {marpa::semstd::K 63}
+    SC  add-rule 182 {marpa::semstd::K 64}
+    SC  add-rule 183 {marpa::semstd::K 65}
+    SC  add-rule 184 {marpa::semstd::K 66}
+    SC  add-rule 185 {marpa::semstd::K 67}
+    SC  add-rule 186 {marpa::semstd::K 68}
+    SC  add-rule 187 {marpa::semstd::K -1}
+    SC  add-rule 188 {marpa::semstd::K -1}
+} -body {
+    # Instruction trace pulled from SLIF lexer. Short comment block in
+    # file "bootstrap/marpa-metag-slif-2015.bnf.for-tcl"
+    SC eval {
+	token {id 233 start-es 0 end-es 1 dst 0 value 1}
+	token {id   0 start-es 1 end-es 2 dst 1 value 802}
+	null  {id 199 start-es 2 end-es 2 dst 2}
+	token {id  52 start-es 2 end-es 3 dst 3 value 803}
+	rule  {id  77 start-es 2 end-es 3 dst 3 first 3 last 3}
+	rule  {id  74 start-es 1 end-es 3 dst 1 first 1 last 3}
+	rule  {id  72 start-es 1 end-es 3 dst 1 first 1 last 1}
+	rule  {id 188 start-es 0 end-es 3 dst 0 first 0 last 1}
+    }
+} -cleanup {
+    SC destroy
+    STORE destroy
+}  -result {-1} ;# whitespace, no symbol, discard
+
+test marpa-semcore-16.1 {eval, lexer trace, get string} -setup {
+    # - -- --- ----- -------- -------------
+    marpa::semstore create STORE
+    STORE put [marpa location null]        ;# -- 1
+    foreach n [iota 1195] { STORE put $n } ;# -- filler 2-1196
+    STORE put [marpa location atom 1195 :] ;# -- 1197
+    STORE put [marpa location atom 1196 d] ;# -- 1198
+    STORE put [marpa location atom 1197 e] ;# -- 1199
+    STORE put [marpa location atom 1198 f] ;# -- 1200
+    STORE put [marpa location atom 1199 a] ;# -- 1201
+    STORE put [marpa location atom 1200 u] ;# -- 1202
+    STORE put [marpa location atom 1201 l] ;# -- 1203
+    STORE put [marpa location atom 1202 t] ;# -- 1204
+    # - -- --- ----- -------- -------------
+    marpa::semcore create SC STORE
+    # GetString setup from SLIF lexer.
+    SC add-rule @default marpa::semstd::locmerge
+    SC add-null @default marpa::location::null*
+    SC add-rule 118 {marpa::semstd::builtin {start length value}}
+    SC add-rule 119 {marpa::semstd::builtin {start length value}}
+    SC add-rule 120 {marpa::semstd::builtin {start length value}}
+    SC add-rule 121 {marpa::semstd::builtin {start length value}}
+    SC add-rule 122 {marpa::semstd::builtin {start length value}}
+    SC add-rule 123 {marpa::semstd::builtin {start length value}}
+    SC add-rule 124 {marpa::semstd::builtin {start length value}}
+    SC add-rule 125 {marpa::semstd::builtin {start length value}}
+    SC add-rule 126 {marpa::semstd::builtin {start length value}}
+    SC add-rule 127 {marpa::semstd::builtin {start length value}}
+    SC add-rule 128 {marpa::semstd::builtin {start length value}}
+    SC add-rule 129 {marpa::semstd::builtin {start length value}}
+    SC add-rule 130 {marpa::semstd::builtin {start length value}}
+    SC add-rule 131 {marpa::semstd::builtin {start length value}}
+    SC add-rule 132 {marpa::semstd::builtin {start length value}}
+    SC add-rule 133 {marpa::semstd::builtin {start length value}}
+    SC add-rule 134 {marpa::semstd::builtin {start length value}}
+    SC add-rule 135 {marpa::semstd::builtin {start length value}}
+    SC add-rule 136 {marpa::semstd::builtin {start length value}}
+    SC add-rule 137 {marpa::semstd::builtin {start length value}}
+    SC add-rule 138 {marpa::semstd::builtin {start length value}}
+    SC add-rule 139 {marpa::semstd::builtin {start length value}}
+    SC add-rule 140 {marpa::semstd::builtin {start length value}}
+    SC add-rule 141 {marpa::semstd::builtin {start length value}}
+    SC add-rule 142 {marpa::semstd::builtin {start length value}}
+    SC add-rule 143 {marpa::semstd::builtin {start length value}}
+    SC add-rule 144 {marpa::semstd::builtin {start length value}}
+    SC add-rule 145 {marpa::semstd::builtin {start length value}}
+    SC add-rule 146 {marpa::semstd::builtin {start length value}}
+    SC add-rule 147 {marpa::semstd::builtin {start length value}}
+    SC add-rule 148 {marpa::semstd::builtin {start length value}}
+    SC add-rule 149 {marpa::semstd::builtin {start length value}}
+    SC add-rule 150 {marpa::semstd::builtin {start length value}}
+    SC add-rule 151 {marpa::semstd::builtin {start length value}}
+    SC add-rule 152 {marpa::semstd::builtin {start length value}}
+    SC add-rule 153 {marpa::semstd::builtin {start length value}}
+    SC add-rule 154 {marpa::semstd::builtin {start length value}}
+    SC add-rule 155 {marpa::semstd::builtin {start length value}}
+    SC add-rule 156 {marpa::semstd::builtin {start length value}}
+    SC add-rule 157 {marpa::semstd::builtin {start length value}}
+    SC add-rule 158 {marpa::semstd::builtin {start length value}}
+    SC add-rule 159 {marpa::semstd::builtin {start length value}}
+    SC add-rule 160 {marpa::semstd::builtin {start length value}}
+    SC add-rule 161 {marpa::semstd::builtin {start length value}}
+    SC add-rule 162 {marpa::semstd::builtin {start length value}}
+    SC add-rule 163 {marpa::semstd::builtin {start length value}}
+    SC add-rule 164 {marpa::semstd::builtin {start length value}}
+    SC add-rule 165 {marpa::semstd::builtin {start length value}}
+    SC add-rule 166 {marpa::semstd::builtin {start length value}}
+    SC add-rule 167 {marpa::semstd::builtin {start length value}}
+    SC add-rule 168 {marpa::semstd::builtin {start length value}}
+    SC add-rule 169 {marpa::semstd::builtin {start length value}}
+    SC add-rule 170 {marpa::semstd::builtin {start length value}}
+    SC add-rule 171 {marpa::semstd::builtin {start length value}}
+    SC add-rule 172 {marpa::semstd::builtin {start length value}}
+    SC add-rule 173 {marpa::semstd::builtin {start length value}}
+    SC add-rule 174 {marpa::semstd::builtin {start length value}}
+    SC add-rule 175 {marpa::semstd::builtin {start length value}}
+    SC add-rule 176 {marpa::semstd::builtin {start length value}}
+    SC add-rule 177 {marpa::semstd::builtin {start length value}}
+    SC add-rule 178 {marpa::semstd::builtin {start length value}}
+    SC add-rule 179 {marpa::semstd::builtin {start length value}}
+    SC add-rule 180 {marpa::semstd::builtin {start length value}}
+    SC add-rule 181 {marpa::semstd::builtin {start length value}}
+    SC add-rule 182 {marpa::semstd::builtin {start length value}}
+    SC add-rule 183 {marpa::semstd::builtin {start length value}}
+    SC add-rule 184 {marpa::semstd::builtin {start length value}}
+    SC add-rule 185 {marpa::semstd::builtin {start length value}}
+    SC add-rule 186 {marpa::semstd::builtin {start length value}}
+} -body {
+    # Instruction trace pulled from SLIF lexer. Lexeme ":default" in
+    # file "bootstrap/marpa-metag-slif-2015.bnf.for-tcl"
+    SC eval {
+	token {id 131 start-es 0 end-es 1 dst 0 value 1}
+	token {id   9 start-es 1 end-es 2 dst 1 value 1197}
+	token {id  21 start-es 2 end-es 3 dst 2 value 1198}
+	token {id  22 start-es 3 end-es 4 dst 3 value 1199}
+	token {id  23 start-es 4 end-es 5 dst 4 value 1200}
+	token {id  18 start-es 5 end-es 6 dst 5 value 1201}
+	token {id  36 start-es 6 end-es 7 dst 6 value 1202}
+	token {id  28 start-es 7 end-es 8 dst 7 value 1203}
+	token {id  35 start-es 8 end-es 9 dst 8 value 1204}
+	rule  {id   5 start-es 1 end-es 9 dst 1 first 1 last 8}
+	rule  {id 123 start-es 0 end-es 9 dst 0 first 0 last 1}
+    }
+} -cleanup {
+    SC destroy
+    STORE destroy
+}  -result {1195 8 :default}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

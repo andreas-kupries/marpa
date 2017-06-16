@@ -1,0 +1,3 @@
+:default ::= action => ::first
+
+B ::= 'b'

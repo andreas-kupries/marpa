@@ -1,0 +1,39 @@
+# This test grammar demonstrates how the semantics transform strings
+# and charclasses into simpler constructs, i.e. characters, ranges,
+# and named classes, and glue them back together with priority rules.
+
+# Note: The grammar does not allow empty strings, nor empty
+#       charclasses.
+
+A ::= B C          D E
+      F G H I      J K L M
+      N O P Q      R S T U
+
+# Strings
+B ::= 'a'
+C ::= 'abc'
+
+D ::= 'a':i
+E ::= 'abc':i
+
+# Char classes
+F ::= [a]
+G ::= [a-z]
+H ::= [[:alnum:]]
+I ::= [a0-9[:braille:]]
+
+J ::= [a]:i
+K ::= [a-z]:i
+L ::= [[:alnum:]]:i
+M ::= [a0-9[:braille:]]:i
+
+# Negated char classes
+N ::= [^a]
+O ::= [^a-z]
+P ::= [^[:alnum:]]
+Q ::= [^a0-9[:braille:]]
+
+R ::= [^a]:i
+S ::= [^a-z]:i
+T ::= [^[:alnum:]]:i
+U ::= [^a0-9[:braille:]]:i

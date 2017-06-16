@@ -1,0 +1,37 @@
+grammar {
+    global {
+        start A
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            A { {priority B 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+            B { {priority C 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            C { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        latm {
+            C 1
+        }
+        lexeme {
+            C { {priority @CHR:<c> 0} }
+        }
+        literal {
+            @CHR:<c> { {character 99} }
+        }
+    }
+}

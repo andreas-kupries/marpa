@@ -1,0 +1,61 @@
+GC comment definition A 0 1
+GC comment g1-definition A undef --> {JMP brick}
+GC comment usage B 6 1
+GC comment usage C 10 1
+GC comment usage D 12 1
+GC comment usage E 16 1
+GC comment g1-usage B undef --> {JMP floater}
+GC comment g1-usage C undef --> {JMP floater}
+GC comment g1-usage D undef --> {JMP floater}
+GC comment g1-usage E undef --> {JMP floater}
+
+	GC g1 priority-rule A {B C D E} 0 action {array values} bless {special undef} mask {0 1 1 0}
+
+GC comment definition B 19 1
+GC comment l0-definition B floater --> {JMP lexeme make-lexeme}
+GC l0 lexeme B
+GC g1 terminal B
+GC comment usage @CHR:<b> 23 3
+GC comment definition @CHR:<b> 23 3
+GC comment <literal> @CHR:<b> undef --> {JMP literal}
+GC l0 literal @CHR:<b> character 98
+GC comment l0-usage @CHR:<b> literal --> NOP
+GC l0 priority-rule B @CHR:<b> 0
+GC comment definition C 27 1
+GC comment l0-definition C floater --> {JMP lexeme make-lexeme}
+GC l0 lexeme C
+GC g1 terminal C
+GC comment usage @CHR:<c> 31 3
+GC comment definition @CHR:<c> 31 3
+GC comment <literal> @CHR:<c> undef --> {JMP literal}
+GC l0 literal @CHR:<c> character 99
+GC comment l0-usage @CHR:<c> literal --> NOP
+GC l0 priority-rule C @CHR:<c> 0
+GC comment definition D 35 1
+GC comment l0-definition D floater --> {JMP lexeme make-lexeme}
+GC l0 lexeme D
+GC g1 terminal D
+GC comment usage @CHR:<d> 39 3
+GC comment definition @CHR:<d> 39 3
+GC comment <literal> @CHR:<d> undef --> {JMP literal}
+GC l0 literal @CHR:<d> character 100
+GC comment l0-usage @CHR:<d> literal --> NOP
+GC l0 priority-rule D @CHR:<d> 0
+GC comment definition E 43 1
+GC comment l0-definition E floater --> {JMP lexeme make-lexeme}
+GC l0 lexeme E
+GC g1 terminal E
+GC comment usage @CHR:<e> 47 3
+GC comment definition @CHR:<e> 47 3
+GC comment <literal> @CHR:<e> undef --> {JMP literal}
+GC l0 literal @CHR:<e> character 101
+GC comment l0-usage @CHR:<e> literal --> NOP
+GC l0 priority-rule E @CHR:<e> 0
+GC comment Semantics completion processing
+GC start! A
+GC comment LATM fix 1
+GC l0 configure B latm 1
+GC l0 configure C latm 1
+GC l0 configure D latm 1
+GC l0 configure E latm 1
+GC comment DDE fix {}

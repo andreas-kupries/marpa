@@ -1,0 +1,25 @@
+GC comment usage A 10 1
+GC comment :lexeme A undef --> {JMP lexeme:u  make-lexeme}
+GC l0 lexeme A
+GC g1 terminal A
+
+	GC l0 configure A event {snafu off before}
+
+GC comment LATM skip A
+GC comment definition B 50 1
+GC comment g1-definition B undef --> {JMP brick}
+GC comment usage A 56 1
+GC comment g1-usage A lexeme:u --> NOP
+GC g1 priority-rule B A 0 action {array values} bless {special undef} mask 0
+GC comment definition A 58 1
+GC comment l0-definition A lexeme:u --> {JMP lexeme}
+GC comment usage @CHR:<a> 62 3
+GC comment definition @CHR:<a> 62 3
+GC comment <literal> @CHR:<a> undef --> {JMP literal}
+GC l0 literal @CHR:<a> character 97
+GC comment l0-usage @CHR:<a> literal --> NOP
+GC l0 priority-rule A @CHR:<a> 0
+GC comment Semantics completion processing
+GC start! B
+GC comment LATM fix 1
+GC comment DDE fix {}

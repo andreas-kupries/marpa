@@ -1,0 +1,53 @@
+statements/0
+  statement/6
+    discard rule/0
+      symbol/0
+        symbol name/0
+          @11 1 'A'
+      adverb list discard/0
+        adverb list items discard/0
+          adverb item discard/0
+            event specification/0
+              event initialization/0
+                event name/2
+                  @22 7 '::bogus'
+                @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @31 1 'B'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @37 1 'C'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @39 1 'C'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @43 3 ''c''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @47 1 'A'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @51 3 ''a''
+            @{} {} ''

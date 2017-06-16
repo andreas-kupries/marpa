@@ -1,0 +1,25 @@
+GC comment definition foo 0 3
+GC comment l0-definition foo undef --> {JMP match}
+GC comment usage @STR:<ab> 6 4
+GC comment definition @STR:<ab> 6 4
+GC comment <literal> @STR:<ab> undef --> {JMP literal}
+GC l0 literal @STR:<ab> string 97 98
+GC comment l0-usage @STR:<ab> literal --> NOP
+GC l0 priority-rule foo @STR:<ab> 0
+
+	GC comment LATM default: 0
+
+GC comment definition A 39 1
+GC comment g1-definition A undef --> {JMP brick}
+GC comment usage foo 45 3
+GC comment g1-usage foo match --> {JMP lexeme make-lexeme}
+GC l0 lexeme foo
+GC g1 terminal foo
+GC g1 priority-rule A foo 0 action {array values} bless {special undef} mask 0
+GC comment Semantics completion processing
+GC start! A
+
+	GC comment LATM fix 0
+	GC l0 configure foo latm 0
+
+GC comment DDE fix {}

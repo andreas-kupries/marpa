@@ -1,0 +1,19 @@
+GC comment definition A 0 1
+GC comment l0-definition A undef --> {JMP match}
+
+	GC l0 priority-rule A {} 0 name {a/b reduction}
+
+GC comment usage F 40 1
+GC comment g1-usage F undef --> {JMP floater}
+GC comment definition F 42 1
+GC comment g1-definition F floater --> {JMP brick}
+GC comment usage A 48 1
+GC comment g1-usage A match --> {JMP lexeme make-lexeme}
+GC l0 lexeme A
+GC g1 terminal A
+GC g1 priority-rule F A 0 action {array values} bless {special undef} mask 0
+GC comment Semantics completion processing
+GC start! F
+GC comment LATM fix 1
+GC l0 configure A latm 1
+GC comment DDE fix {}

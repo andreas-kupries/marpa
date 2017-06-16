@@ -1,0 +1,19 @@
+GC comment definition A 0 1
+GC comment l0-definition A undef --> {JMP match}
+GC comment usage @CHR:<a> 4 3
+GC comment definition @CHR:<a> 4 3
+GC comment <literal> @CHR:<a> undef --> {JMP literal}
+GC l0 literal @CHR:<a> character 97
+GC comment l0-usage @CHR:<a> literal --> NOP
+GC l0 priority-rule A @CHR:<a> 0
+GC comment definition B 8 1
+GC comment l0-definition B undef --> {JMP match}
+GC comment usage A 12 1
+GC comment l0-usage A match --> {JMP strict}
+GC l0 priority-rule B A 0
+GC comment usage A 24 1
+GC comment :lexeme A strict --> {ERR match/lexeme}
+
+	GC error {Grammar error. Forbidden redefinition of L0 symbol <A> as L0 lexeme
+	Definitions:
+	- @0..0}

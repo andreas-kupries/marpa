@@ -1,0 +1,6 @@
+B ~ 'b'
+# B is not used in G1
+
+:start ::= A
+A ::= C
+C ~ 'c'

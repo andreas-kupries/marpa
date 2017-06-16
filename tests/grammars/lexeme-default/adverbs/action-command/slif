@@ -1,0 +1,5 @@
+lexeme default = action => foo
+
+# Avoid errors, complete grammar
+:start ::= A
+A ::= 'a'

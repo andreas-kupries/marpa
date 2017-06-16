@@ -1,0 +1,4 @@
+:discard ~ A
+
+C ::= B
+B ~ 'b'

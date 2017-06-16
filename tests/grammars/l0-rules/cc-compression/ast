@@ -1,0 +1,21 @@
+statements/0
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @539 1 'A'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/1
+                  @545 11 {'[a-z0x1d-|]'}
+            @{} {} ''
+          @560 1 '|'
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/1
+                  @563 12 {'[0123456789]'}
+            @{} {} ''

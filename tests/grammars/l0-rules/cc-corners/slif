@@ -1,0 +1,21 @@
+# Show corner cases for classes
+# IOW, entering dashes, closing brackets, and negations as regular characters.
+
+# From Tcl syntax ....
+# 0. Make them collation elements: [.].], [.-.]
+# 1. First character after [, i.e. [-.....], [].....], [^-.....], [^].....]
+# 2. Escape with \, i.e. \], \-
+# 3. For -, make it last character
+# 4. For -, make it endpoint of a range.
+# 5. For - as start-point of a range, \-escape, or collation element.
+
+# Not supporting collation elements in Tcl/Marpa.
+# With exception of \-escaping the other parts are quite situational.
+# Might be possible to code them in the grammar. With effort.
+
+# Tcl/Marpa goes with:
+# a. -, ] are forbidden as is in the class.
+# b. To enter them \-escape them.
+
+A ::= [b\-]
+   |  [b\]]

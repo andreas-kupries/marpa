@@ -1,0 +1,100 @@
+grammar {
+    global {
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            E { {priority E((3)) 0
+                    action {special hide}
+                    assoc left
+                    bless {standard undef}
+                    mask 0} }
+            E((0)) {
+                {priority N 0
+                        action {cmd N}
+                        assoc left
+                        bless {standard A}
+                        mask 0
+                        name number}
+                {priority {
+                        PO
+                        E((3))
+                        PC} 0
+                            action {cmd G}
+                            assoc left
+                            bless {standard B}
+                            mask {1 0 1}
+                            name sub-expression}
+            }
+            E((1)) {
+                {priority E((0)) 0
+                        action {special hide}
+                        assoc left
+                        bless {standard undef}
+                        mask 0}
+                {priority {
+                        E((0))
+                        POW
+                        E((1))} 0
+                            action {cmd ^}
+                            assoc left
+                            bless {standard C}
+                            mask {0 1 0}
+                            name power}
+            }
+            E((2)) {
+                {priority E((1)) 0
+                        action {special hide}
+                        assoc left
+                        bless {standard undef}
+                        mask 0}
+                {priority {
+                        E((2))
+                        MUL
+                        E((1))} 0
+                            action {cmd *}
+                            assoc left
+                            bless {standard D}
+                            mask {0 1 0}
+                            name multiplier}
+                {priority {
+                        E((2))
+                        DIV
+                        E((1))} 0
+                            action {cmd /}
+                            assoc left
+                            bless {standard E}
+                            mask {0 1 0}
+                            name divider}
+            }
+            E((3)) {
+                {priority E((2)) 0
+                        action {special hide}
+                        assoc left
+                        bless {standard undef}
+                        mask 0}
+                {priority {
+                        E((3))
+                        ADD
+                        E((2))} 0
+                            action {cmd +}
+                            assoc left
+                            bless {standard F}
+                            mask {0 1 0}
+                            name adder}
+                {priority {
+                        E((3))
+                        SUB
+                        E((2))} 0
+                            action {cmd -}
+                            assoc left
+                            bless {standard G}
+                            mask {0 1 0}
+                            name subtractor}
+            }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+}

@@ -1,0 +1,69 @@
+grammar {
+    global {
+        start A
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            A { {priority {{@LEX:@%STR:<CASE-INSENSITIVE\40STRING>}} 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        {} {
+            {@%STR:<CASE-INSENSITIVE\40STRING>} { {priority {
+                    @%CHR:<C>
+                    @%CHR:<A>
+                    @%CHR:<S>
+                    @%CHR:<E>
+                    @%CHR:<->
+                    @%CHR:<I>
+                    @%CHR:<N>
+                    @%CHR:<S>
+                    @%CHR:<E>
+                    @%CHR:<N>
+                    @%CHR:<S>
+                    @%CHR:<I>
+                    @%CHR:<T>
+                    @%CHR:<I>
+                    @%CHR:<V>
+                    @%CHR:<E>
+                    {@%CHR:<\40>}
+                    @%CHR:<S>
+                    @%CHR:<T>
+                    @%CHR:<R>
+                    @%CHR:<I>
+                    @%CHR:<N>
+                    @%CHR:<G>} 0} }
+        }
+        latm {
+            {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} 1
+        }
+        lexeme {
+            {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} { {priority {{@%STR:<CASE-INSENSITIVE\40STRING>}} 0} }
+        }
+        literal {
+            @%CHR:<-> { {character 45} }
+            {@%CHR:<\40>} { {character 32} }
+            @%CHR:<A> { {charclass 65 97} }
+            @%CHR:<C> { {charclass 67 99} }
+            @%CHR:<E> { {charclass 69 101} }
+            @%CHR:<G> { {charclass 71 103} }
+            @%CHR:<I> { {charclass 73 105 {304 305}} }
+            @%CHR:<N> { {charclass 78 110} }
+            @%CHR:<R> { {charclass 82 114} }
+            @%CHR:<S> { {charclass 83 115 383} }
+            @%CHR:<T> { {charclass 84 116} }
+            @%CHR:<V> { {charclass 86 118} }
+        }
+    }
+}

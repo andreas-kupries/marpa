@@ -1,0 +1,23 @@
+GC comment definition A 0 1
+GC comment g1-definition A undef --> {JMP brick}
+
+	GC comment usage {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39
+	GC comment definition {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39
+	GC comment <literal> {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} undef --> {JMP literal}
+	GC l0 literal {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} string 7 8 9 10 11 12 13 92 97 5 55 255 171 13398 124
+
+GC comment definition {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39
+GC comment usage {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 6 39
+GC comment l0-definition {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} undef --> {JMP match}
+GC comment :lexeme {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} match --> {JMP lexeme make-lexeme}
+GC l0 lexeme {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}
+GC g1 terminal {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}
+GC comment l0-usage {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} literal --> NOP
+GC l0 priority-rule {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} {{@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}} 0
+GC comment g1-usage {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} lexeme --> NOP
+GC g1 priority-rule A {{@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}} 0 action {array values} bless {special undef} mask 0
+GC comment Semantics completion processing
+GC start! A
+GC comment LATM fix 1
+GC l0 configure {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} latm 1
+GC comment DDE fix {}

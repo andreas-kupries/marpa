@@ -1,0 +1,21 @@
+GC comment definition B 0 1
+GC comment l0-definition B undef --> {JMP match}
+
+	GC comment usage C 4 1
+	GC comment l0-usage C undef --> {JMP strict:u}
+	GC l0 priority-rule B C 0
+
+GC comment usage A 40 1
+GC comment g1-usage A undef --> {JMP floater}
+GC comment definition A 42 1
+GC comment g1-definition A floater --> {JMP brick}
+GC comment usage B 48 1
+GC comment g1-usage B match --> {JMP lexeme make-lexeme}
+GC l0 lexeme B
+GC g1 terminal B
+GC g1 priority-rule A B 0 action {array values} bless {special undef} mask 0
+GC comment Semantics completion processing
+
+	GC error {Grammar error. L0 symbol <C> has no definition
+	Uses:
+	- @4..4}

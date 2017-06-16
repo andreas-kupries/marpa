@@ -1,0 +1,22 @@
+GC comment definition A 0 1
+GC comment g1-definition A undef --> {JMP brick}
+GC comment usage B 6 1
+GC comment g1-usage B undef --> {JMP floater}
+
+	GC g1 priority-rule A B 0 action {special first} bless {special undef} mask 0
+
+GC comment definition B 27 1
+GC comment l0-definition B floater --> {JMP lexeme make-lexeme}
+GC l0 lexeme B
+GC g1 terminal B
+GC comment usage @CHR:<b> 31 3
+GC comment definition @CHR:<b> 31 3
+GC comment <literal> @CHR:<b> undef --> {JMP literal}
+GC l0 literal @CHR:<b> character 98
+GC comment l0-usage @CHR:<b> literal --> NOP
+GC l0 priority-rule B @CHR:<b> 0
+GC comment Semantics completion processing
+GC start! A
+GC comment LATM fix 1
+GC l0 configure B latm 1
+GC comment DDE fix {}

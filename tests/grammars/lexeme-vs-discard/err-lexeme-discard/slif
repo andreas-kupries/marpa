@@ -1,0 +1,4 @@
+# A lexeme cannot be discarded
+A ~ 'a'
+:lexeme  ~ A
+:discard ~ A

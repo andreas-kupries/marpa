@@ -1,0 +1,16 @@
+L0 discard default settings - global
+
+   event
+
+once only.
+order irrelevant.
+default	is 'no event'
+
+See :discard for next higher level.
+
+
+set-event
+fixup
+nofixup
+get-event
+has-event

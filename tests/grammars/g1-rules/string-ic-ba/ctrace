@@ -1,0 +1,26 @@
+GC comment definition A 0 1
+GC comment g1-definition A undef --> {JMP brick}
+
+	GC comment usage @%STR:<FOXOYO> 6 18
+	GC comment definition @%STR:<FOXOYO> 6 18
+
+	GC comment <literal> @%STR:<FOXOYO> undef --> {JMP literal}
+	GC l0 literal @%STR:<FOXOYO> %string 70 79 88 79 89 79
+
+	GC comment definition @LEX:@%STR:<FOXOYO> 6 18
+	GC comment usage @%STR:<FOXOYO> 6 18
+	GC comment l0-definition @LEX:@%STR:<FOXOYO> undef --> {JMP match}
+
+	GC comment :lexeme @LEX:@%STR:<FOXOYO> match --> {JMP lexeme make-lexeme}
+	GC l0 lexeme @LEX:@%STR:<FOXOYO>
+	GC g1 terminal @LEX:@%STR:<FOXOYO>
+
+GC comment l0-usage @%STR:<FOXOYO> literal --> NOP
+GC l0 priority-rule @LEX:@%STR:<FOXOYO> @%STR:<FOXOYO> 0
+GC comment g1-usage @LEX:@%STR:<FOXOYO> lexeme --> NOP
+GC g1 priority-rule A @LEX:@%STR:<FOXOYO> 0 action {array values} bless {special undef} mask 0
+GC comment Semantics completion processing
+GC start! A
+GC comment LATM fix 1
+GC l0 configure @LEX:@%STR:<FOXOYO> latm 1
+GC comment DDE fix {}

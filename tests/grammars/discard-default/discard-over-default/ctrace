@@ -1,0 +1,55 @@
+GC comment usage foo 11 3
+GC comment :discard foo undef --> {JMP discard:u make-discard}
+
+	GC l0 discard foo
+	GC l0 configure foo event {fox on discard}
+	GC comment DDE skip foo
+
+	GC comment DDE default: {event {{special symbol} {}}}
+
+GC comment usage bar 75 3
+GC comment :discard bar undef --> {JMP discard:u make-discard}
+
+	GC l0 discard bar
+	GC l0 configure bar event {wolf on discard}
+	GC comment DDE skip bar
+
+GC comment usage A 105 1
+GC comment g1-usage A undef --> {JMP floater}
+GC comment definition A 107 1
+GC comment g1-definition A floater --> {JMP brick}
+GC comment usage fox 113 3
+GC comment g1-usage fox undef --> {JMP floater}
+GC g1 priority-rule A fox 0 action {array values} bless {special undef} mask 0
+GC comment definition foo 117 3
+GC comment l0-definition foo discard:u --> {JMP discard}
+GC comment usage @CHR:<a> 123 3
+GC comment definition @CHR:<a> 123 3
+GC comment <literal> @CHR:<a> undef --> {JMP literal}
+GC l0 literal @CHR:<a> character 97
+GC comment l0-usage @CHR:<a> literal --> NOP
+GC l0 priority-rule foo @CHR:<a> 0
+GC comment definition bar 127 3
+GC comment l0-definition bar discard:u --> {JMP discard}
+GC comment usage @CHR:<b> 133 3
+GC comment definition @CHR:<b> 133 3
+GC comment <literal> @CHR:<b> undef --> {JMP literal}
+GC l0 literal @CHR:<b> character 98
+GC comment l0-usage @CHR:<b> literal --> NOP
+GC l0 priority-rule bar @CHR:<b> 0
+GC comment definition fox 137 3
+GC comment l0-definition fox floater --> {JMP lexeme make-lexeme}
+GC l0 lexeme fox
+GC g1 terminal fox
+GC comment usage @CHR:<x> 143 3
+GC comment definition @CHR:<x> 143 3
+GC comment <literal> @CHR:<x> undef --> {JMP literal}
+GC l0 literal @CHR:<x> character 120
+GC comment l0-usage @CHR:<x> literal --> NOP
+GC l0 priority-rule fox @CHR:<x> 0
+GC comment Semantics completion processing
+GC start! A
+GC comment LATM fix 1
+GC l0 configure fox latm 1
+
+	GC comment DDE fix {event {{special symbol} {}}}

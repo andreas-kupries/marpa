@@ -7,7 +7,6 @@
 
 package require TclOO
 
-# Test suite support.
 # # ## ### ##### ######## #############
 ## Simplified Log API. Hiding (the complexity of) the classes and
 ## instances from the users. Auto-creation and -destruction as much as
@@ -15,13 +14,21 @@ package require TclOO
 
 proc log {label} {
     global  __logs
-    lappend __logs [set l [Marpa::Testing::Divert new $label [__logcenter] lognull]]
+    dict set __logs $label [set l [Marpa::Testing::Divert new $label [__logcenter] lognull]]
     return $l
 }
 proc log2 {label args} {
     global  __logs
-    lappend __logs [set l [Marpa::Testing::Divert new $label [__logcenter] {*}$args]]
+    dict set __logs $label [set l [Marpa::Testing::Divert new $label [__logcenter] {*}$args]]
     return $l
+}
+proc /trace {label} {
+    global  __logs
+    [dict get $__logs $label] /trace
+}
+proc log-add {label args} {
+    global  __logs
+    [dict get $__logs $label] {*}$args
 }
 proc __logcenter {} {
     global __logcenter
@@ -34,13 +41,13 @@ proc logclear {} {
     [__logcenter] __clear
     return
 }
-proc logged {} {
+proc logged {{sep "\n  "}} {
     global __logcenter __logs
-    foreach l $__logs { $l destroy }
+    dict for {_ l} $__logs { $l destroy }
     set entries [$__logcenter __calls]
     unset __logcenter __logs
     if {![llength $entries]} { return {} }
-    set sep "\n  "
+    #set sep "\n  "
     return ${sep}[join $entries $sep]\n
 }
 proc lognull {args} {}
@@ -99,7 +106,7 @@ oo::class create Marpa::Testing::Intercept {
 
     method unknown {args} {
 	lappend mycalls C $args
-	set result [{*}$mytarget {*}$args]
+	set result [uplevel 1 [list {*}$mytarget {*}$args]]
 	lappend mycalls $result
 	return $result
     }
@@ -114,13 +121,21 @@ oo::class create Marpa::Testing::Divert {
     variable mylogger
     variable mytarget
     variable mylabel
+    variable mytrace
 
     constructor {label logger args} {
 	set mylabel  $label
 	set mylogger $logger
 	set mytarget $args
+	set mytrace 0
 	return
     }
+
+    method /trace {} {
+	set mytrace 1
+	return
+    }
+    export /trace
 
     # # -- --- ----- -------- -------------
     ## Record all methods. Forward to actual destination.
@@ -128,8 +143,13 @@ oo::class create Marpa::Testing::Divert {
     ## Which can be fed by multiple interceptors
 
     method unknown {args} {
+	if {$mytrace} {
+	    # Tracing is a shorter log. Want to see only calls, return values irrelevant.
+	    $mylogger $mylabel {*}$args
+	    return [uplevel 1 [list {*}$mytarget {*}$args]]
+	}
 	$mylogger $mylabel C $args
-	set result [{*}$mytarget {*}$args]
+	set result [uplevel 1 [list {*}$mytarget {*}$args]]
 	$mylogger $mylabel R $args = $result
 	return $result
     }

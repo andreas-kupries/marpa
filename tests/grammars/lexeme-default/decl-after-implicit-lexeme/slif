@@ -1,0 +1,4 @@
+foo ~ 'ab'
+lexeme default = latm => 0
+
+A ::= foo

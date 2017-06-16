@@ -1,0 +1,3 @@
+:lexeme ~ A event => ::bogus pause => before
+
+B ::= A

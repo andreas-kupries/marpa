@@ -1,0 +1,15 @@
+GC comment definition B 0 1
+GC comment l0-definition B undef --> {JMP match}
+GC comment usage A 4 1
+GC comment l0-usage A undef --> {JMP strict:u}
+GC l0 priority-rule B A 0
+GC comment definition C 6 1
+GC comment g1-definition C undef --> {JMP brick}
+GC comment usage A 12 1
+GC comment g1-usage A strict:u --> {ERR match/g1use}
+
+	GC error {Grammar error. Forbidden use of L0 symbol <A> as G1 symbol
+	Definitions:
+	Uses:
+	- @4..4
+	- @12..12}

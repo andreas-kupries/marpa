@@ -38,14 +38,21 @@ statement ::= <start rule> | <empty rule>
 <statement group> ::= ('{') statements '}'
 <start rule> ::= (':start' <op declare bnf>) symbol
 <start rule> ::= ('start' 'symbol' 'is') symbol
-<default rule> ::= ':default' <op declare bnf> <adverb list>
-<lexeme default statement> ::= ('lexeme' 'default' '=') <adverb list>
-<discard default statement> ::= ('discard' 'default' '=') <adverb list>
-<priority rule> ::= lhs <op declare> priorities
-<empty rule> ::= lhs <op declare> <adverb list>
-<quantified rule> ::= lhs <op declare> <single symbol> quantifier <adverb list>
-<discard rule> ::= (':discard' <op declare match>) <single symbol> <adverb list>
-<lexeme rule> ::= (':lexeme' <op declare match>) symbol <adverb list>
+<default rule> ::= ':default' <op declare bnf> <adverb list default>
+<lexeme default statement> ::= ('lexeme' 'default' '=') <adverb list lexeme default>
+<discard default statement> ::= ('discard' 'default' '=') <adverb list discard default>
+
+<empty rule> ::= lhs <op declare bnf> <adverb list bnf empty>
+<empty rule> ::= lhs <op declare match> <adverb list match empty>
+
+<quantified rule> ::= lhs <op declare bnf> <single symbol> quantifier <adverb list bnf quantified>
+<quantified rule> ::= lhs <op declare match> <single symbol> quantifier <adverb list match quantified>
+
+<discard rule> ::= (':discard' <op declare match>) symbol <adverb list discard>
+<discard rule> ::= (':discard' <op declare match>) <character class> <adverb list discard>
+# Expanded <single symbol> into its two possibilities
+
+<lexeme rule> ::= (':lexeme' <op declare match>) symbol <adverb list lexeme>
 <completion event declaration> ::= ('event') <event initialization> ('=' 'completed') <symbol name>
 <nulled event declaration> ::= ('event') <event initialization> ('=' 'nulled') <symbol name>
 <prediction event declaration> ::= ('event') <event initialization> ('=' 'predicted') <symbol name>
@@ -54,22 +61,65 @@ statement ::= <start rule> | <empty rule>
 <inaccessible statement> ::= ('inaccessible' 'is') <inaccessible treatment> ('by' 'default')
 <inaccessible treatment> ::= 'warn' | 'ok' | 'fatal'
 
-<op declare> ::= <op declare bnf> | <op declare match>
-priorities ::= alternatives+
-    separator => <op loosen> proper => 1
-alternatives ::= alternative+
-    separator => <op equal priority> proper => 1
-alternative ::= rhs <adverb list>
+<priority rule> ::= lhs <op declare bnf> <priorities bnf>
+<priority rule> ::= lhs <op declare match> <priorities match>
 
-<adverb list> ::= <adverb list items>
-<adverb list items> ::= <adverb item>*
-<adverb item> ::=
-      action
-    | <left association> | <right association> | <group association>
-    | <separator specification> | <proper specification>
-    | <rank specification> | <null ranking specification>
-    | <priority specification> | <pause specification> | <event specification>
-    | <latm specification> | blessing | naming | <null adverb>
+<priorities bnf> ::= <alternatives bnf>+    separator => <op loosen> proper => 1
+<priorities match> ::= <alternatives match>+    separator => <op loosen> proper => 1
+
+<alternatives bnf> ::= <alternative bnf>+    separator => <op equal priority> proper => 1
+<alternatives match> ::= <alternative match>+    separator => <op equal priority> proper => 1
+
+<alternative bnf> ::= rhs <adverb list bnf alternative>
+<alternative match> ::= rhs <adverb list match alternative>
+
+<adverb list default>		::= <adverb list items default>	    
+<adverb list discard>		::= <adverb list items discard>	    
+<adverb list lexeme>		::= <adverb list items lexeme>	    
+<adverb list discard default>	::= <adverb list items discard default> 
+<adverb list lexeme default>	::= <adverb list items lexeme default>  
+<adverb list bnf alternative>	::= <adverb list items bnf alternative> 
+<adverb list bnf empty>		::= <adverb list items bnf empty>	    
+<adverb list bnf quantified>	::= <adverb list items bnf quantified>  
+<adverb list match alternative>	::= <adverb list items match alternative>
+<adverb list match empty> 	::= <adverb list items match empty>	    
+<adverb list match quantified>	::= <adverb list items match quantified>
+
+<adverb list items default>		::= <adverb item default>* 
+<adverb list items discard>	    	::= <adverb item discard>*
+<adverb list items lexeme>	    	::= <adverb item lexeme>*
+<adverb list items discard default> 	::= <adverb item discard default>*
+<adverb list items lexeme default>  	::= <adverb item lexeme default>*
+<adverb list items bnf alternative> 	::= <adverb item bnf alternative>*
+<adverb list items bnf empty>		::= <adverb item bnf empty>*
+<adverb list items bnf quantified>	::= <adverb item bnf quantified>*
+<adverb list items match alternative>	::= <adverb item match alternative>*
+<adverb list items match empty>		::= <adverb item match empty>*
+<adverb list items match quantified>	::= <adverb item match quantified>*
+
+<adverb item default>		::= action | blessing											| <null adverb>
+<adverb item discard>	    	::= <event specification>										| <null adverb>
+<adverb item lexeme>	    	::= <event specification> | <latm specification> | <priority specification> | <pause specification>	| <null adverb>
+<adverb item discard default> 	::= <event specification>										| <null adverb>
+<adverb item lexeme default>  	::= action | blessing | <latm specification>								| <null adverb>
+<adverb item bnf alternative> 	::= action | blessing | <left association> | <right association> | <group association> | naming		| <null adverb>
+<adverb item bnf empty>		::= action | blessing | <left association> | <right association> | <group association> | naming		| <null adverb>
+<adverb item bnf quantified>	::= action | blessing | <separator specification> | <proper specification>				| <null adverb>
+<adverb item match alternative>	::= naming												| <null adverb>
+<adverb item match empty>	::= naming												| <null adverb>
+<adverb item match quantified>	::= <separator specification> | <proper specification>							| <null adverb>
+
+# NOTE: __unused__ <rank specification> <null ranking specification>
+
+# <adverb list> ::= <adverb list items>
+# <adverb list items> ::= <adverb item>*
+# <adverb item> ::=
+#       action
+#     | <left association> | <right association> | <group association>
+#     | <separator specification> | <proper specification>
+#     | <rank specification> | <null ranking specification>
+#     | <priority specification> | <pause specification> | <event specification>
+#     | <latm specification> | blessing | naming | <null adverb>
 
 <null adverb> ::= ','
 action ::= ('action' '=>') <action name>

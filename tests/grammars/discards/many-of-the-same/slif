@@ -1,0 +1,4 @@
+:discard ~ [a-z]
+:discard ~ [a-z]
+# Discards of the same literal allowed
+A ::= '0'

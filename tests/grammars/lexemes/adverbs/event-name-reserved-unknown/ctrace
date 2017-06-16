@@ -1,0 +1,6 @@
+GC comment usage A 10 1
+GC comment :lexeme A undef --> {JMP lexeme:u  make-lexeme}
+GC l0 lexeme A
+GC g1 terminal A
+
+	GC error {Unknown reserved name ::bogus for :lexeme}

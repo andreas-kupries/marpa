@@ -1,0 +1,4 @@
+:lexeme ~ A pause => before
+
+B ::= A
+A ~ 'a'

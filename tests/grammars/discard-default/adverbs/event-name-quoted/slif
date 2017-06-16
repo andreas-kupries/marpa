@@ -1,0 +1,4 @@
+discard default = event => '  fu 	 bar  '
+
+B ::= A
+A ~ 'a'

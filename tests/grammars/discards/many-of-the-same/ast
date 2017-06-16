@@ -1,0 +1,21 @@
+statements/0
+  statement/6
+    discard rule/1
+      @11 5 {'[a-z]'}
+      @{} {} ''
+  statement/6
+    discard rule/1
+      @28 5 {'[a-z]'}
+      @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @73 1 'A'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/1
+                @79 3 ''0''
+            @{} {} ''

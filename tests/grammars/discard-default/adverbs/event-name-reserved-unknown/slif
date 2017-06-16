@@ -1,0 +1,4 @@
+discard default = event => ::bogus
+
+B ::= A
+A ~ 'a'

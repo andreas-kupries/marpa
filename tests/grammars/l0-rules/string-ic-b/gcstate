@@ -1,0 +1,32 @@
+grammar {
+    global {
+        start Language
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            Language { {priority A 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            A { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        latm {
+            A 1
+        }
+        lexeme {
+            A { {priority {{@%STR:<CASE-INSENSITIVE\40STRING>}} 0} }
+        }
+        literal {
+            {@%STR:<CASE-INSENSITIVE\40STRING>} { {%string 67 65 83 69 45 73 78 83 69 78 83 73 84 73 86 69 32 83 84 82 73 78 71} }
+        }
+    }
+}

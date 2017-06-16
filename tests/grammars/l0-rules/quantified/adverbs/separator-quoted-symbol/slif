@@ -1,0 +1,5 @@
+A ~ B+ separator => <C X>
+
+D ::= A
+B ~ 'b'
+<C X> ~ 'c'

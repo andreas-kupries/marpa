@@ -1,0 +1,47 @@
+GC comment usage @RAN:<az> 11 5
+GC comment definition @RAN:<az> 11 5
+
+	GC comment <literal> @RAN:<az> undef --> {JMP literal}
+	GC l0 literal @RAN:<az> range 97 122
+
+	GC comment definition @DIS:@RAN:<az> 11 5
+	GC comment usage @RAN:<az> 11 5
+	GC comment l0-definition @DIS:@RAN:<az> undef --> {JMP match}
+	GC comment :discard @DIS:@RAN:<az> match --> {JMP discard make-discard}
+
+	GC l0 discard @DIS:@RAN:<az>
+	GC comment l0-usage @RAN:<az> literal --> NOP
+	GC l0 priority-rule @DIS:@RAN:<az> @RAN:<az> 0
+
+GC comment usage @RAN:<az> 28 5
+GC comment definition @RAN:<az> 28 5
+
+	GC comment <literal> @RAN:<az> literal --> NOP
+
+	GC comment definition @DIS:@RAN:<az> 28 5
+	GC comment usage @RAN:<az> 28 5
+	GC comment l0-definition @DIS:@RAN:<az> discard --> NOP
+	GC comment :discard @DIS:@RAN:<az> discard --> NOP
+	GC comment l0-usage @RAN:<az> literal --> NOP
+
+GC comment definition A 73 1
+GC comment g1-definition A undef --> {JMP brick}
+GC comment usage @CHR:<0> 79 3
+GC comment definition @CHR:<0> 79 3
+GC comment <literal> @CHR:<0> undef --> {JMP literal}
+GC l0 literal @CHR:<0> character 48
+GC comment definition @LEX:@CHR:<0> 79 3
+GC comment usage @CHR:<0> 79 3
+GC comment l0-definition @LEX:@CHR:<0> undef --> {JMP match}
+GC comment :lexeme @LEX:@CHR:<0> match --> {JMP lexeme make-lexeme}
+GC l0 lexeme @LEX:@CHR:<0>
+GC g1 terminal @LEX:@CHR:<0>
+GC comment l0-usage @CHR:<0> literal --> NOP
+GC l0 priority-rule @LEX:@CHR:<0> @CHR:<0> 0
+GC comment g1-usage @LEX:@CHR:<0> lexeme --> NOP
+GC g1 priority-rule A @LEX:@CHR:<0> 0 action {array values} bless {special undef} mask 0
+GC comment Semantics completion processing
+GC start! A
+GC comment LATM fix 1
+GC l0 configure @LEX:@CHR:<0> latm 1
+GC comment DDE fix {}

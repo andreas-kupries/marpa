@@ -1,0 +1,10 @@
+GC comment usage A 10 1
+GC comment :lexeme A undef --> {JMP lexeme:u  make-lexeme}
+GC l0 lexeme A
+GC g1 terminal A
+GC comment definition A 12 1
+GC comment g1-definition A lexeme:u --> {ERR lexeme/g1def}
+
+	GC error {Grammar error. Forbidden redefinition of L0 lexeme <A> as G1 symbol
+	Definitions:
+	- @12..12}

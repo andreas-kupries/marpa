@@ -1,0 +1,25 @@
+statements/0
+  statement/5
+    quantified rule/0
+      lhs/0
+        symbol name/0
+          @0 1 'A'
+      single symbol/0
+        symbol/0
+          symbol name/0
+            @6 1 'B'
+      quantifier/1
+        @8 1 '+'
+      @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @11 1 'B'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @15 3 ''b''
+            @{} {} ''

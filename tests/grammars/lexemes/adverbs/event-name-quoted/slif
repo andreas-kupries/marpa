@@ -1,0 +1,4 @@
+:lexeme ~ A event => '  fu 	 bar  ' pause => before
+
+B ::= A
+A ~ 'a'

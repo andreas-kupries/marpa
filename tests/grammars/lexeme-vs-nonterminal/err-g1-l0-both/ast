@@ -1,0 +1,68 @@
+statements/0
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @0 1 'A'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @6 1 'B'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @8 1 'C'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @12 1 'B'
+            @{} {} ''
+  statement/0
+    start rule/0
+      symbol/0
+        symbol name/0
+          @76 1 'D'
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @78 1 'B'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @82 3 ''b''
+            @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @86 1 'D'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @92 1 'A'
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @94 1 'C'
+            @{} {} ''

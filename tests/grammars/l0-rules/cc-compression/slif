@@ -1,0 +1,18 @@
+# Demonstrate that the simple elements of char classes,
+# i.e. characters and ranges are properly compressed, i.e merged as
+# much as possible, into the smallest set of largest ranges to cover
+# them.
+
+# Note, named classes are excluded. While we loose some of the
+# optimality we gain the use of their pre-made definitions and do not
+# (have to) spend time on compiling a possibly large set of
+# characters.
+
+# Note further, this is only the semantics. A specific generator
+# backend may and can decide otherwise.
+
+# [0-1]+[a-|]
+# [0-9]
+
+A ::= [a-z0x1d-|]
+   |  [0123456789]

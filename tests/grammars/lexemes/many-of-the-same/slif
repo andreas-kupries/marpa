@@ -1,0 +1,4 @@
+A ::= 'a' B
+B ::= 'a'
+
+# Same lexeme literal in multiple places

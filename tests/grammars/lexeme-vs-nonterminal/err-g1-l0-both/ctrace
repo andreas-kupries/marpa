@@ -1,0 +1,17 @@
+GC comment definition A 0 1
+GC comment g1-definition A undef --> {JMP brick}
+GC comment usage B 6 1
+GC comment g1-usage B undef --> {JMP floater}
+
+	GC g1 priority-rule A B 0 action {array values} bless {special undef} mask 0
+
+GC comment definition C 8 1
+GC comment l0-definition C undef --> {JMP match}
+GC comment usage B 12 1
+GC comment l0-usage B floater --> {ERR g1/l0use}
+
+	GC error {Grammar error. Forbidden use of G1 symbol <B> as L0 symbol
+	Definitions:
+	Uses:
+	- @6..6
+	- @12..12}

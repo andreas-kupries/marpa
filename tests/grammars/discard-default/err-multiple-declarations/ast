@@ -1,0 +1,14 @@
+statements/0
+  statement/9
+    discard default statement/0
+      @{} {} ''
+  statement/9
+    discard default statement/0
+      adverb list discard default/0
+        adverb list items discard default/0
+          adverb item discard default/0
+            event specification/0
+              event initialization/0
+                event name/0
+                  @45 3 'foo'
+                @{} {} ''

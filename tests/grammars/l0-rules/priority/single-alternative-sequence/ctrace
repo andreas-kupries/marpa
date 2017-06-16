@@ -1,0 +1,59 @@
+GC comment definition A 0 1
+GC comment l0-definition A undef --> {JMP match}
+GC comment usage B 4 1
+GC comment usage C 6 1
+GC comment usage D 8 1
+GC comment usage E 10 1
+GC comment l0-usage B undef --> {JMP strict:u}
+GC comment l0-usage C undef --> {JMP strict:u}
+GC comment l0-usage D undef --> {JMP strict:u}
+GC comment l0-usage E undef --> {JMP strict:u}
+
+	GC l0 priority-rule A {B C D E} 0
+
+GC comment usage F 24 1
+GC comment g1-usage F undef --> {JMP floater}
+GC comment definition F 26 1
+GC comment g1-definition F floater --> {JMP brick}
+GC comment usage A 32 1
+GC comment g1-usage A match --> {JMP lexeme make-lexeme}
+GC l0 lexeme A
+GC g1 terminal A
+GC g1 priority-rule F A 0 action {array values} bless {special undef} mask 0
+GC comment definition B 34 1
+GC comment l0-definition B strict:u --> {JMP strict}
+GC comment usage @CHR:<b> 38 3
+GC comment definition @CHR:<b> 38 3
+GC comment <literal> @CHR:<b> undef --> {JMP literal}
+GC l0 literal @CHR:<b> character 98
+GC comment l0-usage @CHR:<b> literal --> NOP
+GC l0 priority-rule B @CHR:<b> 0
+GC comment definition C 42 1
+GC comment l0-definition C strict:u --> {JMP strict}
+GC comment usage @CHR:<c> 46 3
+GC comment definition @CHR:<c> 46 3
+GC comment <literal> @CHR:<c> undef --> {JMP literal}
+GC l0 literal @CHR:<c> character 99
+GC comment l0-usage @CHR:<c> literal --> NOP
+GC l0 priority-rule C @CHR:<c> 0
+GC comment definition D 50 1
+GC comment l0-definition D strict:u --> {JMP strict}
+GC comment usage @CHR:<d> 54 3
+GC comment definition @CHR:<d> 54 3
+GC comment <literal> @CHR:<d> undef --> {JMP literal}
+GC l0 literal @CHR:<d> character 100
+GC comment l0-usage @CHR:<d> literal --> NOP
+GC l0 priority-rule D @CHR:<d> 0
+GC comment definition E 58 1
+GC comment l0-definition E strict:u --> {JMP strict}
+GC comment usage @CHR:<e> 62 3
+GC comment definition @CHR:<e> 62 3
+GC comment <literal> @CHR:<e> undef --> {JMP literal}
+GC l0 literal @CHR:<e> character 101
+GC comment l0-usage @CHR:<e> literal --> NOP
+GC l0 priority-rule E @CHR:<e> 0
+GC comment Semantics completion processing
+GC start! F
+GC comment LATM fix 1
+GC l0 configure A latm 1
+GC comment DDE fix {}

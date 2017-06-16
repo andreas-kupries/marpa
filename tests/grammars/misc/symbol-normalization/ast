@@ -1,0 +1,16 @@
+statements/0
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/1
+          @0 12 {'< op comma >'}
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/1
+                      @17 13 {'<\nop   comma>'}
+            @{} {} ''

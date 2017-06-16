@@ -1,0 +1,32 @@
+grammar {
+    global {
+        start A
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            A { {priority @LEX:@RAN:<09> 0
+                    action {array values}
+                    assoc left
+                    bless {special undef}
+                    mask 0} }
+        }
+        terminal {
+            @LEX:@RAN:<09> { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        latm {
+            @LEX:@RAN:<09> 1
+        }
+        lexeme {
+            @LEX:@RAN:<09> { {priority @RAN:<09> 0} }
+        }
+        literal {
+            @RAN:<09> { {brange 48 57} }
+        }
+    }
+}

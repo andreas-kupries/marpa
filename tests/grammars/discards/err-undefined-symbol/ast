@@ -1,0 +1,34 @@
+statements/0
+  statement/6
+    discard rule/0
+      symbol/0
+        symbol name/0
+          @11 1 'A'
+      @{} {} ''
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @14 1 'C'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @20 1 'B'
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @22 1 'B'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @26 3 ''b''
+            @{} {} ''
