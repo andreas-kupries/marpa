@@ -1,0 +1,72 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::export::gc::template
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+##  [ok] get
+
+# # ## ### ##### ######## ############# #####################
+## get
+
+test marpa-export-gc-template-get-1.0 {get, wrong args, too many} -body {
+    marpa::export::gc::template get X
+} -returnCodes error -result {wrong # args: should be "marpa::export::gc::template get"}
+
+test marpa-export-gc-template-get-2.0 {get} -body {
+    marpa::export::gc::template get
+} -result {# -*- tcl -*-
+##
+# This template is BSD-licensed.
+# (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                     http://core.tcl.tk/akupries/
+##
+# (c) @slif-year@ Grammar @slif-name@ By @slif-writer@
+##
+##	Container for SLIF Grammar "@slif-name@"
+##	Generated On @generation-time@
+##		  By @tool-operator@
+##		 Via @tool@
+##
+
+package provide @slif-name@ @slif-version@
+
+# # ## ### ##### ######## #############
+## Requisites
+
+package require marpa	      ;# marpa::slif::container
+package require Tcl 8.5       ;# -- Foundation
+package require TclOO         ;# -- Implies Tcl 8.5 requirement.
+package require debug         ;# Tracing
+package require debug::caller ;#
+
+# # ## ### ##### ######## #############
+
+debug define marpa/grammar/@slif-name@
+debug prefix marpa/grammar/@slif-name@ {[debug caller] | }
+
+# # ## ### ##### ######## #############
+
+oo::class @slif-name@ {
+    superclass marpa::slif::container
+
+    constructor {} {
+	debug.marpa/grammar/@slif-name@
+	my deserialize {@slif-serial@}
+	return
+    }
+}
+
+# # ## ### ##### ######## #############
+return}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

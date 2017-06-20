@@ -160,6 +160,20 @@ critcl::tsources slif/container/attr_quant_l0.tcl ; #   - Quantified L0 rule att
 critcl::tsources slif/container/precedence.tcl    ; # SLIF, precedence utilities, rewrite
 
 # # ## ### ##### ######## #############
+## Generator backends
+
+critcl::tsources export/config.tcl       ; # Comon generator configuration support
+
+# Backend: Dumping a GC as Tcl code implementing a derived GC class
+#          loading the grammar on construction.
+# 1. gc           - compact, no formatting
+# 2. gc-formatted - formatted for human readability (indented multi-line)
+
+critcl::tsources export/gc_template.tcl  ; # Template access for the actual backends
+critcl::tsources export/gc.tcl           ; # Compact output
+critcl::tsources export/gc_formatted.tcl ; # Formatted output
+
+# # ## ### ##### ######## #############
 ## Main C section.
 
 # # ## ### ##### ######## #############

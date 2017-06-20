@@ -79,7 +79,15 @@ oo::class create marpa::slif::container::alter {
 
     method serialize {} {
 	debug.marpa/slif/container/alter {}
-	set serial [list priority $myrhs $myprecedence {*}[A serialize]]
+
+	# Note: The lrange looks superfluous, does it not ?  It is
+	# used here to strip myrhs of its string rep and return a pure
+	# list. The strep may be formatted in some way for readability
+	# and such, which we do not want in the serialization. While
+	# it will not impede machine-readability we simply do want
+	# the superfluous whitespace it can bring.
+
+	set serial [list priority [lrange $myrhs 0 end] $myprecedence {*}[A serialize]]
 	debug.marpa/slif/container/alter {==> $serial}
 	return $serial
     }

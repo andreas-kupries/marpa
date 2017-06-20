@@ -87,7 +87,8 @@ oo::class create marpa::slif::container::grammar::l0 {
 	    myprio  priority
 	} {
 	    if {![dict size [set $var]]} continue
-	    dict set serial $label [set $var]
+	    dict set serial $label [lrange [set $var] 0 end]
+	    # See the note in alter.tcl for explanation of the lrange.
 	}
 
 	debug.marpa/slif/container/grammar/l0 {==> $serial}

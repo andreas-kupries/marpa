@@ -1,0 +1,1471 @@
+# -*- tcl -*-
+##
+# This template is BSD-licensed.
+# (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                     http://core.tcl.tk/akupries/
+##
+# (c) <Year> Grammar <Name> By <Writer>
+##
+##	Container for SLIF Grammar "<Name>"
+##	Generated On <GenerationTime>
+##		  By <Operator>
+##		 Via <Tool>
+##
+
+package provide <Name> <Version>
+
+# # ## ### ##### ######## #############
+## Requisites
+
+package require marpa	      ;# marpa::slif::container
+package require Tcl 8.5       ;# -- Foundation
+package require TclOO         ;# -- Implies Tcl 8.5 requirement.
+package require debug         ;# Tracing
+package require debug::caller ;#
+
+# # ## ### ##### ######## #############
+
+debug define marpa/grammar/<Name>
+debug prefix marpa/grammar/<Name> {[debug caller] | }
+
+# # ## ### ##### ######## #############
+
+oo::class <Name> {
+    superclass marpa::slif::container
+
+    constructor {} {
+	debug.marpa/grammar/<Name>
+	my deserialize {
+	    global {
+	        start statements
+	        inaccessible warn
+	    }
+	    g1 {
+	        {} {
+	            action { {priority {
+	                    @LEX:@STR:<action>
+	                    @LEX:@STR:<=>>
+	                    {action name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 0}} }
+	            {action name} {
+	                {priority {{Perl name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{reserved action name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{array descriptor}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {adverb item bnf alternative} {
+	                {priority action 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{left association}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{right association}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{group association}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority naming 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{null adverb}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {adverb item bnf empty} {
+	                {priority action 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{left association}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{right association}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{group association}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority naming 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{null adverb}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {adverb item bnf quantified} {
+	                {priority action 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{separator specification}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{proper specification}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{null adverb}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {adverb item default} {
+	                {priority action 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{null adverb}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {adverb item discard} {
+	                {priority {{event specification}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{null adverb}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {adverb item discard default} {
+	                {priority {{event specification}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{null adverb}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {adverb item lexeme} {
+	                {priority {{event specification}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{latm specification}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{priority specification}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{pause specification}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{null adverb}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {adverb item lexeme default} {
+	                {priority action 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{latm specification}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{null adverb}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {adverb item match alternative} {
+	                {priority naming 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{null adverb}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {adverb item match empty} {
+	                {priority naming 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{null adverb}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {adverb item match quantified} {
+	                {priority {{separator specification}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{proper specification}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{null adverb}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {adverb list bnf alternative} { {priority {{adverb list items bnf alternative}} 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            {adverb list bnf empty} { {priority {{adverb list items bnf empty}} 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            {adverb list bnf quantified} { {priority {{adverb list items bnf quantified}} 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            {adverb list default} { {priority {{adverb list items default}} 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            {adverb list discard} { {priority {{adverb list items discard}} 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            {adverb list discard default} { {priority {{adverb list items discard default}} 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            {adverb list items bnf alternative} { {quantified {adverb item bnf alternative} 0
+	                    action {array {start length values}}
+	                    bless {special undef}} }
+	            {adverb list items bnf empty} { {quantified {adverb item bnf empty} 0
+	                    action {array {start length values}}
+	                    bless {special undef}} }
+	            {adverb list items bnf quantified} { {quantified {adverb item bnf quantified} 0
+	                    action {array {start length values}}
+	                    bless {special undef}} }
+	            {adverb list items default} { {quantified {adverb item default} 0
+	                    action {array {start length values}}
+	                    bless {special undef}} }
+	            {adverb list items discard} { {quantified {adverb item discard} 0
+	                    action {array {start length values}}
+	                    bless {special undef}} }
+	            {adverb list items discard default} { {quantified {adverb item discard default} 0
+	                    action {array {start length values}}
+	                    bless {special undef}} }
+	            {adverb list items lexeme} { {quantified {adverb item lexeme} 0
+	                    action {array {start length values}}
+	                    bless {special undef}} }
+	            {adverb list items lexeme default} { {quantified {adverb item lexeme default} 0
+	                    action {array {start length values}}
+	                    bless {special undef}} }
+	            {adverb list items match alternative} { {quantified {adverb item match alternative} 0
+	                    action {array {start length values}}
+	                    bless {special undef}} }
+	            {adverb list items match empty} { {quantified {adverb item match empty} 0
+	                    action {array {start length values}}
+	                    bless {special undef}} }
+	            {adverb list items match quantified} { {quantified {adverb item match quantified} 0
+	                    action {array {start length values}}
+	                    bless {special undef}} }
+	            {adverb list lexeme} { {priority {{adverb list items lexeme}} 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            {adverb list lexeme default} { {priority {{adverb list items lexeme default}} 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            {adverb list match alternative} { {priority {{adverb list items match alternative}} 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            {adverb list match empty} { {priority {{adverb list items match empty}} 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            {adverb list match quantified} { {priority {{adverb list items match quantified}} 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            {alternative bnf} { {priority {
+	                    rhs
+	                    {adverb list bnf alternative}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {0 0}} }
+	            {alternative match} { {priority {
+	                    rhs
+	                    {adverb list match alternative}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {0 0}} }
+	            {alternative name} {
+	                {priority {{standard name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{single quoted name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {alternatives bnf} { {quantified {alternative bnf} 1
+	                    action {array {start length values}}
+	                    bless {special undef}
+	                    separator {{op equal priority} 1}} }
+	            {alternatives match} { {quantified {alternative match} 1
+	                    action {array {start length values}}
+	                    bless {special undef}
+	                    separator {{op equal priority} 1}} }
+	            {completion event declaration} { {priority {
+	                    @LEX:@STR:<event>
+	                    {event initialization}
+	                    @LEX:@CHR:<=>
+	                    @LEX:@STR:<completed>
+	                    {symbol name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 0 1 1 0}} }
+	            {current lexer statement} { {priority {
+	                    @LEX:@STR:<current>
+	                    @LEX:@STR:<lexer>
+	                    @LEX:@STR:<is>
+	                    {lexer name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 1 0}} }
+	            {default rule} { {priority {
+	                    @LEX:@STR:<:default>
+	                    {op declare bnf}
+	                    {adverb list default}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {0 0 0}} }
+	            {discard default statement} { {priority {
+	                    @LEX:@STR:<discard>
+	                    @LEX:@STR:<default>
+	                    @LEX:@CHR:<=>
+	                    {adverb list discard default}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 1 0}} }
+	            {discard rule} {
+	                {priority {
+	                        @LEX:@STR:<:discard>
+	                        {op declare match}
+	                        symbol
+	                        {adverb list discard}} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {1 1 0 0}}
+	                {priority {
+	                        @LEX:@STR:<:discard>
+	                        {op declare match}
+	                        {character class}
+	                        {adverb list discard}} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {1 1 0 0}}
+	            }
+	            {empty rule} {
+	                {priority {
+	                        lhs
+	                        {op declare bnf}
+	                        {adverb list bnf empty}} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {0 0 0}}
+	                {priority {
+	                        lhs
+	                        {op declare match}
+	                        {adverb list match empty}} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {0 0 0}}
+	            }
+	            {event initialization} { {priority {
+	                    {event name}
+	                    {event initializer}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {0 0}} }
+	            {event initializer} {
+	                {priority {
+	                        @LEX:@CHR:<=>
+	                        {on or off}} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {1 0}}
+	                {priority {} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}}
+	            }
+	            {event name} {
+	                {priority {{standard name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{single quoted name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{reserved event name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {event specification} { {priority {
+	                    @LEX:@STR:<event>
+	                    @LEX:@STR:<=>>
+	                    {event initialization}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 0}} }
+	            {group association} { {priority {
+	                    @LEX:@STR:<assoc>
+	                    @LEX:@STR:<=>>
+	                    @LEX:@STR:<group>} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 1}} }
+	            {inaccessible statement} { {priority {
+	                    @LEX:@STR:<inaccessible>
+	                    @LEX:@STR:<is>
+	                    {inaccessible treatment}
+	                    @LEX:@STR:<by>
+	                    @LEX:@STR:<default>} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 0 1 1}} }
+	            {inaccessible treatment} {
+	                {priority @LEX:@STR:<warn> 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority @LEX:@STR:<ok> 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority @LEX:@STR:<fatal> 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {latm specification} {
+	                {priority {
+	                        @LEX:@STR:<forgiving>
+	                        @LEX:@STR:<=>>
+	                        boolean} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {1 1 0}}
+	                {priority {
+	                        @LEX:@STR:<latm>
+	                        @LEX:@STR:<=>>
+	                        boolean} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {1 1 0}}
+	            }
+	            {left association} { {priority {
+	                    @LEX:@STR:<assoc>
+	                    @LEX:@STR:<=>>
+	                    @LEX:@STR:<left>} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 1}} }
+	            {lexeme default statement} { {priority {
+	                    @LEX:@STR:<lexeme>
+	                    @LEX:@STR:<default>
+	                    @LEX:@CHR:<=>
+	                    {adverb list lexeme default}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 1 0}} }
+	            {lexeme rule} { {priority {
+	                    @LEX:@STR:<:lexeme>
+	                    {op declare match}
+	                    symbol
+	                    {adverb list lexeme}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 0 0}} }
+	            {lexer name} {
+	                {priority {{standard name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{single quoted name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            lhs { {priority {{symbol name}} 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            naming { {priority {
+	                    @LEX:@STR:<name>
+	                    @LEX:@STR:<=>>
+	                    {alternative name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 0}} }
+	            {null adverb} { {priority @LEX:@CHR:<,> 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            {null ranking constant} {
+	                {priority @LEX:@STR:<low> 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority @LEX:@STR:<high> 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {null ranking specification} {
+	                {priority {
+	                        @LEX:@STR:<null-ranking>
+	                        @LEX:@STR:<=>>
+	                        {null ranking constant}} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {1 1 0}}
+	                {priority {
+	                        @LEX:@STR:<null>
+	                        @LEX:@STR:<rank>
+	                        @LEX:@STR:<=>>
+	                        {null ranking constant}} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {1 1 1 0}}
+	            }
+	            {null statement} { {priority {{@LEX:@CHR:<\73>}} 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            {nulled event declaration} { {priority {
+	                    @LEX:@STR:<event>
+	                    {event initialization}
+	                    @LEX:@CHR:<=>
+	                    @LEX:@STR:<nulled>
+	                    {symbol name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 0 1 1 0}} }
+	            {on or off} {
+	                {priority @LEX:@STR:<on> 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority @LEX:@STR:<off> 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {parenthesized rhs primary list} { {priority {
+	                    {@LEX:@CHR:<\50>}
+	                    {rhs primary list}
+	                    {@LEX:@CHR:<\51>}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 0 1}} }
+	            {pause specification} { {priority {
+	                    @LEX:@STR:<pause>
+	                    @LEX:@STR:<=>>
+	                    {before or after}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 0}} }
+	            {prediction event declaration} { {priority {
+	                    @LEX:@STR:<event>
+	                    {event initialization}
+	                    @LEX:@CHR:<=>
+	                    @LEX:@STR:<predicted>
+	                    {symbol name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 0 1 1 0}} }
+	            {priorities bnf} { {quantified {alternatives bnf} 1
+	                    action {array {start length values}}
+	                    bless {special undef}
+	                    separator {{op loosen} 1}} }
+	            {priorities match} { {quantified {alternatives match} 1
+	                    action {array {start length values}}
+	                    bless {special undef}
+	                    separator {{op loosen} 1}} }
+	            {priority rule} {
+	                {priority {
+	                        lhs
+	                        {op declare bnf}
+	                        {priorities bnf}} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {0 0 0}}
+	                {priority {
+	                        lhs
+	                        {op declare match}
+	                        {priorities match}} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {0 0 0}}
+	            }
+	            {priority specification} { {priority {
+	                    @LEX:@STR:<priority>
+	                    @LEX:@STR:<=>>
+	                    {signed integer}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 0}} }
+	            {proper specification} { {priority {
+	                    @LEX:@STR:<proper>
+	                    @LEX:@STR:<=>>
+	                    boolean} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 0}} }
+	            {quantified rule} {
+	                {priority {
+	                        lhs
+	                        {op declare bnf}
+	                        {single symbol}
+	                        quantifier
+	                        {adverb list bnf quantified}} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {0 0 0 0 0}}
+	                {priority {
+	                        lhs
+	                        {op declare match}
+	                        {single symbol}
+	                        quantifier
+	                        {adverb list match quantified}} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {0 0 0 0 0}}
+	            }
+	            quantifier {
+	                {priority @LEX:@CHR:<*> 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority @LEX:@CHR:<+> 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {rank specification} { {priority {
+	                    @LEX:@STR:<rank>
+	                    @LEX:@STR:<=>>
+	                    {signed integer}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 0}} }
+	            rhs { {quantified {rhs primary} 1
+	                    action {array {start length values}}
+	                    bless {special undef}} }
+	            {rhs primary} {
+	                {priority {{single symbol}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{single quoted string}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{parenthesized rhs primary list}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {rhs primary list} { {quantified {rhs primary} 1
+	                    action {array {start length values}}
+	                    bless {special undef}} }
+	            {right association} { {priority {
+	                    @LEX:@STR:<assoc>
+	                    @LEX:@STR:<=>>
+	                    @LEX:@STR:<right>} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 1}} }
+	            {separator specification} { {priority {
+	                    @LEX:@STR:<separator>
+	                    @LEX:@STR:<=>>
+	                    {single symbol}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 1 0}} }
+	            {single symbol} {
+	                {priority symbol 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{character class}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {start rule} {
+	                {priority {
+	                        @LEX:@STR:<:start>
+	                        {op declare bnf}
+	                        symbol} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {1 1 0}}
+	                {priority {
+	                        @LEX:@STR:<start>
+	                        @LEX:@STR:<symbol>
+	                        @LEX:@STR:<is>
+	                        symbol} 0
+	                            action {array {start length values}}
+	                            assoc left
+	                            bless {special undef}
+	                            mask {1 1 1 0}}
+	            }
+	            statement {
+	                {priority {{start rule}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{empty rule}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{null statement}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{statement group}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{priority rule}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{quantified rule}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{discard rule}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{default rule}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{lexeme default statement}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{discard default statement}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{lexeme rule}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{completion event declaration}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{nulled event declaration}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{prediction event declaration}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{current lexer statement}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{inaccessible statement}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	            {statement group} { {priority {
+	                    {@LEX:@CHR:<\173>}
+	                    statements
+	                    {@LEX:@CHR:<\175>}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask {1 0 0}} }
+	            statements { {quantified statement 1
+	                    action {array {start length values}}
+	                    bless {special undef}} }
+	            symbol { {priority {{symbol name}} 0
+	                    action {array {start length values}}
+	                    assoc left
+	                    bless {special undef}
+	                    mask 0} }
+	            {symbol name} {
+	                {priority {{bare name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	                {priority {{bracketed name}} 0
+	                        action {array {start length values}}
+	                        assoc left
+	                        bless {special undef}
+	                        mask 0}
+	            }
+	        }
+	        terminal {
+	            @LEX:@CHR:<*> { terminal }
+	            @LEX:@CHR:<+> { terminal }
+	            @LEX:@CHR:<,> { terminal }
+	            @LEX:@CHR:<=> { terminal }
+	            {@LEX:@CHR:<\50>} { terminal }
+	            {@LEX:@CHR:<\51>} { terminal }
+	            {@LEX:@CHR:<\73>} { terminal }
+	            {@LEX:@CHR:<\173>} { terminal }
+	            {@LEX:@CHR:<\175>} { terminal }
+	            @LEX:@STR:<:default> { terminal }
+	            @LEX:@STR:<:discard> { terminal }
+	            @LEX:@STR:<:lexeme> { terminal }
+	            @LEX:@STR:<:start> { terminal }
+	            @LEX:@STR:<=>> { terminal }
+	            @LEX:@STR:<action> { terminal }
+	            @LEX:@STR:<assoc> { terminal }
+	            @LEX:@STR:<by> { terminal }
+	            @LEX:@STR:<completed> { terminal }
+	            @LEX:@STR:<current> { terminal }
+	            @LEX:@STR:<default> { terminal }
+	            @LEX:@STR:<discard> { terminal }
+	            @LEX:@STR:<event> { terminal }
+	            @LEX:@STR:<fatal> { terminal }
+	            @LEX:@STR:<forgiving> { terminal }
+	            @LEX:@STR:<group> { terminal }
+	            @LEX:@STR:<high> { terminal }
+	            @LEX:@STR:<inaccessible> { terminal }
+	            @LEX:@STR:<is> { terminal }
+	            @LEX:@STR:<latm> { terminal }
+	            @LEX:@STR:<left> { terminal }
+	            @LEX:@STR:<lexeme> { terminal }
+	            @LEX:@STR:<lexer> { terminal }
+	            @LEX:@STR:<low> { terminal }
+	            @LEX:@STR:<name> { terminal }
+	            @LEX:@STR:<null-ranking> { terminal }
+	            @LEX:@STR:<null> { terminal }
+	            @LEX:@STR:<nulled> { terminal }
+	            @LEX:@STR:<off> { terminal }
+	            @LEX:@STR:<ok> { terminal }
+	            @LEX:@STR:<on> { terminal }
+	            @LEX:@STR:<pause> { terminal }
+	            @LEX:@STR:<predicted> { terminal }
+	            @LEX:@STR:<priority> { terminal }
+	            @LEX:@STR:<proper> { terminal }
+	            @LEX:@STR:<rank> { terminal }
+	            @LEX:@STR:<right> { terminal }
+	            @LEX:@STR:<separator> { terminal }
+	            @LEX:@STR:<start> { terminal }
+	            @LEX:@STR:<symbol> { terminal }
+	            @LEX:@STR:<warn> { terminal }
+	            {array descriptor} { terminal }
+	            {bare name} { terminal }
+	            {before or after} { terminal }
+	            boolean { terminal }
+	            {bracketed name} { terminal }
+	            {character class} { terminal }
+	            {op declare bnf} { terminal }
+	            {op declare match} { terminal }
+	            {op equal priority} { terminal }
+	            {op loosen} { terminal }
+	            {Perl name} { terminal }
+	            {reserved action name} { terminal }
+	            {reserved event name} { terminal }
+	            {signed integer} { terminal }
+	            {single quoted name} { terminal }
+	            {single quoted string} { terminal }
+	            {standard name} { terminal }
+	        }
+	    }
+	    lexeme {
+	        action {array {start length value}}
+	    }
+	    l0 {
+	        {} {
+	            {array descriptor left bracket} {
+	                {priority {{@CHR:<\133>}} 0}
+	                {priority {
+	                        {@CHR:<\133>}
+	                        whitespace} 0}
+	            }
+	            {array descriptor right bracket} {
+	                {priority {{@CHR:<\135>}} 0}
+	                {priority {
+	                        whitespace
+	                        {@CHR:<\135>}} 0}
+	            }
+	            {bracketed name string} { {quantified {@CLS:<_[:alnum:][:space:]>} 1} }
+	            {cc character} {
+	                {priority {{cc single character}} 0}
+	                {priority {{posix char class}} 0}
+	            }
+	            {cc closing} { {priority {{@CHR:<\135>}} 0} }
+	            {cc element} {
+	                {priority {{cc range}} 0}
+	                {priority {{cc character}} 0}
+	            }
+	            {cc elements} { {quantified {cc element} 1} }
+	            {cc open} {
+	                {priority {{@CHR:<\133>}} 0}
+	                {priority {{@STR:<\133^>}} 0}
+	            }
+	            {cc range} { {priority {
+	                    {cc single character}
+	                    @CHR:<->
+	                    {cc single character}} 0} }
+	            {cc single character} {
+	                {priority escaped 0}
+	                {priority normal 0}
+	            }
+	            {character class modifier} {
+	                {priority @STR:<:ic> 0}
+	                {priority @STR:<:i> 0}
+	            }
+	            {character class modifiers} { {quantified {character class modifier} 0} }
+	            {double colon} { {priority @STR:<::> 0} }
+	            escaped {
+	                {priority special 0}
+	                {priority octal 0}
+	                {priority unicode 0}
+	                {priority unihex 0}
+	            }
+	            {hash comment body} { {quantified {hash comment char} 0} }
+	            {hash comment char} { {priority {{@^CLS:<\n-\r\u2028-\u2029>}} 0} }
+	            hex { {priority {{@NCC:<[:xdigit:]>}} 0} }
+	            integer { {quantified {@NCC:<[:digit:]>} 1} }
+	            lodigit { {priority @RAN:<03> 0} }
+	            normal { {priority {{@^CLS:<\t-\r\134-\135\u2028-\u2029>}} 0} }
+	            octal {
+	                {priority {
+	                        {@CHR:<\134>}
+	                        odigit} 0}
+	                {priority {
+	                        {@CHR:<\134>}
+	                        odigit
+	                        odigit} 0}
+	                {priority {
+	                        {@CHR:<\134>}
+	                        lodigit
+	                        odigit
+	                        odigit} 0}
+	            }
+	            odigit { {priority @RAN:<07> 0} }
+	            {one or more word characters} { {quantified {@CLS:<_[:alnum:]>} 1} }
+	            {Perl identifier} { {priority {{one or more word characters}} 0} }
+	            {posix char class} { {priority {
+	                    {@STR:<\133:>}
+	                    {posix char class name}
+	                    {@STR:<:\135>}} 0} }
+	            {posix char class name} { {quantified {@NCC:<[:alnum:]>} 1} }
+	            quote { {priority @CHR:<'> 0} }
+	            {result item descriptor} {
+	                {priority @STR:<start> 0}
+	                {priority @STR:<length> 0}
+	                {priority @STR:<g1start> 0}
+	                {priority @STR:<g1length> 0}
+	                {priority @STR:<name> 0}
+	                {priority @STR:<lhs> 0}
+	                {priority @STR:<symbol> 0}
+	                {priority @STR:<rule> 0}
+	                {priority @STR:<value> 0}
+	                {priority @STR:<values> 0}
+	            }
+	            {result item descriptor list} { {quantified {result item descriptor} 0
+	                    separator {{result item descriptor separator} 0}} }
+	            {result item descriptor separator} {
+	                {priority @CHR:<,> 0}
+	                {priority {
+	                        @CHR:<,>
+	                        whitespace} 0}
+	            }
+	            sign { {priority @CLS:<+-> 0} }
+	            special { {priority {
+	                    {@CHR:<\134>}
+	                    {@CLS:<\134a-bfnrtv>}} 0} }
+	            {string character} {
+	                {priority escaped 0}
+	                {priority {{@^CLS:<\n-\r'\u2028-\u2029>}} 0}
+	            }
+	            {string without single quote or vertical space} { {quantified {string character} 1} }
+	            {terminated hash comment} { {priority {
+	                    @CHR:<#>
+	                    {hash comment body}
+	                    {vertical space char}} 0} }
+	            unicode {
+	                {priority {
+	                        {@STR:<\134u>}
+	                        hex} 0}
+	                {priority {
+	                        {@STR:<\134u>}
+	                        hex
+	                        hex} 0}
+	                {priority {
+	                        {@STR:<\134u>}
+	                        hex
+	                        hex
+	                        hex} 0}
+	                {priority {
+	                        {@STR:<\134u>}
+	                        hex
+	                        hex
+	                        hex
+	                        hex} 0}
+	            }
+	            unihex { {priority {
+	                    {@STR:<\134x>}
+	                    hex
+	                    hex} 0} }
+	            {unterminated final hash comment} { {priority {
+	                    @CHR:<#>
+	                    {hash comment body}} 0} }
+	            {vertical space char} { {priority {{@CLS:<\n-\r\u2028-\u2029>}} 0} }
+	            {zero or more word characters} { {quantified {@CLS:<_[:alnum:]>} 0} }
+	        }
+	        discard {
+	            {hash comment} {
+	                {priority {{terminated hash comment}} 0}
+	                {priority {{unterminated final hash comment}} 0}
+	            }
+	            whitespace { {quantified {@NCC:<[:space:]>} 1} }
+	        }
+	        latm {
+	            @LEX:@CHR:<*> 1
+	            @LEX:@CHR:<+> 1
+	            @LEX:@CHR:<,> 1
+	            @LEX:@CHR:<=> 1
+	            {@LEX:@CHR:<\50>} 1
+	            {@LEX:@CHR:<\51>} 1
+	            {@LEX:@CHR:<\73>} 1
+	            {@LEX:@CHR:<\173>} 1
+	            {@LEX:@CHR:<\175>} 1
+	            @LEX:@STR:<:default> 1
+	            @LEX:@STR:<:discard> 1
+	            @LEX:@STR:<:lexeme> 1
+	            @LEX:@STR:<:start> 1
+	            @LEX:@STR:<=>> 1
+	            @LEX:@STR:<action> 1
+	            @LEX:@STR:<assoc> 1
+	            @LEX:@STR:<by> 1
+	            @LEX:@STR:<completed> 1
+	            @LEX:@STR:<current> 1
+	            @LEX:@STR:<default> 1
+	            @LEX:@STR:<discard> 1
+	            @LEX:@STR:<event> 1
+	            @LEX:@STR:<fatal> 1
+	            @LEX:@STR:<forgiving> 1
+	            @LEX:@STR:<group> 1
+	            @LEX:@STR:<high> 1
+	            @LEX:@STR:<inaccessible> 1
+	            @LEX:@STR:<is> 1
+	            @LEX:@STR:<latm> 1
+	            @LEX:@STR:<left> 1
+	            @LEX:@STR:<lexeme> 1
+	            @LEX:@STR:<lexer> 1
+	            @LEX:@STR:<low> 1
+	            @LEX:@STR:<name> 1
+	            @LEX:@STR:<null-ranking> 1
+	            @LEX:@STR:<null> 1
+	            @LEX:@STR:<nulled> 1
+	            @LEX:@STR:<off> 1
+	            @LEX:@STR:<ok> 1
+	            @LEX:@STR:<on> 1
+	            @LEX:@STR:<pause> 1
+	            @LEX:@STR:<predicted> 1
+	            @LEX:@STR:<priority> 1
+	            @LEX:@STR:<proper> 1
+	            @LEX:@STR:<rank> 1
+	            @LEX:@STR:<right> 1
+	            @LEX:@STR:<separator> 1
+	            @LEX:@STR:<start> 1
+	            @LEX:@STR:<symbol> 1
+	            @LEX:@STR:<warn> 1
+	            {array descriptor} 1
+	            {bare name} 1
+	            {before or after} 1
+	            boolean 1
+	            {bracketed name} 1
+	            {character class} 1
+	            {op declare bnf} 1
+	            {op declare match} 1
+	            {op equal priority} 1
+	            {op loosen} 1
+	            {Perl name} 1
+	            {reserved action name} 1
+	            {reserved event name} 1
+	            {signed integer} 1
+	            {single quoted name} 1
+	            {single quoted string} 1
+	            {standard name} 1
+	        }
+	        lexeme {
+	            @LEX:@CHR:<*> { {priority @CHR:<*> 0} }
+	            @LEX:@CHR:<+> { {priority @CHR:<+> 0} }
+	            @LEX:@CHR:<,> { {priority @CHR:<,> 0} }
+	            @LEX:@CHR:<=> { {priority @CHR:<=> 0} }
+	            {@LEX:@CHR:<\50>} { {priority {{@CHR:<\50>}} 0} }
+	            {@LEX:@CHR:<\51>} { {priority {{@CHR:<\51>}} 0} }
+	            {@LEX:@CHR:<\73>} { {priority {{@CHR:<\73>}} 0} }
+	            {@LEX:@CHR:<\173>} { {priority {{@CHR:<\173>}} 0} }
+	            {@LEX:@CHR:<\175>} { {priority {{@CHR:<\175>}} 0} }
+	            @LEX:@STR:<:default> { {priority @STR:<:default> 0} }
+	            @LEX:@STR:<:discard> { {priority @STR:<:discard> 0} }
+	            @LEX:@STR:<:lexeme> { {priority @STR:<:lexeme> 0} }
+	            @LEX:@STR:<:start> { {priority @STR:<:start> 0} }
+	            @LEX:@STR:<=>> { {priority @STR:<=>> 0} }
+	            @LEX:@STR:<action> { {priority @STR:<action> 0} }
+	            @LEX:@STR:<assoc> { {priority @STR:<assoc> 0} }
+	            @LEX:@STR:<by> { {priority @STR:<by> 0} }
+	            @LEX:@STR:<completed> { {priority @STR:<completed> 0} }
+	            @LEX:@STR:<current> { {priority @STR:<current> 0} }
+	            @LEX:@STR:<default> { {priority @STR:<default> 0} }
+	            @LEX:@STR:<discard> { {priority @STR:<discard> 0} }
+	            @LEX:@STR:<event> { {priority @STR:<event> 0} }
+	            @LEX:@STR:<fatal> { {priority @STR:<fatal> 0} }
+	            @LEX:@STR:<forgiving> { {priority @STR:<forgiving> 0} }
+	            @LEX:@STR:<group> { {priority @STR:<group> 0} }
+	            @LEX:@STR:<high> { {priority @STR:<high> 0} }
+	            @LEX:@STR:<inaccessible> { {priority @STR:<inaccessible> 0} }
+	            @LEX:@STR:<is> { {priority @STR:<is> 0} }
+	            @LEX:@STR:<latm> { {priority @STR:<latm> 0} }
+	            @LEX:@STR:<left> { {priority @STR:<left> 0} }
+	            @LEX:@STR:<lexeme> { {priority @STR:<lexeme> 0} }
+	            @LEX:@STR:<lexer> { {priority @STR:<lexer> 0} }
+	            @LEX:@STR:<low> { {priority @STR:<low> 0} }
+	            @LEX:@STR:<name> { {priority @STR:<name> 0} }
+	            @LEX:@STR:<null-ranking> { {priority @STR:<null-ranking> 0} }
+	            @LEX:@STR:<null> { {priority @STR:<null> 0} }
+	            @LEX:@STR:<nulled> { {priority @STR:<nulled> 0} }
+	            @LEX:@STR:<off> { {priority @STR:<off> 0} }
+	            @LEX:@STR:<ok> { {priority @STR:<ok> 0} }
+	            @LEX:@STR:<on> { {priority @STR:<on> 0} }
+	            @LEX:@STR:<pause> { {priority @STR:<pause> 0} }
+	            @LEX:@STR:<predicted> { {priority @STR:<predicted> 0} }
+	            @LEX:@STR:<priority> { {priority @STR:<priority> 0} }
+	            @LEX:@STR:<proper> { {priority @STR:<proper> 0} }
+	            @LEX:@STR:<rank> { {priority @STR:<rank> 0} }
+	            @LEX:@STR:<right> { {priority @STR:<right> 0} }
+	            @LEX:@STR:<separator> { {priority @STR:<separator> 0} }
+	            @LEX:@STR:<start> { {priority @STR:<start> 0} }
+	            @LEX:@STR:<symbol> { {priority @STR:<symbol> 0} }
+	            @LEX:@STR:<warn> { {priority @STR:<warn> 0} }
+	            {array descriptor} { {priority {
+	                    {array descriptor left bracket}
+	                    {result item descriptor list}
+	                    {array descriptor right bracket}} 0} }
+	            {bare name} { {priority {{one or more word characters}} 0} }
+	            {before or after} {
+	                {priority @STR:<before> 0}
+	                {priority @STR:<after> 0}
+	            }
+	            boolean { {priority @RAN:<01> 0} }
+	            {bracketed name} { {priority {
+	                    @CHR:<<>
+	                    {bracketed name string}
+	                    @CHR:<>>} 0} }
+	            {character class} { {priority {
+	                    {cc open}
+	                    {cc elements}
+	                    {cc closing}
+	                    {character class modifiers}} 0} }
+	            {op declare bnf} { {priority @STR:<::=> 0} }
+	            {op declare match} { {priority @CHR:<~> 0} }
+	            {op equal priority} { {priority @CHR:<|> 0} }
+	            {op loosen} { {priority @STR:<||> 0} }
+	            {Perl name} { {quantified {Perl identifier} 1
+	                    separator {{double colon} 1}} }
+	            {reserved action name} { {priority {
+	                    {double colon}
+	                    {one or more word characters}} 0} }
+	            {reserved event name} { {priority {
+	                    {double colon}
+	                    {one or more word characters}} 0} }
+	            {signed integer} {
+	                {priority integer 0}
+	                {priority {
+	                        sign
+	                        integer} 0}
+	            }
+	            {single quoted name} { {priority {
+	                    quote
+	                    {string without single quote or vertical space}
+	                    quote} 0} }
+	            {single quoted string} { {priority {
+	                    quote
+	                    {string without single quote or vertical space}
+	                    quote
+	                    {character class modifiers}} 0} }
+	            {standard name} { {priority {
+	                    @CLS:<A-Za-z>
+	                    {zero or more word characters}} 0} }
+	        }
+	        literal {
+	            {@^CLS:<\n-\r'\u2028-\u2029>} { {^charclass {10 13} 39 {8232 8233}} }
+	            {@^CLS:<\n-\r\u2028-\u2029>} { {^charclass {10 13} {8232 8233}} }
+	            {@^CLS:<\t-\r\134-\135\u2028-\u2029>} { {^charclass {9 13} {92 93} {8232 8233}} }
+	            @CHR:<#> { {character 35} }
+	            @CHR:<'> { {character 39} }
+	            @CHR:<*> { {character 42} }
+	            @CHR:<+> { {character 43} }
+	            @CHR:<,> { {character 44} }
+	            @CHR:<-> { {character 45} }
+	            @CHR:<<> { {character 60} }
+	            @CHR:<=> { {character 61} }
+	            @CHR:<>> { {character 62} }
+	            {@CHR:<\50>} { {character 40} }
+	            {@CHR:<\51>} { {character 41} }
+	            {@CHR:<\73>} { {character 59} }
+	            {@CHR:<\133>} { {character 91} }
+	            {@CHR:<\134>} { {character 92} }
+	            {@CHR:<\135>} { {character 93} }
+	            {@CHR:<\173>} { {character 123} }
+	            {@CHR:<\175>} { {character 125} }
+	            @CHR:<|> { {character 124} }
+	            @CHR:<~> { {character 126} }
+	            @CLS:<+-> { {charclass 43 45} }
+	            {@CLS:<\134a-bfnrtv>} { {charclass 92 {97 98} 102 110 114 116 118} }
+	            {@CLS:<\n-\r\u2028-\u2029>} { {charclass {10 13} {8232 8233}} }
+	            {@CLS:<_[:alnum:]>} { {charclass 95 alnum} }
+	            {@CLS:<_[:alnum:][:space:]>} { {charclass 95 alnum space} }
+	            @CLS:<A-Za-z> { {charclass {65 90} {97 122}} }
+	            {@NCC:<[:alnum:]>} { {named-class alnum} }
+	            {@NCC:<[:digit:]>} { {named-class digit} }
+	            {@NCC:<[:space:]>} { {named-class space} }
+	            {@NCC:<[:xdigit:]>} { {named-class xdigit} }
+	            @RAN:<01> { {range 48 49} }
+	            @RAN:<03> { {range 48 51} }
+	            @RAN:<07> { {range 48 55} }
+	            @STR:<::=> { {string 58 58 61} }
+	            @STR:<::> { {string 58 58} }
+	            {@STR:<:\135>} { {string 58 93} }
+	            @STR:<:default> { {string 58 100 101 102 97 117 108 116} }
+	            @STR:<:discard> { {string 58 100 105 115 99 97 114 100} }
+	            @STR:<:i> { {string 58 105} }
+	            @STR:<:ic> { {string 58 105 99} }
+	            @STR:<:lexeme> { {string 58 108 101 120 101 109 101} }
+	            @STR:<:start> { {string 58 115 116 97 114 116} }
+	            @STR:<=>> { {string 61 62} }
+	            {@STR:<\133:>} { {string 91 58} }
+	            {@STR:<\133^>} { {string 91 94} }
+	            {@STR:<\134u>} { {string 92 117} }
+	            {@STR:<\134x>} { {string 92 120} }
+	            @STR:<action> { {string 97 99 116 105 111 110} }
+	            @STR:<after> { {string 97 102 116 101 114} }
+	            @STR:<assoc> { {string 97 115 115 111 99} }
+	            @STR:<before> { {string 98 101 102 111 114 101} }
+	            @STR:<by> { {string 98 121} }
+	            @STR:<completed> { {string 99 111 109 112 108 101 116 101 100} }
+	            @STR:<current> { {string 99 117 114 114 101 110 116} }
+	            @STR:<default> { {string 100 101 102 97 117 108 116} }
+	            @STR:<discard> { {string 100 105 115 99 97 114 100} }
+	            @STR:<event> { {string 101 118 101 110 116} }
+	            @STR:<fatal> { {string 102 97 116 97 108} }
+	            @STR:<forgiving> { {string 102 111 114 103 105 118 105 110 103} }
+	            @STR:<g1length> { {string 103 49 108 101 110 103 116 104} }
+	            @STR:<g1start> { {string 103 49 115 116 97 114 116} }
+	            @STR:<group> { {string 103 114 111 117 112} }
+	            @STR:<high> { {string 104 105 103 104} }
+	            @STR:<inaccessible> { {string 105 110 97 99 99 101 115 115 105 98 108 101} }
+	            @STR:<is> { {string 105 115} }
+	            @STR:<latm> { {string 108 97 116 109} }
+	            @STR:<left> { {string 108 101 102 116} }
+	            @STR:<length> { {string 108 101 110 103 116 104} }
+	            @STR:<lexeme> { {string 108 101 120 101 109 101} }
+	            @STR:<lexer> { {string 108 101 120 101 114} }
+	            @STR:<lhs> { {string 108 104 115} }
+	            @STR:<low> { {string 108 111 119} }
+	            @STR:<name> { {string 110 97 109 101} }
+	            @STR:<null-ranking> { {string 110 117 108 108 45 114 97 110 107 105 110 103} }
+	            @STR:<null> { {string 110 117 108 108} }
+	            @STR:<nulled> { {string 110 117 108 108 101 100} }
+	            @STR:<off> { {string 111 102 102} }
+	            @STR:<ok> { {string 111 107} }
+	            @STR:<on> { {string 111 110} }
+	            @STR:<pause> { {string 112 97 117 115 101} }
+	            @STR:<predicted> { {string 112 114 101 100 105 99 116 101 100} }
+	            @STR:<priority> { {string 112 114 105 111 114 105 116 121} }
+	            @STR:<proper> { {string 112 114 111 112 101 114} }
+	            @STR:<rank> { {string 114 97 110 107} }
+	            @STR:<right> { {string 114 105 103 104 116} }
+	            @STR:<rule> { {string 114 117 108 101} }
+	            @STR:<separator> { {string 115 101 112 97 114 97 116 111 114} }
+	            @STR:<start> { {string 115 116 97 114 116} }
+	            @STR:<symbol> { {string 115 121 109 98 111 108} }
+	            @STR:<value> { {string 118 97 108 117 101} }
+	            @STR:<values> { {string 118 97 108 117 101 115} }
+	            @STR:<warn> { {string 119 97 114 110} }
+	            @STR:<||> { {string 124 124} }
+	        }
+	    }
+	}
+	return
+    }
+}
+
+# # ## ### ##### ######## #############
+return
