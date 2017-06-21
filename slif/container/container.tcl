@@ -48,13 +48,15 @@ oo::class create marpa::slif::container {
 
     # # -- --- ----- -------- -------------
     ## Toplevel API invoked by the semantics.
-    ## Delegated to internl objects for actual handling.
+    ## Delegated to internal objects for actual handling.
 
     forward g1               G1
     forward l0               L0
     forward inaccessible     GA set inaccessible
     forward start!           GA set start
     forward lexeme-semantics LS set
+
+    forward lexeme-semantics? LS get
 
     # # -- --- ----- -------- -------------
     ## Further public API - Introspection, (de)serialization, ...

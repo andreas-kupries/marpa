@@ -86,6 +86,7 @@ oo::class create marpa::slif::container::grammar::l0 {
 	    mylatm  latm
 	    myprio  priority
 	} {
+	    # Inlined dynamic forms of the latm, event, priority methods below.
 	    if {![dict size [set $var]]} continue
 	    dict set serial $label [lrange [set $var] 0 end]
 	    # See the note in alter.tcl for explanation of the lrange.
@@ -112,6 +113,27 @@ oo::class create marpa::slif::container::grammar::l0 {
 	return
     }
 
+    method latm {} {
+	debug.marpa/slif/container/grammar/l0 {}
+	if {![dict size $mylatm]} { return {} }
+	return [lrange $mylatm 0 end]
+	# See the note in alter.tcl for explanation of the lrange.
+    }
+
+    method events {} {
+	debug.marpa/slif/container/grammar/l0 {}
+	if {![dict size $myevent]} { return {} }
+	return [lrange $myevent 0 end]
+	# See the note in alter.tcl for explanation of the lrange.
+    }
+
+    method priority {} {
+	debug.marpa/slif/container/grammar/l0 {}
+	if {![dict size $mypriority]} { return {} }
+	return [lrange $mypriority 0 end]
+	# See the note in alter.tcl for explanation of the lrange.
+    }
+    
     # - -- --- ----- -------- -------------
     # Public API
 

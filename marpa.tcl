@@ -173,6 +173,11 @@ critcl::tsources export/gc_template.tcl  ; # Template access for the actual back
 critcl::tsources export/gc.tcl           ; # Compact output
 critcl::tsources export/gc_formatted.tcl ; # Formatted output
 
+# Backend: Dumping a GC as Tcl code implementing a derived lexer engine class
+
+critcl::tsources export/tlex_template.tcl  ; # Template access for the backend
+critcl::tsources export/tlex.tcl           ; # Actual generator
+
 # # ## ### ##### ######## #############
 ## Main C section.
 

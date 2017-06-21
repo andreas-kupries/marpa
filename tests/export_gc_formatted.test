@@ -41,8 +41,6 @@ unset max
 
 set k 0
 test-grammar-map export --> id export base {
-    exec touch $base/export_gc_formatted
-    
     set input    [string trimright [fget $base/gcstate]]
     set kd       [format $format $k]
     set expected [test-grammar-result $base export_gc_formatted]

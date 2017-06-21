@@ -30,7 +30,8 @@ oo::class create marpa::slif::container::grammar {
     variable mysymbol ; # :: dict (symbol-name -> symbol-instance)
     variable mysclass ; # :: dict (symbol-name -> class-name)
     variable mytype   ; # :: dict (type-name -> factory-instance)
-
+    variable mycsym   ; # :: dict (class-name -> (symbol-name -> .))
+    
     # - -- --- ----- -------- -------------
     ## lifecycle
 
@@ -43,6 +44,7 @@ oo::class create marpa::slif::container::grammar {
 
 	set mysymbol {}
 	set mysclass {}
+	set mycsym   {}
 	set mytype   $spec
 	dict set mytype priority   $p
 	dict set mytype quantified $q
@@ -74,9 +76,11 @@ oo::class create marpa::slif::container::grammar {
     method remove {symbol} {
 	debug.marpa/slif/container/grammar {}
 	if {![dict exists $mysymbol $symbol]} return
+	set class [dict get $mysclass $symbol]
 	[dict get $mysymbol $symbol] destroy
 	dict unset mysymbol $symbol
 	dict unset mysclass $symbol
+	dict unset mycsym $class $symbol
 	return
     }
 
@@ -97,6 +101,17 @@ oo::class create marpa::slif::container::grammar {
     method symbols {} {
 	debug.marpa/slif/container/grammar {}
 	return [dict keys $mysymbol]
+    }
+
+    method classes {} {
+	debug.marpa/slif/container/grammar {}
+	return [dict keys $mycsym]
+    }
+
+    method symbols-of {class} {
+	debug.marpa/slif/container/grammar {}
+	my ValidateClass $class
+	return [dict keys [dict get $mycsym $class]]
     }
 
     method get {symbol} {
@@ -124,6 +139,7 @@ oo::class create marpa::slif::container::grammar {
 	debug.marpa/slif/container/grammar {}
 	set mysymbol {}
 	set mysclass {}
+	set mycsym   {}
 	return
     }
 
@@ -144,6 +160,7 @@ oo::class create marpa::slif::container::grammar {
 	# class-blob :: dict (symbol -> (type ...)...)
 	set mysymbol {}
 	set mysclass {}
+	set mycsym   {}
 	dict for {class cdata} $blob {
 	    dict for {symbol spec} $cdata {
 		foreach def $spec {
@@ -181,6 +198,7 @@ oo::class create marpa::slif::container::grammar {
 	if {![dict exists $mysclass $symbol] ||
 	    ([dict get    $mysclass $symbol] eq {})} {
 	    dict set mysclass $symbol $class
+	    dict set mycsym $class $symbol .
 	    return
 	} elseif {$class eq {}} {
 	    return
@@ -194,6 +212,14 @@ oo::class create marpa::slif::container::grammar {
 	debug.marpa/slif/container/grammar {}
 	if {![dict exists $mysymbol $sym]} {
 	    my E "Unknown symbol '$sym'" BAD SYMBOL
+	}
+	return
+    }
+
+    method ValidateClass {class} {
+	debug.marpa/slif/container/grammar {}
+	if {![dict exists $mycsym $class]} {
+	    my E "Unknown class '$class'" BAD CLASS
 	}
 	return
     }
