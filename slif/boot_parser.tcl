@@ -15,6 +15,8 @@
 ## See also
 ## -- Marpa--R2/cpan/lib/Marpa/R2/MetaG.pm
 
+## Rewritten to use the new parse runtime targeted by export::tparse.
+
 # # ## ### ##### ######## #############
 ## Requisites
 
@@ -28,94 +30,21 @@ debug prefix marpa/slif/parser {[debug caller] | }
 ##
 
 oo::class create marpa::slif::parser {
+    superclass marpa::engine::tcl::parse
     # # ## ### ##### ######## #############
     marpa::E marpa/slif/parser SLIF PARSER
 
-    constructor {} {
-	# Build the processing pipeline, and configure the various
-	# engines.
-	my Pipeline
-	my Grammar
+    method Characters {} {
+	return {
+	    # # ' ' ( ( ) ) * * + + , , - - 1 1 : : ; ;
+	    < < = = > > [ [ \\ \\ ] ] ^ ^ a a b b c c d d
+	    e e f f g g h h i i k k l l m m n n o o p p
+	    r r s s t t u u v v w w x x y y \{ \{ | | \} \} ~ ~
+	}
     }
-
-    method Pipeline {} {
-	## - Object creation is backward.
-	## - Spec loading is forward.
-	## - Initialization is backward again.
-
-	# Capture final AST
-	set B [marpa::slif::parser::Capture create B]
-
-	# Store for token values.
-	set ST [marpa::semstore create ST]
-
-	# G1 semantics, empty, builds AST
-	# :default ::= action => [start,length,values]
-	#              bless  => ::lhs
-	set GS [marpa::semcore create GS  $ST]
-
-	# Parser engine - Structural symbols and rules. User
-	# semantics.
-	set G1 [marpa::parser create G1  $ST $GS $B]
-
-	# Lexer engine - Lexical symbol and rules - Symbol gate for
-	# parser, mapping to parser symbols. Fixed semantics
-	# (character aggregation)
-	set L0 [marpa::lexer create L0  $ST $G1]
-
-	# Character gate, class handling and mapping to lexer symbols
-	set LG [marpa::gate create LG  $ST $L0]
-
-	# Basic character processing, location as token value, file
-	# handling ...
-	marpa::inbound create IN  $ST $LG
-
-	#         v----\ v----\
-	# IN --> LG --> L0 --> G1 --> B
-	# v /---/      /       v     /
-	# ST <--------/        GS   /
-	# ^^------------------/    /
-	#  \----------------------/
-    }
-
-    method Grammar {} {
-	#GS add-rule @default {marpa::semstd::builtin {start length values}}
-	GS add-rule @default {marpa::semstd::builtin {name values}}
-	# start
-	# length
-	# values
-	my Gate
-	my Lexer
-	my Structure
-    }
-
-    method Gate {} {
-	# # ## ### ##### ######## #############
-	## Configure pipeline - Gate specification
-
-	# I. Symbols for individual characters
-	##
-	# Define the set of acceptable characters as taken from the grammar
-	# specification. A tcl dictionary, i.e. hash-table is used to map them
-	# to tokens, i.e. integer ids. These ids actually come from the up-
-	# stream object, i.e. the L0 engine. The engine also knows the mapping
-	# (ns upvar'd into scope), for use in grammar rules.
-	##
-	# II. Symbols for character classes
-	##
-	# Indirectly extend the set of acceptable characters via character classes.
-	# For all known characters (see above) memebership is computed as part of
-	# the setup. Unknown characters are lazily computed when they occur.
-
-	# Like for characters a tcl dictionary, i.e. hash-table is used to map
-	# them to tokens, i.e. integer ids. The same dictionary, actually.
-	# These ids again come from the up-stream object, i.e. the L0
-	# engine.
-
-	LG def {
-	    # ' ( ) * + , - 1 : ; < = > [ \\ ] ^ a b c d e f
-	    g h i k l m n o p r s t u v w x y \{ | \} ~
-	} {
+    
+    method Classes {} {
+	return {
 	    @cc-sign           {[+-]}
 	    @cc-bool           {[01]}
 	    @cc-alnum          {[[:alnum:]]}
@@ -130,50 +59,38 @@ oo::class create marpa::slif::parser {
 	    @cc-letter         {[a-zA-Z]}
 	}
     }
+    
+    method L0.Semantics {} {
+	return {start length value}
+    }
+    
+    method Lexemes {} {
+	return {
+	    @lex-(         1 @lex-)            1 @lex-*            1 @lex-+       1
+	    @lex-,         1 @lex-:default     1 @lex-:discard     1 @lex-:lexeme 1
+	    @lex-:start    1 @lex-\;           1 @lex-=            1 @lex-=>      1
+	    @lex-action    1 @lex-assoc        1 @lex-bless        1 @lex-by      1
+	    @lex-completed 1 @lex-current      1 @lex-default      1 @lex-discard 1
+	    @lex-event     1 @lex-fatal        1 @lex-forgiving    1 @lex-group   1
+	    @lex-high      1 @lex-inaccessible 1 @lex-is           1 @lex-latm    1
+	    @lex-left      1 @lex-lexeme       1 @lex-lexer        1 @lex-low     1
+	    @lex-name      1 @lex-null         1 @lex-null-ranking 1 @lex-nulled  1
+	    @lex-off       1 @lex-ok           1 @lex-on           1 @lex-pause   1
+	    @lex-predicted 1 @lex-priority     1 @lex-proper       1 @lex-rank    1
+	    @lex-right     1 @lex-separator    1 @lex-start        1 @lex-symbol  1
+	    @lex-warn      1 @lex-\{           1 @lex-\}           1
 
-    method Lexer {} {
-	# # ## ### ##### ######## #############
-	## Configure pipeline with lexer definitions.
-
-	# III. Lexeme for un-named strings and classes in the L0 definition,
-	#      and those explicitly named in the G1 grammar for use in
-	#      structural rules
-	##
-	# These symbols are part of the interface to G1. They actually have
-	# two ids associated with them, one each for L0 and G1.
-
-	L0 latm   yes
-	L0 action {start length value}
-
-	L0 export {
-	    @lex-(         @lex-)            @lex-*            @lex-+
-	    @lex-,         @lex-:default     @lex-:discard     @lex-:lexeme
-	    @lex-:start    @lex-\;           @lex-=            @lex-=>
-	    @lex-action    @lex-assoc        @lex-bless        @lex-by
-	    @lex-completed @lex-current      @lex-default      @lex-discard
-	    @lex-event     @lex-fatal        @lex-forgiving    @lex-group
-	    @lex-high      @lex-inaccessible @lex-is           @lex-latm
-	    @lex-left      @lex-lexeme       @lex-lexer        @lex-low
-	    @lex-name      @lex-null         @lex-null-ranking @lex-nulled
-	    @lex-off       @lex-ok           @lex-on           @lex-pause
-	    @lex-predicted @lex-priority     @lex-proper       @lex-rank
-	    @lex-right     @lex-separator    @lex-start        @lex-symbol
-	    @lex-warn      @lex-\{           @lex-\}
-
-	    {reserved event name}    {op declare bnf}	  {op declare match}
-	    {op loosen}              {op equal priority}  {before or after}
-	    {signed integer}         boolean              {reserved action name}
-	    {reserved blessing name} {Perl name}          {bare name}
-	    {standard name}          {bracketed name}     {array descriptor}
-	    {single quoted string}   {single quoted name} {character class}
+	    {reserved event name}    1 {op declare bnf}	  1 {op declare match}     1
+	    {op loosen}              1 {op equal priority}  1 {before or after}      1
+	    {signed integer}         1 boolean              1 {reserved action name} 1
+	    {reserved blessing name} 1 {Perl name}          1 {bare name}            1
+	    {standard name}          1 {bracketed name}     1 {array descriptor}     1
+	    {single quoted string}   1 {single quoted name} 1 {character class}      1
 	}
-
-	# V. Lexemes explicitly named in the G1 grammar and NOT used in
-	#    structural rules, only in match rules.
-	##
-	# These symbols are NOT part of the interface to G1.
-
-	L0 symbols {
+    }
+    
+    method L0.Symbols {} {
+	return {
 	    whitespace     {hash comment}
 	    {terminated hash comment}    {unterminated final hash comment}
 	    {hash comment body}    {vertical space char}
@@ -193,10 +110,10 @@ oo::class create marpa::slif::parser {
 	    {posix char class}    {negated posix char class}
 	    {posix char class name}    {horizontal character}
 	}
-
-	# VI. Match rules for all symbols, exported and not.
-
-	L0 rules {
+    }
+    
+    method L0.Rules {} {
+	return {
 	    {@lex-(                                           := (}
 	    {@lex-)                                           := )}
 	    {@lex-*                                           := *}
@@ -317,11 +234,9 @@ oo::class create marpa::slif::parser {
 	    {{horizontal character}                           := @cc-nv}
 	}
     }
-
-    method Structure {} {
-	# VII. Structural symbols, and rules
-
-	G1 symbols {
+    
+    method G1.Symbols {} {
+	return  {
 	    statements    statement
 	    {null statement}    {statement group}
 	    {start rule}    {default rule}
@@ -365,11 +280,10 @@ oo::class create marpa::slif::parser {
 	    {single symbol}    symbol
 	    {symbol name}    {action name}
 	}
-
-	# VII. Structural rules.
-
-	G1 action {name values}
-	G1 rules {
+    }
+    
+    method G1.Rules {} {
+	return {
 	    {statements				+ statement}
 	    {statement				:= {start rule}}
 	    {statement				:= {empty rule}}
@@ -549,102 +463,17 @@ oo::class create marpa::slif::parser {
 	    {{action name}			:= {reserved action name}}
 	    {{action name}			:= {array descriptor}}
 	}
-
-	# # ## ### ##### ######## #############
-	## Complete parser and lexer specification, initialize feedback loops
-	## and switch the objects into active more.
-
-	G1 parse statements {
+    }
+    
+    method Discards {} {
+	return {
 	    whitespace
 	    {hash comment}
 	}
     }
 
-    method process-file {path} {
-	set chan [open $path r]
-	# Drive the pipeline from the channel.
-	IN read $chan
-	IN eof
-	return [B result]
-    }
-
-    method process {string} {
-	# Drive the pipeline from the string
-	IN enter $string
-	IN eof
-	return [B result]
-    }
-
-    # # ## ### ##### ######## #############
-}
-
-# Capture final AST, internal class.
-oo::class create marpa::slif::parser::Capture {
-    marpa::E marpa/slif/parser SLIF PARSER
-
-    variable myresult
-
-    method result {} {
-	return $myresult
-    }
-
-    method enter {ast} {
-	set myresult $ast
-	return
-    }
-
-    method eof {} {}
-
-    method fail {cv} {
-	upvar 1 $cv context
-
-	# Expected keys
-	# - l0 at         : current location (offset from start of input)
-	# - l0 char       : current character
-	# - l0 acceptable : list of characters the lexer gate looked for
-	# - g1 acceptable : list of lexemes the lexer/parser looked for
-
-	append msg "Parsing failed."
-
-	if {[dict exists $context l0 at]} {
-	    set at [dict get $context l0 at]
-	    if {$at eq {}} {
-		append msg " Unable to determine location in the input"
-	    } else {
-		if {$at < 0} {
-		    append msg " No input"
-		} else {
-		    append msg " Stopped at offset " $at
-		}
-	    }
-
-	    if {[dict exists $context l0 char]} {
-		append msg " after reading '" [char quote cstring [dict get $context l0 char]] "'"
-	    }
-	    append msg "."
-	} elseif {[dict exists $context l0 char]} {
-	    append msg "Stopped after reading '" [char quote cstring [dict get $context l0 char]] "'."
-	}
-
-	set chars 0
-	if {[dict exists $context l0 acceptable]} {
-	    append msg " Expected any character in \["
-	    append msg [char quote cstring [join [dict get $context l0 acceptable] {}]] "\]"
-	    set chars 1
-	}
-
-	if {[dict exists $context g1 acceptable]} {
-	    if {$chars} {
-		append msg " while looking"
-	    } else {
-		append msg " Looking"
-	    }
-	    append msg " for any of (" [join [dict get $context g1 acceptable] {, }] ")."
-	} elseif {$chars} {
-	    append msg "."
-	}
-
-	my E $msg SYNTAX $context
+    method Start {} {
+	return statements
     }
 }
 

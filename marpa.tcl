@@ -119,6 +119,9 @@ critcl::tsources engine/tcl/engine.tcl    ; # Base class for lexer, parser
 critcl::tsources engine/tcl/lexer.tcl     ; # Lexer, aggregate characters to lexemes
 critcl::tsources engine/tcl/parser.tcl    ; # Parser, structure lexemes into ASTs
 
+critcl::tsources engine/tcl/rt_lex.tcl    ; # Engine assembly / Runtime: Lexer
+critcl::tsources engine/tcl/rt_parse.tcl  ; # Engine assembly / Runtime: Lexer+Parser
+
 # # ## ### ##### ######## #############
 ## SLIF support commands and classes
 ## Parser, semantics, grammar container
@@ -166,17 +169,15 @@ critcl::tsources export/config.tcl       ; # Comon generator configuration suppo
 
 # Backend: Dumping a GC as Tcl code implementing a derived GC class
 #          loading the grammar on construction.
-# 1. gc           - compact, no formatting
-# 2. gc-formatted - formatted for human readability (indented multi-line)
-
-critcl::tsources export/gc_template.tcl  ; # Template access for the actual backends
-critcl::tsources export/gc.tcl           ; # Compact output
-critcl::tsources export/gc_formatted.tcl ; # Formatted output
-
+# 1. gc-compact - compact, no formatting
+# 2. gc         - formatted for human readability (indented multi-line)
 # Backend: Dumping a GC as Tcl code implementing a derived lexer engine class
+# Backend: Dumping a GC as Tcl code implementing a derived parser engine class
 
-critcl::tsources export/tlex_template.tcl  ; # Template access for the backend
-critcl::tsources export/tlex.tcl           ; # Actual generator
+critcl::tsources export/gc_compact.tcl    ; # Container compact
+critcl::tsources export/gc.tcl            ; # Container formatted
+critcl::tsources export/tlex.tcl          ; # Tcl lexer class
+critcl::tsources export/tparse.tcl        ; # Tcl parser class
 
 # # ## ### ##### ######## #############
 ## Main C section.

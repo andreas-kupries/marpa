@@ -11,7 +11,7 @@
 ## Reusing internals from the generator backend "marpa::export::gc-formatted".
 
 proc gc-format {serial {step {    }}} {
-    return "grammar \{\n[marpa::export::gc-formatted::Reformat $serial {} $step]\n\}"
+    return "grammar \{\n[marpa::export::gc::Reformat $serial {} $step]\n\}"
 }
 
 # # ## ### ##### ######## #############

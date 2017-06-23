@@ -21,16 +21,16 @@ package require debug
 package require debug::caller
 
 # Implied:
-# - marpa::export::tlex::template
+# - marpa::export::tparse::template
 # - marpa::slif::container
 # - marpa:: ... :: reduce
 
-debug define marpa/export/tlex
-debug prefix marpa/export/tlex {[debug caller] | }
+debug define marpa/export/tparse
+debug prefix marpa/export/tparse {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-namespace eval ::marpa::export::tlex {
+namespace eval ::marpa::export::tparse {
     namespace export serial container
     namespace ensemble create
 
@@ -42,13 +42,13 @@ namespace eval ::marpa::export::tlex {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::tlex::container {gc} {
-    debug.marpa/export/tlex {}
+proc ::marpa::export::tparse::container {gc} {
+    debug.marpa/export/tparse {}
     return [Generate [$gc serialize]]
 }
 
-proc ::marpa::export::tlex::Generate {serial} {
-    debug.marpa/export/tlex {}
+proc ::marpa::export::tparse::Generate {serial} {
+    debug.marpa/export/tparse {}
 
     # Create a local copy of the grammar for the upcoming
     # rewrites. This also gives us the opportunity to validate the
@@ -83,14 +83,17 @@ proc ::marpa::export::tlex::Generate {serial} {
     # - named-class, ^named-class
     # - range,       ^range
 
-    # Next, pull the various required parts out of the container ...
+    # TODO: Putting the names and other meta information to the engines.
+    # TODO: Handling actual user semantics.
     
+    # Next, pull the various required parts out of the container ...
+
     set sem  [$gc lexeme-semantics? action]
     set latm [$gc l0 latm]
     set have [$gc l0 classes]
     foreach {class var} {
 	literal lit
-	{}      symbols
+	{}      l0symbols
 	discard discards
 	lexeme  lex
     } {
@@ -101,15 +104,19 @@ proc ::marpa::export::tlex::Generate {serial} {
 	}
     }
 
-    # sem     :: map ('array -> list(semantic-code))
-    # latm    :: map (sym -> bool) (sym == lexemes)
-    # lit     :: list (sym)
-    # symbols :: list (sym) - as is
-    # discard :: list (sym) - as is
-    # lex   :: list (sym)
+    set g1symbols [$gc g1 symbols-of {}]
+    # Ignoring class 'terminal'. That is the same as the l0 lexemes,
+    # and the semantics made sure, as did the container validation.
+
+    # sem       :: map ('array -> list(semantic-code))
+    # latm      :: map (sym -> bool) (sym == lexemes)
+    # lit       :: list (sym)
+    # l0symbols :: list (sym) - as is
+    # discard   :: list (sym) - as is
+    # lex       :: list (sym)
 
     # ... And transform them into the form required by the template
-    
+
     # sem - Check for array, and unpack...
     if {[dict exists $sem array]} {
 	set semantics [dict get $sem array]
@@ -117,49 +124,65 @@ proc ::marpa::export::tlex::Generate {serial} {
 	# TODO: Test case required -- Check what the semantics and syntax say
 	error XXX
     }
-    
+
+    set start [$gc start?]
+
     lassign [ConvertLiterals $gc $lit] characters classes
-    
-    ExtendRules rules $gc $symbols
-    ExtendRules rules $gc $discards
-    ExtendRules rules $gc $lex
+    set l0rules {}
+    ExtendRules l0rules $gc l0 $l0symbols
+    ExtendRules l0rules $gc l0 $discards
+    ExtendRules l0rules $gc l0 $lex
+    set g1rules {}
+    ExtendRules g1rules $gc g1 $g1symbols
+
     set characters [FormatDict $characters] ; # literal: map sym -> char
     set classes    [FormatDict $classes]    ; # literal: map sym -> spec
-    set discards   [FormatList $discards]   ; # list (sym)		     
+    set discards   [FormatList $discards]   ; # list (sym)
     set lexemes    [FormatDict $latm]       ; # map (sym -> latm)
-    set symbols    [FormatList $symbols]    ; # list (sym)		     
-    set rules      [FormatList $rules]      ; # list (rule)	     
+    set l0symbols  [FormatList $l0symbols]  ; # list (sym)
+    set l0rules    [FormatList $l0rules]    ; # list (rule)
     #   semantics  -                            list (semantic-code)
-    
+    set g1symbols  [FormatList $g1symbols]  ; # list (sym)
+    set g1rules    [FormatList $g1rules]    ; # list (rule)
+
     $gc destroy
-    
+
     lappend map {*}[config]
-    lappend map @characters@ $characters
-    lappend map @classes@    $classes
-    lappend map @discards@   $discards
-    lappend map @lexemes@    $lexemes
-    lappend map @symbols@    $symbols
-    lappend map @rules@      $rules
-    lappend map @semantics@  $semantics
+    lappend map @characters@    $characters
+    lappend map @classes@       $classes
+    lappend map @discards@      $discards
+    lappend map @lexemes@       $lexemes
+    lappend map @l0-symbols@    $l0symbols
+    lappend map @l0-rules@      $l0rules
+    lappend map @l0-semantics@  $semantics
+    lappend map @g1-symbols@    $g1symbols
+    lappend map @g1-rules@      $g1rules
+    lappend map @start@         $start
 
     variable self
     return [string map $map [string trim [marpa asset $self]]]
 }
 
-proc ::marpa::export::tlex::ExtendRules {rv gc symbols} {
-    debug.marpa/export/tlex {}
+proc ::marpa::export::tparse::ExtendRules {rv gc area symbols} {
+    debug.marpa/export/tparse {}
     upvar 1 $rv rules
     foreach sym $symbols {
-	foreach def [$gc l0 get $sym] {
+	foreach def [$gc $area get $sym] {
 	    switch -exact -- [lindex $def 0] {
 		priority {
 		    set attr [lassign $def _ rhs _]
-		    # L0: name - TODO - currently ignored
-		    lappend rules [list $sym := {*}$rhs]
+		    # name - TODO - currently ignored
+		    if {($area eq "g1") && [dict exists $attr mask] && ("1" in [dict get $attr mask])} {
+			set op [list :M [dict get $attr mask]]
+		    } else {
+			set op :=
+		    }
+
+		    lappend rules [list $sym {*}$op {*}$rhs]
 		}
 		quantified {
 		    set attr [lassign $def _ rhs pos]
-		    # L0: name? - TODO - currently ignored
+		    # name? - TODO - currently ignored
 		    set pos  [expr {$pos ? "+" : "*"}]
 		    set rule [list $sym $pos $rhs]
 		    if {[dict exists $attr separator]} {
@@ -178,8 +201,8 @@ proc ::marpa::export::tlex::ExtendRules {rv gc symbols} {
     return
 }
 
-proc ::marpa::export::tlex::ConvertLiterals {gc symbols} {
-    debug.marpa/export/tlex {}
+proc ::marpa::export::tparse::ConvertLiterals {gc symbols} {
+    debug.marpa/export/tparse {}
     set characters {}
     set classes {}
     foreach sym $symbols {
@@ -203,19 +226,19 @@ proc ::marpa::export::tlex::ConvertLiterals {gc symbols} {
     return [list $characters $classes]
 }
 
-proc ::marpa::export::tlex::+CH {spec} {
+proc ::marpa::export::tparse::+CH {spec} {
     upvar 1 characters characters sym sym
     lappend characters $sym $spec
     return
 }
 
-proc ::marpa::export::tlex::+CL {spec} {
+proc ::marpa::export::tparse::+CL {spec} {
     upvar 1 classes classes sym sym
     lappend classes $sym $spec
     return
 }
 
-proc ::marpa::export::tlex::CC {ccelts} {
+proc ::marpa::export::tparse::CC {ccelts} {
     join [lmap elt $ccelts {
 	switch -exact -- [::marpa::slif::literal::eltype $elt] {
 	    character   { CX $elt    }
@@ -225,8 +248,8 @@ proc ::marpa::export::tlex::CC {ccelts} {
     }] ""
 }
 
-proc ::marpa::export::tlex::RA {s e} {
-    debug.marpa/export/tlex {}
+proc ::marpa::export::tparse::RA {s e} {
+    debug.marpa/export/tparse {}
     if {$s == $e} {
 	# Equal. Not truly a range
 	return [CX $s]
@@ -240,22 +263,22 @@ proc ::marpa::export::tlex::RA {s e} {
     return "${sx}-${ex}"
 }
 
-proc ::marpa::export::tlex::NC {name} {
-    debug.marpa/export/tlex {}
+proc ::marpa::export::tparse::NC {name} {
+    debug.marpa/export/tparse {}
     return "\[:${name}:\]"
 }
 
-proc ::marpa::export::tlex::Class {spec} {
-    debug.marpa/export/tlex {}
+proc ::marpa::export::tparse::Class {spec} {
+    debug.marpa/export/tparse {}
     return "\[${spec}\]"
 }
 
-proc ::marpa::export::tlex::NegC {spec} {
-    debug.marpa/export/tlex {}
+proc ::marpa::export::tparse::NegC {spec} {
+    debug.marpa/export/tparse {}
     return "\[^${spec}\]"
 }
 
-proc ::marpa::export::tlex::CX {code} {
+proc ::marpa::export::tparse::CX {code} {
     switch -exact -- $code {
 	45 { return "\\055" }
 	93 { return "\\135" }
@@ -263,13 +286,13 @@ proc ::marpa::export::tlex::CX {code} {
     return [Char $code]
 }
 
-proc ::marpa::export::tlex::Char {code} {
-    debug.marpa/export/tlex {}
+proc ::marpa::export::tparse::Char {code} {
+    debug.marpa/export/tparse {}
     return [char quote tcl [format %c $code]]
 }
 
-proc ::marpa::export::tlex::FormatList {words {listify 1}} {
-    debug.marpa/export/tlex {}
+proc ::marpa::export::tparse::FormatList {words {listify 1}} {
+    debug.marpa/export/tparse {}
     # The context of the list in the template is
     # <TAB>return {@@}
     # where @@ is the laceholder for the list.
@@ -282,8 +305,8 @@ proc ::marpa::export::tlex::FormatList {words {listify 1}} {
     return "$prefix[join $words $prefix]\n\t"
 }
 
-proc ::marpa::export::tlex::FormatDict {dict} {
-    debug.marpa/export/tlex {}
+proc ::marpa::export::tparse::FormatDict {dict} {
+    debug.marpa/export/tparse {}
     # The context of the dict in the template is
     # <TAB>return {@@}
     # where @@ is the laceholder for the list.
@@ -314,6 +337,8 @@ proc ::marpa::export::tlex::FormatDict {dict} {
 
 # # ## ### ##### ######## #############
 return
+##
+## Template following (`source` will not process it)
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
@@ -322,12 +347,12 @@ return
 ##
 # (c) @slif-year@ Grammar @slif-name@ By @slif-writer@
 ##
-##	TLex (*) Engine for SLIF Grammar "@slif-name@"
+##	Tparse (*) Engine for SLIF Grammar "@slif-name@"
 ##	Generated On @generation-time@
 ##		  By @tool-operator@
 ##		 Via @tool@
 ##
-##	(*) Tcl-based Lexer-only
+##	(*) Tcl-based Parser
 
 package provide @slif-name@ @slif-version@
 
@@ -348,7 +373,7 @@ debug prefix marpa/grammar/@slif-name@ {[debug caller] | }
 # # ## ### ##### ######## #############
 
 oo::class @slif-name@ {
-    superclass marpa::engine::tcl::lex
+    superclass marpa::engine::tcl::parse
 
     # Lifecycle: No constructor needed. No state.
     # All data is embedded as literals into methods
@@ -358,7 +383,7 @@ oo::class @slif-name@ {
     # these methods in the proper order. The methods simply return the
     # requested information. Their base-class implementations simply
     # throw errors, thus preventing the construction of an incomplete
-    # lexer.
+    # parser.
     
     method Characters {} {
 	debug.marpa/grammar/@slif-name@
@@ -374,7 +399,7 @@ oo::class @slif-name@ {
     
     method Lexemes {} {
 	debug.marpa/grammar/@slif-name@
-	# Lexer API: Lexeme symbols (Cannot be terminal).
+	# Lexer API: Lexeme symbols (Cannot be terminal). G1 terminals
 	return {@lexemes@}
     }
     
@@ -384,23 +409,41 @@ oo::class @slif-name@ {
 	return {@discards@}
     }
     
-    method Symbols {} {
+    method L0.Symbols {} {
 	# Non-lexeme, non-literal symbols
 	debug.marpa/grammar/@slif-name@
-	return {@symbols@}
+	return {@l0-symbols@}
     }
 
-    method Rules {} {
+    method L0.Rules {} {
 	# Rules for all symbols but the literals
 	debug.marpa/grammar/@slif-name@
-	return {@rules@}
+	return {@l0-rules@}
     }
 
-    method Semantics {} {
+    method L0.Semantics {} {
 	debug.marpa/grammar/@slif-name@
 	# NOTE. This is currently limited to array semantics.
 	# NOTE. No support for command semantics in the lexer yet.
-	return {@semantics@}
+	return {@l0-semantics@}
+    }
+
+    method G1.Symbols {} {
+	# Structural symbols
+	debug.marpa/grammar/@slif-name@
+	return {@g1-symbols@}
+    }
+
+    method G1.Rules {} {
+	# Structural rules
+	debug.marpa/grammar/@slif-name@
+	return {@g1-rules@}
+    }
+
+    method Start {} {
+	debug.marpa/grammar/@slif-name@
+	# G1 start symbol
+	return {@start@}
     }
 }
 

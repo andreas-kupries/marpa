@@ -42,7 +42,7 @@ proc GL {lexer} {
 proc GLBase {lexer args} {
     $lexer symbols {a b w}
     $lexer symbols $args
-    $lexer export  {A B}
+    $lexer export  {A 1 B 1}
     $lexer rules {
 	{A := a}
 	{B := b w}

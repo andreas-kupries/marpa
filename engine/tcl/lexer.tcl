@@ -42,7 +42,6 @@ oo::class create marpa::lexer {
 
     # Dynamic
     variable myparts      ;# Sem value definition for the following exports
-    variable mylatm       ;# Match discipline for the following exports
 
     # # -- --- ----- -------- -------------
     ## State
@@ -111,12 +110,11 @@ oo::class create marpa::lexer {
 	set mypublic  {}
 	set myacs     {}
 	set myparts   value ;# Default: lexeme literal semantics
-	set mylatm    yes   ;# Default: longest acceptable token match
 	set mydiscard {}
 	set mynull    [Store put [marpa location null]]
 	set mystart   {}
 
-	my SetupSemantics $semstore
+	my SetupSemantics [marpa::fqn $semstore 2]
 
 	# Attach ourselves to parser, as gate.
 	Forward gate: [self]
@@ -134,45 +132,36 @@ oo::class create marpa::lexer {
 	return
     }
 
-    method latm {flag} {
-	debug.marpa/lexer {[debug caller] | }
-	# TODO: validate as boolean
-	set mylatm $flag
-	return
-    }
-
     method action {names} {
 	debug.marpa/lexer {[debug caller] | }
 	set myparts $names
 	return
     }
-
+    
     method export {names} {
+	# names :: map (sym -> latm)
 	debug.marpa/lexer {[debug caller] | }
 	# Create base symbols.
 	# Create the internal acceptability controls symbols (short: ACS) for the base
 	# Get the same symbols from parser as well, the third set.
 
-	# NOTE! the ACS are created regardless of LATM or not. The
-	# LATM choice is made later, in "Discard", by adding it to the
-	# main rule of the lexeme, or not.
-
-	# We could possibly optimize by defering the operations below
-	# until the whole grammaer is loaded. This would also force a
-	# deferal in the handling of rules.
-
-	# Might be easier to rewrite the system after the bootstrap,
-	# when the lexer/parser is wholly generated from the SLIF,
-	# instead of written manually.
-
-	set local [my symbols $names]
-	set acs   [my symbols [my ToACS $names]]
-	set parse [Forward symbols $names]
+	set allnames [dict keys $names]
+	set local    [my symbols $allnames]
+	set acs      {}
+	dict for {n latm} $names {
+	    if {$latm} {
+		lappend acs {*}[my symbols [my ToACS [list $n]]]
+	    } else {
+		lappend acs {}
+	    }
+	}
+	set parse [Forward symbols $allnames]
 
 	# Map from local to parser symbol     (id -> id)
 	# Map from parser to local ACS symbol (id -> id)
-	foreach s $local p $parse a $acs n $names {
-	    dict set mypublic $s [list $p $myparts $mylatm]
+	foreach s $local p $parse a $acs n $allnames {
+	    set latm [dict get $names $n]	
+	    dict set mypublic $s [list $p $myparts $latm]
 	    dict set myacs    $p $a
 
 	    debug.marpa/lexer {[debug caller 1] | PUBLIC ($n) = local:$s --> up:$p}
@@ -206,18 +195,10 @@ oo::class create marpa::lexer {
 
 	# NOTE: This is the point where the difference between the
 	# LATM and LTM match disciplines is injected into the runtime.
-
-	# TODO: Get rid of the global flag and make it per-lexeme.
-	# Currently we are fixed to a global LATM vs LTM setting.
-
-	# Add the ACS in front of the rules of the exported symbols.
-	# TODO: map of the lexemes
-
-	# TODO: FUTURE: Need the ability to choose per-lexeme LATM vs
-	# LTM for the discard symbols as well.
+	# We do this by adding the ACS in front of the rules of the
+	# exported LATM symbols, and only them.
 
 	foreach symid [dict keys $mypublic] {
-
 	    lassign [dict get $mypublic $symid] pid parts latm
 	    set acs [dict get $myacs $pid]
 
@@ -653,7 +634,6 @@ oo::class create marpa::lexer::sequencer {
     #         symbols    made		    # symbols made        made
     #         export     made		    # export  made        made
     #         action     made		    # action  made        made
-    #         latm       made		    # latm    made        made
     #         rules      made		    # rules   made        made
     #         discard    config		    # discard made        config
     #         eof        done		    # ~~~~~~  ~~~~~~~     ~~~~~~~~
@@ -721,12 +701,6 @@ oo::class create marpa::lexer::sequencer {
 	my __Init
 	my __FNot made ! "Lexer is frozen" FROZEN
 	next $names
-    }
-
-    method latm {flag} {
-	my __Init
-	my __FNot made ! "Lexer is frozen" FROZEN
-	next $flag
     }
 
     method rules {rules} {

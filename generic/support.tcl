@@ -20,7 +20,7 @@ debug prefix marpa/support {[debug caller] | }
 # # ## ### ##### ######## #############
 
 namespace eval marpa {
-    namespace export D DX E EP X import filter K A C C*
+    namespace export D DX E EP X import fqn filter K A C C* asset
 }
 
 # # ## ### ##### ######## #############
@@ -109,13 +109,17 @@ proc marpa::X {msg args} {
 # # ## ### ##### ######## #############
 ## Link external command into local namespace
 
+proc marpa::fqn {cmd {up 1}} {
+    debug.marpa/support {}
+    return [uplevel $up [list namespace which -command $cmd]]
+}
+
 proc marpa::import {cmd {dst {}} {up 2}} {
     debug.marpa/support {}
 
     set fqn  [uplevel $up [list namespace which -command $cmd]]
-    set cn [uplevel 1 {namespace current}]
+    set cn   [uplevel 1 {namespace current}]
     if {$dst eq {}} { set dst [namespace tail $cmd] }
-
     interp alias {} ${cn}::$dst {} $fqn
 
     debug.marpa/support {/ok: ${cn}::$dst}
@@ -143,9 +147,9 @@ proc marpa::filter {values mask} {
 proc marpa::K {x y} { return $x }
 
 # # ## ### ##### ######## #############
+## Forward compatibility for lmap, conditional.
 
 if {![llength [info commands ::lmap]]} {
-
     # http://wiki.tcl.tk/40570
     # lmap forward compatibility
 
@@ -171,6 +175,43 @@ if {![llength [info commands ::lmap]]} {
 	}
 	set temp
     }
+}
+
+# # ## ### ##### ######## #############
+## Access to attached assets.
+
+## This feature makes use of the fact that Tcl's source command uses
+## the ^Z character as -eofchar by default. This allows us to attach
+## anything after the code without breaking the interpreter.  Basic
+## interpreter introspection and shenanigans with -eofchar enable us
+## to access and load the attached data when needed.
+
+namespace eval marpa {
+    variable asset {}
+}
+
+proc marpa::asset {self} {
+    # This command assumes a single attached text asset, and returns it.
+    # For speed the content is memoized.
+    debug.marpa/support {}
+
+    variable asset
+    if {[dict exists $asset $self]} {
+	return [dict get $asset $self]
+    }
+    
+    set ch [open $self]
+    # Skip over code, use special EOF handling analogous to `source`.
+    fconfigure $ch -eofchar \x1A
+    read $ch
+    # Switch to regular EOF handling and skip the separator character
+    fconfigure $ch -eofchar {}
+    read $ch 1
+    # Read asset, close, memoize, and return
+    set content [read $ch]
+    close $ch
+    dict set asset $self $content
+    return $content
 }
 
 # # ## ### ##### ######## #############

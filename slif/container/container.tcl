@@ -57,6 +57,7 @@ oo::class create marpa::slif::container {
     forward lexeme-semantics LS set
 
     forward lexeme-semantics? LS get
+    forward start?            GA get start
 
     # # -- --- ----- -------- -------------
     ## Further public API - Introspection, (de)serialization, ...

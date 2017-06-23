@@ -1,7 +1,7 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
 ## (c) 2017 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
-## marpa::export::gc::formatted
+## marpa::export::tparse
 
 kt check Tcl     8.5
 kt check tcltest 2
@@ -24,13 +24,13 @@ kt source support/textutils.tcl
 # # ## ### ##### ######## ############# #####################
 ## container - state driven export
 
-test marpa-export-gc-formatted-container-1.0 {container, wrong args, not enough} -body {
-    marpa::export::gc-formatted container
-} -returnCodes error -result {wrong # args: should be "marpa::export::gc-formatted container gc"}
+test marpa-export-tparse-container-1.0 {container, wrong args, not enough} -body {
+    marpa::export::tparse container
+} -returnCodes error -result {wrong # args: should be "marpa::export::tparse container gc"}
 
-test marpa-export-gc-formatted-container-1.1 {container, wrong args, too many} -body {
-    marpa::export::gc-formatted container GC X
-} -returnCodes error -result {wrong # args: should be "marpa::export::gc-formatted container gc"}
+test marpa-export-tparse-container-1.1 {container, wrong args, too many} -body {
+    marpa::export::tparse container GC X
+} -returnCodes error -result {wrong # args: should be "marpa::export::tparse container gc"}
 
 # # ## ### ##### ######## ############# #####################
 
@@ -43,9 +43,9 @@ set k 0
 test-grammar-map export --> id export base {
     set input    [string trimright [fget $base/gcstate]]
     set kd       [format $format $k]
-    set expected [test-grammar-result $base export_gc_formatted]
+    set expected [test-grammar-result $base export_tparse]
 
-    test marpa-export-gc-formatted-2.${kd}---${id} "export gc-formatted $id" -setup {
+    test marpa-export-tparse-2.${kd}---${id} "export tparse $id" -setup {
 	marpa::export config! version  <Version>
 	marpa::export config! writer   <Writer>
 	marpa::export config! year     <Year>
@@ -59,7 +59,7 @@ test-grammar-map export --> id export base {
 		     # containers, if serialization is from a valid
 		     # container.
     } -body {
-	marpa::export::gc-formatted container GC
+	marpa::export::tparse container GC
     } -cleanup {
 	GC destroy
 	marpa::export config-reset

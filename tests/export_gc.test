@@ -1,7 +1,7 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
 ## (c) 2017 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
-## marpa::export::gc-compact
+## marpa::export::gc
 
 kt check Tcl     8.5
 kt check tcltest 2
@@ -24,13 +24,13 @@ kt source support/textutils.tcl
 # # ## ### ##### ######## ############# #####################
 ## container - state driven export
 
-test marpa-export-gc-compact-container-1.0 {container, wrong args, not enough} -body {
-    marpa::export::gc-compact container
-} -returnCodes error -result {wrong # args: should be "marpa::export::gc-compact container gc"}
+test marpa-export-gc-container-1.0 {container, wrong args, not enough} -body {
+    marpa::export::gc container
+} -returnCodes error -result {wrong # args: should be "marpa::export::gc container gc"}
 
-test marpa-export-gc-compact-container-1.1 {container, wrong args, too many} -body {
-    marpa::export::gc-compact container GC X
-} -returnCodes error -result {wrong # args: should be "marpa::export::gc-compact container gc"}
+test marpa-export-gc-container-1.1 {container, wrong args, too many} -body {
+    marpa::export::gc container GC X
+} -returnCodes error -result {wrong # args: should be "marpa::export::gc container gc"}
 
 # # ## ### ##### ######## ############# #####################
 
@@ -43,9 +43,9 @@ set k 0
 test-grammar-map export --> id export base {
     set input    [string trimright [fget $base/gcstate]]
     set kd       [format $format $k]
-    set expected [test-grammar-result $base export_gc_compact]
+    set expected [test-grammar-result $base export_gc]
 
-    test marpa-export-gc-compact-2.${kd}---${id} "export gc $id" -setup {
+    test marpa-export-gc-2.${kd}---${id} "export gc $id" -setup {
 	marpa::export config! version  <Version>
 	marpa::export config! writer   <Writer>
 	marpa::export config! year     <Year>
@@ -59,7 +59,7 @@ test-grammar-map export --> id export base {
 		     # containers, if serialization is from a valid
 		     # container.
     } -body {
-	marpa::export::gc-compact container GC
+	marpa::export::gc container GC
     } -cleanup {
 	GC destroy
 	marpa::export config-reset

@@ -154,8 +154,9 @@ oo::class create marpa::gate {
     ## Public API
 
     method def {characters classes} {
+	# characters :: map (sym -> char)
+	# classes    :: map (sym -> class)
 	debug.marpa/gate {[debug caller] | }
-
 	# Bulk definition of the whole gate.
 	my SetupCharacters       $characters
 	my SetupCharacterClasses $classes
@@ -345,23 +346,29 @@ oo::class create marpa::gate {
     ## Internal support - Data management (setup)
 
     method SetupCharacters {characters} {
+	# characters :: map (sym -> char)
 	debug.marpa/gate {[debug caller 1] | }
-	if {![llength $characters]} return
+	if {![dict size $characters]} return
 	# Bulk argument check, prevent duplicates
-	foreach c $characters {
+	foreach {sym c} $characters {
 	    if {[dict exists $mymap $c]} {
 		my E "Duplicate character \"$c\"" \
 		    CHAR DUPLICATE $c
 	    }
 	    dict set mymap  $c ?
 	}
-	# Bulk definition
-	foreach \
-	    c  $characters \
-	    id [Forward symbols $characters] {
-		dict set mymap  $c $id
-		dict set myrmap $id $c
-	    }
+	# We now know that the argument is a proper dictionary and can
+	# be treated as such. We declare the symbols to the lexer and
+	# get their ids back. These ids are then associated with the
+	# proper character.
+
+	set syms [dict keys $characters]
+	set ids  [Forward symbols $syms]
+	foreach id $ids sym $syms {
+	    set c [dict get $characters $sym]
+	    dict set mymap  $c $id
+	    dict set myrmap $id $c
+	}
 	return
     }
 
