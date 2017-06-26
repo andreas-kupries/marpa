@@ -119,17 +119,19 @@ proc ::marpa::export::tlex::Generate {serial} {
     }
     
     lassign [ConvertLiterals $gc $lit] characters classes
-    
+    set rules {}
     ExtendRules rules $gc $symbols
     ExtendRules rules $gc $discards
     ExtendRules rules $gc $lex
-    set characters [FormatDict $characters] ; # literal: map sym -> char
-    set classes    [FormatDict $classes]    ; # literal: map sym -> spec
-    set discards   [FormatList $discards]   ; # list (sym)		     
-    set lexemes    [FormatDict $latm]       ; # map (sym -> latm)
-    set symbols    [FormatList $symbols]    ; # list (sym)		     
-    set rules      [FormatList $rules]      ; # list (rule)	     
-    #   semantics  -                            list (semantic-code)
+    lappend symbols {*}$discards
+    
+    set characters [FormatDict $characters 0] ; # literal: map sym -> char
+    set classes    [FormatDict $classes]      ; # literal: map sym -> spec
+    set discards   [FormatList $discards]     ; # list (sym)		     
+    set lexemes    [FormatDict $latm 0]       ; # map (sym -> latm)
+    set symbols    [FormatList $symbols]      ; # list (sym)		     
+    set rules      [FormatList $rules]        ; # list (rule)	     
+    #   semantics  -                              list (semantic-code)
     
     $gc destroy
     
@@ -276,13 +278,14 @@ proc ::marpa::export::tlex::FormatList {words {listify 1}} {
     # For proper formatting we have to indent, plus additional leading
     # and trailing newlines.
     set prefix "\n\t    "
+    set words [lsort -dict $words]
     if {$listify} {
 	set words [lmap w $words { list $w }]
     }
     return "$prefix[join $words $prefix]\n\t"
 }
 
-proc ::marpa::export::tlex::FormatDict {dict} {
+proc ::marpa::export::tlex::FormatDict {dict {listify 1}} {
     debug.marpa/export/tlex {}
     # The context of the dict in the template is
     # <TAB>return {@@}
@@ -304,9 +307,10 @@ proc ::marpa::export::tlex::FormatDict {dict} {
     set lines {}
     foreach name $names {
 	set dname [list $name]
+	set value [dict get $dict $name]
+	if {$listify} { set value [list $value] }
 	lappend lines [format "%-*s %s" \
-			   $maxl $dname \
-			   [list [dict get $dict $name]]]
+			   $maxl $dname $value]
     }
 
     return [FormatList $lines 0]
@@ -347,7 +351,7 @@ debug prefix marpa/grammar/@slif-name@ {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-oo::class @slif-name@ {
+oo::class create @slif-name@ {
     superclass marpa::engine::tcl::lex
 
     # Lifecycle: No constructor needed. No state.

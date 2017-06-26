@@ -31,7 +31,7 @@ debug prefix marpa/grammar/<Name> {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-oo::class <Name> {
+oo::class create <Name> {
     superclass marpa::engine::tcl::lex
 
     # Lifecycle: No constructor needed. No state.
@@ -48,7 +48,7 @@ oo::class <Name> {
 	debug.marpa/grammar/<Name>
 	# Literals: The directly referenced (allowed) characters.
 	return {
-	    @CHR:<#>        {#}
+	    @CHR:<#>        #
 	    @CHR:<'>        '
 	    @CHR:<*>        *
 	    @CHR:<+>        +
@@ -59,14 +59,6 @@ oo::class <Name> {
 	    @CHR:<<>        <
 	    @CHR:<=>        =
 	    @CHR:<>>        >
-	    {@CHR:<\50>}    {\50}
-	    {@CHR:<\51>}    {\51}
-	    {@CHR:<\73>}    {\73}
-	    {@CHR:<\133>}   {\133}
-	    {@CHR:<\134>}   {\134}
-	    {@CHR:<\135>}   {\135}
-	    {@CHR:<\173>}   {\173}
-	    {@CHR:<\175>}   {\175}
 	    @CHR:<^>        ^
 	    @CHR:<a>        a
 	    @CHR:<b>        b
@@ -93,6 +85,14 @@ oo::class <Name> {
 	    @CHR:<y>        y
 	    @CHR:<|>        |
 	    @CHR:<~>        ~
+	    {@CHR:<\50>}    \50
+	    {@CHR:<\51>}    \51
+	    {@CHR:<\73>}    \73
+	    {@CHR:<\133>}   \133
+	    {@CHR:<\134>}   \134
+	    {@CHR:<\135>}   \135
+	    {@CHR:<\173>}   \173
+	    {@CHR:<\175>}   \175
 	}
     }
     
@@ -100,22 +100,22 @@ oo::class <Name> {
 	debug.marpa/grammar/<Name>
 	# Literals: The character classes in use
 	return {
+	    @CLS:<+->                               {[+\055]}
+	    @CLS:<A-Za-z>                           {[A-Za-z]}
+	    @RAN:<01>                               {[01]}
+	    @RAN:<03>                               {[0-3]}
+	    @RAN:<07>                               {[0-7]}
 	    {@^CLS:<\n-\r'\u2028-\u2029>}           {[^\n-\r'\u2028\u2029]}
 	    {@^CLS:<\n-\r\u2028-\u2029>}            {[^\n-\r\u2028\u2029]}
 	    {@^CLS:<\t-\r\134-\135\u2028-\u2029>}   {[^\t-\r\134\135\u2028\u2029]}
-	    @CLS:<+->                               {[+\055]}
 	    {@CLS:<\134a-bfnrtv>}                   {[\134abfnrtv]}
 	    {@CLS:<\n-\r\u2028-\u2029>}             {[\n-\r\u2028\u2029]}
 	    {@CLS:<_[:alnum:]>}                     {[_[:alnum:]]}
 	    {@CLS:<_[:alnum:][:space:]>}            {[_[:alnum:][:space:]]}
-	    @CLS:<A-Za-z>                           {[A-Za-z]}
 	    {@NCC:<[:alnum:]>}                      {[[:alnum:]]}
 	    {@NCC:<[:digit:]>}                      {[[:digit:]]}
 	    {@NCC:<[:space:]>}                      {[[:space:]]}
 	    {@NCC:<[:xdigit:]>}                     {[[:xdigit:]]}
-	    @RAN:<01>                               {[01]}
-	    @RAN:<03>                               {[0-3]}
-	    @RAN:<07>                               {[0-7]}
 	}
     }
     
@@ -127,11 +127,6 @@ oo::class <Name> {
 	    @LEX:@CHR:<+>              1
 	    @LEX:@CHR:<,>              1
 	    @LEX:@CHR:<=>              1
-	    {@LEX:@CHR:<\50>}          1
-	    {@LEX:@CHR:<\51>}          1
-	    {@LEX:@CHR:<\73>}          1
-	    {@LEX:@CHR:<\173>}         1
-	    {@LEX:@CHR:<\175>}         1
 	    @LEX:@STR:<:default>       1
 	    @LEX:@STR:<:discard>       1
 	    @LEX:@STR:<:lexeme>        1
@@ -173,10 +168,15 @@ oo::class <Name> {
 	    @LEX:@STR:<start>          1
 	    @LEX:@STR:<symbol>         1
 	    @LEX:@STR:<warn>           1
+	    boolean                    1
+	    {@LEX:@CHR:<\50>}          1
+	    {@LEX:@CHR:<\51>}          1
+	    {@LEX:@CHR:<\73>}          1
+	    {@LEX:@CHR:<\173>}         1
+	    {@LEX:@CHR:<\175>}         1
 	    {array descriptor}         1
 	    {bare name}                1
 	    {before or after}          1
-	    boolean                    1
 	    {bracketed name}           1
 	    {character class}          1
 	    {op declare bnf}           1
@@ -206,46 +206,6 @@ oo::class <Name> {
 	# Non-lexeme, non-literal symbols
 	debug.marpa/grammar/<Name>
 	return {
-	    {array descriptor left bracket}
-	    {array descriptor right bracket}
-	    {bracketed name string}
-	    {cc character}
-	    {cc closing}
-	    {cc element}
-	    {cc elements}
-	    {cc open}
-	    {cc range}
-	    {cc single character}
-	    {character class modifier}
-	    {character class modifiers}
-	    {double colon}
-	    escaped
-	    {hash comment body}
-	    {hash comment char}
-	    hex
-	    integer
-	    lodigit
-	    normal
-	    octal
-	    odigit
-	    {one or more word characters}
-	    {Perl identifier}
-	    {posix char class}
-	    {posix char class name}
-	    quote
-	    {result item descriptor}
-	    {result item descriptor list}
-	    {result item descriptor separator}
-	    sign
-	    special
-	    {string character}
-	    {string without single quote or vertical space}
-	    {terminated hash comment}
-	    unicode
-	    unihex
-	    {unterminated final hash comment}
-	    {vertical space char}
-	    {zero or more word characters}
 	    @STR:<::=>
 	    @STR:<::>
 	    {@STR:<:\135>}
@@ -306,6 +266,48 @@ oo::class <Name> {
 	    @STR:<values>
 	    @STR:<warn>
 	    @STR:<||>
+	    {array descriptor left bracket}
+	    {array descriptor right bracket}
+	    {bracketed name string}
+	    {cc character}
+	    {cc closing}
+	    {cc element}
+	    {cc elements}
+	    {cc open}
+	    {cc range}
+	    {cc single character}
+	    {character class modifier}
+	    {character class modifiers}
+	    {double colon}
+	    escaped
+	    {hash comment}
+	    {hash comment body}
+	    {hash comment char}
+	    hex
+	    integer
+	    lodigit
+	    normal
+	    octal
+	    odigit
+	    {one or more word characters}
+	    {Perl identifier}
+	    {posix char class}
+	    {posix char class name}
+	    quote
+	    {result item descriptor}
+	    {result item descriptor list}
+	    {result item descriptor separator}
+	    sign
+	    special
+	    {string character}
+	    {string without single quote or vertical space}
+	    {terminated hash comment}
+	    unicode
+	    unihex
+	    {unterminated final hash comment}
+	    {vertical space char}
+	    whitespace
+	    {zero or more word characters}
 	}
     }
 
@@ -313,75 +315,53 @@ oo::class <Name> {
 	# Rules for all symbols but the literals
 	debug.marpa/grammar/<Name>
 	return {
-	    {{array descriptor left bracket} := {@CHR:<\133>}}
-	    {{array descriptor left bracket} := {@CHR:<\133>} whitespace}
-	    {{array descriptor right bracket} := {@CHR:<\135>}}
-	    {{array descriptor right bracket} := whitespace {@CHR:<\135>}}
-	    {{bracketed name string} + {@CLS:<_[:alnum:][:space:]>}}
-	    {{cc character} := {cc single character}}
-	    {{cc character} := {posix char class}}
-	    {{cc closing} := {@CHR:<\135>}}
-	    {{cc element} := {cc range}}
-	    {{cc element} := {cc character}}
-	    {{cc elements} + {cc element}}
-	    {{cc open} := {@CHR:<\133>}}
-	    {{cc open} := {@STR:<\133^>}}
-	    {{cc range} := {cc single character} @CHR:<-> {cc single character}}
-	    {{cc single character} := escaped}
-	    {{cc single character} := normal}
-	    {{character class modifier} := @STR:<:ic>}
-	    {{character class modifier} := @STR:<:i>}
-	    {{character class modifiers} * {character class modifier}}
-	    {{double colon} := @STR:<::>}
-	    {escaped := special}
-	    {escaped := octal}
-	    {escaped := unicode}
-	    {escaped := unihex}
-	    {{hash comment body} * {hash comment char}}
-	    {{hash comment char} := {@^CLS:<\n-\r\u2028-\u2029>}}
-	    {hex := {@NCC:<[:xdigit:]>}}
-	    {integer + {@NCC:<[:digit:]>}}
-	    {lodigit := @RAN:<03>}
-	    {normal := {@^CLS:<\t-\r\134-\135\u2028-\u2029>}}
-	    {octal := {@CHR:<\134>} odigit}
-	    {octal := {@CHR:<\134>} odigit odigit}
-	    {octal := {@CHR:<\134>} lodigit odigit odigit}
-	    {odigit := @RAN:<07>}
-	    {{one or more word characters} + {@CLS:<_[:alnum:]>}}
-	    {{Perl identifier} := {one or more word characters}}
-	    {{posix char class} := {@STR:<\133:>} {posix char class name} {@STR:<:\135>}}
-	    {{posix char class name} + {@NCC:<[:alnum:]>}}
-	    {quote := @CHR:<'>}
-	    {{result item descriptor} := @STR:<start>}
-	    {{result item descriptor} := @STR:<length>}
-	    {{result item descriptor} := @STR:<g1start>}
-	    {{result item descriptor} := @STR:<g1length>}
-	    {{result item descriptor} := @STR:<name>}
-	    {{result item descriptor} := @STR:<lhs>}
-	    {{result item descriptor} := @STR:<symbol>}
-	    {{result item descriptor} := @STR:<rule>}
-	    {{result item descriptor} := @STR:<value>}
-	    {{result item descriptor} := @STR:<values>}
-	    {{result item descriptor list} * {result item descriptor} {result item descriptor separator} 0}
-	    {{result item descriptor separator} := @CHR:<,>}
-	    {{result item descriptor separator} := @CHR:<,> whitespace}
-	    {sign := @CLS:<+->}
-	    {special := {@CHR:<\134>} {@CLS:<\134a-bfnrtv>}}
-	    {{string character} := escaped}
-	    {{string character} := {@^CLS:<\n-\r'\u2028-\u2029>}}
-	    {{string without single quote or vertical space} + {string character}}
-	    {{terminated hash comment} := @CHR:<#> {hash comment body} {vertical space char}}
-	    {unicode := {@STR:<\134u>} hex}
-	    {unicode := {@STR:<\134u>} hex hex}
-	    {unicode := {@STR:<\134u>} hex hex hex}
-	    {unicode := {@STR:<\134u>} hex hex hex hex}
-	    {unihex := {@STR:<\134x>} hex hex}
-	    {{unterminated final hash comment} := @CHR:<#> {hash comment body}}
-	    {{vertical space char} := {@CLS:<\n-\r\u2028-\u2029>}}
-	    {{zero or more word characters} * {@CLS:<_[:alnum:]>}}
+	    {@LEX:@CHR:<*> := @CHR:<*>}
+	    {@LEX:@CHR:<+> := @CHR:<+>}
+	    {@LEX:@CHR:<,> := @CHR:<,>}
+	    {@LEX:@CHR:<=> := @CHR:<=>}
+	    {@LEX:@STR:<:default> := @STR:<:default>}
+	    {@LEX:@STR:<:discard> := @STR:<:discard>}
+	    {@LEX:@STR:<:lexeme> := @STR:<:lexeme>}
+	    {@LEX:@STR:<:start> := @STR:<:start>}
+	    {@LEX:@STR:<=>> := @STR:<=>>}
+	    {@LEX:@STR:<action> := @STR:<action>}
+	    {@LEX:@STR:<assoc> := @STR:<assoc>}
+	    {@LEX:@STR:<by> := @STR:<by>}
+	    {@LEX:@STR:<completed> := @STR:<completed>}
+	    {@LEX:@STR:<current> := @STR:<current>}
+	    {@LEX:@STR:<default> := @STR:<default>}
+	    {@LEX:@STR:<discard> := @STR:<discard>}
+	    {@LEX:@STR:<event> := @STR:<event>}
+	    {@LEX:@STR:<fatal> := @STR:<fatal>}
+	    {@LEX:@STR:<forgiving> := @STR:<forgiving>}
+	    {@LEX:@STR:<group> := @STR:<group>}
+	    {@LEX:@STR:<high> := @STR:<high>}
+	    {@LEX:@STR:<inaccessible> := @STR:<inaccessible>}
+	    {@LEX:@STR:<is> := @STR:<is>}
+	    {@LEX:@STR:<latm> := @STR:<latm>}
+	    {@LEX:@STR:<left> := @STR:<left>}
+	    {@LEX:@STR:<lexeme> := @STR:<lexeme>}
+	    {@LEX:@STR:<lexer> := @STR:<lexer>}
+	    {@LEX:@STR:<low> := @STR:<low>}
+	    {@LEX:@STR:<name> := @STR:<name>}
+	    {@LEX:@STR:<null-ranking> := @STR:<null-ranking>}
+	    {@LEX:@STR:<null> := @STR:<null>}
+	    {@LEX:@STR:<nulled> := @STR:<nulled>}
+	    {@LEX:@STR:<off> := @STR:<off>}
+	    {@LEX:@STR:<ok> := @STR:<ok>}
+	    {@LEX:@STR:<on> := @STR:<on>}
+	    {@LEX:@STR:<pause> := @STR:<pause>}
+	    {@LEX:@STR:<predicted> := @STR:<predicted>}
+	    {@LEX:@STR:<priority> := @STR:<priority>}
+	    {@LEX:@STR:<proper> := @STR:<proper>}
+	    {@LEX:@STR:<rank> := @STR:<rank>}
+	    {@LEX:@STR:<right> := @STR:<right>}
+	    {@LEX:@STR:<separator> := @STR:<separator>}
+	    {@LEX:@STR:<start> := @STR:<start>}
+	    {@LEX:@STR:<symbol> := @STR:<symbol>}
+	    {@LEX:@STR:<warn> := @STR:<warn>}
 	    {@STR:<::=> := @CHR:<:> @CHR:<:> @CHR:<=>}
 	    {@STR:<::> := @CHR:<:> @CHR:<:>}
-	    {{@STR:<:\135>} := @CHR:<:> {@CHR:<\135>}}
 	    {@STR:<:default> := @CHR:<:> @CHR:<d> @CHR:<e> @CHR:<f> @CHR:<a> @CHR:<u> @CHR:<l> @CHR:<t>}
 	    {@STR:<:discard> := @CHR:<:> @CHR:<d> @CHR:<i> @CHR:<s> @CHR:<c> @CHR:<a> @CHR:<r> @CHR:<d>}
 	    {@STR:<:i> := @CHR:<:> @CHR:<i>}
@@ -389,10 +369,6 @@ oo::class <Name> {
 	    {@STR:<:lexeme> := @CHR:<:> @CHR:<l> @CHR:<e> @CHR:<x> @CHR:<e> @CHR:<m> @CHR:<e>}
 	    {@STR:<:start> := @CHR:<:> @CHR:<s> @CHR:<t> @CHR:<a> @CHR:<r> @CHR:<t>}
 	    {@STR:<=>> := @CHR:<=> @CHR:<>>}
-	    {{@STR:<\133:>} := {@CHR:<\133>} @CHR:<:>}
-	    {{@STR:<\133^>} := {@CHR:<\133>} @CHR:<^>}
-	    {{@STR:<\134u>} := {@CHR:<\134>} @CHR:<u>}
-	    {{@STR:<\134x>} := {@CHR:<\134>} @CHR:<x>}
 	    {@STR:<action> := @CHR:<a> @CHR:<c> @CHR:<t> @CHR:<i> @CHR:<o> @CHR:<n>}
 	    {@STR:<after> := @CHR:<a> @CHR:<f> @CHR:<t> @CHR:<e> @CHR:<r>}
 	    {@STR:<assoc> := @CHR:<a> @CHR:<s> @CHR:<s> @CHR:<o> @CHR:<c>}
@@ -439,78 +415,104 @@ oo::class <Name> {
 	    {@STR:<values> := @CHR:<v> @CHR:<a> @CHR:<l> @CHR:<u> @CHR:<e> @CHR:<s>}
 	    {@STR:<warn> := @CHR:<w> @CHR:<a> @CHR:<r> @CHR:<n>}
 	    {@STR:<||> := @CHR:<|> @CHR:<|>}
-	    {{hash comment} := {terminated hash comment}}
-	    {{hash comment} := {unterminated final hash comment}}
+	    {boolean := @RAN:<01>}
+	    {escaped := octal}
+	    {escaped := special}
+	    {escaped := unicode}
+	    {escaped := unihex}
+	    {hex := {@NCC:<[:xdigit:]>}}
+	    {integer + {@NCC:<[:digit:]>}}
+	    {lodigit := @RAN:<03>}
+	    {normal := {@^CLS:<\t-\r\134-\135\u2028-\u2029>}}
+	    {octal := {@CHR:<\134>} lodigit odigit odigit}
+	    {octal := {@CHR:<\134>} odigit}
+	    {octal := {@CHR:<\134>} odigit odigit}
+	    {odigit := @RAN:<07>}
+	    {quote := @CHR:<'>}
+	    {sign := @CLS:<+->}
+	    {special := {@CHR:<\134>} {@CLS:<\134a-bfnrtv>}}
+	    {unicode := {@STR:<\134u>} hex}
+	    {unicode := {@STR:<\134u>} hex hex}
+	    {unicode := {@STR:<\134u>} hex hex hex}
+	    {unicode := {@STR:<\134u>} hex hex hex hex}
+	    {unihex := {@STR:<\134x>} hex hex}
 	    {whitespace + {@NCC:<[:space:]>}}
-	    {@LEX:@CHR:<*> := @CHR:<*>}
-	    {@LEX:@CHR:<+> := @CHR:<+>}
-	    {@LEX:@CHR:<,> := @CHR:<,>}
-	    {@LEX:@CHR:<=> := @CHR:<=>}
 	    {{@LEX:@CHR:<\50>} := {@CHR:<\50>}}
 	    {{@LEX:@CHR:<\51>} := {@CHR:<\51>}}
 	    {{@LEX:@CHR:<\73>} := {@CHR:<\73>}}
 	    {{@LEX:@CHR:<\173>} := {@CHR:<\173>}}
 	    {{@LEX:@CHR:<\175>} := {@CHR:<\175>}}
-	    {@LEX:@STR:<:default> := @STR:<:default>}
-	    {@LEX:@STR:<:discard> := @STR:<:discard>}
-	    {@LEX:@STR:<:lexeme> := @STR:<:lexeme>}
-	    {@LEX:@STR:<:start> := @STR:<:start>}
-	    {@LEX:@STR:<=>> := @STR:<=>>}
-	    {@LEX:@STR:<action> := @STR:<action>}
-	    {@LEX:@STR:<assoc> := @STR:<assoc>}
-	    {@LEX:@STR:<by> := @STR:<by>}
-	    {@LEX:@STR:<completed> := @STR:<completed>}
-	    {@LEX:@STR:<current> := @STR:<current>}
-	    {@LEX:@STR:<default> := @STR:<default>}
-	    {@LEX:@STR:<discard> := @STR:<discard>}
-	    {@LEX:@STR:<event> := @STR:<event>}
-	    {@LEX:@STR:<fatal> := @STR:<fatal>}
-	    {@LEX:@STR:<forgiving> := @STR:<forgiving>}
-	    {@LEX:@STR:<group> := @STR:<group>}
-	    {@LEX:@STR:<high> := @STR:<high>}
-	    {@LEX:@STR:<inaccessible> := @STR:<inaccessible>}
-	    {@LEX:@STR:<is> := @STR:<is>}
-	    {@LEX:@STR:<latm> := @STR:<latm>}
-	    {@LEX:@STR:<left> := @STR:<left>}
-	    {@LEX:@STR:<lexeme> := @STR:<lexeme>}
-	    {@LEX:@STR:<lexer> := @STR:<lexer>}
-	    {@LEX:@STR:<low> := @STR:<low>}
-	    {@LEX:@STR:<name> := @STR:<name>}
-	    {@LEX:@STR:<null-ranking> := @STR:<null-ranking>}
-	    {@LEX:@STR:<null> := @STR:<null>}
-	    {@LEX:@STR:<nulled> := @STR:<nulled>}
-	    {@LEX:@STR:<off> := @STR:<off>}
-	    {@LEX:@STR:<ok> := @STR:<ok>}
-	    {@LEX:@STR:<on> := @STR:<on>}
-	    {@LEX:@STR:<pause> := @STR:<pause>}
-	    {@LEX:@STR:<predicted> := @STR:<predicted>}
-	    {@LEX:@STR:<priority> := @STR:<priority>}
-	    {@LEX:@STR:<proper> := @STR:<proper>}
-	    {@LEX:@STR:<rank> := @STR:<rank>}
-	    {@LEX:@STR:<right> := @STR:<right>}
-	    {@LEX:@STR:<separator> := @STR:<separator>}
-	    {@LEX:@STR:<start> := @STR:<start>}
-	    {@LEX:@STR:<symbol> := @STR:<symbol>}
-	    {@LEX:@STR:<warn> := @STR:<warn>}
+	    {{@STR:<:\135>} := @CHR:<:> {@CHR:<\135>}}
+	    {{@STR:<\133:>} := {@CHR:<\133>} @CHR:<:>}
+	    {{@STR:<\133^>} := {@CHR:<\133>} @CHR:<^>}
+	    {{@STR:<\134u>} := {@CHR:<\134>} @CHR:<u>}
+	    {{@STR:<\134x>} := {@CHR:<\134>} @CHR:<x>}
+	    {{array descriptor left bracket} := {@CHR:<\133>}}
+	    {{array descriptor left bracket} := {@CHR:<\133>} whitespace}
+	    {{array descriptor right bracket} := whitespace {@CHR:<\135>}}
+	    {{array descriptor right bracket} := {@CHR:<\135>}}
 	    {{array descriptor} := {array descriptor left bracket} {result item descriptor list} {array descriptor right bracket}}
 	    {{bare name} := {one or more word characters}}
-	    {{before or after} := @STR:<before>}
 	    {{before or after} := @STR:<after>}
-	    {boolean := @RAN:<01>}
+	    {{before or after} := @STR:<before>}
+	    {{bracketed name string} + {@CLS:<_[:alnum:][:space:]>}}
 	    {{bracketed name} := @CHR:<<> {bracketed name string} @CHR:<>>}
+	    {{cc character} := {cc single character}}
+	    {{cc character} := {posix char class}}
+	    {{cc closing} := {@CHR:<\135>}}
+	    {{cc elements} + {cc element}}
+	    {{cc element} := {cc character}}
+	    {{cc element} := {cc range}}
+	    {{cc open} := {@CHR:<\133>}}
+	    {{cc open} := {@STR:<\133^>}}
+	    {{cc range} := {cc single character} @CHR:<-> {cc single character}}
+	    {{cc single character} := escaped}
+	    {{cc single character} := normal}
+	    {{character class modifiers} * {character class modifier}}
+	    {{character class modifier} := @STR:<:i>}
+	    {{character class modifier} := @STR:<:ic>}
 	    {{character class} := {cc open} {cc elements} {cc closing} {character class modifiers}}
+	    {{double colon} := @STR:<::>}
+	    {{hash comment body} * {hash comment char}}
+	    {{hash comment char} := {@^CLS:<\n-\r\u2028-\u2029>}}
+	    {{hash comment} := {terminated hash comment}}
+	    {{hash comment} := {unterminated final hash comment}}
+	    {{one or more word characters} + {@CLS:<_[:alnum:]>}}
 	    {{op declare bnf} := @STR:<::=>}
 	    {{op declare match} := @CHR:<~>}
 	    {{op equal priority} := @CHR:<|>}
 	    {{op loosen} := @STR:<||>}
+	    {{Perl identifier} := {one or more word characters}}
 	    {{Perl name} + {Perl identifier} {double colon} 1}
+	    {{posix char class name} + {@NCC:<[:alnum:]>}}
+	    {{posix char class} := {@STR:<\133:>} {posix char class name} {@STR:<:\135>}}
 	    {{reserved action name} := {double colon} {one or more word characters}}
 	    {{reserved event name} := {double colon} {one or more word characters}}
+	    {{result item descriptor list} * {result item descriptor} {result item descriptor separator} 0}
+	    {{result item descriptor separator} := @CHR:<,>}
+	    {{result item descriptor separator} := @CHR:<,> whitespace}
+	    {{result item descriptor} := @STR:<g1length>}
+	    {{result item descriptor} := @STR:<g1start>}
+	    {{result item descriptor} := @STR:<length>}
+	    {{result item descriptor} := @STR:<lhs>}
+	    {{result item descriptor} := @STR:<name>}
+	    {{result item descriptor} := @STR:<rule>}
+	    {{result item descriptor} := @STR:<start>}
+	    {{result item descriptor} := @STR:<symbol>}
+	    {{result item descriptor} := @STR:<value>}
+	    {{result item descriptor} := @STR:<values>}
 	    {{signed integer} := integer}
 	    {{signed integer} := sign integer}
 	    {{single quoted name} := quote {string without single quote or vertical space} quote}
 	    {{single quoted string} := quote {string without single quote or vertical space} quote {character class modifiers}}
 	    {{standard name} := @CLS:<A-Za-z> {zero or more word characters}}
+	    {{string character} := escaped}
+	    {{string character} := {@^CLS:<\n-\r'\u2028-\u2029>}}
+	    {{string without single quote or vertical space} + {string character}}
+	    {{terminated hash comment} := @CHR:<#> {hash comment body} {vertical space char}}
+	    {{unterminated final hash comment} := @CHR:<#> {hash comment body}}
+	    {{vertical space char} := {@CLS:<\n-\r\u2028-\u2029>}}
+	    {{zero or more word characters} * {@CLS:<_[:alnum:]>}}
 	}
     }
 

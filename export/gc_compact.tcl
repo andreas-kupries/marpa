@@ -73,5 +73,5 @@ package require debug
 package require debug::caller
 debug define marpa/grammar/@slif-name@
 debug prefix marpa/grammar/@slif-name@ {[debug caller] | }
-oo::class @slif-name@ { superclass marpa::slif::container ; constructor {} { debug.marpa/grammar/@slif-name@ ; my deserialize {@slif-serial@}}}
+oo::class create @slif-name@ { superclass marpa::slif::container ; constructor {} { debug.marpa/grammar/@slif-name@ ; my deserialize {@slif-serial@}}}
 return

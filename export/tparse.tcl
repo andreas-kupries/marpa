@@ -132,13 +132,14 @@ proc ::marpa::export::tparse::Generate {serial} {
     ExtendRules l0rules $gc l0 $l0symbols
     ExtendRules l0rules $gc l0 $discards
     ExtendRules l0rules $gc l0 $lex
+    lappend l0symbols {*}$discards
     set g1rules {}
     ExtendRules g1rules $gc g1 $g1symbols
 
-    set characters [FormatDict $characters] ; # literal: map sym -> char
+    set characters [FormatDict $characters 0] ; # literal: map sym -> char
     set classes    [FormatDict $classes]    ; # literal: map sym -> spec
     set discards   [FormatList $discards]   ; # list (sym)
-    set lexemes    [FormatDict $latm]       ; # map (sym -> latm)
+    set lexemes    [FormatDict $latm 0]       ; # map (sym -> latm)
     set l0symbols  [FormatList $l0symbols]  ; # list (sym)
     set l0rules    [FormatList $l0rules]    ; # list (rule)
     #   semantics  -                            list (semantic-code)
@@ -173,7 +174,7 @@ proc ::marpa::export::tparse::ExtendRules {rv gc area symbols} {
 		    set attr [lassign $def _ rhs _]
 		    # name - TODO - currently ignored
 		    if {($area eq "g1") && [dict exists $attr mask] && ("1" in [dict get $attr mask])} {
-			set op [list :M [dict get $attr mask]]
+			set op [list :M [Remask [dict get $attr mask]]]
 		    } else {
 			set op :=
 		    }
@@ -199,6 +200,19 @@ proc ::marpa::export::tparse::ExtendRules {rv gc area symbols} {
 	}
     }
     return
+}
+
+proc ::marpa::export::tparse::Remask {mask} {
+    # Convert mask from the semantics: list (bool), true => hide, 0 => visible
+    # The engine takes a list of indices to remove instead.
+    set i -1
+    set filter {}
+    foreach flag $mask {
+	incr i
+	if {!$flag} continue
+	lappend filter $i
+    }
+    return $filter
 }
 
 proc ::marpa::export::tparse::ConvertLiterals {gc symbols} {
@@ -299,13 +313,14 @@ proc ::marpa::export::tparse::FormatList {words {listify 1}} {
     # For proper formatting we have to indent, plus additional leading
     # and trailing newlines.
     set prefix "\n\t    "
+    set words [lsort -dict $words]
     if {$listify} {
 	set words [lmap w $words { list $w }]
     }
     return "$prefix[join $words $prefix]\n\t"
 }
 
-proc ::marpa::export::tparse::FormatDict {dict} {
+proc ::marpa::export::tparse::FormatDict {dict {listify 1}} {
     debug.marpa/export/tparse {}
     # The context of the dict in the template is
     # <TAB>return {@@}
@@ -327,9 +342,10 @@ proc ::marpa::export::tparse::FormatDict {dict} {
     set lines {}
     foreach name $names {
 	set dname [list $name]
+	set value [dict get $dict $name]
+	if {$listify} { set value [list $value] }
 	lappend lines [format "%-*s %s" \
-			   $maxl $dname \
-			   [list [dict get $dict $name]]]
+			   $maxl $dname $value]
     }
 
     return [FormatList $lines 0]
@@ -372,7 +388,7 @@ debug prefix marpa/grammar/@slif-name@ {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-oo::class @slif-name@ {
+oo::class create @slif-name@ {
     superclass marpa::engine::tcl::parse
 
     # Lifecycle: No constructor needed. No state.

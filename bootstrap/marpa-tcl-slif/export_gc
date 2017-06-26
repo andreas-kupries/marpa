@@ -30,7 +30,7 @@ debug prefix marpa/grammar/<Name> {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-oo::class <Name> {
+oo::class create <Name> {
     superclass marpa::slif::container
 
     constructor {} {

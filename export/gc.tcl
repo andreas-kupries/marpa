@@ -306,7 +306,7 @@ debug prefix marpa/grammar/@slif-name@ {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-oo::class @slif-name@ {
+oo::class create @slif-name@ {
     superclass marpa::slif::container
 
     constructor {} {

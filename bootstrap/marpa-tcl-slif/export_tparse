@@ -31,7 +31,7 @@ debug prefix marpa/grammar/<Name> {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-oo::class <Name> {
+oo::class create <Name> {
     superclass marpa::engine::tcl::parse
 
     # Lifecycle: No constructor needed. No state.
@@ -48,7 +48,7 @@ oo::class <Name> {
 	debug.marpa/grammar/<Name>
 	# Literals: The directly referenced (allowed) characters.
 	return {
-	    @CHR:<#>        {#}
+	    @CHR:<#>        #
 	    @CHR:<'>        '
 	    @CHR:<*>        *
 	    @CHR:<+>        +
@@ -59,14 +59,6 @@ oo::class <Name> {
 	    @CHR:<<>        <
 	    @CHR:<=>        =
 	    @CHR:<>>        >
-	    {@CHR:<\50>}    {\50}
-	    {@CHR:<\51>}    {\51}
-	    {@CHR:<\73>}    {\73}
-	    {@CHR:<\133>}   {\133}
-	    {@CHR:<\134>}   {\134}
-	    {@CHR:<\135>}   {\135}
-	    {@CHR:<\173>}   {\173}
-	    {@CHR:<\175>}   {\175}
 	    @CHR:<^>        ^
 	    @CHR:<a>        a
 	    @CHR:<b>        b
@@ -93,6 +85,14 @@ oo::class <Name> {
 	    @CHR:<y>        y
 	    @CHR:<|>        |
 	    @CHR:<~>        ~
+	    {@CHR:<\50>}    \50
+	    {@CHR:<\51>}    \51
+	    {@CHR:<\73>}    \73
+	    {@CHR:<\133>}   \133
+	    {@CHR:<\134>}   \134
+	    {@CHR:<\135>}   \135
+	    {@CHR:<\173>}   \173
+	    {@CHR:<\175>}   \175
 	}
     }
     
@@ -100,22 +100,22 @@ oo::class <Name> {
 	debug.marpa/grammar/<Name>
 	# Literals: The character classes in use
 	return {
+	    @CLS:<+->                               {[+\055]}
+	    @CLS:<A-Za-z>                           {[A-Za-z]}
+	    @RAN:<01>                               {[01]}
+	    @RAN:<03>                               {[0-3]}
+	    @RAN:<07>                               {[0-7]}
 	    {@^CLS:<\n-\r'\u2028-\u2029>}           {[^\n-\r'\u2028\u2029]}
 	    {@^CLS:<\n-\r\u2028-\u2029>}            {[^\n-\r\u2028\u2029]}
 	    {@^CLS:<\t-\r\134-\135\u2028-\u2029>}   {[^\t-\r\134\135\u2028\u2029]}
-	    @CLS:<+->                               {[+\055]}
 	    {@CLS:<\134a-bfnrtv>}                   {[\134abfnrtv]}
 	    {@CLS:<\n-\r\u2028-\u2029>}             {[\n-\r\u2028\u2029]}
 	    {@CLS:<_[:alnum:]>}                     {[_[:alnum:]]}
 	    {@CLS:<_[:alnum:][:space:]>}            {[_[:alnum:][:space:]]}
-	    @CLS:<A-Za-z>                           {[A-Za-z]}
 	    {@NCC:<[:alnum:]>}                      {[[:alnum:]]}
 	    {@NCC:<[:digit:]>}                      {[[:digit:]]}
 	    {@NCC:<[:space:]>}                      {[[:space:]]}
 	    {@NCC:<[:xdigit:]>}                     {[[:xdigit:]]}
-	    @RAN:<01>                               {[01]}
-	    @RAN:<03>                               {[0-3]}
-	    @RAN:<07>                               {[0-7]}
 	}
     }
     
@@ -127,11 +127,6 @@ oo::class <Name> {
 	    @LEX:@CHR:<+>              1
 	    @LEX:@CHR:<,>              1
 	    @LEX:@CHR:<=>              1
-	    {@LEX:@CHR:<\50>}          1
-	    {@LEX:@CHR:<\51>}          1
-	    {@LEX:@CHR:<\73>}          1
-	    {@LEX:@CHR:<\173>}         1
-	    {@LEX:@CHR:<\175>}         1
 	    @LEX:@STR:<:default>       1
 	    @LEX:@STR:<:discard>       1
 	    @LEX:@STR:<:lexeme>        1
@@ -173,10 +168,15 @@ oo::class <Name> {
 	    @LEX:@STR:<start>          1
 	    @LEX:@STR:<symbol>         1
 	    @LEX:@STR:<warn>           1
+	    boolean                    1
+	    {@LEX:@CHR:<\50>}          1
+	    {@LEX:@CHR:<\51>}          1
+	    {@LEX:@CHR:<\73>}          1
+	    {@LEX:@CHR:<\173>}         1
+	    {@LEX:@CHR:<\175>}         1
 	    {array descriptor}         1
 	    {bare name}                1
 	    {before or after}          1
-	    boolean                    1
 	    {bracketed name}           1
 	    {character class}          1
 	    {op declare bnf}           1
@@ -206,46 +206,6 @@ oo::class <Name> {
 	# Non-lexeme, non-literal symbols
 	debug.marpa/grammar/<Name>
 	return {
-	    {array descriptor left bracket}
-	    {array descriptor right bracket}
-	    {bracketed name string}
-	    {cc character}
-	    {cc closing}
-	    {cc element}
-	    {cc elements}
-	    {cc open}
-	    {cc range}
-	    {cc single character}
-	    {character class modifier}
-	    {character class modifiers}
-	    {double colon}
-	    escaped
-	    {hash comment body}
-	    {hash comment char}
-	    hex
-	    integer
-	    lodigit
-	    normal
-	    octal
-	    odigit
-	    {one or more word characters}
-	    {Perl identifier}
-	    {posix char class}
-	    {posix char class name}
-	    quote
-	    {result item descriptor}
-	    {result item descriptor list}
-	    {result item descriptor separator}
-	    sign
-	    special
-	    {string character}
-	    {string without single quote or vertical space}
-	    {terminated hash comment}
-	    unicode
-	    unihex
-	    {unterminated final hash comment}
-	    {vertical space char}
-	    {zero or more word characters}
 	    @STR:<::=>
 	    @STR:<::>
 	    {@STR:<:\135>}
@@ -306,6 +266,48 @@ oo::class <Name> {
 	    @STR:<values>
 	    @STR:<warn>
 	    @STR:<||>
+	    {array descriptor left bracket}
+	    {array descriptor right bracket}
+	    {bracketed name string}
+	    {cc character}
+	    {cc closing}
+	    {cc element}
+	    {cc elements}
+	    {cc open}
+	    {cc range}
+	    {cc single character}
+	    {character class modifier}
+	    {character class modifiers}
+	    {double colon}
+	    escaped
+	    {hash comment}
+	    {hash comment body}
+	    {hash comment char}
+	    hex
+	    integer
+	    lodigit
+	    normal
+	    octal
+	    odigit
+	    {one or more word characters}
+	    {Perl identifier}
+	    {posix char class}
+	    {posix char class name}
+	    quote
+	    {result item descriptor}
+	    {result item descriptor list}
+	    {result item descriptor separator}
+	    sign
+	    special
+	    {string character}
+	    {string without single quote or vertical space}
+	    {terminated hash comment}
+	    unicode
+	    unihex
+	    {unterminated final hash comment}
+	    {vertical space char}
+	    whitespace
+	    {zero or more word characters}
 	}
     }
 
@@ -313,75 +315,53 @@ oo::class <Name> {
 	# Rules for all symbols but the literals
 	debug.marpa/grammar/<Name>
 	return {
-	    {{array descriptor left bracket} := {@CHR:<\133>}}
-	    {{array descriptor left bracket} := {@CHR:<\133>} whitespace}
-	    {{array descriptor right bracket} := {@CHR:<\135>}}
-	    {{array descriptor right bracket} := whitespace {@CHR:<\135>}}
-	    {{bracketed name string} + {@CLS:<_[:alnum:][:space:]>}}
-	    {{cc character} := {cc single character}}
-	    {{cc character} := {posix char class}}
-	    {{cc closing} := {@CHR:<\135>}}
-	    {{cc element} := {cc range}}
-	    {{cc element} := {cc character}}
-	    {{cc elements} + {cc element}}
-	    {{cc open} := {@CHR:<\133>}}
-	    {{cc open} := {@STR:<\133^>}}
-	    {{cc range} := {cc single character} @CHR:<-> {cc single character}}
-	    {{cc single character} := escaped}
-	    {{cc single character} := normal}
-	    {{character class modifier} := @STR:<:ic>}
-	    {{character class modifier} := @STR:<:i>}
-	    {{character class modifiers} * {character class modifier}}
-	    {{double colon} := @STR:<::>}
-	    {escaped := special}
-	    {escaped := octal}
-	    {escaped := unicode}
-	    {escaped := unihex}
-	    {{hash comment body} * {hash comment char}}
-	    {{hash comment char} := {@^CLS:<\n-\r\u2028-\u2029>}}
-	    {hex := {@NCC:<[:xdigit:]>}}
-	    {integer + {@NCC:<[:digit:]>}}
-	    {lodigit := @RAN:<03>}
-	    {normal := {@^CLS:<\t-\r\134-\135\u2028-\u2029>}}
-	    {octal := {@CHR:<\134>} odigit}
-	    {octal := {@CHR:<\134>} odigit odigit}
-	    {octal := {@CHR:<\134>} lodigit odigit odigit}
-	    {odigit := @RAN:<07>}
-	    {{one or more word characters} + {@CLS:<_[:alnum:]>}}
-	    {{Perl identifier} := {one or more word characters}}
-	    {{posix char class} := {@STR:<\133:>} {posix char class name} {@STR:<:\135>}}
-	    {{posix char class name} + {@NCC:<[:alnum:]>}}
-	    {quote := @CHR:<'>}
-	    {{result item descriptor} := @STR:<start>}
-	    {{result item descriptor} := @STR:<length>}
-	    {{result item descriptor} := @STR:<g1start>}
-	    {{result item descriptor} := @STR:<g1length>}
-	    {{result item descriptor} := @STR:<name>}
-	    {{result item descriptor} := @STR:<lhs>}
-	    {{result item descriptor} := @STR:<symbol>}
-	    {{result item descriptor} := @STR:<rule>}
-	    {{result item descriptor} := @STR:<value>}
-	    {{result item descriptor} := @STR:<values>}
-	    {{result item descriptor list} * {result item descriptor} {result item descriptor separator} 0}
-	    {{result item descriptor separator} := @CHR:<,>}
-	    {{result item descriptor separator} := @CHR:<,> whitespace}
-	    {sign := @CLS:<+->}
-	    {special := {@CHR:<\134>} {@CLS:<\134a-bfnrtv>}}
-	    {{string character} := escaped}
-	    {{string character} := {@^CLS:<\n-\r'\u2028-\u2029>}}
-	    {{string without single quote or vertical space} + {string character}}
-	    {{terminated hash comment} := @CHR:<#> {hash comment body} {vertical space char}}
-	    {unicode := {@STR:<\134u>} hex}
-	    {unicode := {@STR:<\134u>} hex hex}
-	    {unicode := {@STR:<\134u>} hex hex hex}
-	    {unicode := {@STR:<\134u>} hex hex hex hex}
-	    {unihex := {@STR:<\134x>} hex hex}
-	    {{unterminated final hash comment} := @CHR:<#> {hash comment body}}
-	    {{vertical space char} := {@CLS:<\n-\r\u2028-\u2029>}}
-	    {{zero or more word characters} * {@CLS:<_[:alnum:]>}}
+	    {@LEX:@CHR:<*> := @CHR:<*>}
+	    {@LEX:@CHR:<+> := @CHR:<+>}
+	    {@LEX:@CHR:<,> := @CHR:<,>}
+	    {@LEX:@CHR:<=> := @CHR:<=>}
+	    {@LEX:@STR:<:default> := @STR:<:default>}
+	    {@LEX:@STR:<:discard> := @STR:<:discard>}
+	    {@LEX:@STR:<:lexeme> := @STR:<:lexeme>}
+	    {@LEX:@STR:<:start> := @STR:<:start>}
+	    {@LEX:@STR:<=>> := @STR:<=>>}
+	    {@LEX:@STR:<action> := @STR:<action>}
+	    {@LEX:@STR:<assoc> := @STR:<assoc>}
+	    {@LEX:@STR:<by> := @STR:<by>}
+	    {@LEX:@STR:<completed> := @STR:<completed>}
+	    {@LEX:@STR:<current> := @STR:<current>}
+	    {@LEX:@STR:<default> := @STR:<default>}
+	    {@LEX:@STR:<discard> := @STR:<discard>}
+	    {@LEX:@STR:<event> := @STR:<event>}
+	    {@LEX:@STR:<fatal> := @STR:<fatal>}
+	    {@LEX:@STR:<forgiving> := @STR:<forgiving>}
+	    {@LEX:@STR:<group> := @STR:<group>}
+	    {@LEX:@STR:<high> := @STR:<high>}
+	    {@LEX:@STR:<inaccessible> := @STR:<inaccessible>}
+	    {@LEX:@STR:<is> := @STR:<is>}
+	    {@LEX:@STR:<latm> := @STR:<latm>}
+	    {@LEX:@STR:<left> := @STR:<left>}
+	    {@LEX:@STR:<lexeme> := @STR:<lexeme>}
+	    {@LEX:@STR:<lexer> := @STR:<lexer>}
+	    {@LEX:@STR:<low> := @STR:<low>}
+	    {@LEX:@STR:<name> := @STR:<name>}
+	    {@LEX:@STR:<null-ranking> := @STR:<null-ranking>}
+	    {@LEX:@STR:<null> := @STR:<null>}
+	    {@LEX:@STR:<nulled> := @STR:<nulled>}
+	    {@LEX:@STR:<off> := @STR:<off>}
+	    {@LEX:@STR:<ok> := @STR:<ok>}
+	    {@LEX:@STR:<on> := @STR:<on>}
+	    {@LEX:@STR:<pause> := @STR:<pause>}
+	    {@LEX:@STR:<predicted> := @STR:<predicted>}
+	    {@LEX:@STR:<priority> := @STR:<priority>}
+	    {@LEX:@STR:<proper> := @STR:<proper>}
+	    {@LEX:@STR:<rank> := @STR:<rank>}
+	    {@LEX:@STR:<right> := @STR:<right>}
+	    {@LEX:@STR:<separator> := @STR:<separator>}
+	    {@LEX:@STR:<start> := @STR:<start>}
+	    {@LEX:@STR:<symbol> := @STR:<symbol>}
+	    {@LEX:@STR:<warn> := @STR:<warn>}
 	    {@STR:<::=> := @CHR:<:> @CHR:<:> @CHR:<=>}
 	    {@STR:<::> := @CHR:<:> @CHR:<:>}
-	    {{@STR:<:\135>} := @CHR:<:> {@CHR:<\135>}}
 	    {@STR:<:default> := @CHR:<:> @CHR:<d> @CHR:<e> @CHR:<f> @CHR:<a> @CHR:<u> @CHR:<l> @CHR:<t>}
 	    {@STR:<:discard> := @CHR:<:> @CHR:<d> @CHR:<i> @CHR:<s> @CHR:<c> @CHR:<a> @CHR:<r> @CHR:<d>}
 	    {@STR:<:i> := @CHR:<:> @CHR:<i>}
@@ -389,10 +369,6 @@ oo::class <Name> {
 	    {@STR:<:lexeme> := @CHR:<:> @CHR:<l> @CHR:<e> @CHR:<x> @CHR:<e> @CHR:<m> @CHR:<e>}
 	    {@STR:<:start> := @CHR:<:> @CHR:<s> @CHR:<t> @CHR:<a> @CHR:<r> @CHR:<t>}
 	    {@STR:<=>> := @CHR:<=> @CHR:<>>}
-	    {{@STR:<\133:>} := {@CHR:<\133>} @CHR:<:>}
-	    {{@STR:<\133^>} := {@CHR:<\133>} @CHR:<^>}
-	    {{@STR:<\134u>} := {@CHR:<\134>} @CHR:<u>}
-	    {{@STR:<\134x>} := {@CHR:<\134>} @CHR:<x>}
 	    {@STR:<action> := @CHR:<a> @CHR:<c> @CHR:<t> @CHR:<i> @CHR:<o> @CHR:<n>}
 	    {@STR:<after> := @CHR:<a> @CHR:<f> @CHR:<t> @CHR:<e> @CHR:<r>}
 	    {@STR:<assoc> := @CHR:<a> @CHR:<s> @CHR:<s> @CHR:<o> @CHR:<c>}
@@ -439,78 +415,104 @@ oo::class <Name> {
 	    {@STR:<values> := @CHR:<v> @CHR:<a> @CHR:<l> @CHR:<u> @CHR:<e> @CHR:<s>}
 	    {@STR:<warn> := @CHR:<w> @CHR:<a> @CHR:<r> @CHR:<n>}
 	    {@STR:<||> := @CHR:<|> @CHR:<|>}
-	    {{hash comment} := {terminated hash comment}}
-	    {{hash comment} := {unterminated final hash comment}}
+	    {boolean := @RAN:<01>}
+	    {escaped := octal}
+	    {escaped := special}
+	    {escaped := unicode}
+	    {escaped := unihex}
+	    {hex := {@NCC:<[:xdigit:]>}}
+	    {integer + {@NCC:<[:digit:]>}}
+	    {lodigit := @RAN:<03>}
+	    {normal := {@^CLS:<\t-\r\134-\135\u2028-\u2029>}}
+	    {octal := {@CHR:<\134>} lodigit odigit odigit}
+	    {octal := {@CHR:<\134>} odigit}
+	    {octal := {@CHR:<\134>} odigit odigit}
+	    {odigit := @RAN:<07>}
+	    {quote := @CHR:<'>}
+	    {sign := @CLS:<+->}
+	    {special := {@CHR:<\134>} {@CLS:<\134a-bfnrtv>}}
+	    {unicode := {@STR:<\134u>} hex}
+	    {unicode := {@STR:<\134u>} hex hex}
+	    {unicode := {@STR:<\134u>} hex hex hex}
+	    {unicode := {@STR:<\134u>} hex hex hex hex}
+	    {unihex := {@STR:<\134x>} hex hex}
 	    {whitespace + {@NCC:<[:space:]>}}
-	    {@LEX:@CHR:<*> := @CHR:<*>}
-	    {@LEX:@CHR:<+> := @CHR:<+>}
-	    {@LEX:@CHR:<,> := @CHR:<,>}
-	    {@LEX:@CHR:<=> := @CHR:<=>}
 	    {{@LEX:@CHR:<\50>} := {@CHR:<\50>}}
 	    {{@LEX:@CHR:<\51>} := {@CHR:<\51>}}
 	    {{@LEX:@CHR:<\73>} := {@CHR:<\73>}}
 	    {{@LEX:@CHR:<\173>} := {@CHR:<\173>}}
 	    {{@LEX:@CHR:<\175>} := {@CHR:<\175>}}
-	    {@LEX:@STR:<:default> := @STR:<:default>}
-	    {@LEX:@STR:<:discard> := @STR:<:discard>}
-	    {@LEX:@STR:<:lexeme> := @STR:<:lexeme>}
-	    {@LEX:@STR:<:start> := @STR:<:start>}
-	    {@LEX:@STR:<=>> := @STR:<=>>}
-	    {@LEX:@STR:<action> := @STR:<action>}
-	    {@LEX:@STR:<assoc> := @STR:<assoc>}
-	    {@LEX:@STR:<by> := @STR:<by>}
-	    {@LEX:@STR:<completed> := @STR:<completed>}
-	    {@LEX:@STR:<current> := @STR:<current>}
-	    {@LEX:@STR:<default> := @STR:<default>}
-	    {@LEX:@STR:<discard> := @STR:<discard>}
-	    {@LEX:@STR:<event> := @STR:<event>}
-	    {@LEX:@STR:<fatal> := @STR:<fatal>}
-	    {@LEX:@STR:<forgiving> := @STR:<forgiving>}
-	    {@LEX:@STR:<group> := @STR:<group>}
-	    {@LEX:@STR:<high> := @STR:<high>}
-	    {@LEX:@STR:<inaccessible> := @STR:<inaccessible>}
-	    {@LEX:@STR:<is> := @STR:<is>}
-	    {@LEX:@STR:<latm> := @STR:<latm>}
-	    {@LEX:@STR:<left> := @STR:<left>}
-	    {@LEX:@STR:<lexeme> := @STR:<lexeme>}
-	    {@LEX:@STR:<lexer> := @STR:<lexer>}
-	    {@LEX:@STR:<low> := @STR:<low>}
-	    {@LEX:@STR:<name> := @STR:<name>}
-	    {@LEX:@STR:<null-ranking> := @STR:<null-ranking>}
-	    {@LEX:@STR:<null> := @STR:<null>}
-	    {@LEX:@STR:<nulled> := @STR:<nulled>}
-	    {@LEX:@STR:<off> := @STR:<off>}
-	    {@LEX:@STR:<ok> := @STR:<ok>}
-	    {@LEX:@STR:<on> := @STR:<on>}
-	    {@LEX:@STR:<pause> := @STR:<pause>}
-	    {@LEX:@STR:<predicted> := @STR:<predicted>}
-	    {@LEX:@STR:<priority> := @STR:<priority>}
-	    {@LEX:@STR:<proper> := @STR:<proper>}
-	    {@LEX:@STR:<rank> := @STR:<rank>}
-	    {@LEX:@STR:<right> := @STR:<right>}
-	    {@LEX:@STR:<separator> := @STR:<separator>}
-	    {@LEX:@STR:<start> := @STR:<start>}
-	    {@LEX:@STR:<symbol> := @STR:<symbol>}
-	    {@LEX:@STR:<warn> := @STR:<warn>}
+	    {{@STR:<:\135>} := @CHR:<:> {@CHR:<\135>}}
+	    {{@STR:<\133:>} := {@CHR:<\133>} @CHR:<:>}
+	    {{@STR:<\133^>} := {@CHR:<\133>} @CHR:<^>}
+	    {{@STR:<\134u>} := {@CHR:<\134>} @CHR:<u>}
+	    {{@STR:<\134x>} := {@CHR:<\134>} @CHR:<x>}
+	    {{array descriptor left bracket} := {@CHR:<\133>}}
+	    {{array descriptor left bracket} := {@CHR:<\133>} whitespace}
+	    {{array descriptor right bracket} := whitespace {@CHR:<\135>}}
+	    {{array descriptor right bracket} := {@CHR:<\135>}}
 	    {{array descriptor} := {array descriptor left bracket} {result item descriptor list} {array descriptor right bracket}}
 	    {{bare name} := {one or more word characters}}
-	    {{before or after} := @STR:<before>}
 	    {{before or after} := @STR:<after>}
-	    {boolean := @RAN:<01>}
+	    {{before or after} := @STR:<before>}
+	    {{bracketed name string} + {@CLS:<_[:alnum:][:space:]>}}
 	    {{bracketed name} := @CHR:<<> {bracketed name string} @CHR:<>>}
+	    {{cc character} := {cc single character}}
+	    {{cc character} := {posix char class}}
+	    {{cc closing} := {@CHR:<\135>}}
+	    {{cc elements} + {cc element}}
+	    {{cc element} := {cc character}}
+	    {{cc element} := {cc range}}
+	    {{cc open} := {@CHR:<\133>}}
+	    {{cc open} := {@STR:<\133^>}}
+	    {{cc range} := {cc single character} @CHR:<-> {cc single character}}
+	    {{cc single character} := escaped}
+	    {{cc single character} := normal}
+	    {{character class modifiers} * {character class modifier}}
+	    {{character class modifier} := @STR:<:i>}
+	    {{character class modifier} := @STR:<:ic>}
 	    {{character class} := {cc open} {cc elements} {cc closing} {character class modifiers}}
+	    {{double colon} := @STR:<::>}
+	    {{hash comment body} * {hash comment char}}
+	    {{hash comment char} := {@^CLS:<\n-\r\u2028-\u2029>}}
+	    {{hash comment} := {terminated hash comment}}
+	    {{hash comment} := {unterminated final hash comment}}
+	    {{one or more word characters} + {@CLS:<_[:alnum:]>}}
 	    {{op declare bnf} := @STR:<::=>}
 	    {{op declare match} := @CHR:<~>}
 	    {{op equal priority} := @CHR:<|>}
 	    {{op loosen} := @STR:<||>}
+	    {{Perl identifier} := {one or more word characters}}
 	    {{Perl name} + {Perl identifier} {double colon} 1}
+	    {{posix char class name} + {@NCC:<[:alnum:]>}}
+	    {{posix char class} := {@STR:<\133:>} {posix char class name} {@STR:<:\135>}}
 	    {{reserved action name} := {double colon} {one or more word characters}}
 	    {{reserved event name} := {double colon} {one or more word characters}}
+	    {{result item descriptor list} * {result item descriptor} {result item descriptor separator} 0}
+	    {{result item descriptor separator} := @CHR:<,>}
+	    {{result item descriptor separator} := @CHR:<,> whitespace}
+	    {{result item descriptor} := @STR:<g1length>}
+	    {{result item descriptor} := @STR:<g1start>}
+	    {{result item descriptor} := @STR:<length>}
+	    {{result item descriptor} := @STR:<lhs>}
+	    {{result item descriptor} := @STR:<name>}
+	    {{result item descriptor} := @STR:<rule>}
+	    {{result item descriptor} := @STR:<start>}
+	    {{result item descriptor} := @STR:<symbol>}
+	    {{result item descriptor} := @STR:<value>}
+	    {{result item descriptor} := @STR:<values>}
 	    {{signed integer} := integer}
 	    {{signed integer} := sign integer}
 	    {{single quoted name} := quote {string without single quote or vertical space} quote}
 	    {{single quoted string} := quote {string without single quote or vertical space} quote {character class modifiers}}
 	    {{standard name} := @CLS:<A-Za-z> {zero or more word characters}}
+	    {{string character} := escaped}
+	    {{string character} := {@^CLS:<\n-\r'\u2028-\u2029>}}
+	    {{string without single quote or vertical space} + {string character}}
+	    {{terminated hash comment} := @CHR:<#> {hash comment body} {vertical space char}}
+	    {{unterminated final hash comment} := @CHR:<#> {hash comment body}}
+	    {{vertical space char} := {@CLS:<\n-\r\u2028-\u2029>}}
+	    {{zero or more word characters} * {@CLS:<_[:alnum:]>}}
 	}
     }
 
@@ -621,157 +623,157 @@ oo::class <Name> {
 	# Structural rules
 	debug.marpa/grammar/<Name>
 	return {
-	    {action :M {1 1 0} @LEX:@STR:<action> @LEX:@STR:<=>> {action name}}
+	    {action :M {0 1} @LEX:@STR:<action> @LEX:@STR:<=>> {action name}}
+	    {lhs := {symbol name}}
+	    {naming :M {0 1} @LEX:@STR:<name> @LEX:@STR:<=>> {alternative name}}
+	    {quantifier := @LEX:@CHR:<*>}
+	    {quantifier := @LEX:@CHR:<+>}
+	    {rhs + {rhs primary}}
+	    {statement := {completion event declaration}}
+	    {statement := {current lexer statement}}
+	    {statement := {default rule}}
+	    {statement := {discard default statement}}
+	    {statement := {discard rule}}
+	    {statement := {empty rule}}
+	    {statement := {inaccessible statement}}
+	    {statement := {lexeme default statement}}
+	    {statement := {lexeme rule}}
+	    {statement := {null statement}}
+	    {statement := {nulled event declaration}}
+	    {statement := {prediction event declaration}}
+	    {statement := {priority rule}}
+	    {statement := {quantified rule}}
+	    {statement := {start rule}}
+	    {statement := {statement group}}
+	    {statements + statement}
+	    {symbol := {symbol name}}
+	    {{action name} := {array descriptor}}
 	    {{action name} := {Perl name}}
 	    {{action name} := {reserved action name}}
-	    {{action name} := {array descriptor}}
 	    {{adverb item bnf alternative} := action}
-	    {{adverb item bnf alternative} := {left association}}
-	    {{adverb item bnf alternative} := {right association}}
-	    {{adverb item bnf alternative} := {group association}}
 	    {{adverb item bnf alternative} := naming}
+	    {{adverb item bnf alternative} := {group association}}
+	    {{adverb item bnf alternative} := {left association}}
 	    {{adverb item bnf alternative} := {null adverb}}
+	    {{adverb item bnf alternative} := {right association}}
 	    {{adverb item bnf empty} := action}
-	    {{adverb item bnf empty} := {left association}}
-	    {{adverb item bnf empty} := {right association}}
-	    {{adverb item bnf empty} := {group association}}
 	    {{adverb item bnf empty} := naming}
+	    {{adverb item bnf empty} := {group association}}
+	    {{adverb item bnf empty} := {left association}}
 	    {{adverb item bnf empty} := {null adverb}}
+	    {{adverb item bnf empty} := {right association}}
 	    {{adverb item bnf quantified} := action}
-	    {{adverb item bnf quantified} := {separator specification}}
-	    {{adverb item bnf quantified} := {proper specification}}
 	    {{adverb item bnf quantified} := {null adverb}}
+	    {{adverb item bnf quantified} := {proper specification}}
+	    {{adverb item bnf quantified} := {separator specification}}
 	    {{adverb item default} := action}
 	    {{adverb item default} := {null adverb}}
-	    {{adverb item discard} := {event specification}}
-	    {{adverb item discard} := {null adverb}}
 	    {{adverb item discard default} := {event specification}}
 	    {{adverb item discard default} := {null adverb}}
-	    {{adverb item lexeme} := {event specification}}
-	    {{adverb item lexeme} := {latm specification}}
-	    {{adverb item lexeme} := {priority specification}}
-	    {{adverb item lexeme} := {pause specification}}
-	    {{adverb item lexeme} := {null adverb}}
+	    {{adverb item discard} := {event specification}}
+	    {{adverb item discard} := {null adverb}}
 	    {{adverb item lexeme default} := action}
 	    {{adverb item lexeme default} := {latm specification}}
 	    {{adverb item lexeme default} := {null adverb}}
+	    {{adverb item lexeme} := {event specification}}
+	    {{adverb item lexeme} := {latm specification}}
+	    {{adverb item lexeme} := {null adverb}}
+	    {{adverb item lexeme} := {pause specification}}
+	    {{adverb item lexeme} := {priority specification}}
 	    {{adverb item match alternative} := naming}
 	    {{adverb item match alternative} := {null adverb}}
 	    {{adverb item match empty} := naming}
 	    {{adverb item match empty} := {null adverb}}
-	    {{adverb item match quantified} := {separator specification}}
-	    {{adverb item match quantified} := {proper specification}}
 	    {{adverb item match quantified} := {null adverb}}
+	    {{adverb item match quantified} := {proper specification}}
+	    {{adverb item match quantified} := {separator specification}}
 	    {{adverb list bnf alternative} := {adverb list items bnf alternative}}
 	    {{adverb list bnf empty} := {adverb list items bnf empty}}
 	    {{adverb list bnf quantified} := {adverb list items bnf quantified}}
 	    {{adverb list default} := {adverb list items default}}
-	    {{adverb list discard} := {adverb list items discard}}
 	    {{adverb list discard default} := {adverb list items discard default}}
+	    {{adverb list discard} := {adverb list items discard}}
 	    {{adverb list items bnf alternative} * {adverb item bnf alternative}}
 	    {{adverb list items bnf empty} * {adverb item bnf empty}}
 	    {{adverb list items bnf quantified} * {adverb item bnf quantified}}
 	    {{adverb list items default} * {adverb item default}}
-	    {{adverb list items discard} * {adverb item discard}}
 	    {{adverb list items discard default} * {adverb item discard default}}
-	    {{adverb list items lexeme} * {adverb item lexeme}}
+	    {{adverb list items discard} * {adverb item discard}}
 	    {{adverb list items lexeme default} * {adverb item lexeme default}}
+	    {{adverb list items lexeme} * {adverb item lexeme}}
 	    {{adverb list items match alternative} * {adverb item match alternative}}
 	    {{adverb list items match empty} * {adverb item match empty}}
 	    {{adverb list items match quantified} * {adverb item match quantified}}
-	    {{adverb list lexeme} := {adverb list items lexeme}}
 	    {{adverb list lexeme default} := {adverb list items lexeme default}}
+	    {{adverb list lexeme} := {adverb list items lexeme}}
 	    {{adverb list match alternative} := {adverb list items match alternative}}
 	    {{adverb list match empty} := {adverb list items match empty}}
 	    {{adverb list match quantified} := {adverb list items match quantified}}
 	    {{alternative bnf} := rhs {adverb list bnf alternative}}
 	    {{alternative match} := rhs {adverb list match alternative}}
-	    {{alternative name} := {standard name}}
 	    {{alternative name} := {single quoted name}}
+	    {{alternative name} := {standard name}}
 	    {{alternatives bnf} + {alternative bnf} {op equal priority} 1}
 	    {{alternatives match} + {alternative match} {op equal priority} 1}
-	    {{completion event declaration} :M {1 0 1 1 0} @LEX:@STR:<event> {event initialization} @LEX:@CHR:<=> @LEX:@STR:<completed> {symbol name}}
-	    {{current lexer statement} :M {1 1 1 0} @LEX:@STR:<current> @LEX:@STR:<lexer> @LEX:@STR:<is> {lexer name}}
+	    {{completion event declaration} :M {0 2 3} @LEX:@STR:<event> {event initialization} @LEX:@CHR:<=> @LEX:@STR:<completed> {symbol name}}
+	    {{current lexer statement} :M {0 1 2} @LEX:@STR:<current> @LEX:@STR:<lexer> @LEX:@STR:<is> {lexer name}}
 	    {{default rule} := @LEX:@STR:<:default> {op declare bnf} {adverb list default}}
-	    {{discard default statement} :M {1 1 1 0} @LEX:@STR:<discard> @LEX:@STR:<default> @LEX:@CHR:<=> {adverb list discard default}}
-	    {{discard rule} :M {1 1 0 0} @LEX:@STR:<:discard> {op declare match} symbol {adverb list discard}}
-	    {{discard rule} :M {1 1 0 0} @LEX:@STR:<:discard> {op declare match} {character class} {adverb list discard}}
+	    {{discard default statement} :M {0 1 2} @LEX:@STR:<discard> @LEX:@STR:<default> @LEX:@CHR:<=> {adverb list discard default}}
+	    {{discard rule} :M {0 1} @LEX:@STR:<:discard> {op declare match} symbol {adverb list discard}}
+	    {{discard rule} :M {0 1} @LEX:@STR:<:discard> {op declare match} {character class} {adverb list discard}}
 	    {{empty rule} := lhs {op declare bnf} {adverb list bnf empty}}
 	    {{empty rule} := lhs {op declare match} {adverb list match empty}}
 	    {{event initialization} := {event name} {event initializer}}
-	    {{event initializer} :M {1 0} @LEX:@CHR:<=> {on or off}}
 	    {{event initializer} :=}
-	    {{event name} := {standard name}}
-	    {{event name} := {single quoted name}}
+	    {{event initializer} :M 0 @LEX:@CHR:<=> {on or off}}
 	    {{event name} := {reserved event name}}
-	    {{event specification} :M {1 1 0} @LEX:@STR:<event> @LEX:@STR:<=>> {event initialization}}
-	    {{group association} :M {1 1 1} @LEX:@STR:<assoc> @LEX:@STR:<=>> @LEX:@STR:<group>}
-	    {{inaccessible statement} :M {1 1 0 1 1} @LEX:@STR:<inaccessible> @LEX:@STR:<is> {inaccessible treatment} @LEX:@STR:<by> @LEX:@STR:<default>}
-	    {{inaccessible treatment} := @LEX:@STR:<warn>}
-	    {{inaccessible treatment} := @LEX:@STR:<ok>}
+	    {{event name} := {single quoted name}}
+	    {{event name} := {standard name}}
+	    {{event specification} :M {0 1} @LEX:@STR:<event> @LEX:@STR:<=>> {event initialization}}
+	    {{group association} :M {0 1 2} @LEX:@STR:<assoc> @LEX:@STR:<=>> @LEX:@STR:<group>}
+	    {{inaccessible statement} :M {0 1 3 4} @LEX:@STR:<inaccessible> @LEX:@STR:<is> {inaccessible treatment} @LEX:@STR:<by> @LEX:@STR:<default>}
 	    {{inaccessible treatment} := @LEX:@STR:<fatal>}
-	    {{latm specification} :M {1 1 0} @LEX:@STR:<forgiving> @LEX:@STR:<=>> boolean}
-	    {{latm specification} :M {1 1 0} @LEX:@STR:<latm> @LEX:@STR:<=>> boolean}
-	    {{left association} :M {1 1 1} @LEX:@STR:<assoc> @LEX:@STR:<=>> @LEX:@STR:<left>}
-	    {{lexeme default statement} :M {1 1 1 0} @LEX:@STR:<lexeme> @LEX:@STR:<default> @LEX:@CHR:<=> {adverb list lexeme default}}
-	    {{lexeme rule} :M {1 1 0 0} @LEX:@STR:<:lexeme> {op declare match} symbol {adverb list lexeme}}
-	    {{lexer name} := {standard name}}
+	    {{inaccessible treatment} := @LEX:@STR:<ok>}
+	    {{inaccessible treatment} := @LEX:@STR:<warn>}
+	    {{latm specification} :M {0 1} @LEX:@STR:<forgiving> @LEX:@STR:<=>> boolean}
+	    {{latm specification} :M {0 1} @LEX:@STR:<latm> @LEX:@STR:<=>> boolean}
+	    {{left association} :M {0 1 2} @LEX:@STR:<assoc> @LEX:@STR:<=>> @LEX:@STR:<left>}
+	    {{lexeme default statement} :M {0 1 2} @LEX:@STR:<lexeme> @LEX:@STR:<default> @LEX:@CHR:<=> {adverb list lexeme default}}
+	    {{lexeme rule} :M {0 1} @LEX:@STR:<:lexeme> {op declare match} symbol {adverb list lexeme}}
 	    {{lexer name} := {single quoted name}}
-	    {lhs := {symbol name}}
-	    {naming :M {1 1 0} @LEX:@STR:<name> @LEX:@STR:<=>> {alternative name}}
+	    {{lexer name} := {standard name}}
 	    {{null adverb} := @LEX:@CHR:<,>}
-	    {{null ranking constant} := @LEX:@STR:<low>}
 	    {{null ranking constant} := @LEX:@STR:<high>}
-	    {{null ranking specification} :M {1 1 0} @LEX:@STR:<null-ranking> @LEX:@STR:<=>> {null ranking constant}}
-	    {{null ranking specification} :M {1 1 1 0} @LEX:@STR:<null> @LEX:@STR:<rank> @LEX:@STR:<=>> {null ranking constant}}
+	    {{null ranking constant} := @LEX:@STR:<low>}
+	    {{null ranking specification} :M {0 1 2} @LEX:@STR:<null> @LEX:@STR:<rank> @LEX:@STR:<=>> {null ranking constant}}
+	    {{null ranking specification} :M {0 1} @LEX:@STR:<null-ranking> @LEX:@STR:<=>> {null ranking constant}}
 	    {{null statement} := {@LEX:@CHR:<\73>}}
-	    {{nulled event declaration} :M {1 0 1 1 0} @LEX:@STR:<event> {event initialization} @LEX:@CHR:<=> @LEX:@STR:<nulled> {symbol name}}
-	    {{on or off} := @LEX:@STR:<on>}
+	    {{nulled event declaration} :M {0 2 3} @LEX:@STR:<event> {event initialization} @LEX:@CHR:<=> @LEX:@STR:<nulled> {symbol name}}
 	    {{on or off} := @LEX:@STR:<off>}
-	    {{parenthesized rhs primary list} :M {1 0 1} {@LEX:@CHR:<\50>} {rhs primary list} {@LEX:@CHR:<\51>}}
-	    {{pause specification} :M {1 1 0} @LEX:@STR:<pause> @LEX:@STR:<=>> {before or after}}
-	    {{prediction event declaration} :M {1 0 1 1 0} @LEX:@STR:<event> {event initialization} @LEX:@CHR:<=> @LEX:@STR:<predicted> {symbol name}}
+	    {{on or off} := @LEX:@STR:<on>}
+	    {{parenthesized rhs primary list} :M {0 2} {@LEX:@CHR:<\50>} {rhs primary list} {@LEX:@CHR:<\51>}}
+	    {{pause specification} :M {0 1} @LEX:@STR:<pause> @LEX:@STR:<=>> {before or after}}
+	    {{prediction event declaration} :M {0 2 3} @LEX:@STR:<event> {event initialization} @LEX:@CHR:<=> @LEX:@STR:<predicted> {symbol name}}
 	    {{priorities bnf} + {alternatives bnf} {op loosen} 1}
 	    {{priorities match} + {alternatives match} {op loosen} 1}
 	    {{priority rule} := lhs {op declare bnf} {priorities bnf}}
 	    {{priority rule} := lhs {op declare match} {priorities match}}
-	    {{priority specification} :M {1 1 0} @LEX:@STR:<priority> @LEX:@STR:<=>> {signed integer}}
-	    {{proper specification} :M {1 1 0} @LEX:@STR:<proper> @LEX:@STR:<=>> boolean}
+	    {{priority specification} :M {0 1} @LEX:@STR:<priority> @LEX:@STR:<=>> {signed integer}}
+	    {{proper specification} :M {0 1} @LEX:@STR:<proper> @LEX:@STR:<=>> boolean}
 	    {{quantified rule} := lhs {op declare bnf} {single symbol} quantifier {adverb list bnf quantified}}
 	    {{quantified rule} := lhs {op declare match} {single symbol} quantifier {adverb list match quantified}}
-	    {quantifier := @LEX:@CHR:<*>}
-	    {quantifier := @LEX:@CHR:<+>}
-	    {{rank specification} :M {1 1 0} @LEX:@STR:<rank> @LEX:@STR:<=>> {signed integer}}
-	    {rhs + {rhs primary}}
-	    {{rhs primary} := {single symbol}}
-	    {{rhs primary} := {single quoted string}}
-	    {{rhs primary} := {parenthesized rhs primary list}}
+	    {{rank specification} :M {0 1} @LEX:@STR:<rank> @LEX:@STR:<=>> {signed integer}}
 	    {{rhs primary list} + {rhs primary}}
-	    {{right association} :M {1 1 1} @LEX:@STR:<assoc> @LEX:@STR:<=>> @LEX:@STR:<right>}
-	    {{separator specification} :M {1 1 0} @LEX:@STR:<separator> @LEX:@STR:<=>> {single symbol}}
+	    {{rhs primary} := {parenthesized rhs primary list}}
+	    {{rhs primary} := {single quoted string}}
+	    {{rhs primary} := {single symbol}}
+	    {{right association} :M {0 1 2} @LEX:@STR:<assoc> @LEX:@STR:<=>> @LEX:@STR:<right>}
+	    {{separator specification} :M {0 1} @LEX:@STR:<separator> @LEX:@STR:<=>> {single symbol}}
 	    {{single symbol} := symbol}
 	    {{single symbol} := {character class}}
-	    {{start rule} :M {1 1 0} @LEX:@STR:<:start> {op declare bnf} symbol}
-	    {{start rule} :M {1 1 1 0} @LEX:@STR:<start> @LEX:@STR:<symbol> @LEX:@STR:<is> symbol}
-	    {statement := {start rule}}
-	    {statement := {empty rule}}
-	    {statement := {null statement}}
-	    {statement := {statement group}}
-	    {statement := {priority rule}}
-	    {statement := {quantified rule}}
-	    {statement := {discard rule}}
-	    {statement := {default rule}}
-	    {statement := {lexeme default statement}}
-	    {statement := {discard default statement}}
-	    {statement := {lexeme rule}}
-	    {statement := {completion event declaration}}
-	    {statement := {nulled event declaration}}
-	    {statement := {prediction event declaration}}
-	    {statement := {current lexer statement}}
-	    {statement := {inaccessible statement}}
-	    {{statement group} :M {1 0 0} {@LEX:@CHR:<\173>} statements {@LEX:@CHR:<\175>}}
-	    {statements + statement}
-	    {symbol := {symbol name}}
+	    {{start rule} :M {0 1 2} @LEX:@STR:<start> @LEX:@STR:<symbol> @LEX:@STR:<is> symbol}
+	    {{start rule} :M {0 1} @LEX:@STR:<:start> {op declare bnf} symbol}
+	    {{statement group} :M 0 {@LEX:@CHR:<\173>} statements {@LEX:@CHR:<\175>}}
 	    {{symbol name} := {bare name}}
 	    {{symbol name} := {bracketed name}}
 	}
