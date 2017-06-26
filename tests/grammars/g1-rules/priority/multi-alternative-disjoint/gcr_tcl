@@ -9,12 +9,10 @@ grammar {
                 {priority B 0
                         action {array values}
                         assoc left
-                        bless {special undef}
                         mask 0}
                 {priority C 0
                         action {array values}
                         assoc left
-                        bless {special undef}
                         mask 0}
             }
         }

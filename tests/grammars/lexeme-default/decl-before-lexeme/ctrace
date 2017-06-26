@@ -8,7 +8,7 @@ GC comment definition A 42 1
 GC comment g1-definition A undef --> {JMP brick}
 GC comment usage foo 48 3
 GC comment g1-usage foo lexeme:u --> NOP
-GC g1 priority-rule A foo 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule A foo 0 action {array values} mask 0
 GC comment definition foo 52 3
 GC comment l0-definition foo lexeme:u --> {JMP lexeme}
 GC comment usage @CHR:<a> 58 3

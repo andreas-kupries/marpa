@@ -15,7 +15,7 @@ GC comment definition A 80 1
 GC comment g1-definition A floater --> {JMP brick}
 GC comment usage fox 86 3
 GC comment g1-usage fox undef --> {JMP floater}
-GC g1 priority-rule A fox 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule A fox 0 action {array values} mask 0
 GC comment definition fox 90 3
 GC comment l0-definition fox floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme fox

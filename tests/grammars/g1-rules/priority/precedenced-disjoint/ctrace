@@ -3,7 +3,7 @@ GC comment g1-definition E undef --> {JMP brick}
 GC comment usage N 6 1
 GC comment g1-usage N undef --> {JMP floater}
 
-	GC g1 priority-rule E N 0 action {array values} bless {special undef} mask 0
+	GC g1 priority-rule E N 0 action {array values} mask 0
 
 GC comment definition E 8 1
 GC comment g1-definition E brick --> NOP
@@ -14,7 +14,7 @@ GC comment g1-usage PO undef --> {JMP floater}
 GC comment g1-usage E brick --> NOP
 GC comment g1-usage PC undef --> {JMP floater}
 
-	GC g1 priority-rule E {PO E PC} 0 action {array values} bless {special undef} assoc group mask {0 0 0}
+	GC g1 priority-rule E {PO E PC} 0 action {array values} assoc group mask {0 0 0}
 
 GC comment g1-definition E brick --> NOP
 GC comment usage E 43 1
@@ -24,7 +24,7 @@ GC comment g1-usage E brick --> NOP
 GC comment g1-usage POW undef --> {JMP floater}
 GC comment g1-usage E brick --> NOP
 
-	GC g1 priority-rule E {E POW E} -1 action {array values} bless {special undef} assoc right mask {0 0 0}
+	GC g1 priority-rule E {E POW E} -1 action {array values} assoc right mask {0 0 0}
 
 GC comment g1-definition E brick --> NOP
 GC comment usage E 72 1
@@ -34,7 +34,7 @@ GC comment g1-usage E brick --> NOP
 GC comment g1-usage MUL undef --> {JMP floater}
 GC comment g1-usage E brick --> NOP
 
-	GC g1 priority-rule E {E MUL E} -2 action {array values} bless {special undef} mask {0 0 0}
+	GC g1 priority-rule E {E MUL E} -2 action {array values} mask {0 0 0}
 
 GC comment g1-definition E brick --> NOP
 GC comment usage E 86 1
@@ -44,7 +44,7 @@ GC comment g1-usage E brick --> NOP
 GC comment g1-usage DIV undef --> {JMP floater}
 GC comment g1-usage E brick --> NOP
 
-	GC g1 priority-rule E {E DIV E} -2 action {array values} bless {special undef} mask {0 0 0}
+	GC g1 priority-rule E {E DIV E} -2 action {array values} mask {0 0 0}
 
 GC comment g1-definition E brick --> NOP
 GC comment usage E 100 1
@@ -54,7 +54,7 @@ GC comment g1-usage E brick --> NOP
 GC comment g1-usage ADD undef --> {JMP floater}
 GC comment g1-usage E brick --> NOP
 
-	GC g1 priority-rule E {E ADD E} -3 action {array values} bless {special undef} mask {0 0 0}
+	GC g1 priority-rule E {E ADD E} -3 action {array values} mask {0 0 0}
 
 GC comment g1-definition E brick --> NOP
 GC comment usage E 114 1
@@ -64,7 +64,7 @@ GC comment g1-usage E brick --> NOP
 GC comment g1-usage SUB undef --> {JMP floater}
 GC comment g1-usage E brick --> NOP
 
-	GC g1 priority-rule E {E SUB E} -3 action {array values} bless {special undef} mask {0 0 0}
+	GC g1 priority-rule E {E SUB E} -3 action {array values} mask {0 0 0}
 
 GC comment definition PO 123 2
 GC comment l0-definition PO floater --> {JMP lexeme make-lexeme}

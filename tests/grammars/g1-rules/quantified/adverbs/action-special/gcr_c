@@ -6,8 +6,7 @@ grammar {
     g1 {
         {} {
             A { {quantified B 1
-                    action {special first}
-                    bless {special undef}} }
+                    action {special first}} }
         }
         terminal {
             B { terminal }

@@ -15,7 +15,7 @@ GC g1 terminal {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}
 GC comment l0-usage {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} literal --> NOP
 GC l0 priority-rule {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} {{@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}} 0
 GC comment g1-usage {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} lexeme --> NOP
-GC g1 priority-rule A {{@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule A {{@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}} 0 action {array values} mask 0
 GC comment Semantics completion processing
 GC start! A
 GC comment LATM fix 1

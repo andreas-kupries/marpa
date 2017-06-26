@@ -12,13 +12,13 @@ statements/0
         @7 1 '+'
       adverb list bnf quantified/0
         adverb list items bnf quantified/0
-          adverb item bnf quantified/2
+          adverb item bnf quantified/1
             separator specification/0
               single symbol/0
                 symbol/0
                   symbol name/0
                     @22 1 'C'
-          adverb item bnf quantified/3
+          adverb item bnf quantified/2
             proper specification/0
               @34 1 '1'
   statement/4

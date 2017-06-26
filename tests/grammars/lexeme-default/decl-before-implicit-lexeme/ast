@@ -3,7 +3,7 @@ statements/0
     lexeme default statement/0
       adverb list lexeme default/0
         adverb list items lexeme default/0
-          adverb item lexeme default/2
+          adverb item lexeme default/1
             latm specification/1
               @25 1 '0'
   statement/4

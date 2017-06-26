@@ -18,7 +18,7 @@ GC comment g1-definition A undef --> {JMP brick}
 GC comment l0-usage @%STR:<FOXOYO> literal --> NOP
 GC l0 priority-rule @LEX:@%STR:<FOXOYO> @%STR:<FOXOYO> 0
 GC comment g1-usage @LEX:@%STR:<FOXOYO> lexeme --> NOP
-GC g1 priority-rule A @LEX:@%STR:<FOXOYO> 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule A @LEX:@%STR:<FOXOYO> 0 action {array values} mask 0
 GC comment Semantics completion processing
 GC start! A
 GC comment LATM fix 1

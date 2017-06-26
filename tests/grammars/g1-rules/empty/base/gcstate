@@ -7,8 +7,7 @@ grammar {
         {} {
             A { {priority {} 0
                     action {array values}
-                    assoc left
-                    bless {special undef}} }
+                    assoc left} }
         }
     }
     lexeme {

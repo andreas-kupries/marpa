@@ -34,7 +34,7 @@ statements/0
                       @19 2 'PC'
             adverb list bnf alternative/0
               adverb list items bnf alternative/0
-                adverb item bnf alternative/4
+                adverb item bnf alternative/3
                   group association/0
         @40 2 '||'
         alternatives bnf/0
@@ -57,7 +57,7 @@ statements/0
                       @49 1 'E'
             adverb list bnf alternative/0
               adverb list items bnf alternative/0
-                adverb item bnf alternative/3
+                adverb item bnf alternative/2
                   right association/0
         @69 2 '||'
         alternatives bnf/0

@@ -8,7 +8,6 @@ grammar {
             B { {priority @LEX:@CHR:<b> 0
                     action {array {values start}}
                     assoc left
-                    bless {special undef}
                     mask 0} }
         }
         terminal {

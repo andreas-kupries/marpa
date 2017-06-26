@@ -32,13 +32,11 @@ oo::class create marpa::slif::container::attribute::quantified::g1 {
 	debug.marpa/slif/container/attribute/quantified/g1 {}
 	marpa::import $grammar Grammar
 
-	# quantified: action, blessing, separator
+	# quantified: action, separator
 
 	marpa A   default  {array values}
 	marpa A   validate [mymethod v-action]
 	marpa C action
-	marpa A   validate [mymethod v-bless]
-	marpa C bless
 	marpa A   validate [mymethod v-separator]
 	marpa C separator
 
@@ -67,17 +65,6 @@ oo::class create marpa::slif::container::attribute::quantified::g1 {
 	    return $value
 	}
 	my E "Bad action type '$type', expected one of array, cmd, or special"
-	return
-    }
-
-    method v-bless {_validate_ value} {
-	debug.marpa/slif/container/attribute/quantified/g1 {}
-	lassign $value type details
-	if {$type in {special standard}} {
-	    # TODO: check supported specials ?
-	    return $value
-	}
-	my E "Bad bless type '$type', expected one of special, or standard"
 	return
     }
 

@@ -15,7 +15,7 @@ statements/0
             action/0
               action name/2
                 @1799 20 {'[start,length,value]'}
-          adverb item lexeme default/2
+          adverb item lexeme default/1
             latm specification/1
               @1832 1 '1'
   statement/0
@@ -784,13 +784,13 @@ statements/0
         @4063 1 '+'
       adverb list bnf quantified/0
         adverb list items bnf quantified/0
-          adverb item bnf quantified/2
+          adverb item bnf quantified/1
             separator specification/0
               single symbol/0
                 symbol/0
                   symbol name/1
                     @4080 11 {'<op loosen>'}
-          adverb item bnf quantified/3
+          adverb item bnf quantified/2
             proper specification/0
               @4104 1 '1'
   statement/5
@@ -806,13 +806,13 @@ statements/0
         @4149 1 '+'
       adverb list bnf quantified/0
         adverb list items bnf quantified/0
-          adverb item bnf quantified/2
+          adverb item bnf quantified/1
             separator specification/0
               single symbol/0
                 symbol/0
                   symbol name/1
                     @4166 11 {'<op loosen>'}
-          adverb item bnf quantified/3
+          adverb item bnf quantified/2
             proper specification/0
               @4190 1 '1'
   statement/5
@@ -828,13 +828,13 @@ statements/0
         @4233 1 '+'
       adverb list bnf quantified/0
         adverb list items bnf quantified/0
-          adverb item bnf quantified/2
+          adverb item bnf quantified/1
             separator specification/0
               single symbol/0
                 symbol/0
                   symbol name/1
                     @4250 19 {'<op equal priority>'}
-          adverb item bnf quantified/3
+          adverb item bnf quantified/2
             proper specification/0
               @4282 1 '1'
   statement/5
@@ -850,13 +850,13 @@ statements/0
         @4328 1 '+'
       adverb list bnf quantified/0
         adverb list items bnf quantified/0
-          adverb item bnf quantified/2
+          adverb item bnf quantified/1
             separator specification/0
               single symbol/0
                 symbol/0
                   symbol name/1
                     @4345 19 {'<op equal priority>'}
-          adverb item bnf quantified/3
+          adverb item bnf quantified/2
             proper specification/0
               @4377 1 '1'
   statement/4

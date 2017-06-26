@@ -20,7 +20,7 @@ GC comment usage A 32 1
 GC comment g1-usage A match --> {JMP lexeme make-lexeme}
 GC l0 lexeme A
 GC g1 terminal A
-GC g1 priority-rule D A 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule D A 0 action {array values} mask 0
 GC comment definition B 34 1
 GC comment l0-definition B strict:u --> {JMP strict}
 GC comment usage @CHR:<b> 38 3

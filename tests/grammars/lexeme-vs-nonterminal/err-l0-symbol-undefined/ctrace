@@ -13,7 +13,7 @@ GC comment usage B 48 1
 GC comment g1-usage B match --> {JMP lexeme make-lexeme}
 GC l0 lexeme B
 GC g1 terminal B
-GC g1 priority-rule A B 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule A B 0 action {array values} mask 0
 GC comment Semantics completion processing
 
 	GC error {Grammar error. L0 symbol <C> has no definition

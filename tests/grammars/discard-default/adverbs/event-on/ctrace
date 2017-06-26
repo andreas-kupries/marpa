@@ -5,7 +5,7 @@ GC comment definition B 39 1
 GC comment g1-definition B undef --> {JMP brick}
 GC comment usage A 45 1
 GC comment g1-usage A undef --> {JMP floater}
-GC g1 priority-rule B A 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule B A 0 action {array values} mask 0
 GC comment definition A 47 1
 GC comment l0-definition A floater --> {JMP lexeme make-lexeme}
 GC l0 lexeme A

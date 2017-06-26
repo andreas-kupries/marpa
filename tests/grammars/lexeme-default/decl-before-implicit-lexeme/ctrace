@@ -14,7 +14,7 @@ GC comment usage foo 45 3
 GC comment g1-usage foo match --> {JMP lexeme make-lexeme}
 GC l0 lexeme foo
 GC g1 terminal foo
-GC g1 priority-rule A foo 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule A foo 0 action {array values} mask 0
 GC comment Semantics completion processing
 GC start! A
 

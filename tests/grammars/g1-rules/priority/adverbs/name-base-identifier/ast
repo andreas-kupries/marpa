@@ -15,7 +15,7 @@ statements/0
                       @6 1 'B'
             adverb list bnf alternative/0
               adverb list items bnf alternative/0
-                adverb item bnf alternative/5
+                adverb item bnf alternative/4
                   naming/0
                     alternative name/0
                       @16 9 'reduction'

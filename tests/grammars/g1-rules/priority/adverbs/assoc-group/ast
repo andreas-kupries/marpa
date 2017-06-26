@@ -25,7 +25,7 @@ statements/0
                       @11 2 'PC'
             adverb list bnf alternative/0
               adverb list items bnf alternative/0
-                adverb item bnf alternative/4
+                adverb item bnf alternative/3
                   group association/0
   statement/4
     priority rule/1

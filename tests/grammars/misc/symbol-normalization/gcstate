@@ -8,7 +8,6 @@ grammar {
             {op comma} { {priority {{op comma}} 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
         }
     }

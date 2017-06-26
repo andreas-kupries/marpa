@@ -6,8 +6,7 @@ grammar {
     g1 {
         {} {
             A { {quantified B 0
-                    action {array values}
-                    bless {special undef}} }
+                    action {array values}} }
         }
         terminal {
             B { terminal }

@@ -28,107 +28,86 @@ grammar {
                     U} 0
                         action {array values}
                         assoc left
-                        bless {special undef}
                         mask {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0}} }
             B { {priority @LEX:@CHR:<a> 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             C { {priority @LEX:@STR:<abc> 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             D { {priority @LEX:@CLS:<Aa> 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             E { {priority @LEX:@%STR:<ABC> 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             F { {priority @LEX:@CHR:<a> 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             G { {priority @LEX:@RAN:<az> 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             H { {priority {{@LEX:@NCC:<[:alnum:]>}} 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             I { {priority {{@LEX:@CLS:<0-9a[:braille:]>}} 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             J { {priority @LEX:@CLS:<Aa> 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             K { {priority {{@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             L { {priority {{@LEX:@%NCC:<[:alnum:]>}} 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             M { {priority {{@LEX:@CLS:<0-9Aa[:%braille:]>}} 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             N { {priority @LEX:@^CHR:<a> 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             O { {priority @LEX:@^RAN:<az> 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             P { {priority {{@LEX:@^NCC:<[:alnum:]>}} 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             Q { {priority {{@LEX:@^CLS:<0-9a[:braille:]>}} 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             R { {priority @LEX:@^CLS:<Aa> 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             S { {priority {{@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             T { {priority {{@LEX:@^%NCC:<[:alnum:]>}} 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
             U { {priority {{@LEX:@^CLS:<0-9Aa[:%braille:]>}} 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
         }
         terminal {

@@ -7,7 +7,7 @@ GC comment g1-usage A brick --> NOP
 GC comment g1-usage OP undef --> {JMP floater}
 GC comment g1-usage A brick --> NOP
 
-	GC g1 priority-rule A {A OP A} 0 action {array values} bless {special undef} assoc left mask {0 0 0}
+	GC g1 priority-rule A {A OP A} 0 action {array values} assoc left mask {0 0 0}
 
 GC comment definition OP 28 2
 GC comment l0-definition OP floater --> {JMP lexeme make-lexeme}

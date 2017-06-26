@@ -8,7 +8,6 @@ grammar {
             A { {priority @LEX:@CHR:<a> 0
                     action {cmd this}
                     assoc left
-                    bless {special undef}
                     mask 0} }
         }
         terminal {

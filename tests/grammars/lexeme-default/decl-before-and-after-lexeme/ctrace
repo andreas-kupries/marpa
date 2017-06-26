@@ -15,7 +15,7 @@ GC comment usage foo 62 3
 GC comment usage bar 66 3
 GC comment g1-usage foo lexeme:u --> NOP
 GC comment g1-usage bar lexeme:u --> NOP
-GC g1 priority-rule A {foo bar} 0 action {array values} bless {special undef} mask {0 0}
+GC g1 priority-rule A {foo bar} 0 action {array values} mask {0 0}
 GC comment definition foo 70 3
 GC comment l0-definition foo lexeme:u --> {JMP lexeme}
 GC comment usage @CHR:<a> 76 3

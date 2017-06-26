@@ -12,7 +12,7 @@ statements/0
         @7 1 '+'
       adverb list bnf quantified/0
         adverb list items bnf quantified/0
-          adverb item bnf quantified/3
+          adverb item bnf quantified/2
             proper specification/0
               @19 1 '0'
   statement/4

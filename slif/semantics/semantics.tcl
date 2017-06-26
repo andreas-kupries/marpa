@@ -71,11 +71,10 @@ oo::class create marpa::slif::semantics {
 	set st [marpa::slif::semantics::Symbol create \
 		    Symbol $container $def $use [self]]
 
-	# Track G1 action/bless defaults
+	# Track G1 action defaults
 	marpa::slif::semantics::Defaults create G1 \
 	    $container {
 		action {array values}
-		bless  {special undef}
 	    }
 
 	# Track LATM flag handling for lexemes
@@ -225,7 +224,6 @@ oo::class create marpa::slif::semantics {
 	#                                      /
 	# Accepted adverbs (see statement/5) -/
 	# - action    -- <action>
-	# - bless     -- <blessing>                   | IGNORED. WARN
 	# - proper    -- <proper specification>
 	# - separator -- <separator specification>
 	# - name      -- <naming>
@@ -318,7 +316,6 @@ oo::class create marpa::slif::semantics {
 	#                     |
 	# Accepted adverbs (see statement/1):
 	# - action    -- <action>
-	# - bless     -- <blessing>
 
 	SymCo g1 definition
 	set lhs [FIRST]
@@ -471,9 +468,8 @@ oo::class create marpa::slif::semantics {
 	##
 	# Note: May only be used ONCE
 	# Adverbs
-	# - action \ These go into the grammar (container)
-	# - bless  /
-	# - latm   | This goes into LATM handling with the :lexeme's
+	# - action > This goes into the grammar (container)
+	# - latm   > This goes into LATM handling with the :lexeme's
 	LD pass
 
 	set adverbs [SINGLE 0]
@@ -484,12 +480,11 @@ oo::class create marpa::slif::semantics {
 	set action $adverbs
 	dict unset action latm
 	if {[dict size $action]} {
-	    # Have at least one of action, bless
+	    # Have at least action
 	    Container lexeme-semantics {*}$action
 	}
 
 	dict unset adverbs action
-	dict unset adverbs bless
 	# latm only at this point, at most.
 
 	if {![dict size $adverbs]} return
@@ -613,14 +608,13 @@ oo::class create marpa::slif::semantics {
     }
 
     # # -- --- ----- -------- -------------
-    ## G1 action/bless defaults
+    ## G1 action defaults
 
     method {default rule/0} {children} {
 	# <adverb list default>
 	# 0
 	# Adverbs
 	# - action
-	# - bless
 	G1 defaults: [FIRST]
 	return
     }
@@ -723,8 +717,7 @@ oo::class create marpa::slif::semantics {
     method {adverb list items match quantified/0}  {children} { FLATTEN }
 
     method {adverb item default/0} {children} { FIRST } ;# action
-    method {adverb item default/1} {children} { FIRST } ;# bless
-    method {adverb item default/2} {children} { FIRST } ;# null
+    method {adverb item default/1} {children} { FIRST } ;# null
 
     method {adverb item discard/0} {children} { FIRST } ;# event
     method {adverb item discard/1} {children} { FIRST } ;# null
@@ -739,31 +732,27 @@ oo::class create marpa::slif::semantics {
     method {adverb item discard default/1} {children} { FIRST } ;# null
 
     method {adverb item lexeme default/0} {children} { FIRST } ;# action
-    method {adverb item lexeme default/1} {children} { FIRST } ;# bless
-    method {adverb item lexeme default/2} {children} { FIRST } ;# latm
-    method {adverb item lexeme default/3} {children} { FIRST } ;# null
+    method {adverb item lexeme default/1} {children} { FIRST } ;# latm
+    method {adverb item lexeme default/2} {children} { FIRST } ;# null
 
     method {adverb item bnf alternative/0} {children} { FIRST } ;# action
-    method {adverb item bnf alternative/1} {children} { FIRST } ;# bless
-    method {adverb item bnf alternative/2} {children} { FIRST } ;# left
-    method {adverb item bnf alternative/3} {children} { FIRST } ;# right
-    method {adverb item bnf alternative/4} {children} { FIRST } ;# group
-    method {adverb item bnf alternative/5} {children} { FIRST } ;# naming
-    method {adverb item bnf alternative/6} {children} { FIRST } ;# null
+    method {adverb item bnf alternative/1} {children} { FIRST } ;# left
+    method {adverb item bnf alternative/2} {children} { FIRST } ;# right
+    method {adverb item bnf alternative/3} {children} { FIRST } ;# group
+    method {adverb item bnf alternative/4} {children} { FIRST } ;# naming
+    method {adverb item bnf alternative/5} {children} { FIRST } ;# null
 
     method {adverb item bnf empty/0} {children} { FIRST } ;# action
-    method {adverb item bnf empty/1} {children} { FIRST } ;# bless
-    method {adverb item bnf empty/2} {children} { FIRST } ;# left
-    method {adverb item bnf empty/3} {children} { FIRST } ;# right
-    method {adverb item bnf empty/4} {children} { FIRST } ;# group
-    method {adverb item bnf empty/5} {children} { FIRST } ;# naming
-    method {adverb item bnf empty/6} {children} { FIRST } ;# null
+    method {adverb item bnf empty/1} {children} { FIRST } ;# left
+    method {adverb item bnf empty/2} {children} { FIRST } ;# right
+    method {adverb item bnf empty/3} {children} { FIRST } ;# group
+    method {adverb item bnf empty/4} {children} { FIRST } ;# naming
+    method {adverb item bnf empty/5} {children} { FIRST } ;# null
 
     method {adverb item bnf quantified/0} {children} { FIRST } ;# action
-    method {adverb item bnf quantified/1} {children} { FIRST } ;# bless
-    method {adverb item bnf quantified/2} {children} { FIRST } ;# separator
-    method {adverb item bnf quantified/3} {children} { FIRST } ;# proper
-    method {adverb item bnf quantified/4} {children} { FIRST } ;# null
+    method {adverb item bnf quantified/1} {children} { FIRST } ;# separator
+    method {adverb item bnf quantified/2} {children} { FIRST } ;# proper
+    method {adverb item bnf quantified/3} {children} { FIRST } ;# null
 
     method {adverb item match alternative/0} {children} { FIRST } ;# naming
     method {adverb item match alternative/1} {children} { FIRST } ;# null
@@ -788,7 +777,6 @@ oo::class create marpa::slif::semantics {
     # pause       undef
     # event       undef
     # latm        no
-    # bless       undef
     # name        undef
     # null        N/A
 
@@ -875,20 +863,6 @@ oo::class create marpa::slif::semantics {
     method {action name/2} {children} {
 	# array descriptor [xxx, ...]
 	list array [split [string range [LITERAL] 1 end-1] ,]
-    }
-
-    # # -- --- ----- -------- -------------
-    ## Blessings
-
-    method blessing/0 {children} { ADVL bless [FIRST] }
-
-    method {blessing name/0} {children} {
-	# standard name - identifier
-	list standard [LITERAL]
-    }
-    method {blessing name/1} {children} {
-	# reserved name ::...
-	list special [string range [LITERAL] 2 end]
     }
 
     # # -- --- ----- -------- -------------

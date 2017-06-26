@@ -6,5 +6,5 @@ statements/0
           @0 1 'A'
       adverb list bnf empty/0
         adverb list items bnf empty/0
-          adverb item bnf empty/4
+          adverb item bnf empty/3
             group association/0

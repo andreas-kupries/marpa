@@ -17,7 +17,7 @@ GC comment l0-usage @CHR:<b> literal --> NOP
 GC l0 priority-rule @LEX:@CHR:<b> @CHR:<b> 0
 GC comment g1-usage @LEX:@CHR:<b> lexeme --> NOP
 
-	GC g1 priority-rule B @LEX:@CHR:<b> 0 action {cmd dobeta} bless {special undef} mask 0
+	GC g1 priority-rule B @LEX:@CHR:<b> 0 action {cmd dobeta} mask 0
 
 GC comment Semantics completion processing
 GC start! B

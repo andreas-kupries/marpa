@@ -5,7 +5,7 @@ GC comment g1-usage B undef --> {JMP floater}
 
 	GC comment usage {C X} 22 5
 	GC comment g1-usage {C X} undef --> {JMP floater}
-	GC g1 quantified-rule A B 1 action {array values} bless {special undef} separator {{C X} 0}
+	GC g1 quantified-rule A B 1 action {array values} separator {{C X} 0}
 
 GC comment definition B 29 1
 GC comment l0-definition B floater --> {JMP lexeme make-lexeme}

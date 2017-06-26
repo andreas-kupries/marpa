@@ -15,7 +15,7 @@ GC g1 terminal @LEX:@CLS:<-b>
 GC comment l0-usage @CLS:<-b> literal --> NOP
 GC l0 priority-rule @LEX:@CLS:<-b> @CLS:<-b> 0
 GC comment g1-usage @LEX:@CLS:<-b> lexeme --> NOP
-GC g1 priority-rule A @LEX:@CLS:<-b> 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule A @LEX:@CLS:<-b> 0 action {array values} mask 0
 GC comment g1-definition A brick --> NOP
 
 	GC comment usage {@CLS:<\135b>} 741 5
@@ -32,7 +32,7 @@ GC g1 terminal {@LEX:@CLS:<\135b>}
 GC comment l0-usage {@CLS:<\135b>} literal --> NOP
 GC l0 priority-rule {@LEX:@CLS:<\135b>} {{@CLS:<\135b>}} 0
 GC comment g1-usage {@LEX:@CLS:<\135b>} lexeme --> NOP
-GC g1 priority-rule A {{@LEX:@CLS:<\135b>}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule A {{@LEX:@CLS:<\135b>}} 0 action {array values} mask 0
 GC comment Semantics completion processing
 GC start! A
 GC comment LATM fix 1

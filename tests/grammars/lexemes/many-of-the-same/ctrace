@@ -19,7 +19,7 @@ GC comment definition @CHR:<a> 6 3
 GC comment usage B 10 1
 GC comment g1-usage @LEX:@CHR:<a> lexeme --> NOP
 GC comment g1-usage B undef --> {JMP floater}
-GC g1 priority-rule A {@LEX:@CHR:<a> B} 0 action {array values} bless {special undef} mask {0 0}
+GC g1 priority-rule A {@LEX:@CHR:<a> B} 0 action {array values} mask {0 0}
 GC comment definition B 12 1
 GC comment g1-definition B floater --> {JMP brick}
 GC comment usage @CHR:<a> 18 3
@@ -34,7 +34,7 @@ GC comment definition @CHR:<a> 18 3
 	GC comment l0-usage @CHR:<a> literal --> NOP
 
 GC comment g1-usage @LEX:@CHR:<a> lexeme --> NOP
-GC g1 priority-rule B @LEX:@CHR:<a> 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule B @LEX:@CHR:<a> 0 action {array values} mask 0
 GC comment Semantics completion processing
 GC start! A
 GC comment LATM fix 1

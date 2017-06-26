@@ -16,7 +16,7 @@ GC comment l0-usage @CHR:<a> literal --> NOP
 GC l0 priority-rule @LEX:@CHR:<a> @CHR:<a> 0
 GC comment g1-usage @LEX:@CHR:<a> lexeme --> NOP
 
-	GC g1 priority-rule A @LEX:@CHR:<a> 0 action {cmd this} bless {special undef} mask 0
+	GC g1 priority-rule A @LEX:@CHR:<a> 0 action {cmd this} mask 0
 	GC comment g1 defaults = {action {cmd that}}
 
 GC comment definition B 66 1
@@ -35,7 +35,7 @@ GC comment l0-usage @CHR:<b> literal --> NOP
 GC l0 priority-rule @LEX:@CHR:<b> @CHR:<b> 0
 GC comment g1-usage @LEX:@CHR:<b> lexeme --> NOP
 
-	GC g1 priority-rule B @LEX:@CHR:<b> 0 action {cmd that} bless {special undef} mask 0
+	GC g1 priority-rule B @LEX:@CHR:<b> 0 action {cmd that} mask 0
 
 GC comment Semantics completion processing
 GC start! A

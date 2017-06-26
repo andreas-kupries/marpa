@@ -8,13 +8,11 @@ grammar {
             E { {priority E((3)) 0
                     action {special hide}
                     assoc left
-                    bless {standard undef}
                     mask 0} }
             E((0)) {
                 {priority N 0
                         action {array values}
                         assoc left
-                        bless {special undef}
                         mask 0}
                 {priority {
                         PO
@@ -22,14 +20,12 @@ grammar {
                         PC} 0
                             action {array values}
                             assoc left
-                            bless {special undef}
                             mask {0 0 0}}
             }
             E((1)) {
                 {priority E((0)) 0
                         action {special hide}
                         assoc left
-                        bless {standard undef}
                         mask 0}
                 {priority {
                         E((0))
@@ -37,14 +33,12 @@ grammar {
                         E((1))} 0
                             action {array values}
                             assoc left
-                            bless {special undef}
                             mask {0 0 0}}
             }
             E((2)) {
                 {priority E((1)) 0
                         action {special hide}
                         assoc left
-                        bless {standard undef}
                         mask 0}
                 {priority {
                         E((2))
@@ -52,7 +46,6 @@ grammar {
                         E((1))} 0
                             action {array values}
                             assoc left
-                            bless {special undef}
                             mask {0 0 0}}
                 {priority {
                         E((2))
@@ -60,14 +53,12 @@ grammar {
                         E((1))} 0
                             action {array values}
                             assoc left
-                            bless {special undef}
                             mask {0 0 0}}
             }
             E((3)) {
                 {priority E((2)) 0
                         action {special hide}
                         assoc left
-                        bless {standard undef}
                         mask 0}
                 {priority {
                         E((3))
@@ -75,7 +66,6 @@ grammar {
                         E((2))} 0
                             action {array values}
                             assoc left
-                            bless {special undef}
                             mask {0 0 0}}
                 {priority {
                         E((3))
@@ -83,7 +73,6 @@ grammar {
                         E((2))} 0
                             action {array values}
                             assoc left
-                            bless {special undef}
                             mask {0 0 0}}
             }
         }

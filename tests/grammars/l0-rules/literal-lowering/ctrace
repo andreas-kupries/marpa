@@ -40,7 +40,7 @@ GC comment g1-usage R undef --> {JMP floater}
 GC comment g1-usage S undef --> {JMP floater}
 GC comment g1-usage T undef --> {JMP floater}
 GC comment g1-usage U undef --> {JMP floater}
-GC g1 priority-rule A {B C D E F G H I J K L M N O P Q R S T U} 0 action {array values} bless {special undef} mask {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0}
+GC g1 priority-rule A {B C D E F G H I J K L M N O P Q R S T U} 0 action {array values} mask {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0}
 
 # - -- --- ----- -------- B 'a' -------- ----- --- -- - -
 
@@ -65,7 +65,7 @@ GC comment :lexeme @LEX:@CHR:<a> match --> {JMP lexeme make-lexeme}
 
 GC comment g1-usage @LEX:@CHR:<a> lexeme --> NOP
 
-GC g1 priority-rule B @LEX:@CHR:<a> 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule B @LEX:@CHR:<a> 0 action {array values} mask 0
 
 # - -- --- ----- -------- C 'abc' -------- ----- --- -- - -
 
@@ -89,7 +89,7 @@ GC comment :lexeme @LEX:@STR:<abc> match --> {JMP lexeme make-lexeme}
 
 GC comment g1-usage @LEX:@STR:<abc> lexeme --> NOP
 
-GC g1 priority-rule C @LEX:@STR:<abc> 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule C @LEX:@STR:<abc> 0 action {array values} mask 0
 
 # - -- --- ----- -------- D 'a'/i -------- ----- --- -- - -
 
@@ -114,7 +114,7 @@ GC comment :lexeme @LEX:@CLS:<Aa> match --> {JMP lexeme make-lexeme}
 
 GC comment g1-usage @LEX:@CLS:<Aa> lexeme --> NOP
 
-GC g1 priority-rule D @LEX:@CLS:<Aa> 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule D @LEX:@CLS:<Aa> 0 action {array values} mask 0
 
 # - -- --- ----- -------- E 'abc'/i -------- ----- --- -- - -
 
@@ -139,7 +139,7 @@ GC comment :lexeme @LEX:@%STR:<ABC> match --> {JMP lexeme make-lexeme}
 
 GC comment g1-usage @LEX:@%STR:<ABC> lexeme --> NOP
 
-GC g1 priority-rule E @LEX:@%STR:<ABC> 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule E @LEX:@%STR:<ABC> 0 action {array values} mask 0
 
 # - -- --- ----- -------- F [a] -------- ----- --- -- - -
 
@@ -156,7 +156,7 @@ GC comment :lexeme @LEX:@CHR:<a> lexeme --> NOP
 GC comment l0-usage @CHR:<a> literal --> NOP
 GC comment g1-usage @LEX:@CHR:<a> lexeme --> NOP
 
-GC g1 priority-rule F @LEX:@CHR:<a> 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule F @LEX:@CHR:<a> 0 action {array values} mask 0
 
 # - -- --- ----- -------- G [a-z] -------- ----- --- -- - -
 
@@ -181,7 +181,7 @@ GC comment :lexeme @LEX:@RAN:<az> match --> {JMP lexeme make-lexeme}
 
 GC comment g1-usage @LEX:@RAN:<az> lexeme --> NOP
 
-GC g1 priority-rule G @LEX:@RAN:<az> 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule G @LEX:@RAN:<az> 0 action {array values} mask 0
 
 # - -- --- ----- -------- H [[:alnum:]] -------- ----- --- -- - -
 
@@ -206,7 +206,7 @@ GC comment :lexeme {@LEX:@NCC:<[:alnum:]>} match --> {JMP lexeme make-lexeme}
 
 GC comment g1-usage {@LEX:@NCC:<[:alnum:]>} lexeme --> NOP
 
-GC g1 priority-rule H {{@LEX:@NCC:<[:alnum:]>}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule H {{@LEX:@NCC:<[:alnum:]>}} 0 action {array values} mask 0
 
 # - -- --- ----- -------- I [0-9a[:braille:]] -------- ----- --- -- - -
 
@@ -231,7 +231,7 @@ GC comment :lexeme {@LEX:@CLS:<0-9a[:braille:]>} match --> {JMP lexeme make-lexe
 
 GC comment g1-usage {@LEX:@CLS:<0-9a[:braille:]>} lexeme --> NOP
 
-GC g1 priority-rule I {{@LEX:@CLS:<0-9a[:braille:]>}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule I {{@LEX:@CLS:<0-9a[:braille:]>}} 0 action {array values} mask 0
 
 # - -- --- ----- -------- J [a]/i -------- ----- --- -- - -
 
@@ -249,7 +249,7 @@ GC comment :lexeme @LEX:@CLS:<Aa> lexeme --> NOP
 GC comment l0-usage @CLS:<Aa> literal --> NOP
 GC comment g1-usage @LEX:@CLS:<Aa> lexeme --> NOP
 
-GC g1 priority-rule J @LEX:@CLS:<Aa> 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule J @LEX:@CLS:<Aa> 0 action {array values} mask 0
 
 # - -- --- ----- -------- K [a-z]/i -------- ----- --- -- - -
 
@@ -274,7 +274,7 @@ GC comment :lexeme {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} match --> {JMP 
 
 GC comment g1-usage {@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} lexeme --> NOP
 
-GC g1 priority-rule K {{@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule K {{@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0 action {array values} mask 0
 
 # - -- --- ----- -------- L [[:alnum:]]/i -------- ----- --- -- - -
 
@@ -299,7 +299,7 @@ GC comment :lexeme {@LEX:@%NCC:<[:alnum:]>} match --> {JMP lexeme make-lexeme}
 
 GC comment g1-usage {@LEX:@%NCC:<[:alnum:]>} lexeme --> NOP
 
-GC g1 priority-rule L {{@LEX:@%NCC:<[:alnum:]>}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule L {{@LEX:@%NCC:<[:alnum:]>}} 0 action {array values} mask 0
 
 # - -- --- ----- -------- M [0-9a[:braille:]]/i -------- ----- --- -- - -
 
@@ -324,7 +324,7 @@ GC comment :lexeme {@LEX:@CLS:<0-9Aa[:%braille:]>} match --> {JMP lexeme make-le
 
 GC comment g1-usage {@LEX:@CLS:<0-9Aa[:%braille:]>} lexeme --> NOP
 
-GC g1 priority-rule M {{@LEX:@CLS:<0-9Aa[:%braille:]>}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule M {{@LEX:@CLS:<0-9Aa[:%braille:]>}} 0 action {array values} mask 0
 
 # - -- --- ----- -------- N [^a] -------- ----- --- -- - -
 
@@ -348,7 +348,7 @@ GC comment :lexeme @LEX:@^CHR:<a> match --> {JMP lexeme make-lexeme}
 
 GC comment g1-usage @LEX:@^CHR:<a> lexeme --> NOP
 
-GC g1 priority-rule N @LEX:@^CHR:<a> 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule N @LEX:@^CHR:<a> 0 action {array values} mask 0
 
 # - -- --- ----- -------- O [^a-z] -------- ----- --- -- - -
 
@@ -372,7 +372,7 @@ GC comment :lexeme @LEX:@^RAN:<az> match --> {JMP lexeme make-lexeme}
 
 GC comment g1-usage @LEX:@^RAN:<az> lexeme --> NOP
 
-GC g1 priority-rule O @LEX:@^RAN:<az> 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule O @LEX:@^RAN:<az> 0 action {array values} mask 0
 
 # - -- --- ----- -------- P [^[:alnum:]] -------- ----- --- -- - -
 
@@ -396,7 +396,7 @@ GC comment :lexeme {@LEX:@^NCC:<[:alnum:]>} match --> {JMP lexeme make-lexeme}
 
 GC comment g1-usage {@LEX:@^NCC:<[:alnum:]>} lexeme --> NOP
 
-GC g1 priority-rule P {{@LEX:@^NCC:<[:alnum:]>}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule P {{@LEX:@^NCC:<[:alnum:]>}} 0 action {array values} mask 0
 
 # - -- --- ----- -------- Q [^0-9a[:braille:]] -------- ----- --- -- - -
 
@@ -420,7 +420,7 @@ GC comment :lexeme {@LEX:@^CLS:<0-9a[:braille:]>} match --> {JMP lexeme make-lex
 
 GC comment g1-usage {@LEX:@^CLS:<0-9a[:braille:]>} lexeme --> NOP
 
-GC g1 priority-rule Q {{@LEX:@^CLS:<0-9a[:braille:]>}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule Q {{@LEX:@^CLS:<0-9a[:braille:]>}} 0 action {array values} mask 0
 
 # - -- --- ----- -------- R [^a]/i -------- ----- --- -- - -
 
@@ -444,7 +444,7 @@ GC comment :lexeme @LEX:@^CLS:<Aa> match --> {JMP lexeme make-lexeme}
 
 GC comment g1-usage @LEX:@^CLS:<Aa> lexeme --> NOP
 
-GC g1 priority-rule R @LEX:@^CLS:<Aa> 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule R @LEX:@^CLS:<Aa> 0 action {array values} mask 0
 
 # - -- --- ----- -------- S [^a-z]/i -------- ----- --- -- - -
 
@@ -468,7 +468,7 @@ GC comment :lexeme {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} match --> {JMP
 
 GC comment g1-usage {@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} lexeme --> NOP
 
-GC g1 priority-rule S {{@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule S {{@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0 action {array values} mask 0
 
 # - -- --- ----- -------- T [^[:alnum:]]/i -------- ----- --- -- - -
 
@@ -492,7 +492,7 @@ GC comment :lexeme {@LEX:@^%NCC:<[:alnum:]>} match --> {JMP lexeme make-lexeme}
 
 GC comment g1-usage {@LEX:@^%NCC:<[:alnum:]>} lexeme --> NOP
 
-GC g1 priority-rule T {{@LEX:@^%NCC:<[:alnum:]>}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule T {{@LEX:@^%NCC:<[:alnum:]>}} 0 action {array values} mask 0
 
 # - -- --- ----- -------- U [^0-9a[:braille:]]/i -------- ----- --- -- - -
 
@@ -516,7 +516,7 @@ GC comment :lexeme {@LEX:@^CLS:<0-9Aa[:%braille:]>} match --> {JMP lexeme make-l
 
 GC comment g1-usage {@LEX:@^CLS:<0-9Aa[:%braille:]>} lexeme --> NOP
 
-GC g1 priority-rule U {{@LEX:@^CLS:<0-9Aa[:%braille:]>}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule U {{@LEX:@^CLS:<0-9Aa[:%braille:]>}} 0 action {array values} mask 0
 
 # - -- --- ----- -------- DONE -------- ----- --- -- - -
 

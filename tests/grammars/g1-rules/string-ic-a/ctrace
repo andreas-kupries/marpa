@@ -19,7 +19,7 @@ GC comment g1-definition A undef --> {JMP brick}
 	GC l0 priority-rule {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} {{@%STR:<CASE-INSENSITIVE\40STRING>}} 0
 	GC comment g1-usage {@LEX:@%STR:<CASE-INSENSITIVE\40STRING>} lexeme --> NOP
 
-GC g1 priority-rule A {{@LEX:@%STR:<CASE-INSENSITIVE\40STRING>}} 0 action {array values} bless {special undef} mask 0
+GC g1 priority-rule A {{@LEX:@%STR:<CASE-INSENSITIVE\40STRING>}} 0 action {array values} mask 0
 GC comment Semantics completion processing
 GC start! A
 GC comment LATM fix 1

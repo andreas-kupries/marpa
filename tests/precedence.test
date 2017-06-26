@@ -28,7 +28,6 @@ proc FILL {container grcode spec} {
 	set attr [lassign $a __ rhs prec]
 	if {$grcode eq "l0"} {
 	    dict unset attr action
-	    dict unset attr bless
 	    dict unset attr mask
 	    dict unset attr assoc
 	}
@@ -121,34 +120,34 @@ test marpa-slif-precedence-rewrite1-1.4 {rewrite1, wrong args, too many} -body {
 
 set E_rules {E -3 {
     {priority N 0
-	assoc left  action {cmd N} bless {standard A} mask {0} name number}
+	assoc left  action {cmd N} mask {0} name number}
     {priority {PO E PC} 0
-	assoc group action {cmd G} bless {standard B} mask {1 0 1} name sub-expression}
+	assoc group action {cmd G} mask {1 0 1} name sub-expression}
     {priority {E POW E} -1
-	assoc right action {cmd ^} bless {standard C} mask {0 1 0} name power}
+	assoc right action {cmd ^} mask {0 1 0} name power}
     {priority {E MUL E} -2
-	assoc left  action {cmd *} bless {standard D} mask {0 1 0} name multiplier}
+	assoc left  action {cmd *} mask {0 1 0} name multiplier}
     {priority {E DIV E} -2
-	assoc left  action {cmd /} bless {standard E} mask {0 1 0} name divider}
+	assoc left  action {cmd /} mask {0 1 0} name divider}
     {priority {E ADD E} -3
-	assoc left  action {cmd +} bless {standard F} mask {0 1 0} name adder}
+	assoc left  action {cmd +} mask {0 1 0} name adder}
     {priority {E SUB E} -3
-	assoc left  action {cmd -} bless {standard G} mask {0 1 0} name subtractor}
+	assoc left  action {cmd -} mask {0 1 0} name subtractor}
 }}
 
 set E_g1_trace {
     {g1 remove E}
-    {g1 priority-rule E E((3)) 0 action {special hide} bless {standard undef} mask 0 assoc left}
-    {g1 priority-rule E((3)) E((2))               0 action {special hide} assoc left bless {standard undef} mask 0}
-    {g1 priority-rule E((2)) E((1))               0 action {special hide} assoc left bless {standard undef} mask 0}
-    {g1 priority-rule E((1)) E((0))                0 action {special hide} assoc left bless {standard undef} mask 0}
-    {g1 priority-rule E((0)) N                      0 action {cmd N} assoc left bless {standard A} mask 0 name number}
-    {g1 priority-rule E((0)) {PO E((3)) PC}        0 action {cmd G} assoc left bless {standard B} mask {1 0 1} name sub-expression}
-    {g1 priority-rule E((1)) {E((0)) POW E((1))}  0 action {cmd ^} assoc left bless {standard C} mask {0 1 0} name power}
-    {g1 priority-rule E((2)) {E((2)) MUL E((1))} 0 action {cmd *} assoc left bless {standard D} mask {0 1 0} name multiplier}
-    {g1 priority-rule E((2)) {E((2)) DIV E((1))} 0 action {cmd /} assoc left bless {standard E} mask {0 1 0} name divider}
-    {g1 priority-rule E((3)) {E((3)) ADD E((2))} 0 action {cmd +} assoc left bless {standard F} mask {0 1 0} name adder}
-    {g1 priority-rule E((3)) {E((3)) SUB E((2))} 0 action {cmd -} assoc left bless {standard G} mask {0 1 0} name subtractor}
+    {g1 priority-rule E E((3)) 0 action {special hide} mask 0 assoc left}
+    {g1 priority-rule E((3)) E((2))               0 action {special hide} assoc left mask 0}
+    {g1 priority-rule E((2)) E((1))               0 action {special hide} assoc left mask 0}
+    {g1 priority-rule E((1)) E((0))                0 action {special hide} assoc left mask 0}
+    {g1 priority-rule E((0)) N                      0 action {cmd N} assoc left mask 0 name number}
+    {g1 priority-rule E((0)) {PO E((3)) PC}        0 action {cmd G} assoc left mask {1 0 1} name sub-expression}
+    {g1 priority-rule E((1)) {E((0)) POW E((1))}  0 action {cmd ^} assoc left mask {0 1 0} name power}
+    {g1 priority-rule E((2)) {E((2)) MUL E((1))} 0 action {cmd *} assoc left mask {0 1 0} name multiplier}
+    {g1 priority-rule E((2)) {E((2)) DIV E((1))} 0 action {cmd /} assoc left mask {0 1 0} name divider}
+    {g1 priority-rule E((3)) {E((3)) ADD E((2))} 0 action {cmd +} assoc left mask {0 1 0} name adder}
+    {g1 priority-rule E((3)) {E((3)) SUB E((2))} 0 action {cmd -} assoc left mask {0 1 0} name subtractor}
 }
 
 set E_l0_trace {

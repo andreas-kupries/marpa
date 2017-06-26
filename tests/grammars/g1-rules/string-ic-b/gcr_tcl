@@ -8,7 +8,6 @@ grammar {
             A { {priority {{@LEX:@%STR:<CASE-INSENSITIVE\40STRING>}} 0
                     action {array values}
                     assoc left
-                    bless {special undef}
                     mask 0} }
         }
         terminal {

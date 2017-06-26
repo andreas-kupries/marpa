@@ -1,7 +1,7 @@
 GC comment definition A 0 1
 GC comment g1-definition A undef --> {JMP brick}
 
-	GC g1 priority-rule A {} 0 action {array {values start}} bless {special undef}
+	GC g1 priority-rule A {} 0 action {array {values start}}
 
 GC comment Semantics completion processing
 GC start! A

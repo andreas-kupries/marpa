@@ -3,13 +3,13 @@ GC comment g1-definition A undef --> {JMP brick}
 GC comment usage B 6 1
 GC comment g1-usage B undef --> {JMP floater}
 
-	GC g1 priority-rule A B 0 action {array values} bless {special undef} mask 0
+	GC g1 priority-rule A B 0 action {array values} mask 0
 
 GC comment g1-definition A brick --> NOP
 GC comment usage C 10 1
 GC comment g1-usage C undef --> {JMP floater}
 
-	GC g1 priority-rule A C 0 action {array values} bless {special undef} mask 0
+	GC g1 priority-rule A C 0 action {array values} mask 0
 
 GC comment definition B 13 1
 GC comment l0-definition B floater --> {JMP lexeme make-lexeme}

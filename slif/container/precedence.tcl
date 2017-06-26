@@ -50,17 +50,16 @@
 #
 # Notes on the priority rules in the result:
 # - All are at precedence level 0, assoc "left".
-# - In case of L0 the attributes action, bless, mask and assoc are
+# - In case of L0 the attributes action, mask and assoc are
 #   left out, otherwise see below.
 # - All from (3,4,5) have the
 #   -	action,
-#   -	bless,
 #   -	mask, and
 #   -	name
 #   of their origin rule.
 # - All from (1, 2) have
 #   -	action {special hide}, --  A form of `first` which prevents the
-#   -	empty bless              \ symbol from making its own AST node.
+#                                \ symbol from making its own AST node.
 #   -	mask {0}, and
 #   -	no name.
 
@@ -134,8 +133,8 @@ proc ::marpa::slif::precedence::rewrite1 {grcode lhs min alternatives} {
     # alternatives :: list(alter)
     # alter        :: tuple(rhs precedence ...)
     # rhs          :: list(symbol)
-    # ...          :: {*}dict ( name action assoc bless mask )
-    # action, assoc, bless, mask are G1 only
+    # ...          :: {*}dict ( name action assoc mask )
+    # action, assoc, mask are G1 only
     # assoc defaults to "left".
 
     # result :: list(commands)
@@ -148,7 +147,7 @@ proc ::marpa::slif::precedence::rewrite1 {grcode lhs min alternatives} {
     #   priority rules.
 
     set smin [S $min]
-    set attr [list action {special hide} bless {standard undef} mask {0}]
+    set attr [list action {special hide} mask {0}]
 
     # Rewrite (1) - Ground
     P $lhs [list $smin]
@@ -259,7 +258,6 @@ proc ::marpa::slif::precedence::P {sym rhs} {
     dict set newattr assoc left
     if {$grcode eq "l0"} {
 	dict unset newattr action
-	dict unset newattr bless
 	dict unset newattr mask
 	dict unset newattr assoc
     }

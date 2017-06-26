@@ -7,7 +7,6 @@ grammar {
         {} {
             A { {quantified B 1
                     action {array values}
-                    bless {special undef}
                     separator {C 0}} }
         }
         terminal {

@@ -1,9 +1,1 @@
-GC comment definition A 0 1
-GC comment g1-definition A undef --> {JMP brick}
-
-	GC g1 priority-rule A {} 0 action {array values} bless {special bar}
-
-GC comment Semantics completion processing
-GC start! A
-GC comment LATM fix 1
-GC comment DDE fix {}
+GC error Parsing\ failed.\ Stopped\ at\ offset\ 12\ after\ reading\ '='.\ Expected\ any\ character\ in\ \[#'(*+,:\;<\[\\\\s\\\\wacdeilns\\173|~\]\ while\ looking\ for\ any\ of\ (@lex-(,\ @lex-*,\ @lex-+,\ @lex-,,\ @lex-:default,\ @lex-:discard,\ @lex-:lexeme,\ @lex-:start,\ @lex-\;,\ @lex-action,\ @lex-assoc,\ @lex-current,\ @lex-discard,\ @lex-event,\ @lex-inaccessible,\ @lex-lexeme,\ @lex-name,\ @lex-start,\ @lex-\{,\ bare\ name,\ bracketed\ name,\ character\ class,\ hash\ comment,\ op\ declare\ bnf,\ op\ declare\ match,\ op\ equal\ priority,\ op\ loosen,\ single\ quoted\ string,\ whitespace).

@@ -7,13 +7,11 @@ grammar {
             E { {priority E((3)) 0
                     action {special hide}
                     assoc left
-                    bless {standard undef}
                     mask 0} }
             E((0)) {
                 {priority N 0
                         action {cmd N}
                         assoc left
-                        bless {standard A}
                         mask 0
                         name number}
                 {priority {
@@ -22,7 +20,6 @@ grammar {
                         PC} 0
                             action {cmd G}
                             assoc left
-                            bless {standard B}
                             mask {1 0 1}
                             name sub-expression}
             }
@@ -30,7 +27,6 @@ grammar {
                 {priority E((0)) 0
                         action {special hide}
                         assoc left
-                        bless {standard undef}
                         mask 0}
                 {priority {
                         E((0))
@@ -38,7 +34,6 @@ grammar {
                         E((1))} 0
                             action {cmd ^}
                             assoc left
-                            bless {standard C}
                             mask {0 1 0}
                             name power}
             }
@@ -46,7 +41,6 @@ grammar {
                 {priority E((1)) 0
                         action {special hide}
                         assoc left
-                        bless {standard undef}
                         mask 0}
                 {priority {
                         E((2))
@@ -54,7 +48,6 @@ grammar {
                         E((1))} 0
                             action {cmd *}
                             assoc left
-                            bless {standard D}
                             mask {0 1 0}
                             name multiplier}
                 {priority {
@@ -63,7 +56,6 @@ grammar {
                         E((1))} 0
                             action {cmd /}
                             assoc left
-                            bless {standard E}
                             mask {0 1 0}
                             name divider}
             }
@@ -71,7 +63,6 @@ grammar {
                 {priority E((2)) 0
                         action {special hide}
                         assoc left
-                        bless {standard undef}
                         mask 0}
                 {priority {
                         E((3))
@@ -79,7 +70,6 @@ grammar {
                         E((2))} 0
                             action {cmd +}
                             assoc left
-                            bless {standard F}
                             mask {0 1 0}
                             name adder}
                 {priority {
@@ -88,7 +78,6 @@ grammar {
                         E((2))} 0
                             action {cmd -}
                             assoc left
-                            bless {standard G}
                             mask {0 1 0}
                             name subtractor}
             }

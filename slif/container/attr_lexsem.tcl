@@ -35,8 +35,6 @@ oo::class create marpa::slif::container::attribute::lexsem {
 	marpa A   default  {array values}
 	marpa A   validate [mymethod v-action]
 	marpa C action
-	marpa A   validate [mymethod v-bless]
-	marpa C bless
 
 	next $container {*}$spec
 	return
@@ -69,17 +67,6 @@ oo::class create marpa::slif::container::attribute::lexsem {
 	    return $value
 	}
 	my E "Bad action type '$type', expected one of array, or cmd"
-	return
-    }
-
-    method v-bless {_validate_ value} {
-	debug.marpa/slif/container/attribute/lexsem {}
-	lassign $value type details
-	if {$type in {special standard}} {
-	    # TODO: check supported specials ?
-	    return $value
-	}
-	my E "Bad bless type '$type', expected one of special, or standard"
 	return
     }
 

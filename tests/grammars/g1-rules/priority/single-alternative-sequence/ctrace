@@ -9,7 +9,7 @@ GC comment g1-usage C undef --> {JMP floater}
 GC comment g1-usage D undef --> {JMP floater}
 GC comment g1-usage E undef --> {JMP floater}
 
-	GC g1 priority-rule A {B C D E} 0 action {array values} bless {special undef} mask {0 0 0 0}
+	GC g1 priority-rule A {B C D E} 0 action {array values} mask {0 0 0 0}
 
 GC comment definition B 15 1
 GC comment l0-definition B floater --> {JMP lexeme make-lexeme}

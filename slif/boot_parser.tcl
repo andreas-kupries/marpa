@@ -69,7 +69,7 @@ oo::class create marpa::slif::parser {
 	    @lex-(         1 @lex-)            1 @lex-*            1 @lex-+       1
 	    @lex-,         1 @lex-:default     1 @lex-:discard     1 @lex-:lexeme 1
 	    @lex-:start    1 @lex-\;           1 @lex-=            1 @lex-=>      1
-	    @lex-action    1 @lex-assoc        1 @lex-bless        1 @lex-by      1
+	    @lex-action    1 @lex-assoc        1                     @lex-by      1
 	    @lex-completed 1 @lex-current      1 @lex-default      1 @lex-discard 1
 	    @lex-event     1 @lex-fatal        1 @lex-forgiving    1 @lex-group   1
 	    @lex-high      1 @lex-inaccessible 1 @lex-is           1 @lex-latm    1
@@ -83,7 +83,7 @@ oo::class create marpa::slif::parser {
 	    {reserved event name}    1 {op declare bnf}	  1 {op declare match}     1
 	    {op loosen}              1 {op equal priority}  1 {before or after}      1
 	    {signed integer}         1 boolean              1 {reserved action name} 1
-	    {reserved blessing name} 1 {Perl name}          1 {bare name}            1
+	                               {Perl name}          1 {bare name}            1
 	    {standard name}          1 {bracketed name}     1 {array descriptor}     1
 	    {single quoted string}   1 {single quoted name} 1 {character class}      1
 	}
@@ -128,7 +128,6 @@ oo::class create marpa::slif::parser {
 	    {@lex-=>                                          := = >}
 	    {@lex-action                                      := a c t i o n}
 	    {@lex-assoc                                       := a s s o c}
-	    {@lex-bless                                       := b l e s s}
 	    {@lex-by                                          := b y}
 	    {@lex-completed                                   := c o m p l e t e d}
 	    {@lex-current                                     := c u r r e n t}
@@ -176,7 +175,6 @@ oo::class create marpa::slif::parser {
 	    {{signed integer}                                 := sign integer}
 	    {boolean                                          := @cc-bool}
 	    {{reserved action name}                           := {double colon} {one or more word characters}}
-	    {{reserved blessing name}                         := {double colon} {one or more word characters}}
 	    {{Perl name}                                      + {Perl identifier} {double colon}}
 	    {{bare name}                                      + @cc-word}
 	    {{standard name}                                  := @cc-letter {zero or more word characters}}
@@ -271,11 +269,10 @@ oo::class create marpa::slif::parser {
 	    {pause specification}    {event specification}
 	    {event initialization}    {event initializer}
 	    {on or off}    {event initializer}
-	    {latm specification}    {blessing}
+	    {latm specification}
 	    {naming}    {alternative name}
 	    {lexer name}    {event name}
-	    {blessing name}    lhs
-	    rhs    {rhs primary}
+	    lhs	    rhs    {rhs primary}
 	    {parenthesized rhs primary list}    {rhs primary list}
 	    {single symbol}    symbol
 	    {symbol name}    {action name}
@@ -362,7 +359,6 @@ oo::class create marpa::slif::parser {
 	    {{adverb list items match quantified}	* {adverb item match quantified}}
 
 	    {{adverb item default}		:= action}
-	    {{adverb item default}		:= blessing}
 	    {{adverb item default}		:= {null adverb}}
 
 	    {{adverb item discard}		:= {event specification}}
@@ -378,12 +374,10 @@ oo::class create marpa::slif::parser {
 	    {{adverb item discard default}	:= {null adverb}}
 
 	    {{adverb item lexeme default}	:= action}
-	    {{adverb item lexeme default}	:= blessing}
 	    {{adverb item lexeme default}	:= {latm specification}}
 	    {{adverb item lexeme default}	:= {null adverb}}
 
 	    {{adverb item bnf alternative}	:= action}
-	    {{adverb item bnf alternative}	:= blessing}
 	    {{adverb item bnf alternative}	:= {left association}}
 	    {{adverb item bnf alternative}	:= {right association}}
 	    {{adverb item bnf alternative}	:= {group association}}
@@ -391,7 +385,6 @@ oo::class create marpa::slif::parser {
 	    {{adverb item bnf alternative}	:= {null adverb}}
 
 	    {{adverb item bnf empty}		:= action}
-	    {{adverb item bnf empty}		:= blessing}
 	    {{adverb item bnf empty}		:= {left association}}
 	    {{adverb item bnf empty}		:= {right association}}
 	    {{adverb item bnf empty}		:= {group association}}
@@ -399,7 +392,6 @@ oo::class create marpa::slif::parser {
 	    {{adverb item bnf empty}		:= {null adverb}}
 
 	    {{adverb item bnf quantified}	:= action}
-	    {{adverb item bnf quantified}	:= blessing}
 	    {{adverb item bnf quantified}	:= {separator specification}}
 	    {{adverb item bnf quantified}	:= {proper specification}}
 	    {{adverb item bnf quantified}	:= {null adverb}}
@@ -436,7 +428,6 @@ oo::class create marpa::slif::parser {
 	    {{event initializer}		:= }
 	    {{latm specification}		:M {0 1} @lex-forgiving @lex-=> boolean}
 	    {{latm specification}		:M {0 1} @lex-latm @lex-=> boolean}
-	    {{blessing}				:M {0 1} @lex-bless @lex-=> {blessing name}}
 	    {{naming}				:M {0 1} @lex-name @lex-=> {alternative name}}
 	    {{alternative name}			:= {standard name}}
 	    {{alternative name}			:= {single quoted name}}
@@ -445,8 +436,6 @@ oo::class create marpa::slif::parser {
 	    {{event name}			:= {standard name}}
 	    {{event name}			:= {single quoted name}}
 	    {{event name}			:= {reserved event name}}
-	    {{blessing name}			:= {standard name}}
-	    {{blessing name}			:= {reserved blessing name}}
 	    {lhs				:= {symbol name}}
 	    {rhs				+ {rhs primary}}
 	    {{rhs primary}			:= {single symbol}}
