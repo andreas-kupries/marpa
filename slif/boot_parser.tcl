@@ -55,7 +55,7 @@ oo::class create marpa::slif::parser {
 	    @cc-vertical       {[\n\v\f\r\u2028\u2029]}
 	    @cc-nvq            {[^'\n\v\f\r\u2028\u2029]}
 	    @cc-nvcbr          {[^\135\n\v\f\r\u2028\u2029\u0085]}
-	    @cc-nv             {[^\n\11\12\r\u2028\u2029]}
+	    @cc-nv             {[^\n\v\f\r\u2028\u2029]}
 	    @cc-letter         {[a-zA-Z]}
 	}
     }
