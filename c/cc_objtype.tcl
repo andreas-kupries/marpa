@@ -209,6 +209,19 @@ critcl::ccode {
     }
     
     static int
+    marpa_scr_bad_range (Tcl_Interp* ip, int start, int end) {
+	char buf [100];
+	if (start <= end) {
+	    return 0;
+	}
+	sprintf (buf, "Range empty (end (%d) before start (%d))",
+		 start, end);
+	Tcl_SetErrorCode (ip, "MARPA", NULL);
+	Tcl_SetObjResult (ip, Tcl_NewStringObj(buf,-1));
+	return 1;
+    }
+    
+    static int
     marpa_scr_rep_from_any (Tcl_Interp* ip, Tcl_Obj* o)
     {
 	/*
@@ -262,12 +275,8 @@ critcl::ccode {
 		if ((Tcl_GetIntFromObj (ip, robjv[0], &start) != TCL_OK) ||
 		    marpa_scr_bad_codepoint (ip, "Range (start)", start) ||
 		    (Tcl_GetIntFromObj (ip, robjv[1], &end) != TCL_OK) ||
-		    marpa_scr_bad_codepoint (ip, "Range (end)", end)) {
-		    goto fail;
-		}
-		if (end < start) {
-		    Tcl_SetErrorCode (ip, "MARPA", NULL);
-		    Tcl_SetObjResult (ip, Tcl_NewStringObj("Range empty (end before start)" ,-1));
+		    marpa_scr_bad_codepoint (ip, "Range (end)", end) ||
+		    marpa_scr_bad_range(ip, start, end)) {
 		    goto fail;
 		}
 		TRACE (("++ (%d...%d)", start, end));
