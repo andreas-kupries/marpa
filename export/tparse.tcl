@@ -294,6 +294,13 @@ proc ::marpa::export::tparse::NegC {spec} {
 
 proc ::marpa::export::tparse::CX {code} {
     switch -exact -- $code {
+	1  { return "\\001" }
+	2  { return "\\002" }
+	3  { return "\\003" }
+	4  { return "\\004" }
+	5  { return "\\005" }
+	6  { return "\\006" }
+	7  { return "\\007" }
 	45 { return "\\055" }
 	93 { return "\\135" }
     }
