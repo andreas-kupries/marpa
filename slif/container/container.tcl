@@ -59,6 +59,9 @@ oo::class create marpa::slif::container {
     forward lexeme-semantics? LS get
     forward start?            GA get start
 
+    # Ignore comments from the semantics
+    method comment {args} {}
+
     # # -- --- ----- -------- -------------
     ## Further public API - Introspection, (de)serialization, ...
 
