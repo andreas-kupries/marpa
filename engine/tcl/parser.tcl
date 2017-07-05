@@ -21,6 +21,14 @@ package require oo::util      ;# mymethod
 
 debug define marpa/parser
 debug prefix marpa/parser {[debug caller] | }
+debug define marpa/parser/stream
+debug prefix marpa/parser/stream {}
+debug define marpa/parser/report
+debug prefix marpa/parser/report {}
+debug define marpa/parser/forest
+debug prefix marpa/parser/forest {}
+debug define marpa/parser/forest/save
+debug prefix marpa/parser/forest/save {}
 
 # # ## ### ##### ######## #############
 ##
@@ -68,8 +76,17 @@ oo::class create marpa::parser {
     ## Lifecycle
 
     constructor {semstore semantics asthandler} {
-	debug.marpa/parser {[marpa::D {
-	    marpa::import $semstore Store ;# Debugging only.
+	# Debugging and tag specific initializations
+	debug.marpa/parser        {[marpa::D { marpa::import $semstore Store }]}
+	debug.marpa/parser/stream {[marpa::D { catch { marpa::import $semstore Store } }]}
+	debug.marpa/parser/report {[marpa DX {Activate progress reports...} {
+	    oo::objdefine [self] mixin marpa::engine::debug
+	}]}
+	debug.marpa/parser/forest/save {[marpa DX {Activate saved forest reports...} {
+	    debug on marpa/parser/forest
+	}]}
+	debug.marpa/parser/forest {[marpa DX {Activate forest reports...} {
+	    oo::objdefine [self] mixin marpa::engine::debug
 	}]}
 
 	next $asthandler
@@ -130,7 +147,9 @@ oo::class create marpa::parser {
     }
 
     method enter {syms sv} {
-	debug.marpa/parser {See '[join [my 2Name $syms] {' '}]' ([marpa location show [Store get $sv]])}
+	debug.marpa/parser {(([my DIds $syms])) @([my DLocation $sv])}
+	debug.marpa/parser/report {[my progress-report-current]}
+	debug.marpa/parser/stream {(([my DIds $syms]))	 @ [my DLocation $sv]}
 
 	if {![llength $syms]} {
 	    # The input has no acceptable symbols waiting.
@@ -180,6 +199,7 @@ oo::class create marpa::parser {
 
     method eof {} {
 	debug.marpa/parser {}
+	debug.marpa/parser/stream {EOF}
 
 	# Flush everything pending in the local recognizer to the
 	# backend before signaling eof to the asthandler.
@@ -196,6 +216,7 @@ oo::class create marpa::parser {
     # TODO: XXX fail - integrate into sequencing
     method fail {cv} {
 	debug.marpa/parser {}
+	debug.marpa/parser/stream {FAIL}
 	upvar 1 $cv context
 
 	# The parser has nothing to say at the moment regarding the
@@ -316,9 +337,12 @@ oo::class create marpa::parser {
 	# the latest earleme. If not we generate suitable parse error
 	# messages. (report ?)
 
+	debug.marpa/parser/report {[my progress-report-current]}
+
 	set latest [RECCE latest-earley-set]
 	while {[catch {
-	    debug.marpa/parser {Check at $latest}
+	    debug.marpa/parser        {Check @$latest}
+	    debug.marpa/parser/forest {[debug caller] | Check @$latest}
 	    RECCE forest create FOREST $latest
 	}]} {
 	    incr latest -1
@@ -343,6 +367,8 @@ oo::class create marpa::parser {
 	set steps {}
 	while {![catch {
 	    lappend steps [FOREST get-parse]
+	    debug.marpa/parser/forest {[my parse-tree [lindex $steps end]]}
+	    debug.marpa/parser/forest/save {[my dump-parse-tree "TP.${latest}.[incr fcounter]" [lindex $steps end]]}
 	}]} {}
 	FOREST destroy
 
@@ -354,6 +380,7 @@ oo::class create marpa::parser {
 	# Evaluate the parses with the configured semantics, and hand
 	# the resulting semantic value to the backend, immediately.
 
+	# TODO ? Tell the semantics or backend how many trees are there to handle ?
 	foreach tree $steps {
 	    Forward enter [Semantics eval $tree]
 	}

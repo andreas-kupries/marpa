@@ -31,6 +31,8 @@ package require debug::caller 1.1
 
 debug define marpa/gate
 #debug prefix marpa/gate {[debug caller] | }
+debug define marpa/gate/stream
+#debug prefix marpa/gate/stream {[debug caller] | }
 
 # # ## ### ##### ######## #############
 ## Entry object for character streams.
@@ -165,6 +167,7 @@ oo::class create marpa::gate {
 
     method eof {} {
 	debug.marpa/gate {[debug caller] | }
+	debug.marpa/gate/stream {EOF}
 	Forward eof
 	return
     }
@@ -190,6 +193,7 @@ oo::class create marpa::gate {
 
     method enter {char value} {
 	debug.marpa/gate {[debug caller 1] | See '[char quote cstring $char]' ([marpa location show [Store get $value]])}
+	debug.marpa/gate/stream {'[char quote cstring $char]'	 @ [marpa location show [Store get $value]]}
 
 	set mylastchar  $char
 	set mylastvalue $value
@@ -391,6 +395,7 @@ oo::class create marpa::gate {
 	# Remember the spec for future lazy membership tests on
 	# unknown characters.
 	foreach {name spec} $classes id $syms {
+	    debug.marpa/gate {[debug caller 1] | Map $name = <<((${spec}))>>}
 	    # Extend the character map with class membership
 	    # information.
 	    dict set myclass $name [list $spec $id]

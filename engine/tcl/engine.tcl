@@ -8,10 +8,14 @@
 # Common class to lexer and parser. Holds the data structures for
 # mapping symbol names to ids, and the methods to define a grammar.
 
-# TODO: strict vs easy mode.
-# TODO: In easy mode a symbol is automatically created when found in a rule and not known.
-# TODO: strict mode throws an error instead.
-# TODO: Currently we only have strict mode.
+# Note: strict vs easy.  In an 'easy' implementation a symbol would be
+# automatically created when found in a rule and not known. A 'strict'
+# implementation throws an error instead. This implementation is
+# strict.  We will not implement 'easy'. This is ok because this is
+# part of a runtime targeted at gneerated lexers and parsers, and the
+# generator can trivially make sure that all symbols are known before
+# use in rules. Only the boot parser for SLIF needed manual
+# configuration.
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -42,10 +46,11 @@ oo::class create marpa::engine {
     # associated local ACS id.
     #
     # Map from rules (ids) to their lhs, for debugging output
+    # -- TODO -- check if the data truly is debug only
 
-    variable mymap    ;# sym name        -> id:local
-    variable myrmap   ;# sym id:local    -> name
-    variable myrule   ;# rule id         -> lhs sym id
+    variable mymap    ;# sym name     -> id:local
+    variable myrmap   ;# sym id:local -> name
+    variable myrule   ;# rule id      -> list (lhs sym id, list (rhs sym id))
 
     ##
     # API self:
@@ -124,54 +129,13 @@ oo::class create marpa::engine {
     }
 
     # # ## ### ##### ######## #############
-    ## Debug support - Higher level progress report for a location.
-
-    method report {location} {
-	package require struct::matrix
-	# TODO: Consider placement of this method into a mixin
-	# That way we avoid the matrix dependency in general code.
-	struct::matrix M
-	M add columns 5
-#Cols = rule id, multiplier, origin
-	array set map {}
-
-	set n [RECCE report-start $location]
-	for {} {$n > 0} {incr n -1} {
-	    lassign [RECCE report-next] rule dot origin
-	    # TODO: Compute human readable fields
-	    # Note: Collapse identical rules into one entry.
-	    # - Use a matrix, and map from rule-ids to rows
-
-
-
-
-	}
-	RECCE report-finish
-	# TODO post-process matrix, format, and return
-    }
-
-    # # ## ### ##### ######## #############
-    ## Internal support - Data access
-
-    method LHSid {id} {
-	debug.marpa/engine {[debug caller] | }
-	return [dict get $myrule $id]
-    }
-
-    method LHSname {id} {
-	debug.marpa/engine {[debug caller] | }
-	return [my 2Name1 [dict get $myrule $id]]
-    }
-
-    # # ## ### ##### ######## #############
     ## Internal support - Data management (setup)
 
     method := {lhs __ args} {
 	debug.marpa/engine {[debug caller] | }
 	set lhsid  [my 2ID1 $lhs]
 	set rhsids [my 2ID  $args]
-	set id [GRAMMAR rule-new $lhsid {*}$rhsids]
-	return [my Rule $id $lhsid]
+	return [my RuleP $lhsid {*}$rhsids]
     }
 
     method * {lhs __ loop {separator {}} {proper no}} {
@@ -186,54 +150,76 @@ oo::class create marpa::engine {
 
     method SEQ {lhs loop separator proper positive} {
 	debug.marpa/engine {[debug caller] | }
-
 	set lhsid  [my 2ID1 $lhs]
 	set loopid [my 2ID1 $loop]
 	set sepid  [expr {$separator eq {} ? -1 : [my 2ID1 $separator]}]
-
 	# lhs * loop,separator,proper
-	set id [GRAMMAR rule-sequence-new $lhsid $loopid $sepid $positive $proper]
-	return [my Rule $id $lhsid]
+	return [my RuleS $lhsid  $loopid $sepid $positive $proper]
     }
 
-    method Rule {id lhsid} {
-	# Remember the mapping from rule to generated symbol, for
-	# debugging output
+    method RuleP {lhsid args} {
+	# Remember the mapping from rule to generating symbol and its
+	# specification, for debugging output (See method `report`, et al)
 	debug.marpa/engine {[debug caller] | }
-	dict set myrule $id $lhsid
-	return $id
+	set rid [GRAMMAR rule-new $lhsid {*}$args]
+	dict set myrule $rid [list $lhsid $args]
+	return $rid
     }
 
-    method 2ID* {args} {
-	return [my 2ID $args]
+    method RuleS {lhsid loopid sepid positive proper} {
+	# Remember the mapping from rule to generating symbol and its
+	# specification, for debugging output (See method `report`, et al)
+	debug.marpa/engine {[debug caller] | }
+	set rid [GRAMMAR rule-sequence-new $lhsid $loopid $sepid $positive $proper]
+	dict set myrule $rid [list $lhsid [list $loopid]]
+	return $rid
     }
-    method 2ID {names} {
-	set ids {}
-	foreach name $names { lappend ids [my 2ID1 $name] }
-	return $ids
-    }
+
+    # # ## ### ##### ######## #############
+    ## Convert between symbol names and ids (local)
+    ## NOTE: Current use mixes debugging and generation of data for semantics.
+    ## Consider disentangling the two uses.
+    
+    method 2ID* {args}  { my 2ID $args }
+    method 2ID  {names} { lmap name $names { my 2ID1 $name } }
     method 2ID1 {name} {
 	if {![dict exists $mymap $name]} {
-	    my E "Unknown symbol \"$name\"" UNKNOWN SYMBOL
+	    my E "Unknown symbol \"$name\"" UNKNOWN SYMBOL $name
 	}
 	return [dict get $mymap $name]
     }
 
-    method 2Name* {args} {
-	return [my 2Name $args]
-    }
-    method 2Name {ids} {
-	set names {}
-	foreach id $ids { lappend names [my 2Name1 $id] }
-	return $names
-    }
+    method 2Name* {args} { my 2Name $args }
+    method 2Name  {ids}  { lmap id $ids { my 2Name1 $id } }
     method 2Name1 {id} {
 	if {![dict exists $myrmap $id]} {
-	    my E "Bad id \"$id\"" BAD ID
+	    my E "Bad id \"$id\"" BAD ID $id
 	}
 	return [dict get $myrmap $id]
     }
 
+    # # ## ### ##### ######## #############
+
+    method DNames    {names} { return <[join $names {> <}]> }
+    method DIds      {ids}   { my DNames [my 2Name $ids] }
+    method DLocation {sv}    { return [marpa location show [Store get $sv]] }
+
+    # # ## ### ##### ######## #############
+    ## Internal support - Data access
+    
+    method RuleData {rid} {
+	debug.marpa/engine {[debug caller] | }
+	return [dict get $myrule $rid]
+    }
+
+    method RuleNameData {rid} {
+	debug.marpa/engine {[debug caller] | }
+	lassign [dict get $myrule $rid] lhs rhs
+	return [list [my 2Name1 $lhs] [my 2Name $rhs]]
+    }
+
+    # # ## ### ##### ######## #############
+    
     method Freeze {} {
 	debug.marpa/engine {[debug caller] | }
 	# Freeze grammar, prevent further editing

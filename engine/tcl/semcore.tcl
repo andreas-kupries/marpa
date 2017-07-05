@@ -160,7 +160,7 @@ oo::class create marpa::semcore {
 			dict set details sv     [TSV [Store get $value]]
 		    }
 		    rule  {
-			dict set details lhs    [Engine LHSname $id]
+			dict set details lhs    [lindex [Engine RuleNameData $id] 0]
 			dict set details filter [dict exists $mymask $id]
 		    }
 		    null  { dict set details symbol [Engine 2Name1  $id] }

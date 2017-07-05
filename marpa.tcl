@@ -115,9 +115,10 @@ critcl::tsources engine/tcl/semstore.tcl  ; # Store for semantic values (interni
 critcl::tsources engine/tcl/semcore.tcl   ; # Common core for the execution of step instructions.
 critcl::tsources engine/tcl/inbound.tcl   ; # Character streamer.
 critcl::tsources engine/tcl/gate.tcl      ; # Character translation, class handling, symbol gating
-critcl::tsources engine/tcl/engine.tcl    ; # Base class for lexer, parser
-critcl::tsources engine/tcl/lexer.tcl     ; # Lexer, aggregate characters to lexemes
-critcl::tsources engine/tcl/parser.tcl    ; # Parser, structure lexemes into ASTs
+critcl::tsources engine/tcl/engine.tcl       ; # Base class for lexer, parser
+critcl::tsources engine/tcl/engine_debug.tcl ; # - Debugging support, active on request
+critcl::tsources engine/tcl/lexer.tcl        ; # Lexer, aggregate characters to lexemes
+critcl::tsources engine/tcl/parser.tcl       ; # Parser, structure lexemes into ASTs
 
 critcl::tsources engine/tcl/rt_lex.tcl    ; # Engine assembly / Runtime: Lexer
 critcl::tsources engine/tcl/rt_parse.tcl  ; # Engine assembly / Runtime: Lexer+Parser

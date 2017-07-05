@@ -5,12 +5,34 @@
 ##
 # This code is BSD-licensed.
 
-# Lexer based on a low-level grammar and per-lexeme
-# recognizer. Usually driven by a combination of "marpa::inbound" and
-# "marpa::gate". Takes a stream of symbols (chars, char-classes) and
-# runs them through a recognizer. Sets of acceptable char(classes) are
-# fed back to the attached 'gate' pre-processor. Another point, this
-# processor has its semantics integrated with itself.
+# Lexer based on a low-level grammar and per-lexeme recognizer.
+# Usually driven by a combination of "marpa::inbound" and
+# "marpa::gate" instances. Takes a stream of symbols (characters and
+# character classes) and runs them through a recognizer. Sets of
+# acceptable character(classes) are fed back to the attached 'gate'
+# pre-processor. Another point, this processor has its semantics
+# integrated with itself.
+
+# More notes:
+#
+# - LTM  : Longest Token Match
+# - LATM : Longest Acceptable Token Match
+# - ACS  : Acceptability Control Symbol
+#
+# __All__ lexemes, regardless of mode, and discard have an ACS which
+# controls if they can be matched or not. LTM mode (and discards) are
+# handled by having their ACS symbol always an acceptable alternative
+# (see method `acceptable`). The main point of always having an ACS
+# symbol is to make other places simpler, i.e. without conditionals to
+# handle LTM vs LATM, etc.
+#
+# The lexer RECCE has a single synthetic start symbol which has
+# alternatives, i.e. rules for each lexeme or discard. The rule has a
+# two element RHS, ACS first, and actual symbol to match second. I.e,
+# as example, for lexeme `foo` the rule is
+#
+#  @START --> ACS:foo foo
+#
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -23,6 +45,14 @@ package require oo::util      ;# mymethod
 
 debug define marpa/lexer
 #debug prefix marpa/lexer {[debug caller] | }
+debug define marpa/lexer/stream
+#debug prefix marpa/lexer/stream {[debug caller] | }
+debug define marpa/lexer/report
+#debug prefix marpa/lexer/report {[debug caller] | }
+debug define marpa/lexer/forest
+#debug prefix marpa/lexer/forest {[debug caller] | }
+debug define marpa/lexer/forest/save
+#debug prefix marpa/lexer/forest/save {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
@@ -38,7 +68,9 @@ oo::class create marpa::lexer {
     # Static
     variable mypublic     ;# sym id:local  -> (id:parser, parts)
     variable myacs        ;# sym id:parser -> id:acs:local
-    variable mydiscard    ;# Set of ACS for discarded lexemes
+    variable myalways     ;# Set of ACS for discarded symbols and LTM
+			   # lexemes, i.e. symbols which are always
+			   # acceptable
 
     # Dynamic
     variable myparts      ;# Sem value definition for the following exports
@@ -48,7 +80,7 @@ oo::class create marpa::lexer {
 
     # Dynamic
     variable myacceptable ;# Remembered (last call of 'Acceptable')
-			   # set of parser acceptable symbols.
+			   # set of the parser's acceptable symbols.
 			   # Required for the regeneration of our
 			   # recognizer after a discarded lexeme was
 			   # found in the input.
@@ -96,6 +128,15 @@ oo::class create marpa::lexer {
 
     constructor {semstore parser} {
 	debug.marpa/lexer {[debug caller] | }
+	debug.marpa/lexer/report {[marpa DX {Activate progress reports...} {
+	    oo::objdefine [self] mixin marpa::engine::debug
+	}]}
+	debug.marpa/lexer/forest/save {[marpa DX {Activate saved forest reports...} {
+	    debug on marpa/lexer/forest
+	}]}
+	debug.marpa/lexer/forest {[marpa DX {Activate forest reports...} {
+	    catch { oo::objdefine [self] mixin marpa::engine::debug }
+	}]}
 
 	next $parser
 
@@ -110,7 +151,7 @@ oo::class create marpa::lexer {
 	set mypublic  {}
 	set myacs     {}
 	set myparts   value ;# Default: lexeme literal semantics
-	set mydiscard {}
+	set myalways  {}
 	set mynull    [Store put [marpa location null]]
 	set mystart   {}
 
@@ -147,23 +188,22 @@ oo::class create marpa::lexer {
 
 	set allnames [dict keys $names]
 	set local    [my symbols $allnames]
-	set acs      {}
-	dict for {n latm} $names {
-	    if {$latm} {
-		lappend acs {*}[my symbols [my ToACS [list $n]]]
-	    } else {
-		lappend acs {}
-	    }
-	}
-	set parse [Forward symbols $allnames]
+	set acs      [my symbols [my ToACS $allnames]]
+	set parse    [Forward symbols $allnames]
 
 	# Map from local to parser symbol     (id -> id)
 	# Map from parser to local ACS symbol (id -> id)
 	foreach s $local p $parse a $acs n $allnames {
-	    set latm [dict get $names $n]	
-	    dict set mypublic $s [list $p $myparts $latm]
+	    dict set mypublic $s [list $p $myparts]
 	    dict set myacs    $p $a
 
+	    set latm [dict get $names $n]
+	    if {!$latm} { lappend myalways $a }
+	    # NOTE (%%): Here and method `acceptable` are the two
+	    # points where the difference between the LATM and LTM
+	    # match disciplines is injected into the runtime. We do
+	    # this by always activating the ACS for LTM symbols.
+	    
 	    debug.marpa/lexer {[debug caller 1] | PUBLIC ($n) = local:$s --> up:$p}
 	    debug.marpa/lexer {[debug caller 1] | ACS    ($n) = up:$p --> local:$a}
 	}
@@ -189,42 +229,32 @@ oo::class create marpa::lexer {
 
 	# Note how the ACS is added to these internal rules from the
 	# internal start symbol to the exported and discard symbols.
-	# Doing it here avoids cluttering the engine with
+	# Doing it here avoids cluttering the base engine with
 	# lexer-specific data and code. No special rules, no wrapper
 	# rules for quantified rules. Only the helper rules here.
 
-	# NOTE: This is the point where the difference between the
-	# LATM and LTM match disciplines is injected into the runtime.
-	# We do this by adding the ACS in front of the rules of the
-	# exported LATM symbols, and only them.
-
 	foreach symid [dict keys $mypublic] {
-	    lassign [dict get $mypublic $symid] pid parts latm
+	    lassign [dict get $mypublic $symid] pid parts
 	    set acs [dict get $myacs $pid]
+	    set rid [my RuleP $start  $acs $symid]
 
-	    if {$latm} {
-		set id [GRAMMAR rule-new $start $acs $symid]
-	    } else {
-		set id [GRAMMAR rule-new $start $symid]
-	    }
-	    my Rule $id $start ;# required for semantics debug narrative
-
-	    set parts [my CompleteParts $parts $symid $pid $id]
+	    # TODO: Precompute the information for builtin semantics in the generator.
+	    set parts [my CompleteParts $parts $symid $pid $rid]
 
 	    # (:D:) Set semantic, lexeme parser symbol, and per-lexeme semantic value
-	    GetSymbol add-rule $id [list marpa::semstd::K $pid]
-	    GetString add-rule $id [list marpa::semstd::builtin $parts]
+	    GetSymbol add-rule $rid [list marpa::semstd::K $pid]
+	    GetString add-rule $rid [list marpa::semstd::builtin $parts]
 	}
 
-	set mydiscard [my symbols [my ToACS $discards]]
+	foreach sym $discards acs [my symbols [my ToACS $discards]] {
+	    lappend myalways $acs
+	    set id  [my 2ID1 $sym]
+	    set rid [my RuleP $start  $acs $id]
 
-	foreach sym $discards acs $mydiscard {
-	    set id [my 2ID1 $sym]
-	    set id [GRAMMAR rule-new $start   $acs $id]
-	    my Rule $id $start ;# required for semantics debug narrative
+	    dict set myacs $acs $acs
 
 	    # (:D:) set semantics, discard marker. Nothing for semantic value.
-	    GetSymbol add-rule $id [list marpa::semstd::K -1]
+	    GetSymbol add-rule $rid [list marpa::semstd::K -1]
 	}
 
 	my Freeze
@@ -232,7 +262,9 @@ oo::class create marpa::lexer {
     }
 
     method enter {syms sv} {
-	debug.marpa/lexer {[debug caller] | See '[join [my 2Name $syms] {' '}]' ([marpa location show [Store get $sv]])}
+	debug.marpa/lexer {[debug caller] | ([my DIds $syms]) @([my DLocation $sv])}
+	debug.marpa/lexer/report {[my progress-report-current]}
+	debug.marpa/lexer/stream {([my DIds $syms])	 @ [my DLocation $sv]}
 
 	if {$mystart eq {}} {
 	    lassign [Store get $sv] mystart __ __
@@ -257,6 +289,7 @@ oo::class create marpa::lexer {
 	foreach sym $syms {
 	    RECCE alternative $sym $sv 1
 	}
+	
 	try {
 	    RECCE earleme-complete
 	} trap {MARPA PARSE_EXHAUSTED} {e o} {
@@ -288,6 +321,7 @@ oo::class create marpa::lexer {
 	upvar 1 $cv context
 
 	my ExtendContext context
+	debug.marpa/lexer/stream {FAIL}
 	Forward fail context
 
 	# Note: This method must not return, but throw an error at
@@ -318,6 +352,8 @@ oo::class create marpa::lexer {
 	    my Complete
 	}
 
+	debug.marpa/lexer/stream {EOF}
+
 	#  Note that the flush leaves us with a just-started
 	# recognizer, which we have to remove again.
 	if {$myrecce ne {}} {
@@ -342,14 +378,17 @@ oo::class create marpa::lexer {
 	set mystart {}
 
 	RECCE start-input
-	if {[llength $syms] || [llength $mydiscard]} {
-	    foreach s $syms {
-		debug.marpa/lexer {[debug caller 1] | U ==> $s '[my 2Name1 $s]'}
+	debug.marpa/lexer/report {[my progress-report-current]}
+	debug.marpa/lexer/stream {START ([my DIds $syms])}
+
+	if {[llength $syms] || [llength $myalways]} {
+	    # NOTE (%%): Here and method `export` are the two points
+	    # where the difference between the LATM and LTM match
+	    # disciplines is injected into the runtime. We do this by
+	    # always activating the ACS for LTM symbols (and discards).
+	    foreach s [lsort -unique [concat $syms $myalways]] {
+		debug.marpa/lexer {[debug caller 1] | U ==> $s <[my 2Name1 $s]>}
 		RECCE alternative [dict get $myacs $s] $mynull 1
-	    }
-	    foreach s $mydiscard {
-		debug.marpa/lexer {[debug caller 1] | D ==> $s '[my 2Name1 $s]'}
-		RECCE alternative $s $mynull 1
 	    }
 	    RECCE earleme-complete
 	    # Tcl 8.6: lmap
@@ -391,20 +430,25 @@ oo::class create marpa::lexer {
 	return $result
     }
 
-    # Helper for debug narrative. No other use.
-    method ACS {idlist} {
-	set r {}
-	foreach id $idlist { lappend r [my 2Name1 [dict get $myacs $id]] }
-	return $r
+    # # ## ### ##### ######## #############
+    ## Helper for debug narrative. No other use.
+    
+    method FromACS {ids} {
+	# For lexemes map the parser symbol ids back to their lexer
+	# symbols. For LATM-mode lexemes this is their ACS symbol,
+	# otherwise their regular lexer symbol.
+	lmap id $ids { dict get $myacs $id }
     }
 
+    method ToACS1 {name} { return "ACS:$name" }
     method ToACS {names} {
+	# symbol names transformed into symbol names for ACS
 	debug.marpa/engine {[debug caller] | }
-	set r {}
-	foreach name $names { lappend r ACS:$name }
-	return $r
+	lmap name $names { my ToACS1 $name }
     }
 
+    # # ## ### ##### ######## #############
+    
     method Complete {} {
 	debug.marpa/lexer {[debug caller] | }
 
@@ -419,13 +463,13 @@ oo::class create marpa::lexer {
 	set redo   0
 
 	while {[catch {
-	    debug.marpa/lexer {[debug caller] | Check at $latest}
+	    debug.marpa/lexer        {[debug caller] | Check @$latest}
+	    debug.marpa/lexer/forest {[debug caller] | Check @$latest}
 	    RECCE forest create FOREST $latest
 	} msg o]} {
 	    incr redo
 	    incr latest -1
 	    if {$latest < 0} {
-
 		my get-context context
 
 		# The current recognizer is done.
@@ -450,6 +494,9 @@ oo::class create marpa::lexer {
 	set forest {}
 	while {![catch {
 	    lappend forest [FOREST get-parse]
+	    debug.marpa/lexer/forest {__________________________________________ Tree [incr fcounter] ([llength [lindex $forest end]])}
+	    debug.marpa/lexer/forest {[my parse-tree [lindex $forest end]]}
+	    debug.marpa/lexer/forest/save {[my dump-parse-tree "TL.@${mystart}+${latest}.$fcounter" [lindex $forest end]]}
 	}]} {}
 	FOREST destroy
 
@@ -502,7 +549,7 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | Recognized: $recognized}
 	debug.marpa/lexer {[debug caller] | Discarded:  $discarded}
 	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] ($found)}
-	debug.marpa/lexer {[debug caller] | Semantic:   $sv ([expr {($sv < 0) ? "" : [marpa location show [Store get $sv]]}])}
+	debug.marpa/lexer {[debug caller] | Semantic:   $sv ([expr {($sv < 0) ? "" : [my DLocation $sv]}])}
 
 	# NOTE! Due to the usage of ACS when the RECCE was initalized
 	# at this point we can have only a subset of the acceptable
@@ -515,13 +562,15 @@ oo::class create marpa::lexer {
 	RECCE destroy
 	set myrecce {}
 
-	debug.marpa/lexer {[debug caller] | Have '[join [my ACS $found] {' '}]' ${sv}=([expr {($sv < 0) ? "" : [marpa location show [Store get $sv]]}])}
+	debug.marpa/lexer {[debug caller] | Have (([my DIds [my FromACS $found]])) ${sv}=([expr {($sv < 0) ? "" : [my DLocation $sv]}])}
 
 	if {($recognized > 0) && ($recognized == $discarded)} {
 	    # We found symbols, and only discarded symbols.
 	    # Restart lexing without informing the parser, keeping
 	    # to the current set of acceptable symbols
 	    debug.marpa/lexer {[debug caller] | Discard ...}
+
+	    debug.marpa/lexer/stream {FIN, discard}
 
 	    my acceptable $myacceptable
 
@@ -534,6 +583,7 @@ oo::class create marpa::lexer {
 	    debug.marpa/lexer {[debug caller] | Push ...}
 
 	    # ASSERT (sv >= 0)
+	    debug.marpa/lexer/stream {FIN, push: (([my DIds [my FromACS $found]]))}
 	    Forward enter $found $sv
 
 	    debug.marpa/lexer {[debug caller] | ... Ok}
@@ -556,15 +606,9 @@ oo::class create marpa::lexer {
 	# information, i.e. which were acceptable to the parser.
 	# Then forward to the parser for his take.
 
-	foreach s $myacceptable {
-	    lappend acceptable [string range [my 2Name1 [dict get $myacs $s]] 4 end]
-	}
-	foreach s $mydiscard {
-	    lappend acceptable [string range [my 2Name1 $s] 4 end]
-	}
-	# Note: The string range strips the 'ACS:' prefix from the symbol names.
-
-	dict set context g1 acceptable [lsort -dict $acceptable]
+	dict set context g1 acceptable [lsort -dict [lmap s [my 2Name [my FromACS [lsort -unique [concat $myacceptable $myalways]]]] {
+	    string map {ACS: {}} $s
+	}]]
 	return
     }
 
