@@ -55,6 +55,7 @@ oo::class create marpa::slif::parser {
 	    @cc-vertical       {[\n\v\f\r\u2028\u2029]}
 	    @cc-nvq            {[^'\n\v\f\r\u2028\u2029]}
 	    @cc-nvcbr          {[^\135\n\v\f\r\u2028\u2029\u0085]}
+	    @cc-nvnb           {[^\134\n\v\f\r\u2028\u2029\u0085]}
 	    @cc-nv             {[^\n\v\f\r\u2028\u2029]}
 	    @cc-letter         {[a-zA-Z]}
 	}
@@ -219,7 +220,7 @@ oo::class create marpa::slif::parser {
 	    {{cc elements}                                    + {cc element}}
 	    {{cc element}                                     := {safe cc character}}
 	    {{cc element}                                     := {escaped cc character}}
-	    {{safe cc character}                              := @cc-nv}
+	    {{safe cc character}                              := @cc-nvnb}
 	    {{escaped cc character}                           := \\ {horizontal character}}
 	    {{cc element}                                     := {posix char class}}
 	    {{cc element}                                     := {negated posix char class}}
