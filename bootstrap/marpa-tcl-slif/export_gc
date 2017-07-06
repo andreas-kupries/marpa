@@ -611,14 +611,14 @@ oo::class create <Name> {
 	                        {priorities bnf}} 0
 	                            action {array {start length values}}
 	                            assoc left
-	                            mask {0 0 0}}
+	                            mask {0 1 0}}
 	                {priority {
 	                        lhs
 	                        {op declare match}
 	                        {priorities match}} 0
 	                            action {array {start length values}}
 	                            assoc left
-	                            mask {0 0 0}}
+	                            mask {0 1 0}}
 	            }
 	            {priority specification} { {priority {
 	                    @LEX:@STR:<priority>
@@ -895,6 +895,12 @@ oo::class create <Name> {
 	    }
 	    l0 {
 	        {} {
+	            {a character class} { {priority {
+	                    {cc open}
+	                    {cc element and more}} 0} }
+	            {a single quoted string} { {priority {
+	                    {string open}
+	                    {non empty string}} 0} }
 	            {array descriptor left bracket} {
 	                {priority {{@CHR:<\133>}} 0}
 	                {priority {
@@ -908,69 +914,283 @@ oo::class create <Name> {
 	                        {@CHR:<\135>}} 0}
 	            }
 	            {bracketed name string} { {quantified {@CLS:<_[:alnum:][:space:]>} 1} }
-	            {cc character} {
-	                {priority {{cc single character}} 0}
-	                {priority {{posix char class}} 0}
+	            {cc close} { {priority {{@CHR:<\135>}} 0} }
+	            {cc element and more} {
+	                {priority {{plain cc element}} 0}
+	                {priority {{escaped cc element}} 0}
 	            }
-	            {cc closing} { {priority {{@CHR:<\135>}} 0} }
-	            {cc element} {
-	                {priority {{cc range}} 0}
-	                {priority {{cc character}} 0}
-	            }
-	            {cc elements} { {quantified {cc element} 1} }
 	            {cc open} {
 	                {priority {{@CHR:<\133>}} 0}
 	                {priority {{@STR:<\133^>}} 0}
 	            }
-	            {cc range} { {priority {
-	                    {cc single character}
-	                    @CHR:<->
-	                    {cc single character}} 0} }
-	            {cc single character} {
-	                {priority escaped 0}
-	                {priority normal 0}
+	            {cc range completion} {
+	                {priority {
+	                        @CHR:<->
+	                        {plain cc char}
+	                        {nullable cc}} 0}
+	                {priority {
+	                        @CHR:<->
+	                        {escaped cc char}} 0}
+	                {priority {{nullable cc}} 0}
+	            }
+	            {cc range completion post short octal escape} {
+	                {priority {
+	                        @CHR:<->
+	                        {plain cc char}
+	                        {nullable cc}} 0}
+	                {priority {
+	                        @CHR:<->
+	                        {escaped cc char}} 0}
+	                {priority {{escaped cc element}} 0}
+	                {priority {{plain cc element without octal}} 0}
+	                {priority {{cc close}} 0}
+	            }
+	            {cc range completion post short unicode escape} {
+	                {priority {
+	                        @CHR:<->
+	                        {plain cc char}
+	                        {nullable cc}} 0}
+	                {priority {
+	                        @CHR:<->
+	                        {escaped cc char}} 0}
+	                {priority {{escaped cc element}} 0}
+	                {priority {{plain cc element without hex}} 0}
+	                {priority {{cc close}} 0}
 	            }
 	            {character class modifier} {
 	                {priority @STR:<:ic> 0}
 	                {priority @STR:<:i> 0}
 	            }
 	            {character class modifiers} { {quantified {character class modifier} 0} }
+	            control { {priority {{@CLS:<\134a-bfnrtv>}} 0} }
 	            {double colon} { {priority @STR:<::> 0} }
-	            escaped {
-	                {priority special 0}
-	                {priority octal 0}
-	                {priority unicode 0}
-	                {priority unihex 0}
+	            escape { {priority {{@CHR:<\134>}} 0} }
+	            {escaped cc char} { {priority {
+	                    escape
+	                    {escaped cc char details}} 0} }
+	            {escaped cc char details} {
+	                {priority {
+	                        control
+	                        {nullable cc}} 0}
+	                {priority {
+	                        @CHR:<x>
+	                        hex
+	                        hex
+	                        {nullable cc}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {nullable cc}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        {nullable cc post short unicode escape}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        {nullable cc post short unicode escape}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        {nullable cc post short unicode escape}} 0}
+	                {priority {
+	                        {leading octal}
+	                        octal
+	                        octal
+	                        {nullable cc}} 0}
+	                {priority {
+	                        octal
+	                        octal
+	                        {nullable cc post short octal escape}} 0}
+	                {priority {
+	                        octal
+	                        {nullable cc post short octal escape}} 0}
+	            }
+	            {escaped cc element} { {priority {
+	                    escape
+	                    {escaped cc element details}} 0} }
+	            {escaped cc element details} {
+	                {priority {
+	                        control
+	                        {cc range completion}} 0}
+	                {priority {
+	                        @CHR:<x>
+	                        hex
+	                        hex
+	                        {cc range completion}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {cc range completion}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        {cc range completion post short unicode escape}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        {cc range completion post short unicode escape}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        {cc range completion post short unicode escape}} 0}
+	                {priority {
+	                        {leading octal}
+	                        octal
+	                        octal
+	                        {cc range completion}} 0}
+	                {priority {
+	                        octal
+	                        octal
+	                        {cc range completion post short octal escape}} 0}
+	                {priority {
+	                        octal
+	                        {cc range completion post short octal escape}} 0}
+	            }
+	            {escaped string char} { {priority {
+	                    escape
+	                    {escaped string char details}} 0} }
+	            {escaped string char details} {
+	                {priority {
+	                        control
+	                        {nullable string}} 0}
+	                {priority {
+	                        @CHR:<x>
+	                        hex
+	                        hex
+	                        {nullable string}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {nullable string}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        {nullable string post short unicode escape}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        {nullable string post short unicode escape}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        {nullable string post short unicode escape}} 0}
+	                {priority {
+	                        {leading octal}
+	                        octal
+	                        octal
+	                        {nullable string}} 0}
+	                {priority {
+	                        octal
+	                        octal
+	                        {nullable string post short octal escape}} 0}
+	                {priority {
+	                        octal
+	                        {nullable string post short octal escape}} 0}
 	            }
 	            {hash comment body} { {quantified {hash comment char} 0} }
 	            {hash comment char} { {priority {{@^CLS:<\n-\r\u2028-\u2029>}} 0} }
 	            hex { {priority {{@NCC:<[:xdigit:]>}} 0} }
 	            integer { {quantified {@NCC:<[:digit:]>} 1} }
-	            lodigit { {priority @RAN:<03> 0} }
-	            normal { {priority {{@^CLS:<\t-\r\134-\135\u2028-\u2029>}} 0} }
-	            octal {
+	            {leading octal} { {priority @RAN:<03> 0} }
+	            {non empty string} {
 	                {priority {
-	                        {@CHR:<\134>}
-	                        odigit} 0}
-	                {priority {
-	                        {@CHR:<\134>}
-	                        odigit
-	                        odigit} 0}
-	                {priority {
-	                        {@CHR:<\134>}
-	                        lodigit
-	                        odigit
-	                        odigit} 0}
+	                        {plain string char}
+	                        {nullable string}} 0}
+	                {priority {{escaped string char}} 0}
 	            }
-	            odigit { {priority @RAN:<07> 0} }
+	            {nullable cc} {
+	                {priority {{cc close}} 0}
+	                {priority {{cc element and more}} 0}
+	            }
+	            {nullable cc post short octal escape} {
+	                {priority {{escaped cc char}} 0}
+	                {priority {
+	                        {plain cc char without octal}
+	                        {nullable cc}} 0}
+	                {priority {{cc close}} 0}
+	            }
+	            {nullable cc post short unicode escape} {
+	                {priority {{escaped cc char}} 0}
+	                {priority {
+	                        {plain cc char without hex}
+	                        {nullable cc}} 0}
+	                {priority {{cc close}} 0}
+	            }
+	            {nullable string} {
+	                {priority {{string close}} 0}
+	                {priority {{non empty string}} 0}
+	            }
+	            {nullable string post short octal escape} {
+	                {priority {{escaped string char}} 0}
+	                {priority {
+	                        {plain string char without octal}
+	                        {nullable string}} 0}
+	                {priority {{string close}} 0}
+	            }
+	            {nullable string post short unicode escape} {
+	                {priority {{escaped string char}} 0}
+	                {priority {
+	                        {plain string char without hex}
+	                        {nullable string}} 0}
+	                {priority {{string close}} 0}
+	            }
+	            octal { {priority @RAN:<07> 0} }
 	            {one or more word characters} { {quantified {@CLS:<_[:alnum:]>} 1} }
 	            {Perl identifier} { {priority {{one or more word characters}} 0} }
+	            {plain cc char} { {priority {{@^CLS:<\7-\r-\134-\135\u2028-\u2029>}} 0} }
+	            {plain cc char without hex} { {priority {{@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>}} 0} }
+	            {plain cc char without octal} { {priority {{@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>}} 0} }
+	            {plain cc element} {
+	                {priority {
+	                        {plain cc char}
+	                        {cc range completion}} 0}
+	                {priority {
+	                        {posix char class}
+	                        {nullable cc}} 0}
+	            }
+	            {plain cc element without hex} {
+	                {priority {
+	                        {plain cc char without hex}
+	                        {cc range completion}} 0}
+	                {priority {
+	                        {posix char class}
+	                        {nullable cc}} 0}
+	            }
+	            {plain cc element without octal} {
+	                {priority {
+	                        {plain cc char without octal}
+	                        {cc range completion}} 0}
+	                {priority {
+	                        {posix char class}
+	                        {nullable cc}} 0}
+	            }
+	            {plain string char} { {priority {{@^CLS:<\7-\r'\134\u2028-\u2029>}} 0} }
+	            {plain string char without hex} { {priority {{@^CLS:<\7-\r'\134\u2028-\u2029[:xdigit:]>}} 0} }
+	            {plain string char without octal} { {priority {{@^CLS:<\7-\r'0-7\134\u2028-\u2029>}} 0} }
 	            {posix char class} { {priority {
 	                    {@STR:<\133:>}
 	                    {posix char class name}
 	                    {@STR:<:\135>}} 0} }
 	            {posix char class name} { {quantified {@NCC:<[:alnum:]>} 1} }
-	            quote { {priority @CHR:<'> 0} }
 	            {result item descriptor} {
 	                {priority @STR:<start> 0}
 	                {priority @STR:<length> 0}
@@ -992,42 +1212,12 @@ oo::class create <Name> {
 	                        whitespace} 0}
 	            }
 	            sign { {priority @CLS:<+-> 0} }
-	            special { {priority {
-	                    {@CHR:<\134>}
-	                    {@CLS:<\134a-bfnrtv>}} 0} }
-	            {string character} {
-	                {priority escaped 0}
-	                {priority {{@^CLS:<\n-\r'\u2028-\u2029>}} 0}
-	            }
-	            {string without single quote or vertical space} { {quantified {string character} 1} }
+	            {string close} { {priority @CHR:<'> 0} }
+	            {string open} { {priority @CHR:<'> 0} }
 	            {terminated hash comment} { {priority {
 	                    @CHR:<#>
 	                    {hash comment body}
 	                    {vertical space char}} 0} }
-	            unicode {
-	                {priority {
-	                        {@STR:<\134u>}
-	                        hex} 0}
-	                {priority {
-	                        {@STR:<\134u>}
-	                        hex
-	                        hex} 0}
-	                {priority {
-	                        {@STR:<\134u>}
-	                        hex
-	                        hex
-	                        hex} 0}
-	                {priority {
-	                        {@STR:<\134u>}
-	                        hex
-	                        hex
-	                        hex
-	                        hex} 0}
-	            }
-	            unihex { {priority {
-	                    {@STR:<\134x>}
-	                    hex
-	                    hex} 0} }
 	            {unterminated final hash comment} { {priority {
 	                    @CHR:<#>
 	                    {hash comment body}} 0} }
@@ -1176,9 +1366,7 @@ oo::class create <Name> {
 	                    {bracketed name string}
 	                    @CHR:<>>} 0} }
 	            {character class} { {priority {
-	                    {cc open}
-	                    {cc elements}
-	                    {cc closing}
+	                    {a character class}
 	                    {character class modifiers}} 0} }
 	            {op declare bnf} { {priority @STR:<::=> 0} }
 	            {op declare match} { {priority @CHR:<~> 0} }
@@ -1198,23 +1386,22 @@ oo::class create <Name> {
 	                        sign
 	                        integer} 0}
 	            }
-	            {single quoted name} { {priority {
-	                    quote
-	                    {string without single quote or vertical space}
-	                    quote} 0} }
+	            {single quoted name} { {priority {{a single quoted string}} 0} }
 	            {single quoted string} { {priority {
-	                    quote
-	                    {string without single quote or vertical space}
-	                    quote
+	                    {a single quoted string}
 	                    {character class modifiers}} 0} }
 	            {standard name} { {priority {
 	                    @CLS:<A-Za-z>
 	                    {zero or more word characters}} 0} }
 	        }
 	        literal {
-	            {@^CLS:<\n-\r'\u2028-\u2029>} { {^charclass {10 13} 39 {8232 8233}} }
+	            {@^CLS:<\7-\r'0-7\134\u2028-\u2029>} { {^charclass {7 13} 39 {48 55} 92 {8232 8233}} }
+	            {@^CLS:<\7-\r'\134\u2028-\u2029>} { {^charclass {7 13} 39 92 {8232 8233}} }
+	            {@^CLS:<\7-\r'\134\u2028-\u2029[:xdigit:]>} { {^charclass {7 13} 39 92 {8232 8233} xdigit} }
+	            {@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>} { {^charclass {7 13} 45 {48 55} {92 93} {8232 8233}} }
+	            {@^CLS:<\7-\r-\134-\135\u2028-\u2029>} { {^charclass {7 13} 45 {92 93} {8232 8233}} }
+	            {@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>} { {^charclass {7 13} 45 {92 93} {8232 8233} xdigit} }
 	            {@^CLS:<\n-\r\u2028-\u2029>} { {^charclass {10 13} {8232 8233}} }
-	            {@^CLS:<\t-\r\134-\135\u2028-\u2029>} { {^charclass {9 13} {92 93} {8232 8233}} }
 	            @CHR:<#> { {character 35} }
 	            @CHR:<'> { {character 39} }
 	            @CHR:<*> { {character 42} }
@@ -1232,6 +1419,8 @@ oo::class create <Name> {
 	            {@CHR:<\135>} { {character 93} }
 	            {@CHR:<\173>} { {character 123} }
 	            {@CHR:<\175>} { {character 125} }
+	            @CHR:<u> { {character 117} }
+	            @CHR:<x> { {character 120} }
 	            @CHR:<|> { {character 124} }
 	            @CHR:<~> { {character 126} }
 	            @CLS:<+-> { {charclass 43 45} }
@@ -1259,8 +1448,6 @@ oo::class create <Name> {
 	            @STR:<=>> { {string 61 62} }
 	            {@STR:<\133:>} { {string 91 58} }
 	            {@STR:<\133^>} { {string 91 94} }
-	            {@STR:<\134u>} { {string 92 117} }
-	            {@STR:<\134x>} { {string 92 120} }
 	            @STR:<action> { {string 97 99 116 105 111 110} }
 	            @STR:<after> { {string 97 102 116 101 114} }
 	            @STR:<assoc> { {string 97 115 115 111 99} }

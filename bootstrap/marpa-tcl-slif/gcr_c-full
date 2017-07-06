@@ -574,14 +574,14 @@ grammar {
                         {priorities bnf}} 0
                             action {array {start length values}}
                             assoc left
-                            mask {0 0 0}}
+                            mask {0 1 0}}
                 {priority {
                         lhs
                         {op declare match}
                         {priorities match}} 0
                             action {array {start length values}}
                             assoc left
-                            mask {0 0 0}}
+                            mask {0 1 0}}
             }
             {priority specification} { {priority {
                     @LEX:@STR:<priority>
@@ -858,10 +858,299 @@ grammar {
     }
     l0 {
         {} {
-            {@^CLS:<\n-\r'\u2028-\u2029>} {
-                {priority {{@BRAN:<\0\t>}} 0}
+            {@^CLS:<\7-\r'0-7\134\u2028-\u2029>} {
+                {priority {{@BRAN:<\0\6>}} 0}
                 {priority {{@BRAN:<\16&>}} 0}
-                {priority {{@BRAN:<\50\177>}} 0}
+                {priority {{@BRAN:<\50/>}} 0}
+                {priority {{@BRAN:<8\133>}} 0}
+                {priority {{@BRAN:<\135\177>}} 0}
+                {priority {
+                        {@BRAN:<\u00c2\u00df>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e0>}
+                        {@BRAN:<\u00a0\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e1>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\200>}
+                        {@BRAN:<\200\u00a7>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\200>}
+                        {@BRAN:<\u00aa\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BRAN:<\201\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00e3\u00ec>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00ed>}
+                        {@BRAN:<\200\237>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00ee\u00ef>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00f0>}
+                        {@BRAN:<\220\u00bf>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00f1\u00f3>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00f4>}
+                        {@BRAN:<\200\217>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+            }
+            {@^CLS:<\7-\r'\134\u2028-\u2029>} {
+                {priority {{@BRAN:<\0\6>}} 0}
+                {priority {{@BRAN:<\16&>}} 0}
+                {priority {{@BRAN:<\50\133>}} 0}
+                {priority {{@BRAN:<\135\177>}} 0}
+                {priority {
+                        {@BRAN:<\u00c2\u00df>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e0>}
+                        {@BRAN:<\u00a0\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e1>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\200>}
+                        {@BRAN:<\200\u00a7>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\200>}
+                        {@BRAN:<\u00aa\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BRAN:<\201\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00e3\u00ec>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00ed>}
+                        {@BRAN:<\200\237>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00ee\u00ef>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00f0>}
+                        {@BRAN:<\220\u00bf>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00f1\u00f3>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00f4>}
+                        {@BRAN:<\200\217>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+            }
+            {@^CLS:<\7-\r'\134\u2028-\u2029[:xdigit:]>} {
+                {priority {{@BRAN:<\0\6>}} 0}
+                {priority {{@BRAN:<\16&>}} 0}
+                {priority {{@BRAN:<\50/>}} 0}
+                {priority @BRAN:<:@> 0}
+                {priority {{@BRAN:<G\133>}} 0}
+                {priority {{@BRAN:<\135`>}} 0}
+                {priority {{@BRAN:<g\177>}} 0}
+                {priority {
+                        {@BRAN:<\u00c2\u00df>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e0>}
+                        {@BRAN:<\u00a0\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e1>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\200>}
+                        {@BRAN:<\200\u00a7>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\200>}
+                        {@BRAN:<\u00aa\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BRAN:<\201\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00e3\u00ec>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00ed>}
+                        {@BRAN:<\200\237>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00ee\u00ef>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00f0>}
+                        {@BRAN:<\220\u00bf>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00f1\u00f3>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00f4>}
+                        {@BRAN:<\200\217>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+            }
+            {@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>} {
+                {priority {{@BRAN:<\0\6>}} 0}
+                {priority {{@BRAN:<\16,>}} 0}
+                {priority @BRAN:<./> 0}
+                {priority {{@BRAN:<8\133>}} 0}
+                {priority {{@BRAN:<^\177>}} 0}
+                {priority {
+                        {@BRAN:<\u00c2\u00df>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e0>}
+                        {@BRAN:<\u00a0\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e1>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\200>}
+                        {@BRAN:<\200\u00a7>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\200>}
+                        {@BRAN:<\u00aa\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BRAN:<\201\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00e3\u00ec>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00ed>}
+                        {@BRAN:<\200\237>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00ee\u00ef>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00f0>}
+                        {@BRAN:<\220\u00bf>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00f1\u00f3>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00f4>}
+                        {@BRAN:<\200\217>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+            }
+            {@^CLS:<\7-\r-\134-\135\u2028-\u2029>} {
+                {priority {{@BRAN:<\0\6>}} 0}
+                {priority {{@BRAN:<\16,>}} 0}
+                {priority {{@BRAN:<.\133>}} 0}
+                {priority {{@BRAN:<^\177>}} 0}
+                {priority {
+                        {@BRAN:<\u00c2\u00df>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e0>}
+                        {@BRAN:<\u00a0\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e1>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\200>}
+                        {@BRAN:<\200\u00a7>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\200>}
+                        {@BRAN:<\u00aa\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00e2>}
+                        {@BRAN:<\201\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00e3\u00ec>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00ed>}
+                        {@BRAN:<\200\237>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00ee\u00ef>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00f0>}
+                        {@BRAN:<\220\u00bf>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BRAN:<\u00f1\u00f3>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+                {priority {
+                        {@BYTE:<\u00f4>}
+                        {@BRAN:<\200\217>}
+                        {@BRAN:<\200\u00bf>}
+                        {@BRAN:<\200\u00bf>}} 0}
+            }
+            {@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>} {
+                {priority {{@BRAN:<\0\6>}} 0}
+                {priority {{@BRAN:<\16,>}} 0}
+                {priority @BRAN:<./> 0}
+                {priority @BRAN:<:@> 0}
+                {priority {{@BRAN:<G\133>}} 0}
+                {priority @BRAN:<^`> 0}
+                {priority {{@BRAN:<g\177>}} 0}
                 {priority {
                         {@BRAN:<\u00c2\u00df>}
                         {@BRAN:<\200\u00bf>}} 0}
@@ -916,61 +1205,6 @@ grammar {
             {@^CLS:<\n-\r\u2028-\u2029>} {
                 {priority {{@BRAN:<\0\t>}} 0}
                 {priority {{@BRAN:<\16\177>}} 0}
-                {priority {
-                        {@BRAN:<\u00c2\u00df>}
-                        {@BRAN:<\200\u00bf>}} 0}
-                {priority {
-                        {@BYTE:<\u00e0>}
-                        {@BRAN:<\u00a0\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
-                {priority {
-                        {@BYTE:<\u00e1>}
-                        {@BRAN:<\200\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
-                {priority {
-                        {@BYTE:<\u00e2>}
-                        {@BYTE:<\200>}
-                        {@BRAN:<\200\u00a7>}} 0}
-                {priority {
-                        {@BYTE:<\u00e2>}
-                        {@BYTE:<\200>}
-                        {@BRAN:<\u00aa\u00bf>}} 0}
-                {priority {
-                        {@BYTE:<\u00e2>}
-                        {@BRAN:<\201\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
-                {priority {
-                        {@BRAN:<\u00e3\u00ec>}
-                        {@BRAN:<\200\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
-                {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\200\237>}
-                        {@BRAN:<\200\u00bf>}} 0}
-                {priority {
-                        {@BRAN:<\u00ee\u00ef>}
-                        {@BRAN:<\200\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
-                {priority {
-                        {@BYTE:<\u00f0>}
-                        {@BRAN:<\220\u00bf>}
-                        {@BRAN:<\200\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
-                {priority {
-                        {@BRAN:<\u00f1\u00f3>}
-                        {@BRAN:<\200\u00bf>}
-                        {@BRAN:<\200\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
-                {priority {
-                        {@BYTE:<\u00f4>}
-                        {@BRAN:<\200\217>}
-                        {@BRAN:<\200\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
-            }
-            {@^CLS:<\t-\r\134-\135\u2028-\u2029>} {
-                {priority {{@BRAN:<\0\10>}} 0}
-                {priority {{@BRAN:<\16\133>}} 0}
-                {priority {{@BRAN:<^\177>}} 0}
                 {priority {
                         {@BRAN:<\u00c2\u00df>}
                         {@BRAN:<\200\u00bf>}} 0}
@@ -10692,12 +10926,6 @@ grammar {
             {@STR:<\133^>} { {priority {
                     {@BYTE:<\133>}
                     @BYTE:<^>} 0} }
-            {@STR:<\134u>} { {priority {
-                    {@BYTE:<\134>}
-                    @BYTE:<u>} 0} }
-            {@STR:<\134x>} { {priority {
-                    {@BYTE:<\134>}
-                    @BYTE:<x>} 0} }
             @STR:<action> { {priority {
                     @BYTE:<a>
                     @BYTE:<c>
@@ -10997,6 +11225,12 @@ grammar {
             @STR:<||> { {priority {
                     @BYTE:<|>
                     @BYTE:<|>} 0} }
+            {a character class} { {priority {
+                    {cc open}
+                    {cc element and more}} 0} }
+            {a single quoted string} { {priority {
+                    {string open}
+                    {non empty string}} 0} }
             {array descriptor left bracket} {
                 {priority {{@BYTE:<\133>}} 0}
                 {priority {
@@ -11010,69 +11244,283 @@ grammar {
                         {@BYTE:<\135>}} 0}
             }
             {bracketed name string} { {quantified {@CLS:<_[:alnum:][:space:]>} 1} }
-            {cc character} {
-                {priority {{cc single character}} 0}
-                {priority {{posix char class}} 0}
+            {cc close} { {priority {{@BYTE:<\135>}} 0} }
+            {cc element and more} {
+                {priority {{plain cc element}} 0}
+                {priority {{escaped cc element}} 0}
             }
-            {cc closing} { {priority {{@BYTE:<\135>}} 0} }
-            {cc element} {
-                {priority {{cc range}} 0}
-                {priority {{cc character}} 0}
-            }
-            {cc elements} { {quantified {cc element} 1} }
             {cc open} {
                 {priority {{@BYTE:<\133>}} 0}
                 {priority {{@STR:<\133^>}} 0}
             }
-            {cc range} { {priority {
-                    {cc single character}
-                    @BYTE:<->
-                    {cc single character}} 0} }
-            {cc single character} {
-                {priority escaped 0}
-                {priority normal 0}
+            {cc range completion} {
+                {priority {
+                        @BYTE:<->
+                        {plain cc char}
+                        {nullable cc}} 0}
+                {priority {
+                        @BYTE:<->
+                        {escaped cc char}} 0}
+                {priority {{nullable cc}} 0}
+            }
+            {cc range completion post short octal escape} {
+                {priority {
+                        @BYTE:<->
+                        {plain cc char}
+                        {nullable cc}} 0}
+                {priority {
+                        @BYTE:<->
+                        {escaped cc char}} 0}
+                {priority {{escaped cc element}} 0}
+                {priority {{plain cc element without octal}} 0}
+                {priority {{cc close}} 0}
+            }
+            {cc range completion post short unicode escape} {
+                {priority {
+                        @BYTE:<->
+                        {plain cc char}
+                        {nullable cc}} 0}
+                {priority {
+                        @BYTE:<->
+                        {escaped cc char}} 0}
+                {priority {{escaped cc element}} 0}
+                {priority {{plain cc element without hex}} 0}
+                {priority {{cc close}} 0}
             }
             {character class modifier} {
                 {priority @STR:<:ic> 0}
                 {priority @STR:<:i> 0}
             }
             {character class modifiers} { {quantified {character class modifier} 0} }
+            control { {priority {{@CLS:<\134a-bfnrtv>}} 0} }
             {double colon} { {priority @STR:<::> 0} }
-            escaped {
-                {priority special 0}
-                {priority octal 0}
-                {priority unicode 0}
-                {priority unihex 0}
+            escape { {priority {{@BYTE:<\134>}} 0} }
+            {escaped cc char} { {priority {
+                    escape
+                    {escaped cc char details}} 0} }
+            {escaped cc char details} {
+                {priority {
+                        control
+                        {nullable cc}} 0}
+                {priority {
+                        @BYTE:<x>
+                        hex
+                        hex
+                        {nullable cc}} 0}
+                {priority {
+                        @BYTE:<u>
+                        hex
+                        hex
+                        hex
+                        hex
+                        {nullable cc}} 0}
+                {priority {
+                        @BYTE:<u>
+                        hex
+                        hex
+                        hex
+                        {nullable cc post short unicode escape}} 0}
+                {priority {
+                        @BYTE:<u>
+                        hex
+                        hex
+                        {nullable cc post short unicode escape}} 0}
+                {priority {
+                        @BYTE:<u>
+                        hex
+                        {nullable cc post short unicode escape}} 0}
+                {priority {
+                        {leading octal}
+                        octal
+                        octal
+                        {nullable cc}} 0}
+                {priority {
+                        octal
+                        octal
+                        {nullable cc post short octal escape}} 0}
+                {priority {
+                        octal
+                        {nullable cc post short octal escape}} 0}
+            }
+            {escaped cc element} { {priority {
+                    escape
+                    {escaped cc element details}} 0} }
+            {escaped cc element details} {
+                {priority {
+                        control
+                        {cc range completion}} 0}
+                {priority {
+                        @BYTE:<x>
+                        hex
+                        hex
+                        {cc range completion}} 0}
+                {priority {
+                        @BYTE:<u>
+                        hex
+                        hex
+                        hex
+                        hex
+                        {cc range completion}} 0}
+                {priority {
+                        @BYTE:<u>
+                        hex
+                        hex
+                        hex
+                        {cc range completion post short unicode escape}} 0}
+                {priority {
+                        @BYTE:<u>
+                        hex
+                        hex
+                        {cc range completion post short unicode escape}} 0}
+                {priority {
+                        @BYTE:<u>
+                        hex
+                        {cc range completion post short unicode escape}} 0}
+                {priority {
+                        {leading octal}
+                        octal
+                        octal
+                        {cc range completion}} 0}
+                {priority {
+                        octal
+                        octal
+                        {cc range completion post short octal escape}} 0}
+                {priority {
+                        octal
+                        {cc range completion post short octal escape}} 0}
+            }
+            {escaped string char} { {priority {
+                    escape
+                    {escaped string char details}} 0} }
+            {escaped string char details} {
+                {priority {
+                        control
+                        {nullable string}} 0}
+                {priority {
+                        @BYTE:<x>
+                        hex
+                        hex
+                        {nullable string}} 0}
+                {priority {
+                        @BYTE:<u>
+                        hex
+                        hex
+                        hex
+                        hex
+                        {nullable string}} 0}
+                {priority {
+                        @BYTE:<u>
+                        hex
+                        hex
+                        hex
+                        {nullable string post short unicode escape}} 0}
+                {priority {
+                        @BYTE:<u>
+                        hex
+                        hex
+                        {nullable string post short unicode escape}} 0}
+                {priority {
+                        @BYTE:<u>
+                        hex
+                        {nullable string post short unicode escape}} 0}
+                {priority {
+                        {leading octal}
+                        octal
+                        octal
+                        {nullable string}} 0}
+                {priority {
+                        octal
+                        octal
+                        {nullable string post short octal escape}} 0}
+                {priority {
+                        octal
+                        {nullable string post short octal escape}} 0}
             }
             {hash comment body} { {quantified {hash comment char} 0} }
             {hash comment char} { {priority {{@^CLS:<\n-\r\u2028-\u2029>}} 0} }
             hex { {priority {{@NCC:<[:xdigit:]>}} 0} }
             integer { {quantified {@NCC:<[:digit:]>} 1} }
-            lodigit { {priority @RAN:<03> 0} }
-            normal { {priority {{@^CLS:<\t-\r\134-\135\u2028-\u2029>}} 0} }
-            octal {
+            {leading octal} { {priority @RAN:<03> 0} }
+            {non empty string} {
                 {priority {
-                        {@BYTE:<\134>}
-                        odigit} 0}
-                {priority {
-                        {@BYTE:<\134>}
-                        odigit
-                        odigit} 0}
-                {priority {
-                        {@BYTE:<\134>}
-                        lodigit
-                        odigit
-                        odigit} 0}
+                        {plain string char}
+                        {nullable string}} 0}
+                {priority {{escaped string char}} 0}
             }
-            odigit { {priority @RAN:<07> 0} }
+            {nullable cc} {
+                {priority {{cc close}} 0}
+                {priority {{cc element and more}} 0}
+            }
+            {nullable cc post short octal escape} {
+                {priority {{escaped cc char}} 0}
+                {priority {
+                        {plain cc char without octal}
+                        {nullable cc}} 0}
+                {priority {{cc close}} 0}
+            }
+            {nullable cc post short unicode escape} {
+                {priority {{escaped cc char}} 0}
+                {priority {
+                        {plain cc char without hex}
+                        {nullable cc}} 0}
+                {priority {{cc close}} 0}
+            }
+            {nullable string} {
+                {priority {{string close}} 0}
+                {priority {{non empty string}} 0}
+            }
+            {nullable string post short octal escape} {
+                {priority {{escaped string char}} 0}
+                {priority {
+                        {plain string char without octal}
+                        {nullable string}} 0}
+                {priority {{string close}} 0}
+            }
+            {nullable string post short unicode escape} {
+                {priority {{escaped string char}} 0}
+                {priority {
+                        {plain string char without hex}
+                        {nullable string}} 0}
+                {priority {{string close}} 0}
+            }
+            octal { {priority @RAN:<07> 0} }
             {one or more word characters} { {quantified {@CLS:<_[:alnum:]>} 1} }
             {Perl identifier} { {priority {{one or more word characters}} 0} }
+            {plain cc char} { {priority {{@^CLS:<\7-\r-\134-\135\u2028-\u2029>}} 0} }
+            {plain cc char without hex} { {priority {{@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>}} 0} }
+            {plain cc char without octal} { {priority {{@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>}} 0} }
+            {plain cc element} {
+                {priority {
+                        {plain cc char}
+                        {cc range completion}} 0}
+                {priority {
+                        {posix char class}
+                        {nullable cc}} 0}
+            }
+            {plain cc element without hex} {
+                {priority {
+                        {plain cc char without hex}
+                        {cc range completion}} 0}
+                {priority {
+                        {posix char class}
+                        {nullable cc}} 0}
+            }
+            {plain cc element without octal} {
+                {priority {
+                        {plain cc char without octal}
+                        {cc range completion}} 0}
+                {priority {
+                        {posix char class}
+                        {nullable cc}} 0}
+            }
+            {plain string char} { {priority {{@^CLS:<\7-\r'\134\u2028-\u2029>}} 0} }
+            {plain string char without hex} { {priority {{@^CLS:<\7-\r'\134\u2028-\u2029[:xdigit:]>}} 0} }
+            {plain string char without octal} { {priority {{@^CLS:<\7-\r'0-7\134\u2028-\u2029>}} 0} }
             {posix char class} { {priority {
                     {@STR:<\133:>}
                     {posix char class name}
                     {@STR:<:\135>}} 0} }
             {posix char class name} { {quantified {@NCC:<[:alnum:]>} 1} }
-            quote { {priority @CHR:<'> 0} }
             {result item descriptor} {
                 {priority @STR:<start> 0}
                 {priority @STR:<length> 0}
@@ -11094,42 +11542,12 @@ grammar {
                         whitespace} 0}
             }
             sign { {priority @CLS:<+-> 0} }
-            special { {priority {
-                    {@BYTE:<\134>}
-                    {@CLS:<\134a-bfnrtv>}} 0} }
-            {string character} {
-                {priority escaped 0}
-                {priority {{@^CLS:<\n-\r'\u2028-\u2029>}} 0}
-            }
-            {string without single quote or vertical space} { {quantified {string character} 1} }
+            {string close} { {priority @CHR:<'> 0} }
+            {string open} { {priority @CHR:<'> 0} }
             {terminated hash comment} { {priority {
                     @CHR:<#>
                     {hash comment body}
                     {vertical space char}} 0} }
-            unicode {
-                {priority {
-                        {@STR:<\134u>}
-                        hex} 0}
-                {priority {
-                        {@STR:<\134u>}
-                        hex
-                        hex} 0}
-                {priority {
-                        {@STR:<\134u>}
-                        hex
-                        hex
-                        hex} 0}
-                {priority {
-                        {@STR:<\134u>}
-                        hex
-                        hex
-                        hex
-                        hex} 0}
-            }
-            unihex { {priority {
-                    {@STR:<\134x>}
-                    hex
-                    hex} 0} }
             {unterminated final hash comment} { {priority {
                     @CHR:<#>
                     {hash comment body}} 0} }
@@ -11278,9 +11696,7 @@ grammar {
                     {bracketed name string}
                     @BYTE:<>>} 0} }
             {character class} { {priority {
-                    {cc open}
-                    {cc elements}
-                    {cc closing}
+                    {a character class}
                     {character class modifiers}} 0} }
             {op declare bnf} { {priority @STR:<::=> 0} }
             {op declare match} { {priority @CHR:<~> 0} }
@@ -11300,27 +11716,29 @@ grammar {
                         sign
                         integer} 0}
             }
-            {single quoted name} { {priority {
-                    quote
-                    {string without single quote or vertical space}
-                    quote} 0} }
+            {single quoted name} { {priority {{a single quoted string}} 0} }
             {single quoted string} { {priority {
-                    quote
-                    {string without single quote or vertical space}
-                    quote
+                    {a single quoted string}
                     {character class modifiers}} 0} }
             {standard name} { {priority {
                     @CLS:<A-Za-z>
                     {zero or more word characters}} 0} }
         }
         literal {
+            @BRAN:<./> { {brange 46 47} }
+            {@BRAN:<.\133>} { {brange 46 91} }
+            {@BRAN:<8\133>} { {brange 56 91} }
             @BRAN:<09> { {brange 48 57} }
-            {@BRAN:<\0\10>} { {brange 0 8} }
+            @BRAN:<:@> { {brange 58 64} }
+            {@BRAN:<\0\6>} { {brange 0 6} }
             {@BRAN:<\0\t>} { {brange 0 9} }
             {@BRAN:<\16&>} { {brange 14 38} }
-            {@BRAN:<\16\133>} { {brange 14 91} }
+            {@BRAN:<\16,>} { {brange 14 44} }
             {@BRAN:<\16\177>} { {brange 14 127} }
-            {@BRAN:<\50\177>} { {brange 40 127} }
+            {@BRAN:<\50/>} { {brange 40 47} }
+            {@BRAN:<\50\133>} { {brange 40 91} }
+            {@BRAN:<\135\177>} { {brange 93 127} }
+            {@BRAN:<\135`>} { {brange 93 96} }
             {@BRAN:<\200\201>} { {brange 128 129} }
             {@BRAN:<\200\202>} { {brange 128 130} }
             {@BRAN:<\200\203>} { {brange 128 131} }
@@ -11645,11 +12063,14 @@ grammar {
             {@BRAN:<\u00ee\u00ef>} { {brange 238 239} }
             {@BRAN:<\u00f1\u00f3>} { {brange 241 243} }
             {@BRAN:<^\177>} { {brange 94 127} }
+            @BRAN:<^`> { {brange 94 96} }
             @BRAN:<ab> { {brange 97 98} }
             @BRAN:<AF> { {brange 65 70} }
             @BRAN:<af> { {brange 97 102} }
             @BRAN:<AZ> { {brange 65 90} }
             @BRAN:<az> { {brange 97 122} }
+            {@BRAN:<G\133>} { {brange 71 91} }
+            {@BRAN:<g\177>} { {brange 103 127} }
             @BYTE:<+> { {byte 43} }
             @BYTE:<-> { {byte 45} }
             @BYTE:<1> { {byte 49} }

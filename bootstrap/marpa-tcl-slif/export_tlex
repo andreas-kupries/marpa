@@ -100,22 +100,26 @@ oo::class create <Name> {
 	debug.marpa/grammar/<Name>
 	# Literals: The character classes in use
 	return {
-	    @CLS:<+->                               {[+\055]}
-	    @CLS:<A-Za-z>                           {[A-Za-z]}
-	    @RAN:<01>                               {[01]}
-	    @RAN:<03>                               {[0-3]}
-	    @RAN:<07>                               {[0-7]}
-	    {@^CLS:<\n-\r'\u2028-\u2029>}           {[^\n-\r'\u2028\u2029]}
-	    {@^CLS:<\n-\r\u2028-\u2029>}            {[^\n-\r\u2028\u2029]}
-	    {@^CLS:<\t-\r\134-\135\u2028-\u2029>}   {[^\t-\r\134\135\u2028\u2029]}
-	    {@CLS:<\134a-bfnrtv>}                   {[\134abfnrtv]}
-	    {@CLS:<\n-\r\u2028-\u2029>}             {[\n-\r\u2028\u2029]}
-	    {@CLS:<_[:alnum:]>}                     {[_[:alnum:]]}
-	    {@CLS:<_[:alnum:][:space:]>}            {[_[:alnum:][:space:]]}
-	    {@NCC:<[:alnum:]>}                      {[[:alnum:]]}
-	    {@NCC:<[:digit:]>}                      {[[:digit:]]}
-	    {@NCC:<[:space:]>}                      {[[:space:]]}
-	    {@NCC:<[:xdigit:]>}                     {[[:xdigit:]]}
+	    @CLS:<+->                                          {[+\055]}
+	    @CLS:<A-Za-z>                                      {[A-Za-z]}
+	    @RAN:<01>                                          {[01]}
+	    @RAN:<03>                                          {[0-3]}
+	    @RAN:<07>                                          {[0-7]}
+	    {@^CLS:<\7-\r'0-7\134\u2028-\u2029>}               {[^\007-\r'0-7\134\u2028\u2029]}
+	    {@^CLS:<\7-\r'\134\u2028-\u2029>}                  {[^\007-\r'\134\u2028\u2029]}
+	    {@^CLS:<\7-\r'\134\u2028-\u2029[:xdigit:]>}        {[^\007-\r'\134\u2028\u2029[:xdigit:]]}
+	    {@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>}          {[^\007-\r\0550-7\134\135\u2028\u2029]}
+	    {@^CLS:<\7-\r-\134-\135\u2028-\u2029>}             {[^\007-\r\055\134\135\u2028\u2029]}
+	    {@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>}   {[^\007-\r\055\134\135\u2028\u2029[:xdigit:]]}
+	    {@^CLS:<\n-\r\u2028-\u2029>}                       {[^\n-\r\u2028\u2029]}
+	    {@CLS:<\134a-bfnrtv>}                              {[\134abfnrtv]}
+	    {@CLS:<\n-\r\u2028-\u2029>}                        {[\n-\r\u2028\u2029]}
+	    {@CLS:<_[:alnum:]>}                                {[_[:alnum:]]}
+	    {@CLS:<_[:alnum:][:space:]>}                       {[_[:alnum:][:space:]]}
+	    {@NCC:<[:alnum:]>}                                 {[[:alnum:]]}
+	    {@NCC:<[:digit:]>}                                 {[[:digit:]]}
+	    {@NCC:<[:space:]>}                                 {[[:space:]]}
+	    {@NCC:<[:xdigit:]>}                                {[[:xdigit:]]}
 	}
     }
     
@@ -218,8 +222,6 @@ oo::class create <Name> {
 	    @STR:<=>>
 	    {@STR:<\133:>}
 	    {@STR:<\133^>}
-	    {@STR:<\134u>}
-	    {@STR:<\134x>}
 	    @STR:<action>
 	    @STR:<after>
 	    @STR:<assoc>
@@ -266,44 +268,62 @@ oo::class create <Name> {
 	    @STR:<values>
 	    @STR:<warn>
 	    @STR:<||>
+	    {a character class}
+	    {a single quoted string}
 	    {array descriptor left bracket}
 	    {array descriptor right bracket}
 	    {bracketed name string}
-	    {cc character}
-	    {cc closing}
-	    {cc element}
-	    {cc elements}
+	    {cc close}
+	    {cc element and more}
 	    {cc open}
-	    {cc range}
-	    {cc single character}
+	    {cc range completion}
+	    {cc range completion post short octal escape}
+	    {cc range completion post short unicode escape}
 	    {character class modifier}
 	    {character class modifiers}
+	    control
 	    {double colon}
-	    escaped
+	    escape
+	    {escaped cc char}
+	    {escaped cc char details}
+	    {escaped cc element}
+	    {escaped cc element details}
+	    {escaped string char}
+	    {escaped string char details}
 	    {hash comment}
 	    {hash comment body}
 	    {hash comment char}
 	    hex
 	    integer
-	    lodigit
-	    normal
+	    {leading octal}
+	    {non empty string}
+	    {nullable cc}
+	    {nullable cc post short octal escape}
+	    {nullable cc post short unicode escape}
+	    {nullable string}
+	    {nullable string post short octal escape}
+	    {nullable string post short unicode escape}
 	    octal
-	    odigit
 	    {one or more word characters}
 	    {Perl identifier}
+	    {plain cc char}
+	    {plain cc char without hex}
+	    {plain cc char without octal}
+	    {plain cc element}
+	    {plain cc element without hex}
+	    {plain cc element without octal}
+	    {plain string char}
+	    {plain string char without hex}
+	    {plain string char without octal}
 	    {posix char class}
 	    {posix char class name}
-	    quote
 	    {result item descriptor}
 	    {result item descriptor list}
 	    {result item descriptor separator}
 	    sign
-	    special
-	    {string character}
-	    {string without single quote or vertical space}
+	    {string close}
+	    {string open}
 	    {terminated hash comment}
-	    unicode
-	    unihex
 	    {unterminated final hash comment}
 	    {vertical space char}
 	    whitespace
@@ -416,26 +436,12 @@ oo::class create <Name> {
 	    {@STR:<warn> := @CHR:<w> @CHR:<a> @CHR:<r> @CHR:<n>}
 	    {@STR:<||> := @CHR:<|> @CHR:<|>}
 	    {boolean := @RAN:<01>}
-	    {escaped := octal}
-	    {escaped := special}
-	    {escaped := unicode}
-	    {escaped := unihex}
+	    {control := {@CLS:<\134a-bfnrtv>}}
+	    {escape := {@CHR:<\134>}}
 	    {hex := {@NCC:<[:xdigit:]>}}
 	    {integer + {@NCC:<[:digit:]>}}
-	    {lodigit := @RAN:<03>}
-	    {normal := {@^CLS:<\t-\r\134-\135\u2028-\u2029>}}
-	    {octal := {@CHR:<\134>} lodigit odigit odigit}
-	    {octal := {@CHR:<\134>} odigit}
-	    {octal := {@CHR:<\134>} odigit odigit}
-	    {odigit := @RAN:<07>}
-	    {quote := @CHR:<'>}
+	    {octal := @RAN:<07>}
 	    {sign := @CLS:<+->}
-	    {special := {@CHR:<\134>} {@CLS:<\134a-bfnrtv>}}
-	    {unicode := {@STR:<\134u>} hex}
-	    {unicode := {@STR:<\134u>} hex hex}
-	    {unicode := {@STR:<\134u>} hex hex hex}
-	    {unicode := {@STR:<\134u>} hex hex hex hex}
-	    {unihex := {@STR:<\134x>} hex hex}
 	    {whitespace + {@NCC:<[:space:]>}}
 	    {{@LEX:@CHR:<\50>} := {@CHR:<\50>}}
 	    {{@LEX:@CHR:<\51>} := {@CHR:<\51>}}
@@ -445,8 +451,8 @@ oo::class create <Name> {
 	    {{@STR:<:\135>} := @CHR:<:> {@CHR:<\135>}}
 	    {{@STR:<\133:>} := {@CHR:<\133>} @CHR:<:>}
 	    {{@STR:<\133^>} := {@CHR:<\133>} @CHR:<^>}
-	    {{@STR:<\134u>} := {@CHR:<\134>} @CHR:<u>}
-	    {{@STR:<\134x>} := {@CHR:<\134>} @CHR:<x>}
+	    {{a character class} := {cc open} {cc element and more}}
+	    {{a single quoted string} := {string open} {non empty string}}
 	    {{array descriptor left bracket} := {@CHR:<\133>}}
 	    {{array descriptor left bracket} := {@CHR:<\133>} whitespace}
 	    {{array descriptor right bracket} := whitespace {@CHR:<\135>}}
@@ -457,26 +463,82 @@ oo::class create <Name> {
 	    {{before or after} := @STR:<before>}
 	    {{bracketed name string} + {@CLS:<_[:alnum:][:space:]>}}
 	    {{bracketed name} := @CHR:<<> {bracketed name string} @CHR:<>>}
-	    {{cc character} := {cc single character}}
-	    {{cc character} := {posix char class}}
-	    {{cc closing} := {@CHR:<\135>}}
-	    {{cc elements} + {cc element}}
-	    {{cc element} := {cc character}}
-	    {{cc element} := {cc range}}
+	    {{cc close} := {@CHR:<\135>}}
+	    {{cc element and more} := {escaped cc element}}
+	    {{cc element and more} := {plain cc element}}
 	    {{cc open} := {@CHR:<\133>}}
 	    {{cc open} := {@STR:<\133^>}}
-	    {{cc range} := {cc single character} @CHR:<-> {cc single character}}
-	    {{cc single character} := escaped}
-	    {{cc single character} := normal}
+	    {{cc range completion post short octal escape} := @CHR:<-> {escaped cc char}}
+	    {{cc range completion post short octal escape} := @CHR:<-> {plain cc char} {nullable cc}}
+	    {{cc range completion post short octal escape} := {cc close}}
+	    {{cc range completion post short octal escape} := {escaped cc element}}
+	    {{cc range completion post short octal escape} := {plain cc element without octal}}
+	    {{cc range completion post short unicode escape} := @CHR:<-> {escaped cc char}}
+	    {{cc range completion post short unicode escape} := @CHR:<-> {plain cc char} {nullable cc}}
+	    {{cc range completion post short unicode escape} := {cc close}}
+	    {{cc range completion post short unicode escape} := {escaped cc element}}
+	    {{cc range completion post short unicode escape} := {plain cc element without hex}}
+	    {{cc range completion} := @CHR:<-> {escaped cc char}}
+	    {{cc range completion} := @CHR:<-> {plain cc char} {nullable cc}}
+	    {{cc range completion} := {nullable cc}}
 	    {{character class modifiers} * {character class modifier}}
 	    {{character class modifier} := @STR:<:i>}
 	    {{character class modifier} := @STR:<:ic>}
-	    {{character class} := {cc open} {cc elements} {cc closing} {character class modifiers}}
+	    {{character class} := {a character class} {character class modifiers}}
 	    {{double colon} := @STR:<::>}
+	    {{escaped cc char details} := @CHR:<u> hex hex hex hex {nullable cc}}
+	    {{escaped cc char details} := @CHR:<u> hex hex hex {nullable cc post short unicode escape}}
+	    {{escaped cc char details} := @CHR:<u> hex hex {nullable cc post short unicode escape}}
+	    {{escaped cc char details} := @CHR:<u> hex {nullable cc post short unicode escape}}
+	    {{escaped cc char details} := @CHR:<x> hex hex {nullable cc}}
+	    {{escaped cc char details} := control {nullable cc}}
+	    {{escaped cc char details} := octal octal {nullable cc post short octal escape}}
+	    {{escaped cc char details} := octal {nullable cc post short octal escape}}
+	    {{escaped cc char details} := {leading octal} octal octal {nullable cc}}
+	    {{escaped cc char} := escape {escaped cc char details}}
+	    {{escaped cc element details} := @CHR:<u> hex hex hex hex {cc range completion}}
+	    {{escaped cc element details} := @CHR:<u> hex hex hex {cc range completion post short unicode escape}}
+	    {{escaped cc element details} := @CHR:<u> hex hex {cc range completion post short unicode escape}}
+	    {{escaped cc element details} := @CHR:<u> hex {cc range completion post short unicode escape}}
+	    {{escaped cc element details} := @CHR:<x> hex hex {cc range completion}}
+	    {{escaped cc element details} := control {cc range completion}}
+	    {{escaped cc element details} := octal octal {cc range completion post short octal escape}}
+	    {{escaped cc element details} := octal {cc range completion post short octal escape}}
+	    {{escaped cc element details} := {leading octal} octal octal {cc range completion}}
+	    {{escaped cc element} := escape {escaped cc element details}}
+	    {{escaped string char details} := @CHR:<u> hex hex hex hex {nullable string}}
+	    {{escaped string char details} := @CHR:<u> hex hex hex {nullable string post short unicode escape}}
+	    {{escaped string char details} := @CHR:<u> hex hex {nullable string post short unicode escape}}
+	    {{escaped string char details} := @CHR:<u> hex {nullable string post short unicode escape}}
+	    {{escaped string char details} := @CHR:<x> hex hex {nullable string}}
+	    {{escaped string char details} := control {nullable string}}
+	    {{escaped string char details} := octal octal {nullable string post short octal escape}}
+	    {{escaped string char details} := octal {nullable string post short octal escape}}
+	    {{escaped string char details} := {leading octal} octal octal {nullable string}}
+	    {{escaped string char} := escape {escaped string char details}}
 	    {{hash comment body} * {hash comment char}}
 	    {{hash comment char} := {@^CLS:<\n-\r\u2028-\u2029>}}
 	    {{hash comment} := {terminated hash comment}}
 	    {{hash comment} := {unterminated final hash comment}}
+	    {{leading octal} := @RAN:<03>}
+	    {{non empty string} := {escaped string char}}
+	    {{non empty string} := {plain string char} {nullable string}}
+	    {{nullable cc post short octal escape} := {cc close}}
+	    {{nullable cc post short octal escape} := {escaped cc char}}
+	    {{nullable cc post short octal escape} := {plain cc char without octal} {nullable cc}}
+	    {{nullable cc post short unicode escape} := {cc close}}
+	    {{nullable cc post short unicode escape} := {escaped cc char}}
+	    {{nullable cc post short unicode escape} := {plain cc char without hex} {nullable cc}}
+	    {{nullable cc} := {cc close}}
+	    {{nullable cc} := {cc element and more}}
+	    {{nullable string post short octal escape} := {escaped string char}}
+	    {{nullable string post short octal escape} := {plain string char without octal} {nullable string}}
+	    {{nullable string post short octal escape} := {string close}}
+	    {{nullable string post short unicode escape} := {escaped string char}}
+	    {{nullable string post short unicode escape} := {plain string char without hex} {nullable string}}
+	    {{nullable string post short unicode escape} := {string close}}
+	    {{nullable string} := {non empty string}}
+	    {{nullable string} := {string close}}
 	    {{one or more word characters} + {@CLS:<_[:alnum:]>}}
 	    {{op declare bnf} := @STR:<::=>}
 	    {{op declare match} := @CHR:<~>}
@@ -484,6 +546,18 @@ oo::class create <Name> {
 	    {{op loosen} := @STR:<||>}
 	    {{Perl identifier} := {one or more word characters}}
 	    {{Perl name} + {Perl identifier} {double colon} 1}
+	    {{plain cc char without hex} := {@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>}}
+	    {{plain cc char without octal} := {@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>}}
+	    {{plain cc char} := {@^CLS:<\7-\r-\134-\135\u2028-\u2029>}}
+	    {{plain cc element without hex} := {plain cc char without hex} {cc range completion}}
+	    {{plain cc element without hex} := {posix char class} {nullable cc}}
+	    {{plain cc element without octal} := {plain cc char without octal} {cc range completion}}
+	    {{plain cc element without octal} := {posix char class} {nullable cc}}
+	    {{plain cc element} := {plain cc char} {cc range completion}}
+	    {{plain cc element} := {posix char class} {nullable cc}}
+	    {{plain string char without hex} := {@^CLS:<\7-\r'\134\u2028-\u2029[:xdigit:]>}}
+	    {{plain string char without octal} := {@^CLS:<\7-\r'0-7\134\u2028-\u2029>}}
+	    {{plain string char} := {@^CLS:<\7-\r'\134\u2028-\u2029>}}
 	    {{posix char class name} + {@NCC:<[:alnum:]>}}
 	    {{posix char class} := {@STR:<\133:>} {posix char class name} {@STR:<:\135>}}
 	    {{reserved action name} := {double colon} {one or more word characters}}
@@ -503,12 +577,11 @@ oo::class create <Name> {
 	    {{result item descriptor} := @STR:<values>}
 	    {{signed integer} := integer}
 	    {{signed integer} := sign integer}
-	    {{single quoted name} := quote {string without single quote or vertical space} quote}
-	    {{single quoted string} := quote {string without single quote or vertical space} quote {character class modifiers}}
+	    {{single quoted name} := {a single quoted string}}
+	    {{single quoted string} := {a single quoted string} {character class modifiers}}
 	    {{standard name} := @CLS:<A-Za-z> {zero or more word characters}}
-	    {{string character} := escaped}
-	    {{string character} := {@^CLS:<\n-\r'\u2028-\u2029>}}
-	    {{string without single quote or vertical space} + {string character}}
+	    {{string close} := @CHR:<'>}
+	    {{string open} := @CHR:<'>}
 	    {{terminated hash comment} := @CHR:<#> {hash comment body} {vertical space char}}
 	    {{unterminated final hash comment} := @CHR:<#> {hash comment body}}
 	    {{vertical space char} := {@CLS:<\n-\r\u2028-\u2029>}}

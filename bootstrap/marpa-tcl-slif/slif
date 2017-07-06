@@ -1,16 +1,6 @@
+# # ## ### ##### ######## ############# #####################
 ## Copyright 2017 Andreas Kupries
-# This file contains a SLIF grammar derived from the original one to
-# account for Tcl's idiosyncrasies. And my own.
-# - Removed blessings. They are a thoroughly Perl construct which
-#   simply does not make sense for Tcl.
-# - Encoded the adverb / context relationship into the syntax instead
-#   of letting the semantics sort it out.
-# - Redefined string and character class syntax to match Tcl with
-#   regard to escapes and such. It also encodes the relevant
-#   constraints into the syntax instead of letting the semantics
-#   break on bad input.
-# - Formatting (nice indentations and such)
-##
+#
 # This file is part of MarpaTcl.  MarpaTcl is free software: you can
 # redistribute it and/or modify it under the terms of the BSD 3-Clause
 # License (Same license as Tcl itself is under).
@@ -18,8 +8,49 @@
 # MarpaTcl is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#
+
+# # ## ### ##### ######## ############# #####################
 ##
+# This file contains a SLIF grammar derived from Jeffrey Kegler's
+# original to account for Tcl's idiosyncrasies. And my own ;)
+#
+# - Removed blessings. They are a thoroughly Perl construct which
+#   simply does not make sense for Tcl.
+#
+# - Encoded the adverb / context relationship into the syntax instead
+#   of letting the semantics sort it out.
+#
+# - Redefined the string and character class syntax to match Tcl with
+#   regard to the allowed escape sequences. The important point here
+#   is that I encode the relevant constraints into the syntax instead
+#   of letting the semantics break on bad input.
+#
+#   This is actually quite complex because a naive definition of the
+#   escape sequences will introduce ambiguities into the grammar. As
+#   the characters in a string or class are independent these will
+#   multiply, for an exponential blowup with a power between 2 and 4,
+#   depending on the mix of escapes.
+#
+#   As an example, look at the octal escape '\377'. With a naive
+#   definition we get 3 possible readings, namely '\3'+'77',
+#   '\37'+'7', and '\377'. In a similar manner the uncode escapes
+#   ('\u...') will can have up to 4 readings.
+#
+#  To avoid the problem the grammar is more complex, with the rules
+#  for the shorter escape sequences looking at their Follow() context
+#  to decide whether to keep or abort them. The basic idea is to treat
+#  the definition as a regexp, a finite automaton, which is translated
+#  into a set of (indirect) right-recursive rules where the right-most
+#  symbol of each rule encodes the state of the automaton for the
+#  regexp. As a side note, here Marpa's use of Joop Leo's fix comes
+#  into its own, preventing non-linear blowup in the earley items for
+#  such rules.
+
+# - Formatting (nice indentations and such)
+
+# # ## ### ##### ######## ############# #####################
+## Copyright statement of the original:
+#
 # Copyright 2015 Jeffrey Kegler
 # This file is part of Marpa::R2.  Marpa::R2 is free software: you can
 # redistribute it and/or modify it under the terms of the GNU Lesser
@@ -34,6 +65,9 @@
 # You should have received a copy of the GNU Lesser
 # General Public License along with Marpa::R2.  If not, see
 # http://www.gnu.org/licenses/.
+
+# # ## ### ##### ######## ############# #####################
+## Let us begin
 
 :default ::=
   action => [start,length,values]
@@ -79,24 +113,28 @@ statement ::=
 
 <discard rule> ::= (':discard' <op declare match>) symbol <adverb list discard>
 <discard rule> ::= (':discard' <op declare match>) <character class> <adverb list discard>
-# Expanded <single symbol> into its two possibilities to make this
-#  more visible to the semantics.
 
-<lexeme rule> ::= (':lexeme' <op declare match>) symbol <adverb list lexeme>
+# Expanded <single symbol> into its two possibilities, i.e. inlined
+# its rules here, to make the differences visible to the semantics,
+# i.e. actionable.
+
+<lexeme rule>                  ::= (':lexeme' <op declare match>) symbol <adverb list lexeme>
+<current lexer statement>      ::= ('current' 'lexer' 'is') <lexer name>
+
 <completion event declaration> ::= ('event') <event initialization> ('=' 'completed') <symbol name>
-<nulled event declaration> ::= ('event') <event initialization> ('=' 'nulled') <symbol name>
+<nulled event declaration>     ::= ('event') <event initialization> ('=' 'nulled') <symbol name>
 <prediction event declaration> ::= ('event') <event initialization> ('=' 'predicted') <symbol name>
-<current lexer statement> ::= ('current' 'lexer' 'is') <lexer name>
 
 <inaccessible statement> ::= ('inaccessible' 'is') <inaccessible treatment> ('by' 'default')
 <inaccessible treatment> ::= 'warn' | 'ok' | 'fatal'
 
-<priority rule> ::= lhs <op declare bnf> <priorities bnf>
-<priority rule> ::= lhs <op declare match> <priorities match>
+<priority rule> ::= lhs (<op declare bnf>  ) <priorities bnf>
+<priority rule> ::= lhs (<op declare match>) <priorities match>
 
 <priorities bnf>   ::= <alternatives bnf>+
   separator => <op loosen>
   proper => 1
+
 <priorities match> ::= <alternatives match>+
   separator => <op loosen>
   proper => 1
@@ -104,6 +142,7 @@ statement ::=
 <alternatives bnf> ::= <alternative bnf>+
   separator => <op equal priority>
   proper => 1
+
 <alternatives match> ::= <alternative match>+
   separator => <op equal priority>
   proper => 1
@@ -183,9 +222,11 @@ action                       ::= ('action'       '=>') <action name>
 
 lhs ::= <symbol name>
 rhs ::= <rhs primary>+
+
 <rhs primary> ::= <single symbol>
 <rhs primary> ::= <single quoted string>
 <rhs primary> ::= <parenthesized rhs primary list>
+
 <parenthesized rhs primary list> ::= ('(') <rhs primary list> (')')
 <rhs primary list> ::= <rhs primary>+
 
@@ -197,6 +238,9 @@ symbol ::= <symbol name>
 
 <symbol name> ::= <bare name> | <bracketed name>
 <action name> ::= <Perl name> | <reserved action name> | <array descriptor>
+
+# # ## ### ##### ######## ############# #####################
+## Lexing, whitespace, including comments.
 
 :discard ~ whitespace
 whitespace ~ [[:space:]]+
@@ -216,6 +260,8 @@ whitespace ~ [[:space:]]+
 <vertical space char> ~  [\n\v\f\r\u2028\u2029]
 <hash comment char>   ~ [^\n\v\f\r\u2028\u2029]
 
+# # ## ### ##### ######## ############# #####################
+
 <op declare bnf> ~ '::='
 <op declare match> ~ '~'
 <op loosen> ~ '||'
@@ -224,7 +270,7 @@ quantifier ::= '*' | '+'
 <before or after> ~ 'before' | 'after'
 
 <signed integer> ~ <integer> | <sign> <integer>
-<sign> ~ [+-]
+<sign> ~ [+\55]
 <integer> ~ [[:digit:]]+
 
 boolean ~ [01]
@@ -277,87 +323,173 @@ boolean ~ [01]
   | 'value'
   | 'values'
 
-quote ~ [']
+# # ## ### ##### ######## ############# #####################
+## Strings of various kinds.
 
-<single quoted string> ~
-  quote
-    <string without single quote or vertical space>
-  quote
-    <character class modifiers>
+# For an explanation please look at the beginning of the file.
+# The escapes handled here are (as a list of representative examples):
+#
+## \a   \r      \0      \uF
+## \b   \t      \10     \uFF
+## \f   \v      \100    \uFFF
+## \n   \\      \xFF    \uFFFF
+#
+## In strings single-quotes (['], \134) may not appear directly.  In
+## char-classes dash ('-', \55) and closing bracket (']', \135) may
+## not appear directly. The line and paragraph separator characters
+## (\u2028, \u2029) are forbidden as well.
 
-<single quoted name> ~
-  quote
-    <string without single quote or vertical space>
-  quote
+<single quoted string> ~ <a single quoted string> <character class modifiers>
+<single quoted name>   ~ <a single quoted string>
 
-<string without single quote or vertical space> ~ <string character>+
-<string character> ~ escaped | [^'\n\v\f\r\u2028\u2029]
-# Not quite <horizontal character>, as quote is excluded as well.
+<a single quoted string> ~ <string open> <non empty string>
 
-<character class> ~
-  <cc open>
-    <cc elements>
-  <cc closing>
-    <character class modifiers>
+<non empty string>
+        ~ <plain string char> <nullable string>
+        | <escaped string char>
 
-<cc open>    ~ '['  # Regular class
-<cc open>    ~ '[^' # Inverted class
-<cc closing> ~ ']'
+<escaped string char> ~ escape <escaped string char details>
 
-<cc elements> ~ <cc element>+
+<nullable string>
+        ~ <string close>
+        | <non empty string>
 
-<cc element>  ~ <cc range>
-<cc element>  ~ <cc character>
+<escaped string char details>
+        ~ control                     <nullable string>
+        | 'x' hex hex                 <nullable string>
+        | 'u' hex hex hex hex         <nullable string>
+        | 'u' hex hex hex             <nullable string post short unicode escape>
+        | 'u' hex hex                 <nullable string post short unicode escape>
+        | 'u' hex                     <nullable string post short unicode escape>
+        | <leading octal> octal octal <nullable string>
+        | octal octal                 <nullable string post short octal escape>
+        | octal                       <nullable string post short octal escape>
 
-<cc range> ~ <cc single character> '-' <cc single character>
+<nullable string post short unicode escape>
+        ~ <escaped string char>
+        | <plain string char without hex> <nullable string>
+        | <string close>
 
-<cc character> ~ <cc single character>
-<cc character> ~ <posix char class>
+<nullable string post short octal escape>
+        ~ <escaped string char>
+        | <plain string char without octal> <nullable string>
+        | <string close>
 
-<cc single character> ~ escaped | normal
+<string open>   ~ [']
+<string close>  ~ [']
 
-normal ~ [^\f\n\r\t\v\u2028\u2029\\\135]
-# U+2028 :: Line Separator
-# U+2029 :: Paragraph Separator
-# U+005D :: ']' (ASCII 93, \135)
-# Not quite <horizontal character>, as backslash and ] are excluded too.
-# Ensuring that these can only be added in some escaped form. As done here.
+octal           ~ [0-7]
+<leading octal> ~ [0-3]
+hex             ~ [[:xdigit:]]
+control         ~ [abfnrtv\\]
+escape          ~ '\\'
 
-# Tcl backslash escaped characters [man Tcl(1), man subst(n)]
-# \a, \b, \f, \n, \r, \t, \v, \\
-# \ooo (1-3)
-# \x(h*)hh
-# \uhhhh (1-4)
+<plain string char>               ~ [^\a\b\f\n\r\t\v\\\u2028\u2029']
+<plain string char without hex>   ~ [^[:xdigit:]\a\b\f\n\r\t\v\\\u2028\u2029']
+<plain string char without octal> ~ [^0-7\a\b\f\n\r\t\v\\\u2028\u2029']
 
-escaped ~ special | octal | unicode | unihex
+# # ## ### ##### ######## ############# #####################
+## Character classes
 
-special ~ '\\' [abfnrtv\\]
+# They allow the sames escapes as strings, so we have to take care of
+# preventing ambiguity here as well. The same trick is used. However
+# the individual elements have different Follow() contexts and a
+# different end marker. This requires us to create all new symbols.
 
-odigit  ~ [0-7]
-lodigit ~ [0-3]
+# The low-level octal and hexadecimal digits, the special characters,
+# etc. can be re-used however, see the string section above for their
+# definitions.
 
-octal ~ '\\' odigit
-octal ~ '\\' odigit odigit
-octal ~ '\\' lodigit odigit odigit
+<character class> ~ <a character class> <character class modifiers>
 
-hex ~ [[:xdigit:]]
-unicode ~ '\\u' hex
-unicode ~ '\\u' hex hex
-unicode ~ '\\u' hex hex hex
-unicode ~ '\\u' hex hex hex hex
+<a character class> ~ <cc open> <cc element and more>
 
-unihex ~ '\\x' hex hex
-# Tcl allows an arbitrary number of hex digits, ignoring all but the
-# last two. We restrict SLIF to the two hex digits which actually
-# matter.
+<cc element and more>
+        ~ <plain cc element>
+        | <escaped cc element>
+
+<plain cc element>
+	~ <plain cc char> <cc range completion>
+	| <posix char class> <nullable cc>
+	
+<plain cc element without hex>
+	~ <plain cc char without hex> <cc range completion>
+	| <posix char class> <nullable cc>
+
+<plain cc element without octal>
+	~ <plain cc char without octal> <cc range completion>
+	| <posix char class> <nullable cc>
+
+<cc range completion>
+        ~ '-' <plain cc char> <nullable cc>
+        | '-' <escaped cc char>
+        | <nullable cc>
+
+<nullable cc>
+        ~ <cc close>
+        | <cc element and more>
+
+<escaped cc element> ~ escape <escaped cc element details>
+
+<escaped cc char> ~ escape <escaped cc char details>
+
+<escaped cc element details>
+        ~ control                     <cc range completion>
+        | 'x' hex hex                 <cc range completion>
+        | 'u' hex hex hex hex         <cc range completion>
+        | 'u' hex hex hex             <cc range completion post short unicode escape>
+        | 'u' hex hex                 <cc range completion post short unicode escape>
+        | 'u' hex                     <cc range completion post short unicode escape>
+        | <leading octal> octal octal <cc range completion>
+        | octal octal                 <cc range completion post short octal escape>
+        | octal                       <cc range completion post short octal escape>
+
+<cc range completion post short unicode escape>
+        ~ '-' <plain cc char> <nullable cc>
+        | '-' <escaped cc char>
+        | <escaped cc element>
+        | <plain cc element without hex>
+        | <cc close>
+
+<cc range completion post short octal escape>
+        ~ '-' <plain cc char> <nullable cc>
+        | '-' <escaped cc char>
+        | <escaped cc element>
+        | <plain cc element without octal>
+        | <cc close>
+
+<escaped cc char details>
+        ~ control                     <nullable cc>
+        | 'x' hex hex                 <nullable cc>
+        | 'u' hex hex hex hex         <nullable cc>
+        | 'u' hex hex hex             <nullable cc post short unicode escape>
+        | 'u' hex hex                 <nullable cc post short unicode escape>
+        | 'u' hex                     <nullable cc post short unicode escape>
+        | <leading octal> octal octal <nullable cc>
+        | octal octal                 <nullable cc post short octal escape>
+        | octal                       <nullable cc post short octal escape>
+
+<nullable cc post short unicode escape>
+        ~ <escaped cc char>
+        | <plain cc char without hex> <nullable cc>
+        | <cc close>
+
+<nullable cc post short octal escape>
+        ~ <escaped cc char>
+        | <plain cc char without octal> <nullable cc>
+        | <cc close>
+
+<cc close> ~ ']'
+<cc open>
+        ~ '['
+        | '[^'
+
+<plain cc char>               ~ [^\a\b\f\n\r\t\v\\\u2028\u2029\135\55]
+<plain cc char without hex>   ~ [^[:xdigit:]\a\b\f\n\r\t\v\\\u2028\u2029\135\55]
+<plain cc char without octal> ~ [^0-7\a\b\f\n\r\t\v\\\u2028\u2029\135\55]
 
 <posix char class>      ~ '[:' <posix char class name> ':]'
 <posix char class name> ~ [[:alnum:]]+
-
-# A horizontal character is any character that is not a form of vertical space
-# <horizontal character> ~ [^\n\v\f\r\u2028\u2029]
-# U+2028 :: Line Separator
-# U+2029 :: Paragraph Separator
 
 <character class modifiers> ~ <character class modifier>*
 <character class modifier> ~ ':ic'
