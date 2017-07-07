@@ -119,7 +119,7 @@ oo::class create marpa::lexer {
     # API parser:
     #   gate:   (self)     - Self attaching to parser for feedback on acceptables.
     #   enter   (syms val) - Push symbol set with semantic value
-    #   fail    ()         - Lexer failed (TODO: error information)
+    #   fail    (cvar)     - Lexer failed (Argument is varname for context information)
     #   eof     ()         - Push end of input signal
     #   symbols (symlist)  - Bulk allocate symbols for ruleschar and char classes.
 
@@ -262,9 +262,9 @@ oo::class create marpa::lexer {
     }
 
     method enter {syms sv} {
-	debug.marpa/lexer {[debug caller] | ([my DIds $syms]) @([my DLocation $sv])}
+	debug.marpa/lexer        {[debug caller] | ([my DIds $syms]) @([my DLocation $sv])}
 	debug.marpa/lexer/report {[my progress-report-current]}
-	debug.marpa/lexer/stream {([my DIds $syms])	 @ [my DLocation $sv]}
+	debug.marpa/lexer/stream {([my DIds $syms]) @ [my DLocation $sv]}
 
 	if {$mystart eq {}} {
 	    lassign [Store get $sv] mystart __ __
@@ -272,7 +272,6 @@ oo::class create marpa::lexer {
 
 	if {![llength $syms]} {
 	    debug.marpa/lexer {[debug caller] | no acceptable symbols, close current lexeme}
-
 	    # Input has no acceptable character waiting. Complete the
 	    # current lexeme, and then let the input try again.
 
@@ -307,7 +306,7 @@ oo::class create marpa::lexer {
 	}
 
 	# Not exhausted. Generate feedback for our gate on the now
-	# acceptable characters and classes.
+	# acceptable symbols, i.e. characters and classes.
 
 	debug.marpa/lexer {[debug caller] | Feedback to gate, chars and classes}
 	Gate acceptable [RECCE expected-terminals]
@@ -346,8 +345,8 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | }
 
 	# Flush everything pending in the local recognizer to the
-	# parser before signaling eof to the parser. Do this only if
-	# we actually have seen something and thus pending.
+	# parser before signaling eof to the parser. Do this if and
+	# only if we actually saw something.
 	if {$mystart ne {}} {
 	    my Complete
 	}
@@ -367,10 +366,11 @@ oo::class create marpa::lexer {
 
     method acceptable {syms} {
 	debug.marpa/lexer {[debug caller] | }
-	# Lexer method, called by parser.
-	# syms is list of parser symbol ids for lexemes.
-	# transform into acs ids, and insert into the recognizer.
-	# TODO: Handle case of LTM also, without ACS
+	# This lexer method is called by the parser.
+	
+	# `syms` is a list of parser symbol ids for the lexemes it can
+	# accept. Transform this into a list of ACS ids, and insert
+	# them into the recognizer.
 
 	set myacceptable $syms
 	set myrecce [GRAMMAR recognizer create RECCE [mymethod Events]]
@@ -381,11 +381,11 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer/report {[my progress-report-current]}
 	debug.marpa/lexer/stream {START ([my DIds $syms])}
 
+	# NOTE (%%): Here and method `export` are the two points where
+	# the difference between the LATM and LTM match disciplines is
+	# injected into the runtime. We do this by always activating
+	# the ACS for LTM symbols (and discards).
 	if {[llength $syms] || [llength $myalways]} {
-	    # NOTE (%%): Here and method `export` are the two points
-	    # where the difference between the LATM and LTM match
-	    # disciplines is injected into the runtime. We do this by
-	    # always activating the ACS for LTM symbols (and discards).
 	    foreach s [lsort -unique [concat $syms $myalways]] {
 		debug.marpa/lexer {[debug caller 1] | U ==> $s <[my 2Name1 $s]>}
 		RECCE alternative [dict get $myacs $s] $mynull 1
@@ -433,10 +433,9 @@ oo::class create marpa::lexer {
     # # ## ### ##### ######## #############
     ## Helper for debug narrative. No other use.
     
-    method FromACS {ids} {
+    method FromParser {ids} {
 	# For lexemes map the parser symbol ids back to their lexer
-	# symbols. For LATM-mode lexemes this is their ACS symbol,
-	# otherwise their regular lexer symbol.
+	# ACS symbols.
 	lmap id $ids { dict get $myacs $id }
     }
 
@@ -505,19 +504,29 @@ oo::class create marpa::lexer {
 	# III. Evaluate the parses with the configured semantics,
 	#      getting one symbol and semantic value per.
 
+	# Note, we assume that the 'sv' is the same for all symbols
+	# and generate it only on first non-discarded symbol.
+
+	# The construction of the @START symbol and its rules,
+	# i.e. for all foo, foo lexeme or discard we have a single
+	# rule `START ~ ACS:foo foo` has a few implications on the
+	# list of instructions, i.e. the parse trees we get from the
+	# forest. These are:
+	
+	# 1. The first instruction is for the token of the ACS
+	#    symbol of the lexeme or discard we matched.
+	# 2. The last instruction is the reduction to @START.
+	# 3. The 2nd-to-last instruction is the reduction to foo.
+	
+	# That last item tells us where we get the rule id from,
+	# should we need it for the semantics.
+
 	set found {}
 	set sv    -1
 	set first yes
 	set recognized 0
 	set discarded  0
 	foreach tree $forest {
-	    # Note, we assume that the 'sv' is the same for all
-	    # symbols and generate it only on first.
-
-	    # NOTE! The last step is always the reduction of the lexeme to
-	    # @START.  We drop that step as we want the lexeme itself.
-	    #set tree [lrange $tree 0 end-2]
-
 	    # Calculate lexeme parser symbol. See (:D:) for where the
 	    # semantics are set to get it here. No further translation
 	    # needed!
@@ -541,56 +550,63 @@ oo::class create marpa::lexer {
 	}
 
 	# Reduce the symbol to the unique subset. Lexing ambiguities
-	# may have us see lexeme multiple times, each per possible
-	# parse-tree. In the SLIF grammar this is visible with
-	# 'character class'.
+	# may cause us see a single lexeme multiple times, one per
+	# possible parse-tree for it.
 	set found [lsort -uniq $found]
 
 	debug.marpa/lexer {[debug caller] | Recognized: $recognized}
 	debug.marpa/lexer {[debug caller] | Discarded:  $discarded}
 	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] ($found)}
+	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] (([my DIds [my FromForward $found]]))}
 	debug.marpa/lexer {[debug caller] | Semantic:   $sv ([expr {($sv < 0) ? "" : [my DLocation $sv]}])}
 
-	# NOTE! Due to the usage of ACS when the RECCE was initalized
-	# at this point we can have only a subset of the acceptable
-	# symbols. We cannot generate invalid symbols (assuming we
-	# have set everything up correctly).
-	#
-	# Exception: We may have come across discarded symbols.
+	# NOTE. Of the found lexemes only those with mode LTM may be
+	# unacceptable to the parser. This is the only source of
+	# invalid symbols the parser may get. Of the LATM lexemes we
+	# can have only matched a subset of the acceptable ones. Which
+	# is why it is recommended to go for LATM, and why that is the
+	# default mode.
 
 	# The current recognizer is done.
 	RECCE destroy
 	set myrecce {}
 
-	debug.marpa/lexer {[debug caller] | Have (([my DIds [my FromACS $found]])) ${sv}=([expr {($sv < 0) ? "" : [my DLocation $sv]}])}
+	debug.marpa/lexer {[debug caller] | Have (([my DIds [my FromParser $found]])) ${sv}=([expr {($sv < 0) ? "" : [my DLocation $sv]}])}
 
+	# Talk to parser iff we have found lexemes, or if we have no
+	# discarded. Conversely skip the parser iff no lexemes found
+	# but discarded symbols.
+	
 	if {($recognized > 0) && ($recognized == $discarded)} {
-	    # We found symbols, and only discarded symbols.
+	    # We found discarded symbols, and no lexemes
 	    # Restart lexing without informing the parser, keeping
 	    # to the current set of acceptable symbols
-	    debug.marpa/lexer {[debug caller] | Discard ...}
-
+	    debug.marpa/lexer        {[debug caller] | Discard ...}
 	    debug.marpa/lexer/stream {FIN, discard}
 
 	    my acceptable $myacceptable
 
 	    debug.marpa/lexer {[debug caller] | ... Ok}
 	} else {
-	    # Push the symbol set up to the parser. This will also
-	    # give us feedback about the new set of acceptable
-	    # symbols, and generate a new RECCE, see 'Acceptable'.
+	    # Pushed the found lexemes (possibly none (*)) to the
+	    # parser. This will also give us feedback about the new
+	    # set of acceptable lexemes, and generate a new RECCE, see
+	    # 'Acceptable'.
+	    #
+	    # (*) This happens when neither lexemes nor discards were
+	    #     found. At that point the lexer is stuck and has to
+	    #     report the issue to the parser.
 
-	    debug.marpa/lexer {[debug caller] | Push ...}
-
+	    debug.marpa/lexer        {[debug caller] | Push ...}
+	    debug.marpa/lexer/stream {FIN, push: (([my DIds [my FromParser $found]]))}
 	    # ASSERT (sv >= 0)
-	    debug.marpa/lexer/stream {FIN, push: (([my DIds [my FromACS $found]]))}
 	    Forward enter $found $sv
 
 	    debug.marpa/lexer {[debug caller] | ... Ok}
 	}
 
-	# Last, not least, have our gate re-enter any characters we
-	# were not able to process (see redo counter above).
+	# Last, but not least, have our gate re-enter any characters
+	# we were not able to process (see redo counter above).
 
 	debug.marpa/lexer {[debug caller] | Re-process $redo ...}
 	Gate redo $redo
@@ -606,7 +622,7 @@ oo::class create marpa::lexer {
 	# information, i.e. which were acceptable to the parser.
 	# Then forward to the parser for his take.
 
-	dict set context g1 acceptable [lsort -dict [lmap s [my 2Name [my FromACS [lsort -unique [concat $myacceptable $myalways]]]] {
+	dict set context g1 acceptable [lsort -dict [lmap s [my 2Name [my FromParser [lsort -unique [concat $myacceptable $myalways]]]] {
 	    string map {ACS: {}} $s
 	}]]
 	return

@@ -12,9 +12,9 @@
 # automatically created when found in a rule and not known. A 'strict'
 # implementation throws an error instead. This implementation is
 # strict.  We will not implement 'easy'. This is ok because this is
-# part of a runtime targeted at gneerated lexers and parsers, and the
+# part of a runtime targeted at generated lexers and parsers, and the
 # generator can trivially make sure that all symbols are known before
-# use in rules. Only the boot parser for SLIF needed manual
+# their use in rules. Only the boot parser for SLIF needed manual
 # configuration.
 
 # # ## ### ##### ######## #############
