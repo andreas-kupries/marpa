@@ -194,7 +194,7 @@ oo::class create marpa::lexer {
 	# Map from local to parser symbol     (id -> id)
 	# Map from parser to local ACS symbol (id -> id)
 	foreach s $local p $parse a $acs n $allnames {
-	    dict set mypublic $s [list $p $myparts]
+	    dict set mypublic $s $p
 	    dict set myacs    $p $a
 
 	    set latm [dict get $names $n]
@@ -234,16 +234,18 @@ oo::class create marpa::lexer {
 	# rules for quantified rules. Only the helper rules here.
 
 	foreach symid [dict keys $mypublic] {
-	    lassign [dict get $mypublic $symid] pid parts
+	    set pid [dict get $mypublic $symid]
 	    set acs [dict get $myacs $pid]
 	    set rid [my RuleP $start  $acs $symid]
 
+	    # Extend for use in Complete (to determine parser symbol)
+	    dict set mypublic $acs $pid
+
 	    # TODO: Precompute the information for builtin semantics in the generator.
-	    set parts [my CompleteParts $parts $symid $pid $rid]
+	    set parts [my CompleteParts $myparts $symid $pid $rid]
 
 	    # (:D:) Set semantic, lexeme parser symbol, and per-lexeme semantic value
-	    GetSymbol add-rule $rid [list marpa::semstd::K $pid]
-	    GetString add-rule $rid [list marpa::semstd::builtin $parts]
+	    GetString add-rule $rid [list marpa::semstd::builtin $myparts]
 	}
 
 	foreach sym $discards acs [my symbols [my ToACS $discards]] {
@@ -253,8 +255,8 @@ oo::class create marpa::lexer {
 
 	    dict set myacs $acs $acs
 
-	    # (:D:) set semantics, discard marker. Nothing for semantic value.
-	    GetSymbol add-rule $rid [list marpa::semstd::K -1]
+	    # Extend for use in Complete (:D: mark as discarded, no parser symbol)
+	    dict set mypublic $acs -1
 	}
 
 	my Freeze
@@ -521,32 +523,28 @@ oo::class create marpa::lexer {
 	# That last item tells us where we get the rule id from,
 	# should we need it for the semantics.
 
-	set found {}
-	set sv    -1
-	set first yes
-	set recognized 0
-	set discarded  0
-	foreach tree $forest {
-	    # Calculate lexeme parser symbol. See (:D:) for where the
-	    # semantics are set to get it here. No further translation
-	    # needed!
-	    set symbol [GetSymbol eval $tree]
+	set sv        -1
+	set found     {}
+	set discarded 0
 
-	    incr recognized
+	foreach tree $forest {
+	    # First instruction = lrange 0 1, 0 == type (assert: token), 1 == details
+	    set details [lindex $tree 1]
+	    set acs [dict get $details id]
+	    set symbol [dict get $mypublic $acs]
+
 	    # Discarded symbols are signaled by marker -1, see (:D:)
 	    if {$symbol < 0} {
 		incr discarded
-		continue
+	    } else {
+		lappend found $symbol
 	    }
+	}
 
-	    # Extract the semantic value iff not discarded and first.
-	    if {$first} {
-		# Calculate the string value of the lexeme.
-		set sv [Store put [GetString eval $tree]]
-	    }
-	    set first no
-
-	    lappend found $symbol
+	# Extract the semantic value iff not discarded and first.
+	if {[llength $found]} {
+	    # Calculate the string value of the lexeme.
+	    set sv [Store put [GetString eval [lindex $forest 0]]]
 	}
 
 	# Reduce the symbol to the unique subset. Lexing ambiguities
@@ -554,10 +552,9 @@ oo::class create marpa::lexer {
 	# possible parse-tree for it.
 	set found [lsort -uniq $found]
 
-	debug.marpa/lexer {[debug caller] | Recognized: $recognized}
 	debug.marpa/lexer {[debug caller] | Discarded:  $discarded}
 	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] ($found)}
-	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] (([my DIds [my FromForward $found]]))}
+	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] (([my DIds [my FromParser $found]]))}
 	debug.marpa/lexer {[debug caller] | Semantic:   $sv ([expr {($sv < 0) ? "" : [my DLocation $sv]}])}
 
 	# NOTE. Of the found lexemes only those with mode LTM may be
@@ -571,13 +568,11 @@ oo::class create marpa::lexer {
 	RECCE destroy
 	set myrecce {}
 
-	debug.marpa/lexer {[debug caller] | Have (([my DIds [my FromParser $found]])) ${sv}=([expr {($sv < 0) ? "" : [my DLocation $sv]}])}
-
 	# Talk to parser iff we have found lexemes, or if we have no
 	# discarded. Conversely skip the parser iff no lexemes found
 	# but discarded symbols.
-	
-	if {($recognized > 0) && ($recognized == $discarded)} {
+
+	if {![llength $found] && $discarded} {
 	    # We found discarded symbols, and no lexemes
 	    # Restart lexing without informing the parser, keeping
 	    # to the current set of acceptable symbols
@@ -635,13 +630,6 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | }
 
 	# Standard semantics for lexemes.
-	# I. Extract lexeme symbol. The exported and discarded symbols
-	#    override the rule default.
-	marpa::semcore create GetSymbol $semstore
-	GetSymbol add-rule  @default marpa::semstd::nop
-	GetSymbol add-null  @default marpa::semstd::nop
-	GetSymbol add-token @default marpa::semstd::nop
-
 	# II. Extract the semantic value. The exported override the
 	#     rule default with grammar data. The default simply
 	#     merges lexeme ranges.
@@ -658,7 +646,6 @@ oo::class create marpa::lexer {
 	    # Provide semcore with access to engine internals for use
 	    # in its debug narrative (conversion of ids back to names)
 	    set my [namespace which -command my]
-	    GetSymbol engine: $my
 	    GetString engine: $my
 	}]}
 	debug.marpa/lexer {[debug caller] | /ok}
@@ -667,7 +654,6 @@ oo::class create marpa::lexer {
 
     # # ## ### ##### ######## #############
 }
-
 
 # # ## ### ##### ######## #############
 ## Mixin helper class. State machine checking the method call
