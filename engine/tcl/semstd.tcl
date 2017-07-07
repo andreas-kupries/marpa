@@ -79,13 +79,13 @@ proc marpa::semstd::builtin {parts id args} {
 
 	# Assemble parts ...
 	switch -exact -- $part {
-	    g1start -
-	    g1end   {}
-	    values { lappend result $args }
-	    start  { lappend result [lindex $range 0] }
-	    end    { lappend result [lindex $range 1] }
-	    value  { lappend result [lindex $range 2] }
-	    length {
+	    g1start  {}
+	    g1length { lappend result 1 }
+	    values   { lappend result $args }
+	    start    { lappend result [lindex $range 0] }
+	    end      { lappend result [lindex $range 1] }
+	    value    { lappend result [lindex $range 2] }
+	    length   {
 		lassign $range s e
 		lappend result [expr {$e - $s + 1}]
 	    }
@@ -95,6 +95,7 @@ proc marpa::semstd::builtin {parts id args} {
 	    lhs    { lappend result $detail }
 	}
     }
+
     if {[llength $parts] == 1} {
 	return [lindex $result 0]
     } else {

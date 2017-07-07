@@ -245,7 +245,7 @@ oo::class create marpa::lexer {
 	    set parts [my CompleteParts $myparts $symid $pid $rid]
 
 	    # (:D:) Set semantic, lexeme parser symbol, and per-lexeme semantic value
-	    GetString add-rule $rid [list marpa::semstd::builtin $myparts]
+	    GetString add-rule $rid [list marpa::semstd::builtin $parts]
 	}
 
 	foreach sym $discards acs [my symbols [my ToACS $discards]] {
@@ -416,17 +416,23 @@ oo::class create marpa::lexer {
 	set result {}
 	foreach part $parts {
 	    switch -exact -- $part {
-		g1start -
-		g1end   -
-		values  -
-		start   -
-		end     -
-		value   -
-		length  -
-		rule    { lappend result $part }
-		name    { lappend result [list $part [my 2Name1 $id]] }
-		symbol  { lappend result [list $part $pid] }
-		lhs     { lappend result [list $part ??] }
+		g1start  -
+		g1length -
+		start    -
+		end      -
+		value    -
+		length   -
+		rule     {
+		    # No static detail, determined from matched lexeme
+		    lappend result $part
+		}
+		values {
+		    # Alias of value, and must be mapped for semstd::builtin.
+		    lappend result value
+		}
+		name   -
+		symbol { lappend result [list $part [my 2Name1 $id]] }
+		lhs    { lappend result [list $part $pid] }
 	    }
 	}
 	return $result
@@ -458,8 +464,8 @@ oo::class create marpa::lexer {
 	    return
 	}
 
-	# I. Pull the location of longest lexeme out of the recognizer
-	#    state
+	# I. Extract the location of longest lexeme from the
+	#    recognizer state
 	set latest [RECCE latest-earley-set]
 	set redo   0
 
@@ -471,35 +477,16 @@ oo::class create marpa::lexer {
 	    incr redo
 	    incr latest -1
 	    if {$latest < 0} {
-		my get-context context
-
-		# The current recognizer is done.
-		RECCE destroy
-		set myrecce {}
-
-		Forward fail context
-
-		# Note: This method must not return, but throw an
-		# error at some point. If it returns we have an
-		# internal problem at hand as well. In that case we
-		# report that now, together with the context.
-
-		my E "Unexpected return without error for problem: $context" \
-		    INTERNAL ILLEGAL RETURN $context
+		my Mismatch
 	    }
 	}
+	debug.marpa/lexer {[debug caller] | Lexeme start:  $mystart}
 	debug.marpa/lexer {[debug caller] | Lexeme length: $latest}
+	debug.marpa/lexer {[debug caller] | Lexeme:        (([char quote cstring [Gate match $latest]]))}
 	debug.marpa/lexer {[debug caller] | Redo:          $redo}
 
 	# II. Pull all the valid parses at this location
-	set forest {}
-	while {![catch {
-	    lappend forest [FOREST get-parse]
-	    debug.marpa/lexer/forest {__________________________________________ Tree [incr fcounter] ([llength [lindex $forest end]])}
-	    debug.marpa/lexer/forest {[my parse-tree [lindex $forest end]]}
-	    debug.marpa/lexer/forest/save {[my dump-parse-tree "TL.@${mystart}+${latest}.$fcounter" [lindex $forest end]]}
-	}]} {}
-	FOREST destroy
+	set forest [my Matches]
 
 	debug.marpa/lexer {[debug caller] | Trees:         [llength $forest]}
 
@@ -517,15 +504,15 @@ oo::class create marpa::lexer {
 	
 	# 1. The first instruction is for the token of the ACS
 	#    symbol of the lexeme or discard we matched.
-	# 2. The last instruction is the reduction to @START.
-	# 3. The 2nd-to-last instruction is the reduction to foo.
+	# 2. The last instruction is a rule, the reduction to @START.
+	# 3. The 2nd-to-last instruction is a rule, the reduction to foo.
 	
 	# That last item tells us where we get the rule id from,
 	# should we need it for the semantics.
 
-	set sv        -1
 	set found     {}
 	set discarded 0
+	set fset      {}
 
 	foreach tree $forest {
 	    # First instruction = lrange 0 1, 0 == type (assert: token), 1 == details
@@ -536,8 +523,14 @@ oo::class create marpa::lexer {
 	    # Discarded symbols are signaled by marker -1, see (:D:)
 	    if {$symbol < 0} {
 		incr discarded
+	    } elseif {[dict exists $fset $symbol]} {
+		# ignore, already handled
 	    } else {
-		lappend found $symbol
+		dict set fset $symbol .
+		# Compute and remember semantic value.
+		# latest, tree, symbol - SV upvar's these as needed.
+		# __sv_*               - Reserved by SV for caching.
+		lappend found $symbol ;#[Store put [my SV]]
 	    }
 	}
 
@@ -550,7 +543,7 @@ oo::class create marpa::lexer {
 	# Reduce the symbol to the unique subset. Lexing ambiguities
 	# may cause us see a single lexeme multiple times, one per
 	# possible parse-tree for it.
-	set found [lsort -uniq $found]
+	#set found [lsort -uniq $found]
 
 	debug.marpa/lexer {[debug caller] | Discarded:  $discarded}
 	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] ($found)}
@@ -607,6 +600,75 @@ oo::class create marpa::lexer {
 	Gate redo $redo
 	debug.marpa/lexer {[debug caller] | ... Reprocessed}
 	return
+    }
+
+    method Mismatch {} {
+	debug.marpa/lexer {[debug caller] | }
+	my get-context context
+
+	# The current recognizer is done.
+	RECCE destroy
+	set myrecce {}
+
+	Forward fail context
+
+	# Note: The call above must not return, but throw an error at
+	# some point. If it returns we have an internal problem at
+	# hand as well. In that case we report that now, together with
+	# the context.
+
+	my E "Unexpected return without error for problem: $context" \
+	    INTERNAL ILLEGAL RETURN $context
+    }
+
+    method Matches {} {
+	debug.marpa/lexer {[debug caller] | }
+	while {![catch {
+	    lappend forest [FOREST get-parse]
+	    debug.marpa/lexer/forest {__________________________________________ Tree [incr fcounter] ([llength [lindex $forest end]])}
+	    debug.marpa/lexer/forest {[my parse-tree [lindex $forest end]]}
+	    debug.marpa/lexer/forest/save {[my dump-parse-tree "TL.@${mystart}+${latest}.$fcounter" [lindex $forest end]]}
+	}]} {}
+	FOREST destroy
+	return $forest
+    }
+
+    method SV {} {
+	debug.marpa/lexer {[debug caller] | }
+	# 'start'	(^mystart) offset where lexeme starts
+	# 'length'	(^latest) length of the lexeme
+	# 'g1start'	G1 offset of the lexeme
+	# 		(Get from parser (Forward ...))
+	# 'g1length'	G1 length of the lexeme (fixed: 1)
+	# 'name'	Symbol name of the lexeme, i.e. rule LHS
+	#	Pre-computable
+	# 'lhs'		LHS symbol id of the rule.
+	#		Lexeme symbol (parser symbol)
+	# 'symbol'	Alias of 'name'
+	# 'rule'	(^tree) Rule id of the matched lexeme
+	# 'value'	Token value of the lexeme, i.e.
+	# 		the matched string.
+	# 'values'	Alias of 'value'
+	#
+	# Special actions
+	# ::array <=> [value]
+	set nop {}
+	lmap part $myparts {
+	    switch -exact -- $part {
+		start    { set mystart }
+		length   { upvar 1 latest  v ; set v }
+		g1start  { expr {{}} }
+		g1length { expr {1} }
+		name     -
+		symbol   {
+		    sym name - lhs lexeme name
+		}
+		lhs      { upvar 1 symbol v ; set v }
+		rule     { upvar 1 tree   v ; dict get [lindex $v end-3] id }
+		value    -
+		values   { Gate match latest }
+	    }
+	}
     }
 
     method ExtendContext {cv} {

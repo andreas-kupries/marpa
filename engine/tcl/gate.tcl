@@ -95,7 +95,7 @@ oo::class create marpa::gate {
     variable myhistory    ;# Entered characters and semantic values.
 
     variable mylastchar   ;# last character "enter"ed into the gate
-    variable mylastvalue  ;# Sem value for last character, effectively its lcoation
+    variable mylastvalue  ;# Sem value for last character, effectively its location
 
     # # -- --- ----- -------- -------------
     ## Configuration
@@ -312,6 +312,12 @@ oo::class create marpa::gate {
 	return
     }
 
+    method match {length} {
+	debug.marpa/gate {[debug caller] | }
+	incr length -1
+	return [join [lrange $myhistory 0 $length] {}]
+    }
+
     method ExtendContext {cv char value} {
 	debug.marpa/gate {[debug caller] | }
 	upvar 1 $cv context
@@ -408,6 +414,10 @@ oo::class create marpa::gate {
 	return
     }
 
+    method name-of {s} {
+	dict get $myrmap $id
+    }
+    
     ##
     # # ## ### ##### ######## #############
 }
