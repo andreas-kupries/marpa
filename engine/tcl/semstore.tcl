@@ -64,7 +64,7 @@ oo::class create marpa::semstore {
 	# referenced section it is mentioned that the engine optimizes
 	# things when it encouters unvalued symbols.
 	#
-	# I suspect that there are issues in these optimzations, for
+	# I suspect that there are issues in these optimizations, for
 	# when I used id 0 during testing I found RECCE to behave
 	# irregular, doing things like
 	#
@@ -72,7 +72,7 @@ oo::class create marpa::semstore {
 	#   more input (parser.test, marpa-parser-7.1.0)
 	#
 	# - report exhausted properly, but fail to construct a forest
-	#   (lexter.test, marpa-lexer-9.2.x)
+	#   (lexer.test, marpa-lexer-9.2.x)
 	#
 	dict set myvalue [incr mycounter] $data
 	debug.marpa/semstore {==> $mycounter}

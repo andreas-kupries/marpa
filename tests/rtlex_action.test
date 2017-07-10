@@ -85,9 +85,13 @@ proc initialize {} {
 
 proc capture {m args} {
     if {$m ne "enter"} return
-    # args = list (list(symbol), svalue)
-    lassign $args _ sv
-    lappend ::TRACE $sv
+    # args = list (list(symbol), list(value))
+    lassign $args symbols svalues
+    set svalues [lsort -uniq $svalues]
+    if {[llength $svalues] == 1} {
+	set svalues [lindex $svalues 0]
+    }
+    lappend ::TRACE $svalues
     return
 }
 
@@ -102,9 +106,9 @@ foreach {lexaction joiner} {
     g1length { }
     g1start  { }
     length   { }
-    lhs      { }
+    lhs      \n
     name     \n
-    rule     { }
+    rule     \n
     start    { }
     symbol   \n
     value    \n

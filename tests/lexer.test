@@ -1061,10 +1061,6 @@ test marpa-lexer-10.1.2 {enter, start lexeme, externals} -setup {
 } -result {
   STO C {get 1}
   STO R {get 1} = {{} {} {}}
-  STO C {get 1}
-  STO R {get 1} = {{} {} {}}
-  STO C {get 1}
-  STO R {get 1} = {{} {} {}}
   STO C {put {}}
   STO R {put {}} = 2
   PAR C {enter 0 2}
@@ -1115,12 +1111,6 @@ test marpa-lexer-10.2.2 {enter, intra lexeme, externals} -setup {
     LEXER destroy
     parsed ; stored
 } -result {
-  STO C {get 1}
-  STO R {get 1} = {{} {} {}}
-  STO C {get 1}
-  STO R {get 1} = {{} {} {}}
-  STO C {get 1}
-  STO R {get 1} = {{} {} {}}
   STO C {get 1}
   STO R {get 1} = {{} {} {}}
   STO C {put {}}

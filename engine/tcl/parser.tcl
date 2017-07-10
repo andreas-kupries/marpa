@@ -147,9 +147,9 @@ oo::class create marpa::parser {
     }
 
     method enter {syms sv} {
-	debug.marpa/parser {(([my DIds $syms])) @([my DLocation $sv])}
+	debug.marpa/parser {(([my DIds $syms])) @($sv)}
 	debug.marpa/parser/report {[my progress-report-current]}
-	debug.marpa/parser/stream {(([my DIds $syms]))	 @ [my DLocation $sv]}
+	debug.marpa/parser/stream {(([my DIds $syms])) @($sv)}
 
 	if {![llength $syms]} {
 	    # The input has no acceptable symbols waiting.
@@ -169,8 +169,8 @@ oo::class create marpa::parser {
 
 	# Drive the low-level recognizer
 	debug.marpa/parser {forward recce}
-	foreach sym $syms {
-	    RECCE alternative $sym $sv 1
+	foreach sym $syms v $sv {
+	    RECCE alternative $sym $v 1
 	}
 	try {
 	    RECCE earleme-complete

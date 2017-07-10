@@ -298,6 +298,7 @@ oo::class create marpa::gate {
 	debug.marpa/gate {[debug caller] | }
 	if {$n} {
 	    # Redo/enter the last n characters
+	    # Note: 2 slots per char (char + value) => Times 2.
 	    incr n $n
 	    incr n -1
 	    set pending [lrange $myhistory end-$n end]
@@ -310,12 +311,6 @@ oo::class create marpa::gate {
 	    set myhistory {}
 	}
 	return
-    }
-
-    method match {length} {
-	debug.marpa/gate {[debug caller] | }
-	incr length -1
-	return [join [lrange $myhistory 0 $length] {}]
     }
 
     method ExtendContext {cv char value} {

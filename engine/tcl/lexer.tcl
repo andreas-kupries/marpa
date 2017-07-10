@@ -68,9 +68,10 @@ oo::class create marpa::lexer {
     # Static
     variable mypublic     ;# sym id:local  -> (id:parser, parts)
     variable myacs        ;# sym id:parser -> id:acs:local
-    variable myalways     ;# Set of ACS for discarded symbols and LTM
-			   # lexemes, i.e. symbols which are always
-			   # acceptable
+    variable mylex        ;# sym id:parser -> id:local (lexeme, not acs)
+    variable myalways     ;# Set (list) of ACS for discarded symbols
+			   # and LTM lexemes, i.e. symbols which are
+			   # always acceptable
 
     # Dynamic
     variable myparts      ;# Sem value definition for the following exports
@@ -85,6 +86,7 @@ oo::class create marpa::lexer {
 			   # recognizer after a discarded lexeme was
 			   # found in the input.
     variable mystart      ;# start offset for the current lexeme
+    variable mylexeme     ;# characters in the current lexeme.
 
     # Constant
     variable mynull       ;# Semantic value for ACS, empty string,
@@ -150,12 +152,12 @@ oo::class create marpa::lexer {
 	# Static configuration and state
 	set mypublic  {}
 	set myacs     {}
+	set mylex     {}
 	set myparts   value ;# Default: lexeme literal semantics
 	set myalways  {}
 	set mynull    [Store put [marpa location null]]
 	set mystart   {}
-
-	my SetupSemantics [marpa::fqn $semstore 2]
+	set mylexeme  ""
 
 	# Attach ourselves to parser, as gate.
 	Forward gate: [self]
@@ -193,9 +195,11 @@ oo::class create marpa::lexer {
 
 	# Map from local to parser symbol     (id -> id)
 	# Map from parser to local ACS symbol (id -> id)
+	# Map from parser to local symbol     (id -> id)
 	foreach s $local p $parse a $acs n $allnames {
 	    dict set mypublic $s $p
 	    dict set myacs    $p $a
+	    dict set mylex    $p $s
 
 	    set latm [dict get $names $n]
 	    if {!$latm} { lappend myalways $a }
@@ -240,12 +244,6 @@ oo::class create marpa::lexer {
 
 	    # Extend for use in Complete (to determine parser symbol)
 	    dict set mypublic $acs $pid
-
-	    # TODO: Precompute the information for builtin semantics in the generator.
-	    set parts [my CompleteParts $myparts $symid $pid $rid]
-
-	    # (:D:) Set semantic, lexeme parser symbol, and per-lexeme semantic value
-	    GetString add-rule $rid [list marpa::semstd::builtin $parts]
 	}
 
 	foreach sym $discards acs [my symbols [my ToACS $discards]] {
@@ -268,14 +266,15 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer/report {[my progress-report-current]}
 	debug.marpa/lexer/stream {([my DIds $syms]) @ [my DLocation $sv]}
 
+	lassign [Store get $sv] thestart __ thechar
 	if {$mystart eq {}} {
-	    lassign [Store get $sv] mystart __ __
+	    set mystart $thestart
 	}
 
 	if {![llength $syms]} {
 	    debug.marpa/lexer {[debug caller] | no acceptable symbols, close current lexeme}
 	    # Input has no acceptable character waiting. Complete the
-	    # current lexeme, and then let the input try again.
+	    # current lexeme and then let the input try again.
 
 	    ## TODO: Check if this happens again immediately ........
 	    ## If yes we have a more serious problem and should stop.
@@ -285,7 +284,8 @@ oo::class create marpa::lexer {
 	    return
 	}
 
-	# Drive the low-level recognizer
+	# Extend the possible match and drive the low-level recognizer
+	append mylexeme $thechar
 	debug.marpa/lexer {[debug caller] | step recce engine}
 	foreach sym $syms {
 	    RECCE alternative $sym $sv 1
@@ -377,7 +377,8 @@ oo::class create marpa::lexer {
 	set myacceptable $syms
 	set myrecce [GRAMMAR recognizer create RECCE [mymethod Events]]
 	debug.marpa/lexer {[debug caller 1] | RECCE = [namespace which -command RECCE]}
-	set mystart {}
+	set mystart  {}
+	set mylexeme {}
 
 	RECCE start-input
 	debug.marpa/lexer/report {[my progress-report-current]}
@@ -412,34 +413,8 @@ oo::class create marpa::lexer {
     # # ## ### ##### ######## #############
     ## Lexer - Completion of a lexeme
 
-    method CompleteParts {parts id pid rid} {
-	set result {}
-	foreach part $parts {
-	    switch -exact -- $part {
-		g1start  -
-		g1length -
-		start    -
-		end      -
-		value    -
-		length   -
-		rule     {
-		    # No static detail, determined from matched lexeme
-		    lappend result $part
-		}
-		values {
-		    # Alias of value, and must be mapped for semstd::builtin.
-		    lappend result value
-		}
-		name   -
-		symbol { lappend result [list $part [my 2Name1 $id]] }
-		lhs    { lappend result [list $part $pid] }
-	    }
-	}
-	return $result
-    }
-
     # # ## ### ##### ######## #############
-    ## Helper for debug narrative. No other use.
+    ## Helper for debug narrative, and `ExtendedContext`.
     
     method FromParser {ids} {
 	# For lexemes map the parser symbol ids back to their lexer
@@ -449,7 +424,7 @@ oo::class create marpa::lexer {
 
     method ToACS1 {name} { return "ACS:$name" }
     method ToACS {names} {
-	# symbol names transformed into symbol names for ACS
+	# Lexeme symbol names transformed into symbol names for ACS.
 	debug.marpa/engine {[debug caller] | }
 	lmap name $names { my ToACS1 $name }
     }
@@ -482,7 +457,7 @@ oo::class create marpa::lexer {
 	}
 	debug.marpa/lexer {[debug caller] | Lexeme start:  $mystart}
 	debug.marpa/lexer {[debug caller] | Lexeme length: $latest}
-	debug.marpa/lexer {[debug caller] | Lexeme:        (([char quote cstring [Gate match $latest]]))}
+	debug.marpa/lexer {[debug caller] | Lexeme:        (([char quote cstring [expr {$redo ? [string range $mylexeme 0 end-$redo] : $mylexeme}]]))}
 	debug.marpa/lexer {[debug caller] | Redo:          $redo}
 
 	# II. Pull all the valid parses at this location
@@ -513,42 +488,47 @@ oo::class create marpa::lexer {
 	set found     {}
 	set discarded 0
 	set fset      {}
+	set sv        {}
+	set svset     {} ;# Map from SV to their id, to prevent duplication
 
 	foreach tree $forest {
 	    # First instruction = lrange 0 1, 0 == type (assert: token), 1 == details
 	    set details [lindex $tree 1]
-	    set acs [dict get $details id]
-	    set symbol [dict get $mypublic $acs]
+	    set acs     [dict get $details id]
+	    set symbol  [dict get $mypublic $acs]
 
 	    # Discarded symbols are signaled by marker -1, see (:D:)
 	    if {$symbol < 0} {
 		incr discarded
 	    } elseif {[dict exists $fset $symbol]} {
-		# ignore, already handled
+		# Ignore, already handled
 	    } else {
+		# Note that we reduce the symbols to the unique
+		# subset. Lexing ambiguities may cause us see a single
+		# lexeme multiple times, one per possible parse-tree
+		# for it. We capture only the first. We do compute and
+		# capture the semantic values for different lexeme
+		# symbols matching here.
 		dict set fset $symbol .
-		# Compute and remember semantic value.
-		# latest, tree, symbol - SV upvar's these as needed.
-		# __sv_*               - Reserved by SV for caching.
-		lappend found $symbol ;#[Store put [my SV]]
+		lappend found $symbol
+		# latest, tree, symbol, redo - upvar'd in GSV these as needed.
+		# __sv_*                     - Reserved by GSV for caching.
+		lappend sv [my KnownValue [my GetSemanticValue]]
 	    }
 	}
 
-	# Extract the semantic value iff not discarded and first.
-	if {[llength $found]} {
-	    # Calculate the string value of the lexeme.
-	    set sv [Store put [GetString eval [lindex $forest 0]]]
-	}
-
-	# Reduce the symbol to the unique subset. Lexing ambiguities
-	# may cause us see a single lexeme multiple times, one per
-	# possible parse-tree for it.
-	#set found [lsort -uniq $found]
-
 	debug.marpa/lexer {[debug caller] | Discarded:  $discarded}
 	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] ($found)}
-	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] (([my DIds [my FromParser $found]]))}
-	debug.marpa/lexer {[debug caller] | Semantic:   $sv ([expr {($sv < 0) ? "" : [my DLocation $sv]}])}
+	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] (([set fs [my DIds [my FromParser $found]]]))}
+	debug.marpa/lexer {[debug caller] | [marpa:D {
+	    set fmax 0
+	    foreach s $fs {
+		set n [string length $s]
+		if {$n > $fmax} { set fmax $n }
+	    }
+	}][join [lmap s $fs v $sv {
+	    set __ "Semantic:   [format %${fmax}s $s] : $v = ([char quote cstring [Store get $v]])"
+	}] \n]}
 
 	# NOTE. Of the found lexemes only those with mode LTM may be
 	# unacceptable to the parser. This is the only source of
@@ -587,7 +567,7 @@ oo::class create marpa::lexer {
 
 	    debug.marpa/lexer        {[debug caller] | Push ...}
 	    debug.marpa/lexer/stream {FIN, push: (([my DIds [my FromParser $found]]))}
-	    # ASSERT (sv >= 0)
+	    # ASSERT (llength (sv) == llength (found))
 	    Forward enter $found $sv
 
 	    debug.marpa/lexer {[debug caller] | ... Ok}
@@ -633,43 +613,6 @@ oo::class create marpa::lexer {
 	return $forest
     }
 
-    method SV {} {
-	debug.marpa/lexer {[debug caller] | }
-	# 'start'	(^mystart) offset where lexeme starts
-	# 'length'	(^latest) length of the lexeme
-	# 'g1start'	G1 offset of the lexeme
-	# 		(Get from parser (Forward ...))
-	# 'g1length'	G1 length of the lexeme (fixed: 1)
-	# 'name'	Symbol name of the lexeme, i.e. rule LHS
-	#	Pre-computable
-	# 'lhs'		LHS symbol id of the rule.
-	#		Lexeme symbol (parser symbol)
-	# 'symbol'	Alias of 'name'
-	# 'rule'	(^tree) Rule id of the matched lexeme
-	# 'value'	Token value of the lexeme, i.e.
-	# 		the matched string.
-	# 'values'	Alias of 'value'
-	#
-	# Special actions
-	# ::array <=> [value]
-	set nop {}
-	lmap part $myparts {
-	    switch -exact -- $part {
-		start    { set mystart }
-		length   { upvar 1 latest  v ; set v }
-		g1start  { expr {{}} }
-		g1length { expr {1} }
-		name     -
-		symbol   {
-		    sym name - lhs lexeme name
-		}
-		lhs      { upvar 1 symbol v ; set v }
-		rule     { upvar 1 tree   v ; dict get [lindex $v end-3] id }
-		value    -
-		values   { Gate match latest }
-	    }
-	}
-    }
 
     method ExtendContext {cv} {
 	debug.marpa/lexer {[debug caller] | }
@@ -688,30 +631,53 @@ oo::class create marpa::lexer {
     # # ## ### ##### ######## #############
     ## Lexer semantics
 
-    method SetupSemantics {semstore} {
+    method KnownValue {v} {
+	upvar 1 svset svset
+	if {[dict exists $svset $v]} {
+	    set v [dict get $svset $v]
+	} else {
+	    set v [Store put $v]
+	    dict set svset $v .
+	}
+	return $v
+    }
+    
+    method GetSemanticValue {} {
 	debug.marpa/lexer {[debug caller] | }
-
-	# Standard semantics for lexemes.
-	# II. Extract the semantic value. The exported override the
-	#     rule default with grammar data. The default simply
-	#     merges lexeme ranges.
-
-	marpa::semcore create GetString $semstore \
-	    {sv marpa::location::show}
-	GetString add-rule  @default marpa::semstd::locmerge
-	GetString add-null  @default marpa::location::null*
-
-	# The exported symbols will declare their own rules as per the
-	# specification in the grammar.
-
-	debug.marpa/semcore {[marpa::D {
-	    # Provide semcore with access to engine internals for use
-	    # in its debug narrative (conversion of ids back to names)
-	    set my [namespace which -command my]
-	    GetString engine: $my
-	}]}
-	debug.marpa/lexer {[debug caller] | /ok}
-	return
+	# 'start'	(^mystart) offset where lexeme starts
+	# 'length'	(^latest) length of the lexeme
+	# 'g1start'	G1 offset of the lexeme (Get from parser (Forward ...))
+	# 'g1length'	G1 length of the lexeme (fixed: 1)
+	# 'name'	Symbol name of the lexeme, i.e. rule LHS /Pre-computable
+	# 'lhs'		LHS symbol id of the rule. Lexeme symbol (parser symbol)
+	# 'symbol'	Alias of 'name'
+	# 'rule'	(^tree) Rule id of the matched lexeme
+	# 'value'	Token value of the lexeme, i.e. the matched string.
+	# 'values'	Alias of 'value'
+	#
+	# Special actions
+	# ::array <=> [value]
+	set result [lmap part $myparts {
+	    switch -exact -- $part {
+		start    { set mystart }
+		length   { upvar 1 latest latest ; expr {$latest-1} }
+		g1start  { expr {{}} }
+		g1length { expr {1} }
+		name     -
+		symbol   { upvar 1 symbol symbol ; my 2Name1 [dict get $mylex $symbol] }
+		lhs      { upvar 1 symbol symbol ; set symbol }
+		rule     { upvar 1 tree   tree   ; dict get [lindex $tree end-2] id }
+		value    -
+		values   {
+		    upvar 1 latest latest redo redo
+		    expr {$redo ? [string range $mylexeme 0 end-$redo] : $mylexeme}
+		}
+	    }
+	}]
+	if {[llength $result] == 1} {
+	    set result [lindex $result 0]
+	}
+	return $result
     }
 
     # # ## ### ##### ######## #############

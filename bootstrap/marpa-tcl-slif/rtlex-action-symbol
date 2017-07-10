@@ -1,25 +1,25 @@
 @LEX:@STR:<:default>
 op declare bnf
-@LEX:@STR:<action>
+@LEX:@STR:<action> {Perl name} {bare name} {standard name}
 @LEX:@STR:<=>>
-array descriptor
-@LEX:@STR:<lexeme>
-@LEX:@STR:<default>
+{array descriptor} {character class}
+@LEX:@STR:<lexeme> {Perl name} {bare name} {standard name}
+@LEX:@STR:<default> {Perl name} {bare name} {standard name}
 @LEX:@CHR:<=>
-@LEX:@STR:<action>
+@LEX:@STR:<action> {Perl name} {bare name} {standard name}
 @LEX:@STR:<=>>
-array descriptor
-@LEX:@STR:<latm>
+{array descriptor} {character class}
+@LEX:@STR:<latm> {Perl name} {bare name} {standard name}
 @LEX:@STR:<=>>
-boolean
+{Perl name} {bare name} boolean {signed integer}
 @LEX:@STR:<:start>
 op declare bnf
-Perl name
-Perl name
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
 op declare bnf
-Perl name
+{Perl name} {bare name} {standard name}
 @LEX:@CHR:<+>
-Perl name
+{Perl name} {bare name} {standard name}
 op declare bnf
 bracketed name
 op equal priority
@@ -54,536 +54,219 @@ op equal priority
 bracketed name
 bracketed name
 op declare bnf
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 op declare bnf
 @LEX:@CHR:<\50>
-single quoted string
+{single quoted name} {single quoted string}
 @LEX:@CHR:<\51>
-Perl name
-single quoted string
+{Perl name} {bare name} {standard name}
+{single quoted name} {single quoted string}
 bracketed name
 op declare bnf
 @LEX:@CHR:<\50>
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 @LEX:@CHR:<\51>
-@LEX:@STR:<symbol>
+@LEX:@STR:<symbol> {Perl name} {bare name} {standard name}
 bracketed name
 op declare bnf
 @LEX:@CHR:<\50>
-single quoted string
-single quoted string
-single quoted string
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
 @LEX:@CHR:<\51>
-@LEX:@STR:<symbol>
+@LEX:@STR:<symbol> {Perl name} {bare name} {standard name}
 bracketed name
 op declare bnf
-single quoted string
-bracketed name
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-bracketed name
-op declare bnf
-Perl name
-bracketed name
-bracketed name
-bracketed name
-op declare bnf
-Perl name
-bracketed name
-bracketed name
-bracketed name
-op declare bnf
-Perl name
-bracketed name
-bracketed name
-Perl name
-bracketed name
-bracketed name
-op declare bnf
-Perl name
-bracketed name
-bracketed name
-Perl name
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-bracketed name
-@LEX:@CHR:<\51>
-@LEX:@STR:<symbol>
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-bracketed name
-@LEX:@CHR:<\51>
+{single quoted name} {single quoted string}
 bracketed name
 bracketed name
 bracketed name
 op declare bnf
 @LEX:@CHR:<\50>
-single quoted string
-bracketed name
-@LEX:@CHR:<\51>
-@LEX:@STR:<symbol>
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-single quoted string
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
 @LEX:@CHR:<\51>
 bracketed name
 bracketed name
 op declare bnf
 @LEX:@CHR:<\50>
-single quoted string
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
 @LEX:@CHR:<\51>
 bracketed name
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare bnf
 @LEX:@CHR:<\50>
-single quoted string
-single quoted string
+{single quoted name} {single quoted string}
+bracketed name
+@LEX:@CHR:<\51>
+@LEX:@STR:<symbol> {Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+bracketed name
+@LEX:@CHR:<\51>
+bracketed name
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+bracketed name
+@LEX:@CHR:<\51>
+@LEX:@STR:<symbol> {Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
 @LEX:@CHR:<\51>
 bracketed name
 bracketed name
 op declare bnf
 @LEX:@CHR:<\50>
-single quoted string
+{single quoted name} {single quoted string}
 @LEX:@CHR:<\51>
 bracketed name
 @LEX:@CHR:<\50>
-single quoted string
-single quoted string
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
 @LEX:@CHR:<\51>
 bracketed name
 bracketed name
 op declare bnf
 @LEX:@CHR:<\50>
-single quoted string
+{single quoted name} {single quoted string}
 @LEX:@CHR:<\51>
 bracketed name
 @LEX:@CHR:<\50>
-single quoted string
-single quoted string
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
 @LEX:@CHR:<\51>
 bracketed name
 bracketed name
 op declare bnf
 @LEX:@CHR:<\50>
-single quoted string
-single quoted string
+{single quoted name} {single quoted string}
 @LEX:@CHR:<\51>
 bracketed name
 @LEX:@CHR:<\50>
-single quoted string
-single quoted string
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+bracketed name
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
 @LEX:@CHR:<\51>
 bracketed name
 op declare bnf
-single quoted string
+{single quoted name} {single quoted string}
 op equal priority
-single quoted string
+{single quoted name} {single quoted string}
 op equal priority
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 op declare bnf
-Perl name
+{Perl name} {bare name} {standard name}
 @LEX:@CHR:<\50>
 bracketed name
 @LEX:@CHR:<\51>
 bracketed name
 bracketed name
 op declare bnf
-Perl name
+{Perl name} {bare name} {standard name}
 @LEX:@CHR:<\50>
 bracketed name
 @LEX:@CHR:<\51>
 bracketed name
-bracketed name
-op declare bnf
-bracketed name
-@LEX:@CHR:<+>
-@LEX:@STR:<separator>
-@LEX:@STR:<=>>
-bracketed name
-@LEX:@STR:<proper>
-@LEX:@STR:<=>>
-boolean
 bracketed name
 op declare bnf
 bracketed name
 @LEX:@CHR:<+>
-@LEX:@STR:<separator>
+@LEX:@STR:<separator> {Perl name} {bare name} {standard name}
 @LEX:@STR:<=>>
 bracketed name
-@LEX:@STR:<proper>
+@LEX:@STR:<proper> {Perl name} {bare name} {standard name}
 @LEX:@STR:<=>>
-boolean
+{Perl name} {bare name} boolean {signed integer}
 bracketed name
 op declare bnf
 bracketed name
 @LEX:@CHR:<+>
-@LEX:@STR:<separator>
+@LEX:@STR:<separator> {Perl name} {bare name} {standard name}
 @LEX:@STR:<=>>
 bracketed name
-@LEX:@STR:<proper>
+@LEX:@STR:<proper> {Perl name} {bare name} {standard name}
 @LEX:@STR:<=>>
-boolean
+{Perl name} {bare name} boolean {signed integer}
 bracketed name
 op declare bnf
 bracketed name
 @LEX:@CHR:<+>
-@LEX:@STR:<separator>
+@LEX:@STR:<separator> {Perl name} {bare name} {standard name}
 @LEX:@STR:<=>>
 bracketed name
-@LEX:@STR:<proper>
+@LEX:@STR:<proper> {Perl name} {bare name} {standard name}
 @LEX:@STR:<=>>
-boolean
+{Perl name} {bare name} boolean {signed integer}
 bracketed name
-op declare bnf
-Perl name
-bracketed name
-bracketed name
-op declare bnf
-Perl name
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-@LEX:@CHR:<*>
-bracketed name
-op declare bnf
-bracketed name
-@LEX:@CHR:<*>
-bracketed name
-op declare bnf
-bracketed name
-@LEX:@CHR:<*>
-bracketed name
-op declare bnf
-bracketed name
-@LEX:@CHR:<*>
-bracketed name
-op declare bnf
-bracketed name
-@LEX:@CHR:<*>
-bracketed name
-op declare bnf
-bracketed name
-@LEX:@CHR:<*>
-bracketed name
-op declare bnf
-bracketed name
-@LEX:@CHR:<*>
-bracketed name
-op declare bnf
-bracketed name
-@LEX:@CHR:<*>
-bracketed name
-op declare bnf
-bracketed name
-@LEX:@CHR:<*>
-bracketed name
-op declare bnf
-bracketed name
-@LEX:@CHR:<*>
-bracketed name
-op declare bnf
-bracketed name
-@LEX:@CHR:<*>
-bracketed name
-op declare bnf
-@LEX:@STR:<action>
-op equal priority
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@STR:<action>
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@STR:<action>
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-op equal priority
-Perl name
-op equal priority
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@STR:<action>
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-op equal priority
-Perl name
-op equal priority
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@STR:<action>
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare bnf
-Perl name
-op equal priority
-bracketed name
-bracketed name
-op declare bnf
-Perl name
-op equal priority
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare bnf
-single quoted string
-@LEX:@STR:<action>
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-Perl name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-Perl name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-Perl name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-bracketed name
-op declare bnf
-single quoted string
-op equal priority
-single quoted string
-bracketed name
-op declare bnf
-bracketed name
-bracketed name
-bracketed name
-op declare bnf
-@LEX:@CHR:<\50>
-single quoted string
-@LEX:@CHR:<\51>
-bracketed name
-bracketed name
-op declare bnf
-single quoted string
-op equal priority
-single quoted string
-bracketed name
-op declare bnf
-bracketed name
-op declare bnf
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare bnf
-bracketed name
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-Perl name
-op declare bnf
-bracketed name
-Perl name
 op declare bnf
 bracketed name
 @LEX:@CHR:<+>
+@LEX:@STR:<separator> {Perl name} {bare name} {standard name}
+@LEX:@STR:<=>>
+bracketed name
+@LEX:@STR:<proper> {Perl name} {bare name} {standard name}
+@LEX:@STR:<=>>
+{Perl name} {bare name} boolean {signed integer}
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+bracketed name
 bracketed name
 op declare bnf
 bracketed name
@@ -592,26 +275,343 @@ op declare bnf
 bracketed name
 bracketed name
 op declare bnf
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+@LEX:@CHR:<*>
+bracketed name
+op declare bnf
+bracketed name
+@LEX:@CHR:<*>
+bracketed name
+op declare bnf
+bracketed name
+@LEX:@CHR:<*>
+bracketed name
+op declare bnf
+bracketed name
+@LEX:@CHR:<*>
+bracketed name
+op declare bnf
+bracketed name
+@LEX:@CHR:<*>
+bracketed name
+op declare bnf
+bracketed name
+@LEX:@CHR:<*>
+bracketed name
+op declare bnf
+bracketed name
+@LEX:@CHR:<*>
+bracketed name
+op declare bnf
+bracketed name
+@LEX:@CHR:<*>
+bracketed name
+op declare bnf
+bracketed name
+@LEX:@CHR:<*>
+bracketed name
+op declare bnf
+bracketed name
+@LEX:@CHR:<*>
+bracketed name
+op declare bnf
+bracketed name
+@LEX:@CHR:<*>
+bracketed name
+op declare bnf
+@LEX:@STR:<action> {Perl name} {bare name} {standard name}
+op equal priority
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@STR:<action> {Perl name} {bare name} {standard name}
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@STR:<action> {Perl name} {bare name} {standard name}
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+{Perl name} {bare name} {standard name}
+op equal priority
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@STR:<action> {Perl name} {bare name} {standard name}
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+{Perl name} {bare name} {standard name}
+op equal priority
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@STR:<action> {Perl name} {bare name} {standard name}
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+op equal priority
+bracketed name
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+op equal priority
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare bnf
+{single quoted name} {single quoted string}
+@LEX:@STR:<action> {Perl name} {bare name} {standard name}
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
 bracketed name
 bracketed name
 op declare bnf
 @LEX:@CHR:<\50>
-single quoted string
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
 @LEX:@CHR:<\51>
 bracketed name
+op declare bnf
 @LEX:@CHR:<\50>
-single quoted string
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
 @LEX:@CHR:<\51>
 bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+{Perl name} {bare name} {standard name}
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+{Perl name} {bare name} {standard name}
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+{Perl name} {bare name} {standard name}
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+bracketed name
+bracketed name
+op declare bnf
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+bracketed name
+bracketed name
+op declare bnf
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+op declare bnf
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+{Perl name} {bare name} {standard name}
+op declare bnf
+bracketed name
+{Perl name} {bare name} {standard name}
 op declare bnf
 bracketed name
 @LEX:@CHR:<+>
 bracketed name
 op declare bnf
-@LEX:@STR:<symbol>
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+bracketed name
+op declare bnf
+bracketed name
+bracketed name
+op declare bnf
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+bracketed name
+@LEX:@CHR:<\50>
+{single quoted name} {single quoted string}
+@LEX:@CHR:<\51>
+bracketed name
+op declare bnf
+bracketed name
+@LEX:@CHR:<+>
+bracketed name
+op declare bnf
+@LEX:@STR:<symbol> {Perl name} {bare name} {standard name}
 op equal priority
 bracketed name
-@LEX:@STR:<symbol>
+@LEX:@STR:<symbol> {Perl name} {bare name} {standard name}
 op declare bnf
 bracketed name
 bracketed name
@@ -628,8 +628,8 @@ op equal priority
 bracketed name
 @LEX:@STR:<:discard>
 op declare match
-Perl name
-Perl name
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
 op declare match
 character class
 @LEX:@CHR:<+>
@@ -643,12 +643,12 @@ op equal priority
 bracketed name
 bracketed name
 op declare match
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 bracketed name
 bracketed name
 op declare match
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 bracketed name
 op declare match
@@ -662,26 +662,26 @@ op declare match
 character class
 bracketed name
 op declare match
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
-single quoted string
-Perl name
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
 op declare bnf
-single quoted string
+{single quoted name} {single quoted string}
 op equal priority
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
-single quoted string
+{single quoted name} {single quoted string}
 op equal priority
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
 bracketed name
@@ -695,7 +695,7 @@ bracketed name
 op declare match
 character class
 @LEX:@CHR:<+>
-Perl name
+{Perl name} {bare name} {standard name}
 op declare match
 character class
 bracketed name
@@ -719,17 +719,17 @@ op declare match
 bracketed name
 bracketed name
 op declare match
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
 bracketed name
 @LEX:@CHR:<+>
-@LEX:@STR:<separator>
+@LEX:@STR:<separator> {Perl name} {bare name} {standard name}
 @LEX:@STR:<=>>
 bracketed name
-@LEX:@STR:<proper>
+@LEX:@STR:<proper> {Perl name} {bare name} {standard name}
 @LEX:@STR:<=>>
-boolean
+{Perl name} {bare name} boolean {signed integer}
 bracketed name
 op declare match
 bracketed name
@@ -739,9 +739,9 @@ character class
 bracketed name
 bracketed name
 op declare match
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
 character class
@@ -753,60 +753,53 @@ bracketed name
 bracketed name
 bracketed name
 op declare match
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
-single quoted string
-Perl name
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
 bracketed name
 op declare match
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
-Perl name
-single quoted string
+{Perl name} {bare name} {standard name}
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
 bracketed name
 @LEX:@CHR:<*>
-@LEX:@STR:<separator>
+@LEX:@STR:<separator> {Perl name} {bare name} {standard name}
 @LEX:@STR:<=>>
 bracketed name
 bracketed name
 op declare match
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
-single quoted string
-Perl name
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
 bracketed name
 op declare match
-single quoted string
+{single quoted name} {single quoted string}
 op equal priority
-single quoted string
+{single quoted name} {single quoted string}
 op equal priority
-single quoted string
+{single quoted name} {single quoted string}
 op equal priority
-single quoted string
+{single quoted name} {single quoted string}
 op equal priority
-single quoted string
+{single quoted name} {single quoted string}
 op equal priority
-single quoted string
+{single quoted name} {single quoted string}
 op equal priority
-single quoted string
+{single quoted name} {single quoted string}
 op equal priority
-single quoted string
+{single quoted name} {single quoted string}
 op equal priority
-single quoted string
+{single quoted name} {single quoted string}
 op equal priority
-single quoted string
-bracketed name
-op declare match
-bracketed name
-bracketed name
-bracketed name
-op declare match
-bracketed name
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
 bracketed name
@@ -815,59 +808,66 @@ bracketed name
 op declare match
 bracketed name
 bracketed name
-op equal priority
+op declare match
+bracketed name
 bracketed name
 bracketed name
 op declare match
-Perl name
 bracketed name
-bracketed name
-op declare match
 bracketed name
 op equal priority
 bracketed name
 bracketed name
 op declare match
-Perl name
+{Perl name} {bare name} {standard name}
 bracketed name
-op equal priority
-single quoted string
-Perl name
-Perl name
 bracketed name
-op equal priority
-single quoted string
-Perl name
-Perl name
-Perl name
-Perl name
-bracketed name
-op equal priority
-single quoted string
-Perl name
-Perl name
-Perl name
-bracketed name
-op equal priority
-single quoted string
-Perl name
-Perl name
-bracketed name
-op equal priority
-single quoted string
-Perl name
+op declare match
 bracketed name
 op equal priority
 bracketed name
-Perl name
-Perl name
+bracketed name
+op declare match
+{Perl name} {bare name} {standard name}
 bracketed name
 op equal priority
-Perl name
-Perl name
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
 bracketed name
 op equal priority
-Perl name
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+bracketed name
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{Perl name} {bare name} {standard name}
 bracketed name
 bracketed name
 op declare match
@@ -891,225 +891,21 @@ character class
 bracketed name
 op declare match
 character class
-Perl name
+{Perl name} {bare name} {standard name}
 op declare match
 character class
 bracketed name
 op declare match
 character class
-Perl name
+{Perl name} {bare name} {standard name}
 op declare match
 character class
-Perl name
+{Perl name} {bare name} {standard name}
 op declare match
 character class
-Perl name
+{Perl name} {bare name} {standard name}
 op declare match
-single quoted string
-bracketed name
-op declare match
-character class
-bracketed name
-op declare match
-character class
-bracketed name
-op declare match
-character class
-bracketed name
-op declare match
-bracketed name
-bracketed name
-bracketed name
-op declare match
-bracketed name
-bracketed name
-bracketed name
-op declare match
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare match
-bracketed name
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-bracketed name
-op declare match
-bracketed name
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-bracketed name
-op declare match
-bracketed name
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-bracketed name
-op declare match
-single quoted string
-bracketed name
-bracketed name
-op equal priority
-single quoted string
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare match
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare match
-Perl name
-bracketed name
-bracketed name
-op declare match
-Perl name
-bracketed name
-bracketed name
-op declare match
-Perl name
-bracketed name
-op equal priority
-single quoted string
-Perl name
-Perl name
-bracketed name
-op equal priority
-single quoted string
-Perl name
-Perl name
-Perl name
-Perl name
-bracketed name
-op equal priority
-single quoted string
-Perl name
-Perl name
-Perl name
-bracketed name
-op equal priority
-single quoted string
-Perl name
-Perl name
-bracketed name
-op equal priority
-single quoted string
-Perl name
-bracketed name
-op equal priority
-bracketed name
-Perl name
-Perl name
-bracketed name
-op equal priority
-Perl name
-Perl name
-bracketed name
-op equal priority
-Perl name
-bracketed name
-bracketed name
-op declare match
-single quoted string
-bracketed name
-bracketed name
-op equal priority
-single quoted string
-bracketed name
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare match
-single quoted string
-bracketed name
-bracketed name
-op equal priority
-single quoted string
-bracketed name
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare match
-Perl name
-bracketed name
-op equal priority
-single quoted string
-Perl name
-Perl name
-bracketed name
-op equal priority
-single quoted string
-Perl name
-Perl name
-Perl name
-Perl name
-bracketed name
-op equal priority
-single quoted string
-Perl name
-Perl name
-Perl name
-bracketed name
-op equal priority
-single quoted string
-Perl name
-Perl name
-bracketed name
-op equal priority
-single quoted string
-Perl name
-bracketed name
-op equal priority
-bracketed name
-Perl name
-Perl name
-bracketed name
-op equal priority
-Perl name
-Perl name
-bracketed name
-op equal priority
-Perl name
-bracketed name
-bracketed name
-op declare match
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare match
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op equal priority
-bracketed name
-bracketed name
-op declare match
-single quoted string
-bracketed name
-op declare match
-single quoted string
-op equal priority
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
 character class
@@ -1121,9 +917,213 @@ op declare match
 character class
 bracketed name
 op declare match
-single quoted string
 bracketed name
-single quoted string
+bracketed name
+bracketed name
+op declare match
+bracketed name
+bracketed name
+bracketed name
+op declare match
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+bracketed name
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+bracketed name
+op declare match
+bracketed name
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+bracketed name
+op declare match
+bracketed name
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare match
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare match
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+bracketed name
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+bracketed name
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare match
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+character class
+bracketed name
+op declare match
+character class
+bracketed name
+op declare match
+character class
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
 character class
@@ -1134,7 +1134,7 @@ bracketed name
 @LEX:@CHR:<*>
 bracketed name
 op declare match
-single quoted string
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
-single quoted string
+{single quoted name} {single quoted string}

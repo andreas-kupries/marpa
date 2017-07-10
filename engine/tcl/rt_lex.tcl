@@ -127,11 +127,11 @@ oo::class create marpa::engine::tcl::lex {
 	}]]
     }
     
-    method enter {symbols value} {
+    method enter {symbols values} {
 	debug.marpa/engine/tcl/lex {}
 	Forward enter \
 	    [lmap s $symbols { dict get $myid $s }] \
-	    [STORE get $value]
+	    [lmap v $values  { STORE get $v }]
 	LEX acceptable $mylex
 	return
     }
