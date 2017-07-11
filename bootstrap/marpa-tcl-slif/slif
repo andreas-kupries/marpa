@@ -70,7 +70,7 @@
 ## Let us begin
 
 :default ::=
-  action => [start,length,values]
+  action => [symbol,ord,values]
 
 lexeme default =
   action => [start,length,value]
@@ -322,6 +322,7 @@ boolean ~ [01]
   | 'rule'
   | 'value'
   | 'values'
+  | 'ord'
 
 # # ## ### ##### ######## ############# #####################
 ## Strings of various kinds.

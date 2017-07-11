@@ -90,9 +90,15 @@ proc marpa::semstd::builtin {parts id args} {
 		lappend result [expr {$e - $s + 1}]
 	    }
 	    rule   { lappend result $id }
+	    ord    -
 	    name   -
 	    symbol -
 	    lhs    { lappend result $detail }
+	    default {
+		return -code error \
+		    -errorcode [list MARPA SEMSTD PART $part] \
+		    "Unsupported part \"$part\", expected one of g1start, g1length, values, start, end, value, length, rule, name, symbol, ord, or lhs"
+	    }
 	}
     }
 

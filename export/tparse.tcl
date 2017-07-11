@@ -59,7 +59,7 @@ proc ::marpa::export::tparse::Generate {serial} {
     $gc validate
 
     # First rewrite is replacement of higher-precedenced rules with
-    # groups encoding the precedence directly in their structure.
+    # groups encoding the precedence directly in their structure. (**)
 
     marpa::slif::precedence 2container \
 	[marpa::slif::precedence rewrite $gc] \
@@ -133,6 +133,7 @@ proc ::marpa::export::tparse::Generate {serial} {
     ExtendRules l0rules $gc l0 $discards
     ExtendRules l0rules $gc l0 $lex
     lappend l0symbols {*}$discards
+
     set g1rules {}
     ExtendRules g1rules $gc g1 $g1symbols
 
@@ -167,42 +168,101 @@ proc ::marpa::export::tparse::Generate {serial} {
 proc ::marpa::export::tparse::ExtendRules {rv gc area symbols} {
     debug.marpa/export/tparse {}
     upvar 1 $rv rules
+
+    # Remember last declared action, to avoid superfluous
+    # redefinition. Implied, if all rules have the same action it is
+    # defined only once.
+    set lastaction {}
+    
     foreach sym $symbols {
 	foreach def [$gc $area get $sym] {
-	    switch -exact -- [lindex $def 0] {
-		priority {
-		    set attr [lassign $def _ rhs _]
-		    # name - TODO - currently ignored
-		    if {($area eq "g1") && [dict exists $attr mask] && ("1" in [dict get $attr mask])} {
-			set op [list :M [Remask [dict get $attr mask]]]
-		    } else {
-			set op :=
-		    }
-
-		    lappend rules [list $sym {*}$op {*}$rhs]
-		}
-		quantified {
-		    set attr [lassign $def _ rhs pos]
-		    # name? - TODO - currently ignored
-		    set pos  [expr {$pos ? "+" : "*"}]
-		    set rule [list $sym $pos $rhs]
-		    if {[dict exists $attr separator]} {
-			# value = (symbol bool)
-			# matches the order of arguments taken by the engine
-			lappend rule {*}[dict get $attr separator]
-		    }
-		    lappend rules $rule
-		}
-		default {
-		    error XXX
-		}
-	    }
+	    Process $def $area $sym
 	}
     }
     return
 }
 
+proc ::marpa::export::tparse::Process {def area sym} {
+    debug.marpa/export/tparse {}
+    upvar 1 rules rules lastaction lastaction
+    switch -exact -- [lindex $def 0] {
+	priority {
+	    set attr [lassign $def _ rhs _]
+	    dict with attr {}
+	    Action
+	    Name
+	    set op {}
+	    if {($area eq "g1") && [info exists mask] && ("1" in $mask)} {
+		lappend op :M [Remask $mask]
+	    } else {
+		lappend op :=
+	    }
+	    lappend op {*}$rhs
+	    lappend rules [list $sym {*}$op]
+	}
+	quantified {
+	    set attr [lassign $def _ rhs pos]
+	    dict with attr {}
+	    Action
+	    Name
+	    set op {}
+	    lappend op [expr {$pos ? "+" : "*"}] $rhs		    
+	    if {[info exists separator]} {
+		# value = (symbol bool)
+		# matches the order of arguments taken by the engine
+		lappend op {*}$separator
+	    }
+	    lappend rules [list $sym {*}$op]
+	}
+	default {
+	    error XXX
+	}
+    }
+    return
+}
+
+proc ::marpa::export::tparse::Name {} {
+    debug.marpa/export/tparse {}
+    upvar 1 name name area area rules rules
+    # Ignore for L0, and no name, or empty.
+    if {$area ne "g1"} return
+    if {![info exists action]} return
+    if {$action eq {}} return
+
+    # Declare name for the next rule
+    lappend rules [list __ :N $name]
+    return
+}
+
+proc ::marpa::export::tparse::Action {} {
+    debug.marpa/export/tparse {}
+    upvar 1 lastaction lastaction action action area area rules rules
+    # Ignore for L0, and no action, or empty.
+    if {$area ne "g1"} return
+    if {![info exists action]} return
+    if {$action eq {}} return
+
+    # Ignore when not changed since last definition
+    if {$action eq $lastaction} return
+
+    # Declare action for all following rules, until a new one is
+    # declared.
+    lassign $action atype adetails
+    switch -exact -- $atype {
+	array {
+	    lappend rules [list __ :A $adetails]
+	}
+	default {
+	    error XXX ;# non-array not supported yet.
+	}
+    }
+
+    set lastaction $action
+    return
+}
+
 proc ::marpa::export::tparse::Remask {mask} {
+    debug.marpa/export/tparse {}
     # Convert mask from the semantics: list (bool), true => hide, 0 => visible
     # The engine takes a list of indices to remove instead.
     set i -1

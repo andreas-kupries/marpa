@@ -800,6 +800,8 @@ op equal priority
 {single quoted name} {single quoted string}
 op equal priority
 {single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
 bracketed name
 op declare match
 bracketed name

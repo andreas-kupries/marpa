@@ -99,8 +99,8 @@ oo::class create marpa::parser {
 
 	# Static configuration
 	set myparts       value
-	set mypreviouslhs -1
-	set myplhscount   0
+	set mypreviouslhs -1 ; # ord state
+	set myplhscount   0  ; # ord counter
 
 	debug.marpa/semcore {[marpa::D {
 	    # Provide semcore with access to engine internals for use
@@ -236,6 +236,19 @@ oo::class create marpa::parser {
     # # -- --- ----- -------- -------------
     ## Rule support
 
+    variable myname
+    method :N {lhs __ name} {
+	debug.marpa/parser {}
+	set myname $name
+	return
+    }
+    
+    method :A {lhs __ parts} {
+	debug.marpa/parser {}
+	set myparts $parts
+	return
+    }
+    
     method :M {lhs __ mask args} {
 	debug.marpa/parser {}
 	# TODO: validate |mask| <= |args| |mask|
@@ -253,6 +266,7 @@ oo::class create marpa::parser {
 
     variable mypreviouslhs
     variable myplhscount
+
     method := {lhs __ args} {
 	debug.marpa/parser {}
 	set rule [next $lhs __ {*}$args]
@@ -290,8 +304,19 @@ oo::class create marpa::parser {
 
     # # -- --- ----- -------- -------------
     ## Rule runtime support - builtin construction of semantic value
-
+    ## TODO: support for general command prefix.
+    
     method CompleteParts {parts id rid} {
+	# 'start'	offset where lexeme starts
+	# 'length'	length of the lexeme
+	# 'g1start'	G1 offset
+	# 'g1length'	G1 length
+	# 'name'	Name of the rule, or LHS symbol name
+	# 'lhs'		LHS symbol id of the rule.
+	# 'symbol'	LHS symbol name, always
+	# 'rule'	Id of the reduced rule
+	# 'value'	Children of the reduced rule
+	# 'values'	Alias of 'value'
 	set result {}
 	foreach part $parts {
 	    switch -exact -- $part {
@@ -303,19 +328,27 @@ oo::class create marpa::parser {
 		value   -
 		length  -
 		rule    { lappend result $part }
-		name    {
+		ord     {
+		    # Generate differing a sequence number for the
+		    # rules of the same LHS, per their declaration
+		    # order.  Allows semantics to distinguish the
+		    # alternative rules
 		    if {$mypreviouslhs != $id} {
 			set myplhscount 0
 		    } else {
 			incr myplhscount
 		    }
-		    # Generate differing names for the same lhs, using a sequence number.
-		    # Allows semantics to distinguish the alternative rules
-		    # TODO: See if that is covered by the existing array descriptor semantics
-		    lappend result [list $part [my 2Name1 $id]/$myplhscount]
+		    lappend result [list $part $myplhscount]
 		}
-		symbol  { lappend result [list $part $id] }
-		lhs     { lappend result [list $part ??] }
+		name {
+		    if {$myname eq {}} {
+			set myname [my 2Name1 $id]
+		    }
+		    lappend result [list $part $myname]
+		    set myname {}
+		}
+		lhs    { lappend result [list $part $id] }
+		symbol { lappend result [list $part [my 2Name1 $id]] }
 	    }
 	}
 	return $result

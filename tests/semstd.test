@@ -96,71 +96,46 @@ test marpa-semstd-builtin-1.1 {builtin, wrong args, not enough} -body {
 } -returnCodes error \
     -result [ARGS {wrong # args: should be "marpa semstd builtin parts id ..."}]
 
+test marpa-semstd-builtin-1.2 {builtin, bad part} -body {
+    marpa semstd builtin bogus ID {0 1 AB}
+} -returnCodes error -result {Unsupported part "bogus", expected one of g1start, g1length, values, start, end, value, length, rule, name, symbol, ord, or lhs}
+
 # args = locations
 
 # Possible part keys, and their details
 ##
-# - g1start n/a
-# - g1end   n/a
-# - start   n/a
-# - end     n/a
-# - value   n/a
-# - values  n/a
-# - length  n/a
-# - rule    n/a
-# - name    NAME
-# - symbol  ID
-# - lhs     ??
+# - g1start  INT
+# - g1length INT
+# - start    INT
+# - end      INT
+# - value    n/a
+# - values   n/a
+# - length   INT
+# - rule     ID
+# - name     NAME
+# - symbol   NAME
+# - lhs      ID
+# - ord      INT
 
-test marpa-semstd-builtin-2.0 {builtin, part: g1start} -body {
-    marpa semstd builtin {g1start} ID {0 1 AB}
-} -result {}
-
-test marpa-semstd-builtin-2.1 {builtin, part: g1end} -body {
-    marpa semstd builtin {g1end} ID {0 1 AB}
-} -result {}
-
-test marpa-semstd-builtin-2.2 {builtin, part: start} -body {
-    marpa semstd builtin {start} ID {0 1 AB}
-} -result 0
-
-test marpa-semstd-builtin-2.3 {builtin, part: end} -body {
-    marpa semstd builtin {end} ID {0 1 AB}
-} -result 1
-
-test marpa-semstd-builtin-2.4 {builtin, part: value} -body {
-    marpa semstd builtin {value} ID {0 1 AB}
-} -result AB
-
-test marpa-semstd-builtin-2.5 {builtin, part: values} -body {
-    marpa semstd builtin {values} ID {0 1 AB}
-} -result {{0 1 AB}}
-
-test marpa-semstd-builtin-2.6 {builtin, part: length} -body {
-    marpa semstd builtin {length} ID {0 1 AB}
-} -result 2
-
-test marpa-semstd-builtin-2.7 {builtin, part: rule} -body {
-    marpa semstd builtin {rule} ID {0 1 AB}
-} -result ID
-
-test marpa-semstd-builtin-2.8 {builtin, part: name} -body {
-    marpa semstd builtin {
-	{name NAME}
-    } ID {0 1 AB}
-} -result NAME
-
-test marpa-semstd-builtin-2.9 {builtin, part: symbol} -body {
-    marpa semstd builtin {
-	{symbol SYM}
-    } ID {0 1 AB}
-} -result SYM
-
-test marpa-semstd-builtin-2.10 {builtin, part: lhs} -body {
-    marpa semstd builtin {
-	{lhs ??}
-    } ID {0 1 AB}
-} -result ??
+foreach {part expected} {
+    g1start    {}
+    g1length   1
+    start      0
+    end        1
+    length     2
+    value      AB
+    values     {{0 1 AB}}
+    rule       ID
+    {name N}   N
+    {symbol N} N
+    {lhs L}    L
+    {ord 3}    3
+} {
+    incr k
+    test marpa-semstd-builtin-2.${k}-$part "builtin, part: $part" -body {
+	marpa semstd builtin [list $part] ID {0 1 AB}
+    } -result $expected
+}
 
 # # ## ### ##### ######## ############# #####################
 cleanupTests

@@ -59,7 +59,7 @@ oo::class create marpa::slif::container::attribute::priority::g1 {
 		foreach v $details {
 		    if {$v ni {
 			start length g1start g1length name
-			lhs symbol rule value values
+			lhs symbol rule value values ord
 		    }} {
 			my E "Bad action code '$v', expected one of g1length, g1start, length, lhs, name, rule, start, symbol, value, or values"
 		    }

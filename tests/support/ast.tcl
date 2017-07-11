@@ -17,7 +17,7 @@ proc ast-format {ast {step {  }}} {
 
 proc ast-format-acc {ast indent step} {
     upvar 1 lines lines
-    lassign $ast symbol children
+    lassign $ast symbol ord children
 
     if {[string is integer $symbol]} {
 	# Terminal, Data is offset, length, and lexeme value.
@@ -25,7 +25,7 @@ proc ast-format-acc {ast indent step} {
 	return
     }
 
-    lappend lines $indent$symbol
+    lappend lines $indent$symbol/$ord
     append indent $step
     foreach child $children {
 	ast-format-acc $child $indent $step

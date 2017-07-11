@@ -2,7 +2,7 @@
 ::=
 action
 =>
-[start,length,values]
+[symbol,ord,values]
 lexeme
 default
 =
@@ -800,6 +800,8 @@ whitespace
 'value'
 |
 'values'
+|
+'ord'
 <single quoted string>
 ~
 <a single quoted string>

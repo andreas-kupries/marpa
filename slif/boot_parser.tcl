@@ -216,6 +216,7 @@ oo::class create marpa::slif::parser {
 	    {{result item descriptor}                         := r u l e}
 	    {{result item descriptor}                         := v a l u e}
 	    {{result item descriptor}                         := v a l u e s}
+	    {{result item descriptor}                         := o r d}
 	    {{string without single quote or vertical space}  + @cc-nvq}
 	    {{cc elements}                                    + {cc element}}
 	    {{cc element}                                     := {safe cc character}}
@@ -282,6 +283,7 @@ oo::class create marpa::slif::parser {
     
     method G1.Rules {} {
 	return {
+	    {__________ :A {symbol ord values}}
 	    {statements				+ statement}
 	    {statement				:= {start rule}}
 	    {statement				:= {empty rule}}

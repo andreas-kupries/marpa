@@ -9,286 +9,286 @@ grammar {
                     @LEX:@STR:<action>
                     @LEX:@STR:<=>>
                     {action name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 0}} }
             {action name} {
                 {priority {{Perl name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{reserved action name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{array descriptor}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             {adverb item bnf alternative} {
                 {priority action 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{left association}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{right association}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{group association}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority naming 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             {adverb item bnf empty} {
                 {priority action 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{left association}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{right association}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{group association}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority naming 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             {adverb item bnf quantified} {
                 {priority action 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{separator specification}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{proper specification}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             {adverb item default} {
                 {priority action 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             {adverb item discard} {
                 {priority {{event specification}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             {adverb item discard default} {
                 {priority {{event specification}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             {adverb item lexeme} {
                 {priority {{event specification}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{latm specification}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{priority specification}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{pause specification}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             {adverb item lexeme default} {
                 {priority action 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{latm specification}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             {adverb item match alternative} {
                 {priority naming 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             {adverb item match empty} {
                 {priority naming 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             {adverb item match quantified} {
                 {priority {{separator specification}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{proper specification}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             {adverb list bnf alternative} { {priority {{adverb list items bnf alternative}} 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             {adverb list bnf empty} { {priority {{adverb list items bnf empty}} 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             {adverb list bnf quantified} { {priority {{adverb list items bnf quantified}} 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             {adverb list default} { {priority {{adverb list items default}} 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             {adverb list discard} { {priority {{adverb list items discard}} 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             {adverb list discard default} { {priority {{adverb list items discard default}} 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             {adverb list items bnf alternative} { {quantified {adverb item bnf alternative} 0
-                    action {array {start length values}}} }
+                    action {array {symbol ord values}}} }
             {adverb list items bnf empty} { {quantified {adverb item bnf empty} 0
-                    action {array {start length values}}} }
+                    action {array {symbol ord values}}} }
             {adverb list items bnf quantified} { {quantified {adverb item bnf quantified} 0
-                    action {array {start length values}}} }
+                    action {array {symbol ord values}}} }
             {adverb list items default} { {quantified {adverb item default} 0
-                    action {array {start length values}}} }
+                    action {array {symbol ord values}}} }
             {adverb list items discard} { {quantified {adverb item discard} 0
-                    action {array {start length values}}} }
+                    action {array {symbol ord values}}} }
             {adverb list items discard default} { {quantified {adverb item discard default} 0
-                    action {array {start length values}}} }
+                    action {array {symbol ord values}}} }
             {adverb list items lexeme} { {quantified {adverb item lexeme} 0
-                    action {array {start length values}}} }
+                    action {array {symbol ord values}}} }
             {adverb list items lexeme default} { {quantified {adverb item lexeme default} 0
-                    action {array {start length values}}} }
+                    action {array {symbol ord values}}} }
             {adverb list items match alternative} { {quantified {adverb item match alternative} 0
-                    action {array {start length values}}} }
+                    action {array {symbol ord values}}} }
             {adverb list items match empty} { {quantified {adverb item match empty} 0
-                    action {array {start length values}}} }
+                    action {array {symbol ord values}}} }
             {adverb list items match quantified} { {quantified {adverb item match quantified} 0
-                    action {array {start length values}}} }
+                    action {array {symbol ord values}}} }
             {adverb list lexeme} { {priority {{adverb list items lexeme}} 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             {adverb list lexeme default} { {priority {{adverb list items lexeme default}} 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             {adverb list match alternative} { {priority {{adverb list items match alternative}} 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             {adverb list match empty} { {priority {{adverb list items match empty}} 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             {adverb list match quantified} { {priority {{adverb list items match quantified}} 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             {alternative bnf} { {priority {
                     rhs
                     {adverb list bnf alternative}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {0 0}} }
             {alternative match} { {priority {
                     rhs
                     {adverb list match alternative}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {0 0}} }
             {alternative name} {
                 {priority {{standard name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{single quoted name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             {alternatives bnf} { {quantified {alternative bnf} 1
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     separator {{op equal priority} 1}} }
             {alternatives match} { {quantified {alternative match} 1
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     separator {{op equal priority} 1}} }
             {completion event declaration} { {priority {
                     @LEX:@STR:<event>
@@ -296,7 +296,7 @@ grammar {
                     @LEX:@CHR:<=>
                     @LEX:@STR:<completed>
                     {symbol name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 0 1 1 0}} }
             {current lexer statement} { {priority {
@@ -304,14 +304,14 @@ grammar {
                     @LEX:@STR:<lexer>
                     @LEX:@STR:<is>
                     {lexer name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 1 0}} }
             {default rule} { {priority {
                     @LEX:@STR:<:default>
                     {op declare bnf}
                     {adverb list default}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {0 0 0}} }
             {discard default statement} { {priority {
@@ -319,7 +319,7 @@ grammar {
                     @LEX:@STR:<default>
                     @LEX:@CHR:<=>
                     {adverb list discard default}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 1 0}} }
             {discard rule} {
@@ -328,7 +328,7 @@ grammar {
                         {op declare match}
                         symbol
                         {adverb list discard}} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {1 1 0 0}}
                 {priority {
@@ -336,7 +336,7 @@ grammar {
                         {op declare match}
                         {character class}
                         {adverb list discard}} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {1 1 0 0}}
             }
@@ -345,45 +345,45 @@ grammar {
                         lhs
                         {op declare bnf}
                         {adverb list bnf empty}} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {0 0 0}}
                 {priority {
                         lhs
                         {op declare match}
                         {adverb list match empty}} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {0 0 0}}
             }
             {event initialization} { {priority {
                     {event name}
                     {event initializer}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {0 0}} }
             {event initializer} {
                 {priority {
                         @LEX:@CHR:<=>
                         {on or off}} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {1 0}}
                 {priority {} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left}
             }
             {event name} {
                 {priority {{standard name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{single quoted name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{reserved event name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
@@ -391,14 +391,14 @@ grammar {
                     @LEX:@STR:<event>
                     @LEX:@STR:<=>>
                     {event initialization}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 0}} }
             {group association} { {priority {
                     @LEX:@STR:<assoc>
                     @LEX:@STR:<=>>
                     @LEX:@STR:<group>} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 1}} }
             {inaccessible statement} { {priority {
@@ -407,20 +407,20 @@ grammar {
                     {inaccessible treatment}
                     @LEX:@STR:<by>
                     @LEX:@STR:<default>} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 0 1 1}} }
             {inaccessible treatment} {
                 {priority @LEX:@STR:<warn> 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority @LEX:@STR:<ok> 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority @LEX:@STR:<fatal> 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
@@ -429,14 +429,14 @@ grammar {
                         @LEX:@STR:<forgiving>
                         @LEX:@STR:<=>>
                         boolean} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {1 1 0}}
                 {priority {
                         @LEX:@STR:<latm>
                         @LEX:@STR:<=>>
                         boolean} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {1 1 0}}
             }
@@ -444,7 +444,7 @@ grammar {
                     @LEX:@STR:<assoc>
                     @LEX:@STR:<=>>
                     @LEX:@STR:<left>} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 1}} }
             {lexeme default statement} { {priority {
@@ -452,7 +452,7 @@ grammar {
                     @LEX:@STR:<default>
                     @LEX:@CHR:<=>
                     {adverb list lexeme default}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 1 0}} }
             {lexeme rule} { {priority {
@@ -460,41 +460,41 @@ grammar {
                     {op declare match}
                     symbol
                     {adverb list lexeme}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 0 0}} }
             {lexer name} {
                 {priority {{standard name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{single quoted name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             lhs { {priority {{symbol name}} 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             naming { {priority {
                     @LEX:@STR:<name>
                     @LEX:@STR:<=>>
                     {alternative name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 0}} }
             {null adverb} { {priority @LEX:@CHR:<,> 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             {null ranking constant} {
                 {priority @LEX:@STR:<low> 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority @LEX:@STR:<high> 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
@@ -503,7 +503,7 @@ grammar {
                         @LEX:@STR:<null-ranking>
                         @LEX:@STR:<=>>
                         {null ranking constant}} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {1 1 0}}
                 {priority {
@@ -511,12 +511,12 @@ grammar {
                         @LEX:@STR:<rank>
                         @LEX:@STR:<=>>
                         {null ranking constant}} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {1 1 1 0}}
             }
             {null statement} { {priority {{@LEX:@CHR:<\73>}} 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             {nulled event declaration} { {priority {
@@ -525,16 +525,16 @@ grammar {
                     @LEX:@CHR:<=>
                     @LEX:@STR:<nulled>
                     {symbol name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 0 1 1 0}} }
             {on or off} {
                 {priority @LEX:@STR:<on> 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority @LEX:@STR:<off> 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
@@ -542,14 +542,14 @@ grammar {
                     {@LEX:@CHR:<\50>}
                     {rhs primary list}
                     {@LEX:@CHR:<\51>}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 0 1}} }
             {pause specification} { {priority {
                     @LEX:@STR:<pause>
                     @LEX:@STR:<=>>
                     {before or after}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 0}} }
             {prediction event declaration} { {priority {
@@ -558,28 +558,28 @@ grammar {
                     @LEX:@CHR:<=>
                     @LEX:@STR:<predicted>
                     {symbol name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 0 1 1 0}} }
             {priorities bnf} { {quantified {alternatives bnf} 1
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     separator {{op loosen} 1}} }
             {priorities match} { {quantified {alternatives match} 1
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     separator {{op loosen} 1}} }
             {priority rule} {
                 {priority {
                         lhs
                         {op declare bnf}
                         {priorities bnf}} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {0 1 0}}
                 {priority {
                         lhs
                         {op declare match}
                         {priorities match}} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {0 1 0}}
             }
@@ -587,14 +587,14 @@ grammar {
                     @LEX:@STR:<priority>
                     @LEX:@STR:<=>>
                     {signed integer}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 0}} }
             {proper specification} { {priority {
                     @LEX:@STR:<proper>
                     @LEX:@STR:<=>>
                     boolean} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 0}} }
             {quantified rule} {
@@ -604,7 +604,7 @@ grammar {
                         {single symbol}
                         quantifier
                         {adverb list bnf quantified}} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {0 0 0 0 0}}
                 {priority {
@@ -613,17 +613,17 @@ grammar {
                         {single symbol}
                         quantifier
                         {adverb list match quantified}} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {0 0 0 0 0}}
             }
             quantifier {
                 {priority @LEX:@CHR:<*> 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority @LEX:@CHR:<+> 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
@@ -631,48 +631,48 @@ grammar {
                     @LEX:@STR:<rank>
                     @LEX:@STR:<=>>
                     {signed integer}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 0}} }
             rhs { {quantified {rhs primary} 1
-                    action {array {start length values}}} }
+                    action {array {symbol ord values}}} }
             {rhs primary} {
                 {priority {{single symbol}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{single quoted string}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{parenthesized rhs primary list}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
             {rhs primary list} { {quantified {rhs primary} 1
-                    action {array {start length values}}} }
+                    action {array {symbol ord values}}} }
             {right association} { {priority {
                     @LEX:@STR:<assoc>
                     @LEX:@STR:<=>>
                     @LEX:@STR:<right>} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 1}} }
             {separator specification} { {priority {
                     @LEX:@STR:<separator>
                     @LEX:@STR:<=>>
                     {single symbol}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 1 0}} }
             {single symbol} {
                 {priority symbol 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{character class}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
@@ -681,7 +681,7 @@ grammar {
                         @LEX:@STR:<:start>
                         {op declare bnf}
                         symbol} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {1 1 0}}
                 {priority {
@@ -689,73 +689,73 @@ grammar {
                         @LEX:@STR:<symbol>
                         @LEX:@STR:<is>
                         symbol} 0
-                            action {array {start length values}}
+                            action {array {symbol ord values}}
                             assoc left
                             mask {1 1 1 0}}
             }
             statement {
                 {priority {{start rule}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{empty rule}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{null statement}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{statement group}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{priority rule}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{quantified rule}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{discard rule}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{default rule}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{lexeme default statement}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{discard default statement}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{lexeme rule}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{completion event declaration}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{nulled event declaration}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{prediction event declaration}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{current lexer statement}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{inaccessible statement}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
@@ -763,22 +763,22 @@ grammar {
                     {@LEX:@CHR:<\173>}
                     statements
                     {@LEX:@CHR:<\175>}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask {1 0 0}} }
             statements { {quantified statement 1
-                    action {array {start length values}}} }
+                    action {array {symbol ord values}}} }
             symbol { {priority {{symbol name}} 0
-                    action {array {start length values}}
+                    action {array {symbol ord values}}
                     assoc left
                     mask 0} }
             {symbol name} {
                 {priority {{bare name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
                 {priority {{bracketed name}} 0
-                        action {array {start length values}}
+                        action {array {symbol ord values}}
                         assoc left
                         mask 0}
             }
@@ -1165,6 +1165,7 @@ grammar {
                 {priority @STR:<rule> 0}
                 {priority @STR:<value> 0}
                 {priority @STR:<values> 0}
+                {priority @STR:<ord> 0}
             }
             {result item descriptor list} { {quantified {result item descriptor} 0
                     separator {{result item descriptor separator} 0}} }
@@ -1443,6 +1444,7 @@ grammar {
             @STR:<off> { {string 111 102 102} }
             @STR:<ok> { {string 111 107} }
             @STR:<on> { {string 111 110} }
+            @STR:<ord> { {string 111 114 100} }
             @STR:<pause> { {string 112 97 117 115 101} }
             @STR:<predicted> { {string 112 114 101 100 105 99 116 101 100} }
             @STR:<priority> { {string 112 114 105 111 114 105 116 121} }

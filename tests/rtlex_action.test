@@ -105,11 +105,11 @@ initialize
 foreach {lexaction joiner} {
     g1length { }
     g1start  { }
-    length   { }
+    length   \n
     lhs      \n
     name     \n
     rule     \n
-    start    { }
+    start    \n
     symbol   \n
     value    \n
     values   \n

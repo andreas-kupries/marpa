@@ -254,6 +254,7 @@ oo::class create <Name> {
 	    @STR:<off>
 	    @STR:<ok>
 	    @STR:<on>
+	    @STR:<ord>
 	    @STR:<pause>
 	    @STR:<predicted>
 	    @STR:<priority>
@@ -421,6 +422,7 @@ oo::class create <Name> {
 	    {@STR:<off> := @CHR:<o> @CHR:<f> @CHR:<f>}
 	    {@STR:<ok> := @CHR:<o> @CHR:<k>}
 	    {@STR:<on> := @CHR:<o> @CHR:<n>}
+	    {@STR:<ord> := @CHR:<o> @CHR:<r> @CHR:<d>}
 	    {@STR:<pause> := @CHR:<p> @CHR:<a> @CHR:<u> @CHR:<s> @CHR:<e>}
 	    {@STR:<predicted> := @CHR:<p> @CHR:<r> @CHR:<e> @CHR:<d> @CHR:<i> @CHR:<c> @CHR:<t> @CHR:<e> @CHR:<d>}
 	    {@STR:<priority> := @CHR:<p> @CHR:<r> @CHR:<i> @CHR:<o> @CHR:<r> @CHR:<i> @CHR:<t> @CHR:<y>}
@@ -570,6 +572,7 @@ oo::class create <Name> {
 	    {{result item descriptor} := @STR:<length>}
 	    {{result item descriptor} := @STR:<lhs>}
 	    {{result item descriptor} := @STR:<name>}
+	    {{result item descriptor} := @STR:<ord>}
 	    {{result item descriptor} := @STR:<rule>}
 	    {{result item descriptor} := @STR:<start>}
 	    {{result item descriptor} := @STR:<symbol>}
@@ -696,6 +699,7 @@ oo::class create <Name> {
 	# Structural rules
 	debug.marpa/grammar/<Name>
 	return {
+	    {__ :A {symbol ord values}}
 	    {action :M {0 1} @LEX:@STR:<action> @LEX:@STR:<=>> {action name}}
 	    {lhs := {symbol name}}
 	    {naming :M {0 1} @LEX:@STR:<name> @LEX:@STR:<=>> {alternative name}}
@@ -861,3 +865,4 @@ oo::class create <Name> {
 
 # # ## ### ##### ######## #############
 return
+

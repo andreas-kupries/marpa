@@ -63,7 +63,6 @@ oo::class create marpa::engine::tcl::parse {
 	LEX   symbols [my L0.Symbols]
 	LEX   rules   [my L0.Rules]
 	PARSE symbols [my G1.Symbols]
-	PARSE action                   {name values} ; # TODO actual user semantics
 	PARSE rules   [my G1.Rules]
 	PARSE parse   [my Start] [my Discards]
 
