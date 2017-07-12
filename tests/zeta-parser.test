@@ -1,0 +1,210 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::engine::tcl::tparse + z-marpa-tcl
+##
+
+## Meta operation, bootstrapping and testing the results: Use the
+## builtin boot slif parser to generate a parser for the SLIF meta
+## grammar, and use the resulting parser on the grammars in the
+## testsuite. Like "slif-parser.test", but using the generated
+## parser. The failures tell us where builtin and meta SLIF differ
+## from each other. After a full bootstrap cycle there should be no
+## such. During dev work on the SLIF grammar the differences guide
+## updates to the builtin and the testsuite.
+##
+## In the end the builtin parser should be generated from the meta
+## grammar, and then regenerate itself.
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+kt require support fileutil ;# cat
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+## No method sequence checking for the parser.
+## Methods can be called in any order.
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/ast.tcl
+kt source support/dirs.tcl
+kt source support/grammars.tcl
+kt source support/textutils.tcl
+
+# # ## ### ##### ######## ############# #####################
+## Setup dynamic parts of the testsuite
+## Currently only importing the `bootstrap/marpa-tcl-slif`
+
+exec [td]/grammars/setup.sh
+
+# # ## ### ##### ######## ############# #####################
+
+proc meta {} {
+    return [td]/grammars/z-marpa-tcl
+}
+
+proc rt-parse-code {} {
+    return [td]/zeta-parser.tcl
+}
+
+proc finalize {} {
+    removeFile [rt-parse-code];#Disable when debugging
+    rename initialize {}
+    rename rt-parse-code {}
+    rename meta {}
+    rename finalize {}
+    return
+}
+
+proc initialize {} {
+    # _ __ ___ _____ ________ _____________ _____________________
+    # Process the slif meta grammar
+    marpa::slif::container create GC
+    marpa::slif::semantics create SEMA GC
+    marpa::slif::parser    create BOOT
+    SEMA process [BOOT process-file [meta]/slif]
+    # GC now holds the grammar
+    BOOT destroy
+    # Note: SEMA auto-destroys at the end of 'process'.
+    # _ __ ___ _____ ________ _____________ _____________________
+    # Generate a parser class for it
+    marpa::export config! version  1
+    marpa::export config! writer   {Jeffrey Kegler + Andreas Kupries}
+    marpa::export config! year     2017
+    marpa::export config! name     meta-parser
+    marpa::export config! operator $::tcl_platform(user)@[info hostname]
+    marpa::export config! tool     [info script]
+    set parser [marpa::export::tparse container GC]
+    GC destroy
+    # _ __ ___ _____ ________ _____________ _____________________
+    # Write to file for debugging.
+    fileutil::writeFile [rt-parse-code] $parser
+    # Activate for use.
+    uplevel #0 $parser
+    # _ __ ___ _____ ________ _____________ _____________________
+    return
+}
+
+# # ## ### ##### ######## ############# #####################
+##  1 constructor/0
+##  2 process/1		(string)
+##  3 process-file/1	(path-to-file)
+
+initialize
+
+# # ## ### ##### ######## ############# #####################
+## constructor - wrong args, initial state, calls
+
+test marpa-meta-parser-constructor-1.0 {constructor, wrong args, too many} -body {
+    meta-parser new X
+} -returnCodes error -result {wrong # args: should be "meta-parser new"}
+
+# # ## ### ##### ######## ############# #####################
+## process
+
+test marpa-meta-parser-process-1.0 {process, wrong args, not enough} -setup {
+    meta-parser create SP
+} -body {
+    SP process
+} -cleanup {
+    SP destroy
+} -returnCodes error -result {wrong # args: should be "SP process string"}
+
+test marpa-meta-parser-process-1.1 {process, wrong args, too many} -setup {
+    meta-parser create SP
+} -body {
+    SP process DATA X
+} -cleanup {
+    SP destroy
+} -returnCodes error -result {wrong # args: should be "SP process string"}
+
+# # ## ### ##### ######## ############# #####################
+## process-file
+
+test marpa-meta-parser-process-file-1.0 {process-file, wrong args, not enough} -setup {
+    meta-parser create SP
+} -body {
+    SP process-file
+} -cleanup {
+    SP destroy
+} -returnCodes error -result {wrong # args: should be "SP process-file path"}
+
+test marpa-meta-parser-process-file-1.1 {process-file, wrong args, too many} -setup {
+    meta-parser create SP
+} -body {
+    SP process-file DATA X
+} -cleanup {
+    SP destroy
+} -returnCodes error -result {wrong # args: should be "SP process-file path"}
+
+# # ## ### ##### ######## ############# #####################
+## process, process-file
+
+incr max
+test-grammar-files slif --> __ __ { incr max }
+set format %0[string length $max]d
+unset max
+
+incr k
+test-grammar-map slif --> id slif base {
+    set input    [fget $slif]
+    set expected [string trimright [fget [file join $base ast]]]
+    set kd       [format $format $k]
+
+    if {0} {
+	test marpa-meta-parser-debug-911.${kd}---${id} "process $id" -setup {
+	    meta-parser create SP
+	} -body {
+	    if {[catch {
+		ast-format [SP process $input]
+	    } msg]} {
+		puts ZZZ:$::errorInfo
+	    }
+	    set msg
+	} -cleanup {
+	    SP destroy
+	    unset msg
+	} -result $expected
+
+	incr k
+	continue
+    }
+
+    test marpa-meta-parser-process-2.${kd}---${id} "process $id" -setup {
+	meta-parser create SP
+    } -body {
+	catch {
+	    ast-format [SP process $input]
+	} msg
+	set msg
+    } -cleanup {
+	SP destroy
+	unset msg
+    } -result $expected
+
+    test marpa-meta-parser-process-file-3.${kd}---${id} "process-file $id" -setup {
+	meta-parser create SP
+    } -body {
+	catch {
+	    ast-format [SP process-file $slif]
+	} msg
+	set msg
+    } -cleanup {
+	SP destroy
+	unset msg
+    } -result $expected
+
+    incr k
+}
+
+finalize
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

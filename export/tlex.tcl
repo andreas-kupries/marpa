@@ -333,12 +333,10 @@ return
 ##
 # (c) @slif-year@ Grammar @slif-name@ By @slif-writer@
 ##
-##	TLex (*) Engine for SLIF Grammar "@slif-name@"
+##	rt_lex-derived Engine for grammar "@slif-name@". Lexing only.
 ##	Generated On @generation-time@
 ##		  By @tool-operator@
 ##		 Via @tool@
-##
-##	(*) Tcl-based Lexer-only
 
 package provide @slif-name@ @slif-version@
 

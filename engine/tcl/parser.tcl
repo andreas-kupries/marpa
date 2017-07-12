@@ -101,6 +101,7 @@ oo::class create marpa::parser {
 	set myparts       value
 	set mypreviouslhs -1 ; # ord state
 	set myplhscount   0  ; # ord counter
+	set myname        {} ; # custom rule name
 
 	debug.marpa/semcore {[marpa::D {
 	    # Provide semcore with access to engine internals for use
@@ -222,6 +223,9 @@ oo::class create marpa::parser {
 	# The parser has nothing to say at the moment regarding the
 	# failure context. Pass forward to the AST handler.
 
+	oo::objdefine [self] mixin marpa::engine::debug
+	dict set context g1 report [my progress-report-current]
+	
 	Forward fail context
 
 	# Note: This method must not return, but throw an error at
@@ -387,7 +391,8 @@ oo::class create marpa::parser {
 
 		set context {}
 		catch { Lexer get-context context }
-
+		dict set context origin parser
+		
 		# The parser is done.
 		RECCE destroy
 

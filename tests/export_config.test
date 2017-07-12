@@ -32,6 +32,7 @@ test marpa-export-config-2.0 {config, defaults} -body {
     @slif-writer@     {}
     @slif-year@       {}
     @slif-name@       {}
+    @slif-name-tag@   {}
     @tool-operator@   {}
     @tool@            {}
     @generation-time@ *
@@ -61,7 +62,7 @@ test marpa-export-config!-3.0 {config!} -body {
     marpa::export::config! version  version
     marpa::export::config! writer   writer
     marpa::export::config! year     year
-    marpa::export::config! name     name
+    marpa::export::config! name     a::name
     marpa::export::config! operator operator
     marpa::export::config! tool     tool
     marpa::export::config! gentime  gentime
@@ -72,7 +73,8 @@ test marpa-export-config!-3.0 {config!} -body {
     @slif-version@    version
     @slif-writer@     writer
     @slif-year@       year
-    @slif-name@       name
+    @slif-name@       a::name
+    @slif-name-tag@   a/name
     @tool-operator@   operator
     @tool@            tool
     @generation-time@ gentime
@@ -103,6 +105,7 @@ test marpa-export-config-reset-2.0 {config-reset} -setup {
     @slif-writer@     {}
     @slif-year@       {}
     @slif-name@       {}
+    @slif-name-tag@   {}
     @tool-operator@   {}
     @tool@            {}
     @generation-time@ *

@@ -46,7 +46,7 @@ proc rt-lex-code {} {
 }
 
 proc finalize {} {
-    #removeFile [rt-lex-code]
+    removeFile [rt-lex-code];# Disable when debugging
     rename initialize {}
     rename rt-lex-code {}
     rename meta {}

@@ -62,10 +62,13 @@ proc ::marpa::export::config {} {
 	set gentime [clock format [clock seconds]]
     }
 
+    set tag [string map {:: /} $name]
+
     lappend map @slif-version@    $version
     lappend map @slif-writer@     $writer
     lappend map @slif-year@       $year
     lappend map @slif-name@       $name
+    lappend map @slif-name-tag@   $tag
     lappend map @tool-operator@   $operator
     lappend map @tool@            $tool
     lappend map @generation-time@ $gentime

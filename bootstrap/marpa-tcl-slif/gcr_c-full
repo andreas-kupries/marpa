@@ -9,286 +9,360 @@ grammar {
                     @LEX:@STR:<action>
                     @LEX:@STR:<=>>
                     {action name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 0}} }
+                        mask {1 1 0}
+                        name action/0} }
             {action name} {
                 {priority {{Perl name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {action name/0}}
                 {priority {{reserved action name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {action name/1}}
                 {priority {{array descriptor}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {action name/2}}
             }
             {adverb item bnf alternative} {
                 {priority action 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf alternative/0}}
                 {priority {{left association}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf alternative/1}}
                 {priority {{right association}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf alternative/2}}
                 {priority {{group association}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf alternative/3}}
                 {priority naming 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf alternative/4}}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf alternative/5}}
             }
             {adverb item bnf empty} {
                 {priority action 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf empty/0}}
                 {priority {{left association}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf empty/1}}
                 {priority {{right association}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf empty/2}}
                 {priority {{group association}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf empty/3}}
                 {priority naming 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf empty/4}}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf empty/5}}
             }
             {adverb item bnf quantified} {
                 {priority action 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf quantified/0}}
                 {priority {{separator specification}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf quantified/1}}
                 {priority {{proper specification}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf quantified/2}}
+                {priority naming 0
+                        action {array {name values}}
+                        assoc left
+                        mask 0
+                        name {adverb item bnf quantified/3}}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item bnf quantified/4}}
             }
             {adverb item default} {
                 {priority action 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item default/0}}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item default/1}}
             }
             {adverb item discard} {
                 {priority {{event specification}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item discard/0}}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item discard/1}}
             }
             {adverb item discard default} {
                 {priority {{event specification}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item discard default/0}}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item discard default/1}}
             }
             {adverb item lexeme} {
                 {priority {{event specification}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item lexeme/0}}
                 {priority {{latm specification}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item lexeme/1}}
                 {priority {{priority specification}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item lexeme/2}}
                 {priority {{pause specification}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item lexeme/3}}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item lexeme/4}}
             }
             {adverb item lexeme default} {
                 {priority action 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item lexeme default/0}}
                 {priority {{latm specification}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item lexeme default/1}}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item lexeme default/2}}
             }
             {adverb item match alternative} {
                 {priority naming 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item match alternative/0}}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item match alternative/1}}
             }
             {adverb item match empty} {
                 {priority naming 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item match empty/0}}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item match empty/1}}
             }
             {adverb item match quantified} {
                 {priority {{separator specification}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item match quantified/0}}
                 {priority {{proper specification}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item match quantified/1}}
                 {priority {{null adverb}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {adverb item match quantified/2}}
             }
             {adverb list bnf alternative} { {priority {{adverb list items bnf alternative}} 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name {adverb list bnf alternative/0}} }
             {adverb list bnf empty} { {priority {{adverb list items bnf empty}} 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name {adverb list bnf empty/0}} }
             {adverb list bnf quantified} { {priority {{adverb list items bnf quantified}} 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name {adverb list bnf quantified/0}} }
             {adverb list default} { {priority {{adverb list items default}} 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name {adverb list default/0}} }
             {adverb list discard} { {priority {{adverb list items discard}} 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name {adverb list discard/0}} }
             {adverb list discard default} { {priority {{adverb list items discard default}} 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name {adverb list discard default/0}} }
             {adverb list items bnf alternative} { {quantified {adverb item bnf alternative} 0
-                    action {array {start length values}}} }
+                    action {array {name values}}
+                    name {adverb list items bnf alternative/0}} }
             {adverb list items bnf empty} { {quantified {adverb item bnf empty} 0
-                    action {array {start length values}}} }
+                    action {array {name values}}
+                    name {adverb list items bnf empty/0}} }
             {adverb list items bnf quantified} { {quantified {adverb item bnf quantified} 0
-                    action {array {start length values}}} }
+                    action {array {name values}}
+                    name {adverb list items bnf quantified/0}} }
             {adverb list items default} { {quantified {adverb item default} 0
-                    action {array {start length values}}} }
+                    action {array {name values}}
+                    name {adverb list items default/0}} }
             {adverb list items discard} { {quantified {adverb item discard} 0
-                    action {array {start length values}}} }
+                    action {array {name values}}
+                    name {adverb list items discard/0}} }
             {adverb list items discard default} { {quantified {adverb item discard default} 0
-                    action {array {start length values}}} }
+                    action {array {name values}}
+                    name {adverb list items discard default/0}} }
             {adverb list items lexeme} { {quantified {adverb item lexeme} 0
-                    action {array {start length values}}} }
+                    action {array {name values}}
+                    name {adverb list items lexeme/0}} }
             {adverb list items lexeme default} { {quantified {adverb item lexeme default} 0
-                    action {array {start length values}}} }
+                    action {array {name values}}
+                    name {adverb list items lexeme default/0}} }
             {adverb list items match alternative} { {quantified {adverb item match alternative} 0
-                    action {array {start length values}}} }
+                    action {array {name values}}
+                    name {adverb list items match alternative/0}} }
             {adverb list items match empty} { {quantified {adverb item match empty} 0
-                    action {array {start length values}}} }
+                    action {array {name values}}
+                    name {adverb list items match empty/0}} }
             {adverb list items match quantified} { {quantified {adverb item match quantified} 0
-                    action {array {start length values}}} }
+                    action {array {name values}}
+                    name {adverb list items match quantified/0}} }
             {adverb list lexeme} { {priority {{adverb list items lexeme}} 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name {adverb list lexeme/0}} }
             {adverb list lexeme default} { {priority {{adverb list items lexeme default}} 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name {adverb list lexeme default/0}} }
             {adverb list match alternative} { {priority {{adverb list items match alternative}} 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name {adverb list match alternative/0}} }
             {adverb list match empty} { {priority {{adverb list items match empty}} 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name {adverb list match empty/0}} }
             {adverb list match quantified} { {priority {{adverb list items match quantified}} 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name {adverb list match quantified/0}} }
             {alternative bnf} { {priority {
                     rhs
                     {adverb list bnf alternative}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {0 0}} }
+                        mask {0 0}
+                        name {alternative bnf/0}} }
             {alternative match} { {priority {
                     rhs
                     {adverb list match alternative}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {0 0}} }
+                        mask {0 0}
+                        name {alternative match/0}} }
             {alternative name} {
                 {priority {{standard name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {alternative name/0}}
                 {priority {{single quoted name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {alternative name/1}}
             }
             {alternatives bnf} { {quantified {alternative bnf} 1
-                    action {array {start length values}}
+                    action {array {name values}}
+                    name {alternatives bnf/0}
                     separator {{op equal priority} 1}} }
             {alternatives match} { {quantified {alternative match} 1
-                    action {array {start length values}}
+                    action {array {name values}}
+                    name {alternatives match/0}
                     separator {{op equal priority} 1}} }
             {completion event declaration} { {priority {
                     @LEX:@STR:<event>
@@ -296,307 +370,354 @@ grammar {
                     @LEX:@CHR:<=>
                     @LEX:@STR:<completed>
                     {symbol name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 0 1 1 0}} }
+                        mask {1 0 1 1 0}
+                        name {completion event declaration/0}} }
             {current lexer statement} { {priority {
                     @LEX:@STR:<current>
                     @LEX:@STR:<lexer>
                     @LEX:@STR:<is>
                     {lexer name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 1 0}} }
+                        mask {1 1 1 0}
+                        name {lexeme rule/1}} }
             {default rule} { {priority {
                     @LEX:@STR:<:default>
                     {op declare bnf}
                     {adverb list default}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {0 0 0}} }
+                        mask {1 1 0}
+                        name {default rule/0}} }
             {discard default statement} { {priority {
                     @LEX:@STR:<discard>
                     @LEX:@STR:<default>
                     @LEX:@CHR:<=>
                     {adverb list discard default}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 1 0}} }
+                        mask {1 1 1 0}
+                        name {discard default statement/0}} }
             {discard rule} {
                 {priority {
                         @LEX:@STR:<:discard>
                         {op declare match}
                         symbol
                         {adverb list discard}} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {1 1 0 0}}
+                            mask {1 1 0 0}
+                            name {discard rule/0}}
                 {priority {
                         @LEX:@STR:<:discard>
                         {op declare match}
                         {character class}
                         {adverb list discard}} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {1 1 0 0}}
+                            mask {1 1 0 0}
+                            name {discard rule/1}}
             }
             {empty rule} {
                 {priority {
                         lhs
                         {op declare bnf}
                         {adverb list bnf empty}} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {0 0 0}}
+                            mask {0 1 0}
+                            name {empty rule/0}}
                 {priority {
                         lhs
                         {op declare match}
                         {adverb list match empty}} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {0 0 0}}
+                            mask {0 1 0}
+                            name {empty rule/1}}
             }
             {event initialization} { {priority {
                     {event name}
                     {event initializer}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {0 0}} }
+                        mask {0 0}
+                        name {event initialization/0}} }
             {event initializer} {
                 {priority {
                         @LEX:@CHR:<=>
                         {on or off}} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {1 0}}
+                            mask {1 0}
+                            name {event initializer/0}}
                 {priority {} 0
-                        action {array {start length values}}
-                        assoc left}
+                        action {array {name values}}
+                        assoc left
+                        name {event initializer/1}}
             }
             {event name} {
                 {priority {{standard name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {event name/0}}
                 {priority {{single quoted name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {event name/1}}
                 {priority {{reserved event name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {event name/2}}
             }
             {event specification} { {priority {
                     @LEX:@STR:<event>
                     @LEX:@STR:<=>>
                     {event initialization}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 0}} }
+                        mask {1 1 0}
+                        name {event specification/0}} }
             {group association} { {priority {
                     @LEX:@STR:<assoc>
                     @LEX:@STR:<=>>
                     @LEX:@STR:<group>} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 1}} }
+                        mask {1 1 1}
+                        name {group association/0}} }
             {inaccessible statement} { {priority {
                     @LEX:@STR:<inaccessible>
                     @LEX:@STR:<is>
                     {inaccessible treatment}
                     @LEX:@STR:<by>
                     @LEX:@STR:<default>} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 0 1 1}} }
+                        mask {1 1 0 1 1}
+                        name {inaccessible statement/0}} }
             {inaccessible treatment} {
                 {priority @LEX:@STR:<warn> 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {inaccessible treatment/0}}
                 {priority @LEX:@STR:<ok> 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {inaccessible treatment/1}}
                 {priority @LEX:@STR:<fatal> 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {inaccessible treatment/2}}
             }
             {latm specification} {
                 {priority {
                         @LEX:@STR:<forgiving>
                         @LEX:@STR:<=>>
                         boolean} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {1 1 0}}
+                            mask {1 1 0}
+                            name {latm specification/0}}
                 {priority {
                         @LEX:@STR:<latm>
                         @LEX:@STR:<=>>
                         boolean} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {1 1 0}}
+                            mask {1 1 0}
+                            name {latm specification/1}}
             }
             {left association} { {priority {
                     @LEX:@STR:<assoc>
                     @LEX:@STR:<=>>
                     @LEX:@STR:<left>} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 1}} }
+                        mask {1 1 1}
+                        name {left association/0}} }
             {lexeme default statement} { {priority {
                     @LEX:@STR:<lexeme>
                     @LEX:@STR:<default>
                     @LEX:@CHR:<=>
                     {adverb list lexeme default}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 1 0}} }
+                        mask {1 1 1 0}
+                        name {lexeme default statement/0}} }
             {lexeme rule} { {priority {
                     @LEX:@STR:<:lexeme>
                     {op declare match}
                     symbol
                     {adverb list lexeme}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 0 0}} }
+                        mask {1 1 0 0}
+                        name {lexeme rule/0}} }
             {lexer name} {
                 {priority {{standard name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {lexer name/0}}
                 {priority {{single quoted name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {lexer name/1}}
             }
             lhs { {priority {{symbol name}} 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name lhs/0} }
             naming { {priority {
                     @LEX:@STR:<name>
                     @LEX:@STR:<=>>
                     {alternative name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 0}} }
+                        mask {1 1 0}
+                        name naming/0} }
             {null adverb} { {priority @LEX:@CHR:<,> 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name {null adverb/0}} }
             {null ranking constant} {
                 {priority @LEX:@STR:<low> 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {null ranking constant/0}}
                 {priority @LEX:@STR:<high> 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {null ranking constant/0}}
             }
             {null ranking specification} {
                 {priority {
                         @LEX:@STR:<null-ranking>
                         @LEX:@STR:<=>>
                         {null ranking constant}} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {1 1 0}}
+                            mask {1 1 0}
+                            name {null ranking specification/0}}
                 {priority {
                         @LEX:@STR:<null>
                         @LEX:@STR:<rank>
                         @LEX:@STR:<=>>
                         {null ranking constant}} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {1 1 1 0}}
+                            mask {1 1 1 0}
+                            name {null ranking specification/1}}
             }
             {null statement} { {priority {{@LEX:@CHR:<\73>}} 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name {null statement/0}} }
             {nulled event declaration} { {priority {
                     @LEX:@STR:<event>
                     {event initialization}
                     @LEX:@CHR:<=>
                     @LEX:@STR:<nulled>
                     {symbol name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 0 1 1 0}} }
+                        mask {1 0 1 1 0}
+                        name {nulled event declaration/0}} }
             {on or off} {
                 {priority @LEX:@STR:<on> 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {on or off/0}}
                 {priority @LEX:@STR:<off> 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {on or off/1}}
             }
             {parenthesized rhs primary list} { {priority {
                     {@LEX:@CHR:<\50>}
                     {rhs primary list}
                     {@LEX:@CHR:<\51>}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 0 1}} }
+                        mask {1 0 1}
+                        name {parenthesized rhs primary list/0}} }
             {pause specification} { {priority {
                     @LEX:@STR:<pause>
                     @LEX:@STR:<=>>
                     {before or after}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 0}} }
+                        mask {1 1 0}
+                        name {pause specification/0}} }
             {prediction event declaration} { {priority {
                     @LEX:@STR:<event>
                     {event initialization}
                     @LEX:@CHR:<=>
                     @LEX:@STR:<predicted>
                     {symbol name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 0 1 1 0}} }
+                        mask {1 0 1 1 0}
+                        name {prediction event declaration/0}} }
             {priorities bnf} { {quantified {alternatives bnf} 1
-                    action {array {start length values}}
+                    action {array {name values}}
+                    name {priorities bnf/0}
                     separator {{op loosen} 1}} }
             {priorities match} { {quantified {alternatives match} 1
-                    action {array {start length values}}
+                    action {array {name values}}
+                    name {priorities match/0}
                     separator {{op loosen} 1}} }
             {priority rule} {
                 {priority {
                         lhs
                         {op declare bnf}
                         {priorities bnf}} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {0 1 0}}
+                            mask {0 1 0}
+                            name {priority rule/0}}
                 {priority {
                         lhs
                         {op declare match}
                         {priorities match}} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {0 1 0}}
+                            mask {0 1 0}
+                            name {priority rule/1}}
             }
             {priority specification} { {priority {
                     @LEX:@STR:<priority>
                     @LEX:@STR:<=>>
                     {signed integer}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 0}} }
+                        mask {1 1 0}
+                        name {priority specification/0}} }
             {proper specification} { {priority {
                     @LEX:@STR:<proper>
                     @LEX:@STR:<=>>
                     boolean} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 0}} }
+                        mask {1 1 0}
+                        name {proper specification/0}} }
             {quantified rule} {
                 {priority {
                         lhs
@@ -604,183 +725,220 @@ grammar {
                         {single symbol}
                         quantifier
                         {adverb list bnf quantified}} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {0 0 0 0 0}}
+                            mask {0 1 0 0 0}
+                            name {quantified rule/0}}
                 {priority {
                         lhs
                         {op declare match}
                         {single symbol}
                         quantifier
                         {adverb list match quantified}} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {0 0 0 0 0}}
+                            mask {0 1 0 0 0}
+                            name {quantified rule/1}}
             }
             quantifier {
                 {priority @LEX:@CHR:<*> 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name quantifier/0}
                 {priority @LEX:@CHR:<+> 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name quantifier/1}
             }
             {rank specification} { {priority {
                     @LEX:@STR:<rank>
                     @LEX:@STR:<=>>
                     {signed integer}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 0}} }
+                        mask {1 1 0}
+                        name {rank specification/0}} }
             rhs { {quantified {rhs primary} 1
-                    action {array {start length values}}} }
+                    action {array {name values}}
+                    name rhs/0} }
             {rhs primary} {
                 {priority {{single symbol}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {rhs primary/0}}
                 {priority {{single quoted string}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {rhs primary/1}}
                 {priority {{parenthesized rhs primary list}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {rhs primary/2}}
             }
             {rhs primary list} { {quantified {rhs primary} 1
-                    action {array {start length values}}} }
+                    action {array {name values}}
+                    name {rhs primary list/0}} }
             {right association} { {priority {
                     @LEX:@STR:<assoc>
                     @LEX:@STR:<=>>
                     @LEX:@STR:<right>} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 1}} }
+                        mask {1 1 1}
+                        name {right association/0}} }
             {separator specification} { {priority {
                     @LEX:@STR:<separator>
                     @LEX:@STR:<=>>
                     {single symbol}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 1 0}} }
+                        mask {1 1 0}
+                        name {separator specification/0}} }
             {single symbol} {
                 {priority symbol 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {single symbol/0}}
                 {priority {{character class}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {single symbol/1}}
             }
             {start rule} {
                 {priority {
                         @LEX:@STR:<:start>
                         {op declare bnf}
                         symbol} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {1 1 0}}
+                            mask {1 1 0}
+                            name {start rule/0}}
                 {priority {
                         @LEX:@STR:<start>
                         @LEX:@STR:<symbol>
                         @LEX:@STR:<is>
                         symbol} 0
-                            action {array {start length values}}
+                            action {array {name values}}
                             assoc left
-                            mask {1 1 1 0}}
+                            mask {1 1 1 0}
+                            name {start rule/1}}
             }
             statement {
                 {priority {{start rule}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/0}
                 {priority {{empty rule}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/1}
                 {priority {{null statement}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/2}
                 {priority {{statement group}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/3}
                 {priority {{priority rule}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/4}
                 {priority {{quantified rule}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/5}
                 {priority {{discard rule}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/6}
                 {priority {{default rule}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/7}
                 {priority {{lexeme default statement}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/8}
                 {priority {{discard default statement}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/9}
                 {priority {{lexeme rule}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/10}
                 {priority {{completion event declaration}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/11}
                 {priority {{nulled event declaration}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/12}
                 {priority {{prediction event declaration}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/13}
                 {priority {{current lexer statement}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/14}
                 {priority {{inaccessible statement}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name statement/15}
             }
             {statement group} { {priority {
                     {@LEX:@CHR:<\173>}
                     statements
                     {@LEX:@CHR:<\175>}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask {1 0 0}} }
+                        mask {1 0 0}
+                        name {statement group/0}} }
             statements { {quantified statement 1
-                    action {array {start length values}}} }
+                    action {array {name values}}
+                    name statements/0} }
             symbol { {priority {{symbol name}} 0
-                    action {array {start length values}}
+                    action {array {name values}}
                     assoc left
-                    mask 0} }
+                    mask 0
+                    name symbol/0} }
             {symbol name} {
                 {priority {{bare name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {symbol name/0}}
                 {priority {{bracketed name}} 0
-                        action {array {start length values}}
+                        action {array {name values}}
                         assoc left
-                        mask 0}
+                        mask 0
+                        name {symbol name/1}}
             }
         }
         terminal {
@@ -858,8 +1016,9 @@ grammar {
     }
     l0 {
         {} {
-            {@^CLS:<\7-\r'0-7\134\u2028-\u2029>} {
+            {@^CLS:<\7-\10\n-\r'0-7\134\u2028-\u2029>} {
                 {priority {{@BRAN:<\0\6>}} 0}
+                {priority {{@BYTE:<\t>}} 0}
                 {priority {{@BRAN:<\16&>}} 0}
                 {priority {{@BRAN:<\50/>}} 0}
                 {priority {{@BRAN:<8\133>}} 0}
@@ -915,8 +1074,9 @@ grammar {
                         {@BRAN:<\200\u00bf>}
                         {@BRAN:<\200\u00bf>}} 0}
             }
-            {@^CLS:<\7-\r'\134\u2028-\u2029>} {
+            {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029>} {
                 {priority {{@BRAN:<\0\6>}} 0}
+                {priority {{@BYTE:<\t>}} 0}
                 {priority {{@BRAN:<\16&>}} 0}
                 {priority {{@BRAN:<\50\133>}} 0}
                 {priority {{@BRAN:<\135\177>}} 0}
@@ -971,8 +1131,9 @@ grammar {
                         {@BRAN:<\200\u00bf>}
                         {@BRAN:<\200\u00bf>}} 0}
             }
-            {@^CLS:<\7-\r'\134\u2028-\u2029[:xdigit:]>} {
+            {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]>} {
                 {priority {{@BRAN:<\0\6>}} 0}
+                {priority {{@BYTE:<\t>}} 0}
                 {priority {{@BRAN:<\16&>}} 0}
                 {priority {{@BRAN:<\50/>}} 0}
                 {priority @BRAN:<:@> 0}
@@ -11133,6 +11294,10 @@ grammar {
             @STR:<on> { {priority {
                     @BYTE:<o>
                     @BYTE:<n>} 0} }
+            @STR:<ord> { {priority {
+                    @BYTE:<o>
+                    @BYTE:<r>
+                    @BYTE:<d>} 0} }
             @STR:<pause> { {priority {
                     @BYTE:<p>
                     @BYTE:<a>
@@ -11513,9 +11678,9 @@ grammar {
                         {posix char class}
                         {nullable cc}} 0}
             }
-            {plain string char} { {priority {{@^CLS:<\7-\r'\134\u2028-\u2029>}} 0} }
-            {plain string char without hex} { {priority {{@^CLS:<\7-\r'\134\u2028-\u2029[:xdigit:]>}} 0} }
-            {plain string char without octal} { {priority {{@^CLS:<\7-\r'0-7\134\u2028-\u2029>}} 0} }
+            {plain string char} { {priority {{@^CLS:<\7-\10\n-\r'\134\u2028-\u2029>}} 0} }
+            {plain string char without hex} { {priority {{@^CLS:<\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]>}} 0} }
+            {plain string char without octal} { {priority {{@^CLS:<\7-\10\n-\r'0-7\134\u2028-\u2029>}} 0} }
             {posix char class} { {priority {
                     {@STR:<\133:>}
                     {posix char class name}
@@ -11532,6 +11697,7 @@ grammar {
                 {priority @STR:<rule> 0}
                 {priority @STR:<value> 0}
                 {priority @STR:<values> 0}
+                {priority @STR:<ord> 0}
             }
             {result item descriptor list} { {quantified {result item descriptor} 0
                     separator {{result item descriptor separator} 0}} }
@@ -12114,6 +12280,7 @@ grammar {
             {@BYTE:<\236>} { {byte 158} }
             {@BYTE:<\237>} { {byte 159} }
             {@BYTE:<\255>} { {byte 173} }
+            {@BYTE:<\t>} { {byte 9} }
             {@BYTE:<\u00a0>} { {byte 160} }
             {@BYTE:<\u00a1>} { {byte 161} }
             {@BYTE:<\u00a2>} { {byte 162} }
@@ -12219,3 +12386,4 @@ grammar {
         }
     }
 }
+

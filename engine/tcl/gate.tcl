@@ -176,7 +176,7 @@ oo::class create marpa::gate {
 	debug.marpa/gate {[debug caller] | }
 	upvar 1 $cv context
 
-	if {[llength $myhistory]} {
+	if {0&&[llength $myhistory]} {
 	    # Pull location information out of the history.
 	    lassign [lrange $myhistory end-1 end] char value
 	} else {
@@ -317,20 +317,28 @@ oo::class create marpa::gate {
 	debug.marpa/gate {[debug caller] | }
 	upvar 1 $cv context
 
+	if {![info exists context] ||
+	    ![dict exists $context from]} {
+	    dict set context origin gate
+	}
+	
 	if {$value ne {}} {
 	    lassign [Store get $value] startoffset __ __
 	    dict set context l0 at $startoffset
 	}
 	if {$char ne {}} {
 	    dict set context l0 char $char
+	    dict set context l0 csym [dict get $mymap $char]
 	}
 
+	set amap {}
 	foreach sym [dict keys $myacceptable] {
 	    set cname [dict get $myrmap $sym] ;# char or name of charclass
 	    if {[dict exists $myclass $cname]} {
 		# map charclass to the set of characters it contains.
 		lassign [dict get $myclass $cname] cname __
-		set cname [string range $cname 1 end-1]
+		dict set amap $sym $cname
+		#set cname [string range $cname 1 end-1]
 
 		# TODO: Need package and commands to manipulate char
 		# ranges and char classes.  (include, exclude, union,
@@ -339,11 +347,17 @@ oo::class create marpa::gate {
 		# TODO: The above can be handled as a package to
 		# handle integer sets, ranges, with characters mapped
 		# in and out via their 'codepoints'.
+		
+		# NOTE: See `marpa::slif::literal`
+	    } else {
+		dict set amap $sym '[char quote cstring $cname]'
 	    }
 	    lappend acceptable $cname
 	}
 
 	dict set context l0 acceptable [lsort -dict $acceptable]
+	dict set context l0 acceptsym  [lsort -integer [dict keys $myacceptable]]
+	dict set context l0 acceptmap  $amap
 	return
     }
 

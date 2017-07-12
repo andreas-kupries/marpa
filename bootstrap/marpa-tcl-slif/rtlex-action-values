@@ -2,7 +2,7 @@
 ::=
 action
 =>
-[symbol,ord,values]
+[name,values]
 lexeme
 default
 =
@@ -19,42 +19,96 @@ statements
 ::=
 statement
 +
+name
+=>
+'statements/0'
 statement
 ::=
 <start rule>
+name
+=>
+'statement/0'
 |
 <empty rule>
+name
+=>
+'statement/1'
 |
 <null statement>
+name
+=>
+'statement/2'
 |
 <statement group>
+name
+=>
+'statement/3'
 |
 <priority rule>
+name
+=>
+'statement/4'
 |
 <quantified rule>
+name
+=>
+'statement/5'
 |
 <discard rule>
+name
+=>
+'statement/6'
 |
 <default rule>
+name
+=>
+'statement/7'
 |
 <lexeme default statement>
+name
+=>
+'statement/8'
 |
 <discard default statement>
+name
+=>
+'statement/9'
 |
 <lexeme rule>
+name
+=>
+'statement/10'
 |
 <completion event declaration>
+name
+=>
+'statement/11'
 |
 <nulled event declaration>
+name
+=>
+'statement/12'
 |
 <prediction event declaration>
+name
+=>
+'statement/13'
 |
 <current lexer statement>
+name
+=>
+'statement/14'
 |
 <inaccessible statement>
+name
+=>
+'statement/15'
 <null statement>
 ::=
 ';'
+name
+=>
+'null statement/0'
 <statement group>
 ::=
 (
@@ -62,26 +116,19 @@ statement
 )
 statements
 '}'
-<start rule>
-::=
-(
-':start'
-<op declare bnf>
-)
-symbol
-<start rule>
-::=
-(
-'start'
-'symbol'
-'is'
-)
-symbol
+name
+=>
+'statement group/0'
 <default rule>
 ::=
+(
 ':default'
 <op declare bnf>
+)
 <adverb list default>
+name
+=>
+'default rule/0'
 <lexeme default statement>
 ::=
 (
@@ -90,6 +137,9 @@ symbol
 '='
 )
 <adverb list lexeme default>
+name
+=>
+'lexeme default statement/0'
 <discard default statement>
 ::=
 (
@@ -98,30 +148,71 @@ symbol
 '='
 )
 <adverb list discard default>
-<empty rule>
+name
+=>
+'discard default statement/0'
+<start rule>
 ::=
-lhs
+(
+':start'
 <op declare bnf>
-<adverb list bnf empty>
+)
+symbol
+name
+=>
+'start rule/0'
+|
+(
+'start'
+'symbol'
+'is'
+)
+symbol
+name
+=>
+'start rule/1'
 <empty rule>
 ::=
 lhs
+(
+<op declare bnf>
+)
+<adverb list bnf empty>
+name
+=>
+'empty rule/0'
+|
+lhs
+(
 <op declare match>
+)
 <adverb list match empty>
+name
+=>
+'empty rule/1'
 <quantified rule>
 ::=
 lhs
+(
 <op declare bnf>
+)
 <single symbol>
 quantifier
 <adverb list bnf quantified>
-<quantified rule>
-::=
+name
+=>
+'quantified rule/0'
+|
 lhs
+(
 <op declare match>
+)
 <single symbol>
 quantifier
 <adverb list match quantified>
+name
+=>
+'quantified rule/1'
 <discard rule>
 ::=
 (
@@ -130,14 +221,19 @@ quantifier
 )
 symbol
 <adverb list discard>
-<discard rule>
-::=
+name
+=>
+'discard rule/0'
+|
 (
 ':discard'
 <op declare match>
 )
 <character class>
 <adverb list discard>
+name
+=>
+'discard rule/1'
 <lexeme rule>
 ::=
 (
@@ -146,6 +242,9 @@ symbol
 )
 symbol
 <adverb list lexeme>
+name
+=>
+'lexeme rule/0'
 <current lexer statement>
 ::=
 (
@@ -154,6 +253,9 @@ symbol
 'is'
 )
 <lexer name>
+name
+=>
+'lexeme rule/1'
 <completion event declaration>
 ::=
 (
@@ -165,6 +267,9 @@ symbol
 'completed'
 )
 <symbol name>
+name
+=>
+'completion event declaration/0'
 <nulled event declaration>
 ::=
 (
@@ -176,6 +281,9 @@ symbol
 'nulled'
 )
 <symbol name>
+name
+=>
+'nulled event declaration/0'
 <prediction event declaration>
 ::=
 (
@@ -187,6 +295,9 @@ symbol
 'predicted'
 )
 <symbol name>
+name
+=>
+'prediction event declaration/0'
 <inaccessible statement>
 ::=
 (
@@ -198,13 +309,25 @@ symbol
 'by'
 'default'
 )
+name
+=>
+'inaccessible statement/0'
 <inaccessible treatment>
 ::=
 'warn'
+name
+=>
+'inaccessible treatment/0'
 |
 'ok'
+name
+=>
+'inaccessible treatment/1'
 |
 'fatal'
+name
+=>
+'inaccessible treatment/2'
 <priority rule>
 ::=
 lhs
@@ -212,17 +335,25 @@ lhs
 <op declare bnf>
 )
 <priorities bnf>
-<priority rule>
-::=
+name
+=>
+'priority rule/0'
+|
 lhs
 (
 <op declare match>
 )
 <priorities match>
+name
+=>
+'priority rule/1'
 <priorities bnf>
 ::=
 <alternatives bnf>
 +
+name
+=>
+'priorities bnf/0'
 separator
 =>
 <op loosen>
@@ -233,6 +364,9 @@ proper
 ::=
 <alternatives match>
 +
+name
+=>
+'priorities match/0'
 separator
 =>
 <op loosen>
@@ -243,6 +377,9 @@ proper
 ::=
 <alternative bnf>
 +
+name
+=>
+'alternatives bnf/0'
 separator
 =>
 <op equal priority>
@@ -253,6 +390,9 @@ proper
 ::=
 <alternative match>
 +
+name
+=>
+'alternatives match/0'
 separator
 =>
 <op equal priority>
@@ -263,175 +403,366 @@ proper
 ::=
 rhs
 <adverb list bnf alternative>
+name
+=>
+'alternative bnf/0'
 <alternative match>
 ::=
 rhs
 <adverb list match alternative>
+name
+=>
+'alternative match/0'
 <adverb list default>
 ::=
 <adverb list items default>
+name
+=>
+'adverb list default/0'
 <adverb list discard>
 ::=
 <adverb list items discard>
+name
+=>
+'adverb list discard/0'
 <adverb list lexeme>
 ::=
 <adverb list items lexeme>
+name
+=>
+'adverb list lexeme/0'
 <adverb list discard default>
 ::=
 <adverb list items discard default>
+name
+=>
+'adverb list discard default/0'
 <adverb list lexeme default>
 ::=
 <adverb list items lexeme default>
+name
+=>
+'adverb list lexeme default/0'
 <adverb list bnf alternative>
 ::=
 <adverb list items bnf alternative>
+name
+=>
+'adverb list bnf alternative/0'
 <adverb list bnf empty>
 ::=
 <adverb list items bnf empty>
+name
+=>
+'adverb list bnf empty/0'
 <adverb list bnf quantified>
 ::=
 <adverb list items bnf quantified>
+name
+=>
+'adverb list bnf quantified/0'
 <adverb list match alternative>
 ::=
 <adverb list items match alternative>
+name
+=>
+'adverb list match alternative/0'
 <adverb list match empty>
 ::=
 <adverb list items match empty>
+name
+=>
+'adverb list match empty/0'
 <adverb list match quantified>
 ::=
 <adverb list items match quantified>
+name
+=>
+'adverb list match quantified/0'
 <adverb list items default>
 ::=
 <adverb item default>
 *
+name
+=>
+'adverb list items default/0'
 <adverb list items discard>
 ::=
 <adverb item discard>
 *
+name
+=>
+'adverb list items discard/0'
 <adverb list items lexeme>
 ::=
 <adverb item lexeme>
 *
+name
+=>
+'adverb list items lexeme/0'
 <adverb list items discard default>
 ::=
 <adverb item discard default>
 *
+name
+=>
+'adverb list items discard default/0'
 <adverb list items lexeme default>
 ::=
 <adverb item lexeme default>
 *
+name
+=>
+'adverb list items lexeme default/0'
 <adverb list items bnf alternative>
 ::=
 <adverb item bnf alternative>
 *
+name
+=>
+'adverb list items bnf alternative/0'
 <adverb list items bnf empty>
 ::=
 <adverb item bnf empty>
 *
+name
+=>
+'adverb list items bnf empty/0'
 <adverb list items bnf quantified>
 ::=
 <adverb item bnf quantified>
 *
+name
+=>
+'adverb list items bnf quantified/0'
 <adverb list items match alternative>
 ::=
 <adverb item match alternative>
 *
+name
+=>
+'adverb list items match alternative/0'
 <adverb list items match empty>
 ::=
 <adverb item match empty>
 *
+name
+=>
+'adverb list items match empty/0'
 <adverb list items match quantified>
 ::=
 <adverb item match quantified>
 *
+name
+=>
+'adverb list items match quantified/0'
 <adverb item default>
 ::=
 action
+name
+=>
+'adverb item default/0'
 |
 <null adverb>
+name
+=>
+'adverb item default/1'
 <adverb item discard>
 ::=
 <event specification>
+name
+=>
+'adverb item discard/0'
 |
 <null adverb>
+name
+=>
+'adverb item discard/1'
 <adverb item lexeme>
 ::=
 <event specification>
+name
+=>
+'adverb item lexeme/0'
 |
 <latm specification>
+name
+=>
+'adverb item lexeme/1'
 |
 <priority specification>
+name
+=>
+'adverb item lexeme/2'
 |
 <pause specification>
+name
+=>
+'adverb item lexeme/3'
 |
 <null adverb>
+name
+=>
+'adverb item lexeme/4'
 <adverb item discard default>
 ::=
 <event specification>
+name
+=>
+'adverb item discard default/0'
 |
 <null adverb>
+name
+=>
+'adverb item discard default/1'
 <adverb item lexeme default>
 ::=
 action
+name
+=>
+'adverb item lexeme default/0'
 |
 <latm specification>
+name
+=>
+'adverb item lexeme default/1'
 |
 <null adverb>
+name
+=>
+'adverb item lexeme default/2'
 <adverb item bnf alternative>
 ::=
 action
+name
+=>
+'adverb item bnf alternative/0'
 |
 <left association>
+name
+=>
+'adverb item bnf alternative/1'
 |
 <right association>
+name
+=>
+'adverb item bnf alternative/2'
 |
 <group association>
+name
+=>
+'adverb item bnf alternative/3'
 |
 naming
+name
+=>
+'adverb item bnf alternative/4'
 |
 <null adverb>
+name
+=>
+'adverb item bnf alternative/5'
 <adverb item bnf empty>
 ::=
 action
+name
+=>
+'adverb item bnf empty/0'
 |
 <left association>
+name
+=>
+'adverb item bnf empty/1'
 |
 <right association>
+name
+=>
+'adverb item bnf empty/2'
 |
 <group association>
+name
+=>
+'adverb item bnf empty/3'
 |
 naming
+name
+=>
+'adverb item bnf empty/4'
 |
 <null adverb>
+name
+=>
+'adverb item bnf empty/5'
 <adverb item bnf quantified>
 ::=
 action
+name
+=>
+'adverb item bnf quantified/0'
 |
 <separator specification>
+name
+=>
+'adverb item bnf quantified/1'
 |
 <proper specification>
+name
+=>
+'adverb item bnf quantified/2'
+|
+naming
+name
+=>
+'adverb item bnf quantified/3'
 |
 <null adverb>
+name
+=>
+'adverb item bnf quantified/4'
 <adverb item match alternative>
 ::=
 naming
+name
+=>
+'adverb item match alternative/0'
 |
 <null adverb>
+name
+=>
+'adverb item match alternative/1'
 <adverb item match empty>
 ::=
 naming
+name
+=>
+'adverb item match empty/0'
 |
 <null adverb>
+name
+=>
+'adverb item match empty/1'
 <adverb item match quantified>
 ::=
 <separator specification>
+name
+=>
+'adverb item match quantified/0'
 |
 <proper specification>
+name
+=>
+'adverb item match quantified/1'
 |
 <null adverb>
+name
+=>
+'adverb item match quantified/2'
 <null adverb>
 ::=
 ','
+name
+=>
+'null adverb/0'
 action
 ::=
 (
@@ -439,6 +770,9 @@ action
 '=>'
 )
 <action name>
+name
+=>
+'action/0'
 <left association>
 ::=
 (
@@ -446,6 +780,9 @@ action
 '=>'
 'left'
 )
+name
+=>
+'left association/0'
 <right association>
 ::=
 (
@@ -453,6 +790,9 @@ action
 '=>'
 'right'
 )
+name
+=>
+'right association/0'
 <group association>
 ::=
 (
@@ -460,6 +800,9 @@ action
 '=>'
 'group'
 )
+name
+=>
+'group association/0'
 <separator specification>
 ::=
 (
@@ -467,6 +810,9 @@ action
 '=>'
 )
 <single symbol>
+name
+=>
+'separator specification/0'
 <proper specification>
 ::=
 (
@@ -474,6 +820,9 @@ action
 '=>'
 )
 boolean
+name
+=>
+'proper specification/0'
 <rank specification>
 ::=
 (
@@ -481,6 +830,9 @@ boolean
 '=>'
 )
 <signed integer>
+name
+=>
+'rank specification/0'
 <priority specification>
 ::=
 (
@@ -488,6 +840,9 @@ boolean
 '=>'
 )
 <signed integer>
+name
+=>
+'priority specification/0'
 <pause specification>
 ::=
 (
@@ -495,6 +850,9 @@ boolean
 '=>'
 )
 <before or after>
+name
+=>
+'pause specification/0'
 <null ranking specification>
 ::=
 (
@@ -502,21 +860,19 @@ boolean
 '=>'
 )
 <null ranking constant>
-<null ranking specification>
-::=
+name
+=>
+'null ranking specification/0'
+|
 (
 'null'
 'rank'
 '=>'
 )
 <null ranking constant>
-<event specification>
-::=
-(
-'event'
-'=>'
-)
-<event initialization>
+name
+=>
+'null ranking specification/1'
 <latm specification>
 ::=
 (
@@ -524,13 +880,29 @@ boolean
 '=>'
 )
 boolean
-<latm specification>
-::=
+name
+=>
+'latm specification/0'
+|
 (
 'latm'
 '=>'
 )
 boolean
+name
+=>
+'latm specification/1'
+<null ranking constant>
+::=
+'low'
+name
+=>
+'null ranking constant/0'
+|
+'high'
+name
+=>
+'null ranking constant/0'
 <naming>
 ::=
 (
@@ -538,61 +910,118 @@ boolean
 '=>'
 )
 <alternative name>
-<null ranking constant>
+name
+=>
+'naming/0'
+<event specification>
 ::=
-'low'
-|
-'high'
+(
+'event'
+'=>'
+)
+<event initialization>
+name
+=>
+'event specification/0'
 <event initialization>
 ::=
 <event name>
 <event initializer>
+name
+=>
+'event initialization/0'
 <event initializer>
 ::=
 (
 '='
 )
 <on or off>
+name
+=>
+'event initializer/0'
+<event initializer>
+::=
+name
+=>
+'event initializer/1'
 <on or off>
 ::=
 'on'
+name
+=>
+'on or off/0'
 |
 'off'
-<event initializer>
-::=
+name
+=>
+'on or off/1'
 <alternative name>
 ::=
 <standard name>
+name
+=>
+'alternative name/0'
 |
 <single quoted name>
+name
+=>
+'alternative name/1'
 <lexer name>
 ::=
 <standard name>
+name
+=>
+'lexer name/0'
 |
 <single quoted name>
+name
+=>
+'lexer name/1'
 <event name>
 ::=
 <standard name>
+name
+=>
+'event name/0'
 |
 <single quoted name>
+name
+=>
+'event name/1'
 |
 <reserved event name>
+name
+=>
+'event name/2'
 lhs
 ::=
 <symbol name>
+name
+=>
+'lhs/0'
 rhs
 ::=
 <rhs primary>
 +
+name
+=>
+'rhs/0'
 <rhs primary>
 ::=
 <single symbol>
-<rhs primary>
-::=
+name
+=>
+'rhs primary/0'
+|
 <single quoted string>
-<rhs primary>
-::=
+name
+=>
+'rhs primary/1'
+|
 <parenthesized rhs primary list>
+name
+=>
+'rhs primary/2'
 <parenthesized rhs primary list>
 ::=
 (
@@ -602,30 +1031,71 @@ rhs
 (
 ')'
 )
+name
+=>
+'parenthesized rhs primary list/0'
 <rhs primary list>
 ::=
 <rhs primary>
 +
+name
+=>
+'rhs primary list/0'
 <single symbol>
 ::=
 symbol
+name
+=>
+'single symbol/0'
 |
 <character class>
+name
+=>
+'single symbol/1'
 symbol
 ::=
 <symbol name>
+name
+=>
+'symbol/0'
 <symbol name>
 ::=
 <bare name>
+name
+=>
+'symbol name/0'
 |
 <bracketed name>
+name
+=>
+'symbol name/1'
 <action name>
 ::=
 <Perl name>
+name
+=>
+'action name/0'
 |
 <reserved action name>
+name
+=>
+'action name/1'
 |
 <array descriptor>
+name
+=>
+'action name/2'
+quantifier
+::=
+'*'
+name
+=>
+'quantifier/0'
+|
+'+'
+name
+=>
+'quantifier/1'
 :discard
 ~
 whitespace
@@ -672,11 +1142,6 @@ whitespace
 <op equal priority>
 ~
 '|'
-quantifier
-::=
-'*'
-|
-'+'
 <before or after>
 ~
 'before'
@@ -910,13 +1375,13 @@ escape
 '\\'
 <plain string char>
 ~
-[^\a\b\f\n\r\t\v\\\u2028\u2029']
+[^\a\b\f\n\r\v\\\u2028\u2029']
 <plain string char without hex>
 ~
-[^[:xdigit:]\a\b\f\n\r\t\v\\\u2028\u2029']
+[^[:xdigit:]\a\b\f\n\r\v\\\u2028\u2029']
 <plain string char without octal>
 ~
-[^0-7\a\b\f\n\r\t\v\\\u2028\u2029']
+[^0-7\a\b\f\n\r\v\\\u2028\u2029']
 <character class>
 ~
 <a character class>

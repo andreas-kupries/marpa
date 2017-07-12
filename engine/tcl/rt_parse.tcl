@@ -139,13 +139,19 @@ oo::class create marpa::engine::tcl::parse {
 	debug.marpa/engine/tcl/parse {}
 	upvar 1 $cv context
 
-	# Expected keys
+	# Expected keys. All are optional. Existence depends on where
+	# exactly a failure occured.
+	#
 	# - l0 at         : current location (offset from start of input)
 	# - l0 char       : current character
 	# - l0 acceptable : list of characters the lexer gate looked for
+	# - l0 stream     : character string preceding the failed character,
+	#                   for the failed lexeme
+	# - l0 report     : list of progress reports for each matched character.
 	# - g1 acceptable : list of lexemes the lexer/parser looked for
+	# - g1 report     : progress report from the parser
 
-	append msg "Parsing failed."
+	append msg "Parsing failed in [dict get $context origin]."
 
 	if {[dict exists $context l0 at]} {
 	    set at [dict get $context l0 at]
@@ -159,14 +165,26 @@ oo::class create marpa::engine::tcl::parse {
 		}
 	    }
 
-	    if {[dict exists $context l0 char]} {
+	    if {[dict exists $context l0 stream]} {
+		set stream [dict get $context l0 stream]
+		if {[dict exists $context l0 char]} {
+		    append stream [dict get $context l0 char]
+		}
+		append msg " after reading '" [char quote cstring $stream] "'"
+	    } elseif {[dict exists $context l0 char]} {
 		append msg " after reading '" [char quote cstring [dict get $context l0 char]] "'"
 	    }
 	    append msg "."
+	} elseif {[dict exists $context l0 stream]} {
+	    set stream [dict get $context l0 stream]
+	    if {[dict exists $context l0 char]} {
+		append stream [dict get $context l0 char]
+	    }
+	    append msg "Stopped after reading '" [char quote cstring $stream] "'."
 	} elseif {[dict exists $context l0 char]} {
 	    append msg "Stopped after reading '" [char quote cstring [dict get $context l0 char]] "'."
 	}
-
+	
 	set chars 0
 	if {[dict exists $context l0 acceptable]} {
 	    append msg " Expected any character in \["
@@ -183,6 +201,27 @@ oo::class create marpa::engine::tcl::parse {
 	    append msg " for any of (" [join [dict get $context g1 acceptable] {, }] ")."
 	} elseif {$chars} {
 	    append msg "."
+	}
+
+	if {[dict exists $context l0 report]} {
+	    append msg "\nL0 Report:\n[lindex [dict get $context l0 report] end]"
+	}
+
+	if {[dict exists $context l0 char] &&
+	    [dict exists $context l0 csym]} {
+	    set ch [char quote cstring [dict get $context l0 char]]
+	    append msg "\nMismatch:\n'$ch' => ([dict get $context l0 csym]) ni"
+	    if {[dict exists $context l0 acceptmap]} {
+		dict for {asym aname} [dict get $context l0 acceptmap] {
+		    append msg "\n [format %4d $asym]: $aname"
+		}
+	    } elseif {[dict exists $context l0 acceptsym]} {
+		append msg " (dict exists $context l0 acceptsym])"
+	    }
+	}
+	
+	if {0&&[dict exists $context g1 report]} {
+	    append msg "\nG1 Report:\n[dict get $context g1 report]"
 	}
 
 	my E $msg SYNTAX $context

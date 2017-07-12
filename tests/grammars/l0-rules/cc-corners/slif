@@ -15,7 +15,7 @@
 
 # Tcl/Marpa goes with:
 # a. -, ] are forbidden as is in the class.
-# b. To enter them \-escape them.
+# b. To enter them escape (octal, unicode, unihex) them.
 
-A ::= [b\-]
-   |  [b\]]
+A ::= [b\55]
+   |  [b\135]

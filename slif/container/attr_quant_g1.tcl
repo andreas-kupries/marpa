@@ -39,6 +39,7 @@ oo::class create marpa::slif::container::attribute::quantified::g1 {
 	marpa C action
 	marpa A   validate [mymethod v-separator]
 	marpa C separator
+	marpa C* name
 
 	next $grammar {*}$spec
 	return

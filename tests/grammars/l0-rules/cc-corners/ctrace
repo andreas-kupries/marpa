@@ -1,13 +1,13 @@
-GC comment definition A 723 1
+GC comment definition A 746 1
 GC comment g1-definition A undef --> {JMP brick}
 
-	GC comment usage @CLS:<-b> 729 5
-	GC comment definition @CLS:<-b> 729 5
+	GC comment usage @CLS:<-b> 752 6
+	GC comment definition @CLS:<-b> 752 6
 	GC comment <literal> @CLS:<-b> undef --> {JMP literal}
 	GC l0 literal @CLS:<-b> charclass 45 98
 
-GC comment definition @LEX:@CLS:<-b> 729 5
-GC comment usage @CLS:<-b> 729 5
+GC comment definition @LEX:@CLS:<-b> 752 6
+GC comment usage @CLS:<-b> 752 6
 GC comment l0-definition @LEX:@CLS:<-b> undef --> {JMP match}
 GC comment :lexeme @LEX:@CLS:<-b> match --> {JMP lexeme make-lexeme}
 GC l0 lexeme @LEX:@CLS:<-b>
@@ -18,13 +18,13 @@ GC comment g1-usage @LEX:@CLS:<-b> lexeme --> NOP
 GC g1 priority-rule A @LEX:@CLS:<-b> 0 action {array values} mask 0
 GC comment g1-definition A brick --> NOP
 
-	GC comment usage {@CLS:<\135b>} 741 5
-	GC comment definition {@CLS:<\135b>} 741 5
+	GC comment usage {@CLS:<\135b>} 765 7
+	GC comment definition {@CLS:<\135b>} 765 7
 	GC comment <literal> {@CLS:<\135b>} undef --> {JMP literal}
 	GC l0 literal {@CLS:<\135b>} charclass 93 98
 
-GC comment definition {@LEX:@CLS:<\135b>} 741 5
-GC comment usage {@CLS:<\135b>} 741 5
+GC comment definition {@LEX:@CLS:<\135b>} 765 7
+GC comment usage {@CLS:<\135b>} 765 7
 GC comment l0-definition {@LEX:@CLS:<\135b>} undef --> {JMP match}
 GC comment :lexeme {@LEX:@CLS:<\135b>} match --> {JMP lexeme make-lexeme}
 GC l0 lexeme {@LEX:@CLS:<\135b>}

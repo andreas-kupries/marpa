@@ -79,10 +79,16 @@ unset max
 
 incr k
 test-grammar-map slif --> id slif base {
-    set input    [fget $slif]
-    set expected [norm-trace [file join $base ctrace]]
-    set kd       [format $format $k]
-
+    set input  [fget $slif]
+    set kd     [format $format $k]
+    set output [file join $base ctrace]
+    if {[string match {*Parsing failed in*} [fget $output]]} {
+	# Keep indentation
+	set expected [string trimright [fget $output]]
+    } else {
+	set expected [norm-trace $output]
+    }
+    
     test marpa-slif-semantics-process-2.${kd}---${id} "process $id /trace" -setup {
 	marpa::slif::semantics create SE [log GC] ; /trace GC
 	marpa::slif::parser    create SP

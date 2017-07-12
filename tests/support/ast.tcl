@@ -17,15 +17,16 @@ proc ast-format {ast {step {  }}} {
 
 proc ast-format-acc {ast indent step} {
     upvar 1 lines lines
-    lassign $ast symbol ord children
 
-    if {[string is integer $symbol]} {
+    if {[string is integer [lindex $ast 0]]} {
 	# Terminal, Data is offset, length, and lexeme value.
 	lappend lines ${indent}@[marpa location show $ast]
 	return
     }
 
-    lappend lines $indent$symbol/$ord
+    lassign $ast symbol children
+
+    lappend lines $indent$symbol
     append indent $step
     foreach child $children {
 	ast-format-acc $child $indent $step

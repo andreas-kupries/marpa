@@ -138,14 +138,13 @@ proc ::marpa::export::tparse::Generate {serial} {
     ExtendRules g1rules $gc g1 $g1symbols
 
     set characters [FormatDict $characters 0] ; # literal: map sym -> char
-    set classes    [FormatDict $classes]    ; # literal: map sym -> spec
-    set discards   [FormatList $discards]   ; # list (sym)
+    set classes    [FormatDict $classes]      ; # literal: map sym -> spec
+    set discards   [FormatList $discards]     ; # list (sym)
     set lexemes    [FormatDict $latm 0]       ; # map (sym -> latm)
-    set l0symbols  [FormatList $l0symbols]  ; # list (sym)
-    set l0rules    [FormatList $l0rules]    ; # list (rule)
-    #   semantics  -                            list (semantic-code)
-    set g1symbols  [FormatList $g1symbols]  ; # list (sym)
-    set g1rules    [FormatList $g1rules]    ; # list (rule)
+    set l0symbols  [FormatList $l0symbols]    ; # list (sym)
+    set l0rules    [FormatList $l0rules]      ; # list (rule)
+    set g1symbols  [FormatList $g1symbols]    ; # list (sym)
+    set g1rules    [FormatList $g1rules 1 0]  ; # list (rule) - specials for semantics and names
 
     $gc destroy
 
@@ -174,8 +173,8 @@ proc ::marpa::export::tparse::ExtendRules {rv gc area symbols} {
     # defined only once.
     set lastaction {}
     
-    foreach sym $symbols {
-	foreach def [$gc $area get $sym] {
+    foreach sym [lsort -dict $symbols] {
+	foreach def [lsort -dict [$gc $area get $sym]] {
 	    Process $def $area $sym
 	}
     }
@@ -226,8 +225,8 @@ proc ::marpa::export::tparse::Name {} {
     upvar 1 name name area area rules rules
     # Ignore for L0, and no name, or empty.
     if {$area ne "g1"} return
-    if {![info exists action]} return
-    if {$action eq {}} return
+    if {![info exists name]} return
+    if {$name eq {}} return
 
     # Declare name for the next rule
     lappend rules [list __ :N $name]
@@ -372,7 +371,7 @@ proc ::marpa::export::tparse::Char {code} {
     return [char quote tcl [format %c $code]]
 }
 
-proc ::marpa::export::tparse::FormatList {words {listify 1}} {
+proc ::marpa::export::tparse::FormatList {words {listify 1} {sort 1}} {
     debug.marpa/export/tparse {}
     # The context of the list in the template is
     # <TAB>return {@@}
@@ -380,14 +379,16 @@ proc ::marpa::export::tparse::FormatList {words {listify 1}} {
     # For proper formatting we have to indent, plus additional leading
     # and trailing newlines.
     set prefix "\n\t    "
-    set words [lsort -dict $words]
+    if {$sort} {
+	set words [lsort -dict $words]
+    }
     if {$listify} {
 	set words [lmap w $words { list $w }]
     }
     return "$prefix[join $words $prefix]\n\t"
 }
 
-proc ::marpa::export::tparse::FormatDict {dict {listify 1}} {
+proc ::marpa::export::tparse::FormatDict {dict {listify 1} {sort 1}} {
     debug.marpa/export/tparse {}
     # The context of the dict in the template is
     # <TAB>return {@@}
@@ -415,7 +416,7 @@ proc ::marpa::export::tparse::FormatDict {dict {listify 1}} {
 			   $maxl $dname $value]
     }
 
-    return [FormatList $lines 0]
+    return [FormatList $lines 0 $sort]
 }
 
 # # ## ### ##### ######## #############
@@ -430,12 +431,10 @@ return
 ##
 # (c) @slif-year@ Grammar @slif-name@ By @slif-writer@
 ##
-##	Tparse (*) Engine for SLIF Grammar "@slif-name@"
+##	rt_parse-derived Engine for grammar "@slif-name@". Lexing + Parsing.
 ##	Generated On @generation-time@
 ##		  By @tool-operator@
 ##		 Via @tool@
-##
-##	(*) Tcl-based Parser
 
 package provide @slif-name@ @slif-version@
 
@@ -450,8 +449,8 @@ package require debug::caller ;#
 
 # # ## ### ##### ######## #############
 
-debug define marpa/grammar/@slif-name@
-debug prefix marpa/grammar/@slif-name@ {[debug caller] | }
+debug define @slif-name-tag@
+debug prefix @slif-name-tag@ {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
@@ -469,43 +468,43 @@ oo::class create @slif-name@ {
     # parser.
     
     method Characters {} {
-	debug.marpa/grammar/@slif-name@
+	debug.@slif-name-tag@
 	# Literals: The directly referenced (allowed) characters.
 	return {@characters@}
     }
     
     method Classes {} {
-	debug.marpa/grammar/@slif-name@
+	debug.@slif-name-tag@
 	# Literals: The character classes in use
 	return {@classes@}
     }
     
     method Lexemes {} {
-	debug.marpa/grammar/@slif-name@
+	debug.@slif-name-tag@
 	# Lexer API: Lexeme symbols (Cannot be terminal). G1 terminals
 	return {@lexemes@}
     }
     
     method Discards {} {
-	debug.marpa/grammar/@slif-name@
+	debug.@slif-name-tag@
 	# Discarded symbols (whitespace)
 	return {@discards@}
     }
     
     method L0.Symbols {} {
 	# Non-lexeme, non-literal symbols
-	debug.marpa/grammar/@slif-name@
+	debug.@slif-name-tag@
 	return {@l0-symbols@}
     }
 
     method L0.Rules {} {
 	# Rules for all symbols but the literals
-	debug.marpa/grammar/@slif-name@
+	debug.@slif-name-tag@
 	return {@l0-rules@}
     }
 
     method L0.Semantics {} {
-	debug.marpa/grammar/@slif-name@
+	debug.@slif-name-tag@
 	# NOTE. This is currently limited to array semantics.
 	# NOTE. No support for command semantics in the lexer yet.
 	return {@l0-semantics@}
@@ -513,18 +512,18 @@ oo::class create @slif-name@ {
 
     method G1.Symbols {} {
 	# Structural symbols
-	debug.marpa/grammar/@slif-name@
+	debug.@slif-name-tag@
 	return {@g1-symbols@}
     }
 
     method G1.Rules {} {
-	# Structural rules
-	debug.marpa/grammar/@slif-name@
+	# Structural rules, including actions, masks, and names
+	debug.@slif-name-tag@
 	return {@g1-rules@}
     }
 
     method Start {} {
-	debug.marpa/grammar/@slif-name@
+	debug.@slif-name-tag@
 	# G1 start symbol
 	return {@start@}
     }

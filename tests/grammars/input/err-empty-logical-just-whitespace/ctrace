@@ -1,2 +1,18 @@
-GC error Parsing\ failed.\ Stopped\ at\ offset\ 20\ after\ reading\ '\\n'.\ Expected\ any\ character\ in\ \[#:\;<\\\\s\\\\wcdeils\\173\]\ while\ looking\ for\ any\ of\ (@lex-:default,\ @lex-:discard,\ @lex-:lexeme,\ @lex-:start,\ @lex-\;,\ @lex-current,\ @lex-discard,\ @lex-event,\ @lex-inaccessible,\ @lex-lexeme,\ @lex-start,\ @lex-\{,\ bare\ name,\ bracketed\ name,\ hash\ comment,\ whitespace).
+GC error {Parsing failed in parser. Stopped at offset 20 after reading '\n'. Expected any character in [#:;<[[:space:]][_[:alnum:]]cdeils\173] while looking for any of (@LEX:@CHR:<\73>, @LEX:@CHR:<\173>, @LEX:@STR:<:default>, @LEX:@STR:<:discard>, @LEX:@STR:<:lexeme>, @LEX:@STR:<:start>, @LEX:@STR:<current>, @LEX:@STR:<discard>, @LEX:@STR:<event>, @LEX:@STR:<inaccessible>, @LEX:@STR:<lexeme>, @LEX:@STR:<start>, bare name, bracketed name, hash comment, whitespace).
+Mismatch:
+'\n' => (58 60 63) ni
+    0: '#'
+    7: ':'
+    8: '<'
+   14: 'c'
+   15: 'd'
+   16: 'e'
+   20: 'i'
+   22: 'l'
+   28: 's'
+   39: ';'
+   43: '\173'
+   59: [_[:alnum:]]
+   63: [[:space:]]}
+
 

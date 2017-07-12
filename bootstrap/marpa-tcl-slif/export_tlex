@@ -6,12 +6,10 @@
 ##
 # (c) <Year> Grammar <Name> By <Writer>
 ##
-##	TLex (*) Engine for SLIF Grammar "<Name>"
+##	rt_lex-derived Engine for grammar "<Name>". Lexing only.
 ##	Generated On <GenerationTime>
 ##		  By <Operator>
 ##		 Via <Tool>
-##
-##	(*) Tcl-based Lexer-only
 
 package provide <Name> <Version>
 
@@ -100,26 +98,26 @@ oo::class create <Name> {
 	debug.marpa/grammar/<Name>
 	# Literals: The character classes in use
 	return {
-	    @CLS:<+->                                          {[+\055]}
-	    @CLS:<A-Za-z>                                      {[A-Za-z]}
-	    @RAN:<01>                                          {[01]}
-	    @RAN:<03>                                          {[0-3]}
-	    @RAN:<07>                                          {[0-7]}
-	    {@^CLS:<\7-\r'0-7\134\u2028-\u2029>}               {[^\007-\r'0-7\134\u2028\u2029]}
-	    {@^CLS:<\7-\r'\134\u2028-\u2029>}                  {[^\007-\r'\134\u2028\u2029]}
-	    {@^CLS:<\7-\r'\134\u2028-\u2029[:xdigit:]>}        {[^\007-\r'\134\u2028\u2029[:xdigit:]]}
-	    {@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>}          {[^\007-\r\0550-7\134\135\u2028\u2029]}
-	    {@^CLS:<\7-\r-\134-\135\u2028-\u2029>}             {[^\007-\r\055\134\135\u2028\u2029]}
-	    {@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>}   {[^\007-\r\055\134\135\u2028\u2029[:xdigit:]]}
-	    {@^CLS:<\n-\r\u2028-\u2029>}                       {[^\n-\r\u2028\u2029]}
-	    {@CLS:<\134a-bfnrtv>}                              {[\134abfnrtv]}
-	    {@CLS:<\n-\r\u2028-\u2029>}                        {[\n-\r\u2028\u2029]}
-	    {@CLS:<_[:alnum:]>}                                {[_[:alnum:]]}
-	    {@CLS:<_[:alnum:][:space:]>}                       {[_[:alnum:][:space:]]}
-	    {@NCC:<[:alnum:]>}                                 {[[:alnum:]]}
-	    {@NCC:<[:digit:]>}                                 {[[:digit:]]}
-	    {@NCC:<[:space:]>}                                 {[[:space:]]}
-	    {@NCC:<[:xdigit:]>}                                {[[:xdigit:]]}
+	    @CLS:<+->                                           {[+\055]}
+	    @CLS:<A-Za-z>                                       {[A-Za-z]}
+	    @RAN:<01>                                           {[01]}
+	    @RAN:<03>                                           {[0-3]}
+	    @RAN:<07>                                           {[0-7]}
+	    {@^CLS:<\7-\10\n-\r'0-7\134\u2028-\u2029>}          {[^\007\10\n-\r'0-7\134\u2028\u2029]}
+	    {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029>}             {[^\007\10\n-\r'\134\u2028\u2029]}
+	    {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]>}   {[^\007\10\n-\r'\134\u2028\u2029[:xdigit:]]}
+	    {@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>}           {[^\007-\r\0550-7\134\135\u2028\u2029]}
+	    {@^CLS:<\7-\r-\134-\135\u2028-\u2029>}              {[^\007-\r\055\134\135\u2028\u2029]}
+	    {@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>}    {[^\007-\r\055\134\135\u2028\u2029[:xdigit:]]}
+	    {@^CLS:<\n-\r\u2028-\u2029>}                        {[^\n-\r\u2028\u2029]}
+	    {@CLS:<\134a-bfnrtv>}                               {[\134abfnrtv]}
+	    {@CLS:<\n-\r\u2028-\u2029>}                         {[\n-\r\u2028\u2029]}
+	    {@CLS:<_[:alnum:]>}                                 {[_[:alnum:]]}
+	    {@CLS:<_[:alnum:][:space:]>}                        {[_[:alnum:][:space:]]}
+	    {@NCC:<[:alnum:]>}                                  {[[:alnum:]]}
+	    {@NCC:<[:digit:]>}                                  {[[:digit:]]}
+	    {@NCC:<[:space:]>}                                  {[[:space:]]}
+	    {@NCC:<[:xdigit:]>}                                 {[[:xdigit:]]}
 	}
     }
     
@@ -557,9 +555,9 @@ oo::class create <Name> {
 	    {{plain cc element without octal} := {posix char class} {nullable cc}}
 	    {{plain cc element} := {plain cc char} {cc range completion}}
 	    {{plain cc element} := {posix char class} {nullable cc}}
-	    {{plain string char without hex} := {@^CLS:<\7-\r'\134\u2028-\u2029[:xdigit:]>}}
-	    {{plain string char without octal} := {@^CLS:<\7-\r'0-7\134\u2028-\u2029>}}
-	    {{plain string char} := {@^CLS:<\7-\r'\134\u2028-\u2029>}}
+	    {{plain string char without hex} := {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]>}}
+	    {{plain string char without octal} := {@^CLS:<\7-\10\n-\r'0-7\134\u2028-\u2029>}}
+	    {{plain string char} := {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029>}}
 	    {{posix char class name} + {@NCC:<[:alnum:]>}}
 	    {{posix char class} := {@STR:<\133:>} {posix char class name} {@STR:<:\135>}}
 	    {{reserved action name} := {double colon} {one or more word characters}}
@@ -602,4 +600,3 @@ oo::class create <Name> {
 
 # # ## ### ##### ######## #############
 return
-

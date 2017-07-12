@@ -137,99 +137,6 @@ oo::class create marpa::slif::semantics {
 	link {G1Event G1Event} ;# Adverb processing for g1 parse events
 	link {E       ERR}
 	link {LOCFMT  LOCFMT}
-
-	# Dispatch for symbols through their ordinals.  See if we can
-	# make this temporary via `name`ing in the meta grammar.
-	foreach m {
-	    action
-	    lhs
-	    naming
-	    quantifier
-	    rhs
-	    statement
-	    statements
-	    symbol
-	    {action name}
-	    {adverb item bnf alternative}
-	    {adverb item bnf empty}
-	    {adverb item bnf quantified}
-	    {adverb item default}
-	    {adverb item discard default}
-	    {adverb item discard}
-	    {adverb item lexeme default}
-	    {adverb item lexeme}
-	    {adverb item match alternative}
-	    {adverb item match empty}
-	    {adverb item match quantified}
-	    {adverb item match quantified}
-	    {adverb list bnf alternative}
-	    {adverb list bnf empty}
-	    {adverb list bnf quantified}
-	    {adverb list default}
-	    {adverb list discard default}
-	    {adverb list discard}
-	    {adverb list items bnf alternative}
-	    {adverb list items bnf empty}
-	    {adverb list items bnf quantified}
-	    {adverb list items default}
-	    {adverb list items discard default}
-	    {adverb list items discard}
-	    {adverb list items lexeme default}
-	    {adverb list items lexeme}
-	    {adverb list items match alternative}
-	    {adverb list items match empty}
-	    {adverb list items match quantified}
-	    {adverb list lexeme default}
-	    {adverb list lexeme}
-	    {adverb list match alternative}
-	    {adverb list match empty}
-	    {adverb list match quantified}
-	    {alternative bnf}
-	    {alternative match}
-	    {alternative name}
-	    {alternatives bnf}
-	    {alternatives match}
-	    {completion event declaration}
-	    {default rule}
-	    {discard default statement}
-	    {discard rule}
-	    {empty rule}
-	    {event initialization}
-	    {event initializer}
-	    {event name}
-	    {event specification}
-	    {group association}
-	    {inaccessible statement}
-	    {inaccessible treatment}
-	    {latm specification}
-	    {left association}
-	    {lexeme default statement}
-	    {lexeme rule}
-	    {null ranking constant}
-	    {null ranking specification}
-	    {null statement}
-	    {nulled event declaration}
-	    {on or off}
-	    {parenthesized rhs primary list}
-	    {pause specification}
-	    {prediction event declaration}
-	    {priorities bnf}
-	    {priorities match}
-	    {priority rule}
-	    {priority specification}
-	    {proper specification}
-	    {quantified rule}
-	    {rhs primary list}
-	    {rhs primary}
-	    {right association}
-	    {separator specification}
-	    {single symbol}
-	    {start rule}
-	    {statement group}
-	    {symbol name}
-	} {
-	    oo::objdefine [self] forward $m my ORD $m       
-	}
     }
 
     method process {ast} {
@@ -263,8 +170,6 @@ oo::class create marpa::slif::semantics {
 	my destroy
 	return
     }
-
-    method ORD {m ord children} { my $m/$ord $children }
     
     # # ## ### ##### ######## #############
     ## AST processing methods
@@ -847,7 +752,8 @@ oo::class create marpa::slif::semantics {
     method {adverb item bnf quantified/0} {children} { FIRST } ;# action
     method {adverb item bnf quantified/1} {children} { FIRST } ;# separator
     method {adverb item bnf quantified/2} {children} { FIRST } ;# proper
-    method {adverb item bnf quantified/3} {children} { FIRST } ;# null
+    method {adverb item bnf quantified/3} {children} { FIRST } ;# naming
+    method {adverb item bnf quantified/4} {children} { FIRST } ;# null
 
     method {adverb item match alternative/0} {children} { FIRST } ;# naming
     method {adverb item match alternative/1} {children} { FIRST } ;# null

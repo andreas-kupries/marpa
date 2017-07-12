@@ -564,7 +564,8 @@ test marpa-gate-3.4.0 {enter, unable to handle symbol} -setup {
 } -cleanup {
     GATE destroy
     logged ; lexed
-} -returnCodes error -result {FAIL (l0 {at {} char X acceptable C})}
+} -returnCodes error -result {FAIL (origin gate l0 {at {} char X csym 1 acceptable C acceptsym 0 acceptmap {0 'C'}})}
+# TODO ^ might have to sort the dict and sub-dict for canonical form and comparison.
 
 test marpa-gate-3.5.0 {enter, during lexing, regated} -setup {
     marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]

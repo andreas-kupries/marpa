@@ -339,6 +339,7 @@ oo::class create marpa::lexer {
 	upvar 1 $cv context
 
 	Gate get-context context
+	dict set context origin lexer
 	my ExtendContext context
 	return
     }
@@ -625,6 +626,20 @@ oo::class create marpa::lexer {
 	dict set context g1 acceptable [lsort -dict [lmap s [my 2Name [my FromParser [lsort -unique [concat $myacceptable $myalways]]]] {
 	    string map {ACS: {}} $s
 	}]]
+
+	# Further extend the context with a report of the active rules
+	# during the current match attempt, and the precending
+	# characters.
+	
+	oo::objdefine [self] mixin marpa::engine::debug
+	set max [RECCE latest-earley-set]
+	set rep {}
+	for {set k 0} {$k <= $max} {incr k} {
+	    lappend rep [my progress-report $k]
+	}
+	dict set context l0 report $rep
+	dict set context l0 stream $mylexeme
+	dict set context l0 latest $max
 	return
     }
 
