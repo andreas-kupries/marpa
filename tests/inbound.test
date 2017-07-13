@@ -25,7 +25,7 @@ oo::define marpa::inbound mixin marpa::inbound::sequencer
 kt source support/common.tcl
 
 # # ## ### ##### ######## ############# #####################
-## 1 constructor/2 (semstore postprocessor)
+## 1 constructor/2 (postprocessor)
 ## 2 enter/1       (string)
 ## 3 read/1        (channel)
 ## 4 eof/0         ()
@@ -53,18 +53,14 @@ kt source support/common.tcl
 
 test marpa-inbound-1.0.0 {constructor, wrong args, not enough} -body {
     marpa::inbound new
-} -returnCodes error -result {wrong # args: should be "marpa::inbound new semstore postprocessor"}
+} -returnCodes error -result {wrong # args: should be "marpa::inbound new postprocessor"}
 
-test marpa-inbound-1.0.1 {constructor, wrong args, not enough} -body {
-    marpa::inbound new STORE
-} -returnCodes error -result {wrong # args: should be "marpa::inbound new semstore postprocessor"}
-
-test marpa-inbound-1.0.2 {constructor, wrong args, too many} -body {
-    marpa::inbound new STORE GATE X
-} -returnCodes error -result {wrong # args: should be "marpa::inbound new semstore postprocessor"}
+test marpa-inbound-1.0.1 {constructor, wrong args, too many} -body {
+    marpa::inbound new GATE X
+} -returnCodes error -result {wrong # args: should be "marpa::inbound new postprocessor"}
 
 test marpa-inbound-1.1 {constructor, initial state} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
 } -body {
     list [IN location?] [logged]
 } -cleanup {
@@ -75,7 +71,7 @@ test marpa-inbound-1.1 {constructor, initial state} -setup {
 ## eof - wrong args, state (reject enter/read/eof after 1st call)
 
 test marpa-inbound-3.0 {eof, wrong args, too many} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
 } -body {
     IN eof X
 } -cleanup {
@@ -84,7 +80,7 @@ test marpa-inbound-3.0 {eof, wrong args, too many} -setup {
 } -returnCodes error -result {wrong # args: should be "IN eof"}
 
 test marpa-inbound-3.1 {eof, results, external calls} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
 } -body {
     # eof is reported to the postprocessor, only.
     list [IN eof] [logged]
@@ -96,7 +92,7 @@ test marpa-inbound-3.1 {eof, results, external calls} -setup {
 }}
 
 test marpa-inbound-3.2.0 {eof, post-forbids eof} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
     IN eof
 } -body {
 IN eof
@@ -106,7 +102,7 @@ IN eof
 } -returnCodes error -result {Unable to process input after EOF}
 
 test marpa-inbound-3.2.1 {eof, post-forbids enter} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
     IN eof
 } -body {
     IN enter something
@@ -116,7 +112,7 @@ test marpa-inbound-3.2.1 {eof, post-forbids enter} -setup {
 } -returnCodes error -result {Unable to process input after EOF}
 
 test marpa-inbound-3.2.2 {eof, post-forbids read} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
     IN eof
 } -body {
     IN read FAKE-CHAN
@@ -126,7 +122,7 @@ test marpa-inbound-3.2.2 {eof, post-forbids read} -setup {
 } -returnCodes error -result {Unable to process input after EOF}
 
 test marpa-inbound-3.2.3 {eof, post-allows location?} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
     IN eof
 } -body {
     IN location?
@@ -139,7 +135,7 @@ test marpa-inbound-3.2.3 {eof, post-allows location?} -setup {
 ## enter - wrong args, state changes, call sequences
 
 test marpa-inbound-4.0.0 {enter, wrong args, not enough} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
 } -body {
     IN enter
 } -cleanup {
@@ -148,7 +144,7 @@ test marpa-inbound-4.0.0 {enter, wrong args, not enough} -setup {
 } -returnCodes error -result {wrong # args: should be "IN enter string"}
 
 test marpa-inbound-4.0.1 {enter, wrong args, too many} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
 } -body {
     IN enter STRING X
 } -cleanup {
@@ -157,28 +153,22 @@ test marpa-inbound-4.0.1 {enter, wrong args, too many} -setup {
 } -returnCodes error -result {wrong # args: should be "IN enter string"}
 
 test marpa-inbound-4.1.0 {enter, results, state changes, external calls} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
 } -body {
     list [IN enter FOO] [IN location?] [logged]
 } -cleanup {
     IN destroy
 } -result {{} 2 {
-  STOR C {put {0 0 F}}
-  STOR R {put {0 0 F}} = {}
-  GATE C {enter F {}}
-  GATE R {enter F {}} = {}
-  STOR C {put {1 1 O}}
-  STOR R {put {1 1 O}} = {}
-  GATE C {enter O {}}
-  GATE R {enter O {}} = {}
-  STOR C {put {2 2 O}}
-  STOR R {put {2 2 O}} = {}
-  GATE C {enter O {}}
-  GATE R {enter O {}} = {}
+  GATE C {enter F 0}
+  GATE R {enter F 0} = {}
+  GATE C {enter O 1}
+  GATE R {enter O 1} = {}
+  GATE C {enter O 2}
+  GATE R {enter O 2} = {}
 }}
 
 test marpa-inbound-4.1.1 {enter nothing, results, state changes, external calls} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
 } -body {
     list [IN enter {}] [IN location?] [logged]
 } -cleanup {
@@ -186,7 +176,7 @@ test marpa-inbound-4.1.1 {enter nothing, results, state changes, external calls}
 } -result {{} -1 {}}
 
 test marpa-inbound-4.2.0 {enter, post-allows enter} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
     IN enter {}
 } -body {
     IN enter {}
@@ -196,7 +186,7 @@ test marpa-inbound-4.2.0 {enter, post-allows enter} -setup {
 } -result {}
 
 test marpa-inbound-4.2.1 {enter, post-allows location?} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
     IN enter {}
 } -body {
     IN location?
@@ -206,7 +196,7 @@ test marpa-inbound-4.2.1 {enter, post-allows location?} -setup {
 } -result -1
 
 test marpa-inbound-4.2.2 {enter, post-allows eof} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
     IN enter {}
 } -body {
     IN eof
@@ -217,7 +207,7 @@ test marpa-inbound-4.2.2 {enter, post-allows eof} -setup {
 
 test marpa-inbound-4.2.3 {enter, post-allows eof} -setup {
     set chan [tcl::chan::string {}]
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
     IN enter {}
 } -body {
     IN read $chan
@@ -231,7 +221,7 @@ test marpa-inbound-4.2.3 {enter, post-allows eof} -setup {
 ## read - wrong args, state changes, call sequences
 
 test marpa-inbound-5.0.0 {read, wrong args, not enough} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
 } -body {
     IN read
 } -cleanup {
@@ -240,7 +230,7 @@ test marpa-inbound-5.0.0 {read, wrong args, not enough} -setup {
 } -returnCodes error -result {wrong # args: should be "IN read chan"}
 
 test marpa-inbound-5.0.1 {read, wrong args, too many} -setup {
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
 } -body {
     IN read CHAN X
 } -cleanup {
@@ -250,30 +240,24 @@ test marpa-inbound-5.0.1 {read, wrong args, too many} -setup {
 
 test marpa-inbound-5.1.0 {read, results, state changes, external calls} -setup {
     set chan [tcl::chan::string FOO]
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
 } -body {
     list [IN read $chan] [IN location?] [logged]
 } -cleanup {
     IN destroy
     close $chan
 } -result {{} 2 {
-  STOR C {put {0 0 F}}
-  STOR R {put {0 0 F}} = {}
-  GATE C {enter F {}}
-  GATE R {enter F {}} = {}
-  STOR C {put {1 1 O}}
-  STOR R {put {1 1 O}} = {}
-  GATE C {enter O {}}
-  GATE R {enter O {}} = {}
-  STOR C {put {2 2 O}}
-  STOR R {put {2 2 O}} = {}
-  GATE C {enter O {}}
-  GATE R {enter O {}} = {}
+  GATE C {enter F 0}
+  GATE R {enter F 0} = {}
+  GATE C {enter O 1}
+  GATE R {enter O 1} = {}
+  GATE C {enter O 2}
+  GATE R {enter O 2} = {}
 }}
 
 test marpa-inbound-5.1.1 {read nothing, results, state changes, external calls} -setup {
     set chan [tcl::chan::string {}]
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
 } -body {
     list [IN read $chan] [IN location?] [logged]
 } -cleanup {
@@ -283,7 +267,7 @@ test marpa-inbound-5.1.1 {read nothing, results, state changes, external calls} 
 
 test marpa-inbound-5.2.0 {read, post-allows enter} -setup {
     set chan [tcl::chan::string {}]
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
     IN read $chan
 } -body {
     IN enter {}
@@ -295,7 +279,7 @@ test marpa-inbound-5.2.0 {read, post-allows enter} -setup {
 
 test marpa-inbound-5.2.1 {read, post-allows location?} -setup {
     set chan [tcl::chan::string {}]
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
     IN read $chan
 } -body {
     IN location?
@@ -307,7 +291,7 @@ test marpa-inbound-5.2.1 {read, post-allows location?} -setup {
 
 test marpa-inbound-5.2.2 {read, post-allows eof} -setup {
     set chan [tcl::chan::string {}]
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
     IN read $chan
 } -body {
     IN eof
@@ -319,7 +303,7 @@ test marpa-inbound-5.2.2 {read, post-allows eof} -setup {
 
 test marpa-inbound-5.2.3 {read, post-allows enter} -setup {
     set chan [tcl::chan::string {}]
-    marpa::inbound create IN [log STOR] [log GATE]
+    marpa::inbound create IN [log GATE]
     IN read $chan
 } -body {
     IN enter {}

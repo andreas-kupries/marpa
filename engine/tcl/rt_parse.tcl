@@ -45,15 +45,15 @@ oo::class create marpa::engine::tcl::parse {
 	marpa::semcore  create SEMA  STORE
 	marpa::parser   create PARSE STORE SEMA [self]
 	marpa::lexer    create LEX   STORE PARSE
-	marpa::gate     create GATE  STORE LEX
-	marpa::inbound  create IN    STORE GATE
+	marpa::gate     create GATE  LEX
+	marpa::inbound  create IN    GATE
 
 	#           v-----+  v-----+                    #
 	# IN --> GATE --> LEX ---> PARSE --> self       #
-	#  \      \        \        \ \                 #
-	#   \      \        \        \ \-> SEMA         #
-	#    \      \        \        \     \           #
-	#     \----> \------> \------> \---> \--> STORE #
+	#                  \        \ \                 #
+	#                   \        \ \-> SEMA         #
+	#                    \        \     \           #
+	#                     \------> \---> \--> STORE #
 
 	# IN - Nothing to configure
 	SEMA  add-rule @default {marpa::semstd::builtin {name values}}

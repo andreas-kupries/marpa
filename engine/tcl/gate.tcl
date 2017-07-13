@@ -94,9 +94,8 @@ oo::class create marpa::gate {
     variable myaccmemo
     variable myacceptable ;# sym -> .
     variable myhistory    ;# Entered characters and semantic values.
-
     variable mylastchar   ;# last character "enter"ed into the gate
-    variable mylastvalue  ;# Sem value for last character, effectively its location
+    variable mylastloc    ;# and its location
 
     # # -- --- ----- -------- -------------
     ## Configuration
@@ -128,18 +127,17 @@ oo::class create marpa::gate {
     # # -- --- ----- -------- -------------
     ## Lifecycle
 
-    constructor {semstore postprocessor} {
+    constructor {postprocessor} {
 	method-benchmarking
 	debug.marpa/gate {[debug caller] | }
 
-	marpa::import $semstore      Store ;# Failure handling and debugging.
 	marpa::import $postprocessor Forward
 
 	# Dynamic state for processing
 	set mylastchar   {} ;# char/loc before anything was entered
-	set mylastvalue  [Store put {-1 -1 {}}]
-	set myhistory    {} ;# queue of processed characters
-	set myaccmemo {}
+	set mylastloc    -1 ;#
+	set myhistory    {} ;# queue of processed characters (and locations)
+	set myaccmemo    {}
 	set myacceptable {} ;# set of expected/allowed symbols,
 			     # initially none
 
@@ -181,25 +179,25 @@ oo::class create marpa::gate {
 
 	if {0&&[llength $myhistory]} {
 	    # Pull location information out of the history.
-	    lassign [lrange $myhistory end-1 end] char value
+	    lassign [lrange $myhistory end-1 end] char location
 	} else {
 	    # When history is not available try to pull information
 	    # from the last character which went into the gate
 	    # instead, as a last fallback.
-	    set char $mylastchar
-	    set value $mylastvalue
+	    set char     $mylastchar
+	    set location $mylastloc
 	}
 
-	my ExtendContext context $char $value
+	my ExtendContext context $char $location
 	return
     }
 
-    method enter {char value} {
-	debug.marpa/gate {[debug caller 1] | See '[char quote cstring $char]' ([marpa location show [Store get $value]])}
-	debug.marpa/gate/stream {'[char quote cstring $char]'	 @ [marpa location show [Store get $value]]}
+    method enter {char location} {
+	debug.marpa/gate {[debug caller 1] | See '[char quote cstring $char]' (@$location)}
+	debug.marpa/gate/stream {'[char quote cstring $char]'	@ $location}
 
-	set mylastchar  $char
-	set mylastvalue $value
+	set mylastchar $char
+	set mylastloc  $location
 
 	# Trick for lazy setup of the gate datastructures in the face
 	# of unknown characters. These can only exist as part of some
@@ -249,11 +247,12 @@ oo::class create marpa::gate {
 		#     because that is predicated on myacceptable,
 		#     which may have changed if the char is re-entered
 		#     later via 'redo'.
-		lappend myhistory $char $value
+		lappend myhistory $char $location
 
 		# ... Let the postprocessor deal with any ambiguity
 		debug.marpa/gate {[debug caller 1] | push ($match)}
-		Forward enter $match $value
+		# sub lexer gate sv - char + lcoation
+		Forward enter $match $char $location
 
 		# We are good.
 		return
@@ -265,7 +264,7 @@ oo::class create marpa::gate {
 	    # character may be accepted. If we flushed already, then
 	    # we have to error out, there is no forward from here.
 	    if {$flushed} {
-		my ExtendContext context $char $value
+		my ExtendContext context $char $location
 		Forward fail context
 
 		# Note: This method must not return, but throw an
@@ -280,7 +279,7 @@ oo::class create marpa::gate {
 	    incr flushed
 	    debug.marpa/gate {[debug caller 1] | push ($match)}
 
-	    Forward enter $match $value
+	    Forward enter $match $char $location
 	    # Loop to retry
 	}
 	return
@@ -321,7 +320,7 @@ oo::class create marpa::gate {
 	return
     }
 
-    method ExtendContext {cv char value} {
+    method ExtendContext {cv char location} {
 	debug.marpa/gate {[debug caller] | }
 	upvar 1 $cv context
 
@@ -330,9 +329,8 @@ oo::class create marpa::gate {
 	    dict set context origin gate
 	}
 	
-	if {$value ne {}} {
-	    lassign [Store get $value] startoffset __ __
-	    dict set context l0 at $startoffset
+	if {$location ne {}} {
+	    dict set context l0 at $location
 	}
 	if {$char ne {}} {
 	    dict set context l0 char $char
@@ -558,7 +556,7 @@ oo::class create marpa::gate::sequencer {
 	my __On   {made config gated regated} --> done
     }
 
-    method enter {char value} {
+    method enter {char location} {
 	my __Init
 	my __Fail made              ! "Setup missing"      SETUP MISSING
 	my __Fail {config data}     ! "Gate missing"       GATE MISSING
@@ -567,7 +565,7 @@ oo::class create marpa::gate::sequencer {
 	# proper state for the callbacks from the postprocessor
 	# (i.e. acceptable, and redo)
 	my __On   {gated regated} --> data
-	next $char $value
+	next $char $location
     }
 
     method acceptable {syms} {

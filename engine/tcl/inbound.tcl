@@ -8,8 +8,7 @@
 # First stream processor for characters to parse. Generates basic
 # token information (location, per character) and then drives the rest
 # of the chain (instance of "marpa::gate" or API compatible) with
-# them. The store object is expected to be an instance of
-# "marpa::tvstore" or API compatible.
+# them.
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -42,45 +41,43 @@ oo::class create marpa::inbound {
     #
     # * Supplication of text via `enter`
     # ```
-    # Driver  Inbound SemStore        Postprocessor
-    # |               |               |
-    # +-cons--\       |               |
-    # |       |       |               |
-    # /       /       /               /
-    # |       |       |               |
-    # +-enter->       |               |
-    # |       +-put--->               |
-    # |       |       |               |
-    # |       +-enter-)--------------->
-    # |       |       |               |
-    # /       /       /               /
-    # |       |       |               |
-    # +-eof--->       |               |
-    # |       +-eof------------------->
-    # |       |       |               |
+    # Driver  Inbound  Postprocessor
+    # |                |
+    # +-cons--\        |
+    # |       |        |
+    # /       /        /
+    # |       |        |
+    # +-enter->        |
+    # |       |        |
+    # |       +-enter-->
+    # |       |        |
+    # /       /        /
+    # |       |        |
+    # +-eof--->        |
+    # |       +-eof---->
+    # |       |        |
     # ```
     #
     # * Supplication of text via `read`
     # ```
-    # Driver  Inbound SemStore        Postprocessor
-    # |               |               |
-    # +-cons--\       |               |
-    # |       |       |               |
-    # /       /       /               /
-    # |       |       |               |
-    # +-read-->       |               |
-    # |       --\     |               |
-    # |       | enter |               |
-    # |       <-/     |               |
-    # |       +-put--->               |
-    # |       |       |               |
-    # |       +-enter-)--------------->
-    # |       |       |               |
-    # /       /       /               /
-    # |       |       |               |
-    # +-eof--->       |               |
-    # |       +-eof---)--------------->
-    # |       |       |               |
+    # Driver  Inbound   Postprocessor
+    # |                 |
+    # +-cons--\         |
+    # |       |         |
+    # /       /         /
+    # |       |         |
+    # +-read-->         |
+    # |       --\       |
+    # |       | enter   |
+    # |       <-/       |
+    # |       |         |
+    # |       +-enter--->
+    # |       |         |
+    # /       /         /
+    # |       |         |
+    # +-eof--->         |
+    # |       +-eof----->
+    # |       |         |
     # ```
     #
     # __Note__, both `enter` and `read` can be mixed between
@@ -92,11 +89,11 @@ oo::class create marpa::inbound {
     variable mylocation ; # Input location
 
     # API:
-    # 1 cons  (semstore, postprocessor) - Create, link
-    # 2 enter (string)                  - Incoming characters via string
-    # 3 read  (chan)                    - Incoming characters via channel
-    # 4 eof   ()                        - End of input signal
-    #   location? ()                    - Retrieve current location
+    # 1 cons  (postprocessor) - Create, link
+    # 2 enter (string)        - Incoming characters via string
+    # 3 read  (chan)          - Incoming characters via channel
+    # 4 eof   ()              - End of input signal
+    #   location? ()          - Retrieve current location
     ##
     # Sequence = 1[23]*4
     # See mark <<s>>
@@ -104,10 +101,9 @@ oo::class create marpa::inbound {
     # # -- --- ----- -------- -------------
     ## Lifecycle
 
-    constructor {semstore postprocessor} {
+    constructor {postprocessor} {
 	debug.marpa/inbound {[debug caller] | }
 
-	marpa::import $semstore      Store
 	marpa::import $postprocessor Forward
 
 	set mylocation -1 ; # location (of current character) in
@@ -134,14 +130,11 @@ oo::class create marpa::inbound {
 	    # Count character location (offset in input)
 	    incr mylocation
 
-	    # Generate semantic value for the character
-	    set loc [marpa location atom $mylocation $ch]
-	    set sv  [Store put $loc]
-
+	    # Semantic value is character location (s.a.)
 	    # And push into the pipeline
-	    debug.marpa/inbound {[debug caller 1] | DO '[char quote cstring $ch]' $sv ([marpa location show $loc]) ______}
+	    debug.marpa/inbound {[debug caller 1] | DO '[char quote cstring $ch]' ($mylocation) ______}
 	    debug.marpa/inbound {[debug caller 1] | DO _______________________________________}
-	    Forward enter $ch $sv
+	    Forward enter $ch $mylocation
 	}
 	return
     }

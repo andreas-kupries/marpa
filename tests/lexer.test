@@ -170,7 +170,7 @@ test marpa-lexer-1.2 {constructor, externals} -body {
 test marpa-lexer-1.3.0 {constructor, post-forbidden: enter} -setup {
     marpa::lexer create LEXER [log STO] [log PAR]
 } -body {
-    LEXER enter C V
+    LEXER enter 0 C V
 } -cleanup {
     LEXER destroy
     logged
@@ -616,7 +616,7 @@ test marpa-lexer-8.5.7 {discard, post-forbidden: enter} -setup {
     marpa::lexer create LEXER [log STO] [log PAR]
     GL LEXER
 } -body {
-    LEXER enter C V
+    LEXER enter 0 C V
 } -cleanup {
     LEXER destroy
     logged
@@ -698,7 +698,7 @@ test marpa-lexer-9.2.0 {acceptable, end of lexeme} -setup {
     # @config
     LEXER acceptable {0 1} ;# parser A B
     # @gated
-    LEXER enter 0 1
+    LEXER enter 0 C 1
     # @data (no forward to parser, no acceptable coming back) - fake-parse-nil
 } -body {
     # Explicitly do the 'acceptable' normally coming from the parser
@@ -713,7 +713,7 @@ test marpa-lexer-9.2.1 {acceptable, end of lexeme, sequencing} -setup {
     marpa::lexer create LEXER [log2 STO [set s [fake-store]]] [log2 PAR [fake-parse-nil]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1}
-    LEXER enter 0 1
+    LEXER enter 0 C 1
 } -body {
     LEXER acceptable {0 1}
     LEXER @
@@ -726,7 +726,7 @@ test marpa-lexer-9.2.2 {acceptable, end of lexeme, external} -setup {
     marpa::lexer create LEXER [log2 STO [set s [fake-store]]] [log2 PAR [fake-parse-nil]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1}
-    LEXER enter 0 1
+    LEXER enter 0 C 1
     logclear
 } -body {
     LEXER acceptable {0 1}
@@ -959,7 +959,7 @@ test marpa-lexer-9.5.8 {acceptable, post-eof post-forbidden: enter} -setup {
     LEXER eof
     LEXER acceptable {0 1}
 } -body {
-    LEXER enter 0 1
+    LEXER enter 0 C 1
 } -cleanup {
     LEXER destroy
     logged ; parsed ; stored
@@ -999,25 +999,34 @@ test marpa-lexer-10.0.0 {enter, wrong args, not enough} -setup {
 } -cleanup {
     LEXER destroy
     logged
-} -returnCodes error -result {wrong # args: should be "LEXER enter syms sv"}
+} -returnCodes error -result {wrong # args: should be "LEXER enter syms thechar thelocation"}
 
 test marpa-lexer-10.0.1 {enter, wrong args, not enough} -setup {
     marpa::lexer create LEXER [log STO] [log PAR]
 } -body {
-    LEXER enter CHARS
+    LEXER enter CHARSYM
 } -cleanup {
     LEXER destroy
     logged
-} -returnCodes error -result {wrong # args: should be "LEXER enter syms sv"}
+} -returnCodes error -result {wrong # args: should be "LEXER enter syms thechar thelocation"}
 
-test marpa-lexer-10.0.2 {enter, wrong args, too many} -setup {
+test marpa-lexer-10.0.2 {enter, wrong args, not enough} -setup {
     marpa::lexer create LEXER [log STO] [log PAR]
 } -body {
-    LEXER enter CHARS VALUE X
+    LEXER enter CHARSYM CHAR
 } -cleanup {
     LEXER destroy
     logged
-} -returnCodes error -result {wrong # args: should be "LEXER enter syms sv"}
+} -returnCodes error -result {wrong # args: should be "LEXER enter syms thechar thelocation"}
+
+test marpa-lexer-10.0.3 {enter, wrong args, too many} -setup {
+    marpa::lexer create LEXER [log STO] [log PAR]
+} -body {
+    LEXER enter CHARSYM CHAR VALUE X
+} -cleanup {
+    LEXER destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "LEXER enter syms thechar thelocation"}
 
 # TODO: unable to handle X - undefined character (class)
 
@@ -1028,7 +1037,7 @@ test marpa-lexer-10.1.0 {enter, start lexeme, result} -setup {
     LEXER acceptable {0 1} ;# parser A B
     # @gated
 } -body {
-    LEXER enter 0 1
+    LEXER enter 0 C 1
     # @data (no forward to parser, no acceptable coming back) - fake-parse-nil
 } -cleanup {
     LEXER destroy
@@ -1040,7 +1049,7 @@ test marpa-lexer-10.1.1 {enter, start lexeme, sequencing} -setup {
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1} ;# parser A B
 } -body {
-    LEXER enter 0 1
+    LEXER enter 0 C 1
     LEXER @
 } -cleanup {
     LEXER destroy
@@ -1053,16 +1062,14 @@ test marpa-lexer-10.1.2 {enter, start lexeme, externals} -setup {
     LEXER acceptable {0 1} ;# parser A B
     logclear
 } -body {
-    LEXER enter 0 1
+    LEXER enter 0 C 1
     logged
 } -cleanup {
     LEXER destroy
     parsed ; stored
 } -result {
-  STO C {get 1}
-  STO R {get 1} = {{} {} {}}
-  STO C {put {}}
-  STO R {put {}} = 2
+  STO C {put C}
+  STO R {put C} = 2
   PAR C {enter 0 2}
   PAR R {enter 0 2} = {}
   GATE C {redo 0}
@@ -1075,10 +1082,10 @@ test marpa-lexer-10.2.0 {enter, intra lexeme, result} -setup {
     # @config
     LEXER acceptable {0 1} ;# parser A B
     # @gated
-    LEXER enter 1 1
+    LEXER enter 1 A 1
     # @data (no forward to parser, no acceptable coming back) - fake-parse-nil
 } -body {
-    LEXER enter 2 1
+    LEXER enter 2 B 1
     # @data (no forward to parser, no acceptable coming back) - fake-parse-nil
 } -cleanup {
     LEXER destroy
@@ -1089,9 +1096,9 @@ test marpa-lexer-10.2.1 {enter, intra lexeme, sequencing} -setup {
     marpa::lexer create LEXER [log2 STO [set s [fake-store]]] [log2 PAR [fake-parse-nil]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1} ;# parser A B
-    LEXER enter 1 1
+    LEXER enter 1 A 1
 } -body {
-    LEXER enter 2 1
+    LEXER enter 2 B 1
     LEXER @
 } -cleanup {
     LEXER destroy
@@ -1102,19 +1109,17 @@ test marpa-lexer-10.2.2 {enter, intra lexeme, externals} -setup {
     marpa::lexer create LEXER [log2 STO [set s [fake-store]]] [log2 PAR [fake-parse-nil]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1} ;# parser A B
-    LEXER enter 1 1
+    LEXER enter 1 A 1
     logclear
 } -body {
-    LEXER enter 2 1
+    LEXER enter 2 B 1
     logged
 } -cleanup {
     LEXER destroy
     parsed ; stored
 } -result {
-  STO C {get 1}
-  STO R {get 1} = {{} {} {}}
-  STO C {put {}}
-  STO R {put {}} = 2
+  STO C {put AB}
+  STO R {put AB} = 2
   PAR C {enter 1 2}
   PAR R {enter 1 2} = {}
   GATE C {redo 0}
@@ -1125,7 +1130,7 @@ test marpa-lexer-10.3.0 {enter, intra lexeme, post-forbidden: gate:} -setup {
     marpa::lexer create LEXER [log2 STO [set s [fake-store]]] [log2 PAR [fake-parse-nil]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1} ;# parser A B
-    LEXER enter 1 1
+    LEXER enter 1 A 1
 } -body {
     LEXER gate: X
 } -cleanup {
@@ -1137,7 +1142,7 @@ test marpa-lexer-10.3.1 {enter, intra lexeme, post-forbidden: symbols} -setup {
     marpa::lexer create LEXER [log2 STO [set s [fake-store]]] [log2 PAR [fake-parse-nil]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1} ;# parser A B
-    LEXER enter 1 1
+    LEXER enter 1 A 1
 } -body {
     LEXER symbols {}
 } -cleanup {
@@ -1149,7 +1154,7 @@ test marpa-lexer-10.3.2 {enter, intra lexeme, post-forbidden: export} -setup {
     marpa::lexer create LEXER [log2 STO [set s [fake-store]]] [log2 PAR [fake-parse-nil]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1} ;# parser A B
-    LEXER enter 1 1
+    LEXER enter 1 A 1
 } -body {
     LEXER export {}
 } -cleanup {
@@ -1161,7 +1166,7 @@ test marpa-lexer-10.3.3 {enter, intra lexeme, post-forbidden: action} -setup {
     marpa::lexer create LEXER [log2 STO [set s [fake-store]]] [log2 PAR [fake-parse-nil]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1} ;# parser A B
-    LEXER enter 1 1
+    LEXER enter 1 A 1
 } -body {
     LEXER action {}
 } -cleanup {
@@ -1173,7 +1178,7 @@ test marpa-lexer-10.3.5 {enter, intra lexeme, post-forbidden: rules} -setup {
     marpa::lexer create LEXER [log2 STO [set s [fake-store]]] [log2 PAR [fake-parse-nil]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1} ;# parser A B
-    LEXER enter 1 1
+    LEXER enter 1 A 1
 } -body {
     LEXER rules {}
 } -cleanup {
@@ -1185,7 +1190,7 @@ test marpa-lexer-10.3.6 {enter, intra lexeme, post-forbidden: discard} -setup {
     marpa::lexer create LEXER [log2 STO [set s [fake-store]]] [log2 PAR [fake-parse-nil]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1} ;# parser A B
-    LEXER enter 1 1
+    LEXER enter 1 A 1
 } -body {
     LEXER discard {}
 } -cleanup {
@@ -1197,7 +1202,7 @@ test marpa-lexer-10.3.7 {enter, intra lexeme, post-forbidden: redo} -setup {
     marpa::lexer create LEXER [log2 STO [set s [fake-store]]] [log2 PAR [fake-parse-nil]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1} ;# parser A B
-    LEXER enter 1 1
+    LEXER enter 1 A 1
 } -body {
     LEXER redo 0
 } -cleanup {
@@ -1327,7 +1332,7 @@ test marpa-lexer-11.4.0 {eof, after enter} -setup {
     marpa::lexer create LEXER [log2 STO [set s [fake-store]]] [log2 PAR [fake-parse-nil]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1} ;# parser A B
-    LEXER enter 0 1
+    LEXER enter 0 C 1
 } -body {
     LEXER eof
 } -cleanup {
@@ -1339,7 +1344,7 @@ test marpa-lexer-11.4.1 {eof, after enter, sequencing} -setup {
     marpa::lexer create LEXER [log2 STO [fake-store]] [log2 PAR [fake-parse-nil]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1}
-    LEXER enter 0 1
+    LEXER enter 0 C 1
 } -body {
     LEXER eof
     LEXER @
@@ -1352,7 +1357,7 @@ test marpa-lexer-11.4.2 {eof, after enter, externals} -setup {
     marpa::lexer create LEXER [log2 STO [fake-store]] [log2 PAR [fake-parse-nil]]
     LEXER gate: [log GATE] ; GL1 LEXER
     LEXER acceptable {0 1}
-    LEXER enter 0 1
+    LEXER enter 0 C 1
     logclear
 } -body {
     # eof is reported to parser, only.
@@ -1430,7 +1435,7 @@ test marpa-lexer-11.5.7 {eof, post-forbidden: enter} -setup {
     marpa::lexer create LEXER [log STO] [log PAR]
     LEXER eof
 } -body {
-    LEXER enter 0 1
+    LEXER enter 0 C 1
 } -cleanup {
     LEXER destroy
     logged

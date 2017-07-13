@@ -42,13 +42,13 @@ oo::class create marpa::engine::tcl::lex {
 	
 	marpa::semstore create STORE
 	marpa::lexer    create LEX   STORE [self]
-	marpa::gate     create GATE  STORE LEX
-	marpa::inbound  create IN    STORE GATE
+	marpa::gate     create GATE  LEX
+	marpa::inbound  create IN    GATE
 
 	#           v-----+  v-----+
 	# IN --> GATE --> LEX ---> Self --> output
-	#  \      \       \        \               .
-	#   \----> \-----> \------> \--> STORE
+	#                 \        \               .
+	#                  \------> \--> STORE
 
 	# IN - Nothing to configure
 	GATE def    [my Characters] [my Classes]

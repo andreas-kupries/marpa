@@ -265,14 +265,14 @@ oo::class create marpa::lexer {
 	return
     }
 
-    method enter {syms sv} {
-	debug.marpa/lexer        {[debug caller] | ([my DIds $syms]) @([my DLocation $sv])}
+    method enter {syms thechar thelocation} {
+	# sub-lexer sv = list(char location)
+	debug.marpa/lexer        {[debug caller] | ([my DIds $syms]) @($thelocation)}
 	debug.marpa/lexer/report {[my progress-report-current]}
-	debug.marpa/lexer/stream {([my DIds $syms]) @ [my DLocation $sv]}
+	debug.marpa/lexer/stream {([my DIds $syms]) '[char quote cstring $thechar]' @ $thelocation}
 
-	lassign [Store get $sv] thestart __ thechar
 	if {$mystart eq {}} {
-	    set mystart $thestart
+	    set mystart $thelocation
 	}
 
 	if {![llength $syms]} {
@@ -292,7 +292,7 @@ oo::class create marpa::lexer {
 	append mylexeme $thechar
 	debug.marpa/lexer {[debug caller] | step recce engine}
 	foreach sym $syms {
-	    RECCE alternative $sym $sv 1
+	    RECCE alternative $sym 1 1 ;# FAKE sv for the chars in the lexeme.
 	}
 	
 	try {
@@ -478,7 +478,6 @@ oo::class create marpa::lexer {
 
 	# II. Pull all the valid parses at this location
 	set forest [my Matches]
-
 	debug.marpa/lexer {[debug caller] | Trees:         [llength $forest]}
 
 	# III. Evaluate the parses with the configured semantics,
@@ -664,12 +663,12 @@ oo::class create marpa::lexer {
     method KnownValue {v} {
 	upvar 1 svset svset
 	if {[dict exists $svset $v]} {
-	    set v [dict get $svset $v]
+	    set vid [dict get $svset $v]
 	} else {
-	    set v [Store put $v]
-	    dict set svset $v .
+	    set vid [Store put $v]
+	    dict set svset $v $vid
 	}
-	return $v
+	return $vid
     }
     
     method GetSemanticValue {} {
@@ -845,7 +844,7 @@ oo::class create marpa::lexer::sequencer {
 	my __On done          --> complete
     }
 
-    method enter {syms sv} {
+    method enter {syms thechar thelocation} {
 	my __Init
 	my __Fail made            ! "Setup missing" MISSING SETUP
 	my __Fail config          ! "Gate missing" MISSING GATE
@@ -854,7 +853,7 @@ oo::class create marpa::lexer::sequencer {
 	# proper state for the callback from the postprocessor
 	# (i.e. acceptable)
 	my __On {gated data} --> data
-	next $syms $sv
+	next $syms $thechar $thelocation
     }
 
     ##

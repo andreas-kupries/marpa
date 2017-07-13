@@ -25,7 +25,7 @@ oo::class create Marpa::Testing::FLN {
     variable gate
     variable acc
     method gate: {g} { set gate $g ; return }
-    method enter {c v} {}
+    method enter {s c v} {}
     method eof {} {}
     method symbols {syms} {
 	set i 0
@@ -47,7 +47,7 @@ oo::class create Marpa::Testing::FLI {
     variable gate
     variable acc
     method gate: {g} { set gate $g ; return }
-    method enter {c v} {
+    method enter {s c v} {
 	$gate acceptable $acc
 	return
     }
@@ -72,7 +72,7 @@ oo::class create Marpa::Testing::FLE {
     variable gate
     variable acc
     method gate: {g} { set gate $g ; return }
-    method enter {c v} {
+    method enter {s c v} {
 	$gate acceptable $acc
 	$gate redo 0
 	return
@@ -98,7 +98,7 @@ oo::class create Marpa::Testing::FLX {
     variable gate
     variable acc
     method gate: {g} { set gate $g ; return }
-    method enter {c v} {
+    method enter {s c v} {
 	$gate acceptable $acc
 	return
     }

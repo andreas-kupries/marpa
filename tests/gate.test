@@ -99,20 +99,16 @@ kt source support/fake-lex.tcl
 
 test marpa-gate-1.0.0 {constructor, wrong args, not enough} -body {
     marpa::gate new
-} -returnCodes error -result {wrong # args: should be "marpa::gate new semstore postprocessor"}
-
-test marpa-gate-1.0.1 {constructor, wrong args, not enough} -body {
-    marpa::gate new STORE
-} -returnCodes error -result {wrong # args: should be "marpa::gate new semstore postprocessor"}
+} -returnCodes error -result {wrong # args: should be "marpa::gate new postprocessor"}
 
 test marpa-gate-1.0.1 {constructor, wrong args, too many} -body {
-    marpa::gate new STORE LEX X
-} -returnCodes error -result {wrong # args: should be "marpa::gate new semstore postprocessor"}
+    marpa::gate new LEX X
+} -returnCodes error -result {wrong # args: should be "marpa::gate new postprocessor"}
 
 # No state to query (Hidden: myacceptable, myhistory)
 
 test marpa-gate-1.1 {constructor, sequencing} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE @
 } -cleanup {
@@ -121,19 +117,17 @@ test marpa-gate-1.1 {constructor, sequencing} -setup {
 } -result made
 
 test marpa-gate-1.2 {constructor, externals} -body {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     logged
 } -cleanup {
     GATE destroy
 } -result {
-  STORE C {put {-1 -1 {}}}
-  STORE R {put {-1 -1 {}}} = {}
   LEX C {gate: ::GATE}
   LEX R {gate: ::GATE} = {}
 }
 
 test marpa-gate-1.3.0 {constructor, post-forbidden: enter} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE enter C V
 } -cleanup {
@@ -142,7 +136,7 @@ test marpa-gate-1.3.0 {constructor, post-forbidden: enter} -setup {
 } -returnCodes error -result {Setup missing}
 
 test marpa-gate-1.3.1 {constructor, post-forbidden: acceptable} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE acceptable {}
 } -cleanup {
@@ -151,7 +145,7 @@ test marpa-gate-1.3.1 {constructor, post-forbidden: acceptable} -setup {
 } -returnCodes error -result {Setup missing}
 
 test marpa-gate-1.3.2 {constructor, post-forbidden: redo} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE redo 0
 } -cleanup {
@@ -163,7 +157,7 @@ test marpa-gate-1.3.2 {constructor, post-forbidden: redo} -setup {
 ## def - wrong args, state, sequencing
 
 test marpa-gate-2.0.0 {def, wrong args, not enough} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE def
 } -cleanup {
@@ -172,7 +166,7 @@ test marpa-gate-2.0.0 {def, wrong args, not enough} -setup {
 } -returnCodes error -result {wrong # args: should be "GATE def characters classes"}
 
 test marpa-gate-2.0.1 {def, wrong args, not enough} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE def CHARS
 } -cleanup {
@@ -181,7 +175,7 @@ test marpa-gate-2.0.1 {def, wrong args, not enough} -setup {
 } -returnCodes error -result {wrong # args: should be "GATE def characters classes"}
 
 test marpa-gate-2.0.2 {def, wrong args, too many} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE def CHARS CLASSES X
 } -cleanup {
@@ -190,7 +184,7 @@ test marpa-gate-2.0.2 {def, wrong args, too many} -setup {
 } -returnCodes error -result {wrong # args: should be "GATE def characters classes"}
 
 test marpa-gate-2.1.0 {def, fail duplicate characters} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE def {s1 a s2 a} {}
 } -cleanup {
@@ -199,7 +193,7 @@ test marpa-gate-2.1.0 {def, fail duplicate characters} -setup {
 } -returnCodes error -result {Duplicate character "a"}
 
 test marpa-gate-2.1.1 {def, fail duplicate character classes} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE def {} {a [ab] a [x]}
 } -cleanup {
@@ -208,7 +202,7 @@ test marpa-gate-2.1.1 {def, fail duplicate character classes} -setup {
 } -returnCodes error -result {Duplicate character class "a"}
 
 test marpa-gate-2.2.1 {def, nothing is ok} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE def {} {}
 } -cleanup {
@@ -217,7 +211,7 @@ test marpa-gate-2.2.1 {def, nothing is ok} -setup {
 } -result {}
 
 test marpa-gate-2.2.1 {def, something} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     logclear
 } -body {
     GATE def {sF F sO O} {a [a]}
@@ -226,7 +220,7 @@ test marpa-gate-2.2.1 {def, something} -setup {
 } -result {}
 
 test marpa-gate-2.3.0 {def, nothing, externals} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     logclear
 } -body {
     GATE def {} {}
@@ -236,7 +230,7 @@ test marpa-gate-2.3.0 {def, nothing, externals} -setup {
 } -result {}
 
 test marpa-gate-2.3.1 {def, something, externals} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     logclear
 } -body {
     GATE def {sF F sO O} {}
@@ -249,7 +243,7 @@ test marpa-gate-2.3.1 {def, something, externals} -setup {
 }
 
 test marpa-gate-2.4.0 {def, sequencing, nothing} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE def {} {}
     GATE @
@@ -259,7 +253,7 @@ test marpa-gate-2.4.0 {def, sequencing, nothing} -setup {
 } -result config
 
 test marpa-gate-2.4.1 {def, sequencing, something} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE def {sF F sO O} {a [a]}
     GATE @
@@ -269,7 +263,7 @@ test marpa-gate-2.4.1 {def, sequencing, something} -setup {
 } -result config
 
 test marpa-gate-2.5.0 {def, post-forbidden: def} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE def {} {}
 } -body {
     GATE def {} {}
@@ -279,7 +273,7 @@ test marpa-gate-2.5.0 {def, post-forbidden: def} -setup {
 } -returnCodes error -result {Invalid redefinition}
 
 test marpa-gate-2.5.1 {def, post-forbidden: enter} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE def {} {}
 } -body {
     GATE enter C V
@@ -289,7 +283,7 @@ test marpa-gate-2.5.1 {def, post-forbidden: enter} -setup {
 } -returnCodes error -result {Gate missing}
 
 test marpa-gate-2.5.2 {def, post-forbidden: redo} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE def {} {}
 } -body {
     GATE redo 0
@@ -302,36 +296,36 @@ test marpa-gate-2.5.2 {def, post-forbidden: redo} -setup {
 ## enter - wrong args, state, sequencing
 
 test marpa-gate-3.0.0 {enter, wrong args, not enough} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE enter
 } -cleanup {
     GATE destroy
     logged
-} -returnCodes error -result {wrong # args: should be "GATE enter char value"}
+} -returnCodes error -result {wrong # args: should be "GATE enter char location"}
 
 test marpa-gate-3.0.1 {enter, wrong args, not enough} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE enter CHAR
 } -cleanup {
     GATE destroy
     logged
-} -returnCodes error -result {wrong # args: should be "GATE enter char value"}
+} -returnCodes error -result {wrong # args: should be "GATE enter char location"}
 
 test marpa-gate-3.0.2 {enter, wrong args, too many} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE enter CHAR VALUE X
 } -cleanup {
     GATE destroy
     logged
-} -returnCodes error -result {wrong # args: should be "GATE enter char value"}
+} -returnCodes error -result {wrong # args: should be "GATE enter char location"}
 
 # TODO: unable to handle X - undefined character (class)
 
 test marpa-gate-3.1.0 {enter, during lexing, gated} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]
+    marpa::gate create GATE [log2 LEX [fake-lex-in]]
     # @made
     GATE def {sC C} {}
     # @config
@@ -347,7 +341,7 @@ test marpa-gate-3.1.0 {enter, during lexing, gated} -setup {
 } -result {}
 
 test marpa-gate-3.1.1 {enter, during lexing, gated, sequencing} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]
+    marpa::gate create GATE [log2 LEX [fake-lex-in]]
     GATE def {sC C} {}
     GATE acceptable {0}
 } -body {
@@ -359,7 +353,7 @@ test marpa-gate-3.1.1 {enter, during lexing, gated, sequencing} -setup {
 } -result regated
 
 test marpa-gate-3.1.2 {enter, during lexing, gated, externals} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]
+    marpa::gate create GATE [log2 LEX [fake-lex-in]]
     GATE def {sC C} {}
     GATE acceptable {0}
     logclear
@@ -370,12 +364,12 @@ test marpa-gate-3.1.2 {enter, during lexing, gated, externals} -setup {
     GATE destroy
     lexed
 } -result {
-  LEX C {enter 0 V}
-  LEX R {enter 0 V} = {}
+  LEX C {enter 0 C V}
+  LEX R {enter 0 C V} = {}
 }
 
 test marpa-gate-3.1.3 {enter, during lexing, regated, post-forbidden: def} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]
+    marpa::gate create GATE [log2 LEX [fake-lex-in]]
     GATE def {sC C} {}
     GATE acceptable {0}
     GATE enter C V
@@ -388,7 +382,7 @@ test marpa-gate-3.1.3 {enter, during lexing, regated, post-forbidden: def} -setu
 } -returnCodes error -result {Invalid redefinition}
 
 test marpa-gate-3.1.4 {enter, during lexing, regated, post-forbidden: acceptable} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]
+    marpa::gate create GATE [log2 LEX [fake-lex-in]]
     GATE def {sC C} {}
     GATE acceptable {0}
     GATE enter C V
@@ -400,7 +394,7 @@ test marpa-gate-3.1.4 {enter, during lexing, regated, post-forbidden: acceptable
 } -returnCodes error -result {Data missing}
 
 test marpa-gate-3.2.0 {enter, end of lexeme} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-end]]
+    marpa::gate create GATE [log2 LEX [fake-lex-end]]
     # @made
     GATE def {sC C} {}
     # @config
@@ -417,7 +411,7 @@ test marpa-gate-3.2.0 {enter, end of lexeme} -setup {
 } -result {}
 
 test marpa-gate-3.2.1 {enter, end of lexeme, sequencing} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-end]]
+    marpa::gate create GATE [log2 LEX [fake-lex-end]]
     GATE def {sC C} {}
     GATE acceptable {0}
 } -body {
@@ -429,7 +423,7 @@ test marpa-gate-3.2.1 {enter, end of lexeme, sequencing} -setup {
 } -result gated
 
 test marpa-gate-3.2.2 {enter, end of lexeme, externals} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-end]]
+    marpa::gate create GATE [log2 LEX [fake-lex-end]]
     GATE def {sC C} {}
     GATE acceptable {0}
     logclear
@@ -440,12 +434,12 @@ test marpa-gate-3.2.2 {enter, end of lexeme, externals} -setup {
     GATE destroy
     lexed
 } -result {
-  LEX C {enter 0 V}
-  LEX R {enter 0 V} = {}
+  LEX C {enter 0 C V}
+  LEX R {enter 0 C V} = {}
 }
 
 test marpa-gate-3.2.3 {enter, end of lexeme, gated, post-forbidden: def} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-end]]
+    marpa::gate create GATE [log2 LEX [fake-lex-end]]
     GATE def {sC C} {}
     GATE acceptable {0}
     GATE enter C V
@@ -457,7 +451,7 @@ test marpa-gate-3.2.3 {enter, end of lexeme, gated, post-forbidden: def} -setup 
 } -returnCodes error -result {Invalid redefinition}
 
 test marpa-gate-3.2.4 {enter, end of lexeme, gated, post-forbidden: acceptable} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-end]]
+    marpa::gate create GATE [log2 LEX [fake-lex-end]]
     GATE def {sC C} {}
     GATE acceptable {0}
     GATE enter C V
@@ -469,7 +463,7 @@ test marpa-gate-3.2.4 {enter, end of lexeme, gated, post-forbidden: acceptable} 
 } -returnCodes error -result {Data missing}
 
 test marpa-gate-3.2.5 {enter, end of lexeme, gated, post-forbidden: redo} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-end]]
+    marpa::gate create GATE [log2 LEX [fake-lex-end]]
     GATE def {sC C} {}
     GATE acceptable {0}
     GATE enter C V
@@ -481,7 +475,7 @@ test marpa-gate-3.2.5 {enter, end of lexeme, gated, post-forbidden: redo} -setup
 } -returnCodes error -result {Data missing}
 
 test marpa-gate-3.3.0 {enter, intra} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-nil]]
+    marpa::gate create GATE [log2 LEX [fake-lex-nil]]
     # @made
     GATE def {sC C} {}
     # @config
@@ -496,7 +490,7 @@ test marpa-gate-3.3.0 {enter, intra} -setup {
 } -result {}
 
 test marpa-gate-3.3.1 {enter, intra, sequencing} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-nil]]
+    marpa::gate create GATE [log2 LEX [fake-lex-nil]]
     GATE def {sC C} {}
     GATE acceptable {0}
 } -body {
@@ -508,7 +502,7 @@ test marpa-gate-3.3.1 {enter, intra, sequencing} -setup {
 } -result data
 
 test marpa-gate-3.3.2 {enter, intra, data, post-forbidden: def} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-nil]]
+    marpa::gate create GATE [log2 LEX [fake-lex-nil]]
     GATE def {sC C} {}
     GATE acceptable {0}
     GATE enter C V
@@ -520,7 +514,7 @@ test marpa-gate-3.3.2 {enter, intra, data, post-forbidden: def} -setup {
 } -returnCodes error -result {Invalid redefinition}
 
 test marpa-gate-3.3.3 {enter, intra, data, post-forbidden: enter} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-nil]]
+    marpa::gate create GATE [log2 LEX [fake-lex-nil]]
     GATE def {sC C} {}
     GATE acceptable {0}
     GATE enter C V
@@ -532,7 +526,7 @@ test marpa-gate-3.3.3 {enter, intra, data, post-forbidden: enter} -setup {
 } -returnCodes error -result {Gate missing}
 
 test marpa-gate-3.3.4 {enter, intra, data, post-forbidden: eof} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-nil]]
+    marpa::gate create GATE [log2 LEX [fake-lex-nil]]
     GATE def {sC C} {}
     GATE acceptable {0}
     GATE enter C V
@@ -544,7 +538,7 @@ test marpa-gate-3.3.4 {enter, intra, data, post-forbidden: eof} -setup {
 } -returnCodes error -result {Unexpected EOF}
 
 test marpa-gate-3.3.5 {enter, intra, data, post-forbidden: redo} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-nil]]
+    marpa::gate create GATE [log2 LEX [fake-lex-nil]]
     GATE def {sC C} {}
     GATE acceptable {0}
     GATE enter C V
@@ -556,7 +550,7 @@ test marpa-gate-3.3.5 {enter, intra, data, post-forbidden: redo} -setup {
 } -returnCodes error -result {Gate missing}
 
 test marpa-gate-3.4.0 {enter, unable to handle symbol} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-not]]
+    marpa::gate create GATE [log2 LEX [fake-lex-not]]
     GATE def {sC C sX X} {}
     GATE acceptable {0}
 } -body {
@@ -564,11 +558,11 @@ test marpa-gate-3.4.0 {enter, unable to handle symbol} -setup {
 } -cleanup {
     GATE destroy
     logged ; lexed
-} -returnCodes error -result {FAIL (origin gate l0 {at {} char X csym 1 acceptable C acceptsym 0 acceptmap {0 'C'}})}
+} -returnCodes error -result {FAIL (origin gate l0 {at V char X csym 1 acceptable C acceptsym 0 acceptmap {0 'C'}})}
 # TODO ^ might have to sort the dict and sub-dict for canonical form and comparison.
 
 test marpa-gate-3.5.0 {enter, during lexing, regated} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]
+    marpa::gate create GATE [log2 LEX [fake-lex-in]]
     # @made
     GATE def {sC C} {}
     # @config
@@ -585,7 +579,7 @@ test marpa-gate-3.5.0 {enter, during lexing, regated} -setup {
 } -result {}
 
 test marpa-gate-3.5.1 {enter, during lexing, regated, sequencing} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]
+    marpa::gate create GATE [log2 LEX [fake-lex-in]]
     GATE def {sC C} {}
     GATE acceptable {0}
     GATE enter C V
@@ -598,7 +592,7 @@ test marpa-gate-3.5.1 {enter, during lexing, regated, sequencing} -setup {
 } -result regated
 
 test marpa-gate-3.5.2 {enter, during lexing, regated, externals} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]
+    marpa::gate create GATE [log2 LEX [fake-lex-in]]
     GATE def {sC C} {}
     GATE acceptable {0}
     GATE enter C V
@@ -610,15 +604,15 @@ test marpa-gate-3.5.2 {enter, during lexing, regated, externals} -setup {
     GATE destroy
     lexed
 } -result {
-  LEX C {enter 0 V}
-  LEX R {enter 0 V} = {}
+  LEX C {enter 0 C V}
+  LEX R {enter 0 C V} = {}
 }
 
 # # ## ### ##### ######## ############# #####################
 ## eof - wrong args, state, sequencing
 
 test marpa-gate-4.0 {eof, wrong args, too many} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE eof X
 } -cleanup {
@@ -627,7 +621,7 @@ test marpa-gate-4.0 {eof, wrong args, too many} -setup {
 } -returnCodes error -result {wrong # args: should be "GATE eof"}
 
 test marpa-gate-4.1.0 {eof, after construction} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE eof
 } -cleanup {
@@ -636,7 +630,7 @@ test marpa-gate-4.1.0 {eof, after construction} -setup {
 } -result {}
 
 test marpa-gate-4.1.1 {eof, after construction, sequencing} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE eof
     GATE @
@@ -646,7 +640,7 @@ test marpa-gate-4.1.1 {eof, after construction, sequencing} -setup {
 } -result done
 
 test marpa-gate-4.1.2 {eof, after construction, externals} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     logclear
 } -body {
     # eof is reported to the postprocessor, only.
@@ -659,7 +653,7 @@ test marpa-gate-4.1.2 {eof, after construction, externals} -setup {
 }}
 
 test marpa-gate-4.2.0 {eof, after configuration} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE def {} {}
 } -body {
     GATE eof
@@ -669,7 +663,7 @@ test marpa-gate-4.2.0 {eof, after configuration} -setup {
 } -result {}
 
 test marpa-gate-4.2.1 {eof, after configuration, sequencing} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE def {} {}
 } -body {
     GATE eof
@@ -680,7 +674,7 @@ test marpa-gate-4.2.1 {eof, after configuration, sequencing} -setup {
 } -result done
 
 test marpa-gate-4.2.2 {eof, after configuration, externals} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE def {} {}
     logclear
 } -body {
@@ -694,7 +688,7 @@ test marpa-gate-4.2.2 {eof, after configuration, externals} -setup {
 }}
 
 test marpa-gate-4.3.0 {eof, after gating} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE def {} {}
     GATE acceptable 0
 } -body {
@@ -705,7 +699,7 @@ test marpa-gate-4.3.0 {eof, after gating} -setup {
 } -result {}
 
 test marpa-gate-4.3.1 {eof, after gating, sequencing} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE def {} {}
     GATE acceptable 0
 } -body {
@@ -717,7 +711,7 @@ test marpa-gate-4.3.1 {eof, after gating, sequencing} -setup {
 } -result done
 
 test marpa-gate-4.3.2 {eof, after gating, externals} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE def {} {}
     GATE acceptable 0
     logclear
@@ -732,7 +726,7 @@ test marpa-gate-4.3.2 {eof, after gating, externals} -setup {
 }}
 
 test marpa-gate-4.4.0 {eof, after data} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]
+    marpa::gate create GATE [log2 LEX [fake-lex-in]]
     GATE def {sC C} {}
     GATE acceptable 0
     GATE enter C V
@@ -744,7 +738,7 @@ test marpa-gate-4.4.0 {eof, after data} -setup {
 } -result {}
 
 test marpa-gate-4.4.1 {eof, after data, sequencing} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]
+    marpa::gate create GATE [log2 LEX [fake-lex-in]]
     GATE def {sC C} {}
     GATE acceptable 0
     GATE enter C V
@@ -757,7 +751,7 @@ test marpa-gate-4.4.1 {eof, after data, sequencing} -setup {
 } -result done
 
 test marpa-gate-4.4.2 {eof, after data, externals} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]
+    marpa::gate create GATE [log2 LEX [fake-lex-in]]
     GATE def {sC C} {}
     GATE acceptable 0
     GATE enter C V
@@ -773,7 +767,7 @@ test marpa-gate-4.4.2 {eof, after data, externals} -setup {
 }}
 
 test marpa-gate-4.5.0 {eof, post-forbidden: def} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE eof
 } -body {
     GATE def {} {}
@@ -783,7 +777,7 @@ test marpa-gate-4.5.0 {eof, post-forbidden: def} -setup {
 } -returnCodes error -result {Invalid redefinition}
 
 test marpa-gate-4.5.1 {eof, post-forbidden: enter} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE eof
 } -body {
     GATE enter C V
@@ -793,7 +787,7 @@ test marpa-gate-4.5.1 {eof, post-forbidden: enter} -setup {
 } -returnCodes error -result {After end of input}
 
 test marpa-gate-4.5.2 {eof, post-forbidden: eof} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE eof
 } -body {
     GATE eof
@@ -803,7 +797,7 @@ test marpa-gate-4.5.2 {eof, post-forbidden: eof} -setup {
 } -returnCodes error -result {Unexpected EOF}
 
 test marpa-gate-4.5.3 {eof, post-forbidden: acceptable} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE eof
 } -body {
     GATE acceptable 0
@@ -816,7 +810,7 @@ test marpa-gate-4.5.3 {eof, post-forbidden: acceptable} -setup {
 ## acceptable - wrong args, state, sequencing
 
 test marpa-gate-5.0.0 {acceptable, wrong args, not enough} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE acceptable
 } -cleanup {
@@ -825,7 +819,7 @@ test marpa-gate-5.0.0 {acceptable, wrong args, not enough} -setup {
 } -returnCodes error -result {wrong # args: should be "GATE acceptable syms"}
 
 test marpa-gate-5.0.1 {acceptable, wrong args, too many} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE acceptable SYMS X
 } -cleanup {
@@ -834,7 +828,7 @@ test marpa-gate-5.0.1 {acceptable, wrong args, too many} -setup {
 } -returnCodes error -result {wrong # args: should be "GATE acceptable syms"}
 
 test marpa-gate-5.1.0 {acceptable, initial} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE def {} {}
 } -body {
     GATE acceptable 0
@@ -844,7 +838,7 @@ test marpa-gate-5.1.0 {acceptable, initial} -setup {
 } -result {}
 
 test marpa-gate-5.1.1 {acceptable, initial, sequencing} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE def {} {}
 } -body {
     GATE acceptable 0
@@ -855,7 +849,7 @@ test marpa-gate-5.1.1 {acceptable, initial, sequencing} -setup {
 } -result gated
 
 test marpa-gate-5.1.2 {acceptable, initial, external} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE def {} {}
     logclear
 } -body {
@@ -866,7 +860,7 @@ test marpa-gate-5.1.2 {acceptable, initial, external} -setup {
 } -result {}
 
 test marpa-gate-5.2.0 {acceptable, during lexeme} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-nil]]
+    marpa::gate create GATE [log2 LEX [fake-lex-nil]]
     GATE def {sC C} {}
     GATE acceptable 0
     GATE enter C V
@@ -878,7 +872,7 @@ test marpa-gate-5.2.0 {acceptable, during lexeme} -setup {
 } -result {}
 
 test marpa-gate-5.2.1 {acceptable, during lexeme, sequencing} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-nil]]
+    marpa::gate create GATE [log2 LEX [fake-lex-nil]]
     GATE def {sC C} {}
     GATE acceptable 0
     GATE enter C V
@@ -891,7 +885,7 @@ test marpa-gate-5.2.1 {acceptable, during lexeme, sequencing} -setup {
 } -result regated
 
 test marpa-gate-5.2.2 {acceptable, during lexeme, external} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-nil]]
+    marpa::gate create GATE [log2 LEX [fake-lex-nil]]
     GATE def {sC C} {}
     GATE acceptable 0
     GATE enter C V
@@ -912,7 +906,7 @@ test marpa-gate-5.2.2 {acceptable, during lexeme, external} -setup {
 ## redo - wrong args, state, sequencing
 
 test marpa-gate-6.0.0 {redo, wrong args, not enough} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE redo
 } -cleanup {
@@ -921,7 +915,7 @@ test marpa-gate-6.0.0 {redo, wrong args, not enough} -setup {
 } -returnCodes error -result {wrong # args: should be "GATE redo n"}
 
 test marpa-gate-6.0.1 {redo, wrong args, too many} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
 } -body {
     GATE redo N X
 } -cleanup {
@@ -930,7 +924,7 @@ test marpa-gate-6.0.1 {redo, wrong args, too many} -setup {
 } -returnCodes error -result {wrong # args: should be "GATE redo n"}
 
 test marpa-gate-6.1.0 {redo, during lexeme} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]
+    marpa::gate create GATE [log2 LEX [fake-lex-in]]
     GATE def {sC C} {}
     GATE acceptable 0
     GATE enter C V
@@ -942,7 +936,7 @@ test marpa-gate-6.1.0 {redo, during lexeme} -setup {
 } -result {}
 
 test marpa-gate-6.1.1 {redo, during lexeme, sequencing} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]
+    marpa::gate create GATE [log2 LEX [fake-lex-in]]
     GATE def {sC C} {}
     GATE acceptable 0
     GATE enter C V
@@ -955,7 +949,7 @@ test marpa-gate-6.1.1 {redo, during lexeme, sequencing} -setup {
 } -result gated
 
 test marpa-gate-6.1.2 {redo, during lexeme, external} -setup {
-    marpa::gate create GATE [log STORE] [log2 LEX [fake-lex-in]]
+    marpa::gate create GATE [log2 LEX [fake-lex-in]]
     GATE def {sC C} {}
     GATE acceptable 0
     GATE enter C V
@@ -969,7 +963,7 @@ test marpa-gate-6.1.2 {redo, during lexeme, external} -setup {
 } -result {}
 
 test marpa-gate-6.2.0 {redo, post eof} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE eof
 } -body {
     GATE redo 0
@@ -979,7 +973,7 @@ test marpa-gate-6.2.0 {redo, post eof} -setup {
 } -result {}
 
 test marpa-gate-6.2.1 {redo, post eof, sequencing} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE eof
 } -body {
     GATE redo 0
@@ -990,7 +984,7 @@ test marpa-gate-6.2.1 {redo, post eof, sequencing} -setup {
 } -result complete
 
 test marpa-gate-6.2.2 {redo, post eof, external} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE eof
     logclear
 } -body {
@@ -1005,7 +999,7 @@ test marpa-gate-6.2.2 {redo, post eof, external} -setup {
 # It follows the handling in state 'complete'.
 
 test marpa-gate-6.3.0 {redo, post-forbidden: def} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE eof
     GATE redo 0
 } -body {
@@ -1016,7 +1010,7 @@ test marpa-gate-6.3.0 {redo, post-forbidden: def} -setup {
 } -returnCodes error -result {Invalid redefinition}
 
 test marpa-gate-6.3.1 {redo, post-forbidden: enter} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE eof
     GATE redo 0
 } -body {
@@ -1027,7 +1021,7 @@ test marpa-gate-6.3.1 {redo, post-forbidden: enter} -setup {
 } -returnCodes error -result {After end of input}
 
 test marpa-gate-6.3.2 {redo, post-forbidden: eof} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE eof
     GATE redo 0
 } -body {
@@ -1038,7 +1032,7 @@ test marpa-gate-6.3.2 {redo, post-forbidden: eof} -setup {
 } -returnCodes error -result {Unexpected EOF}
 
 test marpa-gate-6.3.3 {redo, post-forbidden: acceptable} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE eof
     GATE redo 0
 } -body {
@@ -1049,7 +1043,7 @@ test marpa-gate-6.3.3 {redo, post-forbidden: acceptable} -setup {
 } -returnCodes error -result {After end of input}
 
 test marpa-gate-6.3.4 {redo, post-forbidden: redo} -setup {
-    marpa::gate create GATE [log STORE] [log LEX]
+    marpa::gate create GATE [log LEX]
     GATE eof
     GATE redo 0
 } -body {
