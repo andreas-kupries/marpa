@@ -91,6 +91,7 @@ oo::class create marpa::gate {
     # # -- --- ----- -------- -------------
     ## State
 
+    variable myaccmemo
     variable myacceptable ;# sym -> .
     variable myhistory    ;# Entered characters and semantic values.
 
@@ -128,6 +129,7 @@ oo::class create marpa::gate {
     ## Lifecycle
 
     constructor {semstore postprocessor} {
+	method-benchmarking
 	debug.marpa/gate {[debug caller] | }
 
 	marpa::import $semstore      Store ;# Failure handling and debugging.
@@ -137,6 +139,7 @@ oo::class create marpa::gate {
 	set mylastchar   {} ;# char/loc before anything was entered
 	set mylastvalue  [Store put {-1 -1 {}}]
 	set myhistory    {} ;# queue of processed characters
+	set myaccmemo {}
 	set myacceptable {} ;# set of expected/allowed symbols,
 			     # initially none
 
@@ -286,10 +289,15 @@ oo::class create marpa::gate {
     method acceptable {syms} {
 	debug.marpa/gate {[debug caller] | }
 	# numeric ids, dict => dict exists// list(id)
-	set myacceptable {}
-	foreach s $syms {
-	    debug.marpa/gate {[debug caller 1] | !! $s '[dict get $myrmap $s]'}
-	    dict set myacceptable $s .
+	if {[dict exists $myaccmemo $syms]} {
+	    set myacceptable [dict get $myaccmemo $syms]
+	} else {
+	    set myacceptable {}
+	    foreach s $syms {
+		debug.marpa/gate {[debug caller 1] | !! $s '[dict get $myrmap $s]'}
+		dict set myacceptable $s .
+	    }
+	    dict set myaccmemo $syms $myacceptable
 	}
 	return
     }

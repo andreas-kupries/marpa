@@ -19,6 +19,8 @@ set meta    [file join $selfdir marpa-tcl-slif slif]
 
 proc F {n} { format "%.2f" $n }
 
+#debug on util/benchmarking
+
 # _ __ ___ _____ ________ _____________ _____________________
 # Process the slif meta grammar
 set sz [file size $meta]

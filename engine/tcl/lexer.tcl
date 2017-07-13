@@ -80,6 +80,8 @@ oo::class create marpa::lexer {
     ## State
 
     # Dynamic
+    variable myaccmemo    ;# Cache of translations for sets of
+			   # acceptable symbols.
     variable myacceptable ;# Remembered (last call of 'Acceptable')
 			   # set of the parser's acceptable symbols.
 			   # Required for the regeneration of our
@@ -129,6 +131,7 @@ oo::class create marpa::lexer {
     ## Lifecycle
 
     constructor {semstore parser} {
+	method-benchmarking
 	debug.marpa/lexer {[debug caller] | }
 	debug.marpa/lexer/report {[marpa DX {Activate progress reports...} {
 	    oo::objdefine [self] mixin marpa::engine::debug
@@ -147,6 +150,7 @@ oo::class create marpa::lexer {
 
 	# Dynamic state for processing
 	set myacceptable {}   ;# Parser gating.
+	set myaccmemo    {}   ;# Cache for gating.
 	set myrecce      {}   ;# Local recce management
 
 	# Static configuration and state
@@ -375,7 +379,6 @@ oo::class create marpa::lexer {
 	# accept. Transform this into a list of ACS ids, and insert
 	# them into the recognizer.
 
-	set myacceptable $syms
 	set myrecce [GRAMMAR recognizer create RECCE [mymethod Events]]
 	debug.marpa/lexer {[debug caller 1] | RECCE = [namespace which -command RECCE]}
 	set mystart  {}
@@ -385,14 +388,26 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer/report {[my progress-report-current]}
 	debug.marpa/lexer/stream {START ([my DIds $syms])}
 
-	# NOTE (%%): Here and method `export` are the two points where
-	# the difference between the LATM and LTM match disciplines is
-	# injected into the runtime. We do this by always activating
-	# the ACS for LTM symbols (and discards).
+	set myacceptable $syms
 	if {[llength $syms] || [llength $myalways]} {
-	    foreach s [lsort -unique [concat $syms $myalways]] {
+	    if {[dict exists $myaccmemo $syms]} {
+		# Employ the cache to quickly translate sets we have
+		# seen before.
+		set enter [dict get $myaccmemo $syms]
+	    } else {
+		# NOTE (%%): Here and method `export` are the two
+		# points where the difference between the LATM and LTM
+		# match disciplines is injected into the runtime. We
+		# do this by always activating the ACS for LTM symbols
+		# (and discards).
+		foreach s [lsort -unique [concat $syms $myalways]] {
+		    lappend enter [dict get $myacs $s]
+		}
+		dict set myaccmemo $syms $enter
+	    }
+	    foreach s $enter {
 		debug.marpa/lexer {[debug caller 1] | U ==> $s <[my 2Name1 $s]>}
-		RECCE alternative [dict get $myacs $s] $mynull 1
+		RECCE alternative $s $mynull 1
 	    }
 	    RECCE earleme-complete
 	    # Tcl 8.6: lmap

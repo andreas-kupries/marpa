@@ -17,7 +17,7 @@ package require debug
 package require debug::caller
 
 debug define util/sequencing
-#debug prefix marpa/inbound {[debug caller] | }
+debug prefix util/sequencing {[debug caller] | }
 
 # # ## ### ##### ######## #############
 ## Helper command to create a method which dynamically activates a

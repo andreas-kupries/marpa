@@ -101,6 +101,7 @@ critcl::include    marpa.h
 ## Mostly generic utilities for various things
 
 critcl::tsources generic/sequencing.tcl ; # Method call sequence validation
+critcl::tsources generic/timing.tcl     ; # Method call benchmarking
 critcl::tsources generic/support.tcl    ; # General Tcl level
 critcl::tsources generic/unicode.tcl    ; # Unicode / UTF-8
 
