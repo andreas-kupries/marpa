@@ -7,14 +7,22 @@
  * Part: Inbound
  */
 
-#include <rtc.h>
+#include <inbound.h>
+#include <rtc_int.h>
 
-#define IN (p->in)
+/*
+ */
 
 void
 marpa_rtc_inbound_cons (marpa_rtc_p p)
 {
     IN.location = -1;
+}
+
+void
+marpa_rtc_inbound_release (marpa_rtc_p p)
+{
+    /* nothing to do */
 }
 
 int 
@@ -29,7 +37,7 @@ marpa_rtc_inbound_enter (marpa_rtc_p p, const char* bytes)
     const char* c = bytes;
     while (*c) {
 	IN.location ++;
-	marpa_rtc_gate_enter (p, c);
+	marpa_rtc_gate_enter (p, *c);
     }
 }
 

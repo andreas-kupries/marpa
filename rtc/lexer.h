@@ -10,6 +10,11 @@
 #ifndef MARPA_RTC_LEXER_H
 #define MARPA_RTC_LEXER_H
 
+#include <marpa.h>
+#include <dynset.h>
+#include <stack.h>
+#include <rtc.h>
+
 /*
  * -- dynamic state of the lexer part of an rtc engine --
  */
@@ -27,6 +32,7 @@ typedef struct marpa_rtc_lexer {
  */
 
 void marpa_rtc_lexer_cons       (marpa_rtc_p p);
+void marpa_rtc_lexer_release    (marpa_rtc_p p);
 void marpa_rtc_lexer_enter      (marpa_rtc_p p, int ch); /* IN.location implied */
 void marpa_rtc_lexer_eof        (marpa_rtc_p p);
 void marpa_rtc_lexer_acceptable (marpa_rtc_p p, int c, Marpa_Symbol_ID* v);

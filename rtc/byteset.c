@@ -8,10 +8,11 @@
  */
 
 #include <byteset.h>
+#include <critcl_assert.h>
 
-#define SZ s->n
-#define XL s->sparse
-#define DE s->dense
+#define SZ (s->n)
+#define XL (s->sparse)
+#define DE (s->dense)
 
 void
 marpa_rtc_byteset_clear (marpa_rtc_byteset* s)
@@ -20,15 +21,16 @@ marpa_rtc_byteset_clear (marpa_rtc_byteset* s)
 }
 
 int 
-marpa_rtc_byteset_contains (marpa_rtc_byteset* s, char c)
+marpa_rtc_byteset_contains (marpa_rtc_byteset* s, unsigned char c)
 {
-    return (XL [c] < SZ) && (DE [XL [c]] == c)
+    // sizeof (unsigned char) == 8 --> max(c) = 255, no assertion required
+    return (XL [c] < SZ) && (DE [XL [c]] == c);
 }
 
 Marpa_Symbol_ID*
 marpa_rtc_byteset_dense (marpa_rtc_byteset* s)
 {
-    return &DE;
+    return DE;
 }
 
 void
@@ -37,6 +39,7 @@ marpa_rtc_byteset_link (marpa_rtc_byteset* s, int n)
     int k;
     SZ = n;
     for (k = 0; k < n; k++) {
+	ASSERT (DE [k] < MARPA_RTC_BSMAX, "Symbol out of byte range (> 255)");
 	XL [DE [k]] = k;
     }
 }

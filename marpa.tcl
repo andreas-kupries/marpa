@@ -191,8 +191,13 @@ critcl::tsources export/tparse.tcl        ; # Tcl parser class
 ##       declarations, to avoid conflicts with libmarpa's public
 ##       symbols.
 
-#critcl::cheaders mc/*.h
-#critcl::csources mc/*.c
+## The RTC is the C-based runtime-to-be. It is technically not needed
+## by marpa itself (until after we have moved boot parser to generated
+## C code). It is included to force problems with it to break the
+## marpa built itself, i.e. as canary.
+
+critcl::cheaders rtc/*.h
+critcl::csources rtc/*.c
 
 critcl::source c/errors.tcl           ; # Mapping marpa error codes to strings.
 critcl::source c/events.tcl           ; # Mapping marpa event types to strings.

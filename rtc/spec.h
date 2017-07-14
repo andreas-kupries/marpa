@@ -7,8 +7,10 @@
  * Pre-compiled grammar definition.
  */
 
-#ifndef MARPA_RTC_BYTESET_H
-#define MARPA_RTC_GSPEC_H
+#ifndef MARPA_RTC_SPEC_H
+#define MARPA_RTC_SPEC_H
+
+#include <marpa.h>
 
 /*
  * -- string pool --
@@ -39,21 +41,24 @@ typedef struct marpa_rtc_rules {
 
 #define MARPA_R_PRI (-1) /* priority     -- 2+N arguments: lhs, #rhs, rhs... */
 #define MARPA_R_SEQ (-2) /* quantified   -- 5 arguments: lhs, loop, sep, positive, proper */
-#define MARPA_R_EOR (-3  /* end of rules -- 1 argument: start symbol */
+#define MARPA_R_EOR (-3) /* end of rules -- 1 argument: start symbol */
 
 /*
  * -- parser definition -- l0, g1 sub-grammars, 
  */
 
 typedef struct marpa_rtc_spec {
-    int             lexemes;   /* L: number of lexemes in l0 */
-    int             discards;  /* D: number of discard symbols in l0 */
-    int             l_symbols; /* X: number of internal symbols in l0 */
-    /*                          * L+D+X = l0.syms */
-    int             g_symbols; /* G: number of symbols in g1. */
-    /*                          * G = g1.syms */
-    marpa_rtc_rules l0;
-    marpa_rtc_rules g1;
+    int              lexemes;   /* L: number of lexemes in l0 */
+    int              discards;  /* D: number of discard symbols in l0 */
+    int              l_symbols; /* X: number of internal symbols in l0 */
+    /*                           * L+D+X = l0.syms */
+    int              g_symbols; /* G: number of symbols in g1. */
+    /*                           * G = g1.syms */
+    int              nalways;   /* A: number of symbols always active */
+    /*                           * A = D + |x; x is lexeme, x is LTM| */
+    int*             always;    /* Array listing the always active symbols */
+    marpa_rtc_rules* l0;
+    marpa_rtc_rules* g1;
 } marpa_rtc_spec;
 
 /*
@@ -77,10 +82,11 @@ typedef struct marpa_rtc_spec {
  */
 
 /*
- * No API. The above structures are statically defined, with the definitions
- * created by a generator.
+ * API. Fill a grammar from the static code.
  */
 
+void marpa_rtc_spec_setup (Marpa_Grammar g, marpa_rtc_rules* s);
+		     
 #endif
 
 /*

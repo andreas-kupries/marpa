@@ -8,47 +8,63 @@
  */
 
 #include <stack.h>
+#include <critcl_alloc.h>
+#include <critcl_assert.h>
+#include <tcl.h>
 
 #define MARPA_RTC_STK_INIT 10
+
+#define SZ  (s->n)
+#define CAP (s->max)
+#define STK (s->data)
+
+/*
+ */
 
 void
 marpa_rtc_stack_init (marpa_rtc_stack* s)
 {
-    s->n    = 0;
-    s->max  = MARPA_RTC_STK_INIT;
-    s->data = (int*) ckalloc (s->max * sizeof(int));
+    SZ  = 0;
+    CAP = MARPA_RTC_STK_INIT;
+    STK = NALLOC (int, CAP);
+}
+
+void
+marpa_rtc_stack_release (marpa_rtc_stack* s)
+{
+    FREE (STK); STK = 0;
+    SZ = CAP = 0;
 }
 
 void
 marpa_rtc_stack_clear (marpa_rtc_stack* s)
 {
-    s->n = 0;
+    SZ = 0;
 }
 
 void
 marpa_rtc_stack_push (marpa_rtc_stack* s, int v)
 {
-    if (s->n == s->max) {
-	s->max += s->max;
-	s->data = (int*) ckrealloc ((char*) s->data, s->max * sizeof(int));
+    if (SZ == CAP) {
+	CAP += CAP;
+	STK = REALLOC (STK, int, CAP);
     }
-    s->data[s->n] = v;
-    s->n ++;
+    STK [SZ] = v;
+    SZ ++;
 }
 
 int
 marpa_rtc_stack_pop (marpa_rtc_stack* s)
 {
-    // assert: n > 0
-    s->n --;
-    // assert: n >= 0
-    return s->data[s->n];
+    ASSERT (SZ > 0, "Pop from empty stack");
+    SZ --;
+    return STK [SZ];
 }
 
 int 
 marpa_rtc_stack_size (marpa_rtc_stack* s)
 {
-    return s->n;
+    return SZ;
 }
 
 void
