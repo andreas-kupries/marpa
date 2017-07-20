@@ -173,13 +173,15 @@ critcl::tsources export/config.tcl       ; # Comon generator configuration suppo
 #          loading the grammar on construction.
 # 1. gc-compact - compact, no formatting
 # 2. gc         - formatted for human readability (indented multi-line)
-# Backend: Dumping a GC as Tcl code implementing a derived lexer engine class
-# Backend: Dumping a GC as Tcl code implementing a derived parser engine class
+# Backend: Dumping a GC as Tcl code implementing a rt_lex-derived lexer engine class
+# Backend: Dumping a GC as Tcl code implementing a rt_parse-derived parser engine class
+# Backend: Dumping a GC as C code implementing a rtc-derived parser engine
 
 critcl::tsources export/gc_compact.tcl    ; # Container compact
 critcl::tsources export/gc.tcl            ; # Container formatted
 critcl::tsources export/tlex.tcl          ; # Tcl lexer class
 critcl::tsources export/tparse.tcl        ; # Tcl parser class
+critcl::tsources export/rtc.tcl           ; # RTC parser class
 
 # # ## ### ##### ######## #############
 ## Main C section.
