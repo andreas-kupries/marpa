@@ -29,11 +29,16 @@ typedef uint16_t marpa_size;
 
 /*
  * -- string pool --
+ *    no special structures - 2 parallel arrays, lengths and string pointers.
+ *    a structure with both is 8 or 16 bytes (32/64 system, 4/8 byte pointers)
+ *    due to 4/8 alignment and padding. The two arrays eliminate the padding.
+ *    That said, the pointers to the arrays are captured in a structure.
  */
 
 typedef struct marpa_rtc_string {
-    marpa_size  length; /* Length of the string */
-    const char* string; /* And the string data itself */
+    marpa_size*  length; /* Array of string lengths */
+    marpa_size*  offset; /* Array of string offset */
+    const char*  string; /* String data */
 } marpa_rtc_string;
 
 /*
@@ -70,10 +75,12 @@ typedef struct marpa_rtc_rules {
  * QUANT_PLUS	lhs, rhs		0101.llll.llll.llll	Quantified rule 1+
  * QUANT_N_SEP	lhs, rhs, sep, proper	0110.llll.llll.llll	Quantified rule 0+ with separator/proper
  * QUANT_P_SEP	lhs, rhs, sep, proper	0111.llll.llll.llll	Quantified rule 1+ with separator/proper
- * BRAN		lhs, stat, stop		1000.llll.llll.llll	Byte range from start to stop, inclusive
+ * BRAN		lhs, start, stop	1000.llll.llll.llll	Byte range from start to stop, inclusive
  *
  * S/P					0001.ssssssssssssss
  *					0000.ssssssssssssss
+ *
+ * BRAN: arguments are in 0..255 => bytes, both can be placed into a single marpa_sym
  */
 
 #define MARPA_RC_SETUP (0)
@@ -107,6 +114,8 @@ typedef struct marpa_rtc_rules {
 
 #define MARPA_RCMD_UNBOX(x, tv, vv) { tv = (x) >> (MARPA_SYSZ-4) ; vv = (x) & MARPA_SYLOW ; }
 
+#define MARPA_RCMD_BOXR(a,b)      (((a) << 8)|(b))
+#define MARPA_RCMD_UNBXR(x, a, b) { a = (x) >> 8 ; b = (x) & 255 ; }
 
 /*
  * -- parser definition -- l0, g1 sub-grammars, 
@@ -147,9 +156,10 @@ typedef struct marpa_rtc_spec {
 #define MARPA_SV_G1LENGTH  ((marpa_sym) (3))  /* length of lexeme in G1 */
 #define MARPA_SV_LHS_NAME  ((marpa_sym) (4))  /* Name of the lhs in the reduced rule, lexeme */
 #define MARPA_SV_LHS_ID    ((marpa_sym) (5))  /* Id of the lhs in the reduced rule */
-#define MARPA_SV_RULE_ID   ((marpa_sym) (6))  /* Id of the reduced rule */
-#define MARPA_SV_VALUE     ((marpa_sym) (7))  /* Value of the lexeme, value of the children */
-#define MARPA_SV_CMD       ((marpa_sym) (8))  /* User-specified semantic action */
+#define MARPA_SV_RULE_NAME ((marpa_sym) (6))  /* Name of the reduced rule */
+#define MARPA_SV_RULE_ID   ((marpa_sym) (7))  /* Id of the reduced rule */
+#define MARPA_SV_VALUE     ((marpa_sym) (8))  /* Value of the lexeme, value of the children */
+#define MARPA_SV_CMD       ((marpa_sym) (9))  /* User-specified semantic action */
 
 /*
  * Tags for G1 semantic coding formats

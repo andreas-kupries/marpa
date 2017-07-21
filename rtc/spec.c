@@ -23,7 +23,7 @@ void
 marpa_rtc_spec_setup (Marpa_Grammar g, marpa_rtc_rules* s)
 {
     marpa_sym* pc;
-    marpa_sym cmd, detail, proper, sep;
+    marpa_sym cmd, detail, proper, sep, start, stop;
     int k;
     Marpa_Symbol_ID* scratch;
     Marpa_Symbol_ID lastlhs;
@@ -85,7 +85,8 @@ marpa_rtc_spec_setup (Marpa_Grammar g, marpa_rtc_rules* s)
 	    break;
 	case MARPA_RC_BRAN:
 	    /* byte range - pc [1,2] = start, stop - expand into alternation */
-	    for (k = pc[1]; k <= pc[2]; k++) {
+	    MARPA_RCMD_UNBXR (pc[1], start, stop);
+	    for (k = start; k <= stop; k++) {
 		scratch[0] = k;
 		marpa_g_rule_new (g, detail, scratch, 1);
 	    }

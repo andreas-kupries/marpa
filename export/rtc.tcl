@@ -36,16 +36,16 @@ namespace eval ::marpa::export::rtc {
     variable self [info script]
     variable indent {    }
     variable ak {
-	start   MARPA_SV_START
-	length	MARPA_SV_LENGTH  
-	g1start	MARPA_SV_G1START 
-	g1lengt	MARPA_SV_G1LENGTH
-	name	MARPA_SV_LHS_NAME
-	symbol	MARPA_SV_LHS_NAME
-	lhs	MARPA_SV_LHS_ID  
-	rule	MARPA_SV_RULE_ID 
-	value	MARPA_SV_VALUE   
-	values  MARPA_SV_VALUE   
+	start    MARPA_SV_START
+	length	 MARPA_SV_LENGTH  
+	g1start	 MARPA_SV_G1START 
+	g1length MARPA_SV_G1LENGTH
+	symbol	 MARPA_SV_LHS_NAME
+	lhs	 MARPA_SV_LHS_ID  
+	name	 MARPA_SV_RULE_NAME
+	rule	 MARPA_SV_RULE_ID 
+	value	 MARPA_SV_VALUE   
+	values   MARPA_SV_VALUE   
     }
 }
 
@@ -124,9 +124,9 @@ proc ::marpa::export::rtc::Generate {serial} {
     set l0rules [RulesOf $gc l0 [concat $lex $discards $l0symbols]]
     set g1rules [RulesOf $gc g1 $g1symbols]
 
-    P add [concat $g1symbols $l0symbols $discards $lex $acs_discards $acs_lex $lit]
-    P add [Names $g1rules]
-    P add* $l0start
+    P add  1 [concat $l0symbols $discards $lex $acs_discards $acs_lex $lit]
+    P add  0 [concat [Names $g1rules] $g1symbols]
+    P add* 0 $l0start
 
     A add $g1rules
     
@@ -170,8 +170,8 @@ proc ::marpa::export::rtc::Generate {serial} {
 	} {
 	    if {[L has-id $codepoint]} continue
 	    set bsym [::marpa::slif::literal::symbol [list byte $codepoint]]
-	    P add*  $bsym
-	    L force $bsym $codepoint
+	    P add* 1 $bsym
+	    L force  $bsym $codepoint
 	}
     }
     L skip
@@ -221,7 +221,7 @@ proc ::marpa::export::rtc::Generate {serial} {
     # ----------------- ------------
     # marpa_sym		2
     # char*		8
-    # marpa_rtc_string	16 = (2+(6)+8) -- separate arrays for data and length
+    # marpa_rtc_string	24 = 3*8
     # marpa_rtc_symvec	16 = (2+(6)+8)
     # marpa_rtc_rules	48 = (8+16+16+8)
     # marpa_rtc_spec	72 = (2+2+2+2+16+8+8+16+16)
@@ -235,12 +235,18 @@ proc ::marpa::export::rtc::Generate {serial} {
     lappend map @cname@	[CName]
 
     # String pool
-    incr dsz [* 16 [P size]] ;# sizeof(marpa_rtc_string) = 16
-    incr dsz [P str-size]    ;# sizeof(char) = 1
-    lappend map @string-definitions@	[CArray [P content] -1]
-    lappend map @string-c@              [P size]
-    lappend map @string-sz@             [* 16 [P size]]
-    lappend map @string-data-sz@        [P str-size]
+    lappend map @string-c@      [P size]
+    incr dsz [* 2 [P size]]
+    lappend map @string-length-sz@ [* 2 [P size]]
+    lappend map @string-length-v@  [CArray [P lengths] 16]
+    incr dsz [* 2 [P size]]
+    lappend map @string-offset-sz@ [* 2 [P size]]
+    lappend map @string-offset-v@  [CArray [P offsets] 16]
+    incr dsz [P str-size]
+    lappend map @string-data-sz@ [P str-size]
+    lappend map @string-data-v@  [Array "    " " " [P strings] -1]
+
+    incr dsz 24 ;# sizeof(marpa_rtc_string)
 
     # L0 grammar: symbols, rules, semantics
     incr dsz [* 2 [L size]]       ; # sizeof(marpa_sym) = 2
@@ -615,10 +621,9 @@ oo::class create marpa::export::rtc::Rules {
 
     method P_brange {lhs start stop} {
 	lappend cmd [my C brange [S 2id $lhs]]
-	lappend cmd $start
-	lappend cmd $stop
+	lappend cmd "MARPA_RCMD_BOXR ([format %3d $start],[format %3d $stop])"
 	my P $cmd $lhs {}
-	incr myelements 3
+	incr myelements 2
 	return
     }
 
@@ -694,7 +699,7 @@ oo::class create marpa::export::rtc::Rules {
     method C {cmd v} {
 	return "MARPA_RCMD_[dict get {
 	    brange     {BRAN }
-	    sep        {SEP  }
+	    sep        {SEP}
 	    proper     {SEPP}
 	    start      {SETUP}
 	    stop       {DONE }
@@ -782,8 +787,9 @@ oo::class create marpa::export::rtc::Sym {
     }
 
     method bulk-is {map} {
+	# Assumed: Only used for L => strip-able
 	foreach {id str} $map {
-	    P add* $str
+	    P add* 1 $str
 	    my force $str $id
 	}
 	return
@@ -804,7 +810,7 @@ oo::class create marpa::export::rtc::Bytes {
 
     constructor {} {
 	for {set k 0} {$k < 256} {incr k} {
-	    dict set mycover $k @LO:ILLEGAL_BYTE_$k
+	    dict set mycover $k @L0:ILLEGAL_BYTE_$k
 	}
 	return
     }
@@ -844,51 +850,119 @@ oo::class create marpa::export::rtc::Bytes {
 # # ## ### ##### ######## #############
 
 oo::class create marpa::export::rtc::Pool {
-    variable mypool
-    variable myfinal
-    variable mytable
-    variable mymax
-    variable mystrsize
-
+    variable mystr     ; # dict (string -> string) : external -> transformed
+    variable mypool    ; # dict (string -> length),
+    #       post-finalize: dict (string -> id)
+    variable myfinal   ; # bool
+    variable mystrings ; # list (string)
+    variable mylengths ; # list (length)
+    variable myoffsets ; # list (offset)
+    variable mymax     ; # length, maximum
+    variable mystrsize ; # total length
+    variable bmap      ;# byte mapping
+    
     constructor {} {
+	set mystr     {}
 	set mypool    {}
 	set myfinal   0
-	set mytable   {}
+	set mystrings {}
+	set mylengths {}
 	set mymax     0
 	set mystrsize 0
+	for {set c 0} {$c < 256} {incr c} {
+	    lappend bmap \\u[format %04x $c] \\[format %o $c]
+	}
 	return
     }
 
-    method add {strings} {
+    method Strip {s} {
+	set is $s
+	# remove @-prefixes
+	while {1} {
+	    set n [regsub {@[^:]*:} $is {}]
+	    if {$n eq $is} break
+	    set is $n
+	}
+	# strip <>-bracketing
+	if {[regexp {^<(.*)>$} $is -> n]} { set is $n }
+
+	# Normalize range strings (insertion of -)
+	if {[string match *@RAN:* $s]||
+	    [string match *@BRAN:* $s]} {
+	    set is \[[my FixRange $is]\]
+	}
+	if {[string match *CLS:* $s]} {
+	    set is \[$is\]
+	}
+
+	# normalize \u00xx to octals.
+	set is [string map $bmap $is]
+	
+	return $is
+    }
+
+    method FixRange {s} {
+	if {[string length $s] == 2} {
+	    return [join [linsert [split $s {}] 1 -] {}]
+	}
+	if {[string match "?\\\\*" $s]} {
+	    return [string index $s 0]-[string range $s 1 end]
+	}
+	if {[regexp {^(\B[^\B]*)([^\B])$} $s -> pfx sfx]} {
+	    return ${pfx}-$sfx
+	}
+	if {[regexp {^(.*)(\B[^\B]*)$} $s -> pfx sfx]} {
+	    return ${pfx}-$sfx
+	}
+	error XXX:($s)
+    }
+    
+    method add {strip strings} {
 	if {$myfinal} {
 	    return -code error "Cannot add strings to finalized pool"
 	}
 	foreach s $strings {
-	    set len [string length $s]
-	    dict set mypool $s $len
+	    set is $s
+	    if {$strip} {
+		set is [my Strip $s]
+	    }
+	    dict set mystr $s $is
+	    set len [string length $is]
+	    dict set mypool $is $len
 	    set n [string length $len]
 	    if {$n > $mymax} { set mymax $n }
 	}
 	return
     }
 
-    method add* {args} {
-	my add $args
+    method add* {strip args} {
+	my add $strip $args
     }
 
-    method content {} {
+    method strings {} {
 	my Finalize
-	return $mytable
+	return $mystrings
+    }
+
+    method lengths {} {
+	my Finalize
+	return $mylengths
+    }
+
+    method offsets {} {
+	my Finalize
+	return $myoffsets
     }
 
     method id {str} {
 	my Finalize
-	return [dict get $mypool $str]
+	# double-ref, external -> internal -> id
+	return [dict get $mypool [dict get $mystr $str]]
     }
 
     method size {} {
 	my Finalize
-	return [llength $mytable]
+	return [llength $mystrings]
     }
 
     method str-size {} {
@@ -900,17 +974,25 @@ oo::class create marpa::export::rtc::Pool {
 
     method Finalize {} {
 	if {$myfinal} return
-	set index 0
+	set myfinal 1
+
 	set lf %${mymax}d
 	set if %[string length [dict size $mypool]]d
+	
+	set index 0
+	set offset 0
 	foreach str [lsort -dict [dict keys $mypool]] {
 	    set len [dict get $mypool $str]
 	    incr mystrsize $len
+	    incr mystrsize ;# \0
 	    dict set mypool $str $index
-	    lappend mytable "/* [format $if $index] */ { [format $lf $len], \"[char quote cstring $str]\" }"
+	    lappend mylengths $len
+	    lappend myoffsets $offset
+	    lappend mystrings "/* [format $if $index] */ \"[char quote cstring $str]\\0\""
 	    incr index
+	    incr offset $len
+	    incr offset ;# \0
 	}
-	set myfinal 1
 	return
     }
 }
@@ -938,11 +1020,23 @@ return
 #include <rtc.h>
 
 /*
- * Shared string pool (@string-sz@ bytes over @string-c@ entries)
+ * Shared string pool (@string-length-sz@ len bytes over @string-c@ entries)
+ *                    (@string-offset-sz@ off bytes -----^)
+ *                    (@string-data-sz@ content bytes)
  */
 
-static marpa_rtc_string @cname@_pool [@string-c@] = { /* @string-sz@ + @string-data-sz@ */
-@string-definitions@
+static marpa_size @cname@_pool_length [@string-c@] = { /* @string-length-sz@ */
+@string-length-v@
+};
+
+static marpa_size @cname@_pool_offset [@string-c@] = { /* @string-offset-sz@ */
+@string-offset-v@
+};
+
+static marpa_rtc_string @cname@_pool = { /* 24 + @string-data-sz@ */
+    @cname@_pool_length,
+    @cname@_pool_offset,
+@string-data-v@
 };
 
 /*
@@ -958,7 +1052,7 @@ static marpa_sym @cname@_l0_rule_definitions [@l0-code-c@] = { /* @l0-code-sz@ *
 };
 
 static marpa_rtc_rules @cname@_l0 = { /* 48 */
-    /* .sname   */  @cname@_pool,
+    /* .sname   */  &@cname@_pool,
     /* .symbols */  { @l0-symbols-c@, @cname@_l0_sym_name },
     /* .rules   */  { 0, NULL },
     /* .rcode   */  @cname@_l0_rule_definitions
@@ -985,7 +1079,7 @@ static marpa_sym @cname@_g1_rule_definitions [@g1-code-c@] = { /* @g1-code-sz@ *
 };
 
 static marpa_rtc_rules @cname@_g1 = { /* 48 */
-    /* .sname   */  @cname@_pool,
+    /* .sname   */  &@cname@_pool,
     /* .symbols */  { @g1-symbols-c@, @cname@_g1_sym_name },
     /* .rules   */  { @g1-rules-c@, @cname@_g1_rule_name },
     /* .rcode   */  @cname@_g1_rule_definitions
