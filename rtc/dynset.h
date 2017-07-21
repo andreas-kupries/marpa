@@ -11,6 +11,7 @@
 #define MARPA_RTC_DYNSET_H
 
 #include <marpa.h>
+#include <spec.h>
 
 /*
  * -- dynamic state of the dynset part of an rtc engine --
@@ -23,7 +24,7 @@ typedef struct marpa_rtc_dynset {
     int              n;
     int              capacity;
     Marpa_Symbol_ID* dense;
-    Marpa_Symbol_ID* sparse;
+    marpa_sym*       sparse;
 } marpa_rtc_dynset;
 
 /*
@@ -37,13 +38,15 @@ int              marpa_rtc_dynset_contains  (marpa_rtc_dynset* s, Marpa_Symbol_I
 int              marpa_rtc_dynset_size      (marpa_rtc_dynset* s);
 Marpa_Symbol_ID* marpa_rtc_dynset_dense     (marpa_rtc_dynset* s);
 void             marpa_rtc_dynset_link      (marpa_rtc_dynset* s, int n);
-void             marpa_rtc_dynset_include   (marpa_rtc_dynset* s, int n, Marpa_Symbol_ID* v);
+void             marpa_rtc_dynset_include   (marpa_rtc_dynset* s, int c, marpa_sym* v);
 
 /* cons     - construct set with maximal capacity
+ * release  - free the set and its contents
  * clear    - empty the set
  * contains - check character (symbol) for presence
  * dense    - return reference to internal `dense` array
  * link     - treat first `n` entries as initialized and cross-link them as proper set
+ * include  - add elements to the set, from a vector
  */
 
 

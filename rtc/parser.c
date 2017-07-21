@@ -10,19 +10,22 @@
 #include <parser.h>
 #include <rtc_int.h>
 
+/*
+ */
+
 void
-marpa_rtc_parser_cons (marpa_rtc_p p)
+marpa_rtc_parser_init (marpa_rtc_p p)
 {
-    PA.g = marpa_g_new (&CO);
-    marpa_rtc_spec_setup (PA.g, SP->g1);
-    PA.recce = marpa_r_new (PA.g);
+    PAR.g = marpa_g_new (CONF);
+    marpa_rtc_spec_setup (PAR.g, SPEC->g1);
+    PAR.recce = marpa_r_new (PAR.g);
 }
 
 void
-marpa_rtc_parser_release (marpa_rtc_p p)
+marpa_rtc_parser_free (marpa_rtc_p p)
 {
-    marpa_g_unref (PA.g);
-    marpa_r_unref (PA.recce);
+    marpa_g_unref (PAR.g);
+    marpa_r_unref (PAR.recce);
 }
 
 void

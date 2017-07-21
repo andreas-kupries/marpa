@@ -12,7 +12,7 @@
 
 #include <marpa.h>
 #include <dynset.h>
-#include <stack.h>
+#include <stack_int.h>
 #include <rtc.h>
 
 /*
@@ -25,13 +25,24 @@ typedef struct marpa_rtc_parser {
 } marpa_rtc_parser;
 
 /*
- * API seen by other parts.
+ * API -- lifecycle
  */
 
-void marpa_rtc_parser_cons    (marpa_rtc_p p);
-void marpa_rtc_parser_release (marpa_rtc_p p);
-void marpa_rtc_parser_enter   (marpa_rtc_p p); // TODO: syms, values
-void marpa_rtc_parser_eof     (marpa_rtc_p p);
+void marpa_rtc_parser_init  (marpa_rtc_p p);
+void marpa_rtc_parser_free  (marpa_rtc_p p);
+
+/*
+ * API -- accessors and mutators
+ */
+
+void marpa_rtc_parser_enter (marpa_rtc_p p); // TODO: syms, values
+void marpa_rtc_parser_eof   (marpa_rtc_p p);
+
+/* init       - initialize a lexer
+ * free       - release lexer state
+ * enter      - push a lexeme
+ * eof        - signal the end of the input
+ */
 
 /* TODO: fail, get-context, extend-context */
 

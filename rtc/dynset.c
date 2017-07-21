@@ -25,7 +25,7 @@ marpa_rtc_dynset_cons (marpa_rtc_dynset* s, int capacity)
 {
     SZ  = 0;
     CAP = capacity;
-    XL  = NALLOC (Marpa_Symbol_ID, capacity);
+    XL  = NALLOC (marpa_sym,       capacity);
     DE  = NALLOC (Marpa_Symbol_ID, capacity);
 }
 
@@ -74,11 +74,11 @@ marpa_rtc_dynset_link (marpa_rtc_dynset* s, int n)
 }
 
 void
-marpa_rtc_dynset_include (marpa_rtc_dynset* s, int n, Marpa_Symbol_ID* v)
+marpa_rtc_dynset_include (marpa_rtc_dynset* s, int c, marpa_sym* v)
 {
     int k;
     Marpa_Symbol_ID x;
-    for (k = 0; k < n; k++) {
+    for (k = 0; k < c; k++) {
 	x = v[k];
 	ASSERT (x < CAP, "Symbol beyond set capacity");
 	/* Skip if already a member */

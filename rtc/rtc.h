@@ -34,14 +34,13 @@ typedef struct marpa_rtc* marpa_rtc_p;
  * API functions
  */
 
-marpa_rtc_p marpa_rtc_cons    (marpa_rtc_spec* g);
-void        marpa_rtc_release (marpa_rtc_p p);
-void        marpa_rtc_enter   (marpa_rtc_p p, const char* bytes);
-void        marpa_rtc_eof     (marpa_rtc_p p);
+marpa_rtc_p          marpa_rtc_cons    (marpa_rtc_spec* g, marpa_rtc_sv_cmd a);
+void                 marpa_rtc_release (marpa_rtc_p p);
+void                 marpa_rtc_enter   (marpa_rtc_p p, const char* bytes, int n);
+void                 marpa_rtc_eof     (marpa_rtc_p p);
+marpa_rtc_semvalue_p marpa_rtc_sv      (marpa_rtc_p p);
 
-// TODO: API for semantic actions.
 // TODO: Callbacks (errors, events?)
-
 #endif
 
 /*

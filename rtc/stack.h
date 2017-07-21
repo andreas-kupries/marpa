@@ -11,28 +11,33 @@
 #define MARPA_RTC_STACK_H
 
 /*
- * -- dynamic state of the stack part of an rtc engine --
+ * Opaque stack definition
  */
 
-#define MARPA_RTC_BSMAX 256
-
-typedef struct marpa_rtc_stack {
-  int  n;
-  int  max;
-  int* data;
-} marpa_rtc_stack;
+typedef struct marpa_rtc_stack* marpa_rtc_stack_p;
 
 /*
- * API seen by other parts.
+ * Indicator to use the internal default for the initial capacity.
  */
 
-void marpa_rtc_stack_init    (marpa_rtc_stack* s);
-void marpa_rtc_stack_release (marpa_rtc_stack* s);
-void marpa_rtc_stack_clear   (marpa_rtc_stack* s);
-void marpa_rtc_stack_push    (marpa_rtc_stack* s, int v);
-int  marpa_rtc_stack_pop     (marpa_rtc_stack* s);
-int  marpa_rtc_stack_size    (marpa_rtc_stack* s);
-void marpa_rtc_stack_move    (marpa_rtc_stack* dst, marpa_rtc_stack* src, int n);
+#define MARPA_RTC_STACK_DEFAULT_CAP (-1)
+
+/*
+ * API -- lifecycle
+ */
+
+marpa_rtc_stack_p marpa_rtc_stack_cons    (int initial_capacity);
+void              marpa_rtc_stack_destroy (marpa_rtc_stack_p s);
+
+/*
+ * API -- accessor and mutators
+ */
+
+int  marpa_rtc_stack_size    (marpa_rtc_stack_p s);
+void marpa_rtc_stack_push    (marpa_rtc_stack_p s, int v);
+int  marpa_rtc_stack_pop     (marpa_rtc_stack_p s);
+void marpa_rtc_stack_clear   (marpa_rtc_stack_p s);
+void marpa_rtc_stack_move    (marpa_rtc_stack_p dst, marpa_rtc_stack_p src, int n);
 
 #endif
 

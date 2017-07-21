@@ -19,28 +19,36 @@
  */
 
 typedef struct marpa_rtc_gate {
-    int               lastchar;   /* last character entered into the gate
-				   */
-    int               lastloc;    /* Location of the lastchar
-				   */
-    marpa_rtc_stack   history;    /* History of the current attempt to
-				   * match a lexeme (or discard)
-				   */
-    marpa_rtc_stack   pending;    /* Scratch stack for partial history replay */
-    marpa_rtc_byteset acceptable; /* Set of acceptable byte (symbols)
-				   */
+    int               lastchar;   /* last character entered into the gate */
+    int               lastloc;    /* Location of the lastchar */
+    marpa_rtc_stack_p history;    /* History of the current match attempt */
+    marpa_rtc_stack_p pending;    /* Scratch stack for history replay */
+    marpa_rtc_byteset acceptable; /* Set of acceptable byte (symbols) */
 } marpa_rtc_gate;
 
 /*
- * API seen by other parts.
+ * API -- lifecycle
  */
 
-void marpa_rtc_gate_cons       (marpa_rtc_p p);
-void marpa_rtc_gate_release    (marpa_rtc_p p);
-void marpa_rtc_gate_enter      (marpa_rtc_p p, const char ch); /* IN.location implied */
+void marpa_rtc_gate_init (marpa_rtc_p p);
+void marpa_rtc_gate_free (marpa_rtc_p p);
+
+/*
+ * API -- accessors and mutators
+ */
+
+void marpa_rtc_gate_enter      (marpa_rtc_p p, const char ch); /* location implied */
 void marpa_rtc_gate_eof        (marpa_rtc_p p);
 void marpa_rtc_gate_acceptable (marpa_rtc_p p);
 void marpa_rtc_gate_redo       (marpa_rtc_p p, int n);
+
+/* init       - initialize a gate
+ * free       - release gate state
+ * enter      - push a single byte of input
+ * eof        - signal the end of the input
+ * acceptable - information from lexer about acceptable bytes
+ * redo       - reset to and replay the last n bytes entered
+ */
 
 /* TODO: get-context, extend-context */
 

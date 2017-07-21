@@ -14,13 +14,13 @@
  */
 
 void
-marpa_rtc_inbound_cons (marpa_rtc_p p)
+marpa_rtc_inbound_init (marpa_rtc_p p)
 {
     IN.location = -1;
 }
 
 void
-marpa_rtc_inbound_release (marpa_rtc_p p)
+marpa_rtc_inbound_free (marpa_rtc_p p)
 {
     /* nothing to do */
 }
@@ -32,12 +32,19 @@ marpa_rtc_inbound_location (marpa_rtc_p p)
 }
 
 void
-marpa_rtc_inbound_enter (marpa_rtc_p p, const char* bytes)
+marpa_rtc_inbound_enter (marpa_rtc_p p, const char* bytes, int n)
 {
-    const char* c = bytes;
-    while (*c) {
-	IN.location ++;
-	marpa_rtc_gate_enter (p, *c);
+    const char* c;
+    if (n < 0) {
+	for (c = bytes; *c; c++) {
+	    IN.location ++;
+	    marpa_rtc_gate_enter (p, *c);
+	}
+    } else {
+	for (c = bytes; n; c++, n--) {
+	    IN.location ++;
+	    marpa_rtc_gate_enter (p, *c);
+	}
     }
 }
 
