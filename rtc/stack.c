@@ -1,28 +1,37 @@
-/*
- * RunTime C - Implementation
- * Helper: Stacks of integers.
+/* Runtime for C-engine (RTC). Declarations. (Stacks of ints)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
+ *
+ * Requirements
  */
 
 #include <stack_int.h>
 #include <critcl_alloc.h>
 #include <critcl_assert.h>
-#include <tcl.h>
 
-#define MARPA_RTC_STACK_DEFAULT_INITIAL_CAP 10
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Shorthands
+ */
+
+#define DEFAULT_INITIAL_CAPACITY 10
 
 #define SZ  (s->size)
 #define CAP (s->capacity)
 #define VAL (s->data)
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API
  */
 
-marpa_rtc_stack_p
-marpa_rtc_stack_cons (int initial_capacity)
+marpatcl_rtc_stack_p
+marpatcl_rtc_stack_cons (int initial_capacity)
 {
-    marpa_rtc_stack_p s = ALLOC (marpa_rtc_stack);
+    marpatcl_rtc_stack_p s = ALLOC (marpatcl_rtc_stack);
+
     if (initial_capacity < 0) {
-	initial_capacity = MARPA_RTC_STACK_DEFAULT_INITIAL_CAP;
+	initial_capacity = DEFAULT_INITIAL_CAPACITY;
     }
     
     SZ  = 0;
@@ -32,20 +41,20 @@ marpa_rtc_stack_cons (int initial_capacity)
 }
 
 void
-marpa_rtc_stack_destroy (marpa_rtc_stack_p s)
+marpatcl_rtc_stack_destroy (marpatcl_rtc_stack_p s)
 {
     FREE (VAL);
     FREE (s);
 }
 
 int 
-marpa_rtc_stack_size (marpa_rtc_stack_p s)
+marpatcl_rtc_stack_size (marpatcl_rtc_stack_p s)
 {
     return SZ;
 }
 
 void
-marpa_rtc_stack_push (marpa_rtc_stack_p s, int v)
+marpatcl_rtc_stack_push (marpatcl_rtc_stack_p s, int v)
 {
     if (SZ == CAP) {
 	CAP += CAP;
@@ -56,7 +65,7 @@ marpa_rtc_stack_push (marpa_rtc_stack_p s, int v)
 }
 
 int
-marpa_rtc_stack_pop (marpa_rtc_stack_p s)
+marpatcl_rtc_stack_pop (marpatcl_rtc_stack_p s)
 {
     ASSERT (SZ > 0, "Pop from empty stack");
     SZ --;
@@ -64,21 +73,23 @@ marpa_rtc_stack_pop (marpa_rtc_stack_p s)
 }
 
 void
-marpa_rtc_stack_clear (marpa_rtc_stack_p s)
+marpatcl_rtc_stack_clear (marpatcl_rtc_stack_p s)
 {
     SZ = 0;
 }
 
 void
-marpa_rtc_stack_move (marpa_rtc_stack_p dst, marpa_rtc_stack_p src, int n)
+marpatcl_rtc_stack_move (marpatcl_rtc_stack_p dst, marpatcl_rtc_stack_p src, int n)
 {
-    int v;
     while (n) {
-	v = marpa_rtc_stack_pop (src);
-	marpa_rtc_stack_push (dst, v);
+	marpatcl_rtc_stack_push (dst, marpatcl_rtc_stack_pop (src));
+	n--;
     }
 }
 
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:

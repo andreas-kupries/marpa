@@ -1,55 +1,59 @@
-/*
- * RunTime C
- * Declarations.
- *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Sub header: byte sets (set of acceptable symbols, max 256)
+/* Runtime for C-engine (RTC). Declarations. (Sets of bytes - max 256)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  */
 
-#ifndef MARPA_RTC_BYTESET_H
-#define MARPA_RTC_BYTESET_H
+#ifndef MARPATCL_RTC_BYTESET_H
+#define MARPATCL_RTC_BYTESET_H
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Requirements
+ */
 
 #include <marpa.h>
 
 /*
- * -- dynamic state of the byteset part of an rtc engine --
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Constants and structures
  */
 
-#define MARPA_RTC_BSMAX 256
+#define MARPATCL_RTC_BSMAX 256
 
-typedef struct marpa_rtc_byteset {
+typedef struct marpatcl_rtc_byteset {
     /* NOTE. This structure works without memory initialization
      * Ref: https://core.tcl.tk/akupries/marpa/wiki?name=fast+sparse+integer+sets+in+C
+     *
+     * Note (%%). While using an `unsigned char` for `dense` would be more
+     *            memory efficient the use of Marpa_Symbol_ID allows us to
+     *            connect directly to some Marpa data structures (See
+     *            marpa_r_terminals_expected()), avoiding a copying step.
      */
     int             n;
-    Marpa_Symbol_ID dense  [MARPA_RTC_BSMAX]; /* (%%) */
-    unsigned char   sparse [MARPA_RTC_BSMAX];
-} marpa_rtc_byteset;
-
-/* (Ad %%)
- * While using char here would be more memory-efficient the use of
- * Marpa_Symbol_ID allows us to connect directly to some Marpa data structures
- * (recognizer: array of expected terminals), avoiding a copying step/loop.
- */
+    Marpa_Symbol_ID dense  [MARPATCL_RTC_BSMAX]; /* (%%) */
+    unsigned char   sparse [MARPATCL_RTC_BSMAX];
+} marpatcl_rtc_byteset;
 
 /*
- * API seen by other parts.
- */
-
-void             marpa_rtc_byteset_clear     (marpa_rtc_byteset* s);
-int              marpa_rtc_byteset_contains  (marpa_rtc_byteset* s, unsigned char c);
-Marpa_Symbol_ID* marpa_rtc_byteset_dense     (marpa_rtc_byteset* s);
-void             marpa_rtc_byteset_link      (marpa_rtc_byteset* s, int n);
-
-/* clear    - empty the set
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API - lifecycle, accessors, mutators
+ *
+ * clear    - empty the set
  * contains - check character (symbol) for presence
  * dense    - return reference to internal `dense` array
  * link     - treat first `n` entries as initialized and cross-link them as proper set
  */
 
+void             marpatcl_rtc_byteset_clear    (marpatcl_rtc_byteset* s);
+int              marpatcl_rtc_byteset_contains (marpatcl_rtc_byteset* s, unsigned char c);
+Marpa_Symbol_ID* marpatcl_rtc_byteset_dense    (marpatcl_rtc_byteset* s);
+void             marpatcl_rtc_byteset_link     (marpatcl_rtc_byteset* s, int n);
 
 #endif
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:

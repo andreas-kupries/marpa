@@ -1,33 +1,39 @@
-/*
- * RunTime C
- * Declarations.
- *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Sub header: integer stack (dynamic array)
+/* Runtime for C-engine (RTC). Declarations. (Stacks of ints)
+ *                             Internal
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  */
 
-#ifndef MARPA_RTC_STACK_INT_H
-#define MARPA_RTC_STACK_INT_H
+#ifndef MARPATCL_RTC_STACK_INT_H
+#define MARPATCL_RTC_STACK_INT_H
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Requirements
+ */
 
 #include <stack.h>
 
 /*
- * Structure of stack objects.
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Constants and structures
  */
 
-typedef struct marpa_rtc_stack {
+typedef struct marpatcl_rtc_stack {
     int  capacity; /* Number of elements allocated for `data` */
     int  size;     /* Number of elements used in `data` */
     int* data;     /* Content of the stack */
-
     /*
-     * The `size` is also the `top-of-stack` information, it points to the
-     * cell of data where the **next** element will get pushed.
+     * The `size` field also provides the `top-of-stack` information, as it
+     * points to the cell of `data` where the **next** element will get
+     * pushed.
      */
-} marpa_rtc_stack;
+} marpatcl_rtc_stack;
 
 #endif
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:
