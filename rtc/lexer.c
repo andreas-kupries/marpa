@@ -5,18 +5,32 @@
  * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
  *
  * Part: Lexer
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Requirements
  */
 
 #include <lexer.h>
 #include <rtc_int.h>
 #include <critcl_assert.h>
 
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Local requirements
+ */
+
+static void marpa_rtc_lexer_complete (marpa_rtc_p p)
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API
+ */
+
 void
 marpa_rtc_lexer_cons (marpa_rtc_p p)
 {
     LX.g = marpa_g_new (&CO);
     marpa_rtc_spec_setup (LX.g, SP->l0);
-    marpa_rtc_dynset_cons (&LX.acceptable, SP->lexemes + SP->nalways);
+    marpa_rtc_dynset_cons (&LX.acceptable, SP->lexemes + SP->always.n);
     marpa_rtc_stack_init  (&LX.lexeme);
     LX.start = -1;
     LX.recce = 0;
@@ -25,7 +39,6 @@ marpa_rtc_lexer_cons (marpa_rtc_p p)
 void
 marpa_rtc_lexer_release (marpa_rtc_p p)
 {
-    // TODO release - check with lexer.tcl behaviour
     marpa_g_unref (LX.g);
     marpa_rtc_dynset_release (&LX.acceptable);
     marpa_rtc_stack_release  (&LX.lexeme);
@@ -34,16 +47,47 @@ marpa_rtc_lexer_release (marpa_rtc_p p)
 void
 marpa_rtc_lexer_enter (marpa_rtc_p p, int ch)
 {
-    // TODO enter
+    /* Contrary to the Tcl runtime the C engine does not get multiple symbols,
+     * only one, the current byte. Because byte-ranges are coded as rules in
+     * the grammar instead of as input symbols.
+     */
+
+    if (LX.start == -1) {
+	LX.start = GA.lastloc;
+    }
+
+    if (ch == -1) {
+	marpa_rtc_lexer_complete (p);
+	return;
+    }
+
+    marpa_rtc_stack_push (LX.lexeme, ch);
+    res = marpa_r_alternative (LX.recce, ch, 1, 1);
+    ASSERT (res >= 0, "L alt");
+    // TODO: handle error
+
+    res = marpa_r_earleme_complete (LX.recce);
+    // TODO marpatcl_process_events (instance->grammar, marpatcl_recognizer_event_to_tcl, instance);
+    if (res != MARPA_ERR_PARSE_EXHAUSTED) {
+	// any error but exhausted is failure
+	ASSERT (res >= 0, "L e-c");
+    }
+
+    if (marpa_r_is_exhausted (LX.recce)) {
+	marpa_rtc_lexer_complete (p);
+	return;
+    }
+
+    // Now the gate can update its (character) acceptables too.
+    marpa_rtc_gate_acceptable (p);
+    return;
 }
 
 void
 marpa_rtc_lexer_eof (marpa_rtc_p p)
 {
     if (LX.start >= 0) {
-	ASSERT (0, "todo complete match");
-	// TODO: complete the parse, eval
-	return;
+	marpa_rtc_lexer_complete (p);
     }
 
     if (LX.recce) {
@@ -68,6 +112,7 @@ marpa_rtc_lexer_acceptable (marpa_rtc_p p, int c, Marpa_Symbol_ID* v)
     LX.start = -1;
     marpa_rtc_stack_clear (&LX.lexeme);
     res = marpa_r_start_input (LX.recce);
+    ASSERT (res >= 0, "L s-i");
     // -- marpatcl_process_events (p->l0, HANDLER, CDATA);
     // TODO: handle error
 
@@ -86,10 +131,12 @@ marpa_rtc_lexer_acceptable (marpa_rtc_p p, int c, Marpa_Symbol_ID* v)
 	buf = marpa_rtc_dynset_dense (&LX.acceptable);
 	for (k=0; k < n; k++) {
 	    res = marpa_r_alternative (LX.recce, buf [k], 1, 1);
+	    ASSERT (res >= 0, "L alt/b");
 	    // TODO: handle error
 	}
 
 	res = marpa_r_earleme_complete (LX.recce);
+	ASSERT (res >= 0, "L e-c/b");
 	// -- marpatcl_process_events (p->l0, HANDLER, CDATA);
 	// TODO: handle error
     }
@@ -97,6 +144,18 @@ marpa_rtc_lexer_acceptable (marpa_rtc_p p, int c, Marpa_Symbol_ID* v)
     // Now the gate can update its (character) acceptables too.
     marpa_rtc_gate_acceptable (p);
 }
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Internal
+ */
+
+void
+marpa_rtc_lexer_complete (marpa_rtc_p p)
+{
+    // TODO complete
+}
+
 
 /*
  * Local Variables:
