@@ -18,15 +18,15 @@
  * Header for the public types
  */
 
-#ifndef MARPA_RTC_H
-#define MARPA_RTC_H
+#ifndef MARPATCL_RTC_H
+#define MARPATCL_RTC_H
 
 /*
  * Opaque structure type, pointer/public.
  * Other types seen in the interface.
  */
 
-typedef struct marpa_rtc* marpa_rtc_p;
+typedef struct marpa_rtc* marpatcl_rtc_p;
 
 #include <spec.h>
 
@@ -34,11 +34,11 @@ typedef struct marpa_rtc* marpa_rtc_p;
  * API functions
  */
 
-marpa_rtc_p          marpa_rtc_cons    (marpa_rtc_spec* g, marpa_rtc_sv_cmd a);
-void                 marpa_rtc_release (marpa_rtc_p p);
-void                 marpa_rtc_enter   (marpa_rtc_p p, const char* bytes, int n);
-void                 marpa_rtc_eof     (marpa_rtc_p p);
-marpa_rtc_semvalue_p marpa_rtc_sv      (marpa_rtc_p p);
+marpatcl_rtc_p          marpatcl_rtc_cons    (marpatcl_rtc_spec* g, marpatcl_rtc_sv_cmd a);
+void                 marpatcl_rtc_release (marpatcl_rtc_p p);
+void                 marpatcl_rtc_enter   (marpatcl_rtc_p p, const char* bytes, int n);
+void                 marpatcl_rtc_eof     (marpatcl_rtc_p p);
+marpatcl_rtc_semvalue_p marpatcl_rtc_sv      (marpatcl_rtc_p p);
 
 // TODO: Callbacks (errors, events?)
 #endif

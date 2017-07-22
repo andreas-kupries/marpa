@@ -21,37 +21,37 @@
  */
 
 void
-marpa_rtc_gate_init (marpa_rtc_p p)
+marpatcl_rtc_gate_init (marpatcl_rtc_p p)
 {
-    marpa_rtc_byteset_clear (ACCEPT);
-    GATE.history = marpa_rtc_stack_cons (80);
-    GATE.pending = marpa_rtc_stack_cons (10);
+    marpatcl_rtc_byteset_clear (ACCEPT);
+    GATE.history = marpatcl_rtc_stack_cons (80);
+    GATE.pending = marpatcl_rtc_stack_cons (10);
     GATE.lastchar = -1;
     GATE.lastloc  = -1;
 }
 
 void
-marpa_rtc_gate_free (marpa_rtc_p p)
+marpatcl_rtc_gate_free (marpatcl_rtc_p p)
 {
-    marpa_rtc_stack_destroy (GATE.history);
-    marpa_rtc_stack_destroy (GATE.pending);
+    marpatcl_rtc_stack_destroy (GATE.history);
+    marpatcl_rtc_stack_destroy (GATE.pending);
     /* GATE.acceptable - nothing to do */
 }
 
 void
-marpa_rtc_gate_enter (marpa_rtc_p p, const char ch)
+marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
 {
     int flushed = 0;
     GATE.lastchar = ch;
     GATE.lastloc  = IN.location;
 
     while (1) {
-	if (marpa_rtc_byteset_contains (ACCEPT, ch)) {
-	    marpa_rtc_stack_push (GATE.history, ch);
+	if (marpatcl_rtc_byteset_contains (ACCEPT, ch)) {
+	    marpatcl_rtc_stack_push (GATE.history, ch);
 	    /* Note: Not pushing the locations, we know the last, and
 	     * and can use that in the `redo` to properly move back.
 	     */
-	    marpa_rtc_lexer_enter (p, ch);
+	    marpatcl_rtc_lexer_enter (p, ch);
 	    return;
 	}
 
@@ -62,18 +62,18 @@ marpa_rtc_gate_enter (marpa_rtc_p p, const char ch)
 	}
 
 	flushed ++;
-	marpa_rtc_lexer_enter (p, -1);
+	marpatcl_rtc_lexer_enter (p, -1);
     }
 }
 
 void
-marpa_rtc_gate_eof (marpa_rtc_p p)
+marpatcl_rtc_gate_eof (marpatcl_rtc_p p)
 {
-    marpa_rtc_lexer_eof (p);
+    marpatcl_rtc_lexer_eof (p);
 }
 
 void
-marpa_rtc_gate_acceptable (marpa_rtc_p p)
+marpatcl_rtc_gate_acceptable (marpatcl_rtc_p p)
 {
     /* This code puts information from the lexer's recognizer directly into
      * the `dense` array of the byteset (x). It then links the retrieved
@@ -83,33 +83,33 @@ marpa_rtc_gate_acceptable (marpa_rtc_p p)
      * (x) To allow this is the reason for `dense` using elements of type
      *     `Marpa_Symbol_ID` instead of `unsigned char`.
      */
-    Marpa_Symbol_ID* v = marpa_rtc_byteset_dense (ACCEPT);
+    Marpa_Symbol_ID* v = marpatcl_rtc_byteset_dense (ACCEPT);
     int              c = marpa_r_terminals_expected (LEX_R, v);
-    marpa_rtc_byteset_link (ACCEPT, c);
+    marpatcl_rtc_byteset_link (ACCEPT, c);
 }
 
 void
-marpa_rtc_gate_redo (marpa_rtc_p p, int n)
+marpatcl_rtc_gate_redo (marpatcl_rtc_p p, int n)
 {
     if (!n) {
-	marpa_rtc_stack_clear (GATE.history);
+	marpatcl_rtc_stack_clear (GATE.history);
     } else {
 	/* Save the part of the history to replay, and reset the location
 	 * accordingly. During replay we move forward again.
 	 */
-	marpa_rtc_stack_move (GATE.pending, GATE.history, n);
+	marpatcl_rtc_stack_move (GATE.pending, GATE.history, n);
 	IN.location -= n;
 	/* Note: The move of the data to replay reversed it as well, placing
 	 * the earlier characters higher in the stack. Popping them off again
 	 * thus provides is them in the original time order, just as we need
 	 * it.
 	 */
-	marpa_rtc_stack_clear (GATE.history);
-	while (marpa_rtc_stack_size (GATE.pending)) {
+	marpatcl_rtc_stack_clear (GATE.history);
+	while (marpatcl_rtc_stack_size (GATE.pending)) {
 	    IN.location ++;
-	    marpa_rtc_gate_enter (p, marpa_rtc_stack_pop (GATE.pending));
+	    marpatcl_rtc_gate_enter (p, marpatcl_rtc_stack_pop (GATE.pending));
 	}
-	ASSERT (!marpa_rtc_stack_size (GATE.pending), "History replay left data behind");
+	ASSERT (!marpatcl_rtc_stack_size (GATE.pending), "History replay left data behind");
     }
 }
 

@@ -1,41 +1,32 @@
-/*
- * RunTime C
- * Declarations.
- *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Sub header: Inbound
+/* Runtime for C-engine (RTC). Declarations. (Engine: Input processing)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  */
 
-#ifndef MARPA_RTC_INBOUND_H
-#define MARPA_RTC_INBOUND_H
+#ifndef MARPATCL_RTC_INBOUND_H
+#define MARPATCL_RTC_INBOUND_H
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Requirements
+ */
 
 #include <rtc.h>
 
 /*
- * -- dynamic state of the inbound part of an rtc engine --
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Structures
  */
 
-typedef struct marpa_rtc_inbound {
+typedef struct marpatcl_rtc_inbound {
     int location; /* Location of the current byte in the input. */
-} marpa_rtc_inbound;
+} marpatcl_rtc_inbound;
 
 /*
- * API -- lifecycle
- */
-
-void marpa_rtc_inbound_init (marpa_rtc_p p);
-void marpa_rtc_inbound_free (marpa_rtc_p p);
-
-/*
- * API -- accessor and mutators
- */
-
-int  marpa_rtc_inbound_location (marpa_rtc_p p);
-void marpa_rtc_inbound_enter    (marpa_rtc_p p, const char* bytes, int n);
-void marpa_rtc_inbound_eof      (marpa_rtc_p p);
-
-/* init     - initialize an input processor
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API - lifecycle, accessors, mutators
+ *
+ * init     - initialize an input processor
  * free     - release input state
  * location - returned the current location in the input, as offset in bytes from the start
  * enter    - push a string of `n` bytes from the input.
@@ -43,7 +34,17 @@ void marpa_rtc_inbound_eof      (marpa_rtc_p p);
  * eof      - signal the end of the input
  */
 
+void marpatcl_rtc_inbound_init     (marpatcl_rtc_p p);
+void marpatcl_rtc_inbound_free     (marpatcl_rtc_p p);
+int  marpatcl_rtc_inbound_location (marpatcl_rtc_p p);
+void marpatcl_rtc_inbound_enter    (marpatcl_rtc_p p, const char* bytes, int n);
+void marpatcl_rtc_inbound_eof      (marpatcl_rtc_p p);
+
 #endif
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:

@@ -14,27 +14,27 @@
  */
 
 void
-marpa_rtc_parser_init (marpa_rtc_p p)
+marpatcl_rtc_parser_init (marpatcl_rtc_p p)
 {
     PAR.g = marpa_g_new (CONF);
-    marpa_rtc_spec_setup (PAR.g, SPEC->g1);
+    marpatcl_rtc_spec_setup (PAR.g, SPEC->g1);
     PAR.recce = marpa_r_new (PAR.g);
 }
 
 void
-marpa_rtc_parser_free (marpa_rtc_p p)
+marpatcl_rtc_parser_free (marpatcl_rtc_p p)
 {
     marpa_g_unref (PAR.g);
     marpa_r_unref (PAR.recce);
 }
 
 void
-marpa_rtc_parser_enter (marpa_rtc_p p) // TODO: enter - syms, values
+marpatcl_rtc_parser_enter (marpatcl_rtc_p p) // TODO: enter - syms, values
 {
 }
 
 void
-marpa_rtc_parser_eof (marpa_rtc_p p)
+marpatcl_rtc_parser_eof (marpatcl_rtc_p p)
 {
     // TODO parser eof
 }

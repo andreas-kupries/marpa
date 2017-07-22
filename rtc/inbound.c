@@ -1,59 +1,62 @@
-/*
- * RunTime C
- * Implementation
+/* Runtime for C-engine (RTC). Implementation. (Engine: Input processing)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Part: Inbound
+ * Requirements
  */
 
 #include <inbound.h>
 #include <rtc_int.h>
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API
  */
 
 void
-marpa_rtc_inbound_init (marpa_rtc_p p)
+marpatcl_rtc_inbound_init (marpatcl_rtc_p p)
 {
     IN.location = -1;
 }
 
 void
-marpa_rtc_inbound_free (marpa_rtc_p p)
+marpatcl_rtc_inbound_free (marpatcl_rtc_p p)
 {
     /* nothing to do */
 }
 
 int 
-marpa_rtc_inbound_location (marpa_rtc_p p)
+marpatcl_rtc_inbound_location (marpatcl_rtc_p p)
 {
     return IN.location;
 }
 
 void
-marpa_rtc_inbound_enter (marpa_rtc_p p, const char* bytes, int n)
+marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const char* bytes, int n)
 {
     const char* c;
     if (n < 0) {
 	for (c = bytes; *c; c++) {
 	    IN.location ++;
-	    marpa_rtc_gate_enter (p, *c);
+	    marpatcl_rtc_gate_enter (p, *c);
 	}
     } else {
 	for (c = bytes; n; c++, n--) {
 	    IN.location ++;
-	    marpa_rtc_gate_enter (p, *c);
+	    marpatcl_rtc_gate_enter (p, *c);
 	}
     }
 }
 
 void
-marpa_rtc_inbound_eof (marpa_rtc_p p)
+marpatcl_rtc_inbound_eof (marpatcl_rtc_p p)
 {
-    marpa_rtc_gate_eof (p);
+    marpatcl_rtc_gate_eof (p);
 }
 
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:

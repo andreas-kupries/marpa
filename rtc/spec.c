@@ -1,29 +1,23 @@
-/*
- * RunTime C
- * Implementation
+/* Runtime for C-engine (RTC). Implementation. (Grammar specification)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Part: Grammar specification
+ * Requirements
  */
 
 #include <spec.h>
 #include <critcl_alloc.h>
 
 /*
- * No functions available for the specification types.
- * This file is a dummy to force a check of the declared data structures
- * when building marpa.
- *
- * When functions become available/needed the comment will change.
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API
  */
 
-
 void
-marpa_rtc_spec_setup (Marpa_Grammar g, marpa_rtc_rules* s)
+marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 {
-    marpa_sym* pc;
-    marpa_sym cmd, detail, proper, sep, start, stop;
+    marpatcl_rtc_sym* pc;
+    marpatcl_rtc_sym cmd, detail, proper, sep, start, stop;
     int k;
     Marpa_Symbol_ID* scratch;
     Marpa_Symbol_ID lastlhs;
@@ -48,7 +42,7 @@ marpa_rtc_spec_setup (Marpa_Grammar g, marpa_rtc_rules* s)
 	    return;
 	case MARPA_RC_PRIO:
 	    /* priority -- full spec */
-	    // copy short marpa_sym over to full-length Marpa_Symbol_ID scratch
+	    // copy short marpatcl_rtc_sym over to full-length Marpa_Symbol_ID scratch
 	    for (k=0;k<detail;k++) { scratch[k] = pc[2+k]; }
 	    lastlhs = pc[1];
 	    marpa_g_rule_new (g, lastlhs, scratch, detail);
@@ -56,7 +50,7 @@ marpa_rtc_spec_setup (Marpa_Grammar g, marpa_rtc_rules* s)
 	    break;
 	case MARPA_RC_PRIS:
 	    /* priority -- short spec, reuse previos lhs */
-	    // copy short marpa_sym over to full-length Marpa_Symbol_ID scratch
+	    // copy short marpatcl_rtc_sym over to full-length Marpa_Symbol_ID scratch
 	    for (k=0;k<detail;k++) { scratch[k] = pc[1+k]; }
 	    marpa_g_rule_new (g, lastlhs, scratch, detail);
 	    pc += 1 + detail;

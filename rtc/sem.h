@@ -1,29 +1,35 @@
-/*
- * RunTime C
- * Declarations.
- *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Semantic values, and AST of such.
+/* Runtime for C-engine (RTC). Declarations. (Semantic values, and ASTs)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  */
 
-#ifndef MARPA_RTC_SEM_H
-#define MARPA_RTC_SEM_H
+#ifndef MARPATCL_RTC_SEM_H
+#define MARPATCL_RTC_SEM_H
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Requirements
+ */
 
 #include <marpa.h>
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Constants, and types (mostly structures)
+ */
 
 /*
  * Opaque declarations for SV references and SV vectors (stack-like)
  */
 
-typedef struct marpa_rtc_semvalue*  marpa_rtc_semvalue_p;
-typedef struct marpa_rtc_sv_array*  marpa_rtc_sv_vec;
+typedef struct marpatcl_rtc_sv*  marpatcl_rtc_sv_p;
+typedef struct marpatcl_rtc_sva* marpatcl_rtc_sv_vec;
 
 /*
  * Structure of a single semantic value
  */
 
-typedef struct marpa_rtc_semvalue {
+typedef struct marpatcl_rtc_sv {
     int tag;      /* type tag to identify what value field to, plus flags
 		   * (type-dependent, (x)) */
     int refCount; /* number of references to the value */
@@ -32,9 +38,9 @@ typedef struct marpa_rtc_semvalue {
 	int              inum;   /* value is integer number */
 	double           fnum;   /* value is floating point number */
 	void*            user;   /* value is user-specific anything */
-	marpa_rtc_sv_vec vec;    /* value is vector of values */
+	marpatcl_rtc_sv_vec vec;    /* value is vector of values */
     } value;
-} marpa_rtc_semvalue;
+} marpatcl_rtc_sv;
 
 /*
  * (x) The lowest 4 bits of tag are the flags.
@@ -47,11 +53,11 @@ typedef struct marpa_rtc_semvalue {
  * Negative values are reserved for the internal tags.
  */
 
-#define marpa_rtc_sv_type_string (-1)
-#define marpa_rtc_sv_type_int    (-2)
-#define marpa_rtc_sv_type_double (-3)
-#define marpa_rtc_sv_type_user (-4)
-#define marpa_rtc_sv_type_vec    (-5)
+#define marpatcl_rtc_sv_type_string (-1)
+#define marpatcl_rtc_sv_type_int    (-2)
+#define marpatcl_rtc_sv_type_double (-3)
+#define marpatcl_rtc_sv_type_user   (-4)
+#define marpatcl_rtc_sv_type_vec    (-5)
 
 /*
  * -- Note: The details of the vector type are hidden from users.
@@ -61,49 +67,56 @@ typedef struct marpa_rtc_semvalue {
  */
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
  * API -- SV -- lifecycle
  */
 
-marpa_rtc_semvalue_p marpa_rtc_semvalue_cons_int    (int x);
-marpa_rtc_semvalue_p marpa_rtc_semvalue_cons_double (double x);
-marpa_rtc_semvalue_p marpa_rtc_semvalue_cons_string (const char* s, int copy);
-marpa_rtc_semvalue_p marpa_rtc_semvalue_cons_user   (int tag, void* data);
-marpa_rtc_semvalue_p marpa_rtc_semvalue_cons_vec    (int capacity);
+marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_int    (int x);
+marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_double (double x);
+marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_string (const char* s, int copy);
+marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_user   (int tag, void* data);
+marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_vec    (int capacity);
 
-void marpa_rtc_semvalue_init_int    (marpa_rtc_semvalue_p v, int x);
-void marpa_rtc_semvalue_init_double (marpa_rtc_semvalue_p v, double x);
-void marpa_rtc_semvalue_init_string (marpa_rtc_semvalue_p v, const char* s, int copy);
-void marpa_rtc_semvalue_init_user   (marpa_rtc_semvalue_p v, int tag, void* data);
-void marpa_rtc_semvalue_init_vec    (marpa_rtc_semvalue_p v, int capacity);
+void marpatcl_rtc_sv_init_int    (marpatcl_rtc_sv_p v, int x);
+void marpatcl_rtc_sv_init_double (marpatcl_rtc_sv_p v, double x);
+void marpatcl_rtc_sv_init_string (marpatcl_rtc_sv_p v, const char* s, int copy);
+void marpatcl_rtc_sv_init_user   (marpatcl_rtc_sv_p v, int tag, void* data);
+void marpatcl_rtc_sv_init_vec    (marpatcl_rtc_sv_p v, int capacity);
 
-void marpa_rtc_semvalue_destroy (marpa_rtc_semvalue_p v);
-void marpa_rtc_semvalue_free    (marpa_rtc_semvalue_p v);
+void marpatcl_rtc_sv_destroy (marpatcl_rtc_sv_p v);
+void marpatcl_rtc_sv_free    (marpatcl_rtc_sv_p v);
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
  * API -- SV -- lifecycle II, references
  */
 
-marpa_rtc_semvalue_p marpa_rtc_semvalue_ref   (marpa_rtc_semvalue_p v);
-void                 marpa_rtc_semvalue_unref (marpa_rtc_semvalue_p v);
+marpatcl_rtc_sv_p marpatcl_rtc_sv_ref   (marpatcl_rtc_sv_p v);
+void              marpatcl_rtc_sv_unref (marpatcl_rtc_sv_p v);
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
  * API -- SV -- accessors and mutators
  */
 
-int         marpa_rtc_semvalue_get_int    (marpa_rtc_semvalue_p v);
-double      marpa_rtc_semvalue_get_double (marpa_rtc_semvalue_p v);
-const char* marpa_rtc_semvalue_get_string (marpa_rtc_semvalue_p v);
-void        marpa_rtc_semvalue_get_user   (marpa_rtc_semvalue_p v, int* tag, void** data);
-int         marpa_rtc_semvalue_get_vec    (marpa_rtc_semvalue_p v, marpa_rtc_semvalue_p** data);
+int         marpatcl_rtc_sv_get_int    (marpatcl_rtc_sv_p v);
+double      marpatcl_rtc_sv_get_double (marpatcl_rtc_sv_p v);
+const char* marpatcl_rtc_sv_get_string (marpatcl_rtc_sv_p v);
+void        marpatcl_rtc_sv_get_user   (marpatcl_rtc_sv_p v, int* tag, void** data);
+int         marpatcl_rtc_sv_get_vec    (marpatcl_rtc_sv_p v, marpatcl_rtc_sv_p** data);
 
-void                 marpa_rtc_semvalue_vec_set   (marpa_rtc_semvalue_p v, int at, marpa_rtc_semvalue_p x);
-marpa_rtc_semvalue_p marpa_rtc_semvalue_vec_get   (marpa_rtc_semvalue_p v, int at);
-void                 marpa_rtc_semvalue_vec_push  (marpa_rtc_semvalue_p v, marpa_rtc_semvalue_p x);
-marpa_rtc_semvalue_p marpa_rtc_semvalue_vec_pop   (marpa_rtc_semvalue_p v);
-void                 marpa_rtc_semvalue_vec_clear (marpa_rtc_semvalue_p v);
-int                  marpa_rtc_semvalue_vec_size  (marpa_rtc_semvalue_p v);
+void              marpatcl_rtc_sv_vec_set   (marpatcl_rtc_sv_p v, int at, marpatcl_rtc_sv_p x);
+marpatcl_rtc_sv_p marpatcl_rtc_sv_vec_get   (marpatcl_rtc_sv_p v, int at);
+void              marpatcl_rtc_sv_vec_push  (marpatcl_rtc_sv_p v, marpatcl_rtc_sv_p x);
+marpatcl_rtc_sv_p marpatcl_rtc_sv_vec_pop   (marpatcl_rtc_sv_p v);
+void              marpatcl_rtc_sv_vec_clear (marpatcl_rtc_sv_p v);
+int               marpatcl_rtc_sv_vec_size  (marpatcl_rtc_semvalue_p v);
 		     
 #endif
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:

@@ -7,8 +7,8 @@
  * Main header, Internals
  */
 
-#ifndef MARPA_RTC_INT_H
-#define MARPA_RTC_INT_H
+#ifndef MARPATCL_RTC_INT_H
+#define MARPATCL_RTC_INT_H
 
 #include <spec.h>
 #include <sem_int.h>
@@ -22,14 +22,14 @@
  */
 
 typedef struct marpa_rtc {
-    marpa_rtc_spec*    spec;    /* Static grammar definitions */
+    marpatcl_rtc_spec*    spec;    /* Static grammar definitions */
     Marpa_Config       config;  /* Config info shared to lexer and parser */
-    marpa_rtc_inbound  in;      /* Main dispatch */
-    marpa_rtc_gate     gate;    /* Gating to lexer */
-    marpa_rtc_lexer    lexer;   /* Lexing, gating to parser */
-    marpa_rtc_parser   parser;  /* Parsing state */
-    marpa_rtc_sv_cmd   action;  /* Dispatcher for user actions */
-    marpa_rtc_sv_array store;   /* Store for the lexer's semantic values */
+    marpatcl_rtc_inbound  in;      /* Main dispatch */
+    marpatcl_rtc_gate     gate;    /* Gating to lexer */
+    marpatcl_rtc_lexer    lexer;   /* Lexing, gating to parser */
+    marpatcl_rtc_parser   parser;  /* Parsing state */
+    marpatcl_rtc_sv_cmd   action;  /* Dispatcher for user actions */
+    marpatcl_rtc_sv_array store;   /* Store for the lexer's semantic values */
 } marpa_rtc;
 
 /*

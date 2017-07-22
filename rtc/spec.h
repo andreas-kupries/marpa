@@ -1,20 +1,25 @@
-/*
- * RunTime C
- * Declarations.
- *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Pre-compiled grammar definition.
+/* Runtime for C-engine (RTC). Declarations. (Grammar specification)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  */
 
-#ifndef MARPA_RTC_SPEC_H
-#define MARPA_RTC_SPEC_H
+#ifndef MARPATCL_RTC_SPEC_H
+#define MARPATCL_RTC_SPEC_H
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Requirements
+ */
 
 // stdint.h, cinttypes.h, inttypes.h, types.h
-
 #include <stdint.h>
 #include <marpa.h>
 #include <sem.h>
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Constants, and types (mostly structures)
+ */
 
 /* Type and space for a single symbol reference/id.
  * uint32_t = 4 byte -- 4G symbols
@@ -24,45 +29,51 @@
  * TODO: Add checks to export::rtc, that these limits hold.
  */
 
-typedef uint16_t marpa_sym;
-typedef uint16_t marpa_size;
+typedef uint16_t marpatcl_rtc_sym;
+typedef uint16_t marpatcl_rtc_size;
 
 /*
- * -- string pool --
- *    no special structures - 2 parallel arrays, lengths and string pointers.
- *    a structure with both is 8 or 16 bytes (32/64 system, 4/8 byte pointers)
- *    due to 4/8 alignment and padding. The two arrays eliminate the padding.
- *    That said, the pointers to the arrays are captured in a structure.
+ * - - -- --- ----- -------- ------------- ---------------------
+ * -- String pool
+ *
+ * No special structures - 2 parallel arrays, lengths and string pointers. A
+ * structure with both is 8 or 16 bytes (32/64 system, 4/8 byte pointers) due
+ * to 4/8 alignment and padding. The two arrays eliminate the padding.  That
+ * said, the pointers to the arrays are captured in a structure.
  */
 
-typedef struct marpa_rtc_string {
-    marpa_size*  length; /* Array of string lengths */
-    marpa_size*  offset; /* Array of string offset */
+typedef struct marpatcl_rtc_string {
+    marpatcl_rtc_size*  length; /* Array of string lengths */
+    marpatcl_rtc_size*  offset; /* Array of string offset */
     const char*  string; /* String data */
-} marpa_rtc_string;
+} marpatcl_rtc_string;
 
 /*
- * -- static vectors of symbol references --
+ * - - -- --- ----- -------- ------------- ---------------------
+ * -- static vectors of symbol references
  */
 
-typedef struct marpa_rtc_symvec {
-    marpa_size size; /* Length of the vector */
-    marpa_sym* data; /* Vector content */
-} marpa_rtc_symvec;
+typedef struct marpatcl_rtc_symvec {
+    marpatcl_rtc_size size; /* Length of the vector */
+    marpatcl_rtc_sym* data; /* Vector content */
+} marpatcl_rtc_symvec;
 
 /*
- * -- grammar definition -- symbols used, rules
+ * - - -- --- ----- -------- ------------- ---------------------
+ * -- grammar definition -- symbols used, rules (as a form of bytecode)
  */
 
-typedef struct marpa_rtc_rules {
-    marpa_rtc_string* sname;   /* Table of strings, shared pool */
-    marpa_rtc_symvec  symbols; /* Table of symbol(name)s. References into string pool */
-    marpa_rtc_symvec  rules;   /* Table of rule(name)s. References into string pool */
+typedef struct marpatcl_rtc_rules {
+    marpatcl_rtc_string* sname;   /* Table of strings, shared pool */
+    marpatcl_rtc_symvec  symbols; /* Table of symbol(name)s. References into string pool */
+    marpatcl_rtc_symvec  rules;   /* Table of rule(name)s. References into string pool */
     /*                          * Optional. Empty = (0, NULL) */
-    marpa_sym*        rcode;   /* Bytecode specifying the rules */
-} marpa_rtc_rules;
+    marpatcl_rtc_sym*        rcode;   /* Bytecode specifying the rules */
+} marpatcl_rtc_rules;
 
-/* Rule encoding ... Virtual machine (Short codes)
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Rule encoding ... Virtual machine (Short codes)
  * Symbols are coded in 12bit -- 4096 maximum
  * Sizes ditto.
  *
@@ -80,7 +91,7 @@ typedef struct marpa_rtc_rules {
  * S/P					0001.ssssssssssssss
  *					0000.ssssssssssssss
  *
- * BRAN: arguments are in 0..255 => bytes, both can be placed into a single marpa_sym
+ * BRAN: arguments are in 0..255 => bytes, both can be placed into a single marpatcl_rtc_sym
  */
 
 #define MARPA_RC_SETUP (0)
@@ -93,7 +104,7 @@ typedef struct marpa_rtc_rules {
 #define MARPA_RC_QUPS  (7)
 #define MARPA_RC_BRAN  (8)
 
-#define MARPA_SYSZ  (sizeof(marpa_sym)*8)
+#define MARPA_SYSZ  (sizeof(marpatcl_rtc_sym)*8)
 #define MARPA_SYTOP ((~0) << (MARPA_SYSZ-4))
 #define MARPA_SYLOW (~MARPA_SYTOP) 
 
@@ -118,25 +129,28 @@ typedef struct marpa_rtc_rules {
 #define MARPA_RCMD_UNBXR(x, a, b) { a = (x) >> 8 ; b = (x) & 255 ; }
 
 /*
- * -- parser definition -- l0, g1 sub-grammars, 
+ * - - -- --- ----- -------- ------------- ---------------------
+ * -- overarching parser definition --
  */
 
-typedef struct marpa_rtc_spec {
-    marpa_size       lexemes;   /* L: number of lexemes in l0 */
-    marpa_size       discards;  /* D: number of discard symbols in l0 */
-    marpa_size       l_symbols; /* X: number of symbols in l0 */
-    /*                           * X = l0.syms */
-    marpa_size       g_symbols; /* G: number of symbols in g1. */
-    /*                           * G = g1.syms */
-    marpa_rtc_symvec always;    /* A: number of symbols always active */
-    /*                           * A = D + |x; x is lexeme, x is LTM| */
-    marpa_rtc_rules* l0;
-    marpa_rtc_rules* g1;
-    marpa_rtc_symvec l0semantic; /* Key codes for creation of L0 semantic values */
-    marpa_rtc_symvec g1semantic; /* Key codes for creation of G1 semantic values */
-} marpa_rtc_spec;
+typedef struct marpatcl_rtc_spec {
+    marpatcl_rtc_size   lexemes;   /* L: number of lexemes in l0 */
+    marpatcl_rtc_size   discards;  /* D: number of discard symbols in l0 */
+    marpatcl_rtc_size   l_symbols; /* X: number of symbols in l0 */
+    /*                              * X = l0.syms */
+    marpatcl_rtc_size   g_symbols; /* G: number of symbols in g1. */
+    /*                              * G = g1.syms */
+    marpatcl_rtc_symvec always;    /* A: number of symbols always active */
+    /*                              * A = D + |x; x is lexeme, x is LTM| */
+    marpatcl_rtc_rules* l0;
+    marpatcl_rtc_rules* g1;
+    marpatcl_rtc_symvec l0semantic; /* Key codes for creation of L0 semantic values */
+    marpatcl_rtc_symvec g1semantic; /* Key codes for creation of G1 semantic values */
+} marpatcl_rtc_spec;
 
-/* G1 semantic coding -- ALTERNATE -- action handler knows coding, 2 predefined handlers
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * G1 semantic coding -- ALTERNATE -- action handler knows coding, 2 predefined handlers
  * [0] == 0 global
  *     == 1 per-rule
  *     == >1 per-rule, fixed size (N-1 elements per rule)
@@ -149,17 +163,17 @@ typedef struct marpa_rtc_spec {
  * table of references, all identical.
  */
 
-#define MARPA_SV_NOP       ((marpa_sym) (-1)) /* Do nothing */
-#define MARPA_SV_START     ((marpa_sym) (0))  /* offset of lexeme start in input */
-#define MARPA_SV_LENGTH    ((marpa_sym) (1))  /* length of lexeme in input */
-#define MARPA_SV_G1START   ((marpa_sym) (2))  /* start of lexeme in G1 (token offset) */
-#define MARPA_SV_G1LENGTH  ((marpa_sym) (3))  /* length of lexeme in G1 */
-#define MARPA_SV_LHS_NAME  ((marpa_sym) (4))  /* Name of the lhs in the reduced rule, lexeme */
-#define MARPA_SV_LHS_ID    ((marpa_sym) (5))  /* Id of the lhs in the reduced rule */
-#define MARPA_SV_RULE_NAME ((marpa_sym) (6))  /* Name of the reduced rule */
-#define MARPA_SV_RULE_ID   ((marpa_sym) (7))  /* Id of the reduced rule */
-#define MARPA_SV_VALUE     ((marpa_sym) (8))  /* Value of the lexeme, value of the children */
-#define MARPA_SV_CMD       ((marpa_sym) (9))  /* User-specified semantic action */
+#define MARPA_SV_NOP       ((marpatcl_rtc_sym) (-1)) /* Do nothing */
+#define MARPA_SV_START     ((marpatcl_rtc_sym) (0))  /* offset of lexeme start in input */
+#define MARPA_SV_LENGTH    ((marpatcl_rtc_sym) (1))  /* length of lexeme in input */
+#define MARPA_SV_G1START   ((marpatcl_rtc_sym) (2))  /* start of lexeme in G1 (token offset) */
+#define MARPA_SV_G1LENGTH  ((marpatcl_rtc_sym) (3))  /* length of lexeme in G1 */
+#define MARPA_SV_LHS_NAME  ((marpatcl_rtc_sym) (4))  /* Name of the lhs in the reduced rule, lexeme */
+#define MARPA_SV_LHS_ID    ((marpatcl_rtc_sym) (5))  /* Id of the lhs in the reduced rule */
+#define MARPA_SV_RULE_NAME ((marpatcl_rtc_sym) (6))  /* Name of the reduced rule */
+#define MARPA_SV_RULE_ID   ((marpatcl_rtc_sym) (7))  /* Id of the reduced rule */
+#define MARPA_SV_VALUE     ((marpatcl_rtc_sym) (8))  /* Value of the lexeme, value of the children */
+#define MARPA_SV_CMD       ((marpatcl_rtc_sym) (9))  /* User-specified semantic action */
 
 /*
  * Tags for G1 semantic coding formats
@@ -171,20 +185,23 @@ typedef struct marpa_rtc_spec {
 /* SV handler for user actions. Input value is a vector of children values.
  * Result is value from the action.
  */
-typedef marpa_rtc_semvalue_p (*marpa_rtc_sv_cmd) (int action, const char* aname,
-						  marpa_rtc_semvalue_p children);
+typedef marpatcl_rtc_semvalue_p (*marpatcl_rtc_sv_cmd) (int action, const char* aname,
+							marpatcl_rtc_semvalue_p children);
 /* TODO: Needs access to context:
  * - active marpa step instruction
  * - dynamic parser state (implies: static grammar structures)
  */
 
-/* Notes:
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Notes:
  * - MARPA_SV_CMD : 2 arguments, string pool reference (action name)
  *                           and action code, counted from 0
  *   Dispatch function decides which to use.
  */
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
  * See also export/rtc.tcl -- Keep In Sync
  *
  * -- symbol allocations in l0           -- in g1
@@ -207,12 +224,19 @@ typedef marpa_rtc_semvalue_p (*marpa_rtc_sv_cmd) (int action, const char* aname,
  */
 
 /*
- * API. Fill a grammar from the static code.
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API
+ *
+ * setup - Use the static structures to fill an active Marpa grammar
  */
 
-void marpa_rtc_spec_setup (Marpa_Grammar g, marpa_rtc_rules* s);
+void marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s);
 		     
 #endif
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:

@@ -1,7 +1,8 @@
-/*
- * RunTime C
- * Implementation
- * Arrays/Vectors of semantic values.
+/* Runtime for C-engine (RTC). Implementation. (Semantic values, and ASTs)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
+ *
+ * Requirements
  */
 
 #include <sem_int.h>
@@ -10,6 +11,7 @@
 #include <tcl.h>
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
  * Shorthands
  */
 
@@ -19,93 +21,95 @@
 #define STRICT (v->strict)
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API
  */
 
-marpa_rtc_sv_vec
-marpa_rtc_sva_cons (int capacity, int strict)
+marpatcl_rtc_sv_vec
+marpatcl_rtc_sva_cons (int capacity, int strict)
 {
-    marpa_rtc_sv_vec v = ALLOC (marpa_rtc_sv_array);
-    marpa_rtc_sva_init (v, capacity, strict);
+    marpatcl_rtc_sv_vec v = ALLOC (marpatcl_rtc_sva);
+    marpatcl_rtc_sva_init (v, capacity, strict);
     return v;
 }
 
 void
-marpa_rtc_sva_destroy (marpa_rtc_sv_vec v)
+marpatcl_rtc_sva_destroy (marpatcl_rtc_sv_vec v)
 {
-    marpa_rtc_sva_free (v);
+    marpatcl_rtc_sva_free (v);
     FREE (v);
     return;
 }
 
 void
-marpa_rtc_sva_init (marpa_rtc_sv_vec v, int capacity, int strict)
+marpatcl_rtc_sva_init (marpatcl_rtc_sv_vec v, int capacity, int strict)
 {
     SZ     = 0;
     CAP    = capacity;
     STRICT = strict;
-    VAL    = NALLOC (marpa_rtc_semvalue_p, capacity);
-    memset (VAL, '\0', sizeof(marpa_rtc_semvalue_p)*capacity);
+    VAL    = NALLOC (marpatcl_rtc_semvalue_p, capacity);
+    memset (VAL, '\0', sizeof(marpatcl_rtc_semvalue_p)*capacity);
     return;
 }
 
 void
-marpa_rtc_sva_free (marpa_rtc_sv_vec v)
+marpatcl_rtc_sva_free (marpatcl_rtc_sv_vec v)
 {
     int k;
     for (k=0; k < SZ; k++) {
-	marpa_rtc_semvalue_unref (VAL [k]);
+	marpatcl_rtc_semvalue_unref (VAL [k]);
     }
     FREE (VAL);
     return;
 }
 
 void 
-marpa_rtc_sva_push (marpa_rtc_sv_vec v, marpa_rtc_semvalue_p x)
+marpatcl_rtc_sva_push (marpatcl_rtc_sv_vec v, marpatcl_rtc_semvalue_p x)
 {
     if (STRICT) {
 	ASSERT (SZ < CAP, "Push into full vector");
     } else if (SZ == CAP) {
 	CAP += CAP;
-	VAL = REALLOC (VAL, marpa_rtc_semvalue_p, CAP);
+	VAL = REALLOC (VAL, marpatcl_rtc_semvalue_p, CAP);
     }
     if (x) {
-	(void) marpa_rtc_semvalue_ref (x);
+	(void) marpatcl_rtc_semvalue_ref (x);
     }
     VAL [SZ] = x;
     SZ ++;
     return;
 }
 
-marpa_rtc_semvalue_p
-marpa_rtc_sva_pop (marpa_rtc_sv_vec v)
+marpatcl_rtc_semvalue_p
+marpatcl_rtc_sva_pop (marpatcl_rtc_sv_vec v)
 {
-    marpa_rtc_semvalue_p x;
+    marpatcl_rtc_semvalue_p x;
     ASSERT (SZ > 0, "Pop from empty vector");
     SZ --;
     x = VAL [SZ];
     VAL [SZ] = 0;
-    marpa_rtc_semvalue_unref (x);
+    marpatcl_rtc_semvalue_unref (x);
     return x;
 }
 
 void
-marpa_rtc_sva_clear (marpa_rtc_sv_vec v)
+marpatcl_rtc_sva_clear (marpatcl_rtc_sv_vec v)
 {
     /* Quick impl. - TODO FUTURE replace with loop to release, memchr to clear */
-    while (SZ) { marpa_rtc_sva_pop (v); }
+    while (SZ) { marpatcl_rtc_sva_pop (v); }
     ASSERT (SZ == 0, "vector clear left data behind");
     return;
 }
 int 
-marpa_rtc_sva_size (marpa_rtc_sv_vec v)
+marpatcl_rtc_sva_size (marpatcl_rtc_sv_vec v)
 {
     return SZ;
 }
 
 void
-marpa_rtc_sva_set (marpa_rtc_sv_vec v, int at, marpa_rtc_semvalue_p x)
+marpatcl_rtc_sva_set (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_semvalue_p x)
 {
-    marpa_rtc_semvalue_p old;
+    marpatcl_rtc_semvalue_p old;
     ASSERT_BOUNDS (at, SZ);
     /*
      * This code relies on the fact that the vector starts nulled, and pop
@@ -115,16 +119,16 @@ marpa_rtc_sva_set (marpa_rtc_sv_vec v, int at, marpa_rtc_semvalue_p x)
     old = VAL [at];
     VAL [at] = x;
     if (x) {
-	(void) marpa_rtc_semvalue_ref (x);
+	(void) marpatcl_rtc_semvalue_ref (x);
     }
     if (old) {
-	marpa_rtc_semvalue_unref (old);
+	marpatcl_rtc_semvalue_unref (old);
     }
     return;    
 }
 
-marpa_rtc_semvalue_p
-marpa_rtc_sva_get (marpa_rtc_sv_vec v, int at)
+marpatcl_rtc_semvalue_p
+marpatcl_rtc_sva_get (marpatcl_rtc_sv_vec v, int at)
 {
     /* Caller is responsible for ref-counting */
     ASSERT_BOUNDS (at, SZ);

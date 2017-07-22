@@ -1,4 +1,4 @@
-/* Runtime for C-engine (RTC). Declarations. (Stacks of ints)
+/* Runtime for C-engine (RTC). Implementation. (Stacks of ints)
  * - - -- --- ----- -------- ------------- ---------------------
  * (c) 2017 Andreas Kupries
  *
