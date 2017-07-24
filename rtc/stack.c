@@ -1,82 +1,95 @@
-/*
- * RunTime C
- * Implementation
+/* Runtime for C-engine (RTC). Implementation. (Stacks of ints)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Part: Stack
+ * Requirements
  */
 
-#include <stack.h>
+#include <stack_int.h>
 #include <critcl_alloc.h>
 #include <critcl_assert.h>
-#include <tcl.h>
-
-#define MARPA_RTC_STK_INIT 10
-
-#define SZ  (s->n)
-#define CAP (s->max)
-#define STK (s->data)
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Shorthands
  */
 
-void
-marpa_rtc_stack_init (marpa_rtc_stack* s)
-{
-    SZ  = 0;
-    CAP = MARPA_RTC_STK_INIT;
-    STK = NALLOC (int, CAP);
-}
+#define DEFAULT_INITIAL_CAPACITY 10
 
-void
-marpa_rtc_stack_release (marpa_rtc_stack* s)
-{
-    FREE (STK); STK = 0;
-    SZ = CAP = 0;
-}
+#define SZ  (s->size)
+#define CAP (s->capacity)
+#define VAL (s->data)
 
-void
-marpa_rtc_stack_clear (marpa_rtc_stack* s)
-{
-    SZ = 0;
-}
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API
+ */
 
-void
-marpa_rtc_stack_push (marpa_rtc_stack* s, int v)
+marpatcl_rtc_stack_p
+marpatcl_rtc_stack_cons (int initial_capacity)
 {
-    if (SZ == CAP) {
-	CAP += CAP;
-	STK = REALLOC (STK, int, CAP);
+    marpatcl_rtc_stack_p s = ALLOC (marpatcl_rtc_stack);
+
+    if (initial_capacity < 0) {
+	initial_capacity = DEFAULT_INITIAL_CAPACITY;
     }
-    STK [SZ] = v;
-    SZ ++;
+    
+    SZ  = 0;
+    CAP = initial_capacity;
+    VAL = NALLOC (int, initial_capacity);
+    return s;
 }
 
-int
-marpa_rtc_stack_pop (marpa_rtc_stack* s)
+void
+marpatcl_rtc_stack_destroy (marpatcl_rtc_stack_p s)
 {
-    ASSERT (SZ > 0, "Pop from empty stack");
-    SZ --;
-    return STK [SZ];
+    FREE (VAL);
+    FREE (s);
 }
 
 int 
-marpa_rtc_stack_size (marpa_rtc_stack* s)
+marpatcl_rtc_stack_size (marpatcl_rtc_stack_p s)
 {
     return SZ;
 }
 
 void
-marpa_rtc_stack_move (marpa_rtc_stack* dst, marpa_rtc_stack* src, int n)
+marpatcl_rtc_stack_push (marpatcl_rtc_stack_p s, int v)
 {
-    int v;
+    if (SZ == CAP) {
+	CAP += CAP;
+	VAL = REALLOC (VAL, int, CAP);
+    }
+    VAL [SZ] = v;
+    SZ ++;
+}
+
+int
+marpatcl_rtc_stack_pop (marpatcl_rtc_stack_p s)
+{
+    ASSERT (SZ > 0, "Pop from empty stack");
+    SZ --;
+    return VAL [SZ];
+}
+
+void
+marpatcl_rtc_stack_clear (marpatcl_rtc_stack_p s)
+{
+    SZ = 0;
+}
+
+void
+marpatcl_rtc_stack_move (marpatcl_rtc_stack_p dst, marpatcl_rtc_stack_p src, int n)
+{
     while (n) {
-	v = marpa_rtc_stack_pop (src);
-	marpa_rtc_stack_push (dst, v);
+	marpatcl_rtc_stack_push (dst, marpatcl_rtc_stack_pop (src));
+	n--;
     }
 }
 
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:

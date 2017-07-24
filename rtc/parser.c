@@ -1,40 +1,47 @@
-/*
- * RunTime C
- * Implementation
+/* Runtime for C-engine (RTC). Implementation. (Engine: Parsing)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Part: Parser
+ * Requirements
  */
 
 #include <parser.h>
 #include <rtc_int.h>
 
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API
+ */
+
 void
-marpa_rtc_parser_cons (marpa_rtc_p p)
+marpatcl_rtc_parser_init (marpatcl_rtc_p p)
 {
-    PA.g = marpa_g_new (&CO);
-    marpa_rtc_spec_setup (PA.g, SP->g1);
-    PA.recce = marpa_r_new (PA.g);
+    PAR.g = marpa_g_new (CONF);
+    marpatcl_rtc_spec_setup (PAR.g, SPEC->g1);
+    PAR.recce = marpa_r_new (PAR.g);
 }
 
 void
-marpa_rtc_parser_release (marpa_rtc_p p)
+marpatcl_rtc_parser_free (marpatcl_rtc_p p)
 {
-    marpa_g_unref (PA.g);
-    marpa_r_unref (PA.recce);
+    marpa_g_unref (PAR.g);
+    marpa_r_unref (PAR.recce);
 }
 
 void
-marpa_rtc_parser_enter (marpa_rtc_p p) // TODO: enter - syms, values
+marpatcl_rtc_parser_enter (marpatcl_rtc_p p) // TODO: enter - syms, values
 {
 }
 
 void
-marpa_rtc_parser_eof (marpa_rtc_p p)
+marpatcl_rtc_parser_eof (marpatcl_rtc_p p)
 {
     // TODO parser eof
 }
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:

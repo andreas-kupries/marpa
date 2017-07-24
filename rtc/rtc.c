@@ -1,10 +1,8 @@
-/*
- * RunTime C
- * Implementation
+/* Runtime for C-engine (RTC). Implementation. (Engine: All together)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Part: Main RTC engine
+ * Requirements
  */
 
 #include <rtc.h>
@@ -12,41 +10,57 @@
 #include <critcl_alloc.h>
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API
  */
 
-marpa_rtc_p
-marpa_rtc_cons (marpa_rtc_spec* g)
+marpatcl_rtc_p
+marpatcl_rtc_cons (marpatcl_rtc_spec* g, marpatcl_rtc_sv_cmd a)
 {
-  marpa_rtc_p p = ALLOC (marpa_rtc);
-  SP = g;
-  (void) marpa_c_init (&CO);
-  marpa_rtc_inbound_cons (p);
-  marpa_rtc_gate_cons    (p);
-  marpa_rtc_lexer_cons   (p);
-  marpa_rtc_parser_cons  (p);
+    marpatcl_rtc_p p = ALLOC (marpatcl_rtc);
+    SPEC = g;
+    (void) marpa_c_init (CONF);
+    marpatcl_rtc_inbound_init (p);
+    marpatcl_rtc_gate_init    (p);
+    marpatcl_rtc_lexer_init   (p);
+    marpatcl_rtc_parser_init  (p);
+    marpatcl_rtc_sva_init     (STOR, 10, 0); /* non-strict, expandable */
+    ACT = a;
 }
 
 void
-marpa_rtc_release (marpa_rtc_p p)
+marpatcl_rtc_destroy (marpatcl_rtc_p p)
 {
-  marpa_rtc_parser_release  (p);
-  marpa_rtc_lexer_release   (p);
-  marpa_rtc_gate_release    (p);
-  marpa_rtc_inbound_release (p);
-  FREE (p);
+    marpatcl_rtc_parser_free  (p);
+    marpatcl_rtc_lexer_free   (p);
+    marpatcl_rtc_gate_free    (p);
+    marpatcl_rtc_inbound_free (p);
+    marpatcl_rtc_sva_free     (STOR);
+    FREE (p);
 }
 
 void
-marpa_rtc_enter (marpa_rtc_p p, const char* bytes)
+marpatcl_rtc_enter (marpatcl_rtc_p p, const char* bytes, int n)
 {
-  marpa_rtc_inbound_enter (p, bytes);
+    marpatcl_rtc_inbound_enter (p, bytes, n);
 }
 
 void
-marpa_rtc_eof (marpa_rtc_p p)
+marpatcl_rtc_eof (marpatcl_rtc_p p)
 {
-  marpa_rtc_inbound_eof (p);
+    marpatcl_rtc_inbound_eof (p);
 }
+
+marpatcl_rtc_sv_p
+marpatcl_rtc_get_sv (marpatcl_rtc_p p)
+{
+    // TODO retrieve SV for the whole parse
+}
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API
+ */
 
 /*
  * Local Variables:

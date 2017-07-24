@@ -1,10 +1,6 @@
-/*
- * RunTime C
- * Declarations.
- *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Main header, Public
+/* Runtime for C-engine (RTC). Declarations. (Engine: All together)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  *
  * Notes:
  * - This engine is byte-based, not character-based. It is the responsibility
@@ -18,31 +14,41 @@
  * Header for the public types
  */
 
-#ifndef MARPA_RTC_H
-#define MARPA_RTC_H
+#ifndef MARPATCL_RTC_H
+#define MARPATCL_RTC_H
 
 /*
- * Opaque structure type, pointer/public.
- * Other types seen in the interface.
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Requirements
  */
-
-typedef struct marpa_rtc* marpa_rtc_p;
 
 #include <spec.h>
 
 /*
- * API functions
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Opaque structure type, pointer/public.
+ * Other types seen in the interface.
  */
 
-marpa_rtc_p marpa_rtc_cons    (marpa_rtc_spec* g);
-void        marpa_rtc_release (marpa_rtc_p p);
-void        marpa_rtc_enter   (marpa_rtc_p p, const char* bytes);
-void        marpa_rtc_eof     (marpa_rtc_p p);
+typedef struct marpatcl_rtc* marpatcl_rtc_p;
 
-// TODO: API for semantic actions.
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API -- lifecycle, accessors and mutators
+ */
+
+marpatcl_rtc_p    marpatcl_rtc_cons    (marpatcl_rtc_spec* g, marpatcl_rtc_sv_cmd a);
+void              marpatcl_rtc_destroy (marpatcl_rtc_p p);
+void              marpatcl_rtc_enter   (marpatcl_rtc_p p, const char* bytes, int n);
+void              marpatcl_rtc_eof     (marpatcl_rtc_p p);
+marpatcl_rtc_sv_p marpatcl_rtc_get_sv  (marpatcl_rtc_p p);
+
 // TODO: Callbacks (errors, events?)
-
 #endif
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:

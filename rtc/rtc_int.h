@@ -1,46 +1,59 @@
-/*
- * RunTime C
- * Declarations.
- *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Main header, Internals
+/* Runtime for C-engine (RTC). Declarations. (Engine: All together)
+ *                             Internal
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  */
 
-#ifndef MARPA_RTC_INT_H
-#define MARPA_RTC_INT_H
+#ifndef MARPATCL_RTC_INT_H
+#define MARPATCL_RTC_INT_H
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Requirements
+ */
 
 #include <spec.h>
+#include <sem_int.h>
 #include <inbound.h>
 #include <gate.h>
 #include <lexer.h>
 #include <parser.h>
 
 /*
- * -- dynamic state of an rtc engine --
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Structures
  */
 
-typedef struct marpa_rtc {
-    marpa_rtc_spec*    spec;    /* Static grammar definitions */
-    Marpa_Config       config;  /* Config info shared to lexer and parser */
-    marpa_rtc_inbound  in;      /* Main dispatch */
-    marpa_rtc_gate     gate;    /* Gating to lexer */
-    marpa_rtc_lexer    lexer;   /* Lexing, gating to parser */
-    marpa_rtc_parser   parser;  /* Parsing state */
-} marpa_rtc;
+typedef struct marpatcl_rtc {
+    marpatcl_rtc_spec*    spec;    /* Static grammar definitions */
+    Marpa_Config          config;  /* Config info shared to lexer and parser */
+    marpatcl_rtc_inbound  in;      /* Main dispatch */
+    marpatcl_rtc_gate     gate;    /* Gating to lexer */
+    marpatcl_rtc_lexer    lexer;   /* Lexing, gating to parser */
+    marpatcl_rtc_parser   parser;  /* Parsing state */
+    marpatcl_rtc_sv_cmd   action;  /* Dispatcher for user actions */
+    marpatcl_rtc_sva      store;   /* Store for the lexer's semantic values */
+} marpatcl_rtc;
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
  * Shorthands for fields.
  */
 
-#define SP (p->spec)
-#define IN (p->in)
-#define GA (p->gate)
-#define LX (p->lexer)
-#define PA (p->parser)
-#define CO (p->config)
+#define SPEC (p->spec)
+#define IN   (p->in)
+#define GATE (p->gate)
+#define LEX  (p->lexer)
+#define PAR  (p->parser)
+#define CONF (&(p->config))
+#define ACT  (p->action)
+#define STOR (&(p->store))
 
 #endif
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:

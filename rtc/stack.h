@@ -1,40 +1,44 @@
+/* Runtime for C-engine (RTC). Declarations. (Stacks of ints)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
+ */
+
+#ifndef MARPATCL_RTC_STACK_H
+#define MARPATCL_RTC_STACK_H
+
 /*
- * RunTime C
- * Declarations.
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Constants and structures
+ * - Opaque stack definition
+ * - Indicator to use the internal default for the initial capacity.
+ */
+
+#define MARPATCL_RTC_STACK_DEFAULT_CAP (-1)
+
+typedef struct marpatcl_rtc_stack* marpatcl_rtc_stack_p;
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API - lifecycle, accessors, mutators
  *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Sub header: integer stack (dynamic array)
+ * cons     - construct set with maximal capacity
+ * release  - free the set and its contents
  */
 
-#ifndef MARPA_RTC_STACK_H
-#define MARPA_RTC_STACK_H
-
-/*
- * -- dynamic state of the stack part of an rtc engine --
- */
-
-#define MARPA_RTC_BSMAX 256
-
-typedef struct marpa_rtc_stack {
-  int  n;
-  int  max;
-  int* data;
-} marpa_rtc_stack;
-
-/*
- * API seen by other parts.
- */
-
-void marpa_rtc_stack_init    (marpa_rtc_stack* s);
-void marpa_rtc_stack_release (marpa_rtc_stack* s);
-void marpa_rtc_stack_clear   (marpa_rtc_stack* s);
-void marpa_rtc_stack_push    (marpa_rtc_stack* s, int v);
-int  marpa_rtc_stack_pop     (marpa_rtc_stack* s);
-int  marpa_rtc_stack_size    (marpa_rtc_stack* s);
-void marpa_rtc_stack_move    (marpa_rtc_stack* dst, marpa_rtc_stack* src, int n);
+marpatcl_rtc_stack_p marpatcl_rtc_stack_cons    (int initial_capacity);
+void                 marpatcl_rtc_stack_destroy (marpatcl_rtc_stack_p s);
+int                  marpatcl_rtc_stack_size    (marpatcl_rtc_stack_p s);
+void                 marpatcl_rtc_stack_push    (marpatcl_rtc_stack_p s, int v);
+int                  marpatcl_rtc_stack_pop     (marpatcl_rtc_stack_p s);
+void                 marpatcl_rtc_stack_clear   (marpatcl_rtc_stack_p s);
+void                 marpatcl_rtc_stack_move    (marpatcl_rtc_stack_p dst,
+						 marpatcl_rtc_stack_p src, int n);
 
 #endif
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:
