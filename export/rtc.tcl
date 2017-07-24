@@ -36,16 +36,16 @@ namespace eval ::marpa::export::rtc {
     variable self [info script]
     variable indent {    }
     variable ak {
-	start    MARPA_SV_START
-	length	 MARPA_SV_LENGTH  
-	g1start	 MARPA_SV_G1START 
-	g1length MARPA_SV_G1LENGTH
-	symbol	 MARPA_SV_LHS_NAME
-	lhs	 MARPA_SV_LHS_ID  
-	name	 MARPA_SV_RULE_NAME
-	rule	 MARPA_SV_RULE_ID 
-	value	 MARPA_SV_VALUE   
-	values   MARPA_SV_VALUE   
+	start    MARPATCL_SV_START
+	length	 MARPATCL_SV_LENGTH  
+	g1start	 MARPATCL_SV_G1START 
+	g1length MARPATCL_SV_G1LENGTH
+	symbol	 MARPATCL_SV_LHS_NAME
+	lhs	 MARPATCL_SV_LHS_ID  
+	name	 MARPATCL_SV_RULE_NAME
+	rule	 MARPATCL_SV_RULE_ID 
+	value	 MARPATCL_SV_VALUE   
+	values   MARPATCL_SV_VALUE   
     }
 }
 
@@ -219,12 +219,12 @@ proc ::marpa::export::rtc::Generate {serial} {
     set dsz 0
     # type		sizeof/64
     # ----------------- ------------
-    # marpa_sym		2
+    # marpatcl_rtc_sym		2
     # char*		8
-    # marpa_rtc_string	24 = 3*8
-    # marpa_rtc_symvec	16 = (2+(6)+8)
-    # marpa_rtc_rules	48 = (8+16+16+8)
-    # marpa_rtc_spec	72 = (2+2+2+2+16+8+8+16+16)
+    # marpatcl_rtc_string	24 = 3*8
+    # marpatcl_rtc_symvec	16 = (2+(6)+8)
+    # marpatcl_rtc_rules	48 = (8+16+16+8)
+    # marpatcl_rtc_spec	72 = (2+2+2+2+16+8+8+16+16)
     # ----------------- ------------
     # Note: Inner (..) values are padding
     
@@ -246,10 +246,10 @@ proc ::marpa::export::rtc::Generate {serial} {
     lappend map @string-data-sz@ [P str-size]
     lappend map @string-data-v@  [Array "    " " " [P strings] -1]
 
-    incr dsz 24 ;# sizeof(marpa_rtc_string)
+    incr dsz 24 ;# sizeof(marpatcl_rtc_string)
 
     # L0 grammar: symbols, rules, semantics
-    incr dsz [* 2 [L size]]       ; # sizeof(marpa_sym) = 2
+    incr dsz [* 2 [L size]]       ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-symbols-sz@		[* 2 [L size]]
     lappend map @l0-symbols-c@		[L size]
     lappend map @l0-symbols-indices@	[Chunked [L refs] \
@@ -260,41 +260,41 @@ proc ::marpa::export::rtc::Generate {serial} {
 					     Discard        [llength $discards] \
 					     Internal]
 
-    incr dsz [* 2 [LR elements]]  ; # sizeof(marpa_sym) = 2
+    incr dsz [* 2 [LR elements]]  ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-code-sz@            [* 2 [LR elements]]
     lappend map @l0-code-c@             [LR elements]
     lappend map @l0-code@		[LR content]
 
-    incr dsz [* 2 [llength $sem]] ; # sizeof(marpa_sym) = 2
+    incr dsz [* 2 [llength $sem]] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-semantics-sz@       [* 2 [llength $sem]]
     lappend map @l0-semantics-c@        [llength $sem]
     lappend map @l0-semantics-v@        [CArray $sem 16]
 
-    incr dsz 48                   ; # sizeof(marpa_rtc_rules) = 48
+    incr dsz 48                   ; # sizeof(marpatcl_rtc_rules) = 48
     
     # G1 grammar: symbols, rules
-    incr dsz [* 2 [G size]]      ; # sizeof(marpa_sym) = 2
+    incr dsz [* 2 [G size]]      ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-symbols-sz@		[* 2 [G size]]
     lappend map @g1-symbols-c@	   	[G size]
     lappend map @g1-symbols-indices@	[Chunked [G refs] \
 					     Terminals [llength $lex] \
 					     Structure]
 
-    incr dsz [* 2 [GR elements]] ; # sizeof(marpa_sym) = 2
+    incr dsz [* 2 [GR elements]] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-code-sz@            [* 2 [GR elements]]
     lappend map @g1-code-c@             [GR elements]
     lappend map @g1-code@	   	[GR content]
 
-    incr dsz [* 2 [GR size]]     ; # sizeof(marpa_sym) = 2
+    incr dsz [* 2 [GR size]]     ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-rules-sz@		[* 2 [GR size]]
     lappend map @g1-rules-c@		[GR size]
     lappend map @g1-rules-v@		[CArray [GR refs] 16]
 
-    incr dsz 48                  ; # sizeof(marpa_rtc_rules) = 48
+    incr dsz 48                  ; # sizeof(marpatcl_rtc_rules) = 48
 
     # G1 grammar: semantics
     set acode [EncodeGS asz [A tag] [A content] [GR size]]
-    incr dsz [* 2 $asz] ; # sizeof(marpa_sym) = 2
+    incr dsz [* 2 $asz] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-semantics-sz@       [* 2 $asz]
     lappend map @g1-semantics-c@        $asz
     lappend map @g1-semantics-v@        $acode
@@ -309,7 +309,7 @@ proc ::marpa::export::rtc::Generate {serial} {
     lappend map @always-v@              [CArray $always 16]
     # ^ always - how to code if none is always?
 
-    incr dsz 72 ; # sizeof(marpa_rtc_spec) = 72
+    incr dsz 72 ; # sizeof(marpatcl_rtc_spec) = 72
 
     lappend map @space@ $dsz
     
@@ -469,10 +469,10 @@ proc ::marpa::export::rtc::EncodeGS {cv tag data nr} {
     set size [llength $data]
     incr size
     switch -exact -- $tag {
-	MARPA_S_SINGLE {
+	MARPATCL_S_SINGLE {
 	    return [CArray [linsert $data 0 $tag] 80]
 	}
-	MARPA_S_PER {
+	MARPATCL_S_PER {
 	    set chunks {}
 	    lappend chunks Tag 1
 	    lappend chunks References $nr
@@ -550,13 +550,13 @@ oo::class create marpa::export::rtc::SemaG {
 	set myfinal 1
 	if {[dict size $mysema] == 1} {
 	    # Code global
-	    set mytag  MARPA_S_SINGLE
+	    set mytag  MARPATCL_S_SINGLE
 	    set mycode [lindex [dict keys $mysema] 0]
 	    return
 	}
 	# Code variadic
 	set ref    $mycount
-	set mytag  MARPA_S_PER
+	set mytag  MARPATCL_S_PER
 	set mycode [lrepeat -1 $mycount]
 	foreach s [lsort -dict [dict keys $mysema]] {
 	    lappend mycode {*}$s
@@ -621,7 +621,7 @@ oo::class create marpa::export::rtc::Rules {
 
     method P_brange {lhs start stop} {
 	lappend cmd [my C brange [S 2id $lhs]]
-	lappend cmd "MARPA_RCMD_BOXR ([format %3d $start],[format %3d $stop])"
+	lappend cmd "MARPATCL_RCMD_BOXR ([format %3d $start],[format %3d $stop])"
 	my P $cmd $lhs {}
 	incr myelements 2
 	return
@@ -697,7 +697,7 @@ oo::class create marpa::export::rtc::Rules {
     }
 
     method C {cmd v} {
-	return "MARPA_RCMD_[dict get {
+	return "MARPATCL_RCMD_[dict get {
 	    brange     {BRAN }
 	    sep        {SEP}
 	    proper     {SEPP}
@@ -1017,6 +1017,7 @@ return
 ** Space taken: @space@ bytes
 */
 
+#include <spec.h>
 #include <rtc.h>
 
 /*
@@ -1025,15 +1026,15 @@ return
  *                    (@string-data-sz@ content bytes)
  */
 
-static marpa_size @cname@_pool_length [@string-c@] = { /* @string-length-sz@ */
+static marpatcl_rtc_size @cname@_pool_length [@string-c@] = { /* @string-length-sz@ */
 @string-length-v@
 };
 
-static marpa_size @cname@_pool_offset [@string-c@] = { /* @string-offset-sz@ */
+static marpatcl_rtc_size @cname@_pool_offset [@string-c@] = { /* @string-offset-sz@ */
 @string-offset-v@
 };
 
-static marpa_rtc_string @cname@_pool = { /* 24 + @string-data-sz@ */
+static marpatcl_rtc_string @cname@_pool = { /* 24 + @string-data-sz@ */
     @cname@_pool_length,
     @cname@_pool_offset,
 @string-data-v@
@@ -1043,22 +1044,22 @@ static marpa_rtc_string @cname@_pool = { /* 24 + @string-data-sz@ */
  * L0 structures
  */
 
-static marpa_sym @cname@_l0_sym_name [@l0-symbols-c@] = { /* @l0-symbols-sz@ */
+static marpatcl_rtc_sym @cname@_l0_sym_name [@l0-symbols-c@] = { /* @l0-symbols-sz@ */
 @l0-symbols-indices@
 };
 
-static marpa_sym @cname@_l0_rule_definitions [@l0-code-c@] = { /* @l0-code-sz@ */
+static marpatcl_rtc_sym @cname@_l0_rule_definitions [@l0-code-c@] = { /* @l0-code-sz@ */
 @l0-code@
 };
 
-static marpa_rtc_rules @cname@_l0 = { /* 48 */
+static marpatcl_rtc_rules @cname@_l0 = { /* 48 */
     /* .sname   */  &@cname@_pool,
     /* .symbols */  { @l0-symbols-c@, @cname@_l0_sym_name },
     /* .rules   */  { 0, NULL },
     /* .rcode   */  @cname@_l0_rule_definitions
 };
 
-static marpa_sym @cname@_l0semantics [@l0-semantics-c@] = { /* @l0-semantics-sz@ */
+static marpatcl_rtc_sym @cname@_l0semantics [@l0-semantics-c@] = { /* @l0-semantics-sz@ */
 @l0-semantics-v@
 };
 
@@ -1066,26 +1067,26 @@ static marpa_sym @cname@_l0semantics [@l0-semantics-c@] = { /* @l0-semantics-sz@
  * G1 structures
  */
 
-static marpa_sym @cname@_g1_sym_name [@g1-symbols-c@] = { /* @g1-symbols-sz@ */
+static marpatcl_rtc_sym @cname@_g1_sym_name [@g1-symbols-c@] = { /* @g1-symbols-sz@ */
 @g1-symbols-indices@
 };
 
-static marpa_sym @cname@_g1_rule_name [@g1-rules-c@] = { /* @g1-rules-sz@ */
+static marpatcl_rtc_sym @cname@_g1_rule_name [@g1-rules-c@] = { /* @g1-rules-sz@ */
 @g1-rules-v@
 };
 
-static marpa_sym @cname@_g1_rule_definitions [@g1-code-c@] = { /* @g1-code-sz@ */
+static marpatcl_rtc_sym @cname@_g1_rule_definitions [@g1-code-c@] = { /* @g1-code-sz@ */
 @g1-code@
 };
 
-static marpa_rtc_rules @cname@_g1 = { /* 48 */
+static marpatcl_rtc_rules @cname@_g1 = { /* 48 */
     /* .sname   */  &@cname@_pool,
     /* .symbols */  { @g1-symbols-c@, @cname@_g1_sym_name },
     /* .rules   */  { @g1-rules-c@, @cname@_g1_rule_name },
     /* .rcode   */  @cname@_g1_rule_definitions
 };
 
-static marpa_sym @cname@_g1semantics [@g1-semantics-c@] = { /* @g1-semantics-sz@ */
+static marpatcl_rtc_sym @cname@_g1semantics [@g1-semantics-c@] = { /* @g1-semantics-sz@ */
 @g1-semantics-v@
 };
 
@@ -1093,11 +1094,11 @@ static marpa_sym @cname@_g1semantics [@g1-semantics-c@] = { /* @g1-semantics-sz@
  * Parser definition
  */
 
-static marpa_sym @cname@_always [@always-c@] = { /* @always-sz@ */
+static marpatcl_rtc_sym @cname@_always [@always-c@] = { /* @always-sz@ */
 @always-v@
 };
 
-static marpa_rtc_spec @cname@_spec = { /* 72 */
+static marpatcl_rtc_spec @cname@_spec = { /* 72 */
     /* .lexemes    */  @lexemes-c@,
     /* .discards   */  @discards-c@,
     /* .l_symbols  */  @l0-symbols-c@,
@@ -1113,10 +1114,10 @@ static marpa_rtc_spec @cname@_spec = { /* 72 */
  * Constructor
  */
 
-marpa_rtc_p
-@cname@_constructor (marpa_rtc_sv_cmd a)
+marpatcl_rtc_p
+@cname@_constructor (marpatcl_rtc_sv_cmd a)
 {
-    return marpa_rtc_cons (&@cname@_spec, a);
+    return marpatcl_rtc_cons (&@cname@_spec, a);
 }
 
 // open things

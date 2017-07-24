@@ -35,7 +35,7 @@ marpatcl_rtc_byteset_contains (marpatcl_rtc_byteset* s, unsigned char c)
     return (XL [c] < SZ) && (DE [XL [c]] == c);
 }
 
-Marpatcl_Symbol_ID*
+Marpa_Symbol_ID*
 marpatcl_rtc_byteset_dense (marpatcl_rtc_byteset* s)
 {
     return DE;

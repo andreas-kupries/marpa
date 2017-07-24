@@ -12,8 +12,6 @@
  */
 
 #include <marpa.h>
-#include <dynset.h>
-#include <stack_int.h>
 #include <rtc.h>
 
 /*

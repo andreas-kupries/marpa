@@ -1,4 +1,4 @@
-/* Runtime for C-engine (RTC). Declarations. (Engine: Lexeing, Parser gating)
+/* Runtime for C-engine (RTC). Declarations. (Engine: Lexing, Parser gating)
  * - - -- --- ----- -------- ------------- ---------------------
  * (c) 2017 Andreas Kupries
  */
@@ -12,7 +12,7 @@
  */
 
 #include <marpa.h>
-#include <dynset.h>
+#include <symset.h>
 #include <stack_int.h>
 #include <rtc.h>
 
@@ -24,7 +24,7 @@
 typedef struct marpatcl_rtc_lexer {
     Marpa_Grammar        g;             /* Underlying L0 grammar */
     Marpa_Recognizer     recce;         /* Current recognizer */
-    marpatcl_rtc_dynset  acceptable;    /* Currently acceptable parser symbols */
+    marpatcl_rtc_symset  acceptable;    /* Currently acceptable parser symbols */
     marpatcl_rtc_stack_p lexeme;        /* Characters in the current match */
     int                  start;         /* Location of match start */
 } marpatcl_rtc_lexer;

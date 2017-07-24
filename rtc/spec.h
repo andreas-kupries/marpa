@@ -19,9 +19,8 @@
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * Constants, and types (mostly structures)
- */
-
-/* Type and space for a single symbol reference/id.
+ *
+ * Type and space for a single symbol reference/id.
  * uint32_t = 4 byte -- 4G symbols
  * uint16_t = 2 byte -- 64K symbols -- good enough
  *
@@ -94,39 +93,39 @@ typedef struct marpatcl_rtc_rules {
  * BRAN: arguments are in 0..255 => bytes, both can be placed into a single marpatcl_rtc_sym
  */
 
-#define MARPA_RC_SETUP (0)
-#define MARPA_RC_DONE  (1)
-#define MARPA_RC_PRIO  (2)
-#define MARPA_RC_PRIS  (3)
-#define MARPA_RC_QUN   (4)
-#define MARPA_RC_QUP   (5)
-#define MARPA_RC_QUNS  (6)
-#define MARPA_RC_QUPS  (7)
-#define MARPA_RC_BRAN  (8)
+#define MARPATCL_RC_SETUP (0)
+#define MARPATCL_RC_DONE  (1)
+#define MARPATCL_RC_PRIO  (2)
+#define MARPATCL_RC_PRIS  (3)
+#define MARPATCL_RC_QUN   (4)
+#define MARPATCL_RC_QUP   (5)
+#define MARPATCL_RC_QUNS  (6)
+#define MARPATCL_RC_QUPS  (7)
+#define MARPATCL_RC_BRAN  (8)
 
-#define MARPA_SYSZ  (sizeof(marpatcl_rtc_sym)*8)
-#define MARPA_SYTOP ((~0) << (MARPA_SYSZ-4))
-#define MARPA_SYLOW (~MARPA_SYTOP) 
+#define MARPATCL_SYSZ  (sizeof(marpatcl_rtc_sym)*8)
+#define MARPATCL_SYTOP ((~0) << (MARPATCL_SYSZ-4))
+#define MARPATCL_SYLOW (~MARPATCL_SYTOP) 
 
-#define MARPA_CMD(t,v)   (((t & 15) << (MARPA_SYSZ-4)) | ((v) & MARPA_SYLOW))
+#define MARPATCL_CMD(t,v)   (((t & 15) << (MARPATCL_SYSZ-4)) | ((v) & MARPATCL_SYLOW))
 
-#define MARPA_RCMD_SETUP(n) (MARPA_CMD (MARPA_RC_SETUP, n))
-#define MARPA_RCMD_DONE(n)  (MARPA_CMD (MARPA_RC_DONE, n))
-#define MARPA_RCMD_PRIO(n)  (MARPA_CMD (MARPA_RC_PRIO, n))
-#define MARPA_RCMD_PRIS(n)  (MARPA_CMD (MARPA_RC_PRIS, n))
-#define MARPA_RCMD_QUN(s)   (MARPA_CMD (MARPA_RC_QUN, s))
-#define MARPA_RCMD_QUP(s)   (MARPA_CMD (MARPA_RC_QUP, s))
-#define MARPA_RCMD_QUNS(s)  (MARPA_CMD (MARPA_RC_QUNS, s))
-#define MARPA_RCMD_QUPS(s)  (MARPA_CMD (MARPA_RC_QUPS, s))
-#define MARPA_RCMD_BRAN(s)  (MARPA_CMD (MARPA_RC_BRAN, s))
+#define MARPATCL_RCMD_SETUP(n) (MARPATCL_CMD (MARPATCL_RC_SETUP, n))
+#define MARPATCL_RCMD_DONE(n)  (MARPATCL_CMD (MARPATCL_RC_DONE, n))
+#define MARPATCL_RCMD_PRIO(n)  (MARPATCL_CMD (MARPATCL_RC_PRIO, n))
+#define MARPATCL_RCMD_PRIS(n)  (MARPATCL_CMD (MARPATCL_RC_PRIS, n))
+#define MARPATCL_RCMD_QUN(s)   (MARPATCL_CMD (MARPATCL_RC_QUN, s))
+#define MARPATCL_RCMD_QUP(s)   (MARPATCL_CMD (MARPATCL_RC_QUP, s))
+#define MARPATCL_RCMD_QUNS(s)  (MARPATCL_CMD (MARPATCL_RC_QUNS, s))
+#define MARPATCL_RCMD_QUPS(s)  (MARPATCL_CMD (MARPATCL_RC_QUPS, s))
+#define MARPATCL_RCMD_BRAN(s)  (MARPATCL_CMD (MARPATCL_RC_BRAN, s))
 
-#define MARPA_RCMD_SEP(s)  (MARPA_CMD (0, s))
-#define MARPA_RCMD_SEPP(s) (MARPA_CMD (1, s))
+#define MARPATCL_RCMD_SEP(s)  (MARPATCL_CMD (0, s))
+#define MARPATCL_RCMD_SEPP(s) (MARPATCL_CMD (1, s))
 
-#define MARPA_RCMD_UNBOX(x, tv, vv) { tv = (x) >> (MARPA_SYSZ-4) ; vv = (x) & MARPA_SYLOW ; }
+#define MARPATCL_RCMD_UNBOX(x, tv, vv) { tv = (x) >> (MARPATCL_SYSZ-4) ; vv = (x) & MARPATCL_SYLOW ; }
 
-#define MARPA_RCMD_BOXR(a,b)      (((a) << 8)|(b))
-#define MARPA_RCMD_UNBXR(x, a, b) { a = (x) >> 8 ; b = (x) & 255 ; }
+#define MARPATCL_RCMD_BOXR(a,b)      (((a) << 8)|(b))
+#define MARPATCL_RCMD_UNBXR(x, a, b) { a = (x) >> 8 ; b = (x) & 255 ; }
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -163,30 +162,30 @@ typedef struct marpatcl_rtc_spec {
  * table of references, all identical.
  */
 
-#define MARPA_SV_NOP       ((marpatcl_rtc_sym) (-1)) /* Do nothing */
-#define MARPA_SV_START     ((marpatcl_rtc_sym) (0))  /* offset of lexeme start in input */
-#define MARPA_SV_LENGTH    ((marpatcl_rtc_sym) (1))  /* length of lexeme in input */
-#define MARPA_SV_G1START   ((marpatcl_rtc_sym) (2))  /* start of lexeme in G1 (token offset) */
-#define MARPA_SV_G1LENGTH  ((marpatcl_rtc_sym) (3))  /* length of lexeme in G1 */
-#define MARPA_SV_LHS_NAME  ((marpatcl_rtc_sym) (4))  /* Name of the lhs in the reduced rule, lexeme */
-#define MARPA_SV_LHS_ID    ((marpatcl_rtc_sym) (5))  /* Id of the lhs in the reduced rule */
-#define MARPA_SV_RULE_NAME ((marpatcl_rtc_sym) (6))  /* Name of the reduced rule */
-#define MARPA_SV_RULE_ID   ((marpatcl_rtc_sym) (7))  /* Id of the reduced rule */
-#define MARPA_SV_VALUE     ((marpatcl_rtc_sym) (8))  /* Value of the lexeme, value of the children */
-#define MARPA_SV_CMD       ((marpatcl_rtc_sym) (9))  /* User-specified semantic action */
+#define MARPATCL_SV_NOP       ((marpatcl_rtc_sym) (-1)) /* Do nothing */
+#define MARPATCL_SV_START     ((marpatcl_rtc_sym) (0))  /* offset of lexeme start in input */
+#define MARPATCL_SV_LENGTH    ((marpatcl_rtc_sym) (1))  /* length of lexeme in input */
+#define MARPATCL_SV_G1START   ((marpatcl_rtc_sym) (2))  /* start of lexeme in G1 (token offset) */
+#define MARPATCL_SV_G1LENGTH  ((marpatcl_rtc_sym) (3))  /* length of lexeme in G1 */
+#define MARPATCL_SV_LHS_NAME  ((marpatcl_rtc_sym) (4))  /* Name of the lhs in the reduced rule, lexeme */
+#define MARPATCL_SV_LHS_ID    ((marpatcl_rtc_sym) (5))  /* Id of the lhs in the reduced rule */
+#define MARPATCL_SV_RULE_NAME ((marpatcl_rtc_sym) (6))  /* Name of the reduced rule */
+#define MARPATCL_SV_RULE_ID   ((marpatcl_rtc_sym) (7))  /* Id of the reduced rule */
+#define MARPATCL_SV_VALUE     ((marpatcl_rtc_sym) (8))  /* Value of the lexeme, value of the children */
+#define MARPATCL_SV_CMD       ((marpatcl_rtc_sym) (9))  /* User-specified semantic action */
 
 /*
  * Tags for G1 semantic coding formats
  */
 
-#define MARPA_S_SINGLE (-1)
-#define MARPA_S_PER    (-2)
+#define MARPATCL_S_SINGLE (-1)
+#define MARPATCL_S_PER    (-2)
 
 /* SV handler for user actions. Input value is a vector of children values.
  * Result is value from the action.
  */
-typedef marpatcl_rtc_semvalue_p (*marpatcl_rtc_sv_cmd) (int action, const char* aname,
-							marpatcl_rtc_semvalue_p children);
+typedef marpatcl_rtc_sv_p (*marpatcl_rtc_sv_cmd) (int action, const char* aname,
+						  marpatcl_rtc_sv_p children);
 /* TODO: Needs access to context:
  * - active marpa step instruction
  * - dynamic parser state (implies: static grammar structures)
@@ -195,7 +194,7 @@ typedef marpatcl_rtc_semvalue_p (*marpatcl_rtc_sv_cmd) (int action, const char* 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * Notes:
- * - MARPA_SV_CMD : 2 arguments, string pool reference (action name)
+ * - MARPATCL_SV_CMD : 2 arguments, string pool reference (action name)
  *                           and action code, counted from 0
  *   Dispatch function decides which to use.
  */

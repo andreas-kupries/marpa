@@ -1,16 +1,16 @@
-/*
- * RunTime C
- * Implementation
+/* Runtime for C-engine (RTC). Implementation. (Engine: Parsing)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Part: Parser
+ * Requirements
  */
 
 #include <parser.h>
 #include <rtc_int.h>
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API
  */
 
 void
@@ -38,6 +38,10 @@ marpatcl_rtc_parser_eof (marpatcl_rtc_p p)
 {
     // TODO parser eof
 }
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:

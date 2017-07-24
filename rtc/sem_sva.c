@@ -47,8 +47,8 @@ marpatcl_rtc_sva_init (marpatcl_rtc_sv_vec v, int capacity, int strict)
     SZ     = 0;
     CAP    = capacity;
     STRICT = strict;
-    VAL    = NALLOC (marpatcl_rtc_semvalue_p, capacity);
-    memset (VAL, '\0', sizeof(marpatcl_rtc_semvalue_p)*capacity);
+    VAL    = NALLOC (marpatcl_rtc_sv_p, capacity);
+    memset (VAL, '\0', sizeof(marpatcl_rtc_sv_p)*capacity);
     return;
 }
 
@@ -57,38 +57,38 @@ marpatcl_rtc_sva_free (marpatcl_rtc_sv_vec v)
 {
     int k;
     for (k=0; k < SZ; k++) {
-	marpatcl_rtc_semvalue_unref (VAL [k]);
+	marpatcl_rtc_sv_unref (VAL [k]);
     }
     FREE (VAL);
     return;
 }
 
 void 
-marpatcl_rtc_sva_push (marpatcl_rtc_sv_vec v, marpatcl_rtc_semvalue_p x)
+marpatcl_rtc_sva_push (marpatcl_rtc_sv_vec v, marpatcl_rtc_sv_p x)
 {
     if (STRICT) {
 	ASSERT (SZ < CAP, "Push into full vector");
     } else if (SZ == CAP) {
 	CAP += CAP;
-	VAL = REALLOC (VAL, marpatcl_rtc_semvalue_p, CAP);
+	VAL = REALLOC (VAL, marpatcl_rtc_sv_p, CAP);
     }
     if (x) {
-	(void) marpatcl_rtc_semvalue_ref (x);
+	(void) marpatcl_rtc_sv_ref (x);
     }
     VAL [SZ] = x;
     SZ ++;
     return;
 }
 
-marpatcl_rtc_semvalue_p
+marpatcl_rtc_sv_p
 marpatcl_rtc_sva_pop (marpatcl_rtc_sv_vec v)
 {
-    marpatcl_rtc_semvalue_p x;
+    marpatcl_rtc_sv_p x;
     ASSERT (SZ > 0, "Pop from empty vector");
     SZ --;
     x = VAL [SZ];
     VAL [SZ] = 0;
-    marpatcl_rtc_semvalue_unref (x);
+    marpatcl_rtc_sv_unref (x);
     return x;
 }
 
@@ -107,9 +107,9 @@ marpatcl_rtc_sva_size (marpatcl_rtc_sv_vec v)
 }
 
 void
-marpatcl_rtc_sva_set (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_semvalue_p x)
+marpatcl_rtc_sva_set (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x)
 {
-    marpatcl_rtc_semvalue_p old;
+    marpatcl_rtc_sv_p old;
     ASSERT_BOUNDS (at, SZ);
     /*
      * This code relies on the fact that the vector starts nulled, and pop
@@ -119,15 +119,15 @@ marpatcl_rtc_sva_set (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_semvalue_p x)
     old = VAL [at];
     VAL [at] = x;
     if (x) {
-	(void) marpatcl_rtc_semvalue_ref (x);
+	(void) marpatcl_rtc_sv_ref (x);
     }
     if (old) {
-	marpatcl_rtc_semvalue_unref (old);
+	marpatcl_rtc_sv_unref (old);
     }
     return;    
 }
 
-marpatcl_rtc_semvalue_p
+marpatcl_rtc_sv_p
 marpatcl_rtc_sva_get (marpatcl_rtc_sv_vec v, int at)
 {
     /* Caller is responsible for ref-counting */

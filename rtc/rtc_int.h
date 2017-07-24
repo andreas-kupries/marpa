@@ -1,14 +1,16 @@
-/*
- * RunTime C
- * Declarations.
- *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Main header, Internals
+/* Runtime for C-engine (RTC). Declarations. (Engine: All together)
+ *                             Internal
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_INT_H
 #define MARPATCL_RTC_INT_H
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Requirements
+ */
 
 #include <spec.h>
 #include <sem_int.h>
@@ -18,21 +20,23 @@
 #include <parser.h>
 
 /*
- * -- dynamic state of an rtc engine --
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Structures
  */
 
-typedef struct marpa_rtc {
+typedef struct marpatcl_rtc {
     marpatcl_rtc_spec*    spec;    /* Static grammar definitions */
-    Marpa_Config       config;  /* Config info shared to lexer and parser */
+    Marpa_Config          config;  /* Config info shared to lexer and parser */
     marpatcl_rtc_inbound  in;      /* Main dispatch */
     marpatcl_rtc_gate     gate;    /* Gating to lexer */
     marpatcl_rtc_lexer    lexer;   /* Lexing, gating to parser */
     marpatcl_rtc_parser   parser;  /* Parsing state */
     marpatcl_rtc_sv_cmd   action;  /* Dispatcher for user actions */
-    marpatcl_rtc_sv_array store;   /* Store for the lexer's semantic values */
-} marpa_rtc;
+    marpatcl_rtc_sva      store;   /* Store for the lexer's semantic values */
+} marpatcl_rtc;
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
  * Shorthands for fields.
  */
 
@@ -46,6 +50,10 @@ typedef struct marpa_rtc {
 #define STOR (&(p->store))
 
 #endif
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:

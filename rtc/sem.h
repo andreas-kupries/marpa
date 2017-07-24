@@ -93,24 +93,23 @@ void marpatcl_rtc_sv_free    (marpatcl_rtc_sv_p v);
 
 marpatcl_rtc_sv_p marpatcl_rtc_sv_ref   (marpatcl_rtc_sv_p v);
 void              marpatcl_rtc_sv_unref (marpatcl_rtc_sv_p v);
-
+;
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API -- SV -- accessors and mutators
  */
 
-int         marpatcl_rtc_sv_get_int    (marpatcl_rtc_sv_p v);
-double      marpatcl_rtc_sv_get_double (marpatcl_rtc_sv_p v);
-const char* marpatcl_rtc_sv_get_string (marpatcl_rtc_sv_p v);
-void        marpatcl_rtc_sv_get_user   (marpatcl_rtc_sv_p v, int* tag, void** data);
-int         marpatcl_rtc_sv_get_vec    (marpatcl_rtc_sv_p v, marpatcl_rtc_sv_p** data);
-
-void              marpatcl_rtc_sv_vec_set   (marpatcl_rtc_sv_p v, int at, marpatcl_rtc_sv_p x);
-marpatcl_rtc_sv_p marpatcl_rtc_sv_vec_get   (marpatcl_rtc_sv_p v, int at);
-void              marpatcl_rtc_sv_vec_push  (marpatcl_rtc_sv_p v, marpatcl_rtc_sv_p x);
-marpatcl_rtc_sv_p marpatcl_rtc_sv_vec_pop   (marpatcl_rtc_sv_p v);
-void              marpatcl_rtc_sv_vec_clear (marpatcl_rtc_sv_p v);
-int               marpatcl_rtc_sv_vec_size  (marpatcl_rtc_semvalue_p v);
+int               marpatcl_rtc_sv_get_int    (marpatcl_rtc_sv_p v);
+double            marpatcl_rtc_sv_get_double (marpatcl_rtc_sv_p v);
+const char*       marpatcl_rtc_sv_get_string (marpatcl_rtc_sv_p v);
+void              marpatcl_rtc_sv_get_user   (marpatcl_rtc_sv_p v, int* tag, void** data);
+int               marpatcl_rtc_sv_get_vec    (marpatcl_rtc_sv_p v, marpatcl_rtc_sv_p** data);
+void              marpatcl_rtc_sv_vec_set    (marpatcl_rtc_sv_p v, int at, marpatcl_rtc_sv_p x);
+marpatcl_rtc_sv_p marpatcl_rtc_sv_vec_get    (marpatcl_rtc_sv_p v, int at);
+void              marpatcl_rtc_sv_vec_push   (marpatcl_rtc_sv_p v, marpatcl_rtc_sv_p x);
+marpatcl_rtc_sv_p marpatcl_rtc_sv_vec_pop    (marpatcl_rtc_sv_p v);
+void              marpatcl_rtc_sv_vec_clear  (marpatcl_rtc_sv_p v);
+int               marpatcl_rtc_sv_vec_size   (marpatcl_rtc_sv_p v);
 		     
 #endif
 
