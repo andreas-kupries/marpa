@@ -25,7 +25,7 @@
 #define T_SET(t,f) TAG = (((t) << 4) | (f))
 #define T_GET     (TAG >> 4)
 #define FLAGS     (TAG & 0xF)
-#define COPY (1)
+#define OWN (1)
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -49,10 +49,10 @@ marpatcl_rtc_sv_cons_double (double x)
 }
 
 marpatcl_rtc_sv_p
-marpatcl_rtc_sv_cons_string (const char* s, int copy)
+marpatcl_rtc_sv_cons_string (const char* s, int own)
 {
     marpatcl_rtc_sv_p v = ALLOC (marpatcl_rtc_sv);
-    marpatcl_rtc_sv_init_string (v, s, copy);
+    marpatcl_rtc_sv_init_string (v, s, own);
     return v;
 }
 
@@ -89,11 +89,12 @@ marpatcl_rtc_sv_init_double (marpatcl_rtc_sv_p v, double x)
 }
 
 void
-marpatcl_rtc_sv_init_string (marpatcl_rtc_sv_p v, const char* s, int copy)
+marpatcl_rtc_sv_init_string (marpatcl_rtc_sv_p v, const char* s, int own)
 {
     REF = 0;
-    T_SET (marpatcl_rtc_sv_type_string, (copy & COPY));
-    STR = (copy & COPY) ? strdup (s) : (char*) s;
+    T_SET (marpatcl_rtc_sv_type_string, (own & OWN));
+    STR = (char*) s;
+    //STR = (copy & COPY) ? strdup (s) : (char*) s;
 }
 
 void
@@ -129,7 +130,7 @@ marpatcl_rtc_sv_free (marpatcl_rtc_sv_p v)
 	marpatcl_rtc_sva_destroy (VEC);
 	break;
     case marpatcl_rtc_sv_type_string:
-	if (FLAGS & COPY) {
+	if (FLAGS & OWN) {
 	    FREE (STR);
 	}
 	break;

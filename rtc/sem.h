@@ -34,10 +34,10 @@ typedef struct marpatcl_rtc_sv {
 		   * (type-dependent, (x)) */
     int refCount; /* number of references to the value */
     union {
-	char*            string; /* value is a null-terminated UTF-8 string */
-	int              inum;   /* value is integer number */
-	double           fnum;   /* value is floating point number */
-	void*            user;   /* value is user-specific anything */
+	char*               string; /* value is a null-terminated UTF-8 string */
+	int                 inum;   /* value is integer number */
+	double              fnum;   /* value is floating point number */
+	void*               user;   /* value is user-specific anything */
 	marpatcl_rtc_sv_vec vec;    /* value is vector of values */
     } value;
 } marpatcl_rtc_sv;
@@ -73,7 +73,7 @@ typedef struct marpatcl_rtc_sv {
 
 marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_int    (int x);
 marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_double (double x);
-marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_string (const char* s, int copy);
+marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_string (const char* s, int own);
 marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_user   (int tag, void* data);
 marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_vec    (int capacity);
 
