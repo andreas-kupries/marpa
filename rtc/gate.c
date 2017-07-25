@@ -45,20 +45,23 @@ marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
     GATE.lastchar = ch;
     GATE.lastloc  = IN.location;
 
-    while (1) {
+    while (!FAIL.fail) {
 	if (marpatcl_rtc_byteset_contains (ACCEPT, ch)) {
 	    marpatcl_rtc_stack_push (GATE.history, ch);
 	    /* Note: Not pushing the locations, we know the last, and
 	     * and can use that in the `redo` to properly move back.
 	     */
 	    marpatcl_rtc_lexer_enter (p, ch);
+	    // See marpatcl_rtc_inbound_enter for test of failure and abort.
 	    return;
 	}
 
-	/* No match: Try to close current symbol, then retry. But at most once
+	/* No match: Try to close current symbol, then retry. But at most once.
 	 */
 	if (flushed) {
-	    // TODO: FAIL
+	    marpatcl_rtc_failit (p, "gate");
+	    // See marpatcl_rtc_inbound_enter for test of failure and abort.
+	    return;
 	}
 
 	flushed ++;

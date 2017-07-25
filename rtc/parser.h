@@ -28,15 +28,15 @@ typedef struct marpatcl_rtc_parser {
  * - - -- --- ----- -------- ------------- ---------------------
  * API - lifecycle, accessors, mutators
  *
- * init  - initialize a lexer
- * free  - release lexer state
+ * init  - initialize parser
+ * free  - release parser state
  * enter - push a lexeme
  * eof   - signal the end of the input
  */
 
 void marpatcl_rtc_parser_init  (marpatcl_rtc_p p);
 void marpatcl_rtc_parser_free  (marpatcl_rtc_p p);
-void marpatcl_rtc_parser_enter (marpatcl_rtc_p p); // TODO: syms, values
+void marpatcl_rtc_parser_enter (marpatcl_rtc_p p, int found);
 void marpatcl_rtc_parser_eof   (marpatcl_rtc_p p);
 /* TODO: fail, get-context, extend-context */
 

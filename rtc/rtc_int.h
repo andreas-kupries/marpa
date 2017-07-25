@@ -13,11 +13,12 @@
  */
 
 #include <spec.h>
-#include <sem_int.h>
 #include <inbound.h>
 #include <gate.h>
 #include <lexer.h>
 #include <parser.h>
+#include <store.h>
+#include <fail.h>
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -31,8 +32,9 @@ typedef struct marpatcl_rtc {
     marpatcl_rtc_gate     gate;    /* Gating to lexer */
     marpatcl_rtc_lexer    lexer;   /* Lexing, gating to parser */
     marpatcl_rtc_parser   parser;  /* Parsing state */
-    marpatcl_rtc_sv_cmd   action;  /* Dispatcher for user actions */
-    marpatcl_rtc_sva      store;   /* Store for the lexer's semantic values */
+    marpatcl_rtc_store    store;   /* Store for the lexer's semantic values */
+    marpatcl_rtc_sv_cmd   action;  /* Dispatcher for G1 user actions */
+    marpatcl_rtc_fail     fail;    /* Failure state */
 } marpatcl_rtc;
 
 /*
@@ -47,7 +49,8 @@ typedef struct marpatcl_rtc {
 #define PAR  (p->parser)
 #define CONF (&(p->config))
 #define ACT  (p->action)
-#define STOR (&(p->store))
+#define STOR (p->store)
+#define FAIL (p->fail)
 
 #endif
 

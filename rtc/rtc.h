@@ -42,6 +42,7 @@ void              marpatcl_rtc_destroy (marpatcl_rtc_p p);
 void              marpatcl_rtc_enter   (marpatcl_rtc_p p, const char* bytes, int n);
 void              marpatcl_rtc_eof     (marpatcl_rtc_p p);
 marpatcl_rtc_sv_p marpatcl_rtc_get_sv  (marpatcl_rtc_p p);
+/* marpatcl_rtc_failed - see fail.h */
 
 // TODO: Callbacks (errors, events?)
 #endif

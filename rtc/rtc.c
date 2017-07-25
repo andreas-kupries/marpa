@@ -24,7 +24,7 @@ marpatcl_rtc_cons (marpatcl_rtc_spec* g, marpatcl_rtc_sv_cmd a)
     marpatcl_rtc_gate_init    (p);
     marpatcl_rtc_lexer_init   (p);
     marpatcl_rtc_parser_init  (p);
-    marpatcl_rtc_sva_init     (STOR, 10, 0); /* non-strict, expandable */
+    marpatcl_rtc_store_init   (p);
     ACT = a;
 }
 
@@ -35,7 +35,7 @@ marpatcl_rtc_destroy (marpatcl_rtc_p p)
     marpatcl_rtc_lexer_free   (p);
     marpatcl_rtc_gate_free    (p);
     marpatcl_rtc_inbound_free (p);
-    marpatcl_rtc_sva_free     (STOR);
+    marpatcl_rtc_store_free   (p);
     FREE (p);
 }
 

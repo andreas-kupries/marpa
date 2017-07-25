@@ -36,12 +36,12 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const char* bytes, int n)
 {
     const char* c;
     if (n < 0) {
-	for (c = bytes; *c; c++) {
+	for (c = bytes; *c && !FAIL.fail; c++) {
 	    IN.location ++;
 	    marpatcl_rtc_gate_enter (p, *c);
 	}
     } else {
-	for (c = bytes; n; c++, n--) {
+	for (c = bytes; n && !FAIL.fail; c++, n--) {
 	    IN.location ++;
 	    marpatcl_rtc_gate_enter (p, *c);
 	}
