@@ -90,6 +90,28 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
     }
 }
 
+const char*
+marpatcl_rtc_spec_symname (marpatcl_rtc_rules* s, marpatcl_rtc_sym id, int* len)
+{
+    marpatcl_rtc_string* pool = s->sname;
+    id = s->symbols.data[id];
+    if (len) {
+	*len = pool->length[id];
+    }
+    return pool->string + pool->offset[id];
+}
+
+const char*
+marpatcl_rtc_spec_rulename (marpatcl_rtc_rules* s, marpatcl_rtc_sym id, int* len)
+{
+    marpatcl_rtc_string* pool = s->sname;
+    id = s->rules.data[id];
+    if (len) {
+	*len = pool->length[id];
+    }
+    return pool->string + pool->offset[id];
+}
+
 
 /*
  * Local Variables:

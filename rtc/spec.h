@@ -24,8 +24,8 @@
  * uint32_t = 4 byte -- 4G symbols
  * uint16_t = 2 byte -- 64K symbols -- good enough
  *
- * 2 byte is also good enough for the string lengths used in symbol and rule names.
- * TODO: Add checks to export::rtc, that these limits hold.
+ * 2 byte (64K) should be good enough for the string lengths used in symbol
+ * and rule names. Number of symbols are limited to 12 bits, i.e. 4K.
  */
 
 typedef uint16_t marpatcl_rtc_sym;
@@ -66,8 +66,7 @@ typedef struct marpatcl_rtc_rules {
     marpatcl_rtc_string* sname;   /* Table of strings, shared pool */
     marpatcl_rtc_symvec  symbols; /* Table of symbol(name)s. References into string pool */
     marpatcl_rtc_symvec  rules;   /* Table of rule(name)s. References into string pool */
-    /*                          * Optional. Empty = (0, NULL) */
-    marpatcl_rtc_sym*        rcode;   /* Bytecode specifying the rules */
+    marpatcl_rtc_sym*    rcode;   /* Bytecode specifying the rules */
 } marpatcl_rtc_rules;
 
 /*
@@ -186,9 +185,10 @@ typedef struct marpatcl_rtc_spec {
  */
 typedef marpatcl_rtc_sv_p (*marpatcl_rtc_sv_cmd) (int action, const char* aname,
 						  marpatcl_rtc_sv_p children);
-/* TODO: Needs access to context:
- * - active marpa step instruction
- * - dynamic parser state (implies: static grammar structures)
+/*
+ * TODO: G1 semantic handler needs access to more context:
+ * TODO: - active marpa step instruction
+ * TODO: - dynamic parser state (implies: static grammar structures)
  */
 
 /*
@@ -229,7 +229,9 @@ typedef marpatcl_rtc_sv_p (*marpatcl_rtc_sv_cmd) (int action, const char* aname,
  * setup - Use the static structures to fill an active Marpa grammar
  */
 
-void marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s);
+void        marpatcl_rtc_spec_setup    (Marpa_Grammar g, marpatcl_rtc_rules* s);
+const char* marpatcl_rtc_spec_symname  (marpatcl_rtc_rules* s, marpatcl_rtc_sym id, int* len);
+const char* marpatcl_rtc_spec_rulename (marpatcl_rtc_rules* s, marpatcl_rtc_sym id, int* len);
 		     
 #endif
 
