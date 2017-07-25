@@ -60,6 +60,9 @@ proc ::marpa::export::rtc::container {gc} {
 proc ::marpa::export::rtc::Generate {serial} {
     debug.marpa/export/rtc {}
 
+    error TODO:TEST:string-limit-64K
+    error TODO:TEST:sym-limit-4K
+    
     # Create a local copy of the grammar for the upcoming
     # rewrites. This also gives us the opportunity to validate the
     # input.
