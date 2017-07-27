@@ -179,8 +179,10 @@ critcl::tsources export/config.tcl       ; # Comon generator configuration suppo
 
 critcl::tsources export/gc_compact.tcl    ; # Container compact
 critcl::tsources export/gc.tcl            ; # Container formatted
-critcl::tsources export/tlex.tcl          ; # Tcl lexer class
-critcl::tsources export/tparse.tcl        ; # Tcl parser class
+
+critcl::tsources export/core/tcl.tcl      ; # Support for generators emitting Tcl engines
+critcl::tsources export/tlex.tcl          ; # Tcl engine - lexing
+critcl::tsources export/tparse.tcl        ; # Tcl engine - lexing+parsing
 critcl::tsources export/rtc.tcl           ; # RTC parser class
 
 # # ## ### ##### ######## #############

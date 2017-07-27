@@ -24,8 +24,8 @@ package require debug::caller ;#
 
 # # ## ### ##### ######## #############
 
-debug define marpa/grammar/<Name>
-debug prefix marpa/grammar/<Name> {[debug caller] | }
+debug define <Name>
+debug prefix <Name> {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
@@ -43,7 +43,7 @@ oo::class create <Name> {
     # lexer.
     
     method Characters {} {
-	debug.marpa/grammar/<Name>
+	debug.<Name>
 	# Literals: The directly referenced (allowed) characters.
 	return {
 	    @CHR:<#>        #
@@ -95,7 +95,7 @@ oo::class create <Name> {
     }
     
     method Classes {} {
-	debug.marpa/grammar/<Name>
+	debug.<Name>
 	# Literals: The character classes in use
 	return {
 	    @CLS:<+->                                           {[+\055]}
@@ -122,7 +122,7 @@ oo::class create <Name> {
     }
     
     method Lexemes {} {
-	debug.marpa/grammar/<Name>
+	debug.<Name>
 	# Lexer API: Lexeme symbols (Cannot be terminal).
 	return {
 	    @LEX:@CHR:<*>              1
@@ -196,7 +196,7 @@ oo::class create <Name> {
     }
     
     method Discards {} {
-	debug.marpa/grammar/<Name>
+	debug.<Name>
 	# Discarded symbols (whitespace)
 	return {
 	    {hash comment}
@@ -206,7 +206,7 @@ oo::class create <Name> {
     
     method Symbols {} {
 	# Non-lexeme, non-literal symbols
-	debug.marpa/grammar/<Name>
+	debug.<Name>
 	return {
 	    @STR:<::=>
 	    @STR:<::>
@@ -332,7 +332,7 @@ oo::class create <Name> {
 
     method Rules {} {
 	# Rules for all symbols but the literals
-	debug.marpa/grammar/<Name>
+	debug.<Name>
 	return {
 	    {@LEX:@CHR:<*> := @CHR:<*>}
 	    {@LEX:@CHR:<+> := @CHR:<+>}
@@ -591,7 +591,7 @@ oo::class create <Name> {
     }
 
     method Semantics {} {
-	debug.marpa/grammar/<Name>
+	debug.<Name>
 	# NOTE. This is currently limited to array semantics.
 	# NOTE. No support for command semantics in the lexer yet.
 	return {start length value}
