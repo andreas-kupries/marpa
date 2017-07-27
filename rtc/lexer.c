@@ -338,7 +338,7 @@ mismatch (marpatcl_rtc_p p)
 
 static marpatcl_rtc_sv_p
 get_sv (marpatcl_rtc_p   p,
-	marpatcl_rtc_sym token, /* G1 parser terminal */
+	marpatcl_rtc_sym token, /* G1 parser terminal symbol id */
 	marpatcl_rtc_sym rule)
 {
     int k;
@@ -346,65 +346,37 @@ get_sv (marpatcl_rtc_p   p,
     marpatcl_rtc_sv_p sv = marpatcl_rtc_sv_cons_vec (SPEC->l0semantic.size);
     /* local cache to avoid duplicate memory for duplicate key codes */
     marpatcl_rtc_sv_p start    = 0;
+    marpatcl_rtc_sv_p end      = 0;
     marpatcl_rtc_sv_p length   = 0;
     marpatcl_rtc_sv_p g1start  = 0;
+    marpatcl_rtc_sv_p g1end    = 0;
     marpatcl_rtc_sv_p g1length = 0;
     marpatcl_rtc_sv_p lhsname  = 0;
     marpatcl_rtc_sv_p lhsid    = 0;
     marpatcl_rtc_sv_p ruleid   = 0;
     marpatcl_rtc_sv_p value    = 0;
-	
+
+#define DO(cache,cmd)    if (!(cache)) { (cache) = cmd; }; marpatcl_rtc_sv_vec_push (sv, (cache))
+#define G1_SNAME(token)  marpatcl_rtc_spec_symname (SPEC->g1, token, NULL)
+#define LEX_START        LEX.start
+#define LEX_LEN          marpatcl_rtc_stack_size (LEX.lexeme)
+#define LEX_END          (LEX.start + LEX_LEN - 1)
+#define LEX_STR          get_lexeme (p, NULL)
+
     for (k = 0; k < SPEC->l0semantic.size; k++) {
 	switch (SPEC->l0semantic.data[k]) {
-	case MARPATCL_SV_START:
-	    if (!start) {
-		start = marpatcl_rtc_sv_cons_int (LEX.start);
-	    }
-	    marpatcl_rtc_sv_vec_push (sv, start);
-	    break;
-	case MARPATCL_SV_LENGTH:
-	    if (!length) {
-		length = marpatcl_rtc_sv_cons_int (marpatcl_rtc_stack_size(LEX.lexeme));
-	    }
-	    marpatcl_rtc_sv_vec_push (sv, length);
-	    break;
-	case MARPATCL_SV_G1START:
-	    if (!g1start) {
-		g1start = marpatcl_rtc_sv_cons_int (-1);
-	    }
-	    marpatcl_rtc_sv_vec_push (sv, g1start);
-	    break;
-	case MARPATCL_SV_G1LENGTH:
-	    if (!g1length)
-		g1length = marpatcl_rtc_sv_cons_int (1);
-	    marpatcl_rtc_sv_vec_push (sv, g1length);
-	    break;
-	case MARPATCL_SV_RULE_NAME:
-	case MARPATCL_SV_LHS_NAME:
-	    if (!lhsname) {
-		lhsname = marpatcl_rtc_sv_cons_string (
-			marpatcl_rtc_spec_symname (SPEC->g1, token, NULL), 0);
-	    }
-	    marpatcl_rtc_sv_vec_push (sv, lhsname);
-	    break;
-	case MARPATCL_SV_LHS_ID:
-	    if (!lhsid) {
-		lhsid = marpatcl_rtc_sv_cons_int (token);
-	    }
-	    marpatcl_rtc_sv_vec_push (sv, lhsid);
-	    break;
-	case MARPATCL_SV_RULE_ID:
-	    if (!ruleid) {
-		ruleid = marpatcl_rtc_sv_cons_int (rule);
-	    }
-	    marpatcl_rtc_sv_vec_push (sv, ruleid);
-	    break;
-	case MARPATCL_SV_VALUE:
-	    if (!value) {
-		value = marpatcl_rtc_sv_cons_string (get_lexeme (p, NULL), 1);
-	    }
-	    marpatcl_rtc_sv_vec_push (sv, value);
-	    break;
+	case MARPATCL_SV_START:		DO (start, marpatcl_rtc_sv_cons_int (LEX_START));		break;
+	case MARPATCL_SV_END:		DO (start, marpatcl_rtc_sv_cons_int (LEX_END));			break;
+	case MARPATCL_SV_LENGTH:	DO (length, marpatcl_rtc_sv_cons_int (LEX_LEN));		break;
+	case MARPATCL_SV_G1START:	DO (g1start, marpatcl_rtc_sv_cons_int (-1));			break;//TODO
+	case MARPATCL_SV_G1END:		DO (g1end, marpatcl_rtc_sv_cons_int (-1));			break;//TODO
+	case MARPATCL_SV_G1LENGTH:	DO (g1length, marpatcl_rtc_sv_cons_int (1));			break;
+	case MARPATCL_SV_RULE_NAME:	/* See below, LHS_NAME -- Specific to lexer semantics */
+	case MARPATCL_SV_LHS_NAME:	DO (lhsname, marpatcl_rtc_sv_cons_string (G1_SNAME(token), 0));	break;
+	case MARPATCL_SV_RULE_ID:	DO (ruleid, marpatcl_rtc_sv_cons_int (rule));			break;
+	case MARPATCL_SV_LHS_ID:	DO (lhsid, marpatcl_rtc_sv_cons_int (token));			break;
+	case MARPATCL_SV_VALUE:		DO (value, marpatcl_rtc_sv_cons_string (LEX_STR, 1));		break;
+	default: ASSERT (0, "Invalid array descriptor key");
 	}
     }
     return sv;

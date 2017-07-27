@@ -76,15 +76,16 @@ marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_double (double x);
 marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_string (const char* s, int own);
 marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_user   (int tag, void* data);
 marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_vec    (int capacity);
+marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_vec_cp (marpatcl_rtc_sv_vec v);
 
-void marpatcl_rtc_sv_init_int    (marpatcl_rtc_sv_p v, int x);
-void marpatcl_rtc_sv_init_double (marpatcl_rtc_sv_p v, double x);
-void marpatcl_rtc_sv_init_string (marpatcl_rtc_sv_p v, const char* s, int copy);
-void marpatcl_rtc_sv_init_user   (marpatcl_rtc_sv_p v, int tag, void* data);
-void marpatcl_rtc_sv_init_vec    (marpatcl_rtc_sv_p v, int capacity);
-
-void marpatcl_rtc_sv_destroy (marpatcl_rtc_sv_p v);
-void marpatcl_rtc_sv_free    (marpatcl_rtc_sv_p v);
+void marpatcl_rtc_sv_init_int    (marpatcl_rtc_sv_p sv, int x);
+void marpatcl_rtc_sv_init_double (marpatcl_rtc_sv_p sv, double x);
+void marpatcl_rtc_sv_init_string (marpatcl_rtc_sv_p sv, const char* s, int own);
+void marpatcl_rtc_sv_init_user   (marpatcl_rtc_sv_p sv, int tag, void* data);
+void marpatcl_rtc_sv_init_vec    (marpatcl_rtc_sv_p sv, int capacity);
+void marpatcl_rtc_sv_init_vec_cp (marpatcl_rtc_sv_p sv, marpatcl_rtc_sv_vec v);
+void marpatcl_rtc_sv_destroy     (marpatcl_rtc_sv_p sv);
+void marpatcl_rtc_sv_free        (marpatcl_rtc_sv_p sv);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

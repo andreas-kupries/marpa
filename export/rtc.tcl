@@ -59,9 +59,6 @@ proc ::marpa::export::rtc::container {gc} {
 
 proc ::marpa::export::rtc::Generate {serial} {
     debug.marpa/export/rtc {}
-
-    error TODO:TEST:string-limit-64K
-    error TODO:TEST:sym-limit-4K
     
     # Create a local copy of the grammar for the upcoming
     # rewrites. This also gives us the opportunity to validate the
@@ -119,6 +116,7 @@ proc ::marpa::export::rtc::Generate {serial} {
     Rules create LR L P
     Rules create GR G P 1
     SemaG create A
+    Mask  create M
     
     set acs_discards [lmap w $discards { set _ @ACS:$w }]
     set acs_lex      [lmap w $lex      { set _ @ACS:$w }]
@@ -132,6 +130,7 @@ proc ::marpa::export::rtc::Generate {serial} {
     P add* 0 $l0start
 
     A add $g1rules
+    M add $g1rules
     
     # Symbol allocations in L0. See also rtc/spec.h -- Keep In Sync
     #
@@ -252,6 +251,8 @@ proc ::marpa::export::rtc::Generate {serial} {
     incr dsz 24 ;# sizeof(marpatcl_rtc_string)
 
     # L0 grammar: symbols, rules, semantics
+    Limit12 "\#l0 symbols" [L size]
+    
     incr dsz [* 2 [L size]]       ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-symbols-sz@		[* 2 [L size]]
     lappend map @l0-symbols-c@		[L size]
@@ -268,6 +269,7 @@ proc ::marpa::export::rtc::Generate {serial} {
     lappend map @l0-code-c@             [LR elements]
     lappend map @l0-code@		[LR content]
 
+    Limit16 "\#l0 semantics" [llength $sem]
     incr dsz [* 2 [llength $sem]] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-semantics-sz@       [* 2 [llength $sem]]
     lappend map @l0-semantics-c@        [llength $sem]
@@ -276,6 +278,8 @@ proc ::marpa::export::rtc::Generate {serial} {
     incr dsz 48                   ; # sizeof(marpatcl_rtc_rules) = 48
     
     # G1 grammar: symbols, rules
+    Limit12 "\#g1 symbols" [L size]
+    
     incr dsz [* 2 [G size]]      ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-symbols-sz@		[* 2 [G size]]
     lappend map @g1-symbols-c@	   	[G size]
@@ -288,19 +292,32 @@ proc ::marpa::export::rtc::Generate {serial} {
     lappend map @g1-code-c@             [GR elements]
     lappend map @g1-code@	   	[GR content]
 
+    Limit16 "\#g1 rules" [GR size]
     incr dsz [* 2 [GR size]]     ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-rules-sz@		[* 2 [GR size]]
     lappend map @g1-rules-c@		[GR size]
     lappend map @g1-rules-v@		[CArray [GR refs] 16]
 
+    incr dsz [* 2 [GR size]]     ; # sizeof(marpatcl_rtc_sym) = 2
+    lappend map @g1-lhs-v@		[CArray [GR lhs] 16]
+
     incr dsz 48                  ; # sizeof(marpatcl_rtc_rules) = 48
 
     # G1 grammar: semantics
     set acode [EncodeGS asz [A tag] [A content] [GR size]]
+    Limit16 "\#g1 semantics" $asz
     incr dsz [* 2 $asz] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-semantics-sz@       [* 2 $asz]
     lappend map @g1-semantics-c@        $asz
     lappend map @g1-semantics-v@        $acode
+    
+    # G1 grammar: masking
+    set mcode [EncodeMask msz [M tag] [M content] [GR size]]
+    Limit16 "\#g1 masking" $msz
+    incr dsz [* 2 $msz] ; # sizeof(marpatcl_rtc_sym) = 2
+    lappend map @g1-masking-sz@       [* 2 $msz]
+    lappend map @g1-masking-c@        $msz
+    lappend map @g1-masking-v@        $mcode
     
     # Overarching spec info (various counts, always-on symbols)
     lappend map @lexemes-c@		[llength $lex]
@@ -420,8 +437,11 @@ proc ::marpa::export::rtc::Chunked {words args} {
 }
 
 proc ::marpa::export::rtc::Hdr {n label} {
-    if {$label eq {}} return
     upvar 1 pfx pfx indent indent
+    if {$label eq {}} {
+	# custom prefix
+	return ",\n"
+    }
     return "$pfx/* --- ($n) --- --- --- $label\n$indent */\n"
 }
 
@@ -473,15 +493,21 @@ proc ::marpa::export::rtc::EncodeGS {cv tag data nr} {
     incr size
     switch -exact -- $tag {
 	MARPATCL_S_SINGLE {
-	    return [CArray [linsert $data 0 $tag] 80]
+	    return [Chunked [linsert $data 0 $tag] \
+			Tag 1 {Global Semantics}]
 	}
 	MARPATCL_S_PER {
 	    set chunks {}
+	    set label Semantics
 	    lappend chunks Tag 1
-	    lappend chunks References $nr
+	    lappend chunks {Rule Offsets} $nr
 	    while {[set n [lindex $data $nr]] ne {}} {
-		lappend chunks {} $n
+		# strip comments coded before the length
+		regexp { (\d+)$} $n -> n
+		incr n 1 ;# adjust for length entry
+		lappend chunks $label $n
 		incr nr $n
+		set label {}
 	    }
 	    lappend chunks {}
 	    return [Chunked [linsert $data 0 $tag] {*}$chunks]
@@ -490,8 +516,149 @@ proc ::marpa::export::rtc::EncodeGS {cv tag data nr} {
     }
 }
 
+proc ::marpa::export::rtc::EncodeMask {cv tag data nr} {
+    upvar 1 $cv size
+    set size [llength $data]
+    incr size
+    switch -exact -- $tag {
+	MARPATCL_S_SINGLE {
+	    return [Chunked [linsert $data 0 $tag] \
+			Tag 1 {Global Mask}]
+	}
+	MARPATCL_S_PER {
+	    set chunks {}
+	    set label Masks
+	    lappend chunks Tag 1
+	    lappend chunks {Rule Offsets} $nr
+	    while {[set n [lindex $data $nr]] ne {}} {
+		# strip comments coded before the length
+		regexp { (\d+)$} $n -> n
+		incr n 1 ;# adjust for length entry
+		lappend chunks $label $n
+		incr nr $n
+		set label {}
+	    }
+	    lappend chunks {}
+	    return [Chunked [linsert $data 0 $tag] {*}$chunks]
+	}
+	default { error ZZZ:$tag }
+    }
+}
+
+proc ::marpa::export::rtc::Limit16 {label n} {
+    if {$n < 65536} return
+    return -code error "ZZZ:$label $n > 64K"
+}
+
+proc ::marpa::export::rtc::Limit12 {label n} {
+    if {$n < 4096} return
+    return -code error "ZZZ:$label $n > 4K"
+}
+
 # # ## ### ##### ######## #############
 ## Various helper classes to hold generator state
+
+oo::class create marpa::export::rtc::Mask {
+    variable mymask ; # dict (mask -> list(rule id))
+    variable mycount
+    variable myfinal
+    variable mytag
+    variable mycode
+    
+    constructor {} {
+	set mycount 0
+	set mymask  {}
+	set myfinal 0
+	set mytag  {}
+	set mycode {}
+	return
+    }
+
+    method size {} {
+	my Finalize
+	set n [llength $mycode]
+	incr n 1
+	return $n
+    }
+
+    method tag {} {
+	my Finalize
+	return $mytag
+    }
+    
+    method content {} {
+	my Finalize
+	return $mycode
+    }
+    
+    method add {rules} {
+	foreach rule $rules {
+	    my Process $rule
+	    incr mycount
+	}
+	return
+    }
+
+    method Process {rule} {
+	lassign $rule lhs def
+	set attr [lassign $def type rhs _]
+	dict with attr {}
+	# masks
+	if {$type eq "priority" && [llength $rhs]} {
+	    if {![info exists mask]} { error MASK-MISSING:($rule) }
+	    if {$mask eq {}} { error MASK-EMPTY:($rule) }
+	    # mask is bit vector (true -> hidden, convert to filter)
+	    set filter [::marpa::export::tparse::Remask $mask]
+	    set filter [linsert $filter 0 [llength $filter]]
+	} else {
+	    # quantified, or empty rule - No mask, no filter
+	    set filter 0
+	}
+	# filter = (length, i'0 ... i'length-1)
+	
+	dict lappend mymask $filter $mycount
+	return
+    }
+
+    method Finalize {} {
+	if {$myfinal} return
+	set myfinal 1
+	if {[dict size $mymask] == 1} {
+	    # Code global
+	    set mytag  MARPATCL_S_SINGLE
+	    set mycode [lindex [dict keys $mymask] 0]
+	    return
+	}
+	# Code variadic
+	set ref    $mycount
+	set mytag  MARPATCL_S_PER
+	set mycode [lrepeat $mycount -1]
+
+	set max $mycount
+	foreach s [dict keys $mymask] {
+	    if {[lindex $s 0] == 0} continue
+	    incr max [llength $s]
+	}
+	set df %[string length $max]d
+	
+	foreach s [lsort -dict [dict keys $mymask]] {
+	    if {[lindex $s 0] == 0} {
+		# Do not store empty mask definitions.
+		# Indicate them via offset zero.
+		foreach r [dict get $mymask $s] {
+		    lset mycode $r 0
+		}
+		continue
+	    }
+	    lappend mycode {*}[lreplace $s 0 0 "/* [format $df $ref] */ [lindex $s 0]"]
+	    foreach r [dict get $mymask $s] {
+		lset mycode $r $ref
+	    }
+	    incr ref [llength $s]
+	}
+	return
+    }
+}
 
 oo::class create marpa::export::rtc::SemaG {
     variable mysema ; # dict (semantics -> list(rule id))
@@ -560,13 +727,21 @@ oo::class create marpa::export::rtc::SemaG {
 	# Code variadic
 	set ref    $mycount
 	set mytag  MARPATCL_S_PER
-	set mycode [lrepeat -1 $mycount]
+	set mycode [lrepeat $mycount -1]
+	set max $mycount
+
+	foreach s [dict keys $mymask] {
+	    if {[lindex $s 0] == 0} continue
+	    incr max [llength $s]
+	}
+	set df %[string length $max]d
+
 	foreach s [lsort -dict [dict keys $mysema]] {
-	    lappend mycode {*}$s
-	    foreach r [dict get $mysema $sema] {
+	    lappend mycode {*}[lreplace $s 0 0 "/* [format $df $ref] */ [lindex $s 0]"]
+	    foreach r [dict get $mysema $s] {
 		lset mycode $r $ref
 	    }
-	    incr ref [llength $sema]
+	    incr ref [llength $s]
 	}
 	return
     }
@@ -577,6 +752,7 @@ oo::class create marpa::export::rtc::Rules {
     variable mysize
     variable myelements
     variable mynames
+    variable mylhsids
     variable myusenames
     variable mymaxpad
     variable mylastlhs
@@ -589,6 +765,7 @@ oo::class create marpa::export::rtc::Rules {
 	set mysize     0
 	set myelements 0
 	set mynames    {}
+	set mylhsids   {}
 	set myusenames $usenames
 	set mymaxpad   0
 	set mylastlhs  {}
@@ -604,13 +781,18 @@ oo::class create marpa::export::rtc::Rules {
 	return $mynames
     }
 
+    method lhs {} {
+	return $mylhsids
+    }
+
     method add {words} {
 	foreach rule $words {
 	    lassign $rule lhs def
 	    set details [lassign $def type]
 	    my P_$type $lhs {*}$details
 	    if {!$myusenames} continue
-	    lappend mynames [P id [marpa::export::rtc::RName $rule]]
+	    lappend mynames  [P id [marpa::export::rtc::RName $rule]]
+	    lappend mylhsids [S 2id $lhs]
 	}
 	return
     }
@@ -636,6 +818,7 @@ oo::class create marpa::export::rtc::Rules {
 	set lhid [S 2id $lhs]
 
 	set rl [llength $rhs]
+	::marpa::export::rtc::Limit12 {priority rhs length} $rl
 	if {$rl > $mymaxpad} { set mymaxpad $rl }
 	incr myelements $rl
 
@@ -985,6 +1168,7 @@ oo::class create marpa::export::rtc::Pool {
 	set index 0
 	set offset 0
 	foreach str [lsort -dict [dict keys $mypool]] {
+	    ::marpa::export::rtc::Limit16 {string pool offset} $offset
 	    set len [dict get $mypool $str]
 	    incr mystrsize $len
 	    incr mystrsize ;# \0
@@ -1059,6 +1243,7 @@ static marpatcl_rtc_rules @cname@_l0 = { /* 48 */
     /* .sname   */  &@cname@_pool,
     /* .symbols */  { @l0-symbols-c@, @cname@_l0_sym_name },
     /* .rules   */  { 0, NULL },
+    /* .lhs     */  { 0, NULL },
     /* .rcode   */  @cname@_l0_rule_definitions
 };
 
@@ -1078,6 +1263,10 @@ static marpatcl_rtc_sym @cname@_g1_rule_name [@g1-rules-c@] = { /* @g1-rules-sz@
 @g1-rules-v@
 };
 
+static marpatcl_rtc_sym @cname@_g1_rule_lhs [@g1-rules-c@] = { /* @g1-rules-sz@ */
+@g1-lhs-v@
+};
+
 static marpatcl_rtc_sym @cname@_g1_rule_definitions [@g1-code-c@] = { /* @g1-code-sz@ */
 @g1-code@
 };
@@ -1086,11 +1275,16 @@ static marpatcl_rtc_rules @cname@_g1 = { /* 48 */
     /* .sname   */  &@cname@_pool,
     /* .symbols */  { @g1-symbols-c@, @cname@_g1_sym_name },
     /* .rules   */  { @g1-rules-c@, @cname@_g1_rule_name },
+    /* .lhs     */  { @g1-rules-c@, @cname@_g1_rule_lhs },
     /* .rcode   */  @cname@_g1_rule_definitions
 };
 
 static marpatcl_rtc_sym @cname@_g1semantics [@g1-semantics-c@] = { /* @g1-semantics-sz@ */
 @g1-semantics-v@
+};
+
+static marpatcl_rtc_sym @cname@_g1masking [@g1-masking-c@] = { /* @g1-masking-sz@ */
+@g1-masking-v@
 };
 
 /*
@@ -1110,7 +1304,8 @@ static marpatcl_rtc_spec @cname@_spec = { /* 72 */
     /* .l0         */  &@cname@_l0,
     /* .g1         */  &@cname@_g1,
     /* .l0semantic */  { @l0-semantics-c@, @cname@_l0semantics },
-    /* .g1semantic */  { @g1-semantics-c@, @cname@_g1semantics }
+    /* .g1semantic */  { @g1-semantics-c@, @cname@_g1semantics },
+    /* .g1mask     */  { @g1-masking-c@, @cname@_g1masking }
 };
 
 /*

@@ -7,6 +7,7 @@
 
 #include <spec.h>
 #include <critcl_alloc.h>
+#include <critcl_assert.h>
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -91,25 +92,85 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 }
 
 const char*
-marpatcl_rtc_spec_symname (marpatcl_rtc_rules* s, marpatcl_rtc_sym id, int* len)
+marpatcl_rtc_spec_symname (marpatcl_rtc_rules* g, marpatcl_rtc_sym id, int* len)
 {
-    marpatcl_rtc_string* pool = s->sname;
-    id = s->symbols.data[id];
-    if (len) {
-	*len = pool->length[id];
-    }
-    return pool->string + pool->offset[id];
+    marpatcl_rtc_spec_string (g->sname, g->symbols.data [id], len);
 }
 
 const char*
-marpatcl_rtc_spec_rulename (marpatcl_rtc_rules* s, marpatcl_rtc_sym id, int* len)
+marpatcl_rtc_spec_rulename (marpatcl_rtc_rules* g, marpatcl_rtc_sym id, int* len)
 {
-    marpatcl_rtc_string* pool = s->sname;
-    id = s->rules.data[id];
+    marpatcl_rtc_spec_string (g->sname, g->rules.data [id], len);
+}
+
+const char*
+marpatcl_rtc_spec_string (marpatcl_rtc_string* pool, marpatcl_rtc_sym id, int* len)
+{
     if (len) {
-	*len = pool->length[id];
+	*len = pool->length [id];
     }
-    return pool->string + pool->offset[id];
+    return pool->string + pool->offset [id];
+}
+
+marpatcl_rtc_sym
+marpatcl_rtc_spec_g1map (marpatcl_rtc_symvec* map, marpatcl_rtc_sym id)
+{
+    ASSERT_BOUNDS (id, map->size);
+    return map->data [id];
+}
+
+marpatcl_rtc_sym*
+marpatcl_rtc_spec_g1decode (marpatcl_rtc_symvec* coding, marpatcl_rtc_sym rule, int* len)
+{
+    marpatcl_rtc_sym offset;
+    marpatcl_rtc_sym tag;
+    int length;
+
+    ASSERT_BOUNDS (0, coding->size);
+    tag = coding->data [0];
+    
+    switch (tag) {
+    case MARPATCL_S_SINGLE:
+	/* Masks are identical for all rules, i.e. independent of the
+	 * `rule` argument. Coding:
+	 *
+	 * coding'in = [MARPATCL_S_SINGLE, length, data'0, ... data'length-1]
+	 * coding -------------------------^       ^
+	 * coding'out -----------------------------^
+	 */
+	ASSERT_BOUNDS (1, coding->size);
+	length = coding->data [1];
+
+	*len = length;
+	if (!length) { return NULL; }
+	ASSERT_BOUNDS (2+length-1, coding->size);
+	return coding->data + 2;
+
+    case MARPATCL_S_PER:
+	/* Masks differ per rule, however some may be the same.
+	 * Coding:
+	 * coding'in = [MARPATCL_S_PER, 0'off ... #rules-1'off, ... len, data'0 ... data'#len-1 ...]
+	 * coding ----------------------^   \-----------------------/^   ^
+	 * coding'out ---------------------------------------------------^
+	 * Special coding: Rules with nothing are coded with offset 0 for a bit more compression.
+	 */
+	ASSERT_BOUNDS (1+rule, coding->size);
+	offset = coding->data[1+rule];
+	if (!offset) {
+	    *len = 0;
+	    return NULL;
+	}
+
+	ASSERT_BOUNDS (1+offset, coding->size);
+	length = coding->data[1+offset];
+		
+	*len = length;
+	if (!length) { return NULL; }
+	ASSERT_BOUNDS (1+offset+1+length-1, coding->size);
+
+	return coding->data + 1 + offset + 1;
+    }
+    ASSERT (0, "Unsupported type of g1 coding");
 }
 
 

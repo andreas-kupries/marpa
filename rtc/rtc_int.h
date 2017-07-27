@@ -26,8 +26,8 @@
  */
 
 typedef struct marpatcl_rtc {
-    marpatcl_rtc_spec*    spec;    /* Static grammar definitions */
     Marpa_Config          config;  /* Config info shared to lexer and parser */
+    marpatcl_rtc_spec*    spec;    /* Static grammar definitions */
     marpatcl_rtc_inbound  in;      /* Main dispatch */
     marpatcl_rtc_gate     gate;    /* Gating to lexer */
     marpatcl_rtc_lexer    lexer;   /* Lexing, gating to parser */

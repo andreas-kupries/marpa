@@ -13,6 +13,7 @@
  */
 
 #include <sem.h>
+#include <spec.h>
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -47,16 +48,22 @@ typedef struct marpatcl_rtc_sva {
  * get     - Get SV stored in specififc slot of the vector
  */
 
-marpatcl_rtc_sv_vec marpatcl_rtc_sva_cons    (int capacity, int strict);
-void                marpatcl_rtc_sva_destroy (marpatcl_rtc_sv_vec v);
-void                marpatcl_rtc_sva_init    (marpatcl_rtc_sv_vec v, int capacity, int strict);
-void                marpatcl_rtc_sva_free    (marpatcl_rtc_sv_vec v);
-void                marpatcl_rtc_sva_push    (marpatcl_rtc_sv_vec v, marpatcl_rtc_sv_p x);
-marpatcl_rtc_sv_p   marpatcl_rtc_sva_pop     (marpatcl_rtc_sv_vec v);
-void                marpatcl_rtc_sva_clear   (marpatcl_rtc_sv_vec v);
-int                 marpatcl_rtc_sva_size    (marpatcl_rtc_sv_vec v);
-void                marpatcl_rtc_sva_set     (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x);
-marpatcl_rtc_sv_p   marpatcl_rtc_sva_get     (marpatcl_rtc_sv_vec v, int at);
+marpatcl_rtc_sv_vec marpatcl_rtc_sva_cons      (int capacity, int strict);
+void                marpatcl_rtc_sva_destroy   (marpatcl_rtc_sv_vec v);
+void                marpatcl_rtc_sva_init      (marpatcl_rtc_sv_vec v, int capacity, int strict);
+void                marpatcl_rtc_sva_free      (marpatcl_rtc_sv_vec v);
+void                marpatcl_rtc_sva_push      (marpatcl_rtc_sv_vec v, marpatcl_rtc_sv_p x);
+marpatcl_rtc_sv_p   marpatcl_rtc_sva_pop       (marpatcl_rtc_sv_vec v);
+void                marpatcl_rtc_sva_clear     (marpatcl_rtc_sv_vec v);
+int                 marpatcl_rtc_sva_size      (marpatcl_rtc_sv_vec v);
+marpatcl_rtc_sv_p   marpatcl_rtc_sva_get       (marpatcl_rtc_sv_vec v, int at);
+void                marpatcl_rtc_sva_set       (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x);
+void                marpatcl_rtc_sva_set_fill  (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x);
+void                marpatcl_rtc_sva_set_trunc (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x);
+void                marpatcl_rtc_sva_filter    (marpatcl_rtc_sv_vec v, int c, marpatcl_rtc_sym* x);
+void                marpatcl_rtc_sva_transfer  (marpatcl_rtc_sv_vec dst,
+						marpatcl_rtc_sv_vec src, int from, int to);
+marpatcl_rtc_sv_vec marpatcl_rtc_sva_dup       (marpatcl_rtc_sv_vec v, int strict);
 
 #endif
 

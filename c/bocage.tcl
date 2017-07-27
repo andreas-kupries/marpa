@@ -169,7 +169,7 @@ critcl::class def ::marpa::Bocage {
 		** The application can find the value of the rule's children in the stack locations
 		** from marpa_v_arg_0(v)
 		** to   marpa_v_arg_n(v).
-		** The semantics for the rule whose ID is
+		** The semantics for the rule whose ID
 		** is   marpa_v_rule(v)
 		** should be executed on these child values, and the result placed
 		** in   marpa_v_result(v).

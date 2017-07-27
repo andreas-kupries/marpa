@@ -27,6 +27,8 @@ typedef struct marpatcl_rtc_stack* marpatcl_rtc_stack_p;
 
 marpatcl_rtc_stack_p marpatcl_rtc_stack_cons    (int initial_capacity);
 void                 marpatcl_rtc_stack_destroy (marpatcl_rtc_stack_p s);
+void                 marpatcl_rtc_stack_init    (marpatcl_rtc_stack_p s, int initial_capacity);
+void                 marpatcl_rtc_stack_free    (marpatcl_rtc_stack_p s);
 int                  marpatcl_rtc_stack_size    (marpatcl_rtc_stack_p s);
 void                 marpatcl_rtc_stack_push    (marpatcl_rtc_stack_p s, int v);
 int                  marpatcl_rtc_stack_pop     (marpatcl_rtc_stack_p s);

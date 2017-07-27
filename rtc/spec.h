@@ -66,6 +66,7 @@ typedef struct marpatcl_rtc_rules {
     marpatcl_rtc_string* sname;   /* Table of strings, shared pool */
     marpatcl_rtc_symvec  symbols; /* Table of symbol(name)s. References into string pool */
     marpatcl_rtc_symvec  rules;   /* Table of rule(name)s. References into string pool */
+    marpatcl_rtc_symvec  lhs;     /* Table of rule lhs ids. */
     marpatcl_rtc_sym*    rcode;   /* Bytecode specifying the rules */
 } marpatcl_rtc_rules;
 
@@ -142,8 +143,9 @@ typedef struct marpatcl_rtc_spec {
     /*                              * A = D + |x; x is lexeme, x is LTM| */
     marpatcl_rtc_rules* l0;
     marpatcl_rtc_rules* g1;
-    marpatcl_rtc_symvec l0semantic; /* Key codes for creation of L0 semantic values */
-    marpatcl_rtc_symvec g1semantic; /* Key codes for creation of G1 semantic values */
+    marpatcl_rtc_symvec l0semantic; /* Key codes for creation of L0 SVs */
+    marpatcl_rtc_symvec g1semantic; /* Key codes for creation of G1 SVs */
+    marpatcl_rtc_symvec g1mask;     /* Per-rule masking for creation of G1 SVs */
 } marpatcl_rtc_spec;
 
 /*
@@ -161,24 +163,26 @@ typedef struct marpatcl_rtc_spec {
  * table of references, all identical.
  */
 
-#define MARPATCL_SV_NOP       ((marpatcl_rtc_sym) (-1)) /* Do nothing */
-#define MARPATCL_SV_START     ((marpatcl_rtc_sym) (0))  /* offset of lexeme start in input */
-#define MARPATCL_SV_LENGTH    ((marpatcl_rtc_sym) (1))  /* length of lexeme in input */
-#define MARPATCL_SV_G1START   ((marpatcl_rtc_sym) (2))  /* start of lexeme in G1 (token offset) */
-#define MARPATCL_SV_G1LENGTH  ((marpatcl_rtc_sym) (3))  /* length of lexeme in G1 */
-#define MARPATCL_SV_LHS_NAME  ((marpatcl_rtc_sym) (4))  /* Name of the lhs in the reduced rule, lexeme */
-#define MARPATCL_SV_LHS_ID    ((marpatcl_rtc_sym) (5))  /* Id of the lhs in the reduced rule */
-#define MARPATCL_SV_RULE_NAME ((marpatcl_rtc_sym) (6))  /* Name of the reduced rule */
-#define MARPATCL_SV_RULE_ID   ((marpatcl_rtc_sym) (7))  /* Id of the reduced rule */
-#define MARPATCL_SV_VALUE     ((marpatcl_rtc_sym) (8))  /* Value of the lexeme, value of the children */
-#define MARPATCL_SV_CMD       ((marpatcl_rtc_sym) (9))  /* User-specified semantic action */
+//#define MARPATCL_SV_NOP       ((marpatcl_rtc_sym) (-1)) /* Do nothing */
+#define MARPATCL_SV_START     ((marpatcl_rtc_sym) (0))  /* start in input, char/byte offset */
+#define MARPATCL_SV_END       ((marpatcl_rtc_sym) (1))  /* end in input, char/byte offset */
+#define MARPATCL_SV_LENGTH    ((marpatcl_rtc_sym) (2))  /* length in input, char/byte delta */
+#define MARPATCL_SV_G1START   ((marpatcl_rtc_sym) (3))  /* start in input, g1 locations */
+#define MARPATCL_SV_G1END     ((marpatcl_rtc_sym) (4))  /* end in input, g1 locations */
+#define MARPATCL_SV_G1LENGTH  ((marpatcl_rtc_sym) (5))  /* length in input, G1 location delta */
+#define MARPATCL_SV_LHS_NAME  ((marpatcl_rtc_sym) (6))  /* Name of the lhs in the reduced rule, lexeme symbol name */
+#define MARPATCL_SV_LHS_ID    ((marpatcl_rtc_sym) (7))  /* Id of the lhs symbol in the reduced rule */
+#define MARPATCL_SV_RULE_NAME ((marpatcl_rtc_sym) (8))  /* Name of the reduced rule */
+#define MARPATCL_SV_RULE_ID   ((marpatcl_rtc_sym) (9))  /* Id of the reduced rule */
+#define MARPATCL_SV_VALUE     ((marpatcl_rtc_sym) (10)) /* Value of the lexeme, vector of the children */
+#define MARPATCL_SV_CMD       ((marpatcl_rtc_sym) (11)) /* User-specified semantic action */
 
 /*
  * Tags for G1 semantic coding formats
  */
 
-#define MARPATCL_S_SINGLE (-1)
-#define MARPATCL_S_PER    (-2)
+#define MARPATCL_S_SINGLE (0) /* Single semantic, mask, rule-independent */
+#define MARPATCL_S_PER    (1) /* Per-rule semantic, mask information */
 
 /* SV handler for user actions. Input value is a vector of children values.
  * Result is value from the action.
@@ -229,10 +233,13 @@ typedef marpatcl_rtc_sv_p (*marpatcl_rtc_sv_cmd) (int action, const char* aname,
  * setup - Use the static structures to fill an active Marpa grammar
  */
 
-void        marpatcl_rtc_spec_setup    (Marpa_Grammar g, marpatcl_rtc_rules* s);
-const char* marpatcl_rtc_spec_symname  (marpatcl_rtc_rules* s, marpatcl_rtc_sym id, int* len);
-const char* marpatcl_rtc_spec_rulename (marpatcl_rtc_rules* s, marpatcl_rtc_sym id, int* len);
-		     
+void              marpatcl_rtc_spec_setup    (Marpa_Grammar g, marpatcl_rtc_rules* s);
+const char*       marpatcl_rtc_spec_symname  (marpatcl_rtc_rules* g,  marpatcl_rtc_sym id, int* len);
+const char*       marpatcl_rtc_spec_rulename (marpatcl_rtc_rules* g,  marpatcl_rtc_sym id, int* len);
+const char*       marpatcl_rtc_spec_string   (marpatcl_rtc_string* p, marpatcl_rtc_sym id, int* len);
+marpatcl_rtc_sym* marpatcl_rtc_spec_g1decode (marpatcl_rtc_symvec* coding, marpatcl_rtc_sym rule, int* len);
+marpatcl_rtc_sym  marpatcl_rtc_spec_g1map    (marpatcl_rtc_symvec* map, marpatcl_rtc_sym id);
+
 #endif
 
 /*

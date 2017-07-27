@@ -8,7 +8,6 @@
 #include <sem_int.h>
 #include <critcl_alloc.h>
 #include <critcl_assert.h>
-#include <tcl.h>
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -106,6 +105,14 @@ marpatcl_rtc_sva_size (marpatcl_rtc_sv_vec v)
     return SZ;
 }
 
+marpatcl_rtc_sv_p
+marpatcl_rtc_sva_get (marpatcl_rtc_sv_vec v, int at)
+{
+    /* Caller is responsible for ref-counting */
+    ASSERT_BOUNDS (at, SZ);
+    return VAL [at];
+}
+
 void
 marpatcl_rtc_sva_set (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x)
 {
@@ -127,12 +134,99 @@ marpatcl_rtc_sva_set (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x)
     return;    
 }
 
-marpatcl_rtc_sv_p
-marpatcl_rtc_sva_get (marpatcl_rtc_sv_vec v, int at)
+void
+marpatcl_rtc_sva_set_fill (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x)
 {
-    /* Caller is responsible for ref-counting */
+    marpatcl_rtc_sv_p old;
+    while (SZ <= at) { marpatcl_rtc_sva_push (v, NULL); }
     ASSERT_BOUNDS (at, SZ);
-    return VAL [at];
+    /*
+     * This code relies on the fact that the vector starts nulled, and pop
+     * nulls too.  Without that the checks for not-null here would break on
+     * un-initialized bogus data.
+     */
+    old = VAL [at];
+    VAL [at] = x;
+    if (x) {
+	(void) marpatcl_rtc_sv_ref (x);
+    }
+    if (old) {
+	marpatcl_rtc_sv_unref (old);
+    }
+    return;    
+}
+
+void
+marpatcl_rtc_sva_set_trunc (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x)
+{
+    marpatcl_rtc_sv_p old;
+    ASSERT_BOUNDS (at, SZ);
+    /*
+     * This code relies on the fact that the vector starts nulled, and pop
+     * nulls too.  Without that the checks for not-null here would break on
+     * un-initialized bogus data.
+     */
+    old = VAL [at];
+    VAL [at] = x;
+    if (x) {
+	(void) marpatcl_rtc_sv_ref (x);
+    }
+    if (old) {
+	marpatcl_rtc_sv_unref (old);
+    }
+
+    while (SZ > (at+1)) { marpatcl_rtc_sva_pop (v); }
+    return;    
+}
+
+void
+marpatcl_rtc_sva_filter (marpatcl_rtc_sv_vec v, int c, marpatcl_rtc_sym* x)
+{
+    int k, t, j; /* from, to, filter from */
+    for (k=0, t=0, j=0; k < SZ; k++) {
+	if (t < k) {
+	    VAL [t] = VAL [k];
+	    VAL [k] = NULL;
+	    /* Reference moved, no change in count
+	     * Setting it to null in origin prevents
+	     * miscounting during truncation at the end.
+	     */
+	}
+	if (k == x[j]) {
+	    /* This element filtered out, reference gone */
+	    marpatcl_rtc_sv_unref (VAL [k]);
+	    j ++;
+	    /* From now on t < k */
+	} else {
+	    t ++;
+	}
+    }
+    /* Truncate */
+    while (SZ > (t+1)) { marpatcl_rtc_sva_pop (v); }
+}
+
+void
+marpatcl_rtc_sva_transfer (marpatcl_rtc_sv_vec dst,
+			   marpatcl_rtc_sv_vec src,
+			   int from, int to)
+{
+    int k;
+    /* Shorthands not available, as they assume `v` */
+    ASSERT_BOUNDS (from, src->size);
+    ASSERT_BOUNDS (to,   src->size);
+    ASSERT_BOUNDS (from, to);
+
+    for (k = from; k <= to; k++) {
+	marpatcl_rtc_sva_push (dst, src->data[k]);
+    }
+}
+
+marpatcl_rtc_sv_vec
+marpatcl_rtc_sva_dup (marpatcl_rtc_sv_vec v, int strict)
+{
+    marpatcl_rtc_sv_vec copy = marpatcl_rtc_sva_cons (SZ, strict);
+    marpatcl_rtc_sva_transfer (copy, v, 0, SZ-1);
+    return copy;
 }
 
 
