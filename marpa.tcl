@@ -183,7 +183,9 @@ critcl::tsources export/gc.tcl            ; # Container formatted
 critcl::tsources export/core/tcl.tcl      ; # Support for generators emitting Tcl engines
 critcl::tsources export/tlex.tcl          ; # Tcl engine - lexing
 critcl::tsources export/tparse.tcl        ; # Tcl engine - lexing+parsing
-critcl::tsources export/rtc.tcl           ; # RTC parser class
+
+critcl::tsources export/core/rtc.tcl      ; # Support for generators emitting C engines
+critcl::tsources export/rtc-plain.tcl     ; # Raw RTC parser code
 
 # # ## ### ##### ######## #############
 ## Main C section.

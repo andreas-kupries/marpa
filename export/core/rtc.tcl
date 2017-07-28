@@ -5,7 +5,7 @@
 ##
 # This code is BSD-licensed.
 
-# Exporter (Generator)
+# Exporter -- Common core for related generators (rtc-raw, rtc-critcl)
 ##
 # - Output format: C code, structures for RTC.
 #   Code is formatted with newlines and indentation.
@@ -17,23 +17,72 @@ package require Tcl 8.5
 package require debug
 package require debug::caller
 
-# Implied:
-# - marpa::slif::container
-# - marpa:: ... :: reduce
-
-debug define marpa/export/rtc
-debug prefix marpa/export/rtc {[debug caller] | }
+debug define marpa/export/core/rtc
+debug prefix marpa/export/core/rtc {[debug caller] | }
 
 # # ## ### ##### ######## #############
+## Configuration coming out of this supporting module.
+#
+## General placeholders
+#
+## @slif-version@    -- Grammar information: Version
+## @slif-writer@     -- Grammar information: Author
+## @slif-year@       -- Grammar information: Year of authorship
+## @slif-name@       -- Grammar information: Name
+## @slif-name-tag@   -- Grammar information: Derived from name, tag for Tcl `debug` commands.
+## @tool-operator@   -- Name of user invoking the tool
+## @tool@            -- Name of the pool generating the output
+## @generation-time@ -- Date/Time of when tool was invoked
+#
+## Engine-specific placeholders
+#
+## @always-c@		-- #always active L0 symbols (discards + LTM-mode lexemes)
+## @always-sz@		-- Informational: #bytes for always active L0 symbols
+## @always-v@           -- ACS symbol ids of the always active L0 symbols
+## @cname@		-- C identifier, derived from @name@
+## @discards-c@		-- #discarded symbols in the L0 level (i.e. whitespace)
+## @g1-code-c@          -- #entries to encode the structural (G1) rules
+## @g1-code-sz@         -- Informational: #bytes for
+## @g1-code@	   	-- VM instructions encoding the structural (G1) rules
+## @g1-lhs-v@		-- Per G1 rule indices into the symbol map = lhs of rule
+## @g1-masking-c@       -- #entries encoding the G1 masks (See spec.h for details)
+## @g1-masking-sz@      -- Informational: #bytes for encoding the G1 masks
+## @g1-masking-v@       -- Data encoding the G1 masks
+## @g1-rules-c@		-- #structural (G1) rules
+## @g1-rules-sz@	-- Informational: #bytes for
+## @g1-rules-v@		-- Per G1 rule indices into the string pool = rule name
+## @g1-semantics-c@     -- #entries encoding the G1 semantics
+## @g1-semantics-sz@    -- Informational: #bytes for encoding of the G1 semantics
+## @g1-semantics-v@     -- Data encoding the G1 semantics (See spec.h for details)
+## @g1-symbols-c@   	-- #symbols in the structural (G1) level of the engine
+## @g1-symbols-indices@	-- Per G1 symbol indices into the string pool = symbol name
+## @g1-symbols-sz@	-- Informational: #bytes for
+## @l0-code-c@          -- #entries to encode the lexical (L0) rules
+## @l0-code-sz@         -- Informational: #bytes for
+## @l0-code@		-- VM instructions encoding the lexical (L0) rules
+## @l0-semantics-c@     -- #array descriptor codes of the L0 semantics
+## @l0-semantics-sz@    -- Informational: #bytes for the lexical semantics
+## @l0-semantics-v@     -- The array descriptor codes of the L0 semantics
+## @l0-symbols-c@	-- #symbols in the lexical (L0) level of the engine
+## @l0-symbols-indices@	-- Per L0 symbol indices into the string pool = symbol name
+## @l0-symbols-sz@	-- Informational: #bytes for the symbol name map
+## @lexemes-c@		-- #lexemes = #terminals in the grammar
+## @space@              -- Informational: #bytes taken by all structures
+## @string-c@      	-- #strings in the pool
+## @string-data-sz@ 	-- Informational: #bytes for the string data of the pool
+## @string-data-v@     	-- The string data of the string pool
+## @string-length-sz@ 	-- Informational: #bytes for the length data of the pool
+## @string-length-v@  	-- Length data for the strings in the pool
+## @string-offset-sz@ 	-- Informational: #bytes for the offset data of the pool
+## @string-offset-v@  	-- Offset data for the strings in the pool
 
-namespace eval ::marpa::export::rtc {
-    namespace export serial container
+namespace eval ::marpa::export::core {}
+namespace eval ::marpa::export::core::rtc {
+    namespace import ::marpa::export::config  ; rename config  core-config
+    namespace import ::marpa::export::config? ; rename config? core-config?
+    namespace export config
     namespace ensemble create
 
-    namespace import ::marpa::export::config
-    namespace import ::marpa::export::config?
-
-    variable self [info script]
     variable indent {    }
     variable ak {
 	start    MARPATCL_SV_START
@@ -52,49 +101,21 @@ namespace eval ::marpa::export::rtc {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::rtc::container {gc} {
-    debug.marpa/export/rtc {}
-    return [Generate [$gc serialize]]
-}
+proc ::marpa::export::core::rtc::config {serial} {
+    debug.marpa/export/core/rtc {}
 
-proc ::marpa::export::rtc::Generate {serial} {
-    debug.marpa/export/rtc {}
-    
-    # Create a local copy of the grammar for the upcoming
-    # rewrites. This also gives us the opportunity to validate the
-    # input.
-    
-    set gc [marpa::slif::container new]
-    $gc deserialize $serial
-    $gc validate
-
-    # First rewrite is replacement of higher-precedenced rules with
-    # groups encoding the precedence directly in their structure. (**)
-    marpa::slif::precedence 2container \
-	[marpa::slif::precedence rewrite $gc] \
-	$gc
-
-    # Second rewrite is of the literals to forms supported by the
-    # engine -- bytes only.
-
-    marpa::slif::literal r2container \
-	[marpa::slif::literal reduce [concat {*}[lmap {sym rhs} [dict get [$gc l0 serialize] literal] {
-	    list $sym [lindex $rhs 0]
-	}]] {
-	    D-STR2 D-%STR  D-CLS2  D-^CLS1
-	    D-NCC2 D-%NCC2 D-^NCC1 D-^%NCC2
-	    D-RAN2 D-%RAN  D-^RAN2 D-CHR
-	    D-^CHR
-	}] $gc
+    set gc [Ingest $serial]
+    EncodePrecedences $gc
+    LowerLiterals     $gc
     # Types we can get out of the reduction:
     # - byte
     
     # Pull various required parts out of the container ...
 
-    set lit       [Get $gc literal]
-    set l0symbols [Get $gc {}]
-    set discards  [Get $gc discard]
-    set lex       [Get $gc lexeme]
+    set lit       [GetL0 $gc literal]
+    set l0symbols [GetL0 $gc {}]
+    set discards  [GetL0 $gc discard]
+    set lex       [GetL0 $gc lexeme]
     set g1symbols [$gc g1 symbols-of {}]
 
     # Ignoring class 'terminal'. That is the same as the l0 lexemes,
@@ -230,7 +251,7 @@ proc ::marpa::export::rtc::Generate {serial} {
     # ----------------- ------------
     # Note: Inner (..) values are padding
     
-    lappend map {*}[config]
+    lappend map {*}[core-config]
     # C code placeholders ...
 
     # General name
@@ -340,23 +361,66 @@ proc ::marpa::export::rtc::Generate {serial} {
     G destroy
     LR destroy
     GR destroy
-    
-    variable self
-    return [string map $map [string trim [marpa asset $self]]]
+
+    return $map
 }
 
-proc ::marpa::export::rtc::* {sz n} {
+# # ## ### ##### ######## #############
+## Internals
+
+proc ::marpa::export::core::rtc::Ingest {serial} {
+    debug.marpa/export/core/rtc {}
+        
+    # Create a local copy of the grammar for the upcoming
+    # rewrites. Validate the input as well, now.
+    
+    set gc [marpa::slif::container new]
+    $gc deserialize $serial
+    $gc validate
+    return $gc
+}
+
+proc ::marpa::export::core::rtc::EncodePrecedences {gc} {
+    debug.marpa/export/core/rtc {}
+
+    # Replace higher-precedenced rules with groups of rules encoding
+    # the precedences directly into their structure. (**)
+
+    marpa::slif::precedence 2container \
+	[marpa::slif::precedence rewrite $gc] \
+	$gc
+    return
+}
+
+proc ::marpa::export::core::rtc::LowerLiterals {gc} {
+    debug.marpa/export/core/rtc {}
+
+    # Rewrite the literals into forms supported by the runtime (C engine).
+    
+    marpa::slif::literal r2container \
+	[marpa::slif::literal reduce [concat {*}[lmap {sym rhs} [dict get [$gc l0 serialize] literal] {
+	    list $sym [lindex $rhs 0]
+	}]] {
+	    D-STR2 D-%STR  D-CLS2  D-^CLS1
+	    D-NCC2 D-%NCC2 D-^NCC1 D-^%NCC2
+	    D-RAN2 D-%RAN  D-^RAN2 D-CHR
+	    D-^CHR
+	}] $gc
+    return
+}
+
+proc ::marpa::export::core::rtc::* {sz n} {
     expr {$n * $sz}
 }
 
-proc ::marpa::export::rtc::Get {gc class} {
+proc ::marpa::export::core::rtc::GetL0 {gc class} {
     if {$class ni [$gc l0 classes]} {
 	return {}
     }
     return [lsort -dict [$gc l0 symbols-of $class]]
 }
 
-proc ::marpa::export::rtc::SemaCode {keys} {
+proc ::marpa::export::core::rtc::SemaCode {keys} {
     variable ak
     # sem - Check for array, and unpack...
     if {![dict exists $keys array]} {
@@ -366,22 +430,22 @@ proc ::marpa::export::rtc::SemaCode {keys} {
     return [lmap w [dict get $keys array] { dict get $ak $w }]
 }
 
-proc ::marpa::export::rtc::CName {} {
-    debug.marpa/export/rtc {}
-    string map {:: _ - _} [config? name] 
+proc ::marpa::export::core::rtc::CName {} {
+    debug.marpa/export/core/rtc {}
+    string map {:: _ - _} [core-config? name] 
 }
 
-proc ::marpa::export::rtc::Names {rules} {
+proc ::marpa::export::core::rtc::Names {rules} {
     return [lmap rule $rules { RName $rule }]
 }
 
-proc ::marpa::export::rtc::Sema {rules} {
+proc ::marpa::export::core::rtc::Sema {rules} {
     foreach rule $rules {
 	Sem $rule
     }
 }
 
-proc ::marpa::export::rtc::RName {rule} {
+proc ::marpa::export::core::rtc::RName {rule} {
     lassign $rule lhs def
     set attr [lassign $def type _ _]
     dict with attr {}
@@ -390,7 +454,7 @@ proc ::marpa::export::rtc::RName {rule} {
     return $name
 }
 
-proc ::marpa::export::rtc::RulesOf {gc area syms} {
+proc ::marpa::export::core::rtc::RulesOf {gc area syms} {
     set r {}
     foreach s $syms {
 	foreach def [$gc $area get $s] {
@@ -400,7 +464,7 @@ proc ::marpa::export::rtc::RulesOf {gc area syms} {
     return $r
 }
 
-proc ::marpa::export::rtc::LTM {lex gc} {
+proc ::marpa::export::core::rtc::LTM {lex gc} {
     set latm [$gc l0 latm]
     return [lmap w $lex {
 	if {[dict get $latm $w]} continue
@@ -408,7 +472,7 @@ proc ::marpa::export::rtc::LTM {lex gc} {
     }]
 }
 
-proc ::marpa::export::rtc::Chunked {words args} {
+proc ::marpa::export::core::rtc::Chunked {words args} {
     variable indent
     if {![llength $args]} {
 	return [CArray $words 16]
@@ -436,7 +500,7 @@ proc ::marpa::export::rtc::Chunked {words args} {
     return $result
 }
 
-proc ::marpa::export::rtc::Hdr {n label} {
+proc ::marpa::export::core::rtc::Hdr {n label} {
     upvar 1 pfx pfx indent indent
     if {$label eq {}} {
 	# custom prefix
@@ -445,20 +509,25 @@ proc ::marpa::export::rtc::Hdr {n label} {
     return "$pfx/* --- ($n) --- --- --- $label\n$indent */\n"
 }
 
-proc ::marpa::export::rtc::CArray {words n} {
+proc ::marpa::export::core::rtc::CArray {words n} {
     variable indent
     return [Array $indent ", " $words $n]
 }
 
-proc ::marpa::export::rtc::Array {prefix sep words n} {
+proc ::marpa::export::core::rtc::Array {prefix sep words n} {
+puts Z_____________________________________________________
     # Add the separator to all but the last word.
     set     words [lmap w [lreverse [lassign [lreverse $words] last]] { set _ $w$sep }]
-    lappend words $last
+    lappend words $last[regsub -all -- {[^\t]} $sep { }]
+    # The last word gets a separator as well, as spaces, to match the
+    # alignment in the field of all the others. Without it will indent
+    # badly in a tabular format. These spaces are removed at the end,
+    # with a trimright.
 
     append result $prefix
 
     if {$n < 0} {
-	# dynamically chunk to stay under n columns
+	# dynamically chunk to stay under n character columns
 	set n [expr {(- $n) - [string length $prefix]}]
 	set col 0 ;# This does not count the prefix. n was adjusted.
 	foreach w $words {
@@ -469,6 +538,7 @@ proc ::marpa::export::rtc::Array {prefix sep words n} {
 		continue
 	    }
 	    if {($col + $k) > $n} {
+		set result [string trimright $result]
 		append result \n $prefix
 		set col 0
 	    }
@@ -476,18 +546,30 @@ proc ::marpa::export::rtc::Array {prefix sep words n} {
 	    incr col $k
 	}
     } else {
-	# chunk every n words
+	# chunk every n words - i.e. word based tabular format.
+	# for proper tabular alignment we pad all words with
+	# spaces at the left, to their max length.
+	set max [tcl::mathfunc::max {*}[lmap w $words { string length $w }]]
+	set sf %${max}s
+
+puts XXX:max=$max
+	
         set k $n
 	foreach w $words {
-	    if {$k == 0} { set k $n ; append result \n $prefix }
-	    append result $w
+puts W_|$w|\nW'|[format $sf $w]|
+	    if {$k == 0} {
+		set k $n
+		set result [string trimright $result]
+		append result \n $prefix
+	    }
+	    append result [format $sf $w]
 	    incr k -1
 	}
     }
-    return $result
+    return [string trimright $result]
 }
 
-proc ::marpa::export::rtc::EncodeGS {cv tag data nr} {
+proc ::marpa::export::core::rtc::EncodeGS {cv tag data nr} {
     upvar 1 $cv size
     set size [llength $data]
     incr size
@@ -516,7 +598,7 @@ proc ::marpa::export::rtc::EncodeGS {cv tag data nr} {
     }
 }
 
-proc ::marpa::export::rtc::EncodeMask {cv tag data nr} {
+proc ::marpa::export::core::rtc::EncodeMask {cv tag data nr} {
     upvar 1 $cv size
     set size [llength $data]
     incr size
@@ -545,12 +627,12 @@ proc ::marpa::export::rtc::EncodeMask {cv tag data nr} {
     }
 }
 
-proc ::marpa::export::rtc::Limit16 {label n} {
+proc ::marpa::export::core::rtc::Limit16 {label n} {
     if {$n < 65536} return
     return -code error "ZZZ:$label $n > 64K"
 }
 
-proc ::marpa::export::rtc::Limit12 {label n} {
+proc ::marpa::export::core::rtc::Limit12 {label n} {
     if {$n < 4096} return
     return -code error "ZZZ:$label $n > 4K"
 }
@@ -558,7 +640,7 @@ proc ::marpa::export::rtc::Limit12 {label n} {
 # # ## ### ##### ######## #############
 ## Various helper classes to hold generator state
 
-oo::class create marpa::export::rtc::Mask {
+oo::class create marpa::export::core::rtc::Mask {
     variable mymask ; # dict (mask -> list(rule id))
     variable mycount
     variable myfinal
@@ -608,7 +690,7 @@ oo::class create marpa::export::rtc::Mask {
 	    if {![info exists mask]} { error MASK-MISSING:($rule) }
 	    if {$mask eq {}} { error MASK-EMPTY:($rule) }
 	    # mask is bit vector (true -> hidden, convert to filter)
-	    set filter [::marpa::export::tparse::Remask $mask]
+	    set filter [::marpa::export::core::tcl::Remask $mask]
 	    set filter [linsert $filter 0 [llength $filter]]
 	} else {
 	    # quantified, or empty rule - No mask, no filter
@@ -660,7 +742,7 @@ oo::class create marpa::export::rtc::Mask {
     }
 }
 
-oo::class create marpa::export::rtc::SemaG {
+oo::class create marpa::export::core::rtc::SemaG {
     variable mysema ; # dict (semantics -> list(rule id))
     variable mycount
     variable myfinal
@@ -709,7 +791,7 @@ oo::class create marpa::export::rtc::SemaG {
 	if {![info exists action]} { error ACTION-MISSING }
 	if {$action eq {}} { error ACTION-EMPTY }
 
-	set action [::marpa::export::rtc::SemaCode $action]
+	set action [::marpa::export::core::rtc::SemaCode $action]
 	set action [linsert $action 0 [llength $action]]
 	dict lappend mysema $action $mycount
 	return
@@ -747,7 +829,7 @@ oo::class create marpa::export::rtc::SemaG {
     }
 }
 
-oo::class create marpa::export::rtc::Rules {
+oo::class create marpa::export::core::rtc::Rules {
     variable myrules
     variable mysize
     variable myelements
@@ -791,7 +873,7 @@ oo::class create marpa::export::rtc::Rules {
 	    set details [lassign $def type]
 	    my P_$type $lhs {*}$details
 	    if {!$myusenames} continue
-	    lappend mynames  [P id [marpa::export::rtc::RName $rule]]
+	    lappend mynames  [P id [marpa::export::core::rtc::RName $rule]]
 	    lappend mylhsids [S 2id $lhs]
 	}
 	return
@@ -818,7 +900,7 @@ oo::class create marpa::export::rtc::Rules {
 	set lhid [S 2id $lhs]
 
 	set rl [llength $rhs]
-	::marpa::export::rtc::Limit12 {priority rhs length} $rl
+	::marpa::export::core::rtc::Limit12 {priority rhs length} $rl
 	if {$rl > $mymaxpad} { set mymaxpad $rl }
 	incr myelements $rl
 
@@ -923,7 +1005,7 @@ oo::class create marpa::export::rtc::Rules {
 
 # # ## ### ##### ######## #############
 
-oo::class create marpa::export::rtc::Sym {
+oo::class create marpa::export::core::rtc::Sym {
     variable mycounter
     variable myid
     variable mysym
@@ -984,7 +1066,7 @@ oo::class create marpa::export::rtc::Sym {
 
 # # ## ### ##### ######## #############
 
-oo::class create marpa::export::rtc::Bytes {
+oo::class create marpa::export::core::rtc::Bytes {
     # Literals are bytes - The complexity in the code below comes from
     # the possibility that the bytes and byte-ranges from the grammar
     # do not cover the entire set. Thus we
@@ -1035,7 +1117,7 @@ oo::class create marpa::export::rtc::Bytes {
 
 # # ## ### ##### ######## #############
 
-oo::class create marpa::export::rtc::Pool {
+oo::class create marpa::export::core::rtc::Pool {
     variable mystr     ; # dict (string -> string) : external -> transformed
     variable mypool    ; # dict (string -> length),
     #       post-finalize: dict (string -> id)
@@ -1168,7 +1250,7 @@ oo::class create marpa::export::rtc::Pool {
 	set index 0
 	set offset 0
 	foreach str [lsort -dict [dict keys $mypool]] {
-	    ::marpa::export::rtc::Limit16 {string pool offset} $offset
+	    ::marpa::export::core::rtc::Limit16 {string pool offset} $offset
 	    set len [dict get $mypool $str]
 	    incr mystrsize $len
 	    incr mystrsize ;# \0
@@ -1186,140 +1268,3 @@ oo::class create marpa::export::rtc::Pool {
 
 # # ## ### ##### ######## #############
 return
-##
-## Template following (`source` will not process it)
-/* -*- c -*-
-**
-* This template is BSD-licensed.
-* (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-*                                     http://core.tcl.tk/akupries/
-**
-* (c) @slif-year@ Grammar @slif-name@ By @slif-writer@
-**
-**	rtc-derived Engine for grammar "@slif-name@". Lexing + Parsing.
-**	Generated On @generation-time@
-**		  By @tool-operator@
-**		 Via @tool@
-**
-** Space taken: @space@ bytes
-*/
-
-#include <spec.h>
-#include <rtc.h>
-
-/*
- * Shared string pool (@string-length-sz@ len bytes over @string-c@ entries)
- *                    (@string-offset-sz@ off bytes -----^)
- *                    (@string-data-sz@ content bytes)
- */
-
-static marpatcl_rtc_size @cname@_pool_length [@string-c@] = { /* @string-length-sz@ */
-@string-length-v@
-};
-
-static marpatcl_rtc_size @cname@_pool_offset [@string-c@] = { /* @string-offset-sz@ */
-@string-offset-v@
-};
-
-static marpatcl_rtc_string @cname@_pool = { /* 24 + @string-data-sz@ */
-    @cname@_pool_length,
-    @cname@_pool_offset,
-@string-data-v@
-};
-
-/*
- * L0 structures
- */
-
-static marpatcl_rtc_sym @cname@_l0_sym_name [@l0-symbols-c@] = { /* @l0-symbols-sz@ */
-@l0-symbols-indices@
-};
-
-static marpatcl_rtc_sym @cname@_l0_rule_definitions [@l0-code-c@] = { /* @l0-code-sz@ */
-@l0-code@
-};
-
-static marpatcl_rtc_rules @cname@_l0 = { /* 48 */
-    /* .sname   */  &@cname@_pool,
-    /* .symbols */  { @l0-symbols-c@, @cname@_l0_sym_name },
-    /* .rules   */  { 0, NULL },
-    /* .lhs     */  { 0, NULL },
-    /* .rcode   */  @cname@_l0_rule_definitions
-};
-
-static marpatcl_rtc_sym @cname@_l0semantics [@l0-semantics-c@] = { /* @l0-semantics-sz@ */
-@l0-semantics-v@
-};
-
-/*
- * G1 structures
- */
-
-static marpatcl_rtc_sym @cname@_g1_sym_name [@g1-symbols-c@] = { /* @g1-symbols-sz@ */
-@g1-symbols-indices@
-};
-
-static marpatcl_rtc_sym @cname@_g1_rule_name [@g1-rules-c@] = { /* @g1-rules-sz@ */
-@g1-rules-v@
-};
-
-static marpatcl_rtc_sym @cname@_g1_rule_lhs [@g1-rules-c@] = { /* @g1-rules-sz@ */
-@g1-lhs-v@
-};
-
-static marpatcl_rtc_sym @cname@_g1_rule_definitions [@g1-code-c@] = { /* @g1-code-sz@ */
-@g1-code@
-};
-
-static marpatcl_rtc_rules @cname@_g1 = { /* 48 */
-    /* .sname   */  &@cname@_pool,
-    /* .symbols */  { @g1-symbols-c@, @cname@_g1_sym_name },
-    /* .rules   */  { @g1-rules-c@, @cname@_g1_rule_name },
-    /* .lhs     */  { @g1-rules-c@, @cname@_g1_rule_lhs },
-    /* .rcode   */  @cname@_g1_rule_definitions
-};
-
-static marpatcl_rtc_sym @cname@_g1semantics [@g1-semantics-c@] = { /* @g1-semantics-sz@ */
-@g1-semantics-v@
-};
-
-static marpatcl_rtc_sym @cname@_g1masking [@g1-masking-c@] = { /* @g1-masking-sz@ */
-@g1-masking-v@
-};
-
-/*
- * Parser definition
- */
-
-static marpatcl_rtc_sym @cname@_always [@always-c@] = { /* @always-sz@ */
-@always-v@
-};
-
-static marpatcl_rtc_spec @cname@_spec = { /* 72 */
-    /* .lexemes    */  @lexemes-c@,
-    /* .discards   */  @discards-c@,
-    /* .l_symbols  */  @l0-symbols-c@,
-    /* .g_symbols  */  @g1-symbols-c@,
-    /* .always     */  { @always-c@, @cname@_always },
-    /* .l0         */  &@cname@_l0,
-    /* .g1         */  &@cname@_g1,
-    /* .l0semantic */  { @l0-semantics-c@, @cname@_l0semantics },
-    /* .g1semantic */  { @g1-semantics-c@, @cname@_g1semantics },
-    /* .g1mask     */  { @g1-masking-c@, @cname@_g1masking }
-};
-
-/*
- * Constructor
- */
-
-marpatcl_rtc_p
-@cname@_constructor (marpatcl_rtc_sv_cmd a)
-{
-    return marpatcl_rtc_cons (&@cname@_spec, a);
-}
-
-// open things
-// -- capture failure
-// -- fill in lexer, parser operation
-// -- write critcl wrapper around generated code
-// -- tracing
