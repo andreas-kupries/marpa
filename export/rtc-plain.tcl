@@ -64,20 +64,20 @@ return
 #include <rtc.h>
 
 /*
- * Shared string pool (@string-length-sz@ len bytes over @string-c@ entries)
- *                    (@string-offset-sz@ off bytes -----^)
- *                    (@string-data-sz@ content bytes)
+ * Shared string pool (@string-length-sz@ bytes lengths over @string-c@ entries)
+ *                    (@string-offset-sz@ bytes offsets -----^)
+ *                    (@string-data-sz@ bytes character content)
  */
 
-static marpatcl_rtc_size @cname@_pool_length [@string-c@] = { /* @string-length-sz@ */
+static marpatcl_rtc_size @cname@_pool_length [@string-c@] = { /* @string-length-sz@ bytes */
 @string-length-v@
 };
 
-static marpatcl_rtc_size @cname@_pool_offset [@string-c@] = { /* @string-offset-sz@ */
+static marpatcl_rtc_size @cname@_pool_offset [@string-c@] = { /* @string-offset-sz@ bytes */
 @string-offset-v@
 };
 
-static marpatcl_rtc_string @cname@_pool = { /* 24 + @string-data-sz@ */
+static marpatcl_rtc_string @cname@_pool = { /* 24 + @string-data-sz@ bytes */
     @cname@_pool_length,
     @cname@_pool_offset,
 @string-data-v@
@@ -87,11 +87,11 @@ static marpatcl_rtc_string @cname@_pool = { /* 24 + @string-data-sz@ */
  * L0 structures
  */
 
-static marpatcl_rtc_sym @cname@_l0_sym_name [@l0-symbols-c@] = { /* @l0-symbols-sz@ */
+static marpatcl_rtc_sym @cname@_l0_sym_name [@l0-symbols-c@] = { /* @l0-symbols-sz@ bytes */
 @l0-symbols-indices@
 };
 
-static marpatcl_rtc_sym @cname@_l0_rule_definitions [@l0-code-c@] = { /* @l0-code-sz@ */
+static marpatcl_rtc_sym @cname@_l0_rule_definitions [@l0-code-c@] = { /* @l0-code-sz@ bytes */
 @l0-code@
 };
 
@@ -103,7 +103,7 @@ static marpatcl_rtc_rules @cname@_l0 = { /* 48 */
     /* .rcode   */  @cname@_l0_rule_definitions
 };
 
-static marpatcl_rtc_sym @cname@_l0semantics [@l0-semantics-c@] = { /* @l0-semantics-sz@ */
+static marpatcl_rtc_sym @cname@_l0semantics [@l0-semantics-c@] = { /* @l0-semantics-sz@ bytes */
 @l0-semantics-v@
 };
 
@@ -111,19 +111,19 @@ static marpatcl_rtc_sym @cname@_l0semantics [@l0-semantics-c@] = { /* @l0-semant
  * G1 structures
  */
 
-static marpatcl_rtc_sym @cname@_g1_sym_name [@g1-symbols-c@] = { /* @g1-symbols-sz@ */
+static marpatcl_rtc_sym @cname@_g1_sym_name [@g1-symbols-c@] = { /* @g1-symbols-sz@ bytes */
 @g1-symbols-indices@
 };
 
-static marpatcl_rtc_sym @cname@_g1_rule_name [@g1-rules-c@] = { /* @g1-rules-sz@ */
+static marpatcl_rtc_sym @cname@_g1_rule_name [@g1-rules-c@] = { /* @g1-rules-sz@ bytes */
 @g1-rules-v@
 };
 
-static marpatcl_rtc_sym @cname@_g1_rule_lhs [@g1-rules-c@] = { /* @g1-rules-sz@ */
+static marpatcl_rtc_sym @cname@_g1_rule_lhs [@g1-rules-c@] = { /* @g1-rules-sz@ bytes */
 @g1-lhs-v@
 };
 
-static marpatcl_rtc_sym @cname@_g1_rule_definitions [@g1-code-c@] = { /* @g1-code-sz@ */
+static marpatcl_rtc_sym @cname@_g1_rule_definitions [@g1-code-c@] = { /* @g1-code-sz@ bytes */
 @g1-code@
 };
 
@@ -135,11 +135,11 @@ static marpatcl_rtc_rules @cname@_g1 = { /* 48 */
     /* .rcode   */  @cname@_g1_rule_definitions
 };
 
-static marpatcl_rtc_sym @cname@_g1semantics [@g1-semantics-c@] = { /* @g1-semantics-sz@ */
+static marpatcl_rtc_sym @cname@_g1semantics [@g1-semantics-c@] = { /* @g1-semantics-sz@ bytes */
 @g1-semantics-v@
 };
 
-static marpatcl_rtc_sym @cname@_g1masking [@g1-masking-c@] = { /* @g1-masking-sz@ */
+static marpatcl_rtc_sym @cname@_g1masking [@g1-masking-c@] = { /* @g1-masking-sz@ bytes */
 @g1-masking-v@
 };
 
@@ -147,7 +147,7 @@ static marpatcl_rtc_sym @cname@_g1masking [@g1-masking-c@] = { /* @g1-masking-sz
  * Parser definition
  */
 
-static marpatcl_rtc_sym @cname@_always [@always-c@] = { /* @always-sz@ */
+static marpatcl_rtc_sym @cname@_always [@always-c@] = { /* @always-sz@ bytes */
 @always-v@
 };
 

@@ -261,13 +261,13 @@ proc ::marpa::export::core::rtc::config {serial} {
     lappend map @string-c@      [P size]
     incr dsz [* 2 [P size]]
     lappend map @string-length-sz@ [* 2 [P size]]
-    lappend map @string-length-v@  [CArray [P lengths] 16]
+    lappend map @string-length-v@  [TabularArray [P lengths]]
     incr dsz [* 2 [P size]]
     lappend map @string-offset-sz@ [* 2 [P size]]
-    lappend map @string-offset-v@  [CArray [P offsets] 16]
+    lappend map @string-offset-v@  [TabularArray [P offsets]]
     incr dsz [P str-size]
     lappend map @string-data-sz@ [P str-size]
-    lappend map @string-data-v@  [Array "    " " " [P strings] -1]
+    lappend map @string-data-v@  [FlowArray [P strings] [dict create separator { } n -1]]
 
     incr dsz 24 ;# sizeof(marpatcl_rtc_string)
 
@@ -277,13 +277,7 @@ proc ::marpa::export::core::rtc::config {serial} {
     incr dsz [* 2 [L size]]       ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-symbols-sz@		[* 2 [L size]]
     lappend map @l0-symbols-c@		[L size]
-    lappend map @l0-symbols-indices@	[Chunked [L refs] \
-					     Characters  256 \
-					     "ACS: Lexeme"  [llength $lex] \
-					     "ACS: Discard" [llength $discards] \
-					     Lexeme         [llength $lex] \
-					     Discard        [llength $discards] \
-					     Internal]
+    lappend map @l0-symbols-indices@	[Chunked [L refs] {*}[L0C $lex $discards]]
 
     incr dsz [* 2 [LR elements]]  ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-code-sz@            [* 2 [LR elements]]
@@ -294,7 +288,7 @@ proc ::marpa::export::core::rtc::config {serial} {
     incr dsz [* 2 [llength $sem]] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-semantics-sz@       [* 2 [llength $sem]]
     lappend map @l0-semantics-c@        [llength $sem]
-    lappend map @l0-semantics-v@        [CArray $sem 16]
+    lappend map @l0-semantics-v@        [TabularArray $sem]
 
     incr dsz 48                   ; # sizeof(marpatcl_rtc_rules) = 48
     
@@ -304,9 +298,7 @@ proc ::marpa::export::core::rtc::config {serial} {
     incr dsz [* 2 [G size]]      ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-symbols-sz@		[* 2 [G size]]
     lappend map @g1-symbols-c@	   	[G size]
-    lappend map @g1-symbols-indices@	[Chunked [G refs] \
-					     Terminals [llength $lex] \
-					     Structure]
+    lappend map @g1-symbols-indices@	[Chunked [G refs] {*}[G1C $lex]]
 
     incr dsz [* 2 [GR elements]] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-code-sz@            [* 2 [GR elements]]
@@ -317,15 +309,15 @@ proc ::marpa::export::core::rtc::config {serial} {
     incr dsz [* 2 [GR size]]     ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-rules-sz@		[* 2 [GR size]]
     lappend map @g1-rules-c@		[GR size]
-    lappend map @g1-rules-v@		[CArray [GR refs] 16]
+    lappend map @g1-rules-v@		[TabularArray [GR refs]]
 
     incr dsz [* 2 [GR size]]     ; # sizeof(marpatcl_rtc_sym) = 2
-    lappend map @g1-lhs-v@		[CArray [GR lhs] 16]
+    lappend map @g1-lhs-v@		[TabularArray [GR lhs]]
 
     incr dsz 48                  ; # sizeof(marpatcl_rtc_rules) = 48
 
     # G1 grammar: semantics
-    set acode [EncodeGS asz [A tag] [A content] [GR size]]
+    set acode [FormatRD asz Semantics [A tag] [A content] [GR size]]
     Limit16 "\#g1 semantics" $asz
     incr dsz [* 2 $asz] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-semantics-sz@       [* 2 $asz]
@@ -333,7 +325,7 @@ proc ::marpa::export::core::rtc::config {serial} {
     lappend map @g1-semantics-v@        $acode
     
     # G1 grammar: masking
-    set mcode [EncodeMask msz [M tag] [M content] [GR size]]
+    set mcode [FormatRD msz Mask [M tag] [M content] [GR size]]
     Limit16 "\#g1 masking" $msz
     incr dsz [* 2 $msz] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-masking-sz@       [* 2 $msz]
@@ -347,7 +339,7 @@ proc ::marpa::export::core::rtc::config {serial} {
     incr dsz [* 2 [llength $always]]
     lappend map @always-sz@		[* 2 [llength $always]]
     lappend map @always-c@		[llength $always]
-    lappend map @always-v@              [CArray $always 16]
+    lappend map @always-v@              [TabularArray $always]
     # ^ always - how to code if none is always?
 
     incr dsz 72 ; # sizeof(marpatcl_rtc_spec) = 72
@@ -407,6 +399,25 @@ proc ::marpa::export::core::rtc::LowerLiterals {gc} {
 	    D-^CHR
 	}] $gc
     return
+}
+
+proc ::marpa::export::core::rtc::L0C {lex discards} {
+    set l [llength $lex]
+    set d [llength $discards]
+    return [list \
+		Characters       256 \
+		{{ACS: Lexeme}}  $l \
+		{{ACS: Discard}} $d \
+		Lexeme           $l \
+		Discard          $d \
+		Internal]
+}
+
+proc ::marpa::export::core::rtc::G1C {terminals} {
+    set t [llength $terminals]
+    return [list \
+		Terminals $t \
+		Structure]
 }
 
 proc ::marpa::export::core::rtc::* {sz n} {
@@ -475,27 +486,29 @@ proc ::marpa::export::core::rtc::LTM {lex gc} {
 proc ::marpa::export::core::rtc::Chunked {words args} {
     variable indent
     if {![llength $args]} {
-	return [CArray $words 16]
+	return [TabularArray $words]
     }
 
     # Sectioned array ...
     set result ""
     set args [lassign $args label]
+    set config [lassign $label label]
     set pfx $indent
     while {[llength $args] && [llength $words]} {
-	set args [lassign $args chunk]
+	set args      [lassign $args chunk]
 	set remainder [lrange $words $chunk end]
 	append result [Hdr $chunk $label]
 	incr chunk -1
 	set header [lrange $words 0 $chunk]
-	append result [CArray $header 16]
+	append result [TabularArray $header $config]
 	set words $remainder
 	set args [lassign $args label]
+	set config [lassign $label label]
 	set pfx ,\n\n$indent
     }
     if {[llength $words]} {
 	append result [Hdr [llength $words] $label]
-	append result [CArray $words 16]
+	append result [TabularArray $words $config]
     }
     return $result
 }
@@ -509,117 +522,132 @@ proc ::marpa::export::core::rtc::Hdr {n label} {
     return "$pfx/* --- ($n) --- --- --- $label\n$indent */\n"
 }
 
-proc ::marpa::export::core::rtc::CArray {words n} {
-    variable indent
-    return [Array $indent ", " $words $n]
-}
+proc ::marpa::export::core::rtc::TabularArray {words {config {}}} {
+    # Generate an array with `n` aligned columns, regardless of extend
+    # in columns of characters.
 
-proc ::marpa::export::core::rtc::Array {prefix sep words n} {
-    # Add the separator to all but the last word.
-    set     words [lmap w [lreverse [lassign [lreverse $words] last]] { set _ $w$sep }]
-    lappend words $last[regsub -all -- {[^\t]} $sep { }]
-    # The last word gets a separator as well, as spaces, to match the
-    # alignment in the field of all the others. Without it will indent
-    # badly in a tabular format. These spaces are removed at the end,
-    # with a trimright.
+    set defaults {
+	prefix    {    }
+	separator {, }
+	n         16
+	from      0
+	to        end
+    }
+    dict with defaults {} ; # import defaults into scope
+    dict with config   {} ; # and overide with caller's settings.
+
+    set words [lmap w [lreverse [lassign [lreverse $words] last]] {
+	set _ $w$separator
+    }]
+    lappend words $last[regsub -all -- {[^\t]} $separator { }]
+    # Note how the last word gets a separator as well, as spaces, to
+    # match the alignment within the field of all the others. Without
+    # it would indent badly in a tabular format. These spaces are
+    # removed at the end, with a trimright.
+
+    # Determine field width and derive the formatting pattern for
+    # proper alignment from that. Note, alignment is right-justified,
+    # space padding to the left of each word.
+    set max [tcl::mathfunc::max {*}[lmap w [lrange $words $from $to] {
+	string length $w
+    }]]
+    set sf %${max}s
 
     append result $prefix
-
-    if {$n < 0} {
-	# dynamically chunk to stay under n character columns
-	set n [expr {(- $n) - [string length $prefix]}]
-	set col 0 ;# This does not count the prefix. n was adjusted.
-	foreach w $words {
-	    set k [string length $w]
-	    if {$col == 0} {
-		append result $w
-		incr col $k
-		continue
-	    }
-	    if {($col + $k) > $n} {
-		set result [string trimright $result]
-		append result \n $prefix
-		set col 0
-	    }
-	    append result $w
-	    incr col $k
+    
+    set k $n
+    foreach w $words {
+	if {$k == 0} {
+	    set k $n
+	    set result [string trimright $result]
+	    append result \n $prefix
 	}
-    } else {
-	# chunk every n words - i.e. word based tabular format.
-	# for proper tabular alignment we pad all words with
-	# spaces at the left, to their max length.
-	set max [tcl::mathfunc::max {*}[lmap w $words { string length $w }]]
-	set sf %${max}s
-        set k $n
-	foreach w $words {
-	    if {$k == 0} {
-		set k $n
-		set result [string trimright $result]
-		append result \n $prefix
-	    }
-	    append result [format $sf $w]
-	    incr k -1
-	}
+	append result [format $sf $w]
+	incr k -1
     }
+
     return [string trimright $result]
 }
 
-proc ::marpa::export::core::rtc::EncodeGS {cv tag data nr} {
+proc ::marpa::export::core::rtc::FlowArray {words {config {}}} {
+    # Generate an array with as many elements packed into each line
+    # while staying under the configured maximal column `n` (default:
+    # 79). Note however that to have progress each line will contain
+    # at least one element, even if it overshoots the chosen maximum.
+
+    # Note, this can be used force a line break after each element,
+    # simply set maxcol to 0, or 1.
+    
+    set defaults {
+	prefix    {    }
+	separator {, }
+	n         79
+    }
+    dict with defaults {} ; # import defaults into scope
+    dict with config   {} ; # and overide with caller's settings.
+
+    append result $prefix
+    set n   [expr {$n - [string length $prefix]}]
+    set col 0 ;# This does not count the prefix.
+    #          # n was adjusted instead to account for it.
+
+    set words [lmap w [lreverse [lassign [lreverse $words] last]] {
+	set _ $w$separator
+    }]
+    lappend words $last
+
+    foreach w $words {
+	set k [string length $w]
+	if {$col == 0} {
+	    append result $w
+	    incr col $k
+	    continue
+	}
+	if {($col + $k) > $n} {
+	    set result [string trimright $result]
+	    append result \n $prefix
+	    set col 0
+	}
+	append result $w
+	incr col $k
+    }
+
+    return [string trimright $result]
+
+}
+
+proc ::marpa::export::core::rtc::FormatRD {cv label tag data nr} {
     upvar 1 $cv size
     set size [llength $data]
     incr size
+        set all [linsert $data 0 $tag]
     switch -exact -- $tag {
 	MARPATCL_S_SINGLE {
-	    return [Chunked [linsert $data 0 $tag] \
-			Tag 1 {Global Semantics}]
+	    return [Chunked $all Tag 1 [list "Common $label" to 0]]
 	}
 	MARPATCL_S_PER {
-	    set chunks {}
-	    set label Semantics
-	    lappend chunks Tag 1
-	    lappend chunks {Rule Offsets} $nr
-	    while {[set n [lindex $data $nr]] ne {}} {
-		# strip comments coded before the length
-		regexp { (\d+)$} $n -> n
-		incr n 1 ;# adjust for length entry
-		lappend chunks $label $n
-		incr nr $n
-		set label {}
-	    }
-	    lappend chunks {}
-	    return [Chunked [linsert $data 0 $tag] {*}$chunks]
+	    return [Chunked $all {*}[RuleC $label $data $nr]]
 	}
 	default { error ZZZ:$tag }
     }
 }
 
-proc ::marpa::export::core::rtc::EncodeMask {cv tag data nr} {
-    upvar 1 $cv size
-    set size [llength $data]
-    incr size
-    switch -exact -- $tag {
-	MARPATCL_S_SINGLE {
-	    return [Chunked [linsert $data 0 $tag] \
-			Tag 1 {Global Mask}]
-	}
-	MARPATCL_S_PER {
-	    set chunks {}
-	    set label Masks
-	    lappend chunks Tag 1
-	    lappend chunks {Rule Offsets} $nr
-	    while {[set n [lindex $data $nr]] ne {}} {
-		# strip comments coded before the length
-		regexp { (\d+)$} $n -> n
-		incr n 1 ;# adjust for length entry
-		lappend chunks $label $n
-		incr nr $n
-		set label {}
-	    }
-	    lappend chunks {}
-	    return [Chunked [linsert $data 0 $tag] {*}$chunks]
-	}
-	default { error ZZZ:$tag }
+proc ::marpa::export::core::rtc::RuleC {label data nr} {
+    lappend chunks Tag 1
+    lappend chunks [list "$label Offsets"] $nr
+
+    set label "$label Data"
+    
+    while {[set n [lindex $data $nr]] ne {}} {
+	# strip comments coded before the length
+	regexp { (\d+)$} $n -> n
+	incr n 1 ;# adjust for length entry
+	lappend chunks [list $label from 1] $n
+	incr nr $n
+	set label {}
     }
+    lappend chunks {}
+    return $chunks
 }
 
 proc ::marpa::export::core::rtc::Limit16 {label n} {
