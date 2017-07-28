@@ -515,7 +515,6 @@ proc ::marpa::export::core::rtc::CArray {words n} {
 }
 
 proc ::marpa::export::core::rtc::Array {prefix sep words n} {
-puts Z_____________________________________________________
     # Add the separator to all but the last word.
     set     words [lmap w [lreverse [lassign [lreverse $words] last]] { set _ $w$sep }]
     lappend words $last[regsub -all -- {[^\t]} $sep { }]
@@ -551,12 +550,8 @@ puts Z_____________________________________________________
 	# spaces at the left, to their max length.
 	set max [tcl::mathfunc::max {*}[lmap w $words { string length $w }]]
 	set sf %${max}s
-
-puts XXX:max=$max
-	
         set k $n
 	foreach w $words {
-puts W_|$w|\nW'|[format $sf $w]|
 	    if {$k == 0} {
 		set k $n
 		set result [string trimright $result]
