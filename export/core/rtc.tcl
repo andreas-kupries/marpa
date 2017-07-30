@@ -83,7 +83,6 @@ namespace eval ::marpa::export::core::rtc {
     namespace export config
     namespace ensemble create
 
-    variable indent {    }
     variable ak {
 	start    MARPATCL_SV_START
 	length	 MARPATCL_SV_LENGTH  
@@ -101,9 +100,17 @@ namespace eval ::marpa::export::core::rtc {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::core::rtc::config {serial} {
+proc ::marpa::export::core::rtc::config {serial {config {}}} {
     debug.marpa/export/core/rtc {}
-
+    set defaults {prefix {    }}
+    set config [dict merge $defaults $config]
+    # Carry the prefix into all *Array commands, i.e. Flow, Tabular, and Chunked.
+    # Remove unexposed internal CVs to prevent override.
+    dict unset config separator
+    dict unset config from
+    dict unset config to
+    dict unset config n
+    
     set gc [Ingest $serial]
     EncodePrecedences $gc
     LowerLiterals     $gc
@@ -261,13 +268,14 @@ proc ::marpa::export::core::rtc::config {serial} {
     lappend map @string-c@      [P size]
     incr dsz [* 2 [P size]]
     lappend map @string-length-sz@ [* 2 [P size]]
-    lappend map @string-length-v@  [TabularArray [P lengths]]
+    lappend map @string-length-v@  [TabularArray [P lengths] $config]
     incr dsz [* 2 [P size]]
     lappend map @string-offset-sz@ [* 2 [P size]]
-    lappend map @string-offset-v@  [TabularArray [P offsets]]
+    lappend map @string-offset-v@  [TabularArray [P offsets] $config]
     incr dsz [P str-size]
     lappend map @string-data-sz@ [P str-size]
-    lappend map @string-data-v@  [FlowArray [P strings] [dict create separator { } n -1]]
+    lappend map @string-data-v@  [FlowArray [P strings] \
+				      [dict merge $config {separator { } n -1}]]
 
     incr dsz 24 ;# sizeof(marpatcl_rtc_string)
 
@@ -277,7 +285,8 @@ proc ::marpa::export::core::rtc::config {serial} {
     incr dsz [* 2 [L size]]       ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-symbols-sz@		[* 2 [L size]]
     lappend map @l0-symbols-c@		[L size]
-    lappend map @l0-symbols-indices@	[Chunked [L refs] {*}[L0C $lex $discards]]
+    lappend map @l0-symbols-indices@	[ChunkedArray [L refs] \
+					     [L0C $lex $discards] $config]
 
     incr dsz [* 2 [LR elements]]  ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-code-sz@            [* 2 [LR elements]]
@@ -288,7 +297,7 @@ proc ::marpa::export::core::rtc::config {serial} {
     incr dsz [* 2 [llength $sem]] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-semantics-sz@       [* 2 [llength $sem]]
     lappend map @l0-semantics-c@        [llength $sem]
-    lappend map @l0-semantics-v@        [TabularArray $sem]
+    lappend map @l0-semantics-v@        [TabularArray $sem $config]
 
     incr dsz 48                   ; # sizeof(marpatcl_rtc_rules) = 48
     
@@ -298,7 +307,8 @@ proc ::marpa::export::core::rtc::config {serial} {
     incr dsz [* 2 [G size]]      ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-symbols-sz@		[* 2 [G size]]
     lappend map @g1-symbols-c@	   	[G size]
-    lappend map @g1-symbols-indices@	[Chunked [G refs] {*}[G1C $lex]]
+    lappend map @g1-symbols-indices@	[ChunkedArray [G refs] \
+					     [G1C $lex] $config]
 
     incr dsz [* 2 [GR elements]] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-code-sz@            [* 2 [GR elements]]
@@ -309,15 +319,15 @@ proc ::marpa::export::core::rtc::config {serial} {
     incr dsz [* 2 [GR size]]     ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-rules-sz@		[* 2 [GR size]]
     lappend map @g1-rules-c@		[GR size]
-    lappend map @g1-rules-v@		[TabularArray [GR refs]]
+    lappend map @g1-rules-v@		[TabularArray [GR refs] $config]
 
     incr dsz [* 2 [GR size]]     ; # sizeof(marpatcl_rtc_sym) = 2
-    lappend map @g1-lhs-v@		[TabularArray [GR lhs]]
+    lappend map @g1-lhs-v@		[TabularArray [GR lhs] $config]
 
     incr dsz 48                  ; # sizeof(marpatcl_rtc_rules) = 48
 
     # G1 grammar: semantics
-    set acode [FormatRD asz Semantics [A tag] [A content] [GR size]]
+    set acode [FormatRD asz Semantics $config [A tag] [A content] [GR size]]
     Limit16 "\#g1 semantics" $asz
     incr dsz [* 2 $asz] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-semantics-sz@       [* 2 $asz]
@@ -325,7 +335,7 @@ proc ::marpa::export::core::rtc::config {serial} {
     lappend map @g1-semantics-v@        $acode
     
     # G1 grammar: masking
-    set mcode [FormatRD msz Mask [M tag] [M content] [GR size]]
+    set mcode [FormatRD msz Mask $config [M tag] [M content] [GR size]]
     Limit16 "\#g1 masking" $msz
     incr dsz [* 2 $msz] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-masking-sz@       [* 2 $msz]
@@ -339,7 +349,7 @@ proc ::marpa::export::core::rtc::config {serial} {
     incr dsz [* 2 [llength $always]]
     lappend map @always-sz@		[* 2 [llength $always]]
     lappend map @always-c@		[llength $always]
-    lappend map @always-v@              [TabularArray $always]
+    lappend map @always-v@              [TabularArray $always $config]
     # ^ always - how to code if none is always?
 
     incr dsz 72 ; # sizeof(marpatcl_rtc_spec) = 72
@@ -483,32 +493,30 @@ proc ::marpa::export::core::rtc::LTM {lex gc} {
     }]
 }
 
-proc ::marpa::export::core::rtc::Chunked {words args} {
-    variable indent
-    if {![llength $args]} {
-	return [TabularArray $words]
-    }
-
+proc ::marpa::export::core::rtc::ChunkedArray {words chunking {config {}}} {
     # Sectioned array ...
+    set indent [dict get $config prefix]
     set result ""
-    set args [lassign $args label]
-    set config [lassign $label label]
+    set chunking [lassign $chunking label]
+    set     lconfig $config
+    lappend lconfig {*}[lassign $label label]
     set pfx $indent
-    while {[llength $args] && [llength $words]} {
-	set args      [lassign $args chunk]
+    while {[llength $chunking] && [llength $words]} {
+	set chunking  [lassign $chunking chunk]
 	set remainder [lrange $words $chunk end]
 	append result [Hdr $chunk $label]
 	incr chunk -1
 	set header [lrange $words 0 $chunk]
-	append result [TabularArray $header $config]
-	set words $remainder
-	set args [lassign $args label]
-	set config [lassign $label label]
+	append result [TabularArray $header $lconfig]
+	set words    $remainder
+	set chunking [lassign $chunking label]
+	set     lconfig $config
+	lappend lconfig {*}[lassign $label label]
 	set pfx ,\n\n$indent
     }
     if {[llength $words]} {
 	append result [Hdr [llength $words] $label]
-	append result [TabularArray $words $config]
+	append result [TabularArray $words $lconfig]
     }
     return $result
 }
@@ -616,20 +624,17 @@ proc ::marpa::export::core::rtc::FlowArray {words {config {}}} {
 
 }
 
-proc ::marpa::export::core::rtc::FormatRD {cv label tag data nr} {
+proc ::marpa::export::core::rtc::FormatRD {cv label config tag data nr} {
     upvar 1 $cv size
-    set size [llength $data]
+    set  size [llength $data]
     incr size
-        set all [linsert $data 0 $tag]
+    set all [linsert $data 0 $tag]
     switch -exact -- $tag {
-	MARPATCL_S_SINGLE {
-	    return [Chunked $all Tag 1 [list "Common $label" to 0]]
-	}
-	MARPATCL_S_PER {
-	    return [Chunked $all {*}[RuleC $label $data $nr]]
-	}
+	MARPATCL_S_SINGLE { set chunks [list Tag 1 [list "Common $label" to 0]]	}
+	MARPATCL_S_PER    { set chunks [RuleC $label $data $nr]	}
 	default { error ZZZ:$tag }
     }
+    return [ChunkedArray $all $chunks $config]
 }
 
 proc ::marpa::export::core::rtc::RuleC {label data nr} {

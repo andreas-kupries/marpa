@@ -17,12 +17,12 @@ package require Tcl 8.5
 package require debug
 package require debug::caller
 
-debug define marpa/export/rtc
-debug prefix marpa/export/rtc {[debug caller] | }
+debug define marpa/export/rtc-raw
+debug prefix marpa/export/rtc-raw {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-namespace eval ::marpa::export::rtc {
+namespace eval ::marpa::export::rtc-raw {
     namespace export container
     namespace ensemble create
 
@@ -32,8 +32,8 @@ namespace eval ::marpa::export::rtc {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::rtc::container {gc} {
-    debug.marpa/export/rtc {}
+proc ::marpa::export::rtc-raw::container {gc} {
+    debug.marpa/export/rtc-raw {}
     variable self
     set config   [marpa::export::core::rtc::config [$gc serialize]]
     set template [string trim [marpa asset $self]]
@@ -50,7 +50,7 @@ return
 * (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 *                                     http://core.tcl.tk/akupries/
 **
-* (c) @slif-year@ Grammar @slif-name@ By @slif-writer@
+* (c) @slif-year@ Grammar @slif-name@ @slif-version@ By @slif-writer@
 **
 **	rtc-derived Engine for grammar "@slif-name@". Lexing + Parsing.
 **	Generated On @generation-time@
