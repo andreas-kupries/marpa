@@ -7,6 +7,7 @@
 
 #include <inbound.h>
 #include <rtc_int.h>
+#include <critcl_trace.h>
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -16,25 +17,34 @@
 void
 marpatcl_rtc_inbound_init (marpatcl_rtc_p p)
 {
+    TRACE_ENTER ("marpatcl_rtc_inbound_init");
+    TRACE (("rtc %p", p));
     IN.location = -1;
+    TRACE_RETURN_VOID;
 }
 
 void
 marpatcl_rtc_inbound_free (marpatcl_rtc_p p)
 {
+    TRACE_ENTER ("marpatcl_rtc_inbound_free");
+    TRACE (("rtc %p", p));
     /* nothing to do */
+    TRACE_RETURN_VOID;
 }
 
 int 
 marpatcl_rtc_inbound_location (marpatcl_rtc_p p)
 {
-    return IN.location;
+    TRACE_ENTER ("marpatcl_rtc_inbound_location");
+    TRACE_RETURN ("%d", IN.location);
 }
 
 void
 marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const char* bytes, int n)
 {
     const char* c;
+    TRACE_ENTER ("marpatcl_rtc_inbound_enter");
+    TRACE (("rtc %p bytes %d", p, n));
     if (n < 0) {
 	for (c = bytes; *c && !FAIL.fail; c++) {
 	    IN.location ++;
@@ -46,12 +56,17 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const char* bytes, int n)
 	    marpatcl_rtc_gate_enter (p, *c);
 	}
     }
+    TRACE (("Failed = %d", FAIL.fail));
+    TRACE_RETURN_VOID;
 }
 
 void
 marpatcl_rtc_inbound_eof (marpatcl_rtc_p p)
 {
+    TRACE_ENTER ("marpatcl_rtc_inbound_eof");
+    TRACE (("rtc %p", p));
     marpatcl_rtc_gate_eof (p);
+    TRACE_RETURN_VOID;
 }
 
 /*

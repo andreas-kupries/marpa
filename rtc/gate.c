@@ -1,47 +1,58 @@
-/*
- * RunTime C
- * Implementation
+/* Runtime for C-engine (RTC). Implementation. (Engine: Lexer gating)
+ * - - -- --- ----- -------- ------------- ---------------------
+ * (c) 2017 Andreas Kupries
  *
- * C-based semi-equivalent to rt_parse.tcl and subordinate objects.
- *
- * Part: Gate
+ * Requirements
  */
 
 #include <gate.h>
 #include <rtc_int.h>
 #include <critcl_assert.h>
+#include <critcl_trace.h>
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Shorthands
  */
 
 #define ACCEPT (&GATE.acceptable)
 #define LEX_R  (LEX.recce)
 
 /*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API
  */
 
 void
 marpatcl_rtc_gate_init (marpatcl_rtc_p p)
 {
+    TRACE_ENTER ("marpatcl_rtc_gate_init");
+    TRACE (("rtc %p", p));
     marpatcl_rtc_byteset_clear (ACCEPT);
     GATE.history = marpatcl_rtc_stack_cons (80);
     GATE.pending = marpatcl_rtc_stack_cons (10);
     GATE.lastchar = -1;
     GATE.lastloc  = -1;
+    TRACE_RETURN_VOID;
 }
 
 void
 marpatcl_rtc_gate_free (marpatcl_rtc_p p)
 {
+    TRACE_ENTER ("marpatcl_rtc_gate_free");
+    TRACE (("rtc %p", p));
     marpatcl_rtc_stack_destroy (GATE.history);
     marpatcl_rtc_stack_destroy (GATE.pending);
     /* GATE.acceptable - nothing to do */
+    TRACE_RETURN_VOID;
 }
 
 void
 marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
 {
     int flushed = 0;
+    TRACE_ENTER ("marpatcl_rtc_gate_enter");
+    TRACE (("rtc %p at %d byte %d", p, IN.location, ch));
     GATE.lastchar = ch;
     GATE.lastloc  = IN.location;
 
@@ -53,26 +64,34 @@ marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
 	     */
 	    marpatcl_rtc_lexer_enter (p, ch);
 	    // See marpatcl_rtc_inbound_enter for test of failure and abort.
-	    return;
+	    TRACE_RETURN_VOID;
 	}
 
 	/* No match: Try to close current symbol, then retry. But at most once.
 	 */
+	TRACE (("rtc %p not acceptable", p));
 	if (flushed) {
+	    TRACE (("rtc %p flushed, fail", p));
 	    marpatcl_rtc_failit (p, "gate");
 	    // See marpatcl_rtc_inbound_enter for test of failure and abort.
-	    return;
+	    TRACE_RETURN_VOID;
 	}
 
+	TRACE (("rtc %p flush", p));
 	flushed ++;
 	marpatcl_rtc_lexer_enter (p, -1);
     }
+
+    TRACE_RETURN_VOID;
 }
 
 void
 marpatcl_rtc_gate_eof (marpatcl_rtc_p p)
 {
+    TRACE_ENTER ("marpatcl_rtc_gate_eof");
+    TRACE (("rtc %p", p));
     marpatcl_rtc_lexer_eof (p);
+    TRACE_RETURN_VOID;
 }
 
 void
@@ -86,14 +105,22 @@ marpatcl_rtc_gate_acceptable (marpatcl_rtc_p p)
      * (x) To allow this is the reason for `dense` using elements of type
      *     `Marpa_Symbol_ID` instead of `unsigned char`.
      */
-    Marpa_Symbol_ID* v = marpatcl_rtc_byteset_dense (ACCEPT);
-    int              c = marpa_r_terminals_expected (LEX_R, v);
-    marpatcl_rtc_byteset_link (ACCEPT, c);
+    TRACE_ENTER ("marpatcl_rtc_gate_acceptable");
+    TRACE (("rtc %p", p));
+    {
+	Marpa_Symbol_ID* v = marpatcl_rtc_byteset_dense (ACCEPT);
+	int              c = marpa_r_terminals_expected (LEX_R, v);
+	marpatcl_rtc_fail_syscheck (p, LEX.g, c, "terminals_expected");
+	marpatcl_rtc_byteset_link (ACCEPT, c);
+    }
+    TRACE_RETURN_VOID;
 }
 
 void
 marpatcl_rtc_gate_redo (marpatcl_rtc_p p, int n)
 {
+    TRACE_ENTER ("marpatcl_rtc_gate_redo");
+    TRACE (("rtc %p redo %d", p, n));
     if (!n) {
 	marpatcl_rtc_stack_clear (GATE.history);
     } else {
@@ -114,7 +141,12 @@ marpatcl_rtc_gate_redo (marpatcl_rtc_p p, int n)
 	}
 	ASSERT (!marpatcl_rtc_stack_size (GATE.pending), "History replay left data behind");
     }
+    TRACE_RETURN_VOID;
 }
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
 
 /*
  * Local Variables:
