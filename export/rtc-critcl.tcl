@@ -68,6 +68,8 @@ package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
 critcl::buildrequirement {
     package require critcl::class 1
+    package require critcl::emap
+    package require critcl::literals
     package require critcl::cutil
 }
 if {![critcl::compiling]} { error "Unable to build @slif-name@, no compiler found." }
@@ -89,6 +91,10 @@ critcl::include marpa.h
 critcl::include spec.h
 critcl::include rtc.h
 critcl::include fail.h
+
+critcl::source c/errors.tcl           ; # Mapping marpa error codes to strings.
+critcl::source c/events.tcl           ; # Mapping marpa event types to strings.
+critcl::source c/steps.tcl            ; # String pool for valuation-steps.
 
 # # ## ### ##### ######## ############# #####################
 ## Static data structures declaring the grammar

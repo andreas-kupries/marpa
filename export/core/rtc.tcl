@@ -241,7 +241,12 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
     GR start [$gc start?]
 
     set sem    [SemaCode [$gc lexeme-semantics? action]]
-    set always [lmap w [concat $acs_discards [LTM $lex $gc]] { L 2id $w }]
+    set always [lmap w [concat $acs_discards [LTM $lex $gc]] {
+	# Convert ACS down to terminal symbols and pseudo-terminals
+	# (latter are for the discards)
+	# NOTE: See (%%accept/always%%) in rtc/lexer.c
+	expr {[L 2id $w] - 256}
+    }]
     
     $gc destroy
 

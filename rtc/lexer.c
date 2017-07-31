@@ -12,6 +12,7 @@
 #include <rtc_int.h>
 #include <critcl_assert.h>
 #include <critcl_alloc.h>
+#include <critcl_trace.h>
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -20,8 +21,8 @@
 
 static char*             get_lexeme (marpatcl_rtc_p p, int* len);
 static void              complete  (marpatcl_rtc_p p);
-static void              to_acs    (int c, Marpa_Symbol_ID* v);
-static int               get_parse (Marpa_Tree        t,
+static int               get_parse (marpatcl_rtc_p    p,
+				    Marpa_Tree        t,
 				    marpatcl_rtc_sym* token,
 				    marpatcl_rtc_sym* rule);
 static void              mismatch  (marpatcl_rtc_p p);
@@ -39,6 +40,9 @@ static marpatcl_rtc_sv_p get_sv    (marpatcl_rtc_p   p,
 #define PARS_R (PAR.recce)
 #define ALWAYS (SPEC->always)
 
+#define TO_ACS(s)      ((s)+256)
+#define TO_TERMINAL(s) ((s)-256)
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API
@@ -47,11 +51,27 @@ static marpatcl_rtc_sv_p get_sv    (marpatcl_rtc_p   p,
 void
 marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
 {
-    int k;
+    int k, res;
+    TRACE_ENTER ("marpatcl_rtc_lexer_init");
+    TRACE (("rtc %p", p));
+
+    TRACE (("rtc %p L %d", p, SPEC->lexemes));
+    TRACE (("rtc %p D %d", p, SPEC->discards));
+    TRACE (("rtc %p A %d", p, ALWAYS.size));
+    TRACE (("rtc %p = %d", p, SPEC->lexemes + ALWAYS.size));
+
+    /* Note (%%accept/always%%): The ACCEPT symset contains G1 terminal
+     * symbols, plus pseudo-terminals for the L0 discard ymbols. Conversion to
+     * L0 ACS symbols (+256, TO_ACS) happens on entering them into the L0
+     * recognizer. It was done this way to avoid the memory penalty of having
+     * 256 superfluous and never-used entries for the L0 character symbols
+     * around.
+     */
+    
     LEX.g = marpa_g_new (CONF);
     marpatcl_rtc_spec_setup (LEX.g, SPEC->l0);
-    marpatcl_rtc_symset_init (ACCEPT, SPEC->lexemes + ALWAYS.size);
-    marpatcl_rtc_symset_init (FOUND, SPEC->lexemes);
+    marpatcl_rtc_symset_init (ACCEPT, SPEC->lexemes + SPEC->discards);
+    marpatcl_rtc_symset_init (FOUND,  SPEC->lexemes);
     LEX.lexeme = marpatcl_rtc_stack_cons (80);
     LEX.start = -1;
     LEX.recce = 0;
@@ -64,21 +84,32 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
 	    LEX.single_sv = 0;
 	}
     }
+
+    res = marpa_g_precompute (LEX.g);
+    marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 precompute");
+    // TODO marpatcl_process_events (LEX.g, marpatcl_grammar_event_to_tcl, instance);
+    TRACE_RETURN_VOID;
 }
 
 void
 marpatcl_rtc_lexer_free (marpatcl_rtc_p p)
 {
+    TRACE_ENTER ("marpatcl_rtc_lexer_free");
+    TRACE (("rtc %p", p));
+    
     marpa_g_unref (LEX.g);
     marpatcl_rtc_symset_free (ACCEPT);
     marpatcl_rtc_symset_free (FOUND);
     marpatcl_rtc_stack_destroy (LEX.lexeme);
+    TRACE_RETURN_VOID;
 }
 
 void
 marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
 {
     int res;
+    TRACE_ENTER ("marpatcl_rtc_lexer_enter");
+    TRACE (("rtc %p byte %d", p, ch));
     /* Contrary to the Tcl runtime the C engine does not get multiple symbols,
      * only one, the current byte. Because byte-ranges are coded as rules in
      * the grammar instead of as input symbols.
@@ -90,35 +121,38 @@ marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
 
     if (ch == -1) {
 	complete (p);
-	// MAYBE FAIL.
-	return;
+       	// MAYBE FAIL.
+	TRACE_RETURN_VOID;
     }
 
     marpatcl_rtc_stack_push (LEX.lexeme, ch);
     res = marpa_r_alternative (LEX.recce, ch, 1, 1);
-    ASSERT (res >= 0, "lexer alternative");
+    marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 alternative");
 
     res = marpa_r_earleme_complete (LEX.recce);
     if (res != MARPA_ERR_PARSE_EXHAUSTED) {
 	// any error but exhausted is a hard failure
-	ASSERT (res >= 0, "lexer earleme-complete");
+	marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 earleme_complete");
     }
     // TODO marpatcl_process_events (p->l0, HANDLER, CDATA);
 
     if (marpa_r_is_exhausted (LEX.recce)) {
 	complete (p);
 	// MAYBE FAIL
-	return;
+	TRACE_RETURN_VOID;
     }
 
     // Now the gate can update its (character) acceptables too.
     marpatcl_rtc_gate_acceptable (p);
-    return;
+    TRACE_RETURN_VOID;
 }
 
 void
 marpatcl_rtc_lexer_eof (marpatcl_rtc_p p)
 {
+    TRACE_ENTER ("marpatcl_rtc_lexer_eof");
+    TRACE (("rtc %p", p));
+    
     if (LEX.start >= 0) {
 	complete (p);
 	// MAYBE FAIL - TODO Handling ?
@@ -130,6 +164,7 @@ marpatcl_rtc_lexer_eof (marpatcl_rtc_p p)
     }
 
     marpatcl_rtc_parser_eof (p);
+    TRACE_RETURN_VOID;
 }
 
 void
@@ -139,6 +174,8 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
     Marpa_Symbol_ID* buf;
     int              n;
 
+    TRACE_ENTER ("marpatcl_rtc_lexer_acceptable");
+    TRACE (("rtc %p keep %d", p, keep));
     ASSERT (!LEX.recce, "lexer: left over recognizer");
 
     // create new recognizer for next match, reset match state
@@ -146,7 +183,7 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
     LEX.start = -1;
     marpatcl_rtc_stack_clear (LEX.lexeme);
     res = marpa_r_start_input (LEX.recce);
-    ASSERT (res >= 0, "lexer start-input");
+    marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 start_input");
     // TODO marpatcl_process_events (p->l0, HANDLER, CDATA);
 
     /* This code puts information from the parser's recognizer directly into
@@ -161,7 +198,7 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
     if (!keep) {
 	buf = marpatcl_rtc_symset_dense (ACCEPT);
 	n   = marpa_r_terminals_expected (PARS_R, buf);
-	to_acs (n, buf);
+	marpatcl_rtc_fail_syscheck (p, PAR.g, n, "g1 terminals_expected");
 	marpatcl_rtc_symset_link    (ACCEPT, n);
 	marpatcl_rtc_symset_include (ACCEPT, ALWAYS.size, ALWAYS.data);
     }
@@ -172,17 +209,18 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
 	int k;
 	buf = marpatcl_rtc_symset_dense (ACCEPT);
 	for (k=0; k < n; k++) {
-	    res = marpa_r_alternative (LEX.recce, buf [k], 1, 1);
-	    ASSERT (res >= 0, "lexer alternative/b");
+	    res = marpa_r_alternative (LEX.recce, TO_ACS (buf [k]), 1, 1);
+	    marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 alternative/b");
 	}
 
 	res = marpa_r_earleme_complete (LEX.recce);
-	ASSERT (res >= 0, "lexer earleme-complete/b");
+	marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 earleme_complete/b");
 	// TODO marpatcl_process_events (p->l0, HANDLER, CDATA);
     }
 
     // Now the gate can update its acceptables (byte symbols) too.
     marpatcl_rtc_gate_acceptable (p);
+    TRACE_RETURN_VOID;
 }
 
 /*
@@ -227,7 +265,7 @@ complete (marpatcl_rtc_p p)
     discarded = 0;
     marpatcl_rtc_symset_clear (FOUND);
     while (1) {
-	status = get_parse (t, &token, &rule);
+	status = get_parse (p, t, &token, &rule);
 	if (status < 0) break;
 	// token = ACS lexeme symbol
 	// rule  = lexeme rule
@@ -238,7 +276,7 @@ complete (marpatcl_rtc_p p)
 	    continue;
 	}
 	// Translate ACS lexeme to parser terminal
-	token -= 256;
+	token = TO_TERMINAL (token);
 
 	if (marpatcl_rtc_symset_contains (FOUND, token)) continue;
 	marpatcl_rtc_symset_include (FOUND, 1, &token);
@@ -275,20 +313,9 @@ complete (marpatcl_rtc_p p)
     marpatcl_rtc_gate_redo (p, redo);
 }
 
-static void
-to_acs (int c, Marpa_Symbol_ID* v)
-{
-    /* v[i] ... Parser symbols ... Map to Lexer ACS
-     * As per spec.h: lexeme = 256 + terminal
-     */
-    int k;
-    for (k=0; k < c; k++) {
-	v[k] += 256;
-    }
-}
-
 static int
-get_parse (Marpa_Tree        t,
+get_parse (marpatcl_rtc_p    p,
+	   Marpa_Tree        t,
 	   marpatcl_rtc_sym* token,
 	   marpatcl_rtc_sym* rule)
 {
@@ -300,7 +327,7 @@ get_parse (Marpa_Tree        t,
     if (status == -1) {
 	return -1;
     }
-    ASSERT (status >= 0, "lexer tree failure");
+    marpatcl_rtc_fail_syscheck (p, LEX.g, status, "t_next");
 
     v = marpa_v_new (t);
     while (!stop) {
