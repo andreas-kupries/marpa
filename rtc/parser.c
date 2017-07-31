@@ -30,9 +30,21 @@ static marpatcl_rtc_sv_p get_sv    (marpatcl_rtc_p      p,
 void
 marpatcl_rtc_parser_init (marpatcl_rtc_p p)
 {
+    int res;
     PAR.g = marpa_g_new (CONF);
     marpatcl_rtc_spec_setup (PAR.g, SPEC->g1);
+
+    res = marpa_g_precompute (PAR.g);
+    marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 precompute");
+    // TODO marpatcl_process_events (PAR.g, marpatcl_grammar_event_to_tcl, instance);
+
     PAR.recce = marpa_r_new (PAR.g);
+
+    res = marpa_r_start_input (PAR.recce);
+    marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 start_input");
+    // TODO marpatcl_process_events (p->g1, HANDLER, CDATA);
+
+    marpatcl_rtc_lexer_acceptable (p, 0);
 }
 
 void
@@ -59,7 +71,7 @@ marpatcl_rtc_parser_enter (marpatcl_rtc_p p, int found)
     res = marpa_r_earleme_complete (PAR.recce);
     if (res != MARPA_ERR_PARSE_EXHAUSTED) {
 	// any error but exhausted is a hard failure
-	ASSERT (res >= 0, "parser earleme-complete");
+	marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 earleme_complete");
     }
     // TODO marpatcl_process_events (p->g1, HANDLER, CDATA);
 
