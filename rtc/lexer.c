@@ -111,7 +111,7 @@ marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
 {
     int res;
     TRACE_ENTER ("marpatcl_rtc_lexer_enter");
-    TRACE (("rtc %p byte %d", p, ch));
+    TRACE (("rtc %p byte %d @ %d", p, ch, GATE.lastloc));
     /* Contrary to the Tcl runtime the C engine does not get multiple symbols,
      * only one, the current byte. Because byte-ranges are coded as rules in
      * the grammar instead of as input symbols.
@@ -211,6 +211,8 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
 	int k;
 	buf = marpatcl_rtc_symset_dense (ACCEPT);
 	for (k=0; k < n; k++) {
+	    TRACE (("ACCEPT [%d]: %d = %s", k, TO_ACS (buf[k]),
+		    marpatcl_rtc_spec_symname (SPEC->l0, TO_ACS (buf[k]), 0)));
 	    res = marpa_r_alternative (LEX.recce, TO_ACS (buf [k]), 1, 1);
 	    marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 alternative/b");
 	}
@@ -288,7 +290,6 @@ complete (marpatcl_rtc_p p)
 	 */
 	
 	token = TO_TERMINAL (token);
-	TRACE (("rtc %p terminal %d", p, token));
 
 	/* token = G1 terminal id (lexeme) or pseudo-terminal (discard)
 	 * Range:   0 ... L+D-1
@@ -298,16 +299,18 @@ complete (marpatcl_rtc_p p)
 
 	ASSERT (token < (SPEC->lexemes+SPEC->discards), "pseudo-terminal out of bounds");
 	if (token >= SPEC->lexemes) {
-	    TRACE (("rtc %p discard pseudo-terminal", p));
+	    TRACE (("rtc %p token %d, discard pseudo-terminal", p, token));
 	    discarded ++;
 	    continue;
 	}
-	    
+
+	TRACE (("rtc %p terminal %d (%s)", p, token, marpatcl_rtc_spec_symname (SPEC->g1, token, 0)));
+
 	if (marpatcl_rtc_symset_contains (FOUND, token)) {
 	    TRACE (("rtc %p duplicate, skip", p));
 	    continue;
 	}
-	TRACE (("rtc %p new, save", p));
+	TRACE (("rtc %p token %d (%s) save", p, token, marpatcl_rtc_spec_symname (SPEC->g1, token, 0)));
 	marpatcl_rtc_symset_include (FOUND, 1, &token);
 
 	// SV deduplication: If the semantic codes are all for a value
