@@ -10,6 +10,8 @@
 #include <critcl_alloc.h>
 #include <critcl_trace.h>
 
+TRACE_OFF
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API
@@ -39,7 +41,7 @@ void
 marpatcl_rtc_destroy (marpatcl_rtc_p p)
 {
     TRACE_ENTER ("marpatcl_rtc_destroy");
-    TRACE (("rtc %p", p));
+    TRACE ("rtc %p", p);
     marpatcl_rtc_parser_free  (p);
     marpatcl_rtc_lexer_free   (p);
     marpatcl_rtc_gate_free    (p);
@@ -54,7 +56,7 @@ void
 marpatcl_rtc_enter (marpatcl_rtc_p p, const char* bytes, int n)
 {
     TRACE_ENTER("marpatcl_rtc_enter");
-    TRACE (("rtc %p bytes %d", p, n));
+    TRACE ("rtc %p bytes %d", p, n);
     marpatcl_rtc_inbound_enter (p, bytes, n);
     TRACE_RETURN_VOID;
 }
@@ -63,7 +65,7 @@ void
 marpatcl_rtc_eof (marpatcl_rtc_p p)
 {
     TRACE_ENTER("marpatcl_rtc_eof");
-    TRACE (("rtc %p", p));
+    TRACE ("rtc %p", p);
     marpatcl_rtc_inbound_eof (p);
     TRACE_RETURN_VOID;
 }

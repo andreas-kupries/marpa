@@ -10,6 +10,8 @@
 #include <critcl_assert.h>
 #include <critcl_trace.h>
 
+TRACE_OFF
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API
@@ -25,7 +27,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
     Marpa_Symbol_ID lastlhs;
 
     TRACE_ENTER("marpatcl_rtc_spec_setup");
-    TRACE (("Symbols = %d", s->symbols.size));
+    TRACE ("Symbols = %d", s->symbols.size);
 
     /* Generate the symbols, in bulk */
     for (k=0; k < s->symbols.size; k++) {
@@ -38,7 +40,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	switch (cmd) {
 	case MARPATCL_RC_SETUP:
 	    /* start of rules, detail = size of scratch area */
-	    TRACE (("MARPATCL_RC_SETUP (scratch = %d)", detail));
+	    TRACE ("MARPATCL_RC_SETUP (scratch = %d)", detail);
 
 	    ssz = detail;
 	    scratch = NALLOC (Marpa_Symbol_ID, detail);
@@ -46,7 +48,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	    break;
 	case MARPATCL_RC_DONE:
 	    /* end of rules, detail = start symbol */
-	    TRACE (("MARPATCL_RC_DONE (start = %d)", detail));
+	    TRACE ("MARPATCL_RC_DONE (start = %d)", detail);
 	    ASSERT_BOUNDS (detail, s->symbols.size);
 
 	    marpa_g_start_symbol_set (g, detail);
@@ -55,7 +57,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	    return;
 	case MARPATCL_RC_PRIO:
 	    /* priority -- full spec */
-	    TRACE (("MARPATCL_RC_PRIO (lhs = %d, #rhs = %d)", pc[1], detail));
+	    TRACE ("MARPATCL_RC_PRIO (lhs = %d, #rhs = %d)", pc[1], detail);
 	    ASSERT_BOUNDS (pc[1], s->symbols.size);
 	    if (detail) {
 		ASSERT_BOUNDS ((detail-1), ssz); /* max index is length-1 */
@@ -71,7 +73,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	    break;
 	case MARPATCL_RC_PRIS:
 	    /* priority -- short spec, reuse previos lhs */
-	    TRACE (("MARPATCL_RC_PRIS (lhs = %d, #rhs = %d)", lastlhs, detail));
+	    TRACE ("MARPATCL_RC_PRIS (lhs = %d, #rhs = %d)", lastlhs, detail);
 	    if (detail) {
 		ASSERT_BOUNDS ((detail-1), ssz); /* max index is length-1 */
 	    }
@@ -85,7 +87,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	    break;
 	case MARPATCL_RC_QUN:
 	    /* quantified star, pc[] = rhs */
-	    TRACE (("MARPATCL_RC_QUN  (lhs = %d, rhs = %d)", detail, pc[1]));
+	    TRACE ("MARPATCL_RC_QUN  (lhs = %d, rhs = %d)", detail, pc[1]);
 	    ASSERT_BOUNDS (detail, s->symbols.size);
 	    ASSERT_BOUNDS (pc[1], s->symbols.size);
 
@@ -94,7 +96,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	    break;
 	case MARPATCL_RC_QUP:
 	    /* quantified plus, pc[] = rhs */
-	    TRACE (("MARPATCL_RC_QUP  (lhs = %d, rhs = %d)", detail, pc[1]));
+	    TRACE ("MARPATCL_RC_QUP  (lhs = %d, rhs = %d)", detail, pc[1]);
 	    ASSERT_BOUNDS (detail, s->symbols.size);
 	    ASSERT_BOUNDS (pc[1], s->symbols.size);
 
@@ -104,8 +106,8 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	case MARPATCL_RC_QUNS:
 	    /* quantified star + separator, pc[] = rhs */
 	    MARPATCL_RCMD_UNBOX (pc[2], proper, sep);
-	    TRACE (("MARPATCL_RC_QUNS (lhs = %d, rhs = %d, sep = %d, proper %d)",
-		    detail, pc[1], sep, proper));
+	    TRACE ("MARPATCL_RC_QUNS (lhs = %d, rhs = %d, sep = %d, proper %d)",
+		   detail, pc[1], sep, proper);
 	    ASSERT_BOUNDS (detail, s->symbols.size);
 	    ASSERT_BOUNDS (pc[1], s->symbols.size);
 	    ASSERT_BOUNDS (sep, s->symbols.size);
@@ -116,8 +118,8 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	case MARPATCL_RC_QUPS:
 	    /* quantified plus + separator, pc[] = rhs */
 	    MARPATCL_RCMD_UNBOX (pc[2], proper, sep);
-	    TRACE (("MARPATCL_RC_QUPS (lhs = %d, rhs = %d, sep = %d, proper %d)",
-		    detail, pc[1], sep, proper));
+	    TRACE ("MARPATCL_RC_QUPS (lhs = %d, rhs = %d, sep = %d, proper %d)",
+		   detail, pc[1], sep, proper);
 	    ASSERT_BOUNDS (detail, s->symbols.size);
 	    ASSERT_BOUNDS (pc[1], s->symbols.size);
 	    ASSERT_BOUNDS (sep, s->symbols.size);
@@ -128,7 +130,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	case MARPATCL_RC_BRAN:
 	    /* byte range - pc [1] = start, stop - expand into alternation */
 	    MARPATCL_RCMD_UNBXR (pc[1], start, stop);
-	    TRACE (("MARPATCL_RC_BRAN (lhs = %d, %d .. %d)", detail, start, stop));
+	    TRACE ("MARPATCL_RC_BRAN (lhs = %d, %d .. %d)", detail, start, stop);
 	    ASSERT (start <= stop, "Bad byte range");
 
 	    for (k = start; k <= stop; k++) {

@@ -10,6 +10,8 @@
 #include <critcl_assert.h>
 #include <critcl_trace.h>
 
+TRACE_OFF
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * Shorthands
@@ -27,7 +29,7 @@ void
 marpatcl_rtc_gate_init (marpatcl_rtc_p p)
 {
     TRACE_ENTER ("marpatcl_rtc_gate_init");
-    TRACE (("rtc %p", p));
+    TRACE ("rtc %p", p);
     marpatcl_rtc_byteset_clear (ACCEPT);
     GATE.history = marpatcl_rtc_stack_cons (80);
     GATE.pending = marpatcl_rtc_stack_cons (10);
@@ -40,7 +42,7 @@ void
 marpatcl_rtc_gate_free (marpatcl_rtc_p p)
 {
     TRACE_ENTER ("marpatcl_rtc_gate_free");
-    TRACE (("rtc %p", p));
+    TRACE ("rtc %p", p);
     marpatcl_rtc_stack_destroy (GATE.history);
     marpatcl_rtc_stack_destroy (GATE.pending);
     /* GATE.acceptable - nothing to do */
@@ -52,7 +54,7 @@ marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
 {
     int flushed = 0;
     TRACE_ENTER ("marpatcl_rtc_gate_enter");
-    TRACE (("rtc %p byte %d @ %d", p, ch, IN.location));
+    TRACE ("rtc %p byte %d @ %d", p, ch, IN.location);
     GATE.lastchar = ch;
     GATE.lastloc  = IN.location;
 
@@ -69,15 +71,15 @@ marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
 
 	/* No match: Try to close current symbol, then retry. But at most once.
 	 */
-	TRACE (("rtc %p not acceptable", p));
+	TRACE ("rtc %p not acceptable", p);
 	if (flushed) {
-	    TRACE (("rtc %p flushed, fail", p));
+	    TRACE ("rtc %p flushed, fail", p);
 	    marpatcl_rtc_failit (p, "gate");
 	    // See marpatcl_rtc_inbound_enter for test of failure and abort.
 	    TRACE_RETURN_VOID;
 	}
 
-	TRACE (("rtc %p flush", p));
+	TRACE ("rtc %p flush", p);
 	flushed ++;
 	marpatcl_rtc_lexer_enter (p, -1);
     }
@@ -89,7 +91,7 @@ void
 marpatcl_rtc_gate_eof (marpatcl_rtc_p p)
 {
     TRACE_ENTER ("marpatcl_rtc_gate_eof");
-    TRACE (("rtc %p", p));
+    TRACE ("rtc %p", p);
     marpatcl_rtc_lexer_eof (p);
     TRACE_RETURN_VOID;
 }
@@ -106,18 +108,18 @@ marpatcl_rtc_gate_acceptable (marpatcl_rtc_p p)
      *     `Marpa_Symbol_ID` instead of `unsigned char`.
      */
     TRACE_ENTER ("marpatcl_rtc_gate_acceptable");
-    TRACE (("rtc %p", p));
+    TRACE ("rtc %p", p);
     {
 	Marpa_Symbol_ID* v = marpatcl_rtc_byteset_dense (ACCEPT);
 	int              c = marpa_r_terminals_expected (LEX_R, v);
-	marpatcl_rtc_fail_syscheck (p, LEX.g, c, "terminals_expected");
+	marpatcl_rtc_fail_syscheck (p, LEX.g, c, "l0 terminals_expected");
 	marpatcl_rtc_byteset_link (ACCEPT, c);
 #ifdef CRITCL_TRACER
 	{
 	    int k, n = marpatcl_rtc_byteset_size (ACCEPT);
 	    for (k=0; k < n; k++) {
-		TRACE (("ACCEPT [%d]: %d = %s", k, v[k],
-			marpatcl_rtc_spec_symname (SPEC->l0, v[k], 0)));
+		TRACE ("ACCEPT [%d]: %d = %s", k, v[k],
+			marpatcl_rtc_spec_symname (SPEC->l0, v[k], 0));
 	    }	       
 	}
 #endif
@@ -129,7 +131,7 @@ void
 marpatcl_rtc_gate_redo (marpatcl_rtc_p p, int n)
 {
     TRACE_ENTER ("marpatcl_rtc_gate_redo");
-    TRACE (("rtc %p redo %d", p, n));
+    TRACE ("rtc %p redo %d", p, n);
     if (!n) {
 	marpatcl_rtc_stack_clear (GATE.history);
     } else {

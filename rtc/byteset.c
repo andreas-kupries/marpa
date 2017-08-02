@@ -9,6 +9,8 @@
 #include <critcl_assert.h>
 #include <critcl_trace.h>
 
+TRACE_OFF
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * Shorthands
@@ -27,7 +29,7 @@ void
 marpatcl_rtc_byteset_clear (marpatcl_rtc_byteset* s)
 {
     TRACE_ENTER ("marpatcl_rtc_byteset_clear");
-    TRACE (("byteset %p", s));
+    TRACE ("byteset %p", s);
     SZ = 0;
     TRACE_RETURN_VOID;
 }
@@ -37,7 +39,7 @@ marpatcl_rtc_byteset_contains (marpatcl_rtc_byteset* s, unsigned char c)
 {
     // sizeof (unsigned char) == 8 --> max(c) = 255, no assertion required
     TRACE_ENTER ("marpatcl_rtc_byteset_contains");
-    TRACE (("byteset %p testing %d", s, c));
+    TRACE ("byteset %p testing %d", s, c);
     ASSERT (c < MARPATCL_RTC_BSMAX, "Symbol beyond set capacity");
     TRACE_RETURN ("%d", (XL [c] < SZ) && (DE [XL [c]] == c));
 }
@@ -46,7 +48,7 @@ Marpa_Symbol_ID*
 marpatcl_rtc_byteset_dense (marpatcl_rtc_byteset* s)
 {
     TRACE_ENTER ("marpatcl_rtc_byteset_dense");
-    TRACE (("byteset %p", s));
+    TRACE ("byteset %p", s);
     TRACE_RETURN ("%p", DE);
 }
 
@@ -55,11 +57,11 @@ marpatcl_rtc_byteset_link (marpatcl_rtc_byteset* s, int n)
 {
     int k;
     TRACE_ENTER ("marpatcl_rtc_byteset_link");
-    TRACE (("byteset %p, link %d", s, n));
+    TRACE ("byteset %p, link %d", s, n);
     ASSERT_BOUNDS (n, MARPATCL_RTC_BSMAX);
     SZ = n;
     for (k = 0; k < n; k++) {
-	TRACE (("byteset %p link [%d,%d] %d", s, SZ, k, DE[k]));
+	// TRACE ("byteset %p link [%d,%d] %d", s, SZ, k, DE[k]);
 	ASSERT (DE [k] < MARPATCL_RTC_BSMAX, "Symbol out of byte range (> 255)");
 	XL [DE [k]] = k;
     }
@@ -70,7 +72,7 @@ int
 marpatcl_rtc_byteset_size (marpatcl_rtc_byteset* s)
 {
     TRACE_ENTER ("marpatcl_rtc_byteset_size");
-    TRACE (("byteset %p", s));
+    TRACE ("byteset %p", s);
     TRACE_RETURN ("%d", SZ);
 }
 

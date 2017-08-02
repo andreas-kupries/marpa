@@ -13,8 +13,9 @@
 #include <critcl_assert.h>
 #include <critcl_alloc.h>
 #include <critcl_trace.h>
-
 #include <marpatcl_steptype.h>
+
+TRACE_ON
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -45,6 +46,10 @@ static marpatcl_rtc_sv_p get_sv    (marpatcl_rtc_p   p,
 #define TO_ACS(s)      ((s)+256)
 #define TO_TERMINAL(s) ((s)-256)
 
+#define LEX_START      (LEX.start)
+#define LEX_LEN        (marpatcl_rtc_stack_size(LEX.lexeme))
+#define LEX_END        (LEX.start + LEX_LEN - 1)
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API
@@ -55,12 +60,12 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
 {
     int k, res;
     TRACE_ENTER ("marpatcl_rtc_lexer_init");
-    TRACE (("rtc %p", p));
+    TRACE ("rtc %p", p);
 
-    TRACE (("rtc %p L %d", p, SPEC->lexemes));
-    TRACE (("rtc %p D %d", p, SPEC->discards));
-    TRACE (("rtc %p A %d", p, ALWAYS.size));
-    TRACE (("rtc %p = %d", p, SPEC->lexemes + ALWAYS.size));
+    TRACE ("rtc %p L %d", p, SPEC->lexemes);
+    TRACE ("rtc %p D %d", p, SPEC->discards);
+    TRACE ("rtc %p A %d", p, ALWAYS.size);
+    TRACE ("rtc %p = %d", p, SPEC->lexemes + ALWAYS.size);
 
     /* Note (%%accept/always%%): The ACCEPT symset contains G1 terminal
      * symbols, plus pseudo-terminals for the L0 discard ymbols. Conversion to
@@ -97,7 +102,7 @@ void
 marpatcl_rtc_lexer_free (marpatcl_rtc_p p)
 {
     TRACE_ENTER ("marpatcl_rtc_lexer_free");
-    TRACE (("rtc %p", p));
+    TRACE ("rtc %p", p);
     
     marpa_g_unref (LEX.g);
     marpatcl_rtc_symset_free (ACCEPT);
@@ -111,7 +116,7 @@ marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
 {
     int res;
     TRACE_ENTER ("marpatcl_rtc_lexer_enter");
-    TRACE (("rtc %p byte %d @ %d", p, ch, GATE.lastloc));
+    TRACE ("rtc %p byte %d @ %d", p, ch, GATE.lastloc);
     /* Contrary to the Tcl runtime the C engine does not get multiple symbols,
      * only one, the current byte. Because byte-ranges are coded as rules in
      * the grammar instead of as input symbols.
@@ -136,6 +141,7 @@ marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
 	// any error but exhausted is a hard failure
 	marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 earleme_complete");
     }
+    // Note: res == #events
     // TODO marpatcl_process_events (p->l0, HANDLER, CDATA);
 
     if (marpa_r_is_exhausted (LEX.recce)) {
@@ -153,7 +159,7 @@ void
 marpatcl_rtc_lexer_eof (marpatcl_rtc_p p)
 {
     TRACE_ENTER ("marpatcl_rtc_lexer_eof");
-    TRACE (("rtc %p start %d", p, LEX.start));
+    TRACE ("rtc %p start %d", p, LEX.start);
     
     if (LEX.start >= 0) {
 	complete (p);
@@ -177,7 +183,7 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
     int              n;
 
     TRACE_ENTER ("marpatcl_rtc_lexer_acceptable");
-    TRACE (("rtc %p keep %d", p, keep));
+    TRACE ("rtc %p keep %d", p, keep);
     ASSERT (!LEX.recce, "lexer: left over recognizer");
 
     // create new recognizer for next match, reset match state
@@ -211,14 +217,15 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
 	int k;
 	buf = marpatcl_rtc_symset_dense (ACCEPT);
 	for (k=0; k < n; k++) {
-	    TRACE (("ACCEPT [%d]: %d = %s", k, TO_ACS (buf[k]),
-		    marpatcl_rtc_spec_symname (SPEC->l0, TO_ACS (buf[k]), 0)));
+	    TRACE ("ACCEPT [%d]: %d = %s", k, TO_ACS (buf[k]),
+		   marpatcl_rtc_spec_symname (SPEC->l0, TO_ACS (buf[k]), 0));
 	    res = marpa_r_alternative (LEX.recce, TO_ACS (buf [k]), 1, 1);
 	    marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 alternative/b");
 	}
 
 	res = marpa_r_earleme_complete (LEX.recce);
 	marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 earleme_complete/b");
+	// Note: res == #events
 	// TODO marpatcl_process_events (p->l0, HANDLER, CDATA);
     }
 
@@ -242,9 +249,11 @@ complete (marpatcl_rtc_p p)
     marpatcl_rtc_sym token;
     marpatcl_rtc_sym rule;
     marpatcl_rtc_sv_p sv = 0;
-
+#ifdef CRITCL_TRACER
+    int trees = -1;
+#endif
     TRACE_ENTER ("lexer/complete");
-    TRACE (("rtc %p", p));
+    TRACE ("rtc %p", p);
 	
     if (!LEX.recce) {
 	TRACE_RETURN_VOID;
@@ -254,20 +263,20 @@ complete (marpatcl_rtc_p p)
     latest =  marpa_r_latest_earley_set (LEX.recce);
     redo = 0;
     while (1) {
-	TRACE (("rtc %p ?? match %d redo %d", p, latest, redo));
+	TRACE ("rtc %p ?? match %d redo %d", p, latest, redo);
 	b = marpa_b_new (LEX.recce, latest);
 	if (b) break;
 	redo ++;
 	latest --;
 	if (latest < 0) {
-	    TRACE (("rtc %p no match", p));
+	    TRACE ("rtc %p no match", p);
 	    mismatch (p);
 	    // FAIL, aborting. Callers `lexer_enter`, `lexer_eof`.
 	    TRACE_RETURN_VOID;
 	}
     }
 
-    TRACE (("rtc %p ok match %d redo %d", p, latest, redo));
+    TRACE ("rtc %p ok match %d redo %d", p, latest, redo);
 
     /* Get all the valid parses at the location and evaluate them.
      */
@@ -278,10 +287,17 @@ complete (marpatcl_rtc_p p)
     marpatcl_rtc_symset_clear (FOUND);
     while (1) {
 	status = get_parse (p, t, &token, &rule);
-	TRACE (("rtc %p parse %d", p, status));
-
-	if (status < 0) break;
-	TRACE (("rtc %p lexeme   %d (%s) rule %d", p, token, marpatcl_rtc_spec_symname (SPEC->l0, token, 0), rule));
+	if (status < 0) {
+	    TRACE ("rtc %p parse %d /done", p, status);
+	    break;
+	}
+#ifdef CRITCL_TRACER
+	trees ++;
+#endif
+	TRACE ("rtc %p parse [%d] %d", p, trees, status);
+	TRACE ("rtc %p lexeme   [%d] %d (%s) rule %d", p, trees,
+	       token, marpatcl_rtc_spec_symname (SPEC->l0, token, 0),
+	       rule);
 
 	/* rule = lexeme rule id
 	 * token = ACS symbol id (lexeme or discard)
@@ -299,18 +315,20 @@ complete (marpatcl_rtc_p p)
 
 	ASSERT (token < (SPEC->lexemes+SPEC->discards), "pseudo-terminal out of bounds");
 	if (token >= SPEC->lexemes) {
-	    TRACE (("rtc %p token %d, discard pseudo-terminal", p, token));
+	    TRACE ("rtc %p token %d, discarded", p, token);
 	    discarded ++;
 	    continue;
 	}
 
-	TRACE (("rtc %p terminal %d (%s)", p, token, marpatcl_rtc_spec_symname (SPEC->g1, token, 0)));
+	TRACE ("rtc %p terminal [%d] %d (%s)", p, trees,
+	       token, marpatcl_rtc_spec_symname (SPEC->g1, token, 0));
 
 	if (marpatcl_rtc_symset_contains (FOUND, token)) {
-	    TRACE (("rtc %p duplicate, skip", p));
+	    TRACE ("rtc %p duplicate, skip", p);
 	    continue;
 	}
-	TRACE (("rtc %p token %d (%s) save", p, token, marpatcl_rtc_spec_symname (SPEC->g1, token, 0)));
+	TRACE ("rtc %p token    [%d] %d (%s) save", p, trees,
+	       token, marpatcl_rtc_spec_symname (SPEC->g1, token, 0));
 	marpatcl_rtc_symset_include (FOUND, 1, &token);
 
 	// SV deduplication: If the semantic codes are all for a value
@@ -322,6 +340,9 @@ complete (marpatcl_rtc_p p)
 	if (!LEX.single_sv || !sv) {
 	    sv = get_sv (p, token, rule);
 	    svid = marpatcl_rtc_store_add (p, sv);
+	    TRACE ("rtc %p token    [%d] %d (%s) value [%d] := %p", p, trees,
+		   token, marpatcl_rtc_spec_symname (SPEC->g1, token, 0),
+		   svid, sv);
 	}
 	
 	res = marpa_r_alternative (PARS_R, token, svid, 1);
@@ -335,11 +356,12 @@ complete (marpatcl_rtc_p p)
     if (!marpatcl_rtc_symset_size(FOUND) && discarded) {
 	// Nothing found. Do not talk to parser. Restart lexing with the
 	// current set of acceptable symbols.
-	TRACE (("rtc %p restart", p));
+	TRACE ("rtc %p restart", p);
 	marpatcl_rtc_lexer_acceptable (p, 1);
     } else {
 	// Tell parser about number of alternatives given to it (See (%%))
-	TRACE (("rtc %p parse #%d", p, marpatcl_rtc_symset_size(FOUND)));
+	TRACE ("rtc %p parse #%d (%d..%d/%d)", p, marpatcl_rtc_symset_size(FOUND),
+	       LEX_START, LEX_END, LEX_LEN);
 	marpatcl_rtc_parser_enter (p, marpatcl_rtc_symset_size(FOUND));
 	// MAYBE FAIL
     }
@@ -368,56 +390,63 @@ get_parse (marpatcl_rtc_p    p,
     marpatcl_rtc_fail_syscheck (p, LEX.g, status, "t_next");
 
     v = marpa_v_new (t);
+    stop = 0;
     while (!stop) {
 	Marpa_Step_Type stype = marpa_v_step (v);
 #ifdef CRITCL_TRACER
 	const char* sts = marpatcl_steptype_decode_cstr (stype);
 	k++;
 #endif
-	if (stype == MARPA_STEP_INACTIVE) {
-	    TRACE (("rtc %p step[%d] %d %s", p, k, stype, sts ? sts : "<<null>>"));
+	switch (stype) {
+	case MARPA_STEP_INITIAL:
+	    /* Nothing to do */
+	    TRACE ("rtc %p step[%4d] %d %s", p, k, stype, sts ? sts : "<<null>>");
 	    break;
-	}
-	if (stype == MARPA_STEP_INITIAL) {
-	    TRACE (("rtc %p step[%d] %d %s", p, k, stype, sts ? sts : "<<null>>"));
-	    continue;
-	}
-	if (stype == MARPA_STEP_TOKEN) {
+	case MARPA_STEP_INACTIVE:
+	    /* Done */
+	    TRACE ("rtc %p step[%4d] %d %s", p, k, stype, sts ? sts : "<<null>>");
+	    stop = 1;
+	    break;
+	case MARPA_STEP_RULE:
+	    /* Keep last two rules saved so that we have quick access to
+	     * next-to-last later */
+	    TRACE ("rtc %p step[%4d] %d %s -- r[%d] %d span (%d)-(%d) (%d := (%d-%d))",
+		   p, k, stype, sts ? sts : "<<null>>", rslot,
+		   marpa_v_rule(v),
+		   marpa_v_rule_start_es_id(v),
+		   marpa_v_es_id(v),
+		   marpa_v_result(v),
+		   marpa_v_arg_0(v),
+		   marpa_v_arg_n(v));
+	    rules[rslot] = marpa_v_rule(v);
+	    rslot = 1 - rslot;
+	    break;
+	case MARPA_STEP_TOKEN:
 	    /* First token instruction has the id of the ACS symbol of the
 	     * matched lexeme => terminal symbol derivable from this. */
-	    TRACE (("rtc %p step[%d] %d %s -- token %d (%s) span (%d)-(%d) (%d := <%d>)",
-		    p, k, stype, sts ? sts : "<<null>>",
-		    marpa_v_token(v),
-		    marpatcl_rtc_spec_symname (SPEC->l0, marpa_v_token(v), 0),
-		    marpa_v_rule_start_es_id(v),
-		    marpa_v_es_id(v),
-		    marpa_v_result(v),
-		    marpa_v_token_value(v)));
+	    TRACE ("rtc %p step[%4d] %d %s -- token %3d (%s) span (%d)-(%d) (%d := <%d>)",
+		   p, k, stype, sts ? sts : "<<null>>",
+		   marpa_v_token(v),
+		   marpatcl_rtc_spec_symname (SPEC->l0, marpa_v_token(v), 0),
+		   marpa_v_token_start_es_id(v),
+		   marpa_v_es_id(v),
+		   marpa_v_result(v),
+		   marpa_v_token_value(v));
 	    if (!captoken) {
 		*token = marpa_v_token(v);
 	    }
 	    captoken = 1;
-	    continue;
+	    break;
+	case MARPA_STEP_NULLING_SYMBOL:
+	case MARPA_STEP_INTERNAL1:
+	case MARPA_STEP_INTERNAL2:
+	case MARPA_STEP_TRACE:
+	    TRACE ("rtc %p step[%4d] %d %s", p, k, stype, sts ? sts : "<<null>>");
+	    break;
 	}
-	if (stype == MARPA_STEP_RULE) {
-	    /* Keep last two rules saved so that we have quick access to
-	     * next-to-last later */
-	    TRACE (("rtc %p step[%d] %d %s -- r[%d] %d span (%d)-(%d) (%d := (%d-%d))",
-		    p, k, stype, sts ? sts : "<<null>>", rslot,
-		    marpa_v_rule(v),
-		    marpa_v_rule_start_es_id(v),
-		    marpa_v_es_id(v),
-		    marpa_v_result(v),
-		    marpa_v_arg_0(v),
-		    marpa_v_arg_n(v)));
-	    rules[rslot] = marpa_v_rule(v);
-	    rslot = 1 - rslot;
-	    continue;
-	}
-	TRACE (("rtc %p step[%d] %d %s", p, k, stype, sts ? sts : "<<null>>"));
     }
     marpa_v_unref (v);
-    TRACE (("rtc %p rule[%d] %d", p, rslot, rules[rslot]));
+    TRACE ("rtc %p rule[%d] %d", p, rslot, rules[rslot]);
     *rule = rules[rslot];
     TRACE_RETURN ("%d", 0);
 }
@@ -459,9 +488,6 @@ get_sv (marpatcl_rtc_p   p,
     
 #define DO(cache,cmd)    if (!(cache)) { (cache) = cmd; }; marpatcl_rtc_sv_vec_push (sv, (cache))
 #define G1_SNAME(token)  marpatcl_rtc_spec_symname (SPEC->g1, token, NULL)
-#define LEX_START        LEX.start
-#define LEX_LEN          marpatcl_rtc_stack_size (LEX.lexeme)
-#define LEX_END          (LEX.start + LEX_LEN - 1)
 #define LEX_STR          get_lexeme (p, NULL)
 
     for (k = 0; k < SPEC->l0semantic.size; k++) {
