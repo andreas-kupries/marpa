@@ -47,7 +47,7 @@ static marpatcl_rtc_sv_p get_sv    (marpatcl_rtc_p   p,
 #define TO_TERMINAL(s) ((s)-256)
 
 #define LEX_START      (LEX.start)
-#define LEX_LEN        (marpatcl_rtc_stack_size(LEX.lexeme))
+#define LEX_LEN        (LEX.length)
 #define LEX_END        (LEX.start + LEX_LEN - 1)
 
 /*
@@ -123,7 +123,8 @@ marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
      */
 
     if (LEX.start == -1) {
-	LEX.start = GATE.lastloc;
+	LEX.start  = GATE.lastloc;
+	LEX.length = 0;
     }
 
     if (ch == -1) {
@@ -133,6 +134,7 @@ marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
     }
 
     marpatcl_rtc_stack_push (LEX.lexeme, ch);
+    LEX.length ++;
     res = marpa_r_alternative (LEX.recce, ch, 1, 1);
     marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 alternative");
 
@@ -346,6 +348,7 @@ complete (marpatcl_rtc_p p)
 	}
 	
 	res = marpa_r_alternative (PARS_R, token, svid, 1);
+	marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 alternative");
     }
 
     marpa_t_unref (t);

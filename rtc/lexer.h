@@ -27,6 +27,7 @@ typedef struct marpatcl_rtc_lexer {
     marpatcl_rtc_symset  acceptable;    /* Currently acceptable parser symbols */
     marpatcl_rtc_stack_p lexeme;        /* Characters in the current match */
     int                  start;         /* Location of match start */
+    int                  length;        /* Length of match */
     marpatcl_rtc_symset  found;         /* Symbols found at current match */
     int                  single_sv;     /* Bool, true if SV is identical across symbols */
 } marpatcl_rtc_lexer;
