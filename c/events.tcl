@@ -20,13 +20,18 @@ critcl::emap::def marpatcl_event {
     e-symbol-expected  MARPA_EVENT_SYMBOL_EXPECTED
     e-symbol-nulled    MARPA_EVENT_SYMBOL_NULLED
     e-symbol-predicted MARPA_EVENT_SYMBOL_PREDICTED
-}
+} -mode {c tcl}
 
 # API pieces
 ##
 # Encoder:     int     marpatcl_event_encode (interp, Tcl_Obj* state, int* result) :: string -> type
 # Decoder:     TclObj* marpatcl_event_decode (interp, int      state)              :: type -> string
+#
+# Encoder/C:   int         marpatcl_event_encode_cstr (const char* state) :: string -> type
+# Decoder/C:   const char* marpatcl_event_decode_cstr (int         state) :: type -> string
+#
 # Decl Hdr:    marpatcl_event.h
+#
 # Arg-Type:    marpatcl_event
 # Result-Type: marpatcl_event
 

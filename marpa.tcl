@@ -17,8 +17,8 @@ package require critcl 3.1
 critcl::buildrequirement {
     package require critcl::util 1
     package require critcl::class 1
-    package require critcl::emap
-    package require critcl::literals
+    package require critcl::emap     1.1 ; # mode C support
+    package require critcl::literals 1.2 ; # mode C support
     package require critcl::cutil
 }
 

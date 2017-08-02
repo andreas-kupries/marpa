@@ -9,6 +9,7 @@
 #include <rtc_int.h>
 #include <critcl_assert.h>
 #include <critcl_trace.h>
+#include <marpatcl_error.h>
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -60,10 +61,13 @@ void
 marpatcl_rtc_fail_syscheck (marpatcl_rtc_p p, Marpa_Grammar g, int res, const char* label)
 {
     TRACE_ENTER ("marpatcl_rtc_fail_syscheck");
-    TRACE (("state = %d", res));
+    TRACE (("%s state = %d", label, res));
     if (res == -2) {
 	int status = marpa_g_error (g, NULL);
-	TRACE (("status = %d at %s", status, label));
+#ifdef CRITCL_TRACER
+	const char* e = marpatcl_error_decode_cstr (status);
+#endif
+	TRACE (("status = %d at %s (%s)", status, label, e ? e : "<<null>>"));
 	marpatcl_rtc_failit (p, "libmarpa");
 	ASSERT (0, "syscheck general");
     }
