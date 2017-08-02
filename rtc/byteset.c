@@ -66,6 +66,14 @@ marpatcl_rtc_byteset_link (marpatcl_rtc_byteset* s, int n)
     TRACE_RETURN_VOID;
 }
 
+int 
+marpatcl_rtc_byteset_size (marpatcl_rtc_byteset* s)
+{
+    TRACE_ENTER ("marpatcl_rtc_byteset_size");
+    TRACE (("byteset %p", s));
+    TRACE_RETURN ("%d", SZ);
+}
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  */

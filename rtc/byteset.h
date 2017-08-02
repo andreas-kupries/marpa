@@ -48,6 +48,7 @@ void             marpatcl_rtc_byteset_clear    (marpatcl_rtc_byteset* s);
 int              marpatcl_rtc_byteset_contains (marpatcl_rtc_byteset* s, unsigned char c);
 Marpa_Symbol_ID* marpatcl_rtc_byteset_dense    (marpatcl_rtc_byteset* s);
 void             marpatcl_rtc_byteset_link     (marpatcl_rtc_byteset* s, int n);
+int              marpatcl_rtc_byteset_size     (marpatcl_rtc_byteset* s);
 
 #endif
 
