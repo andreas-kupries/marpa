@@ -52,7 +52,7 @@ marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
 {
     int flushed = 0;
     TRACE_ENTER ("marpatcl_rtc_gate_enter");
-    TRACE (("rtc %p at %d byte %d", p, IN.location, ch));
+    TRACE (("rtc %p byte %d @ %d", p, ch, IN.location));
     GATE.lastchar = ch;
     GATE.lastloc  = IN.location;
 
@@ -112,6 +112,15 @@ marpatcl_rtc_gate_acceptable (marpatcl_rtc_p p)
 	int              c = marpa_r_terminals_expected (LEX_R, v);
 	marpatcl_rtc_fail_syscheck (p, LEX.g, c, "terminals_expected");
 	marpatcl_rtc_byteset_link (ACCEPT, c);
+#ifdef CRITCL_TRACER
+	{
+	    int k, n = marpatcl_rtc_byteset_size (ACCEPT);
+	    for (k=0; k < n; k++) {
+		TRACE (("ACCEPT [%d]: %d = %s", k, v[k],
+			marpatcl_rtc_spec_symname (SPEC->l0, v[k], 0)));
+	    }	       
+	}
+#endif
     }
     TRACE_RETURN_VOID;
 }

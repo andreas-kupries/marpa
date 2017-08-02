@@ -61,7 +61,7 @@ void
 marpatcl_rtc_fail_syscheck (marpatcl_rtc_p p, Marpa_Grammar g, int res, const char* label)
 {
     TRACE_ENTER ("marpatcl_rtc_fail_syscheck");
-    TRACE (("%s state = %d", label, res));
+    TRACE (("[[%s] = %d]", label, res));
     if (res == -2) {
 	int status = marpa_g_error (g, NULL);
 #ifdef CRITCL_TRACER
