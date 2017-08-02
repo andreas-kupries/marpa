@@ -36,13 +36,14 @@ set pongchan stderr
 #set pongchan stdout
 
 # Tcl character classes I. They are created from the base unicode
-# categories. See generic/tclUtf.c ("TclUnicharIsXXX").
+# categories. See generic/tclUtf.c ("TclUnicharIsXXX"), and tclParse.c
+# ("TclIsSpaceProc").
 
 set derived {
     alpha   {Lu Ll Lt Lm Lo}
     control {Cc Cf Co}
     digit   {Nd}
-    space   {Zs Zl Zp}
+    space   {Zs Zl Zp 0x0009 0x000A 0x000B 0x000C 0x000D 0x180E}
     word    {alpha digit Pc}
     punct   {Pc Pd Ps Pe Pi Pf Po}
     graph   {word punct Mn Me Mc Nl No Sm Sc Sk So}
@@ -267,7 +268,11 @@ proc make-derived-tcl-classes {} {
 	pong "Making $key"
 	set ranges {}
 	foreach cc $spec {
-	    add-to-class $key {*}[get-class $cc]
+	    if {[is-class $cc]} {
+		add-to-class $key {*}[get-class $cc]
+	    } else {
+		add-to-class $key $cc
+	    }
 	}
 	def-label $key "= [join $spec { + }]"
     }
@@ -277,6 +282,11 @@ proc make-derived-tcl-classes {} {
 proc get-class {cclass} {
     global cc
     return [dict get $cc $cclass]
+}
+
+proc is-class {cclass} {
+    global cc
+    return [dict exists $cc $cclass]
 }
 
 proc classes {} {
