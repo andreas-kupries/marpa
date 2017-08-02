@@ -296,7 +296,7 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
     incr dsz [* 2 [LR elements]]  ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-code-sz@            [* 2 [LR elements]]
     lappend map @l0-code-c@             [LR elements]
-    lappend map @l0-code@		[LR content]
+    lappend map @l0-code@		[LR content [dict get $config prefix]]
 
     Limit16 "\#l0 semantics" [llength $sem]
     incr dsz [* 2 [llength $sem]] ; # sizeof(marpatcl_rtc_sym) = 2
@@ -318,7 +318,7 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
     incr dsz [* 2 [GR elements]] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-code-sz@            [* 2 [GR elements]]
     lappend map @g1-code-c@             [GR elements]
-    lappend map @g1-code@	   	[GR content]
+    lappend map @g1-code@	   	[GR content [dict get $config prefix]]
 
     Limit16 "\#g1 rules" [GR size]
     incr dsz [* 2 [GR size]]     ; # sizeof(marpatcl_rtc_sym) = 2
@@ -888,8 +888,8 @@ oo::class create marpa::export::core::rtc::Rules {
 	return
     }
 
-    method content {} {
-	return "    [join $myrules "\n    "]"
+    method content {{prefix {    }}} {
+	return "${prefix}[join $myrules "\n$prefix"]"
     }
 
     method refs {} {
