@@ -340,11 +340,20 @@ complete (marpatcl_rtc_p p)
 	// these only the first is captured and forwarded.
 
 	if (!LEX.single_sv || !sv) {
+#ifdef CRITCL_TRACER
+	    char* svs;
+#endif
 	    sv = get_sv (p, token, rule);
+#ifdef CRITCL_TRACER
+	    svs = marpatcl_rtc_sv_show (sv, 0);
+#endif
 	    svid = marpatcl_rtc_store_add (p, sv);
-	    TRACE ("rtc %p token    [%d] %d (%s) value [%d] := %p", p, trees,
+	    TRACE ("rtc %p token    [%d] %4d (%s) value [%d] := %p %s", p, trees,
 		   token, marpatcl_rtc_spec_symname (SPEC->g1, token, 0),
-		   svid, sv);
+		   svid, sv, svs);
+#ifdef CRITCL_TRACER
+	    FREE (svs);
+#endif
 	}
 	
 	res = marpa_r_alternative (PARS_R, token, svid, 1);

@@ -327,6 +327,79 @@ marpatcl_rtc_sv_vec_size (marpatcl_rtc_sv_p sv)
     sz = marpatcl_rtc_sva_size (VEC);
     TRACE_RETURN ("%d", sz);
 }
+#ifdef CRITCL_TRACER
+/*
+ * Generate string representation of an SV. Tracing support
+ * No tracing inside due that.
+ */
+char*
+marpatcl_rtc_sv_show (marpatcl_rtc_sv_p sv, int* slen)
+{
+    char* svs;
+    int len;
+    switch (T_GET) {
+    case marpatcl_rtc_sv_type_string:
+	svs = NALLOC (char, 1+2+strlen (STR));
+	len = sprintf (svs, "'%s'", STR);
+	if (slen) *slen = len;
+	return svs;
+	/**/
+    case marpatcl_rtc_sv_type_int:
+	svs = NALLOC (char, 30);
+	len = sprintf (svs, "%d", INT);
+	if (slen) *slen = len;
+	return svs;
+	/**/
+    case marpatcl_rtc_sv_type_double:
+	svs = NALLOC (char, 130);
+	len = sprintf (svs, "%f", FLT);
+	if (slen) *slen = len;
+	return svs;
+	/**/
+    case marpatcl_rtc_sv_type_vec:
+	return marpatcl_rtc_sv_vec_show (VEC, slen);
+	/**/
+    default:
+	if (T_GET > 0) {
+	    svs = NALLOC (char, 60);
+	    len = sprintf (svs, "U(%d)/%p", T_GET, USR);
+	} else {
+	    svs = NALLOC (char, 40);
+	    len = sprintf (svs, "BAD(%d)", T_GET);
+	}
+	if (slen) *slen = len;
+	return svs;
+    }
+    ASSERT (0, "Should not happen");
+}
+
+char*
+marpatcl_rtc_sv_vec_show (marpatcl_rtc_sv_vec v, int* slen)
+{
+    char* svs = NALLOC (char, 5);
+    char* child;
+    int   len, clen, nlen, k;
+
+    len = sprintf (svs, "%s", "[");
+    for (k = 0; k < v->size; k++) {
+	child = marpatcl_rtc_sv_show (v->data [k], &clen);
+	nlen = len + clen + 2 + 1;
+	svs = REALLOC (svs, char, nlen);
+	ASSERT (svs, "out of memory during SV stringification");
+	strcat (svs+len,child);
+	len += clen;
+	strcat (svs+len,", ");
+	len += 2;
+	FREE (child);
+    }
+    /* Overwrite ", \0" with "]\0" */
+    svs[len-2] = ']';
+    svs[len-1] = '\0';
+    len --;
+    if (slen) *slen = len;
+    return svs;
+}
+#endif
 
 
 /*
