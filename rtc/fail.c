@@ -21,8 +21,7 @@ TRACE_OFF
 void
 marpatcl_rtc_fail_init (marpatcl_rtc_p p)
 {
-    TRACE_ENTER ("marpatcl_rtc_fail_init");
-    TRACE ("rtc %p", p);
+    TRACE_FUNC ("(rtc %p)", p);
 
     FAIL.fail   = 0;
     FAIL.origin = 0;
@@ -33,8 +32,7 @@ marpatcl_rtc_fail_init (marpatcl_rtc_p p)
 void
 marpatcl_rtc_fail_free (marpatcl_rtc_p p)
 {
-    TRACE_ENTER ("marpatcl_rtc_fail_free");
-    TRACE ("rtc %p", p);
+    TRACE_FUNC ("(rtc %p)", p);
     /* Nothing to do */
     TRACE_RETURN_VOID;
 }
@@ -42,8 +40,7 @@ marpatcl_rtc_fail_free (marpatcl_rtc_p p)
 void
 marpatcl_rtc_failit (marpatcl_rtc_p p, const char* origin)
 {
-    TRACE_ENTER ("marpatcl_rtc_failit");
-    TRACE ("rtc %p origin %s", p, origin ? origin : "<<null>>");
+    TRACE_FUNC ("(rtc %p origin %s)", p, origin ? origin : "<<null>>");
     FAIL.fail = 1;
     if (origin && !FAIL.origin) {
 	FAIL.origin = origin;
@@ -54,16 +51,14 @@ marpatcl_rtc_failit (marpatcl_rtc_p p, const char* origin)
 int
 marpatcl_rtc_failed (marpatcl_rtc_p p)
 {
-    TRACE_ENTER ("marpatcl_rtc_failed");
-    TRACE ("rtc %p", p);
+    TRACE_FUNC ("(rtc %p)", p);
     TRACE_RETURN ("%d", FAIL.fail);
 }
 
 void
 marpatcl_rtc_fail_syscheck (marpatcl_rtc_p p, Marpa_Grammar g, int res, const char* label)
 {
-    TRACE_ENTER ("marpatcl_rtc_fail_syscheck");
-    TRACE ("[[%s] = %d]", label, res);
+    TRACE_FUNC ("(rtc %p [[%s] = %d])", p, label, res);
     if (res == -2) {
 	int status = marpa_g_error (g, NULL);
 #ifdef CRITCL_TRACER

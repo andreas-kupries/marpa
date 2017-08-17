@@ -133,28 +133,39 @@ critcl::class def ::marpa::Bocage {
 	Marpa_Value     v;
 	Tcl_Obj*        steps;
 	Tcl_Obj*        step;
-	// Tcl_Obj*        tmp;
 	int             stop;
-
+#ifdef CRITCL_TRACER
+	int k = -1;
+#endif
+	TRACE_TAG_FUNC (parse, "self.Marpa_Tree %p = status %d", t, status);
+	
 	if (status == -1) {
 	    /* Done with tree iterator */
 	    marpa_t_unref (t);
 	    instance->tree = NULL;
-
-	    return marpatcl_throw (interp, (MarpaTcl_Base*) instance,
-				   MARPA_ERR_TREE_EXHAUSTED);
+	    status = marpatcl_throw (interp, (MarpaTcl_Base*) instance,
+				     MARPA_ERR_TREE_EXHAUSTED);
+	    TRACE_TAG_RETURN (parse, "%d", status);
 	} else if (status < -1) {
 	    /* Some failure */
-	    return marpatcl_error (interp, (MarpaTcl_Base*) instance, 0);
+	    status = marpatcl_error (interp, (MarpaTcl_Base*) instance, 0);
+	    TRACE_TAG_RETURN (parse, "%d", status);
 	}
 
-	v     = marpa_v_new (t);
+	v = marpa_v_new (t);
+	TRACE_TAG (parse, "Marpa_Value %p", v);
+	
 	steps = Tcl_NewListObj (0,0);
 	stop  = 0;
 	while (!stop) {
 	    Marpa_Step_Type stype = marpa_v_step (v);
-
-	    // fprintf(stdout,"V %p S %d \"%s\"\n", v, stype, Tcl_GetString(marpatcl_steptype_decode (interp, stype)));fflush(stdout);
+#ifdef CRITCL_TRACER
+	    const char* sts = marpatcl_steptype_decode_cstr (stype);
+	    k++;
+#endif
+	    TRACE_TAG_HEADER (parse, 1);
+	    TRACE_TAG_ADD (parse, "Marpa_Value %p step[%4d] %d %s",
+			   v, k, stype, sts ? sts : "<<null>>");
 
 	    switch (stype) {
 	    case MARPA_STEP_INITIAL:
@@ -177,16 +188,15 @@ critcl::class def ::marpa::Bocage {
 		** is guaranteed to be equal to marpa_v_arg_0(v).
 		*/
 
+		TRACE_TAG_ADD (parse, "    -- rule  %3d, span (%d-%d), %d := (%d-%d)",
+			       marpa_v_rule(v),
+			       marpa_v_rule_start_es_id(v),
+			       marpa_v_es_id(v),
+			       marpa_v_result(v),
+			       marpa_v_arg_0(v),
+			       marpa_v_arg_n(v));
+
 		step = Tcl_NewDictObj ();
-#if 0
-		fprintf (stdout,"rule/ id=%d, start-es=%d, end-es=%d, dst=%d, 1st=%d, lst=%d\n",
-			 marpa_v_rule(v),
-			 marpa_v_rule_start_es_id(v),
-			 marpa_v_es_id(v),
-			 marpa_v_result(v),
-			 marpa_v_arg_0(v),
-			 marpa_v_arg_n(v));fflush(stdout);
-#endif
 		Tcl_DictObjPut (interp, step, MT_S_ID,       Tcl_NewIntObj (marpa_v_rule(v)));
 		Tcl_DictObjPut (interp, step, MT_S_START_ES, Tcl_NewIntObj (marpa_v_rule_start_es_id(v)));
 		Tcl_DictObjPut (interp, step, MT_S_END_ES,   Tcl_NewIntObj (marpa_v_es_id(v)));
@@ -208,6 +218,13 @@ critcl::class def ::marpa::Bocage {
 		** in       marpa_v_token_value(v).
 		*/
 
+		TRACE_TAG_ADD (parse, "   -- token %3d, span (%d-%d), %d := <%d>",
+			       marpa_v_token(v),
+			       marpa_v_token_start_es_id(v),
+			       marpa_v_es_id(v),
+			       marpa_v_result(v),
+			       marpa_v_token_value(v));
+
 		step = Tcl_NewDictObj ();
 		Tcl_DictObjPut (interp, step, MT_S_ID,       Tcl_NewIntObj (marpa_v_token(v)));
 		Tcl_DictObjPut (interp, step, MT_S_START_ES, Tcl_NewIntObj (marpa_v_token_start_es_id(v)));
@@ -225,6 +242,12 @@ critcl::class def ::marpa::Bocage {
 		** location marpa_v_result(v).
 		*/
 
+		TRACE_TAG_ADD (parse, " -- sym     %3d, span (%d-%d), %d := NULL",
+			       marpa_v_symbol(v),
+			       marpa_v_token_start_es_id(v),
+			       marpa_v_es_id(v),
+			       marpa_v_result(v));
+
 		step = Tcl_NewDictObj ();
 		Tcl_DictObjPut (interp, step, MT_S_ID,       Tcl_NewIntObj (marpa_v_symbol(v)));
 		Tcl_DictObjPut (interp, step, MT_S_START_ES, Tcl_NewIntObj (marpa_v_token_start_es_id(v)));
@@ -241,17 +264,22 @@ critcl::class def ::marpa::Bocage {
 		/* Under debug we might wish to see them */
 		break;
 	    }
+	    TRACE_TAG_CLOSER (parse);
 	}
 
 	marpa_v_unref (v);
 	Tcl_SetObjResult (interp, steps);
-	return TCL_OK;
+
+	TRACE_TAG_RETURN (parse, "OK", TCL_OK);
     }
 
 
     # # ## ### ##### ######## #############
     support {
-       /* Stem:  @stem@
+	// tree evaluation
+	TRACE_TAG_OFF (parse);
+
+	/* Stem:  @stem@
 	* Pkg:   @package@
 	* Class: @class@
 	* IType: @instancetype@

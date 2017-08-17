@@ -28,8 +28,7 @@ TRACE_OFF
 void
 marpatcl_rtc_gate_init (marpatcl_rtc_p p)
 {
-    TRACE_ENTER ("marpatcl_rtc_gate_init");
-    TRACE ("rtc %p", p);
+    TRACE_FUNC ("(rtc %p)", p);
     marpatcl_rtc_byteset_clear (ACCEPT);
     GATE.history = marpatcl_rtc_stack_cons (80);
     GATE.pending = marpatcl_rtc_stack_cons (10);
@@ -41,8 +40,7 @@ marpatcl_rtc_gate_init (marpatcl_rtc_p p)
 void
 marpatcl_rtc_gate_free (marpatcl_rtc_p p)
 {
-    TRACE_ENTER ("marpatcl_rtc_gate_free");
-    TRACE ("rtc %p", p);
+    TRACE_FUNC ("(rtc %p)", p);
     marpatcl_rtc_stack_destroy (GATE.history);
     marpatcl_rtc_stack_destroy (GATE.pending);
     /* GATE.acceptable - nothing to do */
@@ -53,8 +51,7 @@ void
 marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
 {
     int flushed = 0;
-    TRACE_ENTER ("marpatcl_rtc_gate_enter");
-    TRACE ("rtc %p byte %d @ %d", p, ch, IN.location);
+    TRACE_FUNC ("(rtc %p byte %d (@ %d))", p, ch, IN.location);
     GATE.lastchar = ch;
     GATE.lastloc  = IN.location;
 
@@ -90,8 +87,7 @@ marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
 void
 marpatcl_rtc_gate_eof (marpatcl_rtc_p p)
 {
-    TRACE_ENTER ("marpatcl_rtc_gate_eof");
-    TRACE ("rtc %p", p);
+    TRACE_FUNC ("(rtc %p)", p);
     marpatcl_rtc_lexer_eof (p);
     TRACE_RETURN_VOID;
 }
@@ -107,8 +103,7 @@ marpatcl_rtc_gate_acceptable (marpatcl_rtc_p p)
      * (x) To allow this is the reason for `dense` using elements of type
      *     `Marpa_Symbol_ID` instead of `unsigned char`.
      */
-    TRACE_ENTER ("marpatcl_rtc_gate_acceptable");
-    TRACE ("rtc %p", p);
+    TRACE_FUNC ("(rtc %p)", p);
     {
 	Marpa_Symbol_ID* v = marpatcl_rtc_byteset_dense (ACCEPT);
 	int              c = marpa_r_terminals_expected (LEX_R, v);
@@ -130,8 +125,7 @@ marpatcl_rtc_gate_acceptable (marpatcl_rtc_p p)
 void
 marpatcl_rtc_gate_redo (marpatcl_rtc_p p, int n)
 {
-    TRACE_ENTER ("marpatcl_rtc_gate_redo");
-    TRACE ("rtc %p redo %d", p, n);
+    TRACE_FUNC ("(rtc %p n %d)", p, n);
     if (!n) {
 	marpatcl_rtc_stack_clear (GATE.history);
     } else {

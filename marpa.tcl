@@ -48,6 +48,7 @@ critcl::debug symbols
 ## Administrivia
 
 critcl::config lines 1
+critcl::config trace 0
 
 critcl::license \
     {Andreas Kupries} \
@@ -205,6 +206,10 @@ critcl::tsources export/rtc-critcl.tcl    ; # Critcl class around RTC-based C co
 
 critcl::cheaders rtc/*.h
 critcl::csources rtc/*.c
+
+critcl::ccode {
+    TRACE_OFF;
+}
 
 critcl::source c/errors.tcl           ; # Mapping marpa error codes to strings.
 critcl::source c/events.tcl           ; # Mapping marpa event types to strings.
