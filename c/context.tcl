@@ -68,12 +68,10 @@ critcl::cproc marpa::check-version {
 
 critcl::cproc marpa::version {
     Tcl_Interp* interp
-    int         required_major
-    int         required_minor
-    int         required_micro
 } ok {
-    int version;
-    int status = marpa_version (&version);
+    int version[3]; /* major, minor, micro (patch) */
+    Tcl_Obj*  v[3];
+    int status = marpa_version (version);
 
     if (status < 0) {
 	Tcl_SetErrorCode (interp, "MARPA", NULL);
@@ -81,7 +79,10 @@ critcl::cproc marpa::version {
 	return TCL_ERROR;
     }
 
-    Tcl_SetObjResult (interp, Tcl_NewIntObj (version));
+    v[0] = Tcl_NewIntObj (version[0]);
+    v[1] = Tcl_NewIntObj (version[1]);
+    v[2] = Tcl_NewIntObj (version[2]);
+    Tcl_SetObjResult (interp, Tcl_NewListObj (3, v));
     return TCL_OK;
 }
 
