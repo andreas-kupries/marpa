@@ -61,7 +61,7 @@ void                marpatcl_rtc_sva_set       (marpatcl_rtc_sv_vec v, int at, m
 void                marpatcl_rtc_sva_set_fill  (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x);
 void                marpatcl_rtc_sva_set_trunc (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x);
 void                marpatcl_rtc_sva_filter    (marpatcl_rtc_sv_vec v, int c, marpatcl_rtc_sym* x);
-void                marpatcl_rtc_sva_transfer  (marpatcl_rtc_sv_vec dst,
+void                marpatcl_rtc_sva_copy  (marpatcl_rtc_sv_vec dst,
 						marpatcl_rtc_sv_vec src, int from, int to);
 marpatcl_rtc_sv_vec marpatcl_rtc_sva_dup       (marpatcl_rtc_sv_vec v, int strict);
 

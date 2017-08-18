@@ -14,7 +14,7 @@
 #include <critcl_trace.h>
 #include <marpatcl_steptype.h>
 
-TRACE_ON
+TRACE_ON;
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -36,7 +36,7 @@ void
 marpatcl_rtc_parser_init (marpatcl_rtc_p p)
 {
     int res;
-    TRACE_FUNC ("(rtc %p)", p);
+    TRACE_FUNC ("((rtc*) %p)", p);
     
     PAR.g = marpa_g_new (CONF);
     marpatcl_rtc_spec_setup (PAR.g, SPEC->g1);
@@ -52,15 +52,18 @@ marpatcl_rtc_parser_init (marpatcl_rtc_p p)
     // TODO marpatcl_process_events (p->g1, HANDLER, CDATA);
 
     marpatcl_rtc_lexer_acceptable (p, 0);
+
     TRACE_RETURN_VOID;
 }
 
 void
 marpatcl_rtc_parser_free (marpatcl_rtc_p p)
 {
-    TRACE_FUNC ("(rtc %p)", p);
+    TRACE_FUNC ("((rtc*) %p)", p);
+
     marpa_g_unref (PAR.g);
     marpa_r_unref (PAR.recce);
+
     TRACE_RETURN_VOID;
 }
 
@@ -99,9 +102,9 @@ marpatcl_rtc_parser_enter (marpatcl_rtc_p p, int found)
 void
 marpatcl_rtc_parser_eof (marpatcl_rtc_p p)
 {
-    TRACE_FUNC ("(rtc %p)", p);
-    complete (p);
+    TRACE_FUNC ("((rtc*) %p)", p);
 
+    complete (p);
     // Forward to overall RTC
 
     TRACE_RETURN_VOID;
@@ -111,6 +114,18 @@ marpatcl_rtc_parser_eof (marpatcl_rtc_p p)
  * - - -- --- ----- -------- ------------- ---------------------
  * Internal
  */
+
+#ifdef CRITCL_TRACER
+#define SHOW_SV(sv) \
+    {							\
+	char* svs = marpatcl_rtc_sv_show (sv, 0);	\
+	TRACE_ADD (" sv %p = %s", sv, svs);		\
+	FREE (svs);					\
+    }
+#else
+#define SHOW_SV(sv)
+#endif
+
 
 void
 complete (marpatcl_rtc_p p)
@@ -122,7 +137,8 @@ complete (marpatcl_rtc_p p)
     marpatcl_rtc_sym* mv;
     int               mlen, latest;
 
-    TRACE_FUNC ("(rtc %p (par.recce %p))", p, PAR.recce);
+    TRACE_FUNC ("((rtc*) %p (par.recce %p))", p, PAR.recce);
+
     if (!PAR.recce) {
 	TRACE_RETURN_VOID;
     }
@@ -132,17 +148,21 @@ complete (marpatcl_rtc_p p)
     while (1) {
 	TRACE_HEADER (1);
 	TRACE_ADD ("rtc %p ?? match %d", p, latest);
+
 	b = marpa_b_new (PAR.recce, latest);
 	if (b) break;
 	latest --;
 	if (latest < 0) {
 	    TRACE_ADD (" fail", 0);
 	    TRACE_CLOSER;
+
 	    marpatcl_rtc_failit (p, "parser");
 	    marpa_r_unref (PAR.recce);
 	    PAR.recce = 0;
+
 	    TRACE_RETURN_VOID;
 	}
+
 	TRACE_CLOSER;
     }
 
@@ -165,7 +185,8 @@ complete (marpatcl_rtc_p p)
 	int k = -1;
 #endif
 	TRACE_HEADER (1);
-	TRACE_ADD ("parse (rtc %p), tree %p = status %d", p, t, status);
+	TRACE_ADD ("parse ((rtc*) %p), tree %p = status %d", p, t, status);
+
 	if (status == -1) {
 	    TRACE_ADD (" /done", 0);
 	    TRACE_CLOSER;
@@ -175,6 +196,7 @@ complete (marpatcl_rtc_p p)
 
 	/* Execute semantics ... */
 	v = marpa_v_new (t);
+
 	TRACE_ADD (" value %p", v);
 	TRACE_CLOSER;
 
@@ -185,10 +207,9 @@ complete (marpatcl_rtc_p p)
 #ifdef CRITCL_TRACER
 	    const char* sts = marpatcl_steptype_decode_cstr (stype);
 	    k++;
-#endif
 	    TRACE_HEADER (1);
-	    TRACE_ADD ("rtc %p step[%4d] %d %s", p, k, stype, sts ? sts : "<<null>>");
-	    
+	    TRACE_ADD ("(rtc*) %p, step[%4d] %d %s", p, k, stype, sts ? sts : "<<null>>");
+#endif
 	    switch (stype) {
 	    case MARPA_STEP_INITIAL:
 		/* nothing to do */
@@ -216,9 +237,9 @@ complete (marpatcl_rtc_p p)
 			   marpa_v_result(v),
 			   marpa_v_arg_0(v),
 			   marpa_v_arg_n(v));
-		marpatcl_rtc_sva_transfer (&rhs, &es, 
-					   marpa_v_arg_0(v),
-					   marpa_v_arg_n(v));
+		
+		marpatcl_rtc_sva_copy (&rhs, &es,
+				       marpa_v_arg_0(v), marpa_v_arg_n(v));
 		rid = marpa_v_rule(v);
 
 		/* get mask, filter */
@@ -229,13 +250,7 @@ complete (marpatcl_rtc_p p)
 
 		/* get semantics, eval */
 		sv = get_sv (p, &rhs, v, rid);
-#ifdef CRITCL_TRACER
-		{
-		    char* svs = marpatcl_rtc_sv_show (sv, 0);
-		    TRACE_ADD (" sv %p = %s", sv, svs);
-		    FREE (svs);
-		}
-#endif
+		SHOW_SV (sv);
 		marpatcl_rtc_sva_set_trunc (&es, marpa_v_result(v), sv);
 		marpatcl_rtc_sva_clear (&rhs);
 		break;
@@ -251,14 +266,9 @@ complete (marpatcl_rtc_p p)
 			   marpatcl_rtc_spec_symname (SPEC->g1, marpa_v_token(v), 0),
 			   marpa_v_result(v),
 			   marpa_v_token_value(v));
+		
 		sv = marpatcl_rtc_store_get(p, marpa_v_token_value(v));
-#ifdef CRITCL_TRACER
-		{
-		    char* svs = marpatcl_rtc_sv_show (sv, 0);
-		    TRACE_ADD (" sv %p = %s", sv, svs);
-		    FREE (svs);
-		}
-#endif
+		SHOW_SV (sv);
 		marpatcl_rtc_sva_set_fill (&es, marpa_v_result(v), sv);
 		break;
 	    case MARPA_STEP_NULLING_SYMBOL:
@@ -273,6 +283,7 @@ complete (marpatcl_rtc_p p)
 			   marpa_v_es_id(v),
 			   marpatcl_rtc_spec_symname (SPEC->g1, marpa_v_symbol(v), 0),
 			   marpa_v_result(v));
+
 		marpatcl_rtc_sva_set_fill (&es, marpa_v_result(v), NULL);
 		break;
 	    case MARPA_STEP_INTERNAL1:
@@ -290,14 +301,10 @@ complete (marpatcl_rtc_p p)
 	// Get final value of the valuator from the stack
 	// TODO: assert that we have one value (size == 1).
 	sv = marpatcl_rtc_sva_get (&es, 0);
-#ifdef CRITCL_TRACER
-	{
-	    char* svs = marpatcl_rtc_sv_show (sv, 0);
-	    TRACE ("tree := sv %p, %s", sv, svs);
-	    FREE (svs);
-	}
-#endif
-
+	TRACE_HEADER (1);
+	TRACE_ADD ("tree :=", 0);
+	SHOW_SV (sv);
+	TRACE_CLOSER;
 	// TODO: push generated SV to RTC for higher handling
 
 	marpatcl_rtc_sva_clear (&es);
@@ -309,6 +316,7 @@ complete (marpatcl_rtc_p p)
     marpa_o_unref (o);
     marpa_r_unref (PAR.recce);
     PAR.recce = 0;
+
     TRACE_RETURN_VOID;
 }
 
@@ -335,7 +343,13 @@ get_sv (marpatcl_rtc_p      p,
     marpatcl_rtc_sv_p ruleid   = 0;
     marpatcl_rtc_sv_p value    = 0;
 
-#define DO(cache,cmd)   if (!(cache)) { (cache) = cmd; }; marpatcl_rtc_sv_vec_push (sv, (cache))
+#define DO(cache,cmd)				\
+    if (!(cache)) {				\
+	TRACE_ADD (" !%s", #cache);		\
+	(cache) = cmd;				\
+    };						\
+    marpatcl_rtc_sv_vec_push (sv, (cache))
+
 #define G1_SNAME(token) marpatcl_rtc_spec_symname (SPEC->g1, token, NULL)
 #define G1_RNAME(rule)  marpatcl_rtc_spec_rulename (SPEC->g1, rule, NULL)
 #define TOKEN           marpatcl_rtc_spec_g1map (&SPEC->g1->lhs, rule)
@@ -348,7 +362,7 @@ get_sv (marpatcl_rtc_p      p,
     for (k = 0; k < klen; k++) {
 	switch (kv [k]) {
 	case MARPATCL_SV_START:		DO (start, marpatcl_rtc_sv_cons_int (LEX.start));		break;//TODO lex location for parse element?
-	case MARPATCL_SV_END:		DO (start, marpatcl_rtc_sv_cons_int (LEX.start));		break;//TODO lex location for parse element?
+	case MARPATCL_SV_END:		DO (end, marpatcl_rtc_sv_cons_int (LEX.start));			break;//TODO lex location for parse element?
 	case MARPATCL_SV_LENGTH:	DO (length, marpatcl_rtc_sv_cons_int (LEX_LEN));		break;//TODO lex length for parse element?
 	case MARPATCL_SV_G1START:	DO (g1start, marpatcl_rtc_sv_cons_int (G1_START));		break;
 	case MARPATCL_SV_G1END:		DO (g1end, marpatcl_rtc_sv_cons_int (G1_END));			break;

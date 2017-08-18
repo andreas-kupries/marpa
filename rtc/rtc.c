@@ -10,7 +10,7 @@
 #include <critcl_alloc.h>
 #include <critcl_trace.h>
 
-TRACE_OFF
+TRACE_ON;
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -21,7 +21,7 @@ marpatcl_rtc_p
 marpatcl_rtc_cons (marpatcl_rtc_spec* g, marpatcl_rtc_sv_cmd a)
 {
     marpatcl_rtc_p p;
-    TRACE_FUNC ("(spec %p, cmd %p)", g, a);
+    TRACE_FUNC ("((spec*) %p, (cmd) %p)", g, a);
     
     p = ALLOC (marpatcl_rtc);
     SPEC = g;
@@ -34,13 +34,14 @@ marpatcl_rtc_cons (marpatcl_rtc_spec* g, marpatcl_rtc_sv_cmd a)
     marpatcl_rtc_lexer_init   (p);
     marpatcl_rtc_parser_init  (p);
 
-    TRACE_RETURN ("%p", p);
+    TRACE_RETURN ("(rtc*) %p", p);
 }
 
 void
 marpatcl_rtc_destroy (marpatcl_rtc_p p)
 {
-    TRACE_FUNC ("(rtc %p)", p);
+    TRACE_FUNC ("((rtc*) %p)", p);
+
     marpatcl_rtc_parser_free  (p);
     marpatcl_rtc_lexer_free   (p);
     marpatcl_rtc_gate_free    (p);
@@ -48,29 +49,38 @@ marpatcl_rtc_destroy (marpatcl_rtc_p p)
     marpatcl_rtc_store_free   (p);
     marpatcl_rtc_fail_free    (p);
     FREE (p);
+
     TRACE_RETURN_VOID;
 }
 
 void
 marpatcl_rtc_enter (marpatcl_rtc_p p, const char* bytes, int n)
 {
-    TRACE_FUNC ("(rtc %p bytes %p, n%d)", p, bytes, n);
+    TRACE_FUNC ("((rtc*) %p, (char*) %p [%d]))", p, bytes, n);
+
     marpatcl_rtc_inbound_enter (p, bytes, n);
+
     TRACE_RETURN_VOID;
 }
 
 void
 marpatcl_rtc_eof (marpatcl_rtc_p p)
 {
-    TRACE_FUNC ("(rtc %p)", p);
+    TRACE_FUNC ("((rtc*) %p)", p);
+
     marpatcl_rtc_inbound_eof (p);
+
     TRACE_RETURN_VOID;
 }
 
 marpatcl_rtc_sv_p
 marpatcl_rtc_get_sv (marpatcl_rtc_p p)
 {
+    TRACE_FUNC ("((rtc*) %p)", p);
+
     // TODO retrieve SV for the whole parse
+
+    TRACE_RETURN ("(sv*) %p", 0 /*TODO*/);
 }
 
 /*
