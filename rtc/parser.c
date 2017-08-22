@@ -201,7 +201,9 @@ complete (marpatcl_rtc_p p)
 	/* Execute semantics ... */
 	v = marpa_v_new (t);
 	ASSERT (v, "Marpa_Value creation failed");
-
+#ifdef CRITCL_TRACER
+	if (TRACE_TAG_VAR (THIS_FILE)) _marpa_v_trace (v, 1);
+#endif
 	TRACE_ADD (" value %p", v);
 	TRACE_CLOSER;
 

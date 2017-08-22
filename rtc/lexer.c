@@ -423,7 +423,9 @@ get_parse (marpatcl_rtc_p    p,
 
     v = marpa_v_new (t);
     ASSERT (v, "Marpa_Value creation failed");
-
+#ifdef CRITCL_TRACER
+    if (TRACE_TAG_VAR (THIS_FILE)) _marpa_v_trace (v, 1);
+#endif
     stop = 0;
     while (!stop) {
 	Marpa_Step_Type stype = marpa_v_step (v);
