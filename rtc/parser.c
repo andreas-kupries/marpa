@@ -173,7 +173,10 @@ complete (marpatcl_rtc_p p)
      */
 
     o = marpa_o_new (b);
+    ASSERT (o, "Marpa_Order creation failed");
+
     t = marpa_t_new (o);
+    ASSERT (t, "Marpa_Tree creation failed");
 
     marpatcl_rtc_sva_init (&es,  10, 0);
     marpatcl_rtc_sva_init (&rhs, 10, 0);
@@ -182,6 +185,7 @@ complete (marpatcl_rtc_p p)
 	/* Per parse tree */
 	int rid, stop, status = marpa_t_next (t);
 #ifdef CRITCL_TRACER
+	const char* sts = 0;
 	int k = -1;
 #endif
 	TRACE_HEADER (1);
@@ -196,6 +200,7 @@ complete (marpatcl_rtc_p p)
 
 	/* Execute semantics ... */
 	v = marpa_v_new (t);
+	ASSERT (v, "Marpa_Value creation failed");
 
 	TRACE_ADD (" value %p", v);
 	TRACE_CLOSER;
@@ -204,12 +209,13 @@ complete (marpatcl_rtc_p p)
 	while (!stop) {
 	    /* Per instruction */
 	    Marpa_Step_Type stype = marpa_v_step (v);
+	    ASSERT (stype >= 0, "Step failure")
 #ifdef CRITCL_TRACER
-	    const char* sts = marpatcl_steptype_decode_cstr (stype);
+	    sts = marpatcl_steptype_decode_cstr (stype);
 	    k++;
+#endif
 	    TRACE_HEADER (1);
 	    TRACE_ADD ("(rtc*) %p, step[%4d] %d %s", p, k, stype, sts ? sts : "<<null>>");
-#endif
 	    switch (stype) {
 	    case MARPA_STEP_INITIAL:
 		/* nothing to do */

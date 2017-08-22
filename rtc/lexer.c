@@ -300,7 +300,11 @@ complete (marpatcl_rtc_p p)
      */
 
     o = marpa_o_new (b);
+    ASSERT (o, "Marpa_Order creation failed");
+		
     t = marpa_t_new (o);
+    ASSERT (t, "Marpa_Tree creation failed");
+
     discarded = 0;
     marpatcl_rtc_symset_clear (FOUND);
     while (1) {
@@ -405,6 +409,7 @@ get_parse (marpatcl_rtc_p    p,
     marpatcl_rtc_sym rules[2] = {-1,-1};
     int stop, status, rslot = 0, captoken = 0;
 #ifdef CRITCL_TRACER
+    const char* sts = 0;
     int k = -1;
 #endif
     TRACE_FUNC ("((rtc*) %p, (Marpa_Tree) %p, (token*) %p, (rule*) %p)",
@@ -417,11 +422,14 @@ get_parse (marpatcl_rtc_p    p,
     marpatcl_rtc_fail_syscheck (p, LEX.g, status, "t_next");
 
     v = marpa_v_new (t);
+    ASSERT (v, "Marpa_Value creation failed");
+
     stop = 0;
     while (!stop) {
 	Marpa_Step_Type stype = marpa_v_step (v);
+	ASSERT (stype >= 0, "Step failure")
 #ifdef CRITCL_TRACER
-	const char* sts = marpatcl_steptype_decode_cstr (stype);
+	sts = marpatcl_steptype_decode_cstr (stype);
 	k++;
 #endif
 	TRACE_HEADER (1);
