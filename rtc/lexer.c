@@ -15,8 +15,8 @@
 #include <critcl_trace.h>
 #include <marpatcl_steptype.h>
 
-TRACE_ON;
-TRACE_TAG_ON (accept);
+TRACE_OFF;
+TRACE_TAG_OFF (accept);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

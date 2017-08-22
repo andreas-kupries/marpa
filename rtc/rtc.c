@@ -10,7 +10,7 @@
 #include <critcl_alloc.h>
 #include <critcl_trace.h>
 
-TRACE_ON;
+TRACE_OFF;
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

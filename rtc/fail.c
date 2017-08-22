@@ -11,7 +11,7 @@
 #include <critcl_trace.h>
 #include <marpatcl_error.h>
 
-TRACE_ON;
+TRACE_OFF;
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

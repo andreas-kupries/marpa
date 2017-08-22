@@ -9,8 +9,8 @@
 #include <critcl_assert.h>
 #include <critcl_trace.h>
 
-TRACE_ON;
-TRACE_TAG_ON (details);
+TRACE_OFF;
+TRACE_TAG_OFF (details);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

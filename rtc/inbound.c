@@ -9,7 +9,7 @@
 #include <rtc_int.h>
 #include <critcl_trace.h>
 
-TRACE_ON;
+TRACE_OFF;
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
