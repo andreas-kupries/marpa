@@ -9,6 +9,7 @@
 #include <spec.h>
 #include <stack.h>
 #include <symset.h>
+#include <events.h>
 #include <rtc_int.h>
 #include <critcl_assert.h>
 #include <critcl_alloc.h>
@@ -90,7 +91,7 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
 
     res = marpa_g_precompute (LEX.g);
     marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 precompute");
-    // TODO marpatcl_process_events (LEX.g, marpatcl_grammar_event_to_tcl, instance);
+    marpatcl_rtc_lexer_events (p);
 
     TRACE_RETURN_VOID;
 }
@@ -140,8 +141,7 @@ marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
 	// any error but exhausted is a hard failure
 	marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 earleme_complete");
     }
-    // Note: res == #events
-    // TODO marpatcl_process_events (p->l0, HANDLER, CDATA);
+    marpatcl_rtc_lexer_events (p);
 
     if (marpa_r_is_exhausted (LEX.recce)) {
 	complete (p);
@@ -191,7 +191,7 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
     marpatcl_rtc_stack_clear (LEX.lexeme);
     res = marpa_r_start_input (LEX.recce);
     marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 start_input");
-    // TODO marpatcl_process_events (p->l0, HANDLER, CDATA);
+    marpatcl_rtc_lexer_events (p);
 
     /* This code puts information from the parser's recognizer directly into
      * the `dense` array of the lexer's symset. It then links the retrieved
@@ -226,8 +226,7 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
 
 	res = marpa_r_earleme_complete (LEX.recce);
 	marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 earleme_complete/b");
-	// Note: res == #events
-	// TODO marpatcl_process_events (p->l0, HANDLER, CDATA);
+	marpatcl_rtc_lexer_events (p);
     }
 
     // Now the gate can update its acceptables (byte symbols) too.

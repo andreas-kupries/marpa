@@ -8,6 +8,7 @@
 #include <parser.h>
 #include <rtc_int.h>
 #include <sem_int.h>
+#include <events.h>
 #include <lexer.h>
 #include <critcl_assert.h>
 #include <critcl_alloc.h>
@@ -43,13 +44,13 @@ marpatcl_rtc_parser_init (marpatcl_rtc_p p)
 
     res = marpa_g_precompute (PAR.g);
     marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 precompute");
-    // TODO marpatcl_process_events (PAR.g, marpatcl_grammar_event_to_tcl, instance);
+    marpatcl_rtc_parser_events (p);
 
     PAR.recce = marpa_r_new (PAR.g);
 
     res = marpa_r_start_input (PAR.recce);
     marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 start_input");
-    // TODO marpatcl_process_events (p->g1, HANDLER, CDATA);
+    marpatcl_rtc_parser_events (p);
 
     marpatcl_rtc_lexer_acceptable (p, 0);
 
@@ -87,7 +88,7 @@ marpatcl_rtc_parser_enter (marpatcl_rtc_p p, int found)
 	// any error but exhausted is a hard failure
 	marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 earleme_complete");
     }
-    // TODO marpatcl_process_events (p->g1, HANDLER, CDATA);
+    marpatcl_rtc_parser_events (p);
 
     if (marpa_r_is_exhausted (PAR.recce)) {
 	complete (p);
