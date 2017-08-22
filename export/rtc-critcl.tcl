@@ -68,8 +68,8 @@ package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
 critcl::buildrequirement {
     package require critcl::class 1
-    package require critcl::emap     1.1 ; # mode C support
-    package require critcl::literals 1.2 ; # mode C support
+    package require critcl::emap     1.1 ; # need support for gen-mode "C"
+    package require critcl::literals 1.2 ; # need support for gen-mode "C"
     package require critcl::cutil
 }
 if {![critcl::compiling]} { error "Unable to build @slif-name@, no compiler found." }
@@ -77,6 +77,10 @@ if {![critcl::compiling]} { error "Unable to build @slif-name@, no compiler foun
 critcl::cutil::alloc
 critcl::cutil::assertions on
 critcl::cutil::tracer     on
+
+critcl::debug symbols
+#critcl::debug memory
+#critcl::debug symbols memory
 
 # # ## ### ##### ######## ############# #####################
 ## Requirements
