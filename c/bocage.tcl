@@ -128,16 +128,21 @@ critcl::class def ::marpa::Bocage {
     # Iterate trees and values from the bocage.
 
     method get-parse proc {} ok {
-	Marpa_Tree      t      = @stem@_tree (instance);
-	int             status = marpa_t_next (t);
+	Marpa_Tree      t;
+	int             status;
 	Marpa_Value     v;
 	Tcl_Obj*        steps;
 	Tcl_Obj*        step;
 	int             stop;
 #ifdef CRITCL_TRACER
+	const char* sts = 0;
 	int k = -1;
 #endif
-	TRACE_TAG_FUNC (parse, "self.Marpa_Tree %p = status %d", t, status);
+	TRACE_TAG_FUNC (parse, "()", 0);
+
+	t = @stem@_tree (instance);
+	status = marpa_t_next (t);
+	TRACE_TAG (parse, "self.Marpa_Tree %p = status %d", t, status);
 	
 	if (status == -1) {
 	    /* Done with tree iterator */
@@ -154,14 +159,22 @@ critcl::class def ::marpa::Bocage {
 
 	v = marpa_v_new (t);
 	TRACE_TAG (parse, "Marpa_Value %p", v);
+	if (!v) {
+	    // TODO: Failed to create valuator, generate message
+	    TRACE_TAG_RETURN (parse, "%d", TCL_ERROR);
+	}
 	
 	steps = Tcl_NewListObj (0,0);
 	stop  = 0;
 	while (!stop) {
 	    Marpa_Step_Type stype = marpa_v_step (v);
+	    ASSERT (stype >= 0, "Step failure")
+	    // TODO check if (stype < 0) is a regular marpa error.
 #ifdef CRITCL_TRACER
-	    const char* sts = marpatcl_steptype_decode_cstr (stype);
-	    k++;
+	    if (TRACE_TAG_VAR (parse)) {
+		sts = marpatcl_steptype_decode_cstr (stype);
+		k++;
+	    }
 #endif
 	    TRACE_TAG_HEADER (parse, 1);
 	    TRACE_TAG_ADD (parse, "Marpa_Value %p step[%4d] %d %s",
@@ -293,14 +306,15 @@ critcl::class def ::marpa::Bocage {
 	static Marpa_Order
 	@stem@_order (@instancetype@ instance)
 	{
-	    // fprintf(stdout,"XXX/OO %p\n",instance->order);fflush(stdout);
+	    TRACE_FUNC ("(@instancetype@) %p ((Marpa_Order) %p)",
+			instance, instance->order)
 
 	    if (!instance->order) {
 		instance->order = marpa_o_new (instance->bocage);
+		ASSERT (instance->order, "Marpa_Order creation failed");
 	    }
 
-	    // fprintf(stdout,"XXX/O= %p\n",instance->order);fflush(stdout);
-	    return instance->order;
+	    TRACE_RETURN ("(Marpa_Order) %p", instance->order);
 	}
 
 	/* ** Create bocage tree iterator object on demand ** */
@@ -308,15 +322,16 @@ critcl::class def ::marpa::Bocage {
 	static Marpa_Tree
 	@stem@_tree (@instancetype@ instance)
 	{
-	    // fprintf(stdout,"XXX/TT %p\n",instance->tree);fflush(stdout);
+	    TRACE_FUNC ("(@instancetype@) %p ((Marpa_Tree) %p)",
+			instance, instance->tree)
 
 	    if (!instance->tree) {
 		Marpa_Order order = @stem@_order (instance);
 		instance->tree = marpa_t_new (order);
+		ASSERT (instance->tree, "Marpa_Tree creation failed");
 	    }
 
-	    // fprintf(stdout,"XXX/T= %p\n",instance->tree);fflush(stdout);
-	    return instance->tree;
+	    TRACE_RETURN ("(Marpa_Tree) %p", instance->tree);
 	}
     }
 
