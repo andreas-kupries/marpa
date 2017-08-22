@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                          http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -35,9 +35,11 @@ critcl::ccode {
 		    MarpaTcl_Base* base,
 		    int            status)
     {
-	// fprintf(stdout,"MTT: %d = \"%s\"\n", status, Tcl_GetString(marpatcl_error_decode (interp, status)));fflush(stdout);
-
-	// if ((status < 0) || (status > MARPA_ERRCODE_COUNT)) Tcl_Panic ("marpa error status out of range");
+	#ifdef CRITCL_TRACER
+	const char* sts = marpatcl_ecode_decode_cstr (status)
+	#endif
+	TRACE_FUNC ("((interp*) %p, (base*) %p, status %d (= '%s'))", interp, base, status, sts ? sts : "?????");
+	ASSERT ((0 <= status) && (status <= MARPA_ERROR_COUNT), "marpa error status out of range");
 
 	Tcl_SetErrorCode (interp, "MARPA", Tcl_GetString(marpatcl_ecode_decode (interp, status)), NULL);
 	Tcl_SetObjResult (interp, marpatcl_error_decode (interp, status));
@@ -50,8 +52,11 @@ critcl::ccode {
 		    int            rv)
     {
 	int status = marpa_g_error (base->grammar, NULL);
-
-	// fprintf(stdout,"MTE: %d = \"%s\"\n", status, Tcl_GetString(marpatcl_error_decode (interp, status)));fflush(stdout);
+	#ifdef CRITCL_TRACER
+	const char* sts = marpatcl_error_decode_cstr (status)
+	#endif
+	TRACE_FUNC ("((interp*) %p, (base*) %p, rv %d (status %d (= '%s')))", interp, base, rv, status, sts ? sts : "?????");
+	ASSERT ((0 <= status) && (status <= MARPA_ERROR_COUNT), "marpa error status out of range");
 
 	if (status == MARPA_ERR_NONE) {
 	    /* Actually not an error (rank functions) */
@@ -97,7 +102,7 @@ critcl::ccode {
 			     marpatcl_event_handler f,
 			     ClientData             context)
     {
-	Marpa_Event_Type t;
+	Marpa_Event_Type etype;
 	Marpa_Event      event;
 
 	int v, i, n = marpa_g_event_count (g);
@@ -106,10 +111,10 @@ critcl::ccode {
 	{
 	    // fprintf(stdout,"/E(%d of %d)\n",i,n);fflush(stdout);
 
-	    t = marpa_g_event ( g, &event, i);
-	    /* assert (t >= 0): */
+	    etype = marpa_g_event ( g, &event, i);
+	    /* assert (etype >= 0): */
 	    v = marpa_g_event_value (&event);
-	    (*f) (context, g, t, v);
+	    (*f) (context, g, etype, v);
 	}
     }
 }
