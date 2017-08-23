@@ -42,6 +42,8 @@ marpatcl_rtc_failit (marpatcl_rtc_p p, const char* origin)
 {
     TRACE_FUNC ("((rtc*) %p, origin '%s')", p, origin ? origin : "<<null>>");
 
+    // todo: lexer progress report, parser progress report
+    
     FAIL.fail = 1;
     if (origin && !FAIL.origin) {
 	FAIL.origin = origin;
@@ -64,9 +66,9 @@ marpatcl_rtc_fail_syscheck (marpatcl_rtc_p p, Marpa_Grammar g, int res, const ch
 
     if (res == -2) {
 	int status = marpa_g_error (g, NULL);
-#ifdef CRITCL_TRACER
-	const char* e = marpatcl_error_decode_cstr (status);
-#endif
+
+	TRACE_RUN (const char* e);
+	TRACE_DO (e = marpatcl_error_decode_cstr (status));
 	TRACE ("status = %d at %s (%s)", status, label, e ? e : "<<null>>");
 	marpatcl_rtc_failit (p, "libmarpa");
 	ASSERT (0, "syscheck general");

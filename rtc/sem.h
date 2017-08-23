@@ -113,11 +113,9 @@ marpatcl_rtc_sv_p marpatcl_rtc_sv_vec_pop    (marpatcl_rtc_sv_p v);
 void              marpatcl_rtc_sv_vec_clear  (marpatcl_rtc_sv_p v);
 int               marpatcl_rtc_sv_vec_size   (marpatcl_rtc_sv_p v);
 
-#ifdef CRITCL_TRACER
 /* Generate string representation of an SV. Tracing support */
-char* marpatcl_rtc_sv_show     (marpatcl_rtc_sv_p   v, int* len);
-char* marpatcl_rtc_sv_vec_show (marpatcl_rtc_sv_vec v, int* len);
-#endif
+TRACE_RUN (char* marpatcl_rtc_sv_show     (marpatcl_rtc_sv_p   v, int* len));
+TRACE_RUN (char* marpatcl_rtc_sv_vec_show (marpatcl_rtc_sv_vec v, int* len));
 #endif
 
 /*

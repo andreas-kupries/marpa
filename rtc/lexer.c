@@ -11,6 +11,7 @@
 #include <symset.h>
 #include <events.h>
 #include <rtc_int.h>
+#include <progress.h>
 #include <critcl_assert.h>
 #include <critcl_alloc.h>
 #include <critcl_trace.h>
@@ -115,6 +116,7 @@ marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
     int res;
     TRACE_FUNC ("((rtc*) %p, byte %d (@ %d))",
 		 p, ch, GATE.lastloc);
+    LEX_P (p);
     /* Contrary to the Tcl runtime the C engine does not get multiple symbols,
      * only one, the current byte. Because byte-ranges are coded as rules in
      * the grammar instead of as input symbols.
@@ -192,7 +194,8 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
     res = marpa_r_start_input (LEX.recce);
     marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 start_input");
     marpatcl_rtc_lexer_events (p);
-
+    LEX_P (p);
+    
     /* This code puts information from the parser's recognizer directly into
      * the `dense` array of the lexer's symset. It then links the retrieved
      * symbols through `sparse` to make it a proper set. Overall this is a
@@ -261,9 +264,7 @@ complete (marpatcl_rtc_p p)
     marpatcl_rtc_sym token;
     marpatcl_rtc_sym rule;
     marpatcl_rtc_sv_p sv = 0;
-#ifdef CRITCL_TRACER
-    int trees = -1;
-#endif
+    TRACE_RUN (int trees = -1);
     TRACE_FUNC ("((rtc*) %p (lex.recce %p))", p, LEX.recce);
 	
     if (!LEX.recce) {
@@ -312,9 +313,8 @@ complete (marpatcl_rtc_p p)
 	    TRACE ("rtc %p parse %d /done", p, status);
 	    break;
 	}
-#ifdef CRITCL_TRACER
-	trees ++;
-#endif
+	
+	TRACE_RUN (trees ++);
 	TRACE_HEADER (1);
 	TRACE_ADD ("rtc %p parse [%d] %d", p, trees, status);
 	TRACE_ADD (" lexeme %d (%s) rule %d",
@@ -407,10 +407,9 @@ get_parse (marpatcl_rtc_p    p,
     Marpa_Value v;
     marpatcl_rtc_sym rules[2] = {-1,-1};
     int stop, status, rslot = 0, captoken = 0;
-#ifdef CRITCL_TRACER
-    const char* sts = 0;
-    int k = -1;
-#endif
+
+    TRACE_RUN (const char* sts = 0);
+    TRACE_RUN (int k = -1);
     TRACE_FUNC ("((rtc*) %p, (Marpa_Tree) %p, (token*) %p, (rule*) %p)",
 		p, t, token, rule);
 
@@ -422,19 +421,16 @@ get_parse (marpatcl_rtc_p    p,
 
     v = marpa_v_new (t);
     ASSERT (v, "Marpa_Value creation failed");
-#ifdef CRITCL_TRACER
-    if (TRACE_TAG_VAR (THIS_FILE)) _marpa_v_trace (v, 1);
-#endif
+    TRACE_DO (_marpa_v_trace (v, 1));
+    
     stop = 0;
     while (!stop) {
 	Marpa_Step_Type stype = marpa_v_step (v);
-	ASSERT (stype >= 0, "Step failure")
-#ifdef CRITCL_TRACER
-	sts = marpatcl_steptype_decode_cstr (stype);
-	k++;
-#endif
+	ASSERT (stype >= 0, "Step failure");
+	TRACE_RUN (sts = marpatcl_steptype_decode_cstr (stype); k++);
 	TRACE_HEADER (1);
 	TRACE_ADD ("(rtc*) %p step[%4d] %d %s", p, k, stype, sts ? sts : "<<null>>");
+
 	switch (stype) {
 	case MARPA_STEP_INITIAL:
 	    /* Nothing to do */

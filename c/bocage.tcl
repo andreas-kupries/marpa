@@ -134,10 +134,9 @@ critcl::class def ::marpa::Bocage {
 	Tcl_Obj*        steps;
 	Tcl_Obj*        step;
 	int             stop;
-#ifdef CRITCL_TRACER
-	const char* sts = 0;
-	int k = -1;
-#endif
+
+	TRACE_RUN (const char* sts = 0);
+	TRACE_RUN (int k = -1);
 	TRACE_TAG_FUNC (parse, "()", 0);
 
 	t = @stem@_tree (instance);
@@ -170,15 +169,11 @@ critcl::class def ::marpa::Bocage {
 	    Marpa_Step_Type stype = marpa_v_step (v);
 	    ASSERT (stype >= 0, "Step failure")
 	    // TODO check if (stype < 0) is a regular marpa error.
-#ifdef CRITCL_TRACER
-	    if (TRACE_TAG_VAR (parse)) {
-		sts = marpatcl_steptype_decode_cstr (stype);
-		k++;
-	    }
-#endif
+
+	    TRACE_TAG_DO     (parse, sts = marpatcl_steptype_decode_cstr (stype); k++);
 	    TRACE_TAG_HEADER (parse, 1);
-	    TRACE_TAG_ADD (parse, "Marpa_Value %p step[%4d] %d %s",
-			   v, k, stype, sts ? sts : "<<null>>");
+	    TRACE_TAG_ADD    (parse, "Marpa_Value %p step[%4d] %d %s",
+			      v, k, stype, sts ? sts : "<<null>>");
 
 	    switch (stype) {
 	    case MARPA_STEP_INITIAL:

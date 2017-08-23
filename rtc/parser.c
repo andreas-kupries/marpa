@@ -10,6 +10,7 @@
 #include <sem_int.h>
 #include <events.h>
 #include <lexer.h>
+#include <progress.h>
 #include <critcl_assert.h>
 #include <critcl_alloc.h>
 #include <critcl_trace.h>
@@ -144,6 +145,8 @@ complete (marpatcl_rtc_p p)
 	TRACE_RETURN_VOID;
     }
 
+    PAR_P (p);
+    
     /* Find location with parse, work backwards from the end of the token-sequence */
     latest = marpa_r_latest_earley_set (PAR.recce);
     while (1) {
@@ -185,10 +188,9 @@ complete (marpatcl_rtc_p p)
     while (1) {
 	/* Per parse tree */
 	int rid, stop, status = marpa_t_next (t);
-#ifdef CRITCL_TRACER
-	const char* sts = 0;
-	int k = -1;
-#endif
+
+	TRACE_RUN (const char* sts = 0);
+	TRACE_RUN (int k = -1);
 	TRACE_HEADER (1);
 	TRACE_ADD ("parse ((rtc*) %p), tree %p = status %d", p, t, status);
 
@@ -202,9 +204,7 @@ complete (marpatcl_rtc_p p)
 	/* Execute semantics ... */
 	v = marpa_v_new (t);
 	ASSERT (v, "Marpa_Value creation failed");
-#ifdef CRITCL_TRACER
-	if (TRACE_TAG_VAR (THIS_FILE)) _marpa_v_trace (v, 1);
-#endif
+	TRACE_DO (_marpa_v_trace (v, 1));
 	TRACE_ADD (" value %p", v);
 	TRACE_CLOSER;
 
@@ -212,11 +212,9 @@ complete (marpatcl_rtc_p p)
 	while (!stop) {
 	    /* Per instruction */
 	    Marpa_Step_Type stype = marpa_v_step (v);
-	    ASSERT (stype >= 0, "Step failure")
-#ifdef CRITCL_TRACER
-	    sts = marpatcl_steptype_decode_cstr (stype);
-	    k++;
-#endif
+	    ASSERT (stype >= 0, "Step failure");
+
+	    TRACE_RUN (sts = marpatcl_steptype_decode_cstr (stype); k++);
 	    TRACE_HEADER (1);
 	    TRACE_ADD ("(rtc*) %p, step[%4d] %d %s", p, k, stype, sts ? sts : "<<null>>");
 	    switch (stype) {

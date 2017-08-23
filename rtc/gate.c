@@ -21,6 +21,19 @@ TRACE_TAG_OFF (accept);
 #define ACCEPT (&GATE.acceptable)
 #define LEX_R  (LEX.recce)
 
+#ifdef CRITCL_TRACER
+static void
+print_accept (marpatcl_rtc_p p, Marpa_Symbol_ID* v, int c)
+{
+    int k, n = marpatcl_rtc_byteset_size (ACCEPT);
+    for (k=0; k < n; k++) {
+	TRACE_TAG (accept, "ACCEPT [%d]: %d = %s", k, v[k],
+		   marpatcl_rtc_spec_symname (SPEC->l0, v[k], 0));
+    }    
+}
+#else
+#endif
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API
@@ -126,15 +139,7 @@ marpatcl_rtc_gate_acceptable (marpatcl_rtc_p p)
     marpatcl_rtc_fail_syscheck (p, LEX.g, c, "l0 terminals_expected");
     marpatcl_rtc_byteset_link (ACCEPT, c);
 
-#ifdef CRITCL_TRACER
-    if (TRACE_TAG_VAR (accept)) {
-	int k, n = marpatcl_rtc_byteset_size (ACCEPT);
-	for (k=0; k < n; k++) {
-	    TRACE_TAG (accept, "ACCEPT [%d]: %d = %s", k, v[k],
-		   marpatcl_rtc_spec_symname (SPEC->l0, v[k], 0));
-	}    
-    }
-#endif
+    TRACE_TAG_DO (accept, print_accept (p, v, c));
     TRACE_RETURN_VOID;
 }
 

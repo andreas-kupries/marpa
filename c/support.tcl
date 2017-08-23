@@ -35,9 +35,8 @@ critcl::ccode {
 		    MarpaTcl_Base* base,
 		    int            status)
     {
-	#ifdef CRITCL_TRACER
-	const char* sts = marpatcl_ecode_decode_cstr (status)
-	#endif
+	TRACE_RUN  (const char* sts);
+	TRACE_DO   (sts = marpatcl_ecode_decode_cstr (status));
 	TRACE_FUNC ("((interp*) %p, (base*) %p, status %d (= '%s'))", interp, base, status, sts ? sts : "?????");
 	ASSERT ((0 <= status) && (status <= MARPA_ERROR_COUNT), "marpa error status out of range");
 
@@ -52,9 +51,8 @@ critcl::ccode {
 		    int            rv)
     {
 	int status = marpa_g_error (base->grammar, NULL);
-	#ifdef CRITCL_TRACER
-	const char* sts = marpatcl_error_decode_cstr (status)
-	#endif
+	TRACE_RUN  (const char* sts);
+	TRACE_DO   (sts = marpatcl_error_decode_cstr (status));
 	TRACE_FUNC ("((interp*) %p, (base*) %p, rv %d (status %d (= '%s')))", interp, base, rv, status, sts ? sts : "?????");
 	ASSERT ((0 <= status) && (status <= MARPA_ERROR_COUNT), "marpa error status out of range");
 

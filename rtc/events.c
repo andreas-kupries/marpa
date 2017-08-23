@@ -36,17 +36,14 @@ marpatcl_rtc_lexer_events (marpatcl_rtc_p p)
     int v, i, n = marpa_g_event_count (LEX.g);
 
     for (i = 0; i < n; i++) {
-#ifdef CRITCL_TRACER
-	const char* ets;
-#endif
+	TRACE_RUN (const char* ets);
+
 	etype = marpa_g_event (LEX.g, &event, i);
 	ASSERT (etype >= 0, "Bad event type");
 	v = marpa_g_event_value (&event);
 
-#ifdef CRITCL_TRACER
-	ets = marpatcl_event_decode_cstr (etype);
+	TRACE_DO (ets = marpatcl_event_decode_cstr (etype));
 	TRACE ("E [%2d/%2d] %s = %d", i, n, ets ? ets : "???", v);
-#endif
     }
 
     TRACE_RETURN_VOID;
@@ -63,17 +60,14 @@ marpatcl_rtc_parser_events (marpatcl_rtc_p p)
     int v, i, n = marpa_g_event_count (PAR.g);
 
     for (i = 0; i < n; i++) {
-#ifdef CRITCL_TRACER
-	const char* ets;
-#endif
+	TRACE_RUN (const char* ets);
+
 	etype = marpa_g_event (PAR.g, &event, i);
 	ASSERT (etype >= 0, "Bad event type");
 	v = marpa_g_event_value (&event);
 
-#ifdef CRITCL_TRACER
-	ets = marpatcl_event_decode_cstr (etype);
+	TRACE_DO (ets = marpatcl_event_decode_cstr (etype));
 	TRACE ("E [%2d/%2d] %s = %d", i, n, ets ? ets : "???", v);
-#endif
     }
 
     TRACE_RETURN_VOID;
