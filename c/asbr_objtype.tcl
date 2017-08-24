@@ -20,8 +20,8 @@
 # 
 ## User Constructor, Accessor Functionality
 # 
-##   int marpa_get_otasbr_from_obj (Tcl_Obj* o, OTASBR** otasbrPtr) - Retrieve OTASBR from Tcl_Obj
-##   ... marpa_new_otasbr_obj (Tcl_Obj* o, OTASBR* otasbr)          - Wrap OTASBR into Tcl_Obj (+1 ref)
+##   int marpatcl_get_otasbr_from_obj (Tcl_Obj* o, OTASBR** otasbrPtr) - Retrieve OTASBR from Tcl_Obj
+##   ... marpatcl_new_otasbr_obj (Tcl_Obj* o, OTASBR* otasbr)          - Wrap OTASBR into Tcl_Obj (+1 ref)
 #
 ## CriTcl Glue
 #
@@ -46,7 +46,7 @@ critcl::ccode {
     */
 
     OTASBR*
-    marpa_otasbr_new (ASBR* asbr)
+    marpatcl_otasbr_new (ASBR* asbr)
     {
 	OTASBR* otasbr;
 	TRACE_FUNC ("((ASBR*) %p)", asbr);
@@ -61,10 +61,10 @@ critcl::ccode {
     }
 
     void
-    marpa_otasbr_destroy (OTASBR* otasbr)
+    marpatcl_otasbr_destroy (OTASBR* otasbr)
     {
 	TRACE_FUNC ("((OTASBR*) %p)", otasbr);
-	marpa_asbr_destroy (otasbr->asbr);
+	marpatcl_asbr_destroy (otasbr->asbr);
 
 	TRACE ("DEL (OTASBR*) %p", otasbr);
 	ckfree((char*) otasbr);
@@ -73,7 +73,7 @@ critcl::ccode {
     }
 
     OTASBR*
-    marpa_otasbr_take (OTASBR* otasbr)
+    marpatcl_otasbr_take (OTASBR* otasbr)
     {
 	TRACE_FUNC ("((OTASBR*) %p)", otasbr);
 	
@@ -83,7 +83,7 @@ critcl::ccode {
     }
     
     void
-    marpa_otasbr_release (OTASBR* otasbr)
+    marpatcl_otasbr_release (OTASBR* otasbr)
     {
 	TRACE_FUNC ("((OTASBR*) %p)", otasbr);
 
@@ -94,7 +94,7 @@ critcl::ccode {
 	    TRACE_RETURN_VOID;
 	}
 
-	marpa_otasbr_destroy (otasbr);
+	marpatcl_otasbr_destroy (otasbr);
 	TRACE_RETURN_VOID;
     }
 
@@ -114,35 +114,35 @@ critcl::ccode {
     ** Forward declare the type structure
     */
     
-    static Tcl_ObjType marpa_asbr_objtype;
+    static Tcl_ObjType marpatcl_asbr_objtype;
 
     /*
     ** Tcl_ObjType vectors implementing it
     */
     
     static void
-    marpa_asbr_rep_free (Tcl_Obj* o)
+    marpatcl_asbr_rep_free (Tcl_Obj* o)
     {
 	TRACE_FUNC ( "(o %p)", o);
-	marpa_otasbr_release (OTASBR_REP(o));
+	marpatcl_otasbr_release (OTASBR_REP(o));
 	TRACE_RETURN_VOID;
     }
     
     static void
-    marpa_asbr_rep_dup (Tcl_Obj* src, Tcl_Obj* dst)
+    marpatcl_asbr_rep_dup (Tcl_Obj* src, Tcl_Obj* dst)
     {
 	TRACE_FUNC ("(src %p (rc %d), dst %p)",
 		    src, src ? src->refCount : -5, dst);
 
-	marpa_otasbr_take (OTASBR_REP(src));
+	marpatcl_otasbr_take (OTASBR_REP(src));
 	dst->INT_REP = src->INT_REP;
-	dst->typePtr = &marpa_asbr_objtype;
+	dst->typePtr = &marpatcl_asbr_objtype;
 
 	TRACE_RETURN_VOID;
     }
     
     static void
-    marpa_asbr_rep_str (Tcl_Obj* o)
+    marpatcl_asbr_rep_str (Tcl_Obj* o)
     {
 	/*
 	** Generate a string for a nested list, using the ASBR as basis
@@ -185,7 +185,7 @@ critcl::ccode {
     }
     
     static int
-    marpa_asbr_rep_from_any (Tcl_Interp* ip, Tcl_Obj* o)
+    marpatcl_asbr_rep_from_any (Tcl_Interp* ip, Tcl_Obj* o)
     {
 	/*
 	** The conversion goes through a list intrep avoiding manual parsing
@@ -227,20 +227,20 @@ critcl::ccode {
 	FreeIntRep (o);
 
 	o->internalRep.otherValuePtr = otasbr;
-	o->typePtr                   = &marpa_asbr_objtype;
+	o->typePtr                   = &marpatcl_asbr_objtype;
 
 	return TCL_OK;
 
     fail:
-	if (asbr) marpa_asbr_destroy(asbr);
+	if (asbr) marpatcl_asbr_destroy(asbr);
 	return TCL_ERROR;
     }
 
-    static Tcl_ObjType marpa_asbr_objtype = {
+    static Tcl_ObjType marpatcl_asbr_objtype = {
 	"marpa::cc::asbr",
-	marpa_asbr_rep_free,
-	marpa_asbr_rep_dup,
-	marpa_asbr_rep_str,
+	marpatcl_asbr_rep_free,
+	marpatcl_asbr_rep_dup,
+	marpatcl_asbr_rep_str,
 	NULL /* from_any not supported, only via 2asbr from OTSCR */,
     };
 
@@ -248,25 +248,25 @@ critcl::ccode {
     */
 
     Tcl_Obj*
-    marpa_new_otasbr_obj (OTASBR* otasbr)
+    marpatcl_new_otasbr_obj (OTASBR* otasbr)
     {
 	Tcl_Obj* obj = Tcl_NewObj ();
 	TRACE_FUNC ("((OTASBR*) %p)", otasbr);
 	
 	Tcl_InvalidateStringRep (obj);
-	obj->internalRep.otherValuePtr = marpa_otasbr_take (otasbr);
-	obj->typePtr                   = &marpa_asbr_objtype;
+	obj->internalRep.otherValuePtr = marpatcl_otasbr_take (otasbr);
+	obj->typePtr                   = &marpatcl_asbr_objtype;
 
 	TRACE_RETURN ("(Tcl_Obj*) %p", obj);
     }
 
     int
-    marpa_get_otasbr_from_obj (Tcl_Interp* ip, Tcl_Obj* o, OTASBR** otasbrPtr)
+    marpatcl_get_otasbr_from_obj (Tcl_Interp* ip, Tcl_Obj* o, OTASBR** otasbrPtr)
     {
 	TRACE_FUNC ("(ip %p, o %p, (OTASBR**) %p)",
 		    ip, o, otasbrPtr);
-	if (o->typePtr != &marpa_asbr_objtype) {
-	    if (marpa_asbr_rep_from_any (ip, o) != TCL_OK) {
+	if (o->typePtr != &marpatcl_asbr_objtype) {
+	    if (marpatcl_asbr_rep_from_any (ip, o) != TCL_OK) {
 		TRACE_RETURN ("ERROR", TCL_ERROR);
 	    }
 	}
@@ -282,7 +282,7 @@ critcl::ccode {
 
 critcl::argtype Marpa_ASBR {
         TRACE ("A(Marpa_ASBR): obj %p/%d, otscr %p/%d", @@, @@->refCount, @A, @A ? @A->refCount : -5);
-    if (marpa_get_otasbr_from_obj (interp, @@, &@A) != TCL_OK) {
+    if (marpatcl_get_otasbr_from_obj (interp, @@, &@A) != TCL_OK) {
 	return TCL_ERROR;
     }
 } OTASBR* OTASBR*
@@ -290,7 +290,7 @@ critcl::argtype Marpa_ASBR {
 critcl::resulttype Marpa_ASBR {
     TRACE ("R(Marpa_ASBR): otscr %p/%d", rv, rv ? rv->refCount : -5);
     if (rv == NULL) { return TCL_ERROR; }
-    Tcl_SetObjResult(interp, marpa_new_otasbr_obj (rv));
+    Tcl_SetObjResult(interp, marpatcl_new_otasbr_obj (rv));
     TRACE ("R(Marpa_ASBR): obj %p/%d", Tcl_GetObjResult(interp), Tcl_GetObjResult(interp)->refCount);
     /* No refcount adjustment */
     return TCL_OK;
@@ -308,7 +308,7 @@ critcl::cproc marpa::unicode::2asbr {
     /* charclass :: OTSCR* */
     TRACE_FUNC ("((OTSCR*) %p (rc=%d))", charclass, charclass->refCount);
     TRACE ("(SCR*) %p", charclass->scr);
-    r = marpa_otasbr_new (marpa_asbr_new (charclass->scr));
+    r = marpatcl_otasbr_new (marpatcl_asbr_new (charclass->scr));
     TRACE_RETURN ("(OTASBR*) %p", r);
 }
 

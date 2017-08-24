@@ -169,7 +169,7 @@ critcl::ccode {
     */
 
     static SCR*
-    marpa_scr_new (int n) {
+    marpatcl_scr_new (int n) {
 	SCR* scr;
 	TRACE_FUNC ("(n %d)", n);
 
@@ -188,7 +188,7 @@ critcl::ccode {
     }
 
     static void
-    marpa_scr_destroy (SCR* scr) {
+    marpatcl_scr_destroy (SCR* scr) {
 	/*
 	// Trivial because the ranges are allocated as part of the structure
 	*/
@@ -198,7 +198,7 @@ critcl::ccode {
     }
 
     static void
-    marpa_scr_add_range (SCR* scr, int first, int last) {
+    marpatcl_scr_add_range (SCR* scr, int first, int last) {
 	TRACE_FUNC ("((SCR*) %p [%d/%d], fl (%d...%d))",
 		    scr, scr->n, scr->max, first, last);
 	ASSERT (scr->n < scr->max, "Unable to add range to full SCR");
@@ -211,8 +211,8 @@ critcl::ccode {
     }
 
     static void
-    marpa_scr_add_code (SCR* scr, int codepoint) {
-	marpa_scr_add_range (scr, codepoint, codepoint);
+    marpatcl_scr_add_code (SCR* scr, int codepoint) {
+	marpatcl_scr_add_range (scr, codepoint, codepoint);
     }
 
     static int
@@ -238,7 +238,7 @@ critcl::ccode {
     }
 
     static void
-    marpa_scr_norm (SCR* scr) {
+    marpatcl_scr_norm (SCR* scr) {
 	TRACE_FUNC ("((SCR*) %p (elt %d))", scr, scr->n);
 	
 	/*
@@ -347,7 +347,7 @@ critcl::ccode {
     }
 
     static SCR*
-    marpa_scr_complement (SCR* scr) {
+    marpatcl_scr_complement (SCR* scr) {
 	/* NOTE:
 	// unicode max from a generated c_unidata.tcl file (tools/unidata.tcl)
 	// New script ? (tools/unidata_c.tcl ?)
@@ -363,14 +363,14 @@ critcl::ccode {
 	    /*
 	    // Negating an empty class yields the full range.
 	    */
-	    ncr = marpa_scr_new (1);
-	    marpa_scr_add_range(ncr, 0, UNI_MAX);
+	    ncr = marpatcl_scr_new (1);
+	    marpatcl_scr_add_range (ncr, 0, UNI_MAX);
 	    ncr->canon       = 1;
 	    TRACE ("ncr out %p :: #elements: %d, canonical", ncr, ncr->n);
 	    TRACE_RETURN ("(SCR*) %p", ncr);
 	}
 	
-	marpa_scr_norm (scr);
+	marpatcl_scr_norm (scr);
 	TRACE ("#norm elt: %d", scr->n);
 
 	/*
@@ -390,7 +390,7 @@ critcl::ccode {
 	}
 
 	TRACE ("#negated:  %d", nc);
-	ncr = marpa_scr_new (nc);
+	ncr = marpatcl_scr_new (nc);
 
 	if (nc == 0) {
 	    /*
@@ -610,7 +610,7 @@ critcl::ccode {
     }
     
     static ASBR*
-    marpa_asbr_new (SCR* scr) {
+    marpatcl_asbr_new (SCR* scr) {
 	ASBRState state;
 	SBR    current;
 	int i, lastcode, code;
@@ -623,8 +623,8 @@ critcl::ccode {
 	
 	TRACE_FUNC ("(scr %p)", scr);
 
-	marpa_scr_norm (scr);
-	SCR_DUMP ("marpa_asbr_new", scr);
+	marpatcl_scr_norm (scr);
+	SCR_DUMP ("marpatcl_asbr_new", scr);
 	
 	for (cr = &scr->cr[0], i = 0, lastcode = 0;
 	     i < scr->n;
@@ -668,7 +668,7 @@ critcl::ccode {
     }
 
     static void
-    marpa_asbr_destroy (ASBR* asbr) {
+    marpatcl_asbr_destroy (ASBR* asbr) {
 	/*
 	// Trivial because the alternates are allocated as part of the
 	// structure
