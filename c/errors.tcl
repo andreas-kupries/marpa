@@ -80,13 +80,18 @@ critcl::emap::def marpatcl_error {
     "The valued status of the symbol is locked"      MARPA_ERR_VALUED_IS_LOCKED
     "Symbol is nulling"                              MARPA_ERR_SYMBOL_IS_NULLING
     "Symbol is not used"                             MARPA_ERR_SYMBOL_IS_UNUSED
-}
+} -mode {c tcl}
 
 # API pieces
 ##
 # Encoder:     int     marpatcl_error_encode (interp, Tcl_Obj* state, int* result) :: string -> type
 # Decoder:     TclObj* marpatcl_error_decode (interp, int      state)              :: type -> string
+#
+# Encoder/C:   int         marpatcl_error_encode_cstr (const char* state) :: string -> type
+# Decoder/C:   const char* marpatcl_error_decode_cstr (int         state) :: type -> string
+#
 # Decl Hdr:    marpatcl_error.h
+#
 # Arg-Type:    marpatcl_error   | Not used.
 # Result-Type: marpatcl_error   | Hidden away in the 'int' result of most libmarpa APIs.
 #                                 See "marpatcl_result" for code handling this in-band signaling.

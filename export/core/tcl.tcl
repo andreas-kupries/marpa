@@ -21,6 +21,33 @@ debug define marpa/export/core/tcl
 debug prefix marpa/export/core/tcl {[debug caller] | }
 
 # # ## ### ##### ######## #############
+## Configuration coming out of this supporting module.
+#
+## General placeholders
+#
+## @slif-version@    -- Grammar information: Version
+## @slif-writer@     -- Grammar information: Author
+## @slif-year@       -- Grammar information: Year of authorship
+## @slif-name@       -- Grammar information: Name
+## @slif-name-tag@   -- Grammar information: Derived from name, tag for Tcl `debug` commands.
+## @tool-operator@   -- Name of user invoking the tool
+## @tool@            -- Name of the pool generating the output
+## @generation-time@ -- Date/Time of when tool was invoked
+#
+## Engine-specific placeholders
+#
+## @characters@    -- (lit) dict (symbol name --> character)
+## @classes@       -- (lit) dict (symbol name --> class specification [Tcl cc regexp])
+## @discards@      -- (l0)  list (symbol name)
+## @lexemes@       -- (l0)  dict (symbol name --> boolean [latm flag])
+## @l0-symbols@    -- (l0)  list (symbol name)
+## @l0-rules@      -- (l0)  list (rule-specification)
+## @l0-semantics@  -- (l0)  list (array-descriptor-code)
+## @g1-symbols@    -- (g1)  list (symbol name)
+## @g1-rules@      -- (g1)  list (rule-specification) [%%]
+## @start@         -- (g1)  symbol name
+##
+## [Ad %%] special forms declare the g1 rule semantics and names
 
 namespace eval ::marpa::export::core {}
 namespace eval ::marpa::export::core::tcl {
@@ -28,34 +55,6 @@ namespace eval ::marpa::export::core::tcl {
     rename config core-config
     namespace export config
     namespace ensemble create
-
-    ## Configuration coming out of this supporting module.
-    #
-    ## General placeholders
-    #
-    ## @slif-version@    -- Grammar information: Version
-    ## @slif-writer@     -- Grammar information: Author
-    ## @slif-year@       -- Grammar information: Year of authorship
-    ## @slif-name@       -- Grammar information: Name
-    ## @slif-name-tag@   -- Grammar information: Derived from name, tag for Tcl `debug` commands.
-    ## @tool-operator@   -- Name of user invoking the tool
-    ## @tool@            -- Name of the pool generating the output
-    ## @generation-time@ -- Date/Time of when tool was invoked
-    #
-    ## Engine-specific placeholders
-    #
-    ## @characters@    -- (lit) dict (symbol name --> character)
-    ## @classes@       -- (lit) dict (symbol name --> class specification [Tcl cc regexp])
-    ## @discards@      -- (l0)  list (symbol name)
-    ## @lexemes@       -- (l0)  dict (symbol name --> boolean [latm flag])
-    ## @l0-symbols@    -- (l0)  list (symbol name)
-    ## @l0-rules@      -- (l0)  list (rule-specification)
-    ## @l0-semantics@  -- (l0)  list (array-descriptor-code)
-    ## @g1-symbols@    -- (g1)  list (symbol name)
-    ## @g1-rules@      -- (g1)  list (rule-specification) [%%]
-    ## @start@         -- (g1)  symbol name
-    ##
-    ## [Ad %%] special forms declare the g1 rule semantics and names
 }
 
 # # ## ### ##### ######## #############

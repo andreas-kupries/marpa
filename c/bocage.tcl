@@ -128,33 +128,52 @@ critcl::class def ::marpa::Bocage {
     # Iterate trees and values from the bocage.
 
     method get-parse proc {} ok {
-	Marpa_Tree      t      = @stem@_tree (instance);
-	int             status = marpa_t_next (t);
+	Marpa_Tree      t;
+	int             status;
 	Marpa_Value     v;
 	Tcl_Obj*        steps;
 	Tcl_Obj*        step;
-	// Tcl_Obj*        tmp;
 	int             stop;
 
+	TRACE_RUN (const char* sts = 0);
+	TRACE_RUN (int k = -1);
+	TRACE_TAG_FUNC (parse, "()", 0);
+
+	t = @stem@_tree (instance);
+	status = marpa_t_next (t);
+	TRACE_TAG (parse, "self.Marpa_Tree %p = status %d", t, status);
+	
 	if (status == -1) {
 	    /* Done with tree iterator */
 	    marpa_t_unref (t);
 	    instance->tree = NULL;
-
-	    return marpatcl_throw (interp, (MarpaTcl_Base*) instance,
-				   MARPA_ERR_TREE_EXHAUSTED);
+	    status = marpatcl_throw (interp, (MarpaTcl_Base*) instance,
+				     MARPA_ERR_TREE_EXHAUSTED);
+	    TRACE_TAG_RETURN (parse, "%d", status);
 	} else if (status < -1) {
 	    /* Some failure */
-	    return marpatcl_error (interp, (MarpaTcl_Base*) instance, 0);
+	    status = marpatcl_error (interp, (MarpaTcl_Base*) instance, 0);
+	    TRACE_TAG_RETURN (parse, "%d", status);
 	}
 
-	v     = marpa_v_new (t);
+	v = marpa_v_new (t);
+	TRACE_TAG (parse, "Marpa_Value %p", v);
+	if (!v) {
+	    // TODO: Failed to create valuator, generate message
+	    TRACE_TAG_RETURN (parse, "%d", TCL_ERROR);
+	}
+	
 	steps = Tcl_NewListObj (0,0);
 	stop  = 0;
 	while (!stop) {
 	    Marpa_Step_Type stype = marpa_v_step (v);
+	    ASSERT (stype >= 0, "Step failure")
+	    // TODO check if (stype < 0) is a regular marpa error.
 
-	    // fprintf(stdout,"V %p S %d \"%s\"\n", v, stype, Tcl_GetString(marpatcl_steptype_decode (interp, stype)));fflush(stdout);
+	    TRACE_TAG_DO     (parse, sts = marpatcl_steptype_decode_cstr (stype); k++);
+	    TRACE_TAG_HEADER (parse, 1);
+	    TRACE_TAG_ADD    (parse, "Marpa_Value %p step[%4d] %d %s",
+			      v, k, stype, sts ? sts : "<<null>>");
 
 	    switch (stype) {
 	    case MARPA_STEP_INITIAL:
@@ -169,7 +188,7 @@ critcl::class def ::marpa::Bocage {
 		** The application can find the value of the rule's children in the stack locations
 		** from marpa_v_arg_0(v)
 		** to   marpa_v_arg_n(v).
-		** The semantics for the rule whose ID is
+		** The semantics for the rule whose ID
 		** is   marpa_v_rule(v)
 		** should be executed on these child values, and the result placed
 		** in   marpa_v_result(v).
@@ -177,16 +196,15 @@ critcl::class def ::marpa::Bocage {
 		** is guaranteed to be equal to marpa_v_arg_0(v).
 		*/
 
+		TRACE_TAG_ADD (parse, "    -- rule  %3d, span (%d-%d), %d := (%d-%d)",
+			       marpa_v_rule(v),
+			       marpa_v_rule_start_es_id(v),
+			       marpa_v_es_id(v),
+			       marpa_v_result(v),
+			       marpa_v_arg_0(v),
+			       marpa_v_arg_n(v));
+
 		step = Tcl_NewDictObj ();
-#if 0
-		fprintf (stdout,"rule/ id=%d, start-es=%d, end-es=%d, dst=%d, 1st=%d, lst=%d\n",
-			 marpa_v_rule(v),
-			 marpa_v_rule_start_es_id(v),
-			 marpa_v_es_id(v),
-			 marpa_v_result(v),
-			 marpa_v_arg_0(v),
-			 marpa_v_arg_n(v));fflush(stdout);
-#endif
 		Tcl_DictObjPut (interp, step, MT_S_ID,       Tcl_NewIntObj (marpa_v_rule(v)));
 		Tcl_DictObjPut (interp, step, MT_S_START_ES, Tcl_NewIntObj (marpa_v_rule_start_es_id(v)));
 		Tcl_DictObjPut (interp, step, MT_S_END_ES,   Tcl_NewIntObj (marpa_v_es_id(v)));
@@ -208,6 +226,13 @@ critcl::class def ::marpa::Bocage {
 		** in       marpa_v_token_value(v).
 		*/
 
+		TRACE_TAG_ADD (parse, "   -- token %3d, span (%d-%d), %d := <%d>",
+			       marpa_v_token(v),
+			       marpa_v_token_start_es_id(v),
+			       marpa_v_es_id(v),
+			       marpa_v_result(v),
+			       marpa_v_token_value(v));
+
 		step = Tcl_NewDictObj ();
 		Tcl_DictObjPut (interp, step, MT_S_ID,       Tcl_NewIntObj (marpa_v_token(v)));
 		Tcl_DictObjPut (interp, step, MT_S_START_ES, Tcl_NewIntObj (marpa_v_token_start_es_id(v)));
@@ -225,6 +250,12 @@ critcl::class def ::marpa::Bocage {
 		** location marpa_v_result(v).
 		*/
 
+		TRACE_TAG_ADD (parse, " -- sym     %3d, span (%d-%d), %d := NULL",
+			       marpa_v_symbol(v),
+			       marpa_v_token_start_es_id(v),
+			       marpa_v_es_id(v),
+			       marpa_v_result(v));
+
 		step = Tcl_NewDictObj ();
 		Tcl_DictObjPut (interp, step, MT_S_ID,       Tcl_NewIntObj (marpa_v_symbol(v)));
 		Tcl_DictObjPut (interp, step, MT_S_START_ES, Tcl_NewIntObj (marpa_v_token_start_es_id(v)));
@@ -241,17 +272,22 @@ critcl::class def ::marpa::Bocage {
 		/* Under debug we might wish to see them */
 		break;
 	    }
+	    TRACE_TAG_CLOSER (parse);
 	}
 
 	marpa_v_unref (v);
 	Tcl_SetObjResult (interp, steps);
-	return TCL_OK;
+
+	TRACE_TAG_RETURN (parse, "OK", TCL_OK);
     }
 
 
     # # ## ### ##### ######## #############
     support {
-       /* Stem:  @stem@
+	// tree evaluation
+	TRACE_TAG_OFF (parse);
+
+	/* Stem:  @stem@
 	* Pkg:   @package@
 	* Class: @class@
 	* IType: @instancetype@
@@ -265,14 +301,15 @@ critcl::class def ::marpa::Bocage {
 	static Marpa_Order
 	@stem@_order (@instancetype@ instance)
 	{
-	    // fprintf(stdout,"XXX/OO %p\n",instance->order);fflush(stdout);
+	    TRACE_FUNC ("(@instancetype@) %p ((Marpa_Order) %p)",
+			instance, instance->order)
 
 	    if (!instance->order) {
 		instance->order = marpa_o_new (instance->bocage);
+		ASSERT (instance->order, "Marpa_Order creation failed");
 	    }
 
-	    // fprintf(stdout,"XXX/O= %p\n",instance->order);fflush(stdout);
-	    return instance->order;
+	    TRACE_RETURN ("(Marpa_Order) %p", instance->order);
 	}
 
 	/* ** Create bocage tree iterator object on demand ** */
@@ -280,15 +317,16 @@ critcl::class def ::marpa::Bocage {
 	static Marpa_Tree
 	@stem@_tree (@instancetype@ instance)
 	{
-	    // fprintf(stdout,"XXX/TT %p\n",instance->tree);fflush(stdout);
+	    TRACE_FUNC ("(@instancetype@) %p ((Marpa_Tree) %p)",
+			instance, instance->tree)
 
 	    if (!instance->tree) {
 		Marpa_Order order = @stem@_order (instance);
 		instance->tree = marpa_t_new (order);
+		ASSERT (instance->tree, "Marpa_Tree creation failed");
 	    }
 
-	    // fprintf(stdout,"XXX/T= %p\n",instance->tree);fflush(stdout);
-	    return instance->tree;
+	    TRACE_RETURN ("(Marpa_Tree) %p", instance->tree);
 	}
     }
 

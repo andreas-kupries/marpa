@@ -200,7 +200,7 @@ oo::class create marpa::engine {
 
     # # ## ### ##### ######## #############
 
-    method DNames    {names} { return <[join $names {> <}]> }
+    method DNames    {names} { return [lmap n $names { set _ <${n}> }] }
     method DIds      {ids}   { my DNames [my 2Name $ids] }
     method DLocation {sv}    { return [marpa location show [Store get $sv]] }
     # DLocation is predicated on a semantic action of (start length value).

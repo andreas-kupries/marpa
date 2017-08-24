@@ -20,7 +20,7 @@ debug define marpa/export/config
 # # ## ### ##### ######## #############
 
 namespace eval ::marpa::export {
-    namespace export config config! config-reset
+    namespace export config config! config-reset config?
     namespace ensemble create
     namespace import ::marpa::X
 
@@ -86,6 +86,17 @@ proc ::marpa::export::config! {key value} {
     }
     dict set data $key $value
     return
+}
+
+proc ::marpa::export::config? {key} {
+    debug.marpa/export/config {}
+    variable data
+    if {![dict exists $data $key]} {
+	set e [linsert [join [lsort -dict [dict keys $data]] {, }] end-1 or]
+	X "Bad configuration key \"$key\", expected one of $e" \
+	    EXPORT CONFIG BAD-KEY
+    }
+    return [dict get $data $key]
 }
 
 # # ## ### ##### ######## #############

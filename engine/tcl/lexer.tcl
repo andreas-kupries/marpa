@@ -535,7 +535,7 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | Discarded:  $discarded}
 	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] ($found)}
 	debug.marpa/lexer {[debug caller] | Symbols:    [llength $found] (([set fs [my DIds [my FromParser $found]]]))}
-	debug.marpa/lexer {[debug caller] | [marpa:D {
+	debug.marpa/lexer {[debug caller] | [marpa::D {
 	    set fmax 0
 	    foreach s $fs {
 		set n [string length $s]

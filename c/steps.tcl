@@ -19,11 +19,12 @@ critcl::literals::def marpatcl_step {
     mt_s_value    "value"
     mt_s_end_es   "end-es"
     mt_s_start_es "start-es"
-}
+} {c tcl}
 
 # API pieces
 ##
-# Mapper:      TclObj* marpatcl_step (interp, int) :: code -> string
+# Mapper:      TclObj*     marpatcl_step      (interp, int) :: code -> string
+# Mapper C:    const char* marpatcl_step_cstr (int)         :: code -> string
 # Decl Hdr:    marpatcl_step.h
 
 # Helper macros for quick access to the pool contents. Implied interp argument.
@@ -54,13 +55,31 @@ critcl::emap::def marpatcl_steptype {
     step-internal1 MARPA_STEP_INTERNAL1
     step-internal2 MARPA_STEP_INTERNAL2
     step-trace     MARPA_STEP_TRACE
-}
+} -mode {c tcl}
+
+# Taken from marpa.h
+##
+#  MARPA_STEP_INTERNAL1 	0
+#  MARPA_STEP_RULE		1
+#  MARPA_STEP_TOKEN		2
+#  MARPA_STEP_NULLING_SYMBOL	3
+#  MARPA_STEP_TRACE		4
+#  MARPA_STEP_INACTIVE		5
+#  MARPA_STEP_INTERNAL2		6
+#  MARPA_STEP_INITIAL		7
+##
+#  MARPA_STEP_COUNT		8
 
 # API pieces
 ##
 # Encoder:     int     marpatcl_steptype_encode (interp, Tcl_Obj* state, int* result) :: string -> type
 # Decoder:     TclObj* marpatcl_steptype_decode (interp, int      state)              :: type -> string
+#
+# Encoder/C:   int         marpatcl_steptype_encode_cstr (const char* state) :: string -> type
+# Decoder/C:   const char* marpatcl_steptype_decode_cstr (int         state) :: type -> string
+#
 # Decl Hdr:    marpatcl_steptype.h
+#
 # Arg-Type:    marpatcl_steptype
 # Result-Type: marpatcl_steptype
 

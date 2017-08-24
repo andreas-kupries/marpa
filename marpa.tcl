@@ -17,8 +17,8 @@ package require critcl 3.1
 critcl::buildrequirement {
     package require critcl::util 1
     package require critcl::class 1
-    package require critcl::emap
-    package require critcl::literals
+    package require critcl::emap     1.1 ; # mode C support
+    package require critcl::literals 1.2 ; # mode C support
     package require critcl::cutil
 }
 
@@ -48,6 +48,7 @@ critcl::debug symbols
 ## Administrivia
 
 critcl::config lines 1
+critcl::config trace 0
 
 critcl::license \
     {Andreas Kupries} \
@@ -173,8 +174,9 @@ critcl::tsources export/config.tcl       ; # Comon generator configuration suppo
 #          loading the grammar on construction.
 # 1. gc-compact - compact, no formatting
 # 2. gc         - formatted for human readability (indented multi-line)
-# Backend: Dumping a GC as Tcl code implementing a derived lexer engine class
-# Backend: Dumping a GC as Tcl code implementing a derived parser engine class
+# Backend: Dumping a GC as Tcl code implementing a rt_lex-derived lexer engine class
+# Backend: Dumping a GC as Tcl code implementing a rt_parse-derived parser engine class
+# Backend: Dumping a GC as C code implementing a rtc-derived parser engine
 
 critcl::tsources export/gc_compact.tcl    ; # Container compact
 critcl::tsources export/gc.tcl            ; # Container formatted
@@ -182,6 +184,10 @@ critcl::tsources export/gc.tcl            ; # Container formatted
 critcl::tsources export/core/tcl.tcl      ; # Support for generators emitting Tcl engines
 critcl::tsources export/tlex.tcl          ; # Tcl engine - lexing
 critcl::tsources export/tparse.tcl        ; # Tcl engine - lexing+parsing
+
+critcl::tsources export/core/rtc.tcl      ; # Support for generators emitting C engines
+critcl::tsources export/rtc-raw.tcl       ; # Raw RTC-based C parser
+critcl::tsources export/rtc-critcl.tcl    ; # Critcl class around RTC-based C code.
 
 # # ## ### ##### ######## #############
 ## Main C section.
@@ -193,8 +199,17 @@ critcl::tsources export/tparse.tcl        ; # Tcl engine - lexing+parsing
 ##       declarations, to avoid conflicts with libmarpa's public
 ##       symbols.
 
-#critcl::cheaders mc/*.h
-#critcl::csources mc/*.c
+## The RTC is the C-based runtime-to-be. It is technically not needed
+## by marpa itself (until after we have moved boot parser to generated
+## C code). It is included to force problems with it to break the
+## marpa built itself, i.e. as canary.
+
+critcl::cheaders rtc/*.h
+critcl::csources rtc/*.c
+
+critcl::ccode {
+    TRACE_OFF;
+}
 
 critcl::source c/errors.tcl           ; # Mapping marpa error codes to strings.
 critcl::source c/events.tcl           ; # Mapping marpa event types to strings.
