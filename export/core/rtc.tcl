@@ -42,6 +42,7 @@ debug prefix marpa/export/core/rtc {[debug caller] | }
 ## @always-v@           -- ACS symbol ids of the always active L0 symbols
 ## @cname@		-- C identifier, derived from @name@
 ## @discards-c@		-- #discarded symbols in the L0 level (i.e. whitespace)
+## @g1-insn-c@          -- #instructions encoding the structural (G1) rules
 ## @g1-code-c@          -- #entries to encode the structural (G1) rules
 ## @g1-code-sz@         -- Informational: #bytes for
 ## @g1-code@	   	-- VM instructions encoding the structural (G1) rules
@@ -58,6 +59,7 @@ debug prefix marpa/export/core/rtc {[debug caller] | }
 ## @g1-symbols-c@   	-- #symbols in the structural (G1) level of the engine
 ## @g1-symbols-indices@	-- Per G1 symbol indices into the string pool = symbol name
 ## @g1-symbols-sz@	-- Informational: #bytes for
+## @l0-insn-c@          -- #instructions encoding the lexical (L0) rules
 ## @l0-code-c@          -- #entries to encode the lexical (L0) rules
 ## @l0-code-sz@         -- Informational: #bytes for
 ## @l0-code@		-- VM instructions encoding the lexical (L0) rules
@@ -296,6 +298,8 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
 
     incr dsz [* 2 [LR elements]]  ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-code-sz@            [* 2 [LR elements]]
+    lappend map @l0-insn-c@             [LR size]
+    lappend map @l0-rule-c@             [LR numrules]
     lappend map @l0-code-c@             [LR elements]
     lappend map @l0-code@		[LR content [dict get $config prefix]]
 
@@ -318,6 +322,8 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
 
     incr dsz [* 2 [GR elements]] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-code-sz@            [* 2 [GR elements]]
+    lappend map @g1-insn-c@             [GR size]
+    lappend map @g1-rule-c@             [GR numrules]
     lappend map @g1-code-c@             [GR elements]
     lappend map @g1-code@	   	[GR content [dict get $config prefix]]
 
@@ -874,7 +880,8 @@ oo::class create marpa::export::core::rtc::Rules {
     variable myrules    ; # list (string) : rule instructions
     variable mydisplay1 ; # list (string) : rule lhs (parallels myrules)
     variable mydisplay2 ; # list (string) : rule rhs (parallels myrules)
-    variable mysize     ; # int           : #rules (mostly llength myrules)
+    variable mysize     ; # int           : #rule instructions (llength myrules)
+    variable myrnum     ; # int           : #rules (>= mysize (branges!))
     variable myelements ; # int           : #entries in the instruction array
     variable mynames    ; # list (int)    : rule name ref (parallels myrules)
     variable mylhsids   ; # list (int)    : rule lhs name ref (parallels myrules)
@@ -890,6 +897,7 @@ oo::class create marpa::export::core::rtc::Rules {
 	set mydisplay1 {}
 	set mydisplay2 {}
 	set mysize     0
+	set myrnum     0
 	set myelements 0
 	set mynames    {}
 	set mylhsids   {}
@@ -953,6 +961,7 @@ oo::class create marpa::export::core::rtc::Rules {
 	lappend cmd "MARPATCL_RCMD_BOXR ([format %3d $start],[format %3d $stop])"
 	my P $cmd <$lhs> "brange ($start - $stop)"
 	incr myelements 2
+	incr myrnum [expr {$stop - $start + 1}]
 	return
     }
 
@@ -965,6 +974,7 @@ oo::class create marpa::export::core::rtc::Rules {
 	::marpa::export::core::rtc::Limit12 {priority rhs length} $rl
 	if {$rl > $mymaxpad} { set mymaxpad $rl }
 	incr myelements $rl
+	incr myrnum
 
 	if {$lhid eq $mylastlhs} {
 	    # Short coding of rule for same LHS
@@ -1004,6 +1014,7 @@ oo::class create marpa::export::core::rtc::Rules {
 		1 { P}
 	    } $proper])"
 	}
+	incr myrnum
 	switch -exact -- ${pos}[info exists separator] {
 	    00 {
 		lappend cmd [my C quant* $lhsid]
@@ -1065,6 +1076,10 @@ oo::class create marpa::export::core::rtc::Rules {
 
     method size {} {
 	return $mysize
+    }
+
+    method numrules {} {
+	return $myrnum
     }
 
     method elements {} {

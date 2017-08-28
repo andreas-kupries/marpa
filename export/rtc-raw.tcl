@@ -58,6 +58,19 @@ return
 **		 Via @tool@
 **
 ** Space taken: @space@ bytes
+**
+** Statistics
+** L0
+** - #Symbols:   @l0-symbols-c@
+** - #Lexemes:   @lexemes-c@
+** - #Discards:  @discards-c@
+** - #Always:    @always-c@
+** - #Rule Insn: @l0-insn-c@ (+2: setup, start-sym)
+** - #Rules:     @l0-rule-c@ (>= insn, brange)
+** G1
+** - #Symbols:   @g1-symbols-c@
+** - #Rule Insn: @g1-insn-c@ (+2: setup, start-sym)
+** - #Rules:     @g1-rule-c@ (match insn)
 */
 
 #include <spec.h>
