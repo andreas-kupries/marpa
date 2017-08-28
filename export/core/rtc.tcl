@@ -880,7 +880,7 @@ oo::class create marpa::export::core::rtc::Rules {
     variable mylhsids   ; # list (int)    : rule lhs name ref (parallels myrules)
     variable myusenames ; # bool          : true -> `mynames`, `mylhsids` are valid
     variable mymaxpad   ; # int           : max length of a rule right hand side
-    variable mylastlhs  ; # string        : last lhs name specified by a CMD_PRIO
+    variable mylastlhs  ; # string        : last lhs id specified by a CMD_PRIO
     variable myblank    ; # string        : whitespace covering `mylastlhs`.
 
     constructor {sym pool {usenames 0}} {
@@ -903,7 +903,7 @@ oo::class create marpa::export::core::rtc::Rules {
     method content {{prefix {    }}} {
 	set maxr [marpa::export::core::rtc::Width $myrules]
 	set maxd [marpa::export::core::rtc::Width $mydisplay1]
-	set fmta "${prefix}%-${maxr}s /* %-${maxd}s := %s */"
+	set fmta "${prefix}%-${maxr}s /* %-${maxd}s %s */"
 	set fmtb "${prefix}%s"
 	
 	return [join [lmap ins $myrules lhs $mydisplay1 rhs $mydisplay2 {
@@ -970,6 +970,8 @@ oo::class create marpa::export::core::rtc::Rules {
 	    # Short coding of rule for same LHS
 	    lappend cmd [my C prio-short $rl]$myblank
 	    incr myelements 1
+	    set lhs " [string repeat { } [string length $lhs]] "
+	    set op "|   "
 	} else {
 	    # New lhs, full coding, and save for reuse
 	    lappend cmd [my C prio $rl]
@@ -978,9 +980,11 @@ oo::class create marpa::export::core::rtc::Rules {
 	    set mylastlhs $lhid
 	    set    myblank {  }
 	    append myblank [string repeat { } [string length $lhid]]
+	    set lhs <${lhs}>
+	    set op "::= "
 	}
 	lappend cmd {*}[lmap s $rhs { S 2id $s }]
-	my P $cmd <$lhs> [lmap w $rhs { set _ <${w}> }]
+	my P $cmd $lhs $op[join [lmap w $rhs { set _ <${w}> }] { }]
 	return
     }
 
@@ -1024,7 +1028,7 @@ oo::class create marpa::export::core::rtc::Rules {
 		incr myelements 3
 	    }
 	}
-	my P $cmd <$lhs> "<$rhs> $op$suffix"
+	my P $cmd <$lhs> "::= <$rhs> $op$suffix"
 	return
     }
 
