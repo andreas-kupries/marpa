@@ -118,7 +118,7 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
     EncodePrecedences $gc
     LowerLiterals     $gc
     # Types we can get out of the reduction:
-    # - byte
+    # - byte, brange
     
     # Pull various required parts out of the container ...
 
@@ -409,7 +409,18 @@ proc ::marpa::export::core::rtc::EncodePrecedences {gc} {
 proc ::marpa::export::core::rtc::LowerLiterals {gc} {
     debug.marpa/export/core/rtc {}
 
-    # Rewrite the literals into forms supported by the runtime (C engine).
+    # Rewrite the literals into forms supported by the runtime
+    # (C engine). These are bytes and byte ranges. The latter are
+    # expanded during setup at runtime, into alternations of bytes,
+    # with a subsequent explosion of rules.
+
+    # For example we currently need 2191 rule instructions to describe
+    # the L0 grammar of the SLIF meta grammar, which encode 6639
+    # rules. The difference is due to the 1591 byte-ranges handling
+    # the character classes.
+    #
+    # 2191 insn | 1591 ranges => 6039 range rules (~ x3.8 for the SLIF L0)
+    #           +  600 other  =>  600 other /
     
     marpa::slif::literal r2container \
 	[marpa::slif::literal reduce [concat {*}[lmap {sym rhs} [dict get [$gc l0 serialize] literal] {
@@ -420,6 +431,26 @@ proc ::marpa::export::core::rtc::LowerLiterals {gc} {
 	    D-RAN2 D-%RAN  D-^RAN2 D-CHR
 	    D-^CHR
 	}] $gc
+
+    # TODO: Global optimization of byte ranges.
+
+    # Reason: The byte ranges to describe unicode classes often
+    # overlap significantly. We will have many byte ranges starting at
+    # the same byte and just having different end bytes. In the
+    # current coding, where all ranges are separate this means that we
+    # will get lots of rules of the form 'B := x ' for the same byte x
+    # in many related ranges B. We get an approximately O(n**2) blowup
+    # in the number of rules from the instructions for the byte
+    # ranges.
+    #
+    # The envisioned optimization would look over all byte ranges,
+    # pull overlapping ranges together and rewrite them so that the
+    # ranges do not (or only minimally) overlap, for an approx O(n)
+    # expansion in rules. While the number of instructions encoding
+    # the grammar are expected to go up somewhat (to handle additional
+    # intrrmediate symbols) the overall number of the rules they
+    # generate should be down.
+    
     return
 }
 
