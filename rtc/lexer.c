@@ -74,7 +74,7 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
      */
     
     LEX.g = marpa_g_new (CONF);
-    marpatcl_rtc_spec_setup (LEX.g, SPEC->l0);
+    LRD   = marpatcl_rtc_spec_setup (LEX.g, SPEC->l0, TRACE_TAG_VAR (lexer_progress));
     marpatcl_rtc_symset_init (ACCEPT, SPEC->lexemes + SPEC->discards);
     marpatcl_rtc_symset_init (FOUND,  SPEC->lexemes);
     LEX.lexeme = marpatcl_rtc_stack_cons (80);
@@ -353,6 +353,10 @@ complete (marpatcl_rtc_p p)
 	    continue;
 	}
 	TRACE_ADD (" save", 0);
+
+	// On first alternative going through to the parser show its progress
+	// for the location.
+	if (!marpatcl_rtc_symset_size(FOUND)) { PAR_P (p); }
 
 	marpatcl_rtc_symset_include (FOUND, 1, &token);
 

@@ -6,6 +6,7 @@
  */
 
 #include <spec.h>
+#include <stack.h>
 #include <critcl_alloc.h>
 #include <critcl_assert.h>
 #include <critcl_trace.h>
@@ -18,20 +19,29 @@ TRACE_TAG_OFF (names);
  * API
  */
 
-void
-marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
+// Per rule we push 2 entries. PC of the instruction, and additional
+// information. The latter is currently only used by
+// - PRIS instructions to refer back to the PRIO instructions which provided their LHS.
+// - BRAN instructions to store the RHS byte.
+
+marpatcl_rtc_stack_p
+marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s, int rd)
 {
 #define NAME(sym) marpatcl_rtc_spec_symname (s, sym, 0)
-    // TODO: generate symbol name information for L0
-    
+#define PUSH(detail)							\
+    if (rd) marpatcl_rtc_stack_push (rule_data, pc - s->rcode); \
+    if (rd) marpatcl_rtc_stack_push (rule_data, detail);
+
     marpatcl_rtc_sym* pc;
+    marpatcl_rtc_sym* lpc = 0;
     marpatcl_rtc_sym cmd, detail, proper, sep, start, stop;
     int k, ssz;
     Marpa_Symbol_ID* scratch;
     Marpa_Symbol_ID lastlhs;
-
+    marpatcl_rtc_stack_p rule_data = 0;
     TRACE_FUNC ("((Marpa_Grammar) %p, (rules*) %p (symbols %d))",
 		g, s, s->symbols.size);
+    if (rd) rule_data = marpatcl_rtc_stack_cons (MARPATCL_RTC_STACK_DEFAULT_CAP);
 
     /* Generate the symbols, in bulk */
     for (k=0; k < s->symbols.size; k++) {
@@ -60,8 +70,13 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 
 	    marpa_g_start_symbol_set (g, detail);
 	    FREE (scratch);
-	    TRACE_RETURN_VOID;
-	    return;
+
+	    if (rd) s->rules.size = marpatcl_rtc_stack_size (rule_data) / 2;
+	    // TODO: Store this somewhere else. (s) are the const grammar
+	    // TODO: structures, i.e. could quite possibly be RO, with the
+	    // TODO: write here seg.faulting.
+	    TRACE_RETURN ("(stack*) %p", rule_data);
+	    
 	case MARPATCL_RC_PRIO:
 	    /* priority -- full spec */
 	    TRACE_HEADER (1);
@@ -80,6 +95,8 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	    
 	    lastlhs = pc[1];
 	    marpa_g_rule_new (g, lastlhs, scratch, detail);
+	    if (rd) lpc = pc;
+	    PUSH (0);
 	    pc += 2 + detail;
 	    break;
 	case MARPATCL_RC_PRIS:
@@ -98,6 +115,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	    TRACE_CLOSER;
 
 	    marpa_g_rule_new (g, lastlhs, scratch, detail);
+	    PUSH (lpc - s->rcode);
 	    pc += 1 + detail;
 	    break;
 	case MARPATCL_RC_QUN:
@@ -110,6 +128,8 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	    TRACE_CLOSER;
 
 	    marpa_g_sequence_new (g, detail, pc[1], -1, 0, 0);
+	    PUSH (0);
+	    
 	    pc += 2;
 	    break;
 	case MARPATCL_RC_QUP:
@@ -122,6 +142,8 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	    TRACE_CLOSER;
 
 	    marpa_g_sequence_new (g, detail, pc[1], -1, 1, 0);
+	    PUSH (0);
+	    
 	    pc += 2;
 	    break;
 	case MARPATCL_RC_QUNS:
@@ -138,6 +160,8 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	    TRACE_CLOSER;
 
 	    marpa_g_sequence_new (g, detail, pc[1], sep, 0, proper);
+	    PUSH (0);
+	    
 	    pc += 3;
 	    break;
 	case MARPATCL_RC_QUPS:
@@ -154,6 +178,8 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	    TRACE_CLOSER;
 
 	    marpa_g_sequence_new (g, detail, pc[1], sep, 1, proper);
+	    PUSH (0);
+	    
 	    pc += 3;
 	    break;
 	case MARPATCL_RC_BRAN:
@@ -169,6 +195,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	    for (k = start; k <= stop; k++) {
 		scratch[0] = k;
 		marpa_g_rule_new (g, detail, scratch, 1);
+		PUSH (k);
 	    }
 	    pc += 2;
 	    break;
@@ -178,7 +205,8 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s)
 	}
     }
 
-    TRACE_RETURN_VOID;
+    ASSERT (0, "reached the unreachable");
+    TRACE_RETURN ("(stack*) %p", rule_data);
 }
 
 const char*

@@ -35,6 +35,16 @@ typedef struct marpatcl_rtc {
     marpatcl_rtc_store    store;   /* Store for the lexer's semantic values */
     marpatcl_rtc_sv_cmd   action;  /* Dispatcher for G1 user actions */
     marpatcl_rtc_fail     fail;    /* Failure state */
+
+    /* Rule information for progress reports. Indexed by rule, returns PC of
+     * spec instruction for the rule. From this lhs and rhs symbol ids can be
+     * infered, from which we can in turn infer symbol names. Valid if and
+     * only if the corresponding progress tag is active (TRACE_TAG_ON, see
+     * progress.h)
+     */
+    
+    marpatcl_rtc_stack_p  l0_rule; /* lexer  */
+    marpatcl_rtc_stack_p  g1_rule; /* parser */
 } marpatcl_rtc;
 
 /*
@@ -51,6 +61,8 @@ typedef struct marpatcl_rtc {
 #define ACT  (p->action)
 #define STOR (p->store)
 #define FAIL (p->fail)
+#define LRD  (p->l0_rule)
+#define PRD  (p->g1_rule)
 
 #endif
 

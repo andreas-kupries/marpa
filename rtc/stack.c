@@ -92,6 +92,14 @@ marpatcl_rtc_stack_pop (marpatcl_rtc_stack_p s)
     TRACE_RETURN ("%d", VAL [SZ]);
 }
 
+int
+marpatcl_rtc_stack_get (marpatcl_rtc_stack_p s, int at)
+{
+    TRACE_FUNC ("(stack*) %p, at %d)", s, at);
+    ASSERT_BOUNDS (at, SZ);
+    TRACE_RETURN ("%d", VAL [at]);
+}
+
 void
 marpatcl_rtc_stack_clear (marpatcl_rtc_stack_p s)
 {
@@ -114,6 +122,16 @@ marpatcl_rtc_stack_move (marpatcl_rtc_stack_p dst, marpatcl_rtc_stack_p src, int
     }
 
     TRACE_RETURN_VOID;
+}
+
+int*
+marpatcl_rtc_stack_data (marpatcl_rtc_stack_p s, int* sz)
+{
+    TRACE_FUNC ("(stack*) %p, (int*) sz %p)", s, sz);
+
+    *sz = SZ;
+
+    TRACE_RETURN ("(int*)", VAL);
 }
 
 /*

@@ -14,7 +14,7 @@
 #include <rtc.h>
 #include <critcl_trace.h>
 
-TRACE_TAG_OFF  (lexer_progress);
+TRACE_TAG_OFF (lexer_progress);
 TRACE_TAG_OFF (parser_progress);
 
 #ifdef CRITCL_TRACER
