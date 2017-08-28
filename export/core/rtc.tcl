@@ -29,7 +29,8 @@ debug prefix marpa/export/core/rtc {[debug caller] | }
 ## @slif-writer@     -- Grammar information: Author
 ## @slif-year@       -- Grammar information: Year of authorship
 ## @slif-name@       -- Grammar information: Name
-## @slif-name-tag@   -- Grammar information: Derived from name, tag for Tcl `debug` commands.
+## @slif-name-tag@   -- Grammar information: Derived from name.
+##                      Tag for Tcl `debug` commands.
 ## @tool-operator@   -- Name of user invoking the tool
 ## @tool@            -- Name of the pool generating the output
 ## @generation-time@ -- Date/Time of when tool was invoked
@@ -561,9 +562,8 @@ proc ::marpa::export::core::rtc::TabularArray {words {config {}}} {
     # Determine field width and derive the formatting pattern for
     # proper alignment from that. Note, alignment is right-justified,
     # space padding to the left of each word.
-    set max [tcl::mathfunc::max {*}[lmap w [lrange $words $from $to] {
-	string length $w
-    }]]
+
+    set max [Width [lrange $words $from $to]]
     set sf %${max}s
 
     append result $prefix
@@ -668,6 +668,10 @@ proc ::marpa::export::core::rtc::Limit16 {label n} {
 proc ::marpa::export::core::rtc::Limit12 {label n} {
     if {$n < 4096} return
     return -code error "ZZZ:$label $n > 4K"
+}
+
+proc ::marpa::export::core::rtc::Width {words} {
+    return [tcl::mathfunc::max {*}[lmap w $words { string length $w }]]
 }
 
 # # ## ### ##### ######## #############
@@ -775,6 +779,8 @@ oo::class create marpa::export::core::rtc::Mask {
     }
 }
 
+# # ## ### ##### ######## #############
+
 oo::class create marpa::export::core::rtc::SemaG {
     variable mysema ; # dict (semantics -> list(rule id))
     variable mycount
@@ -862,21 +868,27 @@ oo::class create marpa::export::core::rtc::SemaG {
     }
 }
 
+# # ## ### ##### ######## #############
+
 oo::class create marpa::export::core::rtc::Rules {
-    variable myrules
-    variable mysize
-    variable myelements
-    variable mynames
-    variable mylhsids
-    variable myusenames
-    variable mymaxpad
-    variable mylastlhs
-    variable myblank
+    variable myrules    ; # list (string) : rule instructions
+    variable mydisplay1 ; # list (string) : rule lhs (parallels myrules)
+    variable mydisplay2 ; # list (string) : rule rhs (parallels myrules)
+    variable mysize     ; # int           : #rules (mostly llength myrules)
+    variable myelements ; # int           : #entries in the instruction array
+    variable mynames    ; # list (int)    : rule name ref (parallels myrules)
+    variable mylhsids   ; # list (int)    : rule lhs name ref (parallels myrules)
+    variable myusenames ; # bool          : true -> `mynames`, `mylhsids` are valid
+    variable mymaxpad   ; # int           : max length of a rule right hand side
+    variable mylastlhs  ; # string        : last lhs name specified by a CMD_PRIO
+    variable myblank    ; # string        : whitespace covering `mylastlhs`.
 
     constructor {sym pool {usenames 0}} {
 	marpa::import $sym  S
 	marpa::import $pool P
 	set myrules    {}
+	set mydisplay1 {}
+	set mydisplay2 {}
 	set mysize     0
 	set myelements 0
 	set mynames    {}
@@ -889,7 +901,18 @@ oo::class create marpa::export::core::rtc::Rules {
     }
 
     method content {{prefix {    }}} {
-	return "${prefix}[join $myrules "\n$prefix"]"
+	set maxr [marpa::export::core::rtc::Width $myrules]
+	set maxd [marpa::export::core::rtc::Width $mydisplay1]
+	set fmta "${prefix}%-${maxr}s /* %-${maxd}s := %s */"
+	set fmtb "${prefix}%s"
+	
+	return [join [lmap ins $myrules lhs $mydisplay1 rhs $mydisplay2 {
+	    if {$lhs ne {}} {
+		format $fmta $ins $lhs $rhs
+	    } else {
+		format $fmtb $ins $lhs $rhs
+	    }
+	}] \n]
     }
 
     method refs {} {
@@ -913,8 +936,14 @@ oo::class create marpa::export::core::rtc::Rules {
     }
 
     method start {sym} {
-	set myrules [linsert $myrules 0 [my C start $mymaxpad],]
+	# wrap the rule instructions into declarations of scratch area
+	# size and start symbol.
+	set     myrules [linsert $myrules 0 [my C start $mymaxpad],]
 	lappend myrules [my C stop [S 2id $sym]]
+	set     mydisplay1 [linsert $mydisplay1 0 {}]
+	lappend mydisplay1 {}
+	set     mydisplay2 [linsert $mydisplay2 0 {}]
+	lappend mydisplay2 {}
 	incr myelements 2
 	return
     }
@@ -922,7 +951,7 @@ oo::class create marpa::export::core::rtc::Rules {
     method P_brange {lhs start stop} {
 	lappend cmd [my C brange [S 2id $lhs]]
 	lappend cmd "MARPATCL_RCMD_BOXR ([format %3d $start],[format %3d $stop])"
-	my P $cmd $lhs {}
+	my P $cmd <$lhs> "brange ($start - $stop)"
 	incr myelements 2
 	return
     }
@@ -951,42 +980,51 @@ oo::class create marpa::export::core::rtc::Rules {
 	    append myblank [string repeat { } [string length $lhid]]
 	}
 	lappend cmd {*}[lmap s $rhs { S 2id $s }]
-	my P $cmd $lhs $rhs
+	my P $cmd <$lhs> [lmap w $rhs { set _ <${w}> }]
 	return
     }
 
     method P_quantified {lhs rhs pos args} {
-	set lhs [S 2id $lhs]
+	set lhsid [S 2id $lhs]
+	set op [dict get {
+	    0 *
+	    1 +
+	} $pos]
 	dict with args {}
+	set suffix {}
 	if {[info exists separator]} {
 	    lassign $separator separator proper
-	    set separator [S 2id $separator]
+	    set separatorid [S 2id $separator]
+	    set suffix " (<$separator>[dict get {
+		0 {}
+		1 { P}
+	    } $proper])"
 	}
 	switch -exact -- ${pos}[info exists separator] {
 	    00 {
-		lappend cmd [my C quant* $lhs]
+		lappend cmd [my C quant* $lhsid]
 		lappend cmd [S 2id $rhs]
 		incr myelements 2
 	    }
 	    01 {
-		lappend cmd [my C quant*S $lhs]
+		lappend cmd [my C quant*S $lhsid]
 		lappend cmd [S 2id $rhs]
-		lappend cmd [my C [my S $proper] $separator]
+		lappend cmd [my C [my S $proper] $separatorid]
 		incr myelements 3
 	    }
 	    10 {
-		lappend cmd [my C quant+ $lhs]
+		lappend cmd [my C quant+ $lhsid]
 		lappend cmd [S 2id $rhs]
 		incr myelements 2
 	    }
 	    11 {
-		lappend cmd [my C quant+S $lhs]
+		lappend cmd [my C quant+S $lhsid]
 		lappend cmd [S 2id $rhs]
-		lappend cmd [my C [my S $proper] $separator]
+		lappend cmd [my C [my S $proper] $separatorid]
 		incr myelements 3
 	    }
 	}
-	my P $cmd $lhs [linsert $args 0 $pos]
+	my P $cmd <$lhs> "<$rhs> $op$suffix"
 	return
     }
 
@@ -1014,7 +1052,9 @@ oo::class create marpa::export::core::rtc::Rules {
     }
 
     method P {cmd lhs display} {
-	lappend myrules "[join $cmd ", "]," ; #" /* -- $lhs ::= $display -- */"
+	lappend myrules    "[join $cmd ", "],"
+	lappend mydisplay1 $lhs
+	lappend mydisplay2 $display
 	incr mysize
 	return
     }
