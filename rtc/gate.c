@@ -6,12 +6,14 @@
  */
 
 #include <gate.h>
+#include <spec.h>
 #include <rtc_int.h>
 #include <critcl_assert.h>
 #include <critcl_trace.h>
 
 TRACE_OFF;
 TRACE_TAG_OFF (accept);
+TRACE_TAG_OFF (stream);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -68,8 +70,11 @@ marpatcl_rtc_gate_free (marpatcl_rtc_p p)
 void
 marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
 {
+#define NAME(sym) marpatcl_rtc_spec_symname (SPEC->l0, sym, 0)
+    
     int flushed = 0;
-    TRACE_FUNC ("((rtc*) %p, byte %d (@ %d))", p, ch, IN.location);
+    TRACE_FUNC ("((rtc*) %p, byte %d (@ %d <%s>))", p, ch, IN.location, NAME (ch));
+    TRACE_TAG (stream, "gate stream :: byte %d (@ %d <%s>)", ch, IN.location, NAME (ch));
 
     GATE.lastchar = ch;
     GATE.lastloc  = IN.location;
@@ -147,7 +152,8 @@ void
 marpatcl_rtc_gate_redo (marpatcl_rtc_p p, int n)
 {
     TRACE_FUNC ("(rtc*) %p, n %d)", p, n);
-
+    TRACE_TAG (stream, "gate stream :: /CUT", 0);
+    
     if (!n) {
 	marpatcl_rtc_stack_clear (GATE.history);
     } else {
