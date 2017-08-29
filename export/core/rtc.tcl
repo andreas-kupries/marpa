@@ -414,14 +414,6 @@ proc ::marpa::export::core::rtc::LowerLiterals {gc} {
     # expanded during setup at runtime, into alternations of bytes,
     # with a subsequent explosion of rules.
 
-    # For example we currently need 2191 rule instructions to describe
-    # the L0 grammar of the SLIF meta grammar, which encode 6639
-    # rules. The difference is due to the 1591 byte-ranges handling
-    # the character classes.
-    #
-    # 2191 insn | 1591 ranges => 6039 range rules (~ x3.8 for the SLIF L0)
-    #           +  600 other  =>  600 other /
-    
     marpa::slif::literal r2container \
 	[marpa::slif::literal reduce [concat {*}[lmap {sym rhs} [dict get [$gc l0 serialize] literal] {
 	    list $sym [lindex $rhs 0]
@@ -432,25 +424,202 @@ proc ::marpa::export::core::rtc::LowerLiterals {gc} {
 	    D-^CHR
 	}] $gc
 
-    # TODO: Global optimization of byte ranges.
+    RefactorRanges $gc
+    return
+}
 
-    # Reason: The byte ranges to describe unicode classes often
-    # overlap significantly. We will have many byte ranges starting at
-    # the same byte and just having different end bytes. In the
-    # current coding, where all ranges are separate this means that we
-    # will get lots of rules of the form 'B := x ' for the same byte x
-    # in many related ranges B. We get an approximately O(n**2) blowup
-    # in the number of rules from the instructions for the byte
-    # ranges.
+proc ::marpa::export::core::rtc::RefactorRanges {gc} {
+    debug.marpa/export/core/rtc {}
+    # Global refactoring of byte ranges.
     #
-    # The envisioned optimization would look over all byte ranges,
-    # pull overlapping ranges together and rewrite them so that the
-    # ranges do not (or only minimally) overlap, for an approx O(n)
-    # expansion in rules. While the number of instructions encoding
-    # the grammar are expected to go up somewhat (to handle additional
-    # intrrmediate symbols) the overall number of the rules they
-    # generate should be down.
+    # The byte ranges in the ASBR for describe unicode classes often
+    # overlap significantly. One of the patterns seen are many byte
+    # ranges starting at the same byte and just having different end
+    # bytes.
+
+    # Without refactorization is range is coded on its own, as
+    # alternation of all the bytes in the range. This generates
+    # (end-start+1) rules for a range, one per byte/alternate. Due to
+    # the strong overlap between ranges many of the generated
+    # alternates are identical across all the ranges.
+    ##
+    # In concrete numbers, using the L0 sub-grammar of the SLIF meta
+    # grammar as our example:
+    ##
+    #   2191 setup instructions are used to decribe 6639 rules.  About
+    #   73% (1591 exactly) are instructions for byte ranges, expanding
+    #   into 6039 rules (91%) for the range alternates. The remaining
+    #   600 instructions (27%) account for the remaining 600 rules
+    #   (9%).
+
+    # The refactoring algorithm currently only looks for the pattern
+    # mentioned before, i.e. sets of ranges starting at the same
+    # byte. This is easy to do, compared to comparing all ranges
+    # against all others for overlap and then trying to find
+    # advantegeous splits.
+    ##
+    # After ordering by end byte the first range is left as is,
+    # becoming the initial prefix, while all following are refactored
+    # into an alternation of the known prefix and the left-over
+    # suffix, becoming prefix to the next in turn. By properly
+    # ordering the overall refactoring itself, i.e. processing sets in
+    # ascending order of their start byte the generated range suffixes
+    # may in turn be refactored further.
+    ##
+    # For our example this results in
+    ##
+    # 2584 setup instructions (+18%) are used to describe 2942 rules
+    # (-56%). About only 4% (91 exactly) are instructions for byte
+    # ranges, expanding into 449 rules (15%) for the range
+    # alternates. The remaining 2493 instructions (96%) account for
+    # the remaining 2493 rules (85%). As the 600 other rules from
+    # before the refactoring are the basic lexical structure we can
+    # infer that 1893 of these instructions and rules are newly-made
+    # alternations aggregating the atomic small ranges into the large
+    # ranges of the grammar.
+
+    # As end result we can expect that the number of instructions
+    # needed to encode an L0 sub-grammar goes moderately up while the
+    # number of actual rules they generate should fall dramatically.
+    # Instead of many large (wide) byte ranges expanding into a large
+    # set of virtually identical alternates the grammar will contain a
+    # small set of near-atomic ranges instead, from which all the
+    # larger ranges are constructed, via (binary) trees of
+    # alternations.
+
+    # NOTE: The puts statements with AAA and ZZZ prefixes can be used
+    # print the set of byte ranges as pseudo bitmaps, showing the
+    # distribution before and after the refactoring. Extract them with
+    # grep, then sort by start and end bytes.
     
+    set ranges {}   ; # ranges :: (start -> (stop -> symbol))
+    set cover  {}   ; # cover  :: ((start,stop) -> sym)
+
+    foreach sym [$gc l0 symbols-of literal] {
+	set details [lassign [lindex [$gc l0 get $sym] 0] type]
+	if {$type eq "brange"} {
+	    lassign $details start stop
+	    debug.marpa/export/core/rtc {Range: $sym ($start - $stop)}
+	    # Print range as bitmap.
+	    #puts AAA_[format %3d $start]-[format %3d $stop]|[string repeat { } [expr {$start-1}]][string repeat * [expr {$stop-$start+1}]]
+	    
+	    # Collect ranges with the same start together.
+	    dict set ranges $start $stop $sym
+
+	    # Collect range to symbol mapping for re-use of existing
+	    # definition where possible.
+	    dict set cover [list $start $stop] $sym
+	} else {
+	    # type is a "byte". We put this into the symbol mapping
+	    # for reuse, but not in the table for refactoring.
+	    lassign $details byte
+	    debug.marpa/export/core/rtc {Byte: $sym ($byte)}
+	    dict set cover [list $byte $byte] $sym
+	}
+    }
+
+    #debug.marpa/export/core/rtc {[debug::pdict $cover]}
+    
+    while {[dict size $ranges]} {
+	# ranges is the table/queue of things to refactor.
+	set start [lindex [lsort -integer [dict keys $ranges]] 0]
+	# We iterate over the collected ranges by ascending start.
+	# This way any new ranges we may create below for suffixes is
+	# added in places we will look at and process later. There is
+	# no need to go backward for reprocessing of added things.
+
+	# Take definition, drop it from queue, we will be done with it.
+	set defs [dict get $ranges $start]
+	dict unset ranges $start
+
+	debug.marpa/export/core/rtc {Processing [format %3d $start] :: [dictsort $defs]}
+	
+	# For each set of ranges starting the same point, sort them by
+	# ascending endpoint. The first definition stands as is. If it
+	# is the sole definition we drop the entire set from processing.
+
+	if {[llength [dict keys $defs]] == 1} {
+	    debug.marpa/export/core/rtc {...Single range, skip}
+	    continue
+	}
+
+	# All definitions after the first become an alternation of
+	# prefix and suffix range, the latter the subtraction of
+	# prefix from full range, making it smaller. That part may
+	# re-use an existing range definition. Note that the suffix
+	# may be refactored too. As the start of any suffix range is
+	# greater than the current start they are processed in
+	# upcoming iterations.
+	
+	set remainder [lassign [lsort -integer [dict keys $defs]] prefixstop]
+	set prefixsym [dict get $defs $prefixstop]
+
+	debug.marpa/export/core/rtc {...Multiple ranges, refactor 2+}
+	
+	foreach stop $remainder {
+	    debug.marpa/export/core/rtc {...Prefix  ([format %3d $start]-[format %3d $prefixstop]) $prefixsym}
+
+	    set currentsym [dict get $defs $stop]
+	    debug.marpa/export/core/rtc {...Current ([format %3d $start]-[format %3d $stop]) $currentsym}
+	    
+	    # suffix = prefixstop+1 ... stop
+	    set suffixstart $prefixstop
+	    incr suffixstart
+
+	    set key [list $suffixstart $stop]
+	    if {![dict exists $cover $key]} {
+		# The suffix range has no symbol yet. Create it as
+		# either a byte or a brange literal, depending on the
+		# size of the covered range. Always add it to the
+		# coverage map for future reuse.  Add it to the queue
+		# for refactoring only if it is a range.
+
+		if {$suffixstart == $stop} {
+		    set suffixsym BYTE<d$suffixstart>
+		    dict set cover [list $suffixstart $suffixstart] $suffixsym
+		    $gc l0 literal $suffixsym byte $suffixstart
+
+		    debug.marpa/export/core/rtc {...Suffix  ([format %3d $suffixstart]) $suffixsym (BYTE)}
+		} else {
+		    set suffixsym BRAN<d${suffixstart}-d${stop}>
+		    dict set cover $key $suffixsym
+		    dict set ranges $suffixstart $stop $suffixsym
+		    $gc l0 literal $suffixsym brange $suffixstart $stop
+		    debug.marpa/export/core/rtc {...Suffix  ([format %3d $suffixstart]-[format %3d $stop]) $suffixsym (NEW)}
+		}
+	    } else {
+		# We have a symbol for the suffix. Reuse it. No new
+		# entries are needed.
+		set suffixsym [dict get $cover $key]
+		debug.marpa/export/core/rtc {...Suffix  ([format %3d $suffixstart]-[format %3d $stop]) $suffixsym (reused)}
+	    }
+	    
+	    # create priority alternation of prefix and suffix ranges
+	    $gc l0 remove        $currentsym
+	    $gc l0 priority-rule $currentsym [list $prefixsym] 0
+	    $gc l0 priority-rule $currentsym [list $suffixsym] 0
+
+	    debug.marpa/export/core/rtc {...Replace $currentsym ::= $prefixsym | $suffixsym}
+	    
+	    # The processed definition becomes the prefix for the next.
+	    set prefixstop $stop
+	    set prefixsym  $currentsym
+	}
+    }
+
+    if 0 {
+	# post refactoring, print new ranges as bitmaps
+	foreach sym [$gc l0 symbols-of literal] {
+	    set details [lassign [lindex [$gc l0 get $sym] 0] type]
+	    if {$type eq "brange"} {
+		lassign $details start stop
+		# Print range as bitmap.
+		puts ZZZ_[format %3d $start]-[format %3d $stop]|[string repeat { } [expr {$start-1}]][string repeat {*} [expr {$stop-$start+1}]]
+	    }
+	}
+    }
+
+    #exit 1
     return
 }
 
@@ -709,6 +878,14 @@ proc ::marpa::export::core::rtc::Limit12 {label n} {
 
 proc ::marpa::export::core::rtc::Width {words} {
     return [tcl::mathfunc::max {*}[lmap w $words { string length $w }]]
+}
+
+
+proc ::marpa::export::core::rtc::dictsort {dict} {
+    foreach k [lsort -dict [dict keys $dict]] {
+	lappend r $k [dict get $dict $k]
+    }
+    return $r
 }
 
 # # ## ### ##### ######## #############
