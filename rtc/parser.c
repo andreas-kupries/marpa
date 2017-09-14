@@ -41,6 +41,7 @@ marpatcl_rtc_parser_init (marpatcl_rtc_p p)
     TRACE_FUNC ("((rtc*) %p)", p);
     
     PAR.g = marpa_g_new (CONF);
+    (void) marpa_g_force_valued (PAR.g);
     PRD   = marpatcl_rtc_spec_setup (PAR.g, SPEC->g1, TRACE_TAG_VAR (parser_progress));
     res = marpa_g_precompute (PAR.g);
     marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 precompute");

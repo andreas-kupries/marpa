@@ -74,6 +74,7 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
      */
     
     LEX.g = marpa_g_new (CONF);
+    (void) marpa_g_force_valued (LEX.g);
     LRD   = marpatcl_rtc_spec_setup (LEX.g, SPEC->l0, TRACE_TAG_VAR (lexer_progress));
     marpatcl_rtc_symset_init (ACCEPT, SPEC->lexemes + SPEC->discards);
     marpatcl_rtc_symset_init (FOUND,  SPEC->lexemes);
