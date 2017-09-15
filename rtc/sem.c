@@ -388,6 +388,14 @@ marpatcl_rtc_sv_show (marpatcl_rtc_sv_p sv, int* slen)
 {
     char* svs;
     int len;
+    if (!sv) {
+	const char* null = "<NULL>";
+	svs = NALLOC (char, 2+strlen(null));
+	len = sprintf (svs, "%s", null);
+	if (slen) *slen = len;
+	return svs;
+	/**/
+    }
     switch (T_GET) {
     case marpatcl_rtc_sv_type_string:
 	svs = NALLOC (char, 1+2+strlen (STR));

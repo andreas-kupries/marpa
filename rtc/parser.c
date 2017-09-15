@@ -41,6 +41,7 @@ marpatcl_rtc_parser_init (marpatcl_rtc_p p)
     TRACE_FUNC ("((rtc*) %p)", p);
     
     PAR.g = marpa_g_new (CONF);
+    (void) marpa_g_force_valued (PAR.g);
     PRD   = marpatcl_rtc_spec_setup (PAR.g, SPEC->g1, TRACE_TAG_VAR (parser_progress));
     res = marpa_g_precompute (PAR.g);
     marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 precompute");
@@ -63,7 +64,7 @@ marpatcl_rtc_parser_free (marpatcl_rtc_p p)
     TRACE_FUNC ("((rtc*) %p)", p);
 
     marpa_g_unref (PAR.g);
-    marpa_r_unref (PAR.recce);
+    if (PAR.recce) marpa_r_unref (PAR.recce);
 
     TRACE_RETURN_VOID;
 }
@@ -84,7 +85,7 @@ marpatcl_rtc_parser_enter (marpatcl_rtc_p p, int found)
      */
 
     res = marpa_r_earleme_complete (PAR.recce);
-    if (res != MARPA_ERR_PARSE_EXHAUSTED) {
+    if (res && (marpa_g_error (PAR.g, NULL) != MARPA_ERR_PARSE_EXHAUSTED)) {
 	// any error but exhausted is a hard failure
 	marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 earleme_complete");
     }
@@ -203,7 +204,7 @@ complete (marpatcl_rtc_p p)
 	/* Execute semantics ... */
 	v = marpa_v_new (t);
 	ASSERT (v, "Marpa_Value creation failed");
-	TRACE_DO (_marpa_v_trace (v, 1));
+	//TRACE_DO (_marpa_v_trace (v, 1));
 	TRACE_ADD (" value %p", v);
 	TRACE_CLOSER;
 
@@ -236,7 +237,7 @@ complete (marpatcl_rtc_p p)
 		 * - get per-rule masking - filter vector
 		 * - get per-rule semantic - run on vector
 		 */
-		TRACE_ADD ("    -- rule  %3d, span (%d-%d), %d := (%d-%d)",
+		TRACE_ADD ("    -- rule  %4d, span (%d-%d), %d := (%d-%d)",
 			   marpa_v_rule(v),
 			   marpa_v_rule_start_es_id(v),
 			   marpa_v_es_id(v),
@@ -265,7 +266,7 @@ complete (marpatcl_rtc_p p)
 		// marpa_v_result(v)      - destination stack slot
 		// marpa_v_token_value(v) - token's semantic value
 		/* token - push on eval stack */
-		TRACE_ADD ("   -- token %3d, span (%d-%d), <%s> %d := <%d>",
+		TRACE_ADD ("   -- token %4d, span (%d-%d), <%s> %d := <%d>",
 			   marpa_v_token(v),
 			   marpa_v_token_start_es_id(v),
 			   marpa_v_es_id(v),

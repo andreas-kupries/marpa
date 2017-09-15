@@ -69,10 +69,12 @@ void
 marpatcl_rtc_sva_free (marpatcl_rtc_sv_vec v)
 {
     int k;
+    marpatcl_rtc_sv_p x;
     TRACE_FUNC ("((sv_vec) %p)", v);
 
     for (k=0; k < SZ; k++) {
-	marpatcl_rtc_sv_unref (VAL [k]);
+	x = VAL [k];
+	if (x) marpatcl_rtc_sv_unref (x);
     }
     FREE (VAL);
 
@@ -264,7 +266,7 @@ marpatcl_rtc_sva_filter (marpatcl_rtc_sv_vec v, int c, marpatcl_rtc_sym* x)
 	if (k == x[j]) {
 	    TRACE_TAG_ADD (filter, " skip, unref", 0);
 	    /* This element filtered out, reference gone */
-	    marpatcl_rtc_sv_unref (VAL [k]);
+	    if (VAL [k]) marpatcl_rtc_sv_unref (VAL [k]);
 	    j ++;
 	    /* From now on t < k */
 	} else {
@@ -291,24 +293,24 @@ marpatcl_rtc_sva_copy (marpatcl_rtc_sv_vec dst,
 		       marpatcl_rtc_sv_vec src,
 		       int from, int to)
 {
-    int k, at;
+    int k, newsize;
     /* Shorthands not available, as they assume `v` */
     TRACE_FUNC ("((sv_vec) dst %p <- (sv_vec) src %p [%d-%d])", dst, src, from, to);
     ASSERT_BOUNDS (from, src->size);
     ASSERT_BOUNDS (to,   src->size);
-    ASSERT_BOUNDS (from, to);
-    at = dst->size+(to-from+1);
-    ASSERT (!dst->strict || (at < dst->capacity), "Cannot fill beyond capacity");
+    ASSERT (from <= to, "Unable to copy twisted interval (start > end)");
+    newsize = dst->size+(to-from+1);
+    ASSERT (!dst->strict || (newsize <= dst->capacity), "Cannot fill beyond capacity");
 
     // Semi-inlined _push. The per-push check for expandability, and actual
     // expansion are factored out and pulled in front of the actual push ops.
 
     // Expand to hold all the new values
-    while (at >= dst->capacity) {
+    while (newsize > dst->capacity) {
 	dst->capacity += dst->capacity;
 	dst->data = REALLOC (dst->data, marpatcl_rtc_sv_p, dst->capacity);
     }
-    ASSERT_BOUNDS (at, dst->capacity);
+    ASSERT_BOUNDS (newsize-1, dst->capacity);
     
     for (k = from; k <= to; k++) {
 	marpatcl_rtc_sv_p x = src->data[k];

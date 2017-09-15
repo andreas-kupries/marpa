@@ -74,6 +74,7 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
      */
     
     LEX.g = marpa_g_new (CONF);
+    (void) marpa_g_force_valued (LEX.g);
     LRD   = marpatcl_rtc_spec_setup (LEX.g, SPEC->l0, TRACE_TAG_VAR (lexer_progress));
     marpatcl_rtc_symset_init (ACCEPT, SPEC->lexemes + SPEC->discards);
     marpatcl_rtc_symset_init (FOUND,  SPEC->lexemes);
@@ -139,7 +140,7 @@ marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
     marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 alternative");
 
     res = marpa_r_earleme_complete (LEX.recce);
-    if (res != MARPA_ERR_PARSE_EXHAUSTED) {
+    if (res && (marpa_g_error (LEX.g, NULL) != MARPA_ERR_PARSE_EXHAUSTED)) {
 	// any error but exhausted is a hard failure
 	marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 earleme_complete");
     }
@@ -425,7 +426,7 @@ get_parse (marpatcl_rtc_p    p,
 
     v = marpa_v_new (t);
     ASSERT (v, "Marpa_Value creation failed");
-    TRACE_DO (_marpa_v_trace (v, 1));
+    //TRACE_DO (_marpa_v_trace (v, 1));
     
     stop = 0;
     while (!stop) {
@@ -446,7 +447,7 @@ get_parse (marpatcl_rtc_p    p,
 	case MARPA_STEP_RULE:
 	    /* Keep last two rules saved so that we have quick access to
 	     * next-to-last later */
-	    TRACE_ADD ("  -- [%1d] rule %3d, span (%d-%d), %d := (%d-%d)",
+	    TRACE_ADD ("  -- [%1d] rule %4d, span (%d-%d), %d := (%d-%d)",
 		       rslot,
 		       marpa_v_rule(v),
 		       marpa_v_rule_start_es_id(v),
@@ -460,7 +461,7 @@ get_parse (marpatcl_rtc_p    p,
 	case MARPA_STEP_TOKEN:
 	    /* First token instruction has the id of the ACS symbol of the
 	     * matched lexeme => terminal symbol derivable from this. */
-	    TRACE_ADD (" -- token    %3d, span (%d-%d) <%s>, %d := <%d>",
+	    TRACE_ADD (" -- token    %4d, span (%d-%d) <%s>, %d := <%d>",
 		   marpa_v_token(v),
 		   marpa_v_token_start_es_id(v),
 		   marpa_v_es_id(v),
