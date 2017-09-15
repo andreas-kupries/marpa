@@ -14,21 +14,8 @@ TRACE_OFF;
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
- * Shorthands
+ * Debugging support.
  */
-
-#define TAG (sv->tag)
-#define REF (sv->refCount)
-#define STR (sv->value.string)
-#define INT (sv->value.inum)
-#define FLT (sv->value.fnum)
-#define USR (sv->value.user)
-#define VEC (sv->value.vec)
-
-#define T_SET(t,f) TAG = (((t) << 4) | (f))
-#define T_GET     (TAG >> 4)
-#define FLAGS     (TAG & 0xF)
-#define OWN (1)
 
 #define ASSERT_SV_TYPE(tag,msg)						\
     TRACE ("sv %p (%d/%s)", sv, T_GET, sv_type (sv));			\
