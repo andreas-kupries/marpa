@@ -118,14 +118,23 @@ marpatcl_rtc_parser_eof (marpatcl_rtc_p p)
  */
 
 #ifdef CRITCL_TRACER
-#define SHOW_SV(sv) \
-    {							\
+#define SHOW_SV(sv) {					\
 	char* svs = marpatcl_rtc_sv_show (sv, 0);	\
 	TRACE_ADD (" sv %p = %s", sv, svs);		\
 	FREE (svs);					\
     }
+
+#define SHOW_MASK(mlen,mv) {		     \
+	int j ; const char* sep = " M(";     \
+	for (j =0; j < mlen; j++) {	     \
+	    TRACE_ADD ("%s%d", sep, mv[j]);  \
+	    sep = ",";			     \
+	}				     \
+        TRACE_ADD (")", 0);		     \
+    }
 #else
 #define SHOW_SV(sv)
+#define SHOW_MASK(mlen,mv)
 #endif
 
 
@@ -252,6 +261,7 @@ complete (marpatcl_rtc_p p)
 		/* get mask, filter */
 		mv = marpatcl_rtc_spec_g1decode (&SPEC->g1mask, rid, &mlen);
 		if (mlen) {
+		    SHOW_MASK (mlen, mv);
 		    marpatcl_rtc_sva_filter (&rhs, mlen, mv);
 		}
 
@@ -284,7 +294,7 @@ complete (marpatcl_rtc_p p)
 		/* null symbol - push null on eval stack
 		 * -- might have semantics ?
 		 */
-		TRACE_ADD (" -- sym     %3d, span (%d-%d), <%s> %d := NULL",
+		TRACE_ADD (" -- sym   %4d, span (%d-%d), <%s> %d := NULL",
 			   marpa_v_symbol(v),
 			   marpa_v_token_start_es_id(v),
 			   marpa_v_es_id(v),

@@ -23,6 +23,14 @@ TRACE_TAG_OFF (filter);
 #define VAL    (v->data)
 #define STRICT (v->strict)
 
+#define VECDUMP(tag,label,v) {						\
+        int i;								\
+	for (i=0; i < (v)->size; i++) {					\
+	    TRACE_TAG (tag, "* %s [%3d] = %p", label, i, (v)->data[i]); \
+	}								\
+	TRACE_TAG (tag, "", 0);						\
+    }
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API
@@ -250,41 +258,52 @@ marpatcl_rtc_sva_filter (marpatcl_rtc_sv_vec v, int c, marpatcl_rtc_sym* x)
     marpatcl_rtc_sv_p sv;
     int k, t, j; /* from, to, filter from */
     TRACE_FUNC ("((sv_vec) %p, #sym %d, (sym*) %p)", v, c, x);
-
+    VECDUMP (filter, "vI", v);
+    
     for (k=0, t=0, j=0; k < SZ; k++) {
 	TRACE_TAG_HEADER (filter, 1);
-	TRACE_TAG_ADD (filter, "[%3d <- %3d [%3d: %3d]]", k, t, j, x[j]);
-	if (t < k) {
-	    TRACE_TAG_ADD (filter, " keep, copy down", 0);
-	    VAL [t] = VAL [k];
-	    VAL [k] = NULL;
-	    /* Reference moved, no change in count
-	     * Setting it to null in origin prevents
-	     * miscounting during truncation at the end.
+	TRACE_TAG_ADD (filter, "[%3d <- %3d [%3d: %3d]]", t, k, j, ((j<c)?x[j]:-1));
+	if ((j < c) && (k == x[j])) {
+	    TRACE_TAG_ADD (filter, ", skip & unref %d", k);
+	    /* (1) This element is filtered out, its reference gone, if it had
+	     * any. Replace with null, and release. The null will be moved
+	     * towards the end by (2).
 	     */
-	}
-	if (k == x[j]) {
-	    TRACE_TAG_ADD (filter, " skip, unref", 0);
-	    /* This element filtered out, reference gone */
 	    if (VAL [k]) marpatcl_rtc_sv_unref (VAL [k]);
+	    VAL [k] = NULL;
 	    j ++;
 	    /* From now on t < k */
+	} else if (t < k) {
+	    /* (2) Move the referenced element down. No change in count.
+	     * Setting it to null effectively shifts that null from the
+	     * destination slot towards the end of the vector.
+	     */
+	    TRACE_TAG_ADD (filter, ", save %d to %d", k, t);
+	    VAL [t] = VAL [k];
+	    VAL [k] = NULL;
+	    t ++;
 	} else {
-	    TRACE_TAG_ADD (filter, " keep", 0);
+	    /* (3) k == t, no copying needed to keep the element.
+	     * We are here before the first element to filter out.
+	     */
+	    TRACE_TAG_ADD (filter, ", keep %d", k);
 	    t ++;
 	}
 	TRACE_TAG_CLOSER (filter);
-    }
-    /* Truncate */
-    while (SZ > (t+1)) {
-	// inlined _pop
-	SZ --;
-	sv = VAL [SZ];
-	TRACE_TAG (filter, "pop (sv*) %p", sv);
-	VAL [SZ] = 0;
-	if (sv) marpatcl_rtc_sv_unref (sv);
+	VECDUMP (filter, "vT", v);
     }
 
+    /* Truncate to t, which is the new, lesser, size of the vector.
+    **
+     * Note, the loop above nulled and released the removed elements (1), and
+     * further shifted these nulls to the end of the vector (2). As nothing
+     * has to be done with the elements anymore the truncation reduces to a
+     * simple assignment of the new size.
+     */
+    TRACE_TAG (filter, "pop %d", SZ-t);
+    SZ = t;
+
+    VECDUMP (filter, "vO", v);
     TRACE_RETURN_VOID;
 }
 
