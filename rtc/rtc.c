@@ -18,7 +18,10 @@ TRACE_OFF;
  */
 
 marpatcl_rtc_p
-marpatcl_rtc_cons (marpatcl_rtc_spec* g, marpatcl_rtc_sv_cmd a)
+marpatcl_rtc_cons (marpatcl_rtc_spec* g,
+		   marpatcl_rtc_sv_cmd a,
+		   marpatcl_rtc_result r,
+		   void* rcd)
 {
     marpatcl_rtc_p p;
     TRACE_FUNC ("((spec*) %p, (cmd) %p)", g, a);
@@ -26,6 +29,8 @@ marpatcl_rtc_cons (marpatcl_rtc_spec* g, marpatcl_rtc_sv_cmd a)
     p = ALLOC (marpatcl_rtc);
     SPEC = g;
     ACT = a;
+    p->result = r;
+    p->rcdata = rcd;
     (void) marpa_c_init (CONF);
     marpatcl_rtc_fail_init    (p);
     marpatcl_rtc_store_init   (p);

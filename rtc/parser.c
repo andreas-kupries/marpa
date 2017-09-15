@@ -322,7 +322,9 @@ complete (marpatcl_rtc_p p)
 	TRACE_ADD ("tree :=", 0);
 	SHOW_SV (sv);
 	TRACE_CLOSER;
-	// TODO: push generated SV to RTC for higher handling
+
+	// Invoke user-supplied callback for handling the SVs
+	p->result (p->rcdata, sv);
 
 	marpatcl_rtc_sva_clear (&es);
     }

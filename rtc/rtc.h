@@ -34,10 +34,20 @@ typedef struct marpatcl_rtc* marpatcl_rtc_p;
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
+ * Type of the callback invoked to return the results (semantic values).
+ */
+
+typedef void (*marpatcl_rtc_result) (void* clientdata, marpatcl_rtc_sv_p);
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
  * API -- lifecycle, accessors and mutators
  */
 
-marpatcl_rtc_p    marpatcl_rtc_cons    (marpatcl_rtc_spec* g, marpatcl_rtc_sv_cmd a);
+marpatcl_rtc_p    marpatcl_rtc_cons    (marpatcl_rtc_spec* g,
+					marpatcl_rtc_sv_cmd a,
+					marpatcl_rtc_result r,
+					void* rcd);
 void              marpatcl_rtc_destroy (marpatcl_rtc_p p);
 void              marpatcl_rtc_enter   (marpatcl_rtc_p p, const char* bytes, int n);
 void              marpatcl_rtc_eof     (marpatcl_rtc_p p);
