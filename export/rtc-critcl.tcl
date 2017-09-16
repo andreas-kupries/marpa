@@ -108,6 +108,8 @@ critcl::include marpa.h
 critcl::include spec.h
 critcl::include rtc.h
 critcl::include fail.h
+critcl::include sem_tcl.h
+critcl::include store.h
 
 critcl::source c/errors.tcl           ; # Mapping marpa error codes to strings.
 critcl::source c/events.tcl           ; # Mapping marpa event types to strings.
@@ -224,10 +226,22 @@ critcl::ccode {
 ## Class exposing the grammar engine.
 
 critcl::class def @slif-name@ {
+
+    insvariable marpatcl_rtc_sv_p result {
+	Parse result
+    } {
+	instance->result = 0;
+    } {
+	if (instance->result) marpatcl_rtc_sv_unref (instance->result);
+    }
+    
     insvariable marpatcl_rtc_p state {
 	C-level engine, RTC structures.
     } {
-	instance->state = marpatcl_rtc_cons (&@cname@_spec, NULL /* TODO FUTURE */);
+	instance->state = marpatcl_rtc_cons (&@cname@_spec,
+					     NULL /* actions - TODO FUTURE */,
+					     @stem@_result,
+					     (void*) instance );
     } {
 	marpatcl_rtc_destroy (instance->state);
     }
@@ -256,12 +270,12 @@ critcl::class def @slif-name@ {
 	FREE (buf);
 
 	(void) Tcl_Close (ip, in);
-	return @stem@_complete (ip, instance->state);
+	return @stem@_complete (ip, instance);
     }
     
     method process proc {Tcl_Interp* ip pstring text} ok {
 	marpatcl_rtc_enter (instance->state, text.s, text.len);
-	return @stem@_complete (ip, instance->state);
+	return @stem@_complete (ip, instance);
     }
 
     support {
@@ -273,19 +287,34 @@ critcl::class def @slif-name@ {
 	** CType: @classtype@
 	*/
 
-	static int
-	@stem@_complete (Tcl_Interp* ip, marpatcl_rtc_p state)
+	static void
+	@stem@_result (void* cdata, marpatcl_rtc_sv_p sv)
 	{
+	    @instancetype@ instance = (@instancetype@) cdata;
+	    if (instance->result) marpatcl_rtc_sv_unref (instance->result);
+	    if (sv) marpatcl_rtc_sv_ref (sv);
+	    instance->result = sv;
+	    return;
+	}
+
+	static int
+	@stem@_complete (Tcl_Interp* ip, @instancetype@ instance)
+	{
+	    marpatcl_rtc_p state = instance->state;
 	    if (!marpatcl_rtc_failed (state)) {
 		marpatcl_rtc_eof (state);
 	    }
-	    if (marpatcl_rtc_failed (state)) {
-		// TODO: retrieve and throw error
-		return TCL_ERROR;
+	    if (!marpatcl_rtc_failed (state)) {
+		Tcl_Obj* r = marpatcl_rtc_sv_astcl (ip, instance->result);
+		if (r) {
+		    Tcl_SetObjResult (ip, r);
+		    return TCL_OK;
+		}
+		/* Assumes that an error message was left in ip */
 	    } else {
-		// TODO: retrieve and return AST
-		return TCL_OK;
+		// TODO: retrieve and throw error
 	    }
+	    return TCL_ERROR;
 	}
     }
 }
