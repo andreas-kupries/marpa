@@ -46,7 +46,7 @@ oo::class create marpa::engine::debug {
 		# Compute human readable fields
 		lassign [my RuleNameData $rule] lhs rhs
 		lassign [my DRule $rule $dot $rhs] ddot drule
-		set drhs [string map {<.> .} [my DNames [linsert $rhs $ddot .]]]
+		set drhs [string map {<.> .} [join [my DNames [linsert $rhs $ddot .]] { }]]
 
 		# And save...
 		#(r$rule,d$dot,o$origin)
