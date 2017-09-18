@@ -2,9 +2,10 @@
  * - - -- --- ----- -------- ------------- ---------------------
  * (c) 2017 Andreas Kupries
  *
- * Requirements
+ * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
 
+#include <environment.h>
 #include <lexer.h>
 #include <spec.h>
 #include <stack.h>
@@ -12,9 +13,6 @@
 #include <events.h>
 #include <rtc_int.h>
 #include <progress.h>
-#include <critcl_assert.h>
-#include <critcl_alloc.h>
-#include <critcl_trace.h>
 #include <marpatcl_steptype.h>
 
 TRACE_OFF;

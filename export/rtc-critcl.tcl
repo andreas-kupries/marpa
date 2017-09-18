@@ -105,10 +105,10 @@ critcl::cheaders rtc/*.h
 critcl::csources rtc/*.c
 
 critcl::include marpa.h
-critcl::include spec.h
-critcl::include rtc.h
-critcl::include fail.h
-critcl::include sem_tcl.h
+critcl::include spec.h    ; # RTC grammar specification structures, for the static data below
+critcl::include rtc.h     ; # RTC runtime structures and API
+critcl::include fail.h    ; # RTC failure API
+critcl::include sem_tcl.h ; # Tcl-specific RTC glue we can keep out of the template.
 
 critcl::source c/errors.tcl           ; # Mapping marpa error codes to strings.
 critcl::source c/events.tcl           ; # Mapping marpa event types to strings.

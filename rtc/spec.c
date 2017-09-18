@@ -2,14 +2,12 @@
  * - - -- --- ----- -------- ------------- ---------------------
  * (c) 2017 Andreas Kupries
  *
- * Requirements
+ * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
 
+#include <environment.h>
 #include <spec.h>
 #include <stack.h>
-#include <critcl_alloc.h>
-#include <critcl_assert.h>
-#include <critcl_trace.h>
 
 TRACE_OFF;
 TRACE_TAG_OFF (names);

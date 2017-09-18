@@ -2,12 +2,12 @@
  * - - -- --- ----- -------- ------------- ---------------------
  * (c) 2017 Andreas Kupries
  *
- * Requirements
+ * Requirements - Note, tracing via an external environment header.
  */
 
+#include <environment.h>
 #include <store.h>
 #include <rtc_int.h>
-#include <critcl_trace.h>
 
 TRACE_OFF;
 
