@@ -314,7 +314,7 @@ marpatcl_rtc_sva_copy (marpatcl_rtc_sv_vec dst,
 {
     int k, newsize;
     /* Shorthands not available, as they assume `v` */
-    TRACE_FUNC ("((sv_vec) dst %p <- (sv_vec) src %p [%d-%d])", dst, src, from, to);
+    TRACE_FUNC ("((sv_vec) dst %p <- (sv_vec) src %p [%d|%d..%d])", dst, src, src->size, from, to);
     ASSERT_BOUNDS (from, src->size);
     ASSERT_BOUNDS (to,   src->size);
     ASSERT (from <= to, "Unable to copy twisted interval (start > end)");
@@ -350,7 +350,7 @@ marpatcl_rtc_sva_dup (marpatcl_rtc_sv_vec v, int strict)
     TRACE_FUNC ("((sv_vec) %p, strict %d)", v, strict);
 
     copy = marpatcl_rtc_sva_cons (SZ, strict);
-    marpatcl_rtc_sva_copy (copy, v, 0, SZ-1);
+    if (SZ) marpatcl_rtc_sva_copy (copy, v, 0, SZ-1);
 
     TRACE_RETURN ("(sv_vec) %p", copy);
 }
