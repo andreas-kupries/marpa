@@ -11,14 +11,18 @@
  * Requirements
  */
 
+#include <rtc.h>
 #include <sem.h>
 #include <tcl.h>
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API -- SV -- conversion to Tcl structures
+ *     --       generic parse completion
  */
 
-extern Tcl_Obj* marpatcl_rtc_sv_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_p sv);
+extern Tcl_Obj* marpatcl_rtc_sv_astcl    (Tcl_Interp* ip, marpatcl_rtc_sv_p sv);
+extern int      marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p p);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

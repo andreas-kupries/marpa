@@ -31,11 +31,42 @@ marpatcl_rtc_sv_vec_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_vec v, Tcl_Obj* null)
  * API
  */
 
+extern int
+marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p p)
+{
+    /* This function is called with a pointer to where the SV will be
+     * stored. This is necesssary because at the time of the call the SV is
+     * not known yet. It is only after the call to 'marpatcl_rtc_eof' below
+     * that the SV will be known and stored at the referenced location.
+     */
+
+    TRACE_FUNC ("(Interp*) %p, (sv**) %p, (rtc*) %p", ip, sv, p);
+
+    if (!marpatcl_rtc_failed (p)) {
+	TRACE ("EOF", 0);
+	marpatcl_rtc_eof (p);
+    }
+    if (!marpatcl_rtc_failed (p)) {
+	Tcl_Obj* r;
+	TRACE ("SV-AS-TCL (sv*) %p", sv);
+	r = marpatcl_rtc_sv_astcl (ip, *sv);
+	if (r) {
+	    TRACE ("SV OK (Tcl_Obj*) %p", r);
+	    Tcl_SetObjResult (ip, r);
+	    TRACE_RETURN ("OK", TCL_OK);
+	}
+	/* Assumes that an error message was left in ip */
+    } else {
+	TRACE ("FAIL", 0);
+	// TODO: retrieve and throw error
+    }
+    TRACE_RETURN ("ERROR", TCL_ERROR);
+}
+
 extern Tcl_Obj*
 marpatcl_rtc_sv_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_p sv)
 {
     Tcl_Obj *svres, *null;
-
     TRACE_FUNC ("(Interp*) %p, (sv*) %p", ip, sv);
 
     null = Tcl_NewListObj (0,0);

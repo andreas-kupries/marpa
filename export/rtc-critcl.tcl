@@ -109,7 +109,6 @@ critcl::include spec.h
 critcl::include rtc.h
 critcl::include fail.h
 critcl::include sem_tcl.h
-critcl::include store.h
 
 critcl::source c/errors.tcl           ; # Mapping marpa error codes to strings.
 critcl::source c/events.tcl           ; # Mapping marpa event types to strings.
@@ -226,7 +225,6 @@ critcl::ccode {
 ## Class exposing the grammar engine.
 
 critcl::class def @slif-name@ {
-
     insvariable marpatcl_rtc_sv_p result {
 	Parse result
     } {
@@ -270,16 +268,16 @@ critcl::class def @slif-name@ {
 	FREE (buf);
 
 	(void) Tcl_Close (ip, in);
-	return @stem@_complete (ip, instance);
+	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
     
     method process proc {Tcl_Interp* ip pstring string} ok {
 	marpatcl_rtc_enter (instance->state, string.s, string.len);
-	return @stem@_complete (ip, instance);
+	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
 
     support {
-	/* Helper function encapsulating parse completion processing.
+	/* Helper function capturing parse results (semantic values of the parser)
 	** Stem:  @stem@
 	** Pkg:   @package@
 	** Class: @class@
@@ -295,26 +293,6 @@ critcl::class def @slif-name@ {
 	    if (sv) marpatcl_rtc_sv_ref (sv);
 	    instance->result = sv;
 	    return;
-	}
-
-	static int
-	@stem@_complete (Tcl_Interp* ip, @instancetype@ instance)
-	{
-	    marpatcl_rtc_p state = instance->state;
-	    if (!marpatcl_rtc_failed (state)) {
-		marpatcl_rtc_eof (state);
-	    }
-	    if (!marpatcl_rtc_failed (state)) {
-		Tcl_Obj* r = marpatcl_rtc_sv_astcl (ip, instance->result);
-		if (r) {
-		    Tcl_SetObjResult (ip, r);
-		    return TCL_OK;
-		}
-		/* Assumes that an error message was left in ip */
-	    } else {
-		// TODO: retrieve and throw error
-	    }
-	    return TCL_ERROR;
 	}
     }
 }
