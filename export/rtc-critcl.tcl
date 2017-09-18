@@ -273,8 +273,8 @@ critcl::class def @slif-name@ {
 	return @stem@_complete (ip, instance);
     }
     
-    method process proc {Tcl_Interp* ip pstring text} ok {
-	marpatcl_rtc_enter (instance->state, text.s, text.len);
+    method process proc {Tcl_Interp* ip pstring string} ok {
+	marpatcl_rtc_enter (instance->state, string.s, string.len);
 	return @stem@_complete (ip, instance);
     }
 
