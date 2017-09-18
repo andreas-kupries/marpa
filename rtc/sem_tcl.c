@@ -10,7 +10,7 @@
 #include <critcl_trace.h>
 #include <critcl_assert.h>
 
-TRACE_ON;
+TRACE_OFF;
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
