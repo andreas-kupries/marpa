@@ -272,6 +272,9 @@ error_print (void* cdata, const char* string)
 static void
 error_l0_progress (Tcl_DString *ds, marpatcl_rtc_p p)
 {
+    // Skip progress report if there is no recognizer to query
+    if (!LEX.recce) return;
+
     Tcl_DStringAppend (ds, "\nL0 Report:\n", -1);
     // We need the rule_data for the/a readable progress report.  Generate it
     // if it was not made during regular setup (with progress tracing on).
