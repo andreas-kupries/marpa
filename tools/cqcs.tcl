@@ -9,7 +9,11 @@ package require char
 puts "const char* marpatcl_qcs \[\] = \{"
 
 for {set c 0} {$c < 256} {incr c} {
-    set cq [char quote tcl [format %c $c]]
+    if {$c > 127} {
+	set cq \\[format %o $c]
+    } else {
+	set cq [char quote tcl [format %c $c]]
+    }
     puts "    /* [format %3d $c] = */ \"[char quote cstring $cq]\","
 }
 
