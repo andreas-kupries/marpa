@@ -30,6 +30,8 @@ TRACE_TAG_OFF (parser_progress);
  * Structures
  */
 
+typedef void (marpatcl_rtc_progress_append) (void* cdata, const char* string);
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API -- lifecycle, accessors and mutators
@@ -37,6 +39,14 @@ TRACE_TAG_OFF (parser_progress);
 
 extern void marpatcl_rtc_lexer_progress  (marpatcl_rtc_p p);
 extern void marpatcl_rtc_parser_progress (marpatcl_rtc_p p);
+extern void marpatcl_rtc_progress (marpatcl_rtc_progress_append acmd,
+				   void* adata,
+				   marpatcl_rtc_p p,
+				   marpatcl_rtc_rules*  spec,    // Relevant grammar spec (rcode, symbols, ...)
+				   marpatcl_rtc_stack_p rd,      // rd :: map (rule id --> PC (into spec->rcode))
+				   Marpa_Recognizer     r,       // Recognizer and
+				   Marpa_Grammar        g,       // Grammar under inspection.
+				   int                  location);
 
 #endif
 

@@ -15,12 +15,13 @@ TRACE_TAG_OFF (names);
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API
+ *
+ * Regarding "rule_data".
+ * Per rule we push 2 entries. PC of the instruction, and additional
+ * information. The latter is currently only used by
+ * - PRIS instructions to refer back to the PRIO instructions which provided their LHS.
+ * - BRAN instructions to store the RHS byte.
  */
-
-// Per rule we push 2 entries. PC of the instruction, and additional
-// information. The latter is currently only used by
-// - PRIS instructions to refer back to the PRIO instructions which provided their LHS.
-// - BRAN instructions to store the RHS byte.
 
 marpatcl_rtc_stack_p
 marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s, int rd)
@@ -205,6 +206,8 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s, int rd)
 
     ASSERT (0, "reached the unreachable");
     TRACE_RETURN ("(stack*) %p", rule_data);
+
+#undef PUSH
 }
 
 const char*
@@ -309,6 +312,88 @@ marpatcl_rtc_spec_g1decode (marpatcl_rtc_symvec* coding, marpatcl_rtc_sym rule, 
 	TRACE_RETURN ("(sym*) %p", coding->data + 1 + offset + 1);
     }
     ASSERT (0, "Unsupported type of g1 coding");
+}
+
+marpatcl_rtc_stack_p
+marpatcl_rtc_spec_setup_rd (marpatcl_rtc_rules* s)
+{
+#define PUSH(detail)					\
+    marpatcl_rtc_stack_push (rule_data, pc - s->rcode); \
+    marpatcl_rtc_stack_push (rule_data, detail);
+
+    marpatcl_rtc_sym* pc;
+    marpatcl_rtc_sym* lpc = 0;
+    marpatcl_rtc_sym cmd, detail, start, stop;
+    int k;
+    marpatcl_rtc_stack_p rule_data = 0;
+
+    TRACE_FUNC ("((rules*) %p (symbols %d))", s, s->symbols.size);
+    rule_data = marpatcl_rtc_stack_cons (MARPATCL_RTC_STACK_DEFAULT_CAP);
+
+    /* Short-code engine decoding the rules into the grammar */
+    pc = s->rcode;
+    while (1) {
+	MARPATCL_RCMD_UNBOX (pc[0], cmd, detail);
+	switch (cmd) {
+	case MARPATCL_RC_SETUP:
+	    /* start of rules, detail = size of scratch area */
+	    pc ++;
+	    break;
+	case MARPATCL_RC_DONE:
+	    /* end of rules, detail = start symbol */
+	    s->rules.size = marpatcl_rtc_stack_size (rule_data) / 2;
+	    // TODO: Store this somewhere else. (s) are the const grammar
+	    // TODO: structures, i.e. could quite possibly be RO, with the
+	    // TODO: write here seg.faulting.
+	    TRACE_RETURN ("(stack*) %p", rule_data);
+	    
+	case MARPATCL_RC_PRIO:
+	    /* priority -- full spec */
+	    lpc = pc;
+	    PUSH (0);
+	    pc += 2 + detail;
+	    break;
+	case MARPATCL_RC_PRIS:
+	    /* priority -- short spec, reuse previos lhs */
+	    PUSH (lpc - s->rcode);
+	    pc += 1 + detail;
+	    break;
+	case MARPATCL_RC_QUN:
+	    /* quantified star, pc[] = rhs */
+	    PUSH (0);
+	    pc += 2;
+	    break;
+	case MARPATCL_RC_QUP:
+	    /* quantified plus, pc[] = rhs */
+	    PUSH (0);
+	    pc += 2;
+	    break;
+	case MARPATCL_RC_QUNS:
+	    /* quantified star + separator, pc[] = rhs */
+	    PUSH (0);
+	    pc += 3;
+	    break;
+	case MARPATCL_RC_QUPS:
+	    /* quantified plus + separator, pc[] = rhs */
+	    PUSH (0);
+	    pc += 3;
+	    break;
+	case MARPATCL_RC_BRAN:
+	    /* byte range - pc [1] = start, stop - expand into alternation */
+	    MARPATCL_RCMD_UNBXR (pc[1], start, stop);
+	    for (k = start; k <= stop; k++) {
+		PUSH (k);
+	    }
+	    pc += 2;
+	    break;
+	default:
+	    TRACE ("x UNKNOWN (%d %d)", cmd, detail);
+	    ASSERT (0, "Unknown instruction");
+	}
+    }
+
+    ASSERT (0, "reached the unreachable");
+    TRACE_RETURN ("(stack*) %p", rule_data);
 }
 
 

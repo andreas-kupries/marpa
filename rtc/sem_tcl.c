@@ -8,9 +8,11 @@
 #include <sem_tcl.h>
 #include <sem_int.h>
 #include <rtc_int.h>
+#include <spec.h>
 #include <byteset.h>
 #include <symset.h>
 #include <stack.h>
+#include <progress.h>
 #include <critcl_trace.h>
 #include <critcl_assert.h>
 
@@ -261,6 +263,28 @@ error_parse_accept (Tcl_DString *ds, marpatcl_rtc_p p)
 }
 
 static void
+error_print (void* cdata, const char* string)
+{
+    Tcl_DString* ds = (Tcl_DString*) cdata;
+    Tcl_DStringAppend (ds, string, -1);
+}
+
+static void
+error_l0_progress (Tcl_DString *ds, marpatcl_rtc_p p)
+{
+    Tcl_DStringAppend (ds, "\nL0 Report:\n", -1);
+    // We need the rule_data for the/a readable progress report.  Generate it
+    // if it was not made during regular setup (with progress tracing on).
+    // That is the normal case, i.e. generate just for the error message.
+    if (!LRD) {
+	LRD = marpatcl_rtc_spec_setup_rd (SPEC->l0);
+    }
+    marpatcl_rtc_progress (error_print, ds,
+			   p, SPEC->l0, LRD, LEX.recce, LEX.g,
+			   marpa_r_latest_earley_set (LEX.recce));
+}
+
+static void
 marpatcl_rtc_error (Tcl_Interp* ip, marpatcl_rtc_p p)
 {
     // *** ATTENTION ***
@@ -281,18 +305,14 @@ marpatcl_rtc_error (Tcl_Interp* ip, marpatcl_rtc_p p)
     error_match_candidate (&ds, p);
     error_lex_accept      (&ds, p);
     error_parse_accept    (&ds, p);
+    error_l0_progress     (&ds, p);
 
     Tcl_SetErrorCode  (ip, "SYNTAX", NULL);
     Tcl_DStringResult (ip, &ds);
     Tcl_DStringFree (&ds);
 
 #if 0
-    // TODO: l0 progress report.
     // TODO: char mismatch information
-
-    if {[dict exists $context l0 report]} {
-	append msg "\nL0 Report:\n[lindex [dict get $context l0 report] end]"
-    }
 
     if {[dict exists $context l0 char] &&
 	[dict exists $context l0 csym]} {

@@ -234,6 +234,7 @@ typedef marpatcl_rtc_sv_p (*marpatcl_rtc_sv_cmd) (int action, const char* aname,
  * setup - Use the static structures to fill an active Marpa grammar
  */
 
+marpatcl_rtc_stack_p marpatcl_rtc_spec_setup_rd (marpatcl_rtc_rules* s);
 marpatcl_rtc_stack_p marpatcl_rtc_spec_setup    (Marpa_Grammar g, marpatcl_rtc_rules* s, int rd);
 const char*          marpatcl_rtc_spec_symname  (marpatcl_rtc_rules* g,  marpatcl_rtc_sym id, int* len);
 const char*          marpatcl_rtc_spec_rulename (marpatcl_rtc_rules* g,  marpatcl_rtc_sym id, int* len);

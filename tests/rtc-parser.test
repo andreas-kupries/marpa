@@ -51,8 +51,8 @@ proc rt-parse-code {} {
 }
 
 proc finalize {} {
-    memory validate off
-    removeFile [rt-parse-code];#Disable when debugging
+    catch { memory validate off }
+    #removeFile [rt-parse-code];#Disable when debugging
     rename initialize {}
     rename rt-parse-code {}
     rename meta {}
@@ -93,7 +93,7 @@ proc initialize {} {
     file delete rtc c
     # compile and load happens on first use
     # _ __ ___ _____ ________ _____________ _____________________
-    memory validate on
+    catch { memory validate on }
     return
 }
 
