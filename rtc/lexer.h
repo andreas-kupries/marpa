@@ -43,13 +43,11 @@ typedef struct marpatcl_rtc_lexer {
  * acceptable - information from parser about acceptable lexemes
  */
 
-void marpatcl_rtc_lexer_init       (marpatcl_rtc_p p);
-void marpatcl_rtc_lexer_free       (marpatcl_rtc_p p);
-void marpatcl_rtc_lexer_enter      (marpatcl_rtc_p p, int ch); /* IN.location implied */
-void marpatcl_rtc_lexer_eof        (marpatcl_rtc_p p);
-void marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep);
-/* TODO: fail, get-context, extend-context */
-
+void  marpatcl_rtc_lexer_init       (marpatcl_rtc_p p);
+void  marpatcl_rtc_lexer_free       (marpatcl_rtc_p p);
+void  marpatcl_rtc_lexer_enter      (marpatcl_rtc_p p, int ch); /* IN.location implied */
+void  marpatcl_rtc_lexer_eof        (marpatcl_rtc_p p);
+void  marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep);
 #endif
 
 /*

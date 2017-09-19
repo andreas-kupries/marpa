@@ -7,6 +7,11 @@
 
 #include <sem_tcl.h>
 #include <sem_int.h>
+#include <rtc_int.h>
+#include <byteset.h>
+#include <symset.h>
+#include <stack.h>
+#include <cqcs.c>         /* Conversion table for "char quote cstring" on bytes */
 #include <critcl_trace.h>
 #include <critcl_assert.h>
 
@@ -25,6 +30,9 @@ marpatcl_rtc_sv_astcl_do (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, Tcl_Obj* null);
 
 static Tcl_Obj*
 marpatcl_rtc_sv_vec_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_vec v, Tcl_Obj* null);
+
+static Tcl_Obj*
+marpatcl_rtc_error (marpatcl_rtc_p p);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -58,7 +66,8 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p 
 	/* Assumes that an error message was left in ip */
     } else {
 	TRACE ("FAIL", 0);
-	// TODO: retrieve and throw error
+	Tcl_SetObjResult (ip, marpatcl_rtc_error (p));
+	Tcl_SetErrorCode (ip, "SYNTAX", NULL);
     }
     TRACE_RETURN ("ERROR", TCL_ERROR);
 }
@@ -126,6 +135,99 @@ marpatcl_rtc_sv_vec_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_vec v, Tcl_Obj* null)
     }
 
     return svres;
+}
+
+static Tcl_Obj*
+marpatcl_rtc_error (marpatcl_rtc_p p)
+{
+    // *** ATTENTION ***
+    //
+    // While the Tcl engine uses chars and char offsets RTC uses bytes and
+    // byte offsets.  For testing this does not matter, operating solely in
+    // the ASCII domain, where these things are identical.
+    //
+    // TODO: Extend GATE to mark and count char offsets (track char starts through the bit patterns of the utf bytes)
+    // TODO: Extend GATE to remember the bytes of a (partially) read character.
+
+    Tcl_Obj* msg;
+    int chars = 0;
+    char* lexeme;
+
+    msg = Tcl_ObjPrintf ("Parsing failed in %s.", FAIL.origin);
+
+    if (GATE.lastloc < 0) {
+	Tcl_AppendPrintfToObj (msg, " No input");
+    } else {
+	Tcl_AppendPrintfToObj (msg, " Stopped at offset %d ", GATE.lastloc);
+    }
+
+    if (marpatcl_rtc_stack_size (LEX.lexeme)) {
+	// ATTENTION: This access to LEX.lexeme is destructive.
+	Tcl_AppendPrintfToObj (msg, " after reading '");
+	while (marpatcl_rtc_stack_size (LEX.lexeme)) {
+	    char c = marpatcl_rtc_stack_pop (LEX.lexeme);
+	    Tcl_AppendPrintfToObj (msg, "%s", quote_cstring[c]);
+	}
+	if (GATE.lastchar >= 0) {
+	    // TODO: Properly handle a partially read UTF character
+	    Tcl_AppendPrintfToObj (msg, "%c", quote_cstring [GATE.lastchar]);
+	}
+	Tcl_AppendPrintfToObj (msg, "'");
+    }
+    Tcl_AppendPrintfToObj (msg, ".");
+
+    if (marpatcl_rtc_byteset_size (&GATE.acceptable)) {
+	Tcl_AppendPrintfToObj (msg, " Expected any character in [");
+
+	int k;
+	for (k=0; k < MARPATCL_RTC_BSMAX; k++) {
+	    if (!marpatcl_rtc_byteset_contains (&GATE.acceptable, k)) continue;
+	    Tcl_AppendPrintfToObj (msg, "%s", quote_cstring[k]);
+	}
+	// TODO: Might have to note partial UTF info here.
+	Tcl_AppendPrintfToObj (msg, "]");
+	chars ++;
+    }
+
+    if (marpatcl_rtc_symset_size (&LEX.acceptable)) {
+	if (chars) {
+	    Tcl_AppendPrintfToObj (msg, " while looking for any of (");
+	} else {
+	    Tcl_AppendPrintfToObj (msg, " Looking for any of (");
+	}
+
+	// TODO: append msg [join [dict get $context g1 acceptable] {, }]
+	// TODO: loop over symbols, translate to name, and add.
+	Tcl_AppendPrintfToObj (msg, ").");
+    } else if (chars) {
+	Tcl_AppendPrintfToObj (msg, ".");
+    }
+
+    return msg;
+#if 0
+    // TODO: l0 progress report.
+    // TODO: char mismatch information
+
+    if {[dict exists $context l0 report]} {
+	append msg "\nL0 Report:\n[lindex [dict get $context l0 report] end]"
+    }
+
+    if {[dict exists $context l0 char] &&
+	[dict exists $context l0 csym]} {
+	set ch [char quote cstring [dict get $context l0 char]]
+	append msg "\nMismatch:\n'$ch' => ([dict get $context l0 csym]) ni"
+
+	    // acceptsym, map -- generate from GATE.acceptable
+
+	if {[dict exists $context l0 acceptmap]} {
+  	dict for {asym aname} [dict get $context l0 acceptmap] {
+  	    append msg "\n [format %4d $asym]: $aname"
+  	}
+      } elseif {[dict exists $context l0 acceptsym]} {
+  	append msg " (dict exists $context l0 acceptsym])"
+      }
+  }
+#endif
 }
 
 

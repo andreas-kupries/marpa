@@ -36,6 +36,7 @@ critcl::cutil::alloc
 # (3) Debugging symbols, memory tracking
 
 generate-tables ;# 'bmp' (default), or 'full'
+generate-cstring
 
 critcl::cutil::assertions on
 critcl::cutil::tracer     off
