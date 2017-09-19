@@ -19,6 +19,7 @@
 package require Tcl 8.5
 package require debug
 package require debug::caller
+package require char
 
 debug define marpa/export/rtc-critcl
 debug prefix marpa/export/rtc-critcl {[debug caller] | }
@@ -41,8 +42,22 @@ proc ::marpa::export::rtc-critcl::container {gc} {
     set config [marpa::export::core::rtc::config [$gc serialize] {
 	prefix {	}
     }]
+    lappend config @cqcs@ [CQCS]
     set template [string trim [marpa asset $self]]
     return [string map $config $template]
+}
+
+proc ::marpa::export::rtc-critcl::CQCS {} {
+    ## See also tools/cqcs.tcl ##    
+    # char quote cstring
+    # over \0 to \ff
+    lappend lines "const char* marpatcl_qcs \[\] = \{"
+    for {set c 0} {$c < 256} {incr c} {
+	set cq [char quote cstring [format %c $c]]
+	lappend lines "    /* [format %3d $c] = */ \"[char quote cstring $cq]\","
+    }
+    lappend lines "    0\n\};"
+    join $lines \n
 }
 
 # # ## ### ##### ######## #############
@@ -219,6 +234,8 @@ critcl::ccode {
 	/* .g1mask     */  { @g1-masking-c@, @cname@_g1masking }
     };
     /* --- end of generated data structures --- */
+
+@cqcs@
 }
 
 # # ## ### ##### ######## ############# #####################

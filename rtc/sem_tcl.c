@@ -11,7 +11,6 @@
 #include <byteset.h>
 #include <symset.h>
 #include <stack.h>
-#include <cqcs.c>         /* Conversion table for "char quote cstring" on bytes */
 #include <critcl_trace.h>
 #include <critcl_assert.h>
 
@@ -19,9 +18,12 @@ TRACE_OFF;
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
- * Shorthands
+ * Shorthands, externals, and forward declarations for internals.
  */
 
+extern const char* marpatcl_qcs [256];
+
+#define QCS  marpatcl_qcs
 #define TAKE Tcl_IncrRefCount
 #define RELE Tcl_DecrRefCount
 
@@ -66,8 +68,8 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p 
 	/* Assumes that an error message was left in ip */
     } else {
 	TRACE ("FAIL", 0);
-	Tcl_SetObjResult (ip, marpatcl_rtc_error (p));
-	Tcl_SetErrorCode (ip, "SYNTAX", NULL);
+	//Tcl_SetObjResult (ip, marpatcl_rtc_error (p));
+	//Tcl_SetErrorCode (ip, "SYNTAX", NULL);
     }
     TRACE_RETURN ("ERROR", TCL_ERROR);
 }
@@ -137,6 +139,16 @@ marpatcl_rtc_sv_vec_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_vec v, Tcl_Obj* null)
     return svres;
 }
 
+static int
+compare (const void* a, const void* b)
+{
+    Marpa_Symbol_ID* as = (Marpa_Symbol_ID*) a;
+    Marpa_Symbol_ID* bs = (Marpa_Symbol_ID*) b;
+    if (*as < *bs) return -1;
+    if (*as > *bs) return 1;
+    return 0;
+}
+
 static Tcl_Obj*
 marpatcl_rtc_error (marpatcl_rtc_p p)
 {
@@ -149,60 +161,88 @@ marpatcl_rtc_error (marpatcl_rtc_p p)
     // TODO: Extend GATE to mark and count char offsets (track char starts through the bit patterns of the utf bytes)
     // TODO: Extend GATE to remember the bytes of a (partially) read character.
 
-    Tcl_Obj* msg;
+    Tcl_Obj* msg = 0;
+#if 0
     int chars = 0;
     char* lexeme;
 
+    TRACE_FUNC ("((rtc*) %p)", p);
+    
     msg = Tcl_ObjPrintf ("Parsing failed in %s.", FAIL.origin);
+    TAKE (msg);
 
+    TRACE ("GATE LL %d", GATE.lastloc);
     if (GATE.lastloc < 0) {
 	Tcl_AppendPrintfToObj (msg, " No input");
     } else {
-	Tcl_AppendPrintfToObj (msg, " Stopped at offset %d ", GATE.lastloc);
+	Tcl_AppendPrintfToObj (msg, " Stopped at offset %d", GATE.lastloc);
     }
 
+    // TODO: Properly handle a partially read UTF character at the end
+    // IOW instead 'after reading' use 'while x bytes in reading'
+
+    TRACE ("GATE LC %d|%d", GATE.lastchar, MARPATCL_RTC_BSMAX);
+    TRACE ("LEXE # %d", marpatcl_rtc_stack_size (LEX.lexeme));
+    
     if (marpatcl_rtc_stack_size (LEX.lexeme)) {
 	// ATTENTION: This access to LEX.lexeme is destructive.
 	Tcl_AppendPrintfToObj (msg, " after reading '");
 	while (marpatcl_rtc_stack_size (LEX.lexeme)) {
 	    char c = marpatcl_rtc_stack_pop (LEX.lexeme);
-	    Tcl_AppendPrintfToObj (msg, "%s", quote_cstring[c]);
+	    Tcl_AppendPrintfToObj (msg, "%s", QCS [c]);
 	}
 	if (GATE.lastchar >= 0) {
-	    // TODO: Properly handle a partially read UTF character
-	    Tcl_AppendPrintfToObj (msg, "%c", quote_cstring [GATE.lastchar]);
+	    ASSERT_BOUNDS (GATE.lastchar, MARPATCL_RTC_BSMAX);
+	    Tcl_AppendPrintfToObj (msg, "%s", QCS [GATE.lastchar]);
 	}
 	Tcl_AppendPrintfToObj (msg, "'");
+    } else if (GATE.lastchar >= 0) {
+	ASSERT_BOUNDS (GATE.lastchar, MARPATCL_RTC_BSMAX);
+	Tcl_AppendPrintfToObj (msg, " after reading '%s'", QCS [GATE.lastchar]);
     }
     Tcl_AppendPrintfToObj (msg, ".");
 
+    TRACE ("GATE #acc %d", marpatcl_rtc_byteset_size (&GATE.acceptable));
     if (marpatcl_rtc_byteset_size (&GATE.acceptable)) {
+	int k;
 	Tcl_AppendPrintfToObj (msg, " Expected any character in [");
 
-	int k;
 	for (k=0; k < MARPATCL_RTC_BSMAX; k++) {
 	    if (!marpatcl_rtc_byteset_contains (&GATE.acceptable, k)) continue;
-	    Tcl_AppendPrintfToObj (msg, "%s", quote_cstring[k]);
+	    Tcl_AppendPrintfToObj (msg, "%s", QCS [k]);
 	}
-	// TODO: Might have to note partial UTF info here.
 	Tcl_AppendPrintfToObj (msg, "]");
 	chars ++;
     }
 
+    TRACE ("LEXE #acc %d", marpatcl_rtc_symset_size (&LEX.acceptable));
     if (marpatcl_rtc_symset_size (&LEX.acceptable)) {
+	int           k, n = marpatcl_rtc_symset_size  (&LEX.acceptable);
+	Marpa_Symbol_ID* d = marpatcl_rtc_symset_dense (&LEX.acceptable);
+	const char* sep = "";
+
 	if (chars) {
 	    Tcl_AppendPrintfToObj (msg, " while looking for any of (");
 	} else {
 	    Tcl_AppendPrintfToObj (msg, " Looking for any of (");
 	}
 
-	// TODO: append msg [join [dict get $context g1 acceptable] {, }]
-	// TODO: loop over symbols, translate to name, and add.
+	// ATTENTION: qsort is destructive on the symset
+	// (the cross-links with sparse are broken).
+	qsort (d, n, sizeof (Marpa_Symbol_ID), compare);
+	for (k=0; k < n; k++) {
+	    Marpa_Symbol_ID sym = d [k];
+	    const char* sname = marpatcl_rtc_spec_symname (SPEC->g1, sym, 0);
+	    TRACE ("LEX? %4d '%s'", sym, sname);
+	    
+	    Tcl_AppendPrintfToObj (msg, "%s%s", sep, sname);
+	    sep = ", ";
+	}
 	Tcl_AppendPrintfToObj (msg, ").");
     } else if (chars) {
 	Tcl_AppendPrintfToObj (msg, ".");
     }
-
+#endif
     return msg;
 #if 0
     // TODO: l0 progress report.

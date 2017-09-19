@@ -207,6 +207,7 @@ critcl::tsources export/rtc-critcl.tcl    ; # Critcl class around RTC-based C co
 
 critcl::cheaders rtc/*.h
 critcl::csources rtc/*.c
+critcl::csources generated/cqcs.c
 
 critcl::ccode {
     TRACE_OFF;

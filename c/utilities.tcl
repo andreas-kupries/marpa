@@ -22,14 +22,10 @@ proc generate-cstring {} {
     } {
 	critcl::msg -nonewline " (Up-to-date cstring quoting table available, skipping generation)"
     } else {
-	set delay ??
-	critcl::msg -nonewline " (Generating cstring quoting tables, please wait (about $delay sec) ..."
-
-	set start [clock seconds]
+	critcl::msg -nonewline " (Generating cstring quoting tables ..."
 	file mkdir $outdir
 	exec {*}[info nameofexecutable] $generator > $code
-	set delta [expr { [clock seconds] - $start}]
-	critcl::msg -nonewline " Done in $delta seconds: [file size $code] bytes)"
+	critcl::msg -nonewline " [file size $code] bytes)"
     }
 
     # Last, make the generated data available.
