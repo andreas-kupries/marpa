@@ -3173,6 +3173,7 @@ grammar {
                         {@BRAN:<\232\234>}} 0}
             }
             {@CLS:<_[:alnum:][:space:]>} {
+                {priority {{@BRAN:<\t\r>}} 0}
                 {priority {{@BYTE:<\40>}} 0}
                 {priority @BRAN:<09> 0}
                 {priority @BRAN:<AZ> 0}
@@ -4107,6 +4108,10 @@ grammar {
                         {@BYTE:<\u00e1>}
                         {@BYTE:<\237>}
                         {@BRAN:<\u00a0\u00a9>}} 0}
+                {priority {
+                        {@BYTE:<\u00e1>}
+                        {@BYTE:<\u00a0>}
+                        {@BYTE:<\216>}} 0}
                 {priority {
                         {@BYTE:<\u00e1>}
                         {@BYTE:<\u00a0>}
@@ -7024,6 +7029,7 @@ grammar {
                         {@BRAN:<\220\231>}} 0}
             }
             {@NCC:<[:space:]>} {
+                {priority {{@BRAN:<\t\r>}} 0}
                 {priority {{@BYTE:<\40>}} 0}
                 {priority {
                         {@BYTE:<\u00c2>}
@@ -7032,6 +7038,10 @@ grammar {
                         {@BYTE:<\u00e1>}
                         {@BYTE:<\232>}
                         {@BYTE:<\200>}} 0}
+                {priority {
+                        {@BYTE:<\u00e1>}
+                        {@BYTE:<\u00a0>}
+                        {@BYTE:<\216>}} 0}
                 {priority {
                         {@BYTE:<\u00e2>}
                         {@BYTE:<\200>}
@@ -8087,6 +8097,7 @@ grammar {
             {@BRAN:<\237\u00bd>} { {brange 159 189} }
             {@BRAN:<\255\u00b0>} { {brange 173 176} }
             {@BRAN:<\n\r>} { {brange 10 13} }
+            {@BRAN:<\t\r>} { {brange 9 13} }
             {@BRAN:<\u00a0\u00a1>} { {brange 160 161} }
             {@BRAN:<\u00a0\u00a4>} { {brange 160 164} }
             {@BRAN:<\u00a0\u00a6>} { {brange 160 166} }
