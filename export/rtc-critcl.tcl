@@ -53,7 +53,7 @@ proc ::marpa::export::rtc-critcl::CQCS {} {
     # over \0 to \ff
     lappend lines "const char* marpatcl_qcs \[\] = \{"
     for {set c 0} {$c < 256} {incr c} {
-	set cq [char quote cstring [format %c $c]]
+	set cq [char quote tcl [format %c $c]]
 	lappend lines "    /* [format %3d $c] = */ \"[char quote cstring $cq]\","
     }
     lappend lines "    0\n\};"
