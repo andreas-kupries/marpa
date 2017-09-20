@@ -1,0 +1,33 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::slif::parser -- builtin
+
+# # ## ### ##### ######## ############# #####################
+## API to the parser-core
+
+proc label  {} { return "builtin" }
+proc pclass {} { return marpa::slif::parser }
+
+proc result {base} {
+    foreach file {
+	ast_tcl
+	ast
+    } {
+	set path [file join $base $file]
+	if {![file exists $path]} continue
+	return $path
+    }
+    return -code error "Unable to find result for $base"
+}
+
+proc initialize {} {}
+proc finalize   {} {}
+
+# # ## ### ##### ######## ############# #####################
+##
+
+kt source parser-core.testsuite
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

@@ -1,4 +1,4 @@
-GC error {Parsing failed in gate. Stopped at offset 24 after reading '='. Expected any character in [#'(,:;<[[[:space:]][_[:alnum:]]cdeilns\173|~] while looking for any of (@LEX:@CHR:<,>, @LEX:@CHR:<\50>, @LEX:@CHR:<\73>, @LEX:@CHR:<\173>, @LEX:@STR:<:default>, @LEX:@STR:<:discard>, @LEX:@STR:<:lexeme>, @LEX:@STR:<:start>, @LEX:@STR:<current>, @LEX:@STR:<discard>, @LEX:@STR:<event>, @LEX:@STR:<inaccessible>, @LEX:@STR:<lexeme>, @LEX:@STR:<name>, @LEX:@STR:<start>, bare name, bracketed name, character class, hash comment, op declare bnf, op declare match, op equal priority, op loosen, single quoted string, whitespace).
+Parsing failed in gate. Stopped at offset 26 after reading '='. Expected any character in [#'(,:;<[[[:space:]][_[:alnum:]]cdeilns\173|~] while looking for any of (@LEX:@CHR:<,>, @LEX:@CHR:<\50>, @LEX:@CHR:<\73>, @LEX:@CHR:<\173>, @LEX:@STR:<:default>, @LEX:@STR:<:discard>, @LEX:@STR:<:lexeme>, @LEX:@STR:<:start>, @LEX:@STR:<current>, @LEX:@STR:<discard>, @LEX:@STR:<event>, @LEX:@STR:<inaccessible>, @LEX:@STR:<lexeme>, @LEX:@STR:<name>, @LEX:@STR:<start>, bare name, bracketed name, character class, hash comment, op declare bnf, op declare match, op equal priority, op loosen, single quoted string, whitespace).
 L0 Report:
 ______ P2     @1-1 <@LEX:@CHR:<,>>                   --> . <@CHR:<,>>
 ______ P4     @1-1 <@LEX:@STR:<:default>>            --> . <@STR:<:default>>
@@ -94,6 +94,4 @@ Mismatch:
    40: '['
    43: '\173'
    59: [_[:alnum:]]
-   63: [[:space:]]}
-
-
+   63: [[:space:]]

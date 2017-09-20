@@ -1,4 +1,4 @@
-GC error {Parsing failed in gate. Stopped at offset 15 after reading '='. Expected any character in [#:[[:space:]]~] while looking for any of (hash comment, op declare bnf, op declare match, whitespace).
+Parsing failed in gate. Stopped at offset 19 after reading '='. Expected any character in [#:[[:space:]]~] while looking for any of (hash comment, op declare bnf, op declare match, whitespace).
 L0 Report:
 ______ P45    @1-1 <@STR:<::=>>                      --> . <@CHR:<:>> <@CHR:<:>> <@CHR:<=>>
 ______ P108   @1-1 <whitespace>                      --> . <@NCC:<[:space:]>>
@@ -17,4 +17,4 @@ Mismatch:
     0: '#'
     7: ':'
    36: '~'
-   63: [[:space:]]}
+   63: [[:space:]]

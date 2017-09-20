@@ -1,10 +1,14 @@
-GC error {Parsing failed in gate. Stopped at offset 24 after reading '='. Expected any character in [#'(,:;<[[[:space:]][_[:alnum:]]cdeilns\173|~] while looking for any of (@LEX:@CHR:<,>, @LEX:@CHR:<\50>, @LEX:@CHR:<\73>, @LEX:@CHR:<\173>, @LEX:@STR:<:default>, @LEX:@STR:<:discard>, @LEX:@STR:<:lexeme>, @LEX:@STR:<:start>, @LEX:@STR:<current>, @LEX:@STR:<discard>, @LEX:@STR:<event>, @LEX:@STR:<inaccessible>, @LEX:@STR:<lexeme>, @LEX:@STR:<name>, @LEX:@STR:<start>, bare name, bracketed name, character class, hash comment, op declare bnf, op declare match, op equal priority, op loosen, single quoted string, whitespace).
+Parsing failed in gate. Stopped at offset 12 after reading '='. Expected any character in [#'(*+,:;<[[[:space:]][_[:alnum:]]acdeilns\173|~] while looking for any of (@LEX:@CHR:<*>, @LEX:@CHR:<+>, @LEX:@CHR:<,>, @LEX:@CHR:<\50>, @LEX:@CHR:<\73>, @LEX:@CHR:<\173>, @LEX:@STR:<:default>, @LEX:@STR:<:discard>, @LEX:@STR:<:lexeme>, @LEX:@STR:<:start>, @LEX:@STR:<action>, @LEX:@STR:<assoc>, @LEX:@STR:<current>, @LEX:@STR:<discard>, @LEX:@STR:<event>, @LEX:@STR:<inaccessible>, @LEX:@STR:<lexeme>, @LEX:@STR:<name>, @LEX:@STR:<start>, bare name, bracketed name, character class, hash comment, op declare bnf, op declare match, op equal priority, op loosen, single quoted string, whitespace).
 L0 Report:
+______ P0     @1-1 <@LEX:@CHR:<*>>                   --> . <@CHR:<*>>
+______ P1     @1-1 <@LEX:@CHR:<+>>                   --> . <@CHR:<+>>
 ______ P2     @1-1 <@LEX:@CHR:<,>>                   --> . <@CHR:<,>>
 ______ P4     @1-1 <@LEX:@STR:<:default>>            --> . <@STR:<:default>>
 ______ P5     @1-1 <@LEX:@STR:<:discard>>            --> . <@STR:<:discard>>
 ______ P6     @1-1 <@LEX:@STR:<:lexeme>>             --> . <@STR:<:lexeme>>
 ______ P7     @1-1 <@LEX:@STR:<:start>>              --> . <@STR:<:start>>
+______ P9     @1-1 <@LEX:@STR:<action>>              --> . <@STR:<action>>
+______ P10    @1-1 <@LEX:@STR:<assoc>>               --> . <@STR:<assoc>>
 ______ P13    @1-1 <@LEX:@STR:<current>>             --> . <@STR:<current>>
 ______ P15    @1-1 <@LEX:@STR:<discard>>             --> . <@STR:<discard>>
 ______ P16    @1-1 <@LEX:@STR:<event>>               --> . <@STR:<event>>
@@ -17,6 +21,8 @@ ______ P47    @1-1 <@STR:<:default>>                 --> . <@CHR:<:>> <@CHR:<d>>
 ______ P48    @1-1 <@STR:<:discard>>                 --> . <@CHR:<:>> <@CHR:<d>> <@CHR:<i>> <@CHR:<s>> <@CHR:<c>> <@CHR:<a>> <@CHR:<r>> <@CHR:<d>>
 ______ P51    @1-1 <@STR:<:lexeme>>                  --> . <@CHR:<:>> <@CHR:<l>> <@CHR:<e>> <@CHR:<x>> <@CHR:<e>> <@CHR:<m>> <@CHR:<e>>
 ______ P52    @1-1 <@STR:<:start>>                   --> . <@CHR:<:>> <@CHR:<s>> <@CHR:<t>> <@CHR:<a>> <@CHR:<r>> <@CHR:<t>>
+______ P54    @1-1 <@STR:<action>>                   --> . <@CHR:<a>> <@CHR:<c>> <@CHR:<t>> <@CHR:<i>> <@CHR:<o>> <@CHR:<n>>
+______ P56    @1-1 <@STR:<assoc>>                    --> . <@CHR:<a>> <@CHR:<s>> <@CHR:<s>> <@CHR:<o>> <@CHR:<c>>
 ______ P60    @1-1 <@STR:<current>>                  --> . <@CHR:<c>> <@CHR:<u>> <@CHR:<r>> <@CHR:<r>> <@CHR:<e>> <@CHR:<n>> <@CHR:<t>>
 ______ P62    @1-1 <@STR:<discard>>                  --> . <@CHR:<d>> <@CHR:<i>> <@CHR:<s>> <@CHR:<c>> <@CHR:<a>> <@CHR:<r>> <@CHR:<d>>
 ______ P63    @1-1 <@STR:<event>>                    --> . <@CHR:<e>> <@CHR:<v>> <@CHR:<e>> <@CHR:<n>> <@CHR:<t>>
@@ -48,11 +54,15 @@ ______ P245   @1-1 <single quoted string>            --> . <a single quoted stri
 ______ P248   @1-1 <string open>                     --> . <@CHR:<'>>
 ______ P249   @1-1 <terminated hash comment>         --> . <@CHR:<#>> <hash comment body> <vertical space char>
 ______ P250   @1-1 <unterminated final hash comment> --> . <@CHR:<#>> <hash comment body>
+______ R253:1 @0-1 <@START>                          --> <ACS:@LEX:@CHR:<*>> . <@LEX:@CHR:<*>>
+______ R254:1 @0-1 <@START>                          --> <ACS:@LEX:@CHR:<+>> . <@LEX:@CHR:<+>>
 ______ R255:1 @0-1 <@START>                          --> <ACS:@LEX:@CHR:<,>> . <@LEX:@CHR:<,>>
 ______ R257:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<:default>> . <@LEX:@STR:<:default>>
 ______ R258:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<:discard>> . <@LEX:@STR:<:discard>>
 ______ R259:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<:lexeme>> . <@LEX:@STR:<:lexeme>>
 ______ R260:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<:start>> . <@LEX:@STR:<:start>>
+______ R262:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<action>> . <@LEX:@STR:<action>>
+______ R263:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<assoc>> . <@LEX:@STR:<assoc>>
 ______ R266:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<current>> . <@LEX:@STR:<current>>
 ______ R268:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<discard>> . <@LEX:@STR:<discard>>
 ______ R269:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<event>> . <@LEX:@STR:<event>>
@@ -77,9 +87,12 @@ Mismatch:
 '=' => (9 50 51 52 53 54 55 56) ni
     0: '#'
     1: '''
+    2: '*'
+    3: '+'
     4: ','
     7: ':'
     8: '<'
+   12: 'a'
    14: 'c'
    15: 'd'
    16: 'e'
@@ -94,6 +107,4 @@ Mismatch:
    40: '['
    43: '\173'
    59: [_[:alnum:]]
-   63: [[:space:]]}
-
-
+   63: [[:space:]]
