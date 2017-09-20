@@ -32,9 +32,12 @@ void                 marpatcl_rtc_stack_free    (marpatcl_rtc_stack_p s);
 int                  marpatcl_rtc_stack_size    (marpatcl_rtc_stack_p s);
 void                 marpatcl_rtc_stack_push    (marpatcl_rtc_stack_p s, int v);
 int                  marpatcl_rtc_stack_pop     (marpatcl_rtc_stack_p s);
+int                  marpatcl_rtc_stack_get     (marpatcl_rtc_stack_p s, int at);
 void                 marpatcl_rtc_stack_clear   (marpatcl_rtc_stack_p s);
 void                 marpatcl_rtc_stack_move    (marpatcl_rtc_stack_p dst,
 						 marpatcl_rtc_stack_p src, int n);
+int*                 marpatcl_rtc_stack_data    (marpatcl_rtc_stack_p s, int* sz);
+
 
 #endif
 

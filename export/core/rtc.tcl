@@ -29,7 +29,8 @@ debug prefix marpa/export/core/rtc {[debug caller] | }
 ## @slif-writer@     -- Grammar information: Author
 ## @slif-year@       -- Grammar information: Year of authorship
 ## @slif-name@       -- Grammar information: Name
-## @slif-name-tag@   -- Grammar information: Derived from name, tag for Tcl `debug` commands.
+## @slif-name-tag@   -- Grammar information: Derived from name.
+##                      Tag for Tcl `debug` commands.
 ## @tool-operator@   -- Name of user invoking the tool
 ## @tool@            -- Name of the pool generating the output
 ## @generation-time@ -- Date/Time of when tool was invoked
@@ -41,6 +42,7 @@ debug prefix marpa/export/core/rtc {[debug caller] | }
 ## @always-v@           -- ACS symbol ids of the always active L0 symbols
 ## @cname@		-- C identifier, derived from @name@
 ## @discards-c@		-- #discarded symbols in the L0 level (i.e. whitespace)
+## @g1-insn-c@          -- #instructions encoding the structural (G1) rules
 ## @g1-code-c@          -- #entries to encode the structural (G1) rules
 ## @g1-code-sz@         -- Informational: #bytes for
 ## @g1-code@	   	-- VM instructions encoding the structural (G1) rules
@@ -57,6 +59,7 @@ debug prefix marpa/export/core/rtc {[debug caller] | }
 ## @g1-symbols-c@   	-- #symbols in the structural (G1) level of the engine
 ## @g1-symbols-indices@	-- Per G1 symbol indices into the string pool = symbol name
 ## @g1-symbols-sz@	-- Informational: #bytes for
+## @l0-insn-c@          -- #instructions encoding the lexical (L0) rules
 ## @l0-code-c@          -- #entries to encode the lexical (L0) rules
 ## @l0-code-sz@         -- Informational: #bytes for
 ## @l0-code@		-- VM instructions encoding the lexical (L0) rules
@@ -115,7 +118,7 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
     EncodePrecedences $gc
     LowerLiterals     $gc
     # Types we can get out of the reduction:
-    # - byte
+    # - byte, brange
     
     # Pull various required parts out of the container ...
 
@@ -295,6 +298,8 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
 
     incr dsz [* 2 [LR elements]]  ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-code-sz@            [* 2 [LR elements]]
+    lappend map @l0-insn-c@             [LR size]
+    lappend map @l0-rule-c@             [LR numrules]
     lappend map @l0-code-c@             [LR elements]
     lappend map @l0-code@		[LR content [dict get $config prefix]]
 
@@ -317,6 +322,8 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
 
     incr dsz [* 2 [GR elements]] ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-code-sz@            [* 2 [GR elements]]
+    lappend map @g1-insn-c@             [GR size]
+    lappend map @g1-rule-c@             [GR numrules]
     lappend map @g1-code-c@             [GR elements]
     lappend map @g1-code@	   	[GR content [dict get $config prefix]]
 
@@ -402,8 +409,11 @@ proc ::marpa::export::core::rtc::EncodePrecedences {gc} {
 proc ::marpa::export::core::rtc::LowerLiterals {gc} {
     debug.marpa/export/core/rtc {}
 
-    # Rewrite the literals into forms supported by the runtime (C engine).
-    
+    # Rewrite the literals into forms supported by the runtime
+    # (C engine). These are bytes and byte ranges. The latter are
+    # expanded during setup at runtime, into alternations of bytes,
+    # with a subsequent explosion of rules.
+
     marpa::slif::literal r2container \
 	[marpa::slif::literal reduce [concat {*}[lmap {sym rhs} [dict get [$gc l0 serialize] literal] {
 	    list $sym [lindex $rhs 0]
@@ -413,6 +423,203 @@ proc ::marpa::export::core::rtc::LowerLiterals {gc} {
 	    D-RAN2 D-%RAN  D-^RAN2 D-CHR
 	    D-^CHR
 	}] $gc
+
+    RefactorRanges $gc
+    return
+}
+
+proc ::marpa::export::core::rtc::RefactorRanges {gc} {
+    debug.marpa/export/core/rtc {}
+    # Global refactoring of byte ranges.
+    #
+    # The byte ranges in the ASBR for describe unicode classes often
+    # overlap significantly. One of the patterns seen are many byte
+    # ranges starting at the same byte and just having different end
+    # bytes.
+
+    # Without refactorization is range is coded on its own, as
+    # alternation of all the bytes in the range. This generates
+    # (end-start+1) rules for a range, one per byte/alternate. Due to
+    # the strong overlap between ranges many of the generated
+    # alternates are identical across all the ranges.
+    ##
+    # In concrete numbers, using the L0 sub-grammar of the SLIF meta
+    # grammar as our example:
+    ##
+    #   2191 setup instructions are used to decribe 6639 rules.  About
+    #   73% (1591 exactly) are instructions for byte ranges, expanding
+    #   into 6039 rules (91%) for the range alternates. The remaining
+    #   600 instructions (27%) account for the remaining 600 rules
+    #   (9%).
+
+    # The refactoring algorithm currently only looks for the pattern
+    # mentioned before, i.e. sets of ranges starting at the same
+    # byte. This is easy to do, compared to comparing all ranges
+    # against all others for overlap and then trying to find
+    # advantegeous splits.
+    ##
+    # After ordering by end byte the first range is left as is,
+    # becoming the initial prefix, while all following are refactored
+    # into an alternation of the known prefix and the left-over
+    # suffix, becoming prefix to the next in turn. By properly
+    # ordering the overall refactoring itself, i.e. processing sets in
+    # ascending order of their start byte the generated range suffixes
+    # may in turn be refactored further.
+    ##
+    # For our example this results in
+    ##
+    # 2584 setup instructions (+18%) are used to describe 2942 rules
+    # (-56%). About only 4% (91 exactly) are instructions for byte
+    # ranges, expanding into 449 rules (15%) for the range
+    # alternates. The remaining 2493 instructions (96%) account for
+    # the remaining 2493 rules (85%). As the 600 other rules from
+    # before the refactoring are the basic lexical structure we can
+    # infer that 1893 of these instructions and rules are newly-made
+    # alternations aggregating the atomic small ranges into the large
+    # ranges of the grammar.
+
+    # As end result we can expect that the number of instructions
+    # needed to encode an L0 sub-grammar goes moderately up while the
+    # number of actual rules they generate should fall dramatically.
+    # Instead of many large (wide) byte ranges expanding into a large
+    # set of virtually identical alternates the grammar will contain a
+    # small set of near-atomic ranges instead, from which all the
+    # larger ranges are constructed, via (binary) trees of
+    # alternations.
+
+    # NOTE: The puts statements with AAA and ZZZ prefixes can be used
+    # print the set of byte ranges as pseudo bitmaps, showing the
+    # distribution before and after the refactoring. Extract them with
+    # grep, then sort by start and end bytes.
+    
+    set ranges {}   ; # ranges :: (start -> (stop -> symbol))
+    set cover  {}   ; # cover  :: ((start,stop) -> sym)
+
+    foreach sym [$gc l0 symbols-of literal] {
+	set details [lassign [lindex [$gc l0 get $sym] 0] type]
+	if {$type eq "brange"} {
+	    lassign $details start stop
+	    debug.marpa/export/core/rtc {Range: $sym ($start - $stop)}
+	    # Print range as bitmap.
+	    #puts AAA_[format %3d $start]-[format %3d $stop]|[string repeat { } [expr {$start-1}]][string repeat * [expr {$stop-$start+1}]]
+	    
+	    # Collect ranges with the same start together.
+	    dict set ranges $start $stop $sym
+
+	    # Collect range to symbol mapping for re-use of existing
+	    # definition where possible.
+	    dict set cover [list $start $stop] $sym
+	} else {
+	    # type is a "byte". We put this into the symbol mapping
+	    # for reuse, but not in the table for refactoring.
+	    lassign $details byte
+	    debug.marpa/export/core/rtc {Byte: $sym ($byte)}
+	    dict set cover [list $byte $byte] $sym
+	}
+    }
+
+    #debug.marpa/export/core/rtc {[debug::pdict $cover]}
+    
+    while {[dict size $ranges]} {
+	# ranges is the table/queue of things to refactor.
+	set start [lindex [lsort -integer [dict keys $ranges]] 0]
+	# We iterate over the collected ranges by ascending start.
+	# This way any new ranges we may create below for suffixes is
+	# added in places we will look at and process later. There is
+	# no need to go backward for reprocessing of added things.
+
+	# Take definition, drop it from queue, we will be done with it.
+	set defs [dict get $ranges $start]
+	dict unset ranges $start
+
+	debug.marpa/export/core/rtc {Processing [format %3d $start] :: [dictsort $defs]}
+	
+	# For each set of ranges starting the same point, sort them by
+	# ascending endpoint. The first definition stands as is. If it
+	# is the sole definition we drop the entire set from processing.
+
+	if {[llength [dict keys $defs]] == 1} {
+	    debug.marpa/export/core/rtc {...Single range, skip}
+	    continue
+	}
+
+	# All definitions after the first become an alternation of
+	# prefix and suffix range, the latter the subtraction of
+	# prefix from full range, making it smaller. That part may
+	# re-use an existing range definition. Note that the suffix
+	# may be refactored too. As the start of any suffix range is
+	# greater than the current start they are processed in
+	# upcoming iterations.
+	
+	set remainder [lassign [lsort -integer [dict keys $defs]] prefixstop]
+	set prefixsym [dict get $defs $prefixstop]
+
+	debug.marpa/export/core/rtc {...Multiple ranges, refactor 2+}
+	
+	foreach stop $remainder {
+	    debug.marpa/export/core/rtc {...Prefix  ([format %3d $start]-[format %3d $prefixstop]) $prefixsym}
+
+	    set currentsym [dict get $defs $stop]
+	    debug.marpa/export/core/rtc {...Current ([format %3d $start]-[format %3d $stop]) $currentsym}
+	    
+	    # suffix = prefixstop+1 ... stop
+	    set suffixstart $prefixstop
+	    incr suffixstart
+
+	    set key [list $suffixstart $stop]
+	    if {![dict exists $cover $key]} {
+		# The suffix range has no symbol yet. Create it as
+		# either a byte or a brange literal, depending on the
+		# size of the covered range. Always add it to the
+		# coverage map for future reuse.  Add it to the queue
+		# for refactoring only if it is a range.
+
+		if {$suffixstart == $stop} {
+		    set suffixsym BYTE<d$suffixstart>
+		    dict set cover [list $suffixstart $suffixstart] $suffixsym
+		    $gc l0 literal $suffixsym byte $suffixstart
+
+		    debug.marpa/export/core/rtc {...Suffix  ([format %3d $suffixstart]) $suffixsym (BYTE)}
+		} else {
+		    set suffixsym BRAN<d${suffixstart}-d${stop}>
+		    dict set cover $key $suffixsym
+		    dict set ranges $suffixstart $stop $suffixsym
+		    $gc l0 literal $suffixsym brange $suffixstart $stop
+		    debug.marpa/export/core/rtc {...Suffix  ([format %3d $suffixstart]-[format %3d $stop]) $suffixsym (NEW)}
+		}
+	    } else {
+		# We have a symbol for the suffix. Reuse it. No new
+		# entries are needed.
+		set suffixsym [dict get $cover $key]
+		debug.marpa/export/core/rtc {...Suffix  ([format %3d $suffixstart]-[format %3d $stop]) $suffixsym (reused)}
+	    }
+	    
+	    # create priority alternation of prefix and suffix ranges
+	    $gc l0 remove        $currentsym
+	    $gc l0 priority-rule $currentsym [list $prefixsym] 0
+	    $gc l0 priority-rule $currentsym [list $suffixsym] 0
+
+	    debug.marpa/export/core/rtc {...Replace $currentsym ::= $prefixsym | $suffixsym}
+	    
+	    # The processed definition becomes the prefix for the next.
+	    set prefixstop $stop
+	    set prefixsym  $currentsym
+	}
+    }
+
+    if 0 {
+	# post refactoring, print new ranges as bitmaps
+	foreach sym [$gc l0 symbols-of literal] {
+	    set details [lassign [lindex [$gc l0 get $sym] 0] type]
+	    if {$type eq "brange"} {
+		lassign $details start stop
+		# Print range as bitmap.
+		puts ZZZ_[format %3d $start]-[format %3d $stop]|[string repeat { } [expr {$start-1}]][string repeat {*} [expr {$stop-$start+1}]]
+	    }
+	}
+    }
+
+    #exit 1
     return
 }
 
@@ -561,9 +768,8 @@ proc ::marpa::export::core::rtc::TabularArray {words {config {}}} {
     # Determine field width and derive the formatting pattern for
     # proper alignment from that. Note, alignment is right-justified,
     # space padding to the left of each word.
-    set max [tcl::mathfunc::max {*}[lmap w [lrange $words $from $to] {
-	string length $w
-    }]]
+
+    set max [Width [lrange $words $from $to]]
     set sf %${max}s
 
     append result $prefix
@@ -668,6 +874,18 @@ proc ::marpa::export::core::rtc::Limit16 {label n} {
 proc ::marpa::export::core::rtc::Limit12 {label n} {
     if {$n < 4096} return
     return -code error "ZZZ:$label $n > 4K"
+}
+
+proc ::marpa::export::core::rtc::Width {words} {
+    return [tcl::mathfunc::max {*}[lmap w $words { string length $w }]]
+}
+
+
+proc ::marpa::export::core::rtc::dictsort {dict} {
+    foreach k [lsort -dict [dict keys $dict]] {
+	lappend r $k [dict get $dict $k]
+    }
+    return $r
 }
 
 # # ## ### ##### ######## #############
@@ -775,6 +993,8 @@ oo::class create marpa::export::core::rtc::Mask {
     }
 }
 
+# # ## ### ##### ######## #############
+
 oo::class create marpa::export::core::rtc::SemaG {
     variable mysema ; # dict (semantics -> list(rule id))
     variable mycount
@@ -862,22 +1082,30 @@ oo::class create marpa::export::core::rtc::SemaG {
     }
 }
 
+# # ## ### ##### ######## #############
+
 oo::class create marpa::export::core::rtc::Rules {
-    variable myrules
-    variable mysize
-    variable myelements
-    variable mynames
-    variable mylhsids
-    variable myusenames
-    variable mymaxpad
-    variable mylastlhs
-    variable myblank
+    variable myrules    ; # list (string) : rule instructions
+    variable mydisplay1 ; # list (string) : rule lhs (parallels myrules)
+    variable mydisplay2 ; # list (string) : rule rhs (parallels myrules)
+    variable mysize     ; # int           : #rule instructions (llength myrules)
+    variable myrnum     ; # int           : #rules (>= mysize (branges!))
+    variable myelements ; # int           : #entries in the instruction array
+    variable mynames    ; # list (int)    : rule name ref (parallels myrules)
+    variable mylhsids   ; # list (int)    : rule lhs name ref (parallels myrules)
+    variable myusenames ; # bool          : true -> `mynames`, `mylhsids` are valid
+    variable mymaxpad   ; # int           : max length of a rule right hand side
+    variable mylastlhs  ; # string        : last lhs id specified by a CMD_PRIO
+    variable myblank    ; # string        : whitespace covering `mylastlhs`.
 
     constructor {sym pool {usenames 0}} {
 	marpa::import $sym  S
 	marpa::import $pool P
 	set myrules    {}
+	set mydisplay1 {}
+	set mydisplay2 {}
 	set mysize     0
+	set myrnum     0
 	set myelements 0
 	set mynames    {}
 	set mylhsids   {}
@@ -889,7 +1117,18 @@ oo::class create marpa::export::core::rtc::Rules {
     }
 
     method content {{prefix {    }}} {
-	return "${prefix}[join $myrules "\n$prefix"]"
+	set maxr [marpa::export::core::rtc::Width $myrules]
+	set maxd [marpa::export::core::rtc::Width $mydisplay1]
+	set fmta "${prefix}%-${maxr}s /* %-${maxd}s %s */"
+	set fmtb "${prefix}%s"
+	
+	return [join [lmap ins $myrules lhs $mydisplay1 rhs $mydisplay2 {
+	    if {$lhs ne {}} {
+		format $fmta $ins $lhs $rhs
+	    } else {
+		format $fmtb $ins $lhs $rhs
+	    }
+	}] \n]
     }
 
     method refs {} {
@@ -913,8 +1152,14 @@ oo::class create marpa::export::core::rtc::Rules {
     }
 
     method start {sym} {
-	set myrules [linsert $myrules 0 [my C start $mymaxpad],]
+	# wrap the rule instructions into declarations of scratch area
+	# size and start symbol.
+	set     myrules [linsert $myrules 0 [my C start $mymaxpad],]
 	lappend myrules [my C stop [S 2id $sym]]
+	set     mydisplay1 [linsert $mydisplay1 0 {}]
+	lappend mydisplay1 {}
+	set     mydisplay2 [linsert $mydisplay2 0 {}]
+	lappend mydisplay2 {}
 	incr myelements 2
 	return
     }
@@ -922,8 +1167,9 @@ oo::class create marpa::export::core::rtc::Rules {
     method P_brange {lhs start stop} {
 	lappend cmd [my C brange [S 2id $lhs]]
 	lappend cmd "MARPATCL_RCMD_BOXR ([format %3d $start],[format %3d $stop])"
-	my P $cmd $lhs {}
+	my P $cmd <$lhs> "brange ($start - $stop)"
 	incr myelements 2
+	incr myrnum [expr {$stop - $start + 1}]
 	return
     }
 
@@ -936,11 +1182,14 @@ oo::class create marpa::export::core::rtc::Rules {
 	::marpa::export::core::rtc::Limit12 {priority rhs length} $rl
 	if {$rl > $mymaxpad} { set mymaxpad $rl }
 	incr myelements $rl
+	incr myrnum
 
 	if {$lhid eq $mylastlhs} {
 	    # Short coding of rule for same LHS
 	    lappend cmd [my C prio-short $rl]$myblank
 	    incr myelements 1
+	    set lhs " [string repeat { } [string length $lhs]] "
+	    set op "|   "
 	} else {
 	    # New lhs, full coding, and save for reuse
 	    lappend cmd [my C prio $rl]
@@ -949,44 +1198,56 @@ oo::class create marpa::export::core::rtc::Rules {
 	    set mylastlhs $lhid
 	    set    myblank {  }
 	    append myblank [string repeat { } [string length $lhid]]
+	    set lhs <${lhs}>
+	    set op "::= "
 	}
 	lappend cmd {*}[lmap s $rhs { S 2id $s }]
-	my P $cmd $lhs $rhs
+	my P $cmd $lhs $op[join [lmap w $rhs { set _ <${w}> }] { }]
 	return
     }
 
     method P_quantified {lhs rhs pos args} {
-	set lhs [S 2id $lhs]
+	set lhsid [S 2id $lhs]
+	set op [dict get {
+	    0 *
+	    1 +
+	} $pos]
 	dict with args {}
+	set suffix {}
 	if {[info exists separator]} {
 	    lassign $separator separator proper
-	    set separator [S 2id $separator]
+	    set separatorid [S 2id $separator]
+	    set suffix " (<$separator>[dict get {
+		0 {}
+		1 { P}
+	    } $proper])"
 	}
+	incr myrnum
 	switch -exact -- ${pos}[info exists separator] {
 	    00 {
-		lappend cmd [my C quant* $lhs]
+		lappend cmd [my C quant* $lhsid]
 		lappend cmd [S 2id $rhs]
 		incr myelements 2
 	    }
 	    01 {
-		lappend cmd [my C quant*S $lhs]
+		lappend cmd [my C quant*S $lhsid]
 		lappend cmd [S 2id $rhs]
-		lappend cmd [my C [my S $proper] $separator]
+		lappend cmd [my C [my S $proper] $separatorid]
 		incr myelements 3
 	    }
 	    10 {
-		lappend cmd [my C quant+ $lhs]
+		lappend cmd [my C quant+ $lhsid]
 		lappend cmd [S 2id $rhs]
 		incr myelements 2
 	    }
 	    11 {
-		lappend cmd [my C quant+S $lhs]
+		lappend cmd [my C quant+S $lhsid]
 		lappend cmd [S 2id $rhs]
-		lappend cmd [my C [my S $proper] $separator]
+		lappend cmd [my C [my S $proper] $separatorid]
 		incr myelements 3
 	    }
 	}
-	my P $cmd $lhs [linsert $args 0 $pos]
+	my P $cmd <$lhs> "::= <$rhs> $op$suffix"
 	return
     }
 
@@ -1014,13 +1275,19 @@ oo::class create marpa::export::core::rtc::Rules {
     }
 
     method P {cmd lhs display} {
-	lappend myrules "[join $cmd ", "]," ; #" /* -- $lhs ::= $display -- */"
+	lappend myrules    "[join $cmd ", "],"
+	lappend mydisplay1 $lhs
+	lappend mydisplay2 $display
 	incr mysize
 	return
     }
 
     method size {} {
 	return $mysize
+    }
+
+    method numrules {} {
+	return $myrnum
     }
 
     method elements {} {

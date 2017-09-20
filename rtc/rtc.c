@@ -2,13 +2,12 @@
  * - - -- --- ----- -------- ------------- ---------------------
  * (c) 2017 Andreas Kupries
  *
- * Requirements
+ * Requirements - Note, allocations and tracing via an external environment header.
  */
 
+#include <environment.h>
 #include <rtc.h>
 #include <rtc_int.h>
-#include <critcl_alloc.h>
-#include <critcl_trace.h>
 
 TRACE_OFF;
 
@@ -18,7 +17,10 @@ TRACE_OFF;
  */
 
 marpatcl_rtc_p
-marpatcl_rtc_cons (marpatcl_rtc_spec* g, marpatcl_rtc_sv_cmd a)
+marpatcl_rtc_cons (marpatcl_rtc_spec* g,
+		   marpatcl_rtc_sv_cmd a,
+		   marpatcl_rtc_result r,
+		   void* rcd)
 {
     marpatcl_rtc_p p;
     TRACE_FUNC ("((spec*) %p, (cmd) %p)", g, a);
@@ -26,6 +28,8 @@ marpatcl_rtc_cons (marpatcl_rtc_spec* g, marpatcl_rtc_sv_cmd a)
     p = ALLOC (marpatcl_rtc);
     SPEC = g;
     ACT = a;
+    p->result = r;
+    p->rcdata = rcd;
     (void) marpa_c_init (CONF);
     marpatcl_rtc_fail_init    (p);
     marpatcl_rtc_store_init   (p);

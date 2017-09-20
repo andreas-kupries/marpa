@@ -46,13 +46,13 @@ oo::class create marpa::engine::debug {
 		# Compute human readable fields
 		lassign [my RuleNameData $rule] lhs rhs
 		lassign [my DRule $rule $dot $rhs] ddot drule
-		set drhs [string map {<.> .} [my DNames [linsert $rhs $ddot .]]]
+		set drhs [string map {<.> .} [join [my DNames [linsert $rhs $ddot .]] { }]]
 
 		# And save...
 		#(r$rule,d$dot,o$origin)
-		M add row [list ______ $drule @$origin-${location} $lhs --> $drhs]
-		# (%%)          0      1      2                    3    4   5
-		#               indent ^rule  ^span                lhs arrow rhs+dot
+		M add row [list ______ $drule @$origin-${location} <${lhs}> --> $drhs]
+		# (%%)          0      1      2                    3        4     5
+		#               indent ^rule  ^span                lhs      arrow rhs+dot
 	    }
 	    set report [my TrimTrailingWS [M format 2string]]
 	} on error {e o} {

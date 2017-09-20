@@ -25,7 +25,7 @@ typedef struct marpatcl_rtc_byteset {
      * Ref: https://core.tcl.tk/akupries/marpa/wiki?name=fast+sparse+integer+sets+in+C
      *
      * Note (%%). While using an `unsigned char` for `dense` would be more
-     *            memory efficient the use of Marpa_Symbol_ID allows us to
+     *            memory efficient, the use of Marpa_Symbol_ID allows us to
      *            connect directly to some Marpa data structures (See
      *            marpa_r_terminals_expected()), avoiding a copying step.
      */

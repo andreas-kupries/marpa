@@ -19,6 +19,7 @@
 package require Tcl 8.5
 package require debug
 package require debug::caller
+package require char
 
 debug define marpa/export/rtc-critcl
 debug prefix marpa/export/rtc-critcl {[debug caller] | }
@@ -41,8 +42,26 @@ proc ::marpa::export::rtc-critcl::container {gc} {
     set config [marpa::export::core::rtc::config [$gc serialize] {
 	prefix {	}
     }]
+    lappend config @cqcs@ [CQCS]
     set template [string trim [marpa asset $self]]
     return [string map $config $template]
+}
+
+proc ::marpa::export::rtc-critcl::CQCS {} {
+    ## See also tools/cqcs.tcl ##    
+    # char quote cstring
+    # over \0 to \ff
+    lappend lines "const char* marpatcl_qcs \[\] = \{"
+    for {set c 0} {$c < 256} {incr c} {
+	if {$c > 127} {
+	    set cq \\[format %o $c]
+	} else {
+	    set cq [char quote tcl [format %c $c]]
+	}
+	lappend lines "    /* [format %3d $c] = */ \"[char quote cstring $cq]\","
+    }
+    lappend lines "    0\n\};"
+    join $lines \n
 }
 
 # # ## ### ##### ######## #############
@@ -63,6 +82,19 @@ return
 ##		 Via @tool@
 ##
 #* Space taken: @space@ bytes
+##
+#* Statistics
+#* L0
+#* - #Symbols:   @l0-symbols-c@
+#* - #Lexemes:   @lexemes-c@
+#* - #Discards:  @discards-c@
+#* - #Always:    @always-c@
+#* - #Rule Insn: @l0-insn-c@ (+2: setup, start-sym)
+#* - #Rules:     @l0-rule-c@ (>= insn, brange)
+#* G1
+#* - #Symbols:   @g1-symbols-c@
+#* - #Rule Insn: @g1-insn-c@ (+2: setup, start-sym)
+#* - #Rules:     @g1-rule-c@ (match insn)
 
 package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
@@ -92,9 +124,10 @@ critcl::cheaders rtc/*.h
 critcl::csources rtc/*.c
 
 critcl::include marpa.h
-critcl::include spec.h
-critcl::include rtc.h
-critcl::include fail.h
+critcl::include spec.h    ; # RTC grammar specification structures, for the static data below
+critcl::include rtc.h     ; # RTC runtime structures and API
+critcl::include fail.h    ; # RTC failure API
+critcl::include sem_tcl.h ; # Tcl-specific RTC glue we can keep out of the template.
 
 critcl::source c/errors.tcl           ; # Mapping marpa error codes to strings.
 critcl::source c/events.tcl           ; # Mapping marpa event types to strings.
@@ -205,21 +238,45 @@ critcl::ccode {
 	/* .g1mask     */  { @g1-masking-c@, @cname@_g1masking }
     };
     /* --- end of generated data structures --- */
+
+@cqcs@
 }
 
 # # ## ### ##### ######## ############# #####################
 ## Class exposing the grammar engine.
 
 critcl::class def @slif-name@ {
+    insvariable marpatcl_rtc_sv_p result {
+	Parse result
+    } {
+	instance->result = 0;
+    } {
+	if (instance->result) marpatcl_rtc_sv_unref (instance->result);
+    }
+    
     insvariable marpatcl_rtc_p state {
 	C-level engine, RTC structures.
     } {
-	instance->state = marpatcl_rtc_cons (&@cname@_spec, NULL /* TODO FUTURE */);
+	instance->state = marpatcl_rtc_cons (&@cname@_spec,
+					     NULL /* actions - TODO FUTURE */,
+					     @stem@_result,
+					     (void*) instance );
     } {
 	marpatcl_rtc_destroy (instance->state);
     }
     
-    # constructor - automatic
+    constructor {
+        /*
+	 * Syntax:                          ... []
+         * skip == 2: <class> new           ...
+         *      == 3: <class> create <name> ...
+         */
+	
+	if (objc > 0) {
+	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
+	    goto error;
+	}
+    } {}
 
     method process-file proc {Tcl_Interp* ip Tcl_Obj* path} ok {
 	int res, got;
@@ -243,16 +300,16 @@ critcl::class def @slif-name@ {
 	FREE (buf);
 
 	(void) Tcl_Close (ip, in);
-	return @stem@_complete (ip, instance->state);
+	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
     
-    method process proc {Tcl_Interp* ip pstring text} ok {
-	marpatcl_rtc_enter (instance->state, text.s, text.len);
-	return @stem@_complete (ip, instance->state);
+    method process proc {Tcl_Interp* ip pstring string} ok {
+	marpatcl_rtc_enter (instance->state, string.s, string.len);
+	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
 
     support {
-	/* Helper function encapsulating parse completion processing.
+	/* Helper function capturing parse results (semantic values of the parser)
 	** Stem:  @stem@
 	** Pkg:   @package@
 	** Class: @class@
@@ -260,19 +317,14 @@ critcl::class def @slif-name@ {
 	** CType: @classtype@
 	*/
 
-	static int
-	@stem@_complete (Tcl_Interp* ip, marpatcl_rtc_p state)
+	static void
+	@stem@_result (void* cdata, marpatcl_rtc_sv_p sv)
 	{
-	    if (!marpatcl_rtc_failed (state)) {
-		marpatcl_rtc_eof (state);
-	    }
-	    if (marpatcl_rtc_failed (state)) {
-		// TODO: retrieve and throw error
-		return TCL_ERROR;
-	    } else {
-		// TODO: retrieve and return AST
-		return TCL_OK;
-	    }
+	    @instancetype@ instance = (@instancetype@) cdata;
+	    if (instance->result) marpatcl_rtc_sv_unref (instance->result);
+	    if (sv) marpatcl_rtc_sv_ref (sv);
+	    instance->result = sv;
+	    return;
 	}
     }
 }

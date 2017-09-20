@@ -17,6 +17,24 @@
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
+ * Shorthands for structure access, assumes var name 'sv'.
+ */
+
+#define TAG (sv->tag)
+#define REF (sv->refCount)
+#define STR (sv->value.string)
+#define INT (sv->value.inum)
+#define FLT (sv->value.fnum)
+#define USR (sv->value.user)
+#define VEC (sv->value.vec)
+
+#define T_SET(t,f) TAG = (((t) << 4) | (f))
+#define T_GET     (TAG >> 4)
+#define FLAGS     (TAG & 0xF)
+#define OWN (1)
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
  * Structures -- SV vectors (stack-like)
  */
 

@@ -2,18 +2,16 @@
  * - - -- --- ----- -------- ------------- ---------------------
  * (c) 2017 Andreas Kupries
  *
- * Requirements
+ * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
 
+#include <environment.h>
 #include <parser.h>
 #include <rtc_int.h>
 #include <sem_int.h>
 #include <events.h>
 #include <lexer.h>
 #include <progress.h>
-#include <critcl_assert.h>
-#include <critcl_alloc.h>
-#include <critcl_trace.h>
 #include <marpatcl_steptype.h>
 
 TRACE_OFF;
@@ -41,8 +39,8 @@ marpatcl_rtc_parser_init (marpatcl_rtc_p p)
     TRACE_FUNC ("((rtc*) %p)", p);
     
     PAR.g = marpa_g_new (CONF);
-    marpatcl_rtc_spec_setup (PAR.g, SPEC->g1);
-
+    (void) marpa_g_force_valued (PAR.g);
+    PRD   = marpatcl_rtc_spec_setup (PAR.g, SPEC->g1, TRACE_TAG_VAR (parser_progress));
     res = marpa_g_precompute (PAR.g);
     marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 precompute");
     marpatcl_rtc_parser_events (p);
@@ -64,7 +62,7 @@ marpatcl_rtc_parser_free (marpatcl_rtc_p p)
     TRACE_FUNC ("((rtc*) %p)", p);
 
     marpa_g_unref (PAR.g);
-    marpa_r_unref (PAR.recce);
+    if (PAR.recce) marpa_r_unref (PAR.recce);
 
     TRACE_RETURN_VOID;
 }
@@ -85,7 +83,7 @@ marpatcl_rtc_parser_enter (marpatcl_rtc_p p, int found)
      */
 
     res = marpa_r_earleme_complete (PAR.recce);
-    if (res != MARPA_ERR_PARSE_EXHAUSTED) {
+    if (res && (marpa_g_error (PAR.g, NULL) != MARPA_ERR_PARSE_EXHAUSTED)) {
 	// any error but exhausted is a hard failure
 	marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 earleme_complete");
     }
@@ -118,14 +116,23 @@ marpatcl_rtc_parser_eof (marpatcl_rtc_p p)
  */
 
 #ifdef CRITCL_TRACER
-#define SHOW_SV(sv) \
-    {							\
+#define SHOW_SV(sv) {					\
 	char* svs = marpatcl_rtc_sv_show (sv, 0);	\
 	TRACE_ADD (" sv %p = %s", sv, svs);		\
 	FREE (svs);					\
     }
+
+#define SHOW_MASK(mlen,mv) {		     \
+	int j ; const char* sep = " M(";     \
+	for (j =0; j < mlen; j++) {	     \
+	    TRACE_ADD ("%s%d", sep, mv[j]);  \
+	    sep = ",";			     \
+	}				     \
+        TRACE_ADD (")", 0);		     \
+    }
 #else
 #define SHOW_SV(sv)
+#define SHOW_MASK(mlen,mv)
 #endif
 
 
@@ -204,7 +211,7 @@ complete (marpatcl_rtc_p p)
 	/* Execute semantics ... */
 	v = marpa_v_new (t);
 	ASSERT (v, "Marpa_Value creation failed");
-	TRACE_DO (_marpa_v_trace (v, 1));
+	//TRACE_DO (_marpa_v_trace (v, 1));
 	TRACE_ADD (" value %p", v);
 	TRACE_CLOSER;
 
@@ -237,7 +244,7 @@ complete (marpatcl_rtc_p p)
 		 * - get per-rule masking - filter vector
 		 * - get per-rule semantic - run on vector
 		 */
-		TRACE_ADD ("    -- rule  %3d, span (%d-%d), %d := (%d-%d)",
+		TRACE_ADD ("    -- rule  %4d, span (%d-%d), %d := (%d-%d)",
 			   marpa_v_rule(v),
 			   marpa_v_rule_start_es_id(v),
 			   marpa_v_es_id(v),
@@ -252,6 +259,7 @@ complete (marpatcl_rtc_p p)
 		/* get mask, filter */
 		mv = marpatcl_rtc_spec_g1decode (&SPEC->g1mask, rid, &mlen);
 		if (mlen) {
+		    SHOW_MASK (mlen, mv);
 		    marpatcl_rtc_sva_filter (&rhs, mlen, mv);
 		}
 
@@ -266,7 +274,7 @@ complete (marpatcl_rtc_p p)
 		// marpa_v_result(v)      - destination stack slot
 		// marpa_v_token_value(v) - token's semantic value
 		/* token - push on eval stack */
-		TRACE_ADD ("   -- token %3d, span (%d-%d), <%s> %d := <%d>",
+		TRACE_ADD ("   -- token %4d, span (%d-%d), <%s> %d := <%d>",
 			   marpa_v_token(v),
 			   marpa_v_token_start_es_id(v),
 			   marpa_v_es_id(v),
@@ -284,7 +292,7 @@ complete (marpatcl_rtc_p p)
 		/* null symbol - push null on eval stack
 		 * -- might have semantics ?
 		 */
-		TRACE_ADD (" -- sym     %3d, span (%d-%d), <%s> %d := NULL",
+		TRACE_ADD (" -- sym   %4d, span (%d-%d), <%s> %d := NULL",
 			   marpa_v_symbol(v),
 			   marpa_v_token_start_es_id(v),
 			   marpa_v_es_id(v),
@@ -312,7 +320,9 @@ complete (marpatcl_rtc_p p)
 	TRACE_ADD ("tree :=", 0);
 	SHOW_SV (sv);
 	TRACE_CLOSER;
-	// TODO: push generated SV to RTC for higher handling
+
+	// Invoke user-supplied callback for handling the SVs
+	p->result (p->rcdata, sv);
 
 	marpatcl_rtc_sva_clear (&es);
     }

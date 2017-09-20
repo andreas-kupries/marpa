@@ -2,12 +2,12 @@
  * - - -- --- ----- -------- ------------- ---------------------
  * (c) 2017 Andreas Kupries
  *
- * Requirements
+ * Requirements - Note, tracing via an external environment header.
  */
 
+#include <environment.h>
 #include <store.h>
 #include <rtc_int.h>
-#include <critcl_trace.h>
 
 TRACE_OFF;
 
@@ -23,6 +23,9 @@ marpatcl_rtc_store_init (marpatcl_rtc_p p)
 
     marpatcl_rtc_sva_init (&STOR.content, 10, 0); /* non-strict, expandable */
 
+    // Push a dummy value to ensure that all true SVs get ids starting from 1.
+    marpatcl_rtc_sva_push (&STOR.content, NULL);
+    
     TRACE_RETURN_VOID;
 }
 
