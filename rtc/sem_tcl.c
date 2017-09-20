@@ -270,7 +270,7 @@ error_print (void* cdata, const char* string)
 }
 
 static void
-error_l0_progress (Tcl_DString *ds, marpatcl_rtc_p p)
+error_lex_progress (Tcl_DString *ds, marpatcl_rtc_p p)
 {
     // Skip progress report if there is no recognizer to query
     if (!LEX.recce) return;
@@ -285,6 +285,34 @@ error_l0_progress (Tcl_DString *ds, marpatcl_rtc_p p)
     marpatcl_rtc_progress (error_print, ds,
 			   p, SPEC->l0, LRD, LEX.recce, LEX.g,
 			   marpa_r_latest_earley_set (LEX.recce));
+}
+
+static void
+error_lex_mismatch (Tcl_DString *ds, marpatcl_rtc_p p)
+{
+    if (GATE.lastchar >= 0) {
+	char buf [30];
+
+	Tcl_DStringAppend (ds, "\nMismatch:\n'", -1);
+	Tcl_DStringAppend (ds, QCS [GATE.lastchar], -1);
+	Tcl_DStringAppend (ds, "' => (", -1);
+	sprintf (buf, "%d", GATE.lastchar);
+	Tcl_DStringAppend (ds, buf, -1);
+	Tcl_DStringAppend (ds, ") ni", -1);
+
+	if (marpatcl_rtc_byteset_size (&GATE.acceptable)) {
+	    int k;
+	    for (k=0; k < MARPATCL_RTC_BSMAX; k++) {
+		if (!marpatcl_rtc_byteset_contains (&GATE.acceptable, k)) continue;
+		Tcl_DStringAppend (ds, "\n ", -1);
+		sprintf (buf, "%4d", k);
+		Tcl_DStringAppend (ds, buf, -1);
+		Tcl_DStringAppend (ds, ": '", -1);
+		Tcl_DStringAppend (ds, QCS [k], -1);
+		Tcl_DStringAppend (ds, "'", -1);
+	    }
+	}
+    }
 }
 
 static void
@@ -308,31 +336,13 @@ marpatcl_rtc_error (Tcl_Interp* ip, marpatcl_rtc_p p)
     error_match_candidate (&ds, p);
     error_lex_accept      (&ds, p);
     error_parse_accept    (&ds, p);
-    error_l0_progress     (&ds, p);
+    error_lex_progress    (&ds, p);
+    error_lex_mismatch    (&ds, p);
 
     Tcl_SetErrorCode  (ip, "SYNTAX", NULL);
     Tcl_DStringResult (ip, &ds);
+
     Tcl_DStringFree (&ds);
-
-#if 0
-    // TODO: char mismatch information
-
-    if {[dict exists $context l0 char] &&
-	[dict exists $context l0 csym]} {
-	set ch [char quote cstring [dict get $context l0 char]]
-	append msg "\nMismatch:\n'$ch' => ([dict get $context l0 csym]) ni"
-
-	    // acceptsym, map -- generate from GATE.acceptable
-
-	if {[dict exists $context l0 acceptmap]} {
-  	dict for {asym aname} [dict get $context l0 acceptmap] {
-  	    append msg "\n [format %4d $asym]: $aname"
-  	}
-      } elseif {[dict exists $context l0 acceptsym]} {
-  	append msg " (dict exists $context l0 acceptsym])"
-      }
-  }
-#endif
 }
 
 
