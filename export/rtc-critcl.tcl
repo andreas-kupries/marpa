@@ -265,7 +265,18 @@ critcl::class def @slif-name@ {
 	marpatcl_rtc_destroy (instance->state);
     }
     
-    # constructor - automatic
+    constructor {
+        /*
+	 * Syntax:                          ... []
+         * skip == 2: <class> new           ...
+         *      == 3: <class> create <name> ...
+         */
+	
+	if (objc > 0) {
+	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
+	    goto error;
+	}
+    } {}
 
     method process-file proc {Tcl_Interp* ip Tcl_Obj* path} ok {
 	int res, got;
