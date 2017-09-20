@@ -31,6 +31,22 @@ TRACE_TAG_OFF (filter);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
+ * Helper
+ */
+
+static void
+expand (marpatcl_rtc_sv_vec v, int newcap)
+{
+    if (!CAP) {
+	VAL = NALLOC (marpatcl_rtc_sv_p, newcap);
+    } else {
+	VAL = REALLOC (VAL, marpatcl_rtc_sv_p, newcap);
+    }
+    CAP = newcap;
+}
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
  * API
  */
 
@@ -65,8 +81,12 @@ marpatcl_rtc_sva_init (marpatcl_rtc_sv_vec v, int capacity, int strict)
     SZ     = 0;
     CAP    = capacity;
     STRICT = strict;
-    VAL    = NALLOC (marpatcl_rtc_sv_p, capacity);
-    memset (VAL, '\0', sizeof(marpatcl_rtc_sv_p)*capacity);
+    if (capacity) {
+	VAL = NALLOC (marpatcl_rtc_sv_p, capacity);
+	memset (VAL, '\0', sizeof(marpatcl_rtc_sv_p)*capacity);
+    } else {
+	VAL = NULL;
+    }
 
     TRACE_RETURN_VOID;
 }
@@ -78,11 +98,13 @@ marpatcl_rtc_sva_free (marpatcl_rtc_sv_vec v)
     marpatcl_rtc_sv_p x;
     TRACE_FUNC ("((sv_vec) %p)", v);
 
-    for (k=0; k < SZ; k++) {
-	x = VAL [k];
-	if (x) marpatcl_rtc_sv_unref (x);
+    if (VAL) {
+	for (k=0; k < SZ; k++) {
+	    x = VAL [k];
+	    if (x) marpatcl_rtc_sv_unref (x);
+	}
+	FREE (VAL);
     }
-    FREE (VAL);
 
     TRACE_RETURN_VOID;
 }
@@ -95,8 +117,7 @@ marpatcl_rtc_sva_push (marpatcl_rtc_sv_vec v, marpatcl_rtc_sv_p x)
     if (STRICT) {
 	ASSERT (SZ < CAP, "Push into full vector");
     } else if (SZ == CAP) {
-	CAP += CAP;
-	VAL = REALLOC (VAL, marpatcl_rtc_sv_p, CAP);
+	expand (v, CAP ? (CAP+CAP) : 1);
     }
     if (x) {
 	(void) marpatcl_rtc_sv_ref (x);
@@ -188,11 +209,18 @@ marpatcl_rtc_sva_set_fill (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x)
 
     // Semi-inlined _push. The per-push check for expandability, and actual
     // expansion are factored out and pulled in front of the actual push ops.
-    
     // Expand to hold the new slot.
-    while (at >= CAP) {
-	CAP += CAP;
-	VAL = REALLOC (VAL, marpatcl_rtc_sv_p, CAP);
+    {
+	int newcap;
+	if (!CAP) {
+	    newcap = at+1;
+	} else {
+	    newcap = CAP;
+	    while (at >= newcap) {
+		newcap += newcap;
+	    }
+	}
+	expand (v, newcap);
     }
     ASSERT_BOUNDS (at, CAP);
 
