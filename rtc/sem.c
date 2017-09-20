@@ -9,6 +9,7 @@
 #include <sem_int.h>
 
 TRACE_OFF;
+TRACE_TAG_OFF (show);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -71,7 +72,7 @@ marpatcl_rtc_sv_p
 marpatcl_rtc_sv_cons_string (const char* s, int own)
 {
     marpatcl_rtc_sv_p sv;
-    TRACE_FUNC ("(s '%s', own %d)", s, own);
+    TRACE_FUNC ("(s %p = '%s', own %d)", s, s, own);
 
     sv = ALLOC (marpatcl_rtc_sv);
     marpatcl_rtc_sv_init_string (sv, s, own);
@@ -142,7 +143,7 @@ marpatcl_rtc_sv_init_double (marpatcl_rtc_sv_p sv, double x)
 void
 marpatcl_rtc_sv_init_string (marpatcl_rtc_sv_p sv, const char* s, int own)
 {
-    TRACE_FUNC ("((sv*) %p, s '%s', own %d)", sv, s, own);
+    TRACE_FUNC ("((sv*) %p, s %p = '%s', own %d)", sv, s, s, own);
 
     REF = 0;
     T_SET (marpatcl_rtc_sv_type_string, (own & OWN));
@@ -420,28 +421,56 @@ marpatcl_rtc_sv_show (marpatcl_rtc_sv_p sv, int* slen)
 char*
 marpatcl_rtc_sv_vec_show (marpatcl_rtc_sv_vec v, int* slen)
 {
-    char* svs = NALLOC (char, 5);
+    char* svs;
     char* child;
     int   len, clen, nlen, k;
 
-    len = sprintf (svs, "%s", "[");
-    for (k = 0; k < v->size; k++) {
-	child = marpatcl_rtc_sv_show (v->data [k], &clen);
-	nlen = len + clen + 2 + 1;
-	svs = REALLOC (svs, char, nlen);
-	ASSERT (svs, "out of memory during SV stringification");
-	strcat (svs+len,child);
-	len += clen;
-	strcat (svs+len,", ");
-	len += 2;
-	FREE (child);
+    TRACE_TAG_FUNC (show, "((sv_vec) %p [%d:%d|%d], (int*) %p)",
+		    v, v->size, v->capacity, v->strict, slen);
+
+    if (!v->size) {
+	svs = NALLOC (char, 5);
+	len = snprintf (svs, 5, "%s", "[]");
+	TRACE ("svs/a %p [%d] = %d:'%s'", svs, len, strlen(svs), svs);
+    } else {
+	svs = NALLOC (char, 5);
+	len = snprintf (svs, 5, "%s", "[");
+	TRACE ("svs/b %p [%d] = %d:'%s'", svs, len, strlen(svs), svs);
+	   
+	for (k = 0; k < v->size; k++) {
+	    TRACE_TAG (show, "child[%3d]", k);
+	    child = marpatcl_rtc_sv_show (v->data [k], &clen);
+	    nlen = len + clen + 2 + 1;
+	    TRACE_TAG (show, "child[%3d] = %p [%d] ==> %d", k, child, clen, nlen);
+	
+	    svs = REALLOC (svs, char, nlen);
+	    ASSERT (svs, "out of memory during SV stringification");
+
+	    strcat (svs+len,child);
+	    len += clen;
+	    strcat (svs+len,", ");
+	    len += 2;
+	    TRACE_TAG (show, "svs/c %p [%d] = %d:'%s'", svs, len, strlen(svs), svs);
+	    ASSERT (len == strlen(svs), "string length mismatch");
+
+	    FREE (child);
+	}
+
+	/* Overwrite the closing suffix ", \0" with "]\0" */
+	ASSERT (len > 2, "Short string, unable to close.");
+	svs [len-2] = ']';
+	svs [len-1] = '\0';
+	len --;
     }
-    /* Overwrite ", \0" with "]\0" */
-    svs[len-2] = ']';
-    svs[len-1] = '\0';
-    len --;
-    if (slen) *slen = len;
-    return svs;
+
+    TRACE_TAG (show, "svs/d %p [%d] = %d:'%s'", svs, len, strlen(svs), svs);
+    ASSERT (len == strlen(svs), "string length mismatch");
+	
+    if (slen) {
+	*slen = len;
+	TRACE_TAG (show, "(int*) %p len = %d", slen, *slen);
+    }
+    TRACE_TAG_RETURN (show, "(char*) %p", svs);
 }
 #endif
 
