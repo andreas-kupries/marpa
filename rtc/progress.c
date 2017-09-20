@@ -160,6 +160,127 @@ progress (const char*          label,   // string
  */
 
 void
+marpatcl_rtc_progress (marpatcl_rtc_progress_append acmd,
+		       void* adata,
+		       marpatcl_rtc_p       p,       // Overall RTC state
+		       marpatcl_rtc_rules*  spec,    // Relevant grammar spec (rcode, symbols, ...)
+		       marpatcl_rtc_stack_p rd,      // rd :: map (rule id --> PC (into spec->rcode))
+		       Marpa_Recognizer     r,       // Recognizer and
+		       Marpa_Grammar        g,       // Grammar under inspection.
+		       int                  location)
+{
+    // TODO: FIX to use dyn strings and definitely have no overflow.
+
+#define NAME(sym) marpatcl_rtc_spec_symname (spec, sym, 0)
+#define PRINT(s) acmd (adata, s)
+
+#define P(r,x)  marpatcl_rtc_sv_vec_push (r, x);
+#define PS(r,s) P (r, marpatcl_rtc_sv_cons_string (strdup (s), 1))
+#define MF(field) if (len > field) { field = len ; }
+#define PADR(n) while (len < n) { PRINT (" "); len ++; }
+#define PFIELD(max,x)							\
+    {									\
+	marpatcl_rtc_sv_p v = marpatcl_rtc_sv_vec_get (entry, x);	\
+	const char*       s = marpatcl_rtc_sv_get_string (v);		\
+	int             len = strlen (s);				\
+	PRINT (s);							\
+	PADR (max);							\
+    }
+
+    int count, k, res;
+    marpatcl_rtc_stack_p rhs;
+    marpatcl_rtc_sym     lhs;
+    marpatcl_rtc_sym cmd, detail;
+    marpatcl_rtc_sv_p report, entry, rhsv;
+    char buf [200];
+    int len;
+    int maxintro = 0;
+    int maxspan  = 0;
+    int maxlhs   = 0;
+
+    // I. Get the progress report, partially format the elements, use SV data
+    // structures to save these pieces, track field widths across the set.
+
+    report = marpatcl_rtc_sv_cons_vec (1);
+    report->value.vec->strict = 0; // Poke, make expandable.
+    // Each element of the report will be 4-element vec containing
+    // 3 strings and a vector: intro/S, span/S, lhs/S, rhs/V(S).
+    // We track the max size of the first three columns.
+    
+    count = marpa_r_progress_report_start  (r, location);
+    marpatcl_rtc_fail_syscheck (p, g, count, "progress_report_start");
+
+    rhs = marpatcl_rtc_stack_cons (-1);
+
+    for (k = 0; k < count; k++) {
+	int                 j, dot, ddot, rhsl;
+	int*                rv;
+	char prefix;
+	char suffix [40] = { 0 };
+	char* iname;
+	Marpa_Earley_Set_ID origin;
+	Marpa_Rule_ID       rule = marpa_r_progress_item (r, &dot, &origin);
+	marpatcl_rtc_fail_syscheck (p, g, rule, "progress_report_item");
+
+	lhs = decode_rule (spec, rd, rule, rhs, &iname);
+	rv  = marpatcl_rtc_stack_data (rhs, &rhsl);
+	// lhs - id, rhs - stack of ids
+
+	ddot = dot;
+	if ((dot < 0) || (dot >= rhsl)) {
+	    prefix = 'F';
+	    ddot = rhsl;
+	} else if (dot == 0) {
+	    prefix = 'P';
+	} else {
+	    prefix = 'R';
+	    snprintf (suffix, 40, ":%d", dot);
+	}
+	
+	entry = marpatcl_rtc_sv_cons_vec (4);	P (report, entry);
+
+	len = snprintf (buf, 200, "%c%d%s", prefix, rule, suffix);	PS (entry, buf); MF (maxintro);
+	len = snprintf (buf, 200, "@%d-%d", origin, location);		PS (entry, buf); MF (maxspan);
+	len = snprintf (buf, 200, "<%s>", NAME (lhs));			PS (entry, buf); MF (maxlhs);
+	rhsv = marpatcl_rtc_sv_cons_vec (rhsl+1);			P (entry, rhsv);
+	for (j = 0 ; j < ddot ; j++) {
+	    snprintf (buf, 200, "<%s>", NAME (rv[j]));    PS (rhsv, buf);
+	}
+	PS (rhsv, ".");
+	for (      ; j < rhsl ; j++) {
+	    snprintf (buf, 200, "<%s>", NAME (rv[j]));    PS (rhsv, buf);
+	}
+    }
+
+    res = marpa_r_progress_report_finish (r);
+    marpatcl_rtc_fail_syscheck (p, g, res, "progress_report_finish");
+    marpatcl_rtc_stack_destroy (rhs);
+
+    /// III. Take the semi-assembled progress report and print it with proper
+    /// column alignment.
+
+    for (k = 0; k < count; k++) {
+	entry = marpatcl_rtc_sv_vec_get (report, k);
+
+	PRINT ("______ ");	PFIELD (maxintro, 0);
+	PRINT (" ");		PFIELD (maxspan,  1);
+	PRINT (" ");		PFIELD (maxlhs,   2);
+	PRINT (" --> ");
+	{
+	    marpatcl_rtc_sv_p rhs = marpatcl_rtc_sv_vec_get (entry, 3);
+	    int j, rhsl = marpatcl_rtc_sv_vec_size (rhs);
+	    for (j = 0; j < rhsl; j++) {
+		PRINT (" ");
+		PRINT (marpatcl_rtc_sv_get_string (marpatcl_rtc_sv_vec_get (rhs, j)));
+	    }
+	}
+	PRINT ("\n");
+    }
+
+    marpatcl_rtc_sv_destroy (report);
+}
+
+void
 marpatcl_rtc_lexer_progress (marpatcl_rtc_p p)
 {
     int loc;

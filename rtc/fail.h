@@ -21,9 +21,9 @@
 typedef struct marpatcl_rtc_fail {
     int fail; /* boolean */
     const char* origin;
-    // v-- TOD: separate structure
+    // v-- TODO: separate structure?!
     // origin        - string
-    // l0 at         - LEX.lastlocation
+    // l0 at         - LEX.lastloc
     // l0 char       - LEX.lastchar
     // l0 csym       - moot
     // l0 acceptable - GATE.acceptable
