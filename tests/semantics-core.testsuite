@@ -1,0 +1,168 @@
+# -*- tcl -*-
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## Execution core for testing the SLIF semantics in combination with
+## all kinds of marpa-based parser engines.
+## Configured by the caller with methods for
+## - overall initialization and finalization
+## - parser creation and destruction
+## - semantics result selection
+#
+## The methods expected to exist are
+#
+## * label      :: return string to name the tests
+## * initialize :: global setup, for the suite
+## * finalize   :: global cleanup, for the suite
+## * pclass     :: return name of the parser class
+## * result     :: result selection by label / base directory
+
+# # ## ### ##### ######## ############# #####################
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+kt require support fileutil ;# cat
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+
+proc setup   {} {
+    marpa::slif::semantics create SEMA [log GC] ; /trace GC
+    [pclass]               create PARSE
+}
+proc cleanup {} {
+    PARSE destroy
+    catch { SEMA destroy }
+    # The semantics instance normally auto-destroys itself at the end
+    # of "process"(file). However if the test failed this may not have
+    # happend. Thus we try to destroy such leftovers so that they may
+    # not interfere with the next test, and the ignore the error when
+    # it was already gone.
+}
+
+# # ## ### ##### ######## ############# #####################
+## No method sequence checking for the parser.
+## Methods can be called in any order.
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/ast.tcl
+kt source support/common.tcl
+kt source support/dirs.tcl
+kt source support/grammars.tcl
+kt source support/textutils.tcl
+
+# # ## ### ##### ######## ############# #####################
+## Setup dynamic parts of the testsuite
+## Currently only importing the `bootstrap/marpa-tcl-slif`
+
+exec [td]/grammars/setup.sh
+
+# # ## ### ##### ######## ############# #####################
+
+initialize
+
+# # ## ### ##### ######## ############# #####################
+##  1 constructor/0
+##  2 process/1		(ast)
+
+# # ## ### ##### ######## ############# #####################
+## constructor - wrong args, initial state, calls
+
+test marpa-slif-semantics-constructor-1.0 {constructor, wrong args, not enough} -body {
+    marpa::slif::semantics new
+} -returnCodes error -result {wrong # args: should be "marpa::slif::semantics new container"}
+
+test marpa-slif-semantics-constructor-1.1 {constructor, wrong args, too many} -body {
+    marpa::slif::semantics new CONTAINER X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::semantics new container"}
+
+test marpa-slif-semantics-constructor-1.2 {constructor, wrong args, not enough} -body {
+    marpa::slif::semantics create SEMA
+} -returnCodes error -result {wrong # args: should be "marpa::slif::semantics create SEMA container"}
+
+test marpa-slif-semantics-constructor-1.3 {constructor, wrong args, too many} -body {
+    marpa::slif::semantics create SEMA CONTAINER X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::semantics create SEMA container"}
+
+# # ## ### ##### ######## ############# #####################
+## process - wrong # args
+
+test marpa-slif-semantics-process-1.0 {process, wrong args, not enough} -setup {
+    marpa::slif::semantics create SEMA [log CONTAINER]
+} -body {
+    SEMA process
+} -cleanup {
+    SEMA destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "SEMA process ast"}
+
+test marpa-slif-semantics-process-1.1 {process, wrong args, too many} -setup {
+    marpa::slif::semantics create SEMA [log CONTAINER]
+} -body {
+    SEMA process AST X
+} -cleanup {
+    SEMA destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "SEMA process ast"}
+
+# # ## ### ##### ######## ############# #####################
+## semantics + process, process-file - Actual processing - Id formatting prep
+
+incr max
+test-grammar-files slif --> __ __ { incr max }
+set format %0[string length $max]d
+unset max
+
+# # ## ### ##### ######## ############# #####################
+
+incr k
+test-grammar-map slif --> id slif base {
+    set input    [fget $slif]
+    set output   [result $base]
+    set kd       [format $format $k]
+    set expected [fget $output]
+
+    if {[string match {*Parsing failed in*} $expected]} {
+	# Keep indentation in expected error results
+	set expected [string trimright $expected]
+    } else {
+	# Reformat readable result (highlighting of important parts by
+	# indentation and separation) into the actual trace coming out
+	# of the semantics.
+	set expected [norm-trace $output]
+    }
+    
+    test marpa-slif-semantics-process-[label]-2.${kd}---${id} "[label] :: semantics $id /trace" -body {
+	if {[catch {
+	    SEMA process [PARSE process $input]
+	} msg]} {
+	    #puts $::errorInfo
+	    log-add GC error $msg
+	}
+	string trim [logged "\n"]
+    } -setup setup -cleanup {
+	unset msg
+	cleanup
+    } -result $expected
+
+    incr k
+}
+
+# # ## ### ##### ######## ############# #####################
+
+unset k slif base format expected kd input
+finalize
+rename label {}
+rename result {}
+rename initialize {}
+rename finalize {}
+rename pclass {}
+rename setup {}
+rename cleanup {}
+return

@@ -1,0 +1,45 @@
+GC error {Parsing failed in gate. Stopped at offset 15 after reading '='. Expected any character in [\t\n\13\14\r\40#:~\302\341\342\343] while looking for any of (hash comment, op declare bnf, op declare match, whitespace).
+L0 Report:
+______ P57     @1-1 <op declare bnf>                  -->  . <::=>
+______ P58     @1-1 <op declare match>                -->  . <~>
+______ P69     @1-1 <hash comment>                    -->  . <terminated hash comment>
+______ P70     @1-1 <hash comment>                    -->  . <unterminated final hash comment>
+______ P71     @1-1 <whitespace>                      -->  . <[:space:]>
+______ P2084   @1-1 <[:space:]>                       -->  . <[\t-\r]>
+______ P2085   @1-1 <[:space:]>                       -->  . <\40>
+______ P2086   @1-1 <[:space:]>                       -->  . <\302> <\240>
+______ P2087   @1-1 <[:space:]>                       -->  . <\341> <\232> <\200>
+______ P2088   @1-1 <[:space:]>                       -->  . <\341> <\240> <\216>
+______ P2089   @1-1 <[:space:]>                       -->  . <\342> <\200> <[\200-\212]>
+______ P2090   @1-1 <[:space:]>                       -->  . <\342> <\200> <[\250-\251]>
+______ P2091   @1-1 <[:space:]>                       -->  . <\342> <\200> <\257>
+______ P2092   @1-1 <[:space:]>                       -->  . <\342> <\201> <\237>
+______ P2093   @1-1 <[:space:]>                       -->  . <\343> <\200> <\200>
+______ P2101   @1-1 <::=>                             -->  . <:> <:> <=>
+______ P2420   @1-1 <terminated hash comment>         -->  . <#> <hash comment body> <vertical space char>
+______ P2421   @1-1 <unterminated final hash comment> -->  . <#> <hash comment body>
+______ P2540   @1-1 <[\t-\r]>                         -->  . <\t>
+______ P2541   @1-1 <[\t-\r]>                         -->  . <\n>
+______ P2542   @1-1 <[\t-\r]>                         -->  . <\13>
+______ P2543   @1-1 <[\t-\r]>                         -->  . <\14>
+______ P2544   @1-1 <[\t-\r]>                         -->  . <\r>
+______ R2929:1 @0-1 <@L0:START>                       -->  <op declare bnf> . <op declare bnf>
+______ R2930:1 @0-1 <@L0:START>                       -->  <op declare match> . <op declare match>
+______ R2940:1 @0-1 <@L0:START>                       -->  <hash comment> . <hash comment>
+______ R2941:1 @0-1 <@L0:START>                       -->  <whitespace> . <whitespace>
+
+Mismatch:
+'=' => (61) ni
+    9: '\t'
+   10: '\n'
+   11: '\13'
+   12: '\14'
+   13: '\r'
+   32: '\40'
+   35: '#'
+   58: ':'
+  126: '~'
+  194: '\302'
+  225: '\341'
+  226: '\342'
+  227: '\343'}

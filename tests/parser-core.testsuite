@@ -126,7 +126,7 @@ test-grammar-map slif --> id slif base {
 	    }
 	    set msg
 	} -setup setup -cleanup {
-	    PARSE destroy
+	    cleanup
 	    unset msg
 	} -result $expected
 
