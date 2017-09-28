@@ -45,6 +45,10 @@ proc cleanup {} {
     # it was already gone.
 }
 
+proc ParserFile {} {
+    return [td]/[pclass]-sema.tcl
+}
+
 # # ## ### ##### ######## ############# #####################
 ## No method sequence checking for the parser.
 ## Methods can be called in any order.

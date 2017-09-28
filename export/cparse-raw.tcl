@@ -17,12 +17,12 @@ package require Tcl 8.5
 package require debug
 package require debug::caller
 
-debug define marpa/export/rtc-raw
-debug prefix marpa/export/rtc-raw {[debug caller] | }
+debug define marpa/export/cparse-raw
+debug prefix marpa/export/cparse-raw {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-namespace eval ::marpa::export::rtc-raw {
+namespace eval ::marpa::export::cparse-raw {
     namespace export container
     namespace ensemble create
 
@@ -32,8 +32,8 @@ namespace eval ::marpa::export::rtc-raw {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::rtc-raw::container {gc} {
-    debug.marpa/export/rtc-raw {}
+proc ::marpa::export::cparse-raw::container {gc} {
+    debug.marpa/export/cparse-raw {}
     variable self
     set config   [marpa::export::core::rtc::config [$gc serialize]]
     set template [string trim [marpa asset $self]]

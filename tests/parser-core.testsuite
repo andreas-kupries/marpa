@@ -33,6 +33,10 @@ kt local   testing marpa
 proc setup   {} { [pclass] create PARSE }
 proc cleanup {} { PARSE destroy }
 
+proc ParserFile {} {
+    return [td]/[pclass].tcl
+}
+
 # # ## ### ##### ######## ############# #####################
 ## No method sequence checking for the parser.
 ## Methods can be called in any order.

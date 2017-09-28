@@ -8,78 +8,21 @@
 ## Larger testing of exporter results, and runtime -- export::tparse, engine::tcl
 ## 
 
+# Definition of boot-tcl
+kt source  support/boot-tcl.tcl
+
 # # ## ### ##### ######## ############# #####################
 ## API to the parser-core
 
-proc label  {} { return "engine_tcl_slif" }
-proc pclass {} { return engine-tcl-parser }
+proc label      {} { return "engine_tcl_slif" }
+proc pclass     {} { return engine-tcl-parser }
+proc initialize {} { boot-tcl }
+proc finalize   {} { unboot-tcl }
 
-proc result {base} {
-    foreach file {
-	ast_tcl
-	ast
-    } {
-	set path [file join $base $file]
-	if {![file exists $path]} continue
-	return $path
-    }
-    return -code error "Unable to find result for $base"
-}
+proc result {base} { locate $base ast_tcl ast }
 
-proc initialize {} {
-    # _ __ ___ _____ ________ _____________ _____________________
-    # The builtin lexer, parser and uncore are used to process the
-    # SLIF meta grammar and create a full-blown tcl-based engine for
-    # it (via the proper exporter). This engine is used, in turn, to
-    # process all the test cases.
-    
-    # _ __ ___ _____ ________ _____________ _____________________
-    # I. Create the processor
-    marpa::slif::container create GC
-    marpa::slif::semantics create SEMA GC
-    marpa::slif::parser    create BOOT
-
-    # _ __ ___ _____ ________ _____________ _____________________
-    # II. Process the slif meta grammar
-    SEMA process [BOOT process-file [MetaLocation]/slif]
-    # GC now holds the grammar
-    BOOT destroy
-    # Note: SEMA auto-destroys itself at the end of 'process'.
-
-    # _ __ ___ _____ ________ _____________ _____________________
-    # III. Generate a tcl-based parser class
-    marpa::export config! version  1
-    marpa::export config! writer   {Jeffrey Kegler + Andreas Kupries}
-    marpa::export config! year     2017
-    marpa::export config! name     [pclass]
-    marpa::export config! operator $::tcl_platform(user)@[info hostname]
-    marpa::export config! tool     [info script]
-
-    set parser [marpa::export::tparse container GC]
-    GC destroy
-    # Write to file for debugging.
-    fileutil::writeFile [ParserFile] $parser
-
-    # _ __ ___ _____ ________ _____________ _____________________
-    # IV. Load and activate the new class.
-    uplevel #0 $parser
-    # _ __ ___ _____ ________ _____________ _____________________
-    return
-}
-
-proc finalize {} {
-    removeFile [ParserFile];#Disable when debugging
-    rename ParserFile {}
-    rename MetaLocation {}
-    return
-}
-
-proc MetaLocation {} {
+proc GrammarLocation {} {
     return [td]/grammars/z-marpa-tcl
-}
-
-proc ParserFile {} {
-    return [td]/[pclass].tcl
 }
 
 # # ## ### ##### ######## ############# #####################
