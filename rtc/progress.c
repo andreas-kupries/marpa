@@ -201,8 +201,7 @@ marpatcl_rtc_progress (marpatcl_rtc_progress_append acmd,
     // I. Get the progress report, partially format the elements, use SV data
     // structures to save these pieces, track field widths across the set.
 
-    report = marpatcl_rtc_sv_cons_vec (1);
-    report->value.vec->strict = 0; // Poke, make expandable.
+    report = marpatcl_rtc_sv_cons_evec (1); // Expandable
     // Each element of the report will be 4-element vec containing
     // 3 strings and a vector: intro/S, span/S, lhs/S, rhs/V(S).
     // We track the max size of the first three columns.

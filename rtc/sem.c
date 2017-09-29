@@ -116,6 +116,18 @@ marpatcl_rtc_sv_cons_vec_cp (marpatcl_rtc_sv_vec v)
     TRACE_RETURN ("(sv*) %p", sv);
 }
 
+marpatcl_rtc_sv_p
+marpatcl_rtc_sv_cons_evec (int capacity)
+{
+    marpatcl_rtc_sv_p sv;
+    TRACE_FUNC ("(capacity %d)", capacity);
+
+    sv = ALLOC (marpatcl_rtc_sv);
+    marpatcl_rtc_sv_init_evec (sv, capacity);
+
+    TRACE_RETURN ("(sv*) %p", sv);
+}
+
 void
 marpatcl_rtc_sv_init_int (marpatcl_rtc_sv_p sv, int x)
 {
@@ -173,6 +185,18 @@ marpatcl_rtc_sv_init_vec (marpatcl_rtc_sv_p sv, int capacity)
     REF = 0;
     T_SET (marpatcl_rtc_sv_type_vec, 0);
     VEC = marpatcl_rtc_sva_cons (capacity, 1);
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_sv_init_evec (marpatcl_rtc_sv_p sv, int capacity)
+{
+    TRACE_FUNC ("((sv*) %p, capacity %d)", sv, capacity);
+
+    REF = 0;
+    T_SET (marpatcl_rtc_sv_type_vec, 0);
+    VEC = marpatcl_rtc_sva_cons (capacity, 0);
 
     TRACE_RETURN_VOID;
 }

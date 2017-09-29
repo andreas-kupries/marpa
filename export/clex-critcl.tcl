@@ -290,8 +290,7 @@ critcl::class def @slif-name@ {
 	    @instancetype@ instance = (@instancetype@) cdata;
 
 	    if (!instance->result) {
-		instance->result = marpatcl_rtc_sv_cons_vec (2);
-		instance->result->value.vec->strict = 0; // Make expandable
+		instance->result = marpatcl_rtc_sv_cons_evec (1); // Expandable
 	    }
 
 	    marpatcl_rtc_sv_vec_push (instance->result, sv);
