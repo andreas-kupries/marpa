@@ -375,6 +375,8 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
     G destroy
     LR destroy
     GR destroy
+    A destroy
+    M destroy
 
     return $map
 }
