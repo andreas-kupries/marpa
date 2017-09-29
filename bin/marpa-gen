@@ -32,7 +32,6 @@
 # @@ Meta End
 
 package require Tcl 8.5
-package require marpa
 package require fileutil
 
 proc main {} {
@@ -47,7 +46,7 @@ proc cmdline {} {
 
     set type    tparse
     set version 1
-    set name    MarpaParser
+    set name    {}
     set author  $::tcl_platform(user)@[info hostname]
     
     while {[string match -* [set option [lindex $argv 0]]]} {
@@ -113,6 +112,7 @@ proc usage {{text {}}} {
 }
 
 proc supported-types {} {
+    package require marpa
     return [lsort -dict [lmap e [info commands ::marpa::export::*] {
 	if {![llength [info commands ${e}::container]]} continue
 	string map {::marpa::export:: {}} $e
@@ -120,11 +120,19 @@ proc supported-types {} {
 }
 
 proc ingest {path} {
-    global out
+    global out name
+    package require marpa
     # _ __ ___ _____ ________ _____________ _____________________
     # Process the slif meta grammar
     # TODO: progress callbacks from the parser (call per token ...)
 
+    if {$name eq {}} {
+	set name [file tail $path]
+	if {[file extension $name] eq ".slif"} {
+	    set name [file rootname $name]
+	}
+    }
+    
     set sz [file size $path]
     note "Processing $path ($sz bytes) ..."
     marpa::slif::container create GC
