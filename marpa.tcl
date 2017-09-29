@@ -189,6 +189,7 @@ critcl::tsources export/tparse.tcl        ; # Tcl engine - lexing+parsing
 critcl::tsources export/core/rtc.tcl      ; # Support for generators emitting C engines
 critcl::tsources export/cparse-raw.tcl    ; # RTC engine - Raw C code
 critcl::tsources export/cparse-critcl.tcl ; # RTC engine - Critcl class around the C code
+critcl::tsources export/clex-critcl.tcl   ; # RTC engine, lex only - Critcl class wrapper
 
 # # ## ### ##### ######## #############
 ## Main C section.

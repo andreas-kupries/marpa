@@ -5,32 +5,30 @@
 ##
 
 ##
-## Larger testing of exporter results, and runtime -- export::rtc-critcl, rtc
+## Larger testing of exporter results, and runtime
+## - export::cparse-critcl,
+## - rtc
 ## 
 
 kt require support critcl   ;# compile & run
-
-# Definition of boot-rtc
-kt source  support/boot-rtc.tcl
+kt source  support/gen.tcl
 
 # # ## ### ##### ######## ############# #####################
 ## API to the parser-core
 
-proc label      {} { return "engine_rtc_slif" }
-proc pclass     {} { return engine-rtc-parser }
-proc initialize {} { boot-rtc }
-proc finalize   {} { unboot-rtc }
+gen configure \
+    cl engine-rtc-parser \
+    ex cparse
 
 proc result {base} { locate $base ast_rtc ast }
-
-proc GrammarLocation {} {
-    return [td]/grammars/z-marpa-tcl
-}
+proc label      {} { return "engine_rtc_slif" }
+proc initialize {} { gen setup }
+proc finalize   {} { gen cleanup }
 
 # # ## ### ##### ######## ############# #####################
 ##
 
-kt source parser-core.testsuite
+kt source common/parser-core.testsuite
 
 # # ## ### ##### ######## ############# #####################
 cleanupTests

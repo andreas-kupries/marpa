@@ -1,0 +1,151 @@
+# -*- tcl -*-
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## Execution core for testing all kinds of marpa-based lexer engines.
+## Configured by the caller with methods for
+## - overall initialization and finalization
+## - lexer creation and destruction
+## - Result selection
+#
+## The methods expected to exist are
+#
+## * label      :: return string to name the tests
+## * initialize :: global setup, for the suite
+## * finalize   :: global cleanup, for the suite
+## * result     :: result selection by label / base directory
+
+## Uses the builtin parser and export::tlex to generate a lexer based
+## on the rt_lex runtime (Tcl), and then uses that to test the
+## runtime's behaviour with respect to the supported semantic actions.
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+kt require support fileutil ;# writeFile
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+## Local shorthands
+
+proc setup {} {
+    global TRACE
+    [gen cget cl] create LEX
+    set TRACE {}
+}
+proc cleanup {} {
+    global TRACE
+    LEX destroy
+    unset TRACE
+}
+
+proc lex-setup {lexaction} {
+    global clsave
+    set clsave [gen cget cl]
+    set grsave [gen cget gr]
+    
+    set gr [td]/g_$lexaction
+    set cl ${clsave}-$lexaction
+
+    # Override the lexer semantics specified by the origin grammar
+    # with what we wish to test.
+    lappend map "lexeme default =\n  action => \[start,length,value\]"
+    lappend map "lexeme default = action => \[$lexaction\]"
+    fileutil::writeFile $gr [string map $map [fget $grsave]]
+
+    gen setup cl $cl gr $gr
+
+    # Cleanup
+    gen configure gr $grsave
+    file delete $gr
+    return    
+}
+
+proc lex-cleanup {lexaction} {
+    global clsave
+    file delete [td]/[gen cget cl].tcl
+    gen configure cl $clsave
+    return
+}
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/dirs.tcl
+kt source support/grammars.tcl
+kt source support/textutils.tcl
+
+# # ## ### ##### ######## ############# #####################
+## Setup dynamic parts of the testsuite
+## Currently only importing the `bootstrap/marpa-tcl-slif`
+
+exec [td]/grammars/setup.sh
+
+# # ## ### ##### ######## ############# #####################
+## Helper
+
+proc capture {m args} {
+    if {$m ne "enter"} return
+    # args = list (list(symbol), list(value))
+    lassign $args symbols svalues
+    set svalues [lsort -uniq $svalues]
+    if {[llength $svalues] == 1} {
+	set svalues [lindex $svalues 0]
+    }
+    lappend ::TRACE $svalues
+    return
+}
+
+# # ## ### ##### ######## ############# #####################
+
+initialize
+
+# # ## ### ##### ######## ############# #####################
+##
+
+incr max
+test-grammar-files slif --> __ __ { incr max }
+set format %0[string length $max]d
+unset max
+
+foreach {lexaction joiner} {
+    g1length { }
+    g1start  { }
+    length   \n
+    lhs      \n
+    name     \n
+    rule     \n
+    start    \n
+    symbol   \n
+    value    \n
+    values   \n
+} {
+    lex-setup $lexaction
+    set k 0
+
+    test-grammar-map slif --> id slif base {
+	#exec touch $base/rtlex-action-$lexaction
+	incr k
+	if {![file exists $base/rtlex-action-$lexaction]} continue
+	set input [fget $slif]
+	set kd    [format $format $k]
+
+	test marpa-lexer-[label]-1.0.${kd}-${lexaction} "[label], action (($lexaction))" -body {
+	    LEX process-file $slif capture
+	    join $TRACE $joiner
+	}   -setup   setup \
+	    -cleanup cleanup \
+	    -result [viewFile $base/rtlex-action-$lexaction]
+    }
+
+    lex-cleanup $lexaction
+}
+
+# # ## ### ##### ######## ############# #####################
+unset k lexaction joiner
+rename capture {}
+finalize
+return

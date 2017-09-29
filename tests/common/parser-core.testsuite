@@ -12,8 +12,10 @@
 ## * label      :: return string to name the tests
 ## * initialize :: global setup, for the suite
 ## * finalize   :: global cleanup, for the suite
-## * pclass     :: return name of the parser class
 ## * result     :: result selection by label / base directory
+
+## The name of the parser class is stored in the `gen` config, under
+## key `cl`.
 
 # # ## ### ##### ######## ############# #####################
 
@@ -29,13 +31,10 @@ kt require support fileutil ;# cat
 kt local   testing marpa
 
 # # ## ### ##### ######## ############# #####################
+## Local shorthands
 
-proc setup   {} { [pclass] create PARSE }
+proc setup   {} { [gen cget cl] create PARSE }
 proc cleanup {} { PARSE destroy }
-
-proc ParserFile {} {
-    return [td]/[pclass].tcl
-}
 
 # # ## ### ##### ######## ############# #####################
 ## No method sequence checking for the parser.
@@ -67,9 +66,9 @@ initialize
 ## constructor - wrong args, initial state, calls
 
 test marpa-[label]-parser-constructor-1.0 "[label] :: constructor, wrong args, too many" -body {
-    [pclass] new X
+    [gen cget cl] new X
 }   -returnCodes error \
-    -result "wrong # args: should be \"[pclass] new\""
+    -result "wrong # args: should be \"[gen cget cl] new\""
 
 # # ## ### ##### ######## ############# #####################
 ## process - argument checking
@@ -162,14 +161,16 @@ test-grammar-map slif --> id slif base {
 }
 
 # # ## ### ##### ######## ############# #####################
-
 unset k slif base format expected kd input
-finalize
-rename label {}
-rename result {}
-rename initialize {}
-rename finalize {}
-rename pclass {}
-rename setup {}
+rename setup   {}
 rename cleanup {}
+
+# # ## ### ##### ######## ############# #####################
+finalize
+
+# # ## ### ##### ######## ############# #####################
+rename label      {}
+rename result     {}
+rename initialize {}
+rename finalize   {}
 return

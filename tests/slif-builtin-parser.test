@@ -3,31 +3,22 @@
 # # ## ### ##### ######## ############# #####################
 ## marpa::slif::parser -- builtin
 
+kt source  support/gen.tcl
+
 # # ## ### ##### ######## ############# #####################
 ## API to the parser-core
 
-proc label  {} { return "builtin" }
-proc pclass {} { return marpa::slif::parser }
+gen configure cl marpa::slif::parser
 
-proc result {base} {
-    foreach file {
-	ast_tcl
-	ast
-    } {
-	set path [file join $base $file]
-	if {![file exists $path]} continue
-	return $path
-    }
-    return -code error "Unable to find result for $base"
-}
-
+proc result {base} { locate $base ast_tcl ast }
+proc label      {} { return "builtin" }
 proc initialize {} {}
 proc finalize   {} {}
 
 # # ## ### ##### ######## ############# #####################
 ##
 
-kt source parser-core.testsuite
+kt source common/parser-core.testsuite
 
 # # ## ### ##### ######## ############# #####################
 cleanupTests

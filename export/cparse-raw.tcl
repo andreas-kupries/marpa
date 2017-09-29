@@ -35,6 +35,7 @@ namespace eval ::marpa::export::cparse-raw {
 proc ::marpa::export::cparse-raw::container {gc} {
     debug.marpa/export/cparse-raw {}
     variable self
+    marpa::fqn gc
     set config   [marpa::export::core::rtc::config [$gc serialize]]
     set template [string trim [marpa asset $self]]
     return [string map $config $template]

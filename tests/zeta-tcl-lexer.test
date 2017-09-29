@@ -1,24 +1,25 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
 ## (c) 2017 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
-## marpa::slif::semantics + builtin slif parser
+## marpa::tcl::lex - Aggregated lexer pipeline.
 
 kt source  support/gen.tcl
 
 # # ## ### ##### ######## ############# #####################
-## API to the semantics-core
+## API to the lexer-core
 
-gen configure cl marpa::slif::parser
+gen configure \
+    cl engine-tcl-lexer \
+    ex tlex
 
-proc result {base} { locate $base ctrace_tcl ctrace }
-proc label      {} { return "builtin" }
+proc label      {} { return "engine_tcl_slif" }
 proc initialize {} {}
 proc finalize   {} {}
 
 # # ## ### ##### ######## ############# #####################
 ##
 
-kt source common/semantics-core.testsuite
+kt source common/lexer-core.testsuite
 
 # # ## ### ##### ######## ############# #####################
 cleanupTests

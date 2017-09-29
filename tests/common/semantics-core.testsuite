@@ -13,8 +13,10 @@
 ## * label      :: return string to name the tests
 ## * initialize :: global setup, for the suite
 ## * finalize   :: global cleanup, for the suite
-## * pclass     :: return name of the parser class
 ## * result     :: result selection by label / base directory
+
+## The name of the parser class is stored in the `gen` config, under
+## key `cl`.
 
 # # ## ### ##### ######## ############# #####################
 
@@ -33,7 +35,7 @@ kt local   testing marpa
 
 proc setup   {} {
     marpa::slif::semantics create SEMA [log GC] ; /trace GC
-    [pclass]               create PARSE
+    [gen cget cl]          create PARSE
 }
 proc cleanup {} {
     PARSE destroy
@@ -43,10 +45,6 @@ proc cleanup {} {
     # happend. Thus we try to destroy such leftovers so that they may
     # not interfere with the next test, and the ignore the error when
     # it was already gone.
-}
-
-proc ParserFile {} {
-    return [td]/[pclass]-sema.tcl
 }
 
 # # ## ### ##### ######## ############# #####################
@@ -159,14 +157,16 @@ test-grammar-map slif --> id slif base {
 }
 
 # # ## ### ##### ######## ############# #####################
-
 unset k slif base format expected kd input
-finalize
-rename label {}
-rename result {}
-rename initialize {}
-rename finalize {}
-rename pclass {}
-rename setup {}
+rename setup   {}
 rename cleanup {}
+
+# # ## ### ##### ######## ############# #####################
+finalize
+
+# # ## ### ##### ######## ############# #####################
+rename label      {}
+rename result     {}
+rename initialize {}
+rename finalize   {}
 return

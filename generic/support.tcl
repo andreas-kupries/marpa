@@ -109,26 +109,41 @@ proc marpa::X {msg args} {
 # # ## ### ##### ######## #############
 ## Link external command into local namespace
 
-proc marpa::fqn {cmd {up 1}} {
+proc marpa::fqn {cmdvar {up 2}} {
     debug.marpa/support {}
-    return [uplevel $up [list namespace which -command $cmd]]
+    upvar 1 $cmdvar cmd
+    set cmd [uplevel $up [list namespace which -command $cmd]]
+    return
 }
 
 proc marpa::import {cmd {dst {}} {up 2}} {
     debug.marpa/support {}
 
+    #puts XXX/////([info level 0])
+    #puts XXX\t([info level -1])
+    #puts XXX.C=$cmd
+    #puts XXX.D=$dst
+    
     set fqn  [uplevel $up [list namespace which -command $cmd]]
     set cn   [uplevel 1 {namespace current}]
+
+    #puts XXX.F=$fqn
+    #puts XXX.N=$cn
+    
     if {$dst eq {}} { set dst [namespace tail $cmd] }
+
+    #puts XXX.D=$dst
+    
     interp alias {} ${cn}::$dst {} $fqn
 
     debug.marpa/support {/ok: ${cn}::$dst}
+    #puts XXX/////////////////////////////////////////
     return
 
-    # I do not quite like the use of aliases for this.
-    # Unfort I was unable to get things working with 'namespace import'.
-    # Possibly an issue with ensemble commands, (not) being exported, and the like.
-    # Alias works.
+    # I do not quite like the use of aliases for this.  Unfortunately
+    # I was unable to get things working with 'namespace import'.
+    # Possibly an issue with ensemble commands, (not) being exported,
+    # and the like.  Alias works.
     return
 }
 

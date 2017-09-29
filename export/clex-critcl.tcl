@@ -21,12 +21,12 @@ package require debug
 package require debug::caller
 package require char
 
-debug define marpa/export/cparse-critcl
-debug prefix marpa/export/cparse-critcl {[debug caller] | }
+debug define marpa/export/clex-critcl
+debug prefix marpa/export/clex-critcl {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-namespace eval ::marpa::export::cparse-critcl {
+namespace eval ::marpa::export::clex-critcl {
     namespace export container
     namespace ensemble create
 
@@ -36,8 +36,8 @@ namespace eval ::marpa::export::cparse-critcl {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::cparse-critcl::container {gc} {
-    debug.marpa/export/cparse-critcl {}
+proc ::marpa::export::clex-critcl::container {gc} {
+    debug.marpa/export/clex-critcl {}
     variable self
     marpa::fqn gc
     set config [marpa::export::core::rtc::config [$gc serialize] {
@@ -48,7 +48,7 @@ proc ::marpa::export::cparse-critcl::container {gc} {
     return [string map $config $template]
 }
 
-proc ::marpa::export::cparse-critcl::CQCS {} {
+proc ::marpa::export::clex-critcl::CQCS {} {
     ## See also tools/cqcs.tcl ##    
     # char quote cstring
     # over \0 to \ff
@@ -77,7 +77,7 @@ return
 ##
 # (c) @slif-year@ Grammar @slif-name@ @slif-version@ By @slif-writer@
 ##
-##	rtc-derived Engine for grammar "@slif-name@". Lexing + Parsing.
+##	rtc-derived Engine for grammar "@slif-name@". Lexing only.
 ##	Generated On @generation-time@
 ##		  By @tool-operator@
 ##		 Via @tool@
@@ -92,10 +92,6 @@ return
 #* - #Always:    @always-c@
 #* - #Rule Insn: @l0-insn-c@ (+2: setup, start-sym)
 #* - #Rules:     @l0-rule-c@ (>= insn, brange)
-#* G1
-#* - #Symbols:   @g1-symbols-c@
-#* - #Rule Insn: @g1-insn-c@ (+2: setup, start-sym)
-#* - #Rules:     @g1-rule-c@ (match insn)
 
 package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
@@ -183,43 +179,12 @@ critcl::ccode {
     };
 
     /*
-    ** G1 structures
+    ** G1 structures - None, lexing only
     */
 
-    static marpatcl_rtc_sym @cname@_g1_sym_name [@g1-symbols-c@] = { /* @g1-symbols-sz@ bytes */
-@g1-symbols-indices@
-    };
-
-    static marpatcl_rtc_sym @cname@_g1_rule_name [@g1-rules-c@] = { /* @g1-rules-sz@ bytes */
-@g1-rules-v@
-    };
-
-    static marpatcl_rtc_sym @cname@_g1_rule_lhs [@g1-rules-c@] = { /* @g1-rules-sz@ bytes */
-@g1-lhs-v@
-    };
-
-    static marpatcl_rtc_sym @cname@_g1_rule_definitions [@g1-code-c@] = { /* @g1-code-sz@ bytes */
-@g1-code@
-    };
-
-    static marpatcl_rtc_rules @cname@_g1 = { /* 48 */
-	/* .sname   */  &@cname@_pool,
-	/* .symbols */  { @g1-symbols-c@, @cname@_g1_sym_name },
-	/* .rules   */  { @g1-rules-c@, @cname@_g1_rule_name },
-	/* .lhs     */  { @g1-rules-c@, @cname@_g1_rule_lhs },
-	/* .rcode   */  @cname@_g1_rule_definitions
-    };
-
-    static marpatcl_rtc_sym @cname@_g1semantics [@g1-semantics-c@] = { /* @g1-semantics-sz@ bytes */
-@g1-semantics-v@
-    };
-
-    static marpatcl_rtc_sym @cname@_g1masking [@g1-masking-c@] = { /* @g1-masking-sz@ bytes */
-@g1-masking-v@
-    };
-
     /*
-    ** Parser definition
+    ** Engine definition. G1 fields nulled.
+    ** Triggers lex-only operation in the runtime.
     */
 
     static marpatcl_rtc_sym @cname@_always [@always-c@] = { /* @always-sz@ bytes */
@@ -230,13 +195,13 @@ critcl::ccode {
 	/* .lexemes    */  @lexemes-c@,
 	/* .discards   */  @discards-c@,
 	/* .l_symbols  */  @l0-symbols-c@,
-	/* .g_symbols  */  @g1-symbols-c@,
+	/* .g_symbols  */  0,
 	/* .always     */  { @always-c@, @cname@_always },
 	/* .l0         */  &@cname@_l0,
-	/* .g1         */  &@cname@_g1,
+	/* .g1         */  NULL,
 	/* .l0semantic */  { @l0-semantics-c@, @cname@_l0semantics },
-	/* .g1semantic */  { @g1-semantics-c@, @cname@_g1semantics },
-	/* .g1mask     */  { @g1-masking-c@, @cname@_g1masking }
+	/* .g1semantic */  { 0, 0 },
+	/* .g1mask     */  { 0, 0 }
     };
     /* --- end of generated data structures --- */
 
@@ -248,7 +213,8 @@ critcl::ccode {
 
 critcl::class def @slif-name@ {
     insvariable marpatcl_rtc_sv_p result {
-	Parse result
+	"Parse" result. Actually a vector of all semantic values
+	produced by the lexer.
     } {
 	instance->result = 0;
     } {
@@ -322,9 +288,13 @@ critcl::class def @slif-name@ {
 	@stem@_result (void* cdata, marpatcl_rtc_sv_p sv)
 	{
 	    @instancetype@ instance = (@instancetype@) cdata;
-	    if (instance->result) marpatcl_rtc_sv_unref (instance->result);
-	    if (sv) marpatcl_rtc_sv_ref (sv);
-	    instance->result = sv;
+
+	    if (!instance->result) {
+		instance->result = marpatcl_rtc_sv_cons_vec (2);
+		instance->result->value.vec->strict = 0; // Make expandable
+	    }
+
+	    marpatcl_rtc_sv_vec_push (instance->result, sv);
 	    return;
 	}
     }

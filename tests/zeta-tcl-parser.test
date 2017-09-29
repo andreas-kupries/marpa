@@ -5,30 +5,29 @@
 ##
 
 ##
-## Larger testing of exporter results, and runtime -- export::tparse, engine::tcl
+## Larger testing of exporter results, and runtime
+## - export::tparse,
+## - engine::tcl
 ## 
 
-# Definition of boot-tcl
-kt source  support/boot-tcl.tcl
+kt source  support/gen.tcl
 
 # # ## ### ##### ######## ############# #####################
 ## API to the parser-core
 
-proc label      {} { return "engine_tcl_slif" }
-proc pclass     {} { return engine-tcl-parser }
-proc initialize {} { boot-tcl }
-proc finalize   {} { unboot-tcl }
+gen configure \
+    cl engine-tcl-parser \
+    ex tparse
 
 proc result {base} { locate $base ast_tcl ast }
-
-proc GrammarLocation {} {
-    return [td]/grammars/z-marpa-tcl
-}
+proc label      {} { return "engine_tcl_slif" }
+proc initialize {} { gen setup }
+proc finalize   {} { gen cleanup }
 
 # # ## ### ##### ######## ############# #####################
 ##
 
-kt source parser-core.testsuite
+kt source common/parser-core.testsuite
 
 # # ## ### ##### ######## ############# #####################
 cleanupTests
