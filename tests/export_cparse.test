@@ -1,0 +1,72 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::export::cparse-critcl
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+
+kt local   testing marpa
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/common.tcl
+kt source support/dirs.tcl
+kt source support/grammars.tcl
+kt source support/textutils.tcl
+
+# # ## ### ##### ######## ############# #####################
+##  [ok] container
+
+# # ## ### ##### ######## ############# #####################
+## container - state driven export
+
+test marpa-export-cparse-critcl-container-1.0 {container, wrong args, not enough} -body {
+    marpa::export::cparse-critcl container
+} -returnCodes error -result {wrong # args: should be "marpa::export::cparse-critcl container gc"}
+
+test marpa-export-cparse-critcl-container-1.1 {container, wrong args, too many} -body {
+    marpa::export::cparse-critcl container GC X
+} -returnCodes error -result {wrong # args: should be "marpa::export::cparse-critcl container gc"}
+
+# # ## ### ##### ######## ############# #####################
+
+set max 0
+test-grammar-files export --> __ __ { incr max }
+set format %0[string length $max]d
+unset max
+
+set k 0
+test-grammar-map export --> id export base {
+    set input    [string trimright [fget $base/gcstate]]
+    set kd       [format $format $k]
+    set expected [test-grammar-result $base export_cparse]
+
+    test marpa-export-cparse-critcl-2.${kd}---${id} "export cparse-critcl $id" -setup {
+	marpa::export config! version  <Version>
+	marpa::export config! writer   <Writer>
+	marpa::export config! year     <Year>
+	marpa::export config! name     <Name>
+	marpa::export config! operator <Operator>
+	marpa::export config! tool     <Tool>
+	marpa::export config! gentime  <GenerationTime>
+	marpa::slif::container create GC
+	GC deserialize [dict get $input grammar]
+	GC validate ;# Deserialize should create only valid
+		     # containers, if serialization is from a valid
+		     # container.
+    } -body {
+	marpa::export::cparse-critcl container GC
+    } -cleanup {
+	GC destroy
+	marpa::export config-reset
+    } -result $expected
+
+    incr k
+}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests
