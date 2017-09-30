@@ -36,7 +36,12 @@ marpatcl_rtc_cons (marpatcl_rtc_spec* g,
     marpatcl_rtc_inbound_init (p);
     marpatcl_rtc_gate_init    (p);
     marpatcl_rtc_lexer_init   (p);
-    marpatcl_rtc_parser_init  (p);
+
+    // Without G1 we go into lexing-only mode.
+    if (SPEC->g1)
+	marpatcl_rtc_parser_init (p);
+    else
+	marpatcl_rtc_lexer_acceptable (p, 0);
 
     TRACE_RETURN ("(rtc*) %p", p);
 }
@@ -46,7 +51,9 @@ marpatcl_rtc_destroy (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
 
-    marpatcl_rtc_parser_free  (p);
+    // Without G1 we are in lexing-only mode.
+    if (SPEC->g1) marpatcl_rtc_parser_free  (p);
+
     marpatcl_rtc_lexer_free   (p);
     marpatcl_rtc_gate_free    (p);
     marpatcl_rtc_inbound_free (p);
