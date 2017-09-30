@@ -35,12 +35,12 @@ test marpa-export-gc-compact-container-1.1 {container, wrong args, too many} -bo
 # # ## ### ##### ######## ############# #####################
 
 set max 0
-test-grammar-files export --> __ __ { incr max }
+test-grammar-files export_gc_compact --> __ __ { incr max }
 set format %0[string length $max]d
 unset max
 
 set k 0
-test-grammar-map export --> id export base {
+test-grammar-map export_gc_compact --> id export base {
     set input    [string trimright [fget $base/gcstate]]
     set kd       [format $format $k]
     set expected [test-grammar-result $base export_gc_compact]
