@@ -4212,43 +4212,75 @@ const char* marpatcl_qcs [] = {
 ## Class exposing the grammar engine.
 
 critcl::class def <Name> {
-    insvariable marpatcl_rtc_sv_p result {
-	"Parse" result. Actually a vector of all semantic values
-	produced by the lexer.
+
+    insvariable marpatcl_rtc_sv_p tokens {
+	Scratchpad for the @stem@_token callback to store the incoming
+	tokens before they get passed to the Tcl level.
     } {
-	instance->result = 0;
+	instance->tokens = marpatcl_rtc_sv_cons_evec (1); // Expandable
     } {
-	if (instance->result) marpatcl_rtc_sv_unref (instance->result);
+	if (instance->tokens) marpatcl_rtc_sv_unref (instance->tokens);
     }
-    
+
+    insvariable marpatcl_rtc_sv_p values {
+	Scratchpad for the @stem@_token callback to store the incoming
+	values before they get passed to the Tcl level.
+    } {
+	instance->values = marpatcl_rtc_sv_cons_evec (1); // Expandable
+    } {
+	if (instance->values) marpatcl_rtc_sv_unref (instance->values);
+    }
+
     insvariable marpatcl_rtc_p state {
 	C-level engine, RTC structures.
     } {
 	instance->state = marpatcl_rtc_cons (&<Name>_spec,
-					     NULL /* actions - TODO FUTURE */,
-					     @stem@_result,
+					     NULL, @stem@_token,
 					     (void*) instance );
     } {
 	marpatcl_rtc_destroy (instance->state);
     }
-    
+
+    # Future: Wrap callback handling into a C utility class to handle
+    # everything for the user.
+    insvariable int outcmd_c {
+	Command prefix to handle the tokens delivered by the lexer, count
+    } {
+	instance->outcmd_c = 0;
+    } { /* Nothing to release */ }
+
+    insvariable Tcl_Obj** outcmd_v {
+	Command prefix to handle the tokens delivered by the lexer, elements
+    } {
+	instance->outcmd_v = 0;
+    } { /* Nothing to release */ }
+
+    insvariable Tcl_Interp* ip {
+	Interpreter back reference for instance internal callbacks from the C engine.
+    } {
+	instance->ip = 0;
+    } { /* Nothing to release */ }
+
     constructor {
         /*
 	 * Syntax:                          ... []
          * skip == 2: <class> new           ...
          *      == 3: <class> create <name> ...
          */
-	
+
 	if (objc > 0) {
 	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
 	    goto error;
 	}
+
+	instance->ip = interp;
     } {}
 
-    method process-file proc {Tcl_Interp* ip Tcl_Obj* path} ok {
+    method process-file proc {Tcl_Interp* ip Tcl_Obj* path list outcmd} ok {
 	int res, got;
 	char* buf;
 	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
+
 	if (!in) {
 	    return TCL_ERROR;
 	}
@@ -4256,7 +4288,10 @@ critcl::class def <Name> {
 	Tcl_SetChannelOption (ip, in, "-translation", "binary");
 	Tcl_SetChannelOption (ip, in, "-encoding",    "binary");
 	// TODO: abort on failed set-channel-option
-	
+
+	instance->outcmd_c = outcmd.c;
+	instance->outcmd_v = outcmd.v;
+
 	buf = NALLOC (char, 4096); // TODO: configurable
 	while (!Tcl_Eof(in)) {
 	    got = Tcl_Read (in, buf, 4096);
@@ -4267,12 +4302,31 @@ critcl::class def <Name> {
 	FREE (buf);
 
 	(void) Tcl_Close (ip, in);
-	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
+
+	res = @stem@_callout_eof (instance);
+
+    	// Clear outcmd
+	instance->outcmd_c = 0;
+	instance->outcmd_v = 0;
+
+	return res;
     }
-    
-    method process proc {Tcl_Interp* ip pstring string} ok {
+
+    method process proc {Tcl_Interp* ip pstring string list outcmd} ok {
+	int res;
+
+	instance->outcmd_c = outcmd.c;
+	instance->outcmd_v = outcmd.v;
+
 	marpatcl_rtc_enter (instance->state, string.s, string.len);
-	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
+
+	res = @stem@_callout_eof (instance);
+
+    	// Clear outcmd
+	instance->outcmd_c = 0;
+	instance->outcmd_v = 0;
+
+	return res;
     }
 
     support {
@@ -4284,17 +4338,93 @@ critcl::class def <Name> {
 	** CType: @classtype@
 	*/
 
+	static void incr_v (int c, Tcl_Obj** v) {
+	    int i; for (i=0; i < c; i++) { Tcl_IncrRefCount (v[i]); }
+	}
+
+	static void decr_v (int c, Tcl_Obj** v) {
+	    int i; for (i=0; i < c; i++) { Tcl_DecrRefCount (v[i]); }
+	}
+
+	static int
+	@stem@_callout_eof (@instancetype@ instance)
+	{
+	    int c = instance->outcmd_c + 1;
+	    int res;
+	    Tcl_Obj** v = NALLOC (Tcl_Obj*, c);
+	    memcpy (v, instance->outcmd_v, instance->outcmd_c * sizeof (Tcl_Obj*));
+
+	    // TODO: literal pool for the method names
+	    v [c-1] = Tcl_NewStringObj ("eof", -1);
+
+	    incr_v (c, v);
+	    res = Tcl_EvalObjv (instance->ip, c, v, 0);
+	    decr_v (c, v);
+	    return res;
+	}
+
+	static int
+	@stem@_callout_enter (@instancetype@ instance, Tcl_Obj* ts, Tcl_Obj* vs)
+	{
+	    int c = instance->outcmd_c + 3;
+	    int res;
+	    Tcl_Obj** v = NALLOC (Tcl_Obj*, c);
+	    memcpy (v, instance->outcmd_v, instance->outcmd_c * sizeof (Tcl_Obj*));
+
+	    // TODO: literal pool for the method names
+	    v [c-3] = Tcl_NewStringObj ("enter", -1);
+	    v [c-2] = ts;
+	    v [c-1] = vs;
+
+	    incr_v (c, v);
+	    res = Tcl_EvalObjv (instance->ip, c, v, 0);
+	    decr_v (c, v);
+	    return res;
+	}
+
 	static void
-	@stem@_result (void* cdata, marpatcl_rtc_sv_p sv)
+	@stem@_token (void* cdata, marpatcl_rtc_sv_p sv)
 	{
 	    @instancetype@ instance = (@instancetype@) cdata;
+	    // See rtc/lexer.c 'complete' (!SPEC->g1) for the caller.
+	    //
+	    // Call sequence:
+	    // - sv == 0 : "enter" begins
+	    // - sv == 1 : "enter" is complete, call to Tcl
+	    // - any other sv:
+	    //   - even call => sv is token [string]
+	    //   - odd  call => sv is value [any]
 
-	    if (!instance->result) {
-		instance->result = marpatcl_rtc_sv_cons_vec (2);
-		instance->result->value.vec->strict = 0; // Make expandable
+	    if (sv == 0) {
+		// Begin "enter"
+		marpatcl_rtc_sv_vec_clear (instance->tokens);
+		marpatcl_rtc_sv_vec_clear (instance->values);
+		return;
 	    }
 
-	    marpatcl_rtc_sv_vec_push (instance->result, sv);
+	    if (sv == ((marpatcl_rtc_sv_p) 1)) {
+		// Complete "enter", call into Tcl
+
+		Tcl_Obj* ts = marpatcl_rtc_sv_astcl (instance->ip, instance->tokens);
+		Tcl_Obj* vs = marpatcl_rtc_sv_astcl (instance->ip, instance->values);
+
+		(void) @stem@_callout_enter (instance, ts, vs);
+
+		Tcl_DecrRefCount (ts);
+		Tcl_DecrRefCount (vs);
+		return;
+	    };
+
+	    if (marpatcl_rtc_sv_vec_size (instance->tokens) ==
+		marpatcl_rtc_sv_vec_size (instance->values)) {
+		// Even call, both pads are empty or filled with matching t/v pairs.
+		// This call is a new token.
+		marpatcl_rtc_sv_vec_push (instance->tokens, sv);
+	    } else {
+		// Odd call, we have one more token than values.
+		// This call is a new value, match them again.
+		marpatcl_rtc_sv_vec_push (instance->values, sv);
+	    }
 	    return;
 	}
     }

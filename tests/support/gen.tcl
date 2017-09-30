@@ -31,8 +31,8 @@ proc ::gen::configure {args} {
 }
 
 proc ::gen::cleanup {} {
-    removeFile [td]/[cget cl].tcl
-    removeDir  [td]/OUT_[cget cl]
+    removeFile      [td]/[cget cl].tcl
+    removeDirectory [td]/OUT_[cget cl]
     return
 }
 

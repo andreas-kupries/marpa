@@ -1,0 +1,25 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::tcl::lex - Aggregated lexer pipeline.
+
+kt source  support/gen.tcl
+
+# # ## ### ##### ######## ############# #####################
+## API to the lexer-core
+
+gen configure \
+    cl engine-tcl-lexer \
+    ex clex
+
+proc label      {} { return "engine_rtc_slif" }
+proc initialize {} {}
+proc finalize   {} {}
+
+# # ## ### ##### ######## ############# #####################
+##
+
+kt source common/lexer-core.testsuite
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests
