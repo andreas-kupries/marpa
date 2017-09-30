@@ -67,7 +67,8 @@ proc lex-setup {lexaction} {
 
 proc lex-cleanup {lexaction} {
     global clsave
-    file delete [td]/[gen cget cl].tcl
+    file delete        [td]/[gen cget cl].tcl
+    file delete -force [td]/OUT_[gen cget cl]
     gen configure cl $clsave
     return
 }

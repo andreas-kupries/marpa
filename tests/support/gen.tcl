@@ -32,6 +32,8 @@ proc ::gen::configure {args} {
 
 proc ::gen::cleanup {} {
     removeFile [td]/[cget cl].tcl
+    removeDir  [td]/OUT_[cget cl]
+    return
 }
 
 proc ::gen::setup {args} {
@@ -90,6 +92,44 @@ proc ::gen::setup {args} {
 
 # # ## ### ##### ######## ############# #####################
 
+proc ::gen::LoadTcl {} {
+    upvar 1 cl cl
+    uplevel #0 [list source [td]/${cl}.tcl]
+    return
+}
+
+proc ::gen::LoadRTC {} {
+    upvar 1 cl cl
+
+    # Run an external critcl process to compile the new
+    # parser. This avoids issues with multiple definitions of
+    # various custom arg/result types interfering with each
+    # other.
+
+    set out [td]/OUT_${cl}
+    file mkdir $out/C $out/L
+
+    exec ln -s [file normalize [td]/../rtc] rtc
+    exec ln -s [file normalize [td]/../c] c
+
+    exec >& $out/LOG critcl -pkg -keep \
+	-cache  $out/C \
+	-libdir $out/L \
+	[td]/${cl}.tcl
+    
+    file delete rtc c
+
+    # At last load the resulting parser package
+    
+    set dir [glob -directory $out/L *]
+    source $dir/pkgIndex.tcl
+    package require [string map {- _} $cl]
+    
+    # Actual compile to and loading of shlib happens on first use.
+    ::exit 2
+    return
+}
+
 proc ::gen::Init {} {
     variable config {
 	ex tparse
@@ -103,26 +143,10 @@ proc ::gen::Init {} {
 	clex   marpa::export::clex-critcl
     }
     variable load {
-	tlex   { uplevel #0 [list source [td]/${cl}.tcl] }
-	tparse { uplevel #0 [list source [td]/${cl}.tcl] }
-	cparse {
-	    # Access to the RTC sources
-	    exec ln -s [file normalize [td]/../rtc] rtc
-	    exec ln -s [file normalize [td]/../c] c
-	    # read
-	    uplevel #0 [list source [td]/${cl}.tcl]
-	    file delete rtc c
-	    # Actual compile to and loading of shlib happens on first use.
-	}
-	clex {
-	    # Access to the RTC sources
-	    exec ln -s [file normalize [td]/../rtc] rtc
-	    exec ln -s [file normalize [td]/../c] c
-	    # read
-	    uplevel #0 [list source [td]/${cl}.tcl]
-	    file delete rtc c
-	    # Actual compile to and loading of shlib happens on first use.
-	}
+	tlex   { LoadTcl }
+	tparse { LoadTcl }
+	cparse { LoadRTC }
+	clex   { LoadRTC }
     }
     return
 }
