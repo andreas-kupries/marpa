@@ -128,9 +128,9 @@ foreach {lexaction joiner} {
     set k 0
 
     test-grammar-map slif --> id slif base {
-	#exec touch $base/rtlex-action-$lexaction
 	incr k
-	if {![file exists $base/rtlex-action-$lexaction]} continue
+	set result $base/lexaction_${lexaction}_[suffix]
+	if {![file exists $result]} continue
 	set input [fget $slif]
 	set kd    [format $format $k]
 
@@ -139,7 +139,7 @@ foreach {lexaction joiner} {
 	    join $TRACE $joiner
 	}   -setup   setup \
 	    -cleanup cleanup \
-	    -result [viewFile $base/rtlex-action-$lexaction]
+	    -result [viewFile $result]
     }
 
     lex-cleanup $lexaction

@@ -12,6 +12,7 @@ gen configure \
     cl engine-tcl-lexer \
     ex tlex
 
+proc suffix     {} { return tcl }
 proc label      {} { return "engine_tcl_slif" }
 proc initialize {} {}
 proc finalize   {} {}
