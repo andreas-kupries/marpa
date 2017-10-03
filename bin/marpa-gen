@@ -51,11 +51,11 @@ proc cmdline {} {
     
     while {[string match -* [set option [lindex $argv 0]]]} {
 	switch -exact -- $option {
-	    -type    { take type    argv }
-	    -version { take version argv }
-	    -name    { take name    argv }
-	    -author  { take author  argv }
-	    --       { skip argv ; break }
+	    -T - -type    { take type    argv }
+	    -V - -version { take version argv }
+	    -N - -name    { take name    argv }
+	    -A - -author  { take author  argv }
+	    --            { skip argv ; break }
 	    default  usage
 	}
     }
@@ -100,7 +100,7 @@ proc skip {lv} {
 	
 proc usage {{text {}}} {
     global argv0
-    puts stderr "Usage: $argv0 ?-type T? ?-version V? ?-name N? ?-author A? ?--? /path/to/slif/grammar ?/path/to/output?"
+    puts stderr "Usage: $argv0 ?-type|-T T? ?-version|-V V? ?-name|-N N? ?-author|-A A? ?--? /path/to/slif/grammar ?/path/to/output?"
     if {$text eq {}} {
  	append text "Supported `-type`s:\n"
 	foreach t [supported-types] {
