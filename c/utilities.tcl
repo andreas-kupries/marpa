@@ -8,31 +8,6 @@
 # # ## ### ##### ######## #############
 ## Build configuration utilities
 
-proc generate-cstring {} {
-    set selfdir [file dirname [file normalize [info script]]]
-
-    set generator  $selfdir/tools/cqcs.tcl
-    set outdir     $selfdir/generated
-    set code       $selfdir/generated/cqcs.c
-
-    if {
-	[file exists $code] &&
-	([file mtime $code] >= [file mtime $generator]) &&
-	1
-    } {
-	critcl::msg -nonewline " (Up-to-date cstring quoting table available, skipping generation)"
-    } else {
-	critcl::msg -nonewline " (Generating cstring quoting tables ..."
-	file mkdir $outdir
-	exec {*}[info nameofexecutable] $generator > $code
-	critcl::msg -nonewline " [file size $code] bytes)"
-    }
-
-    # Last, make the generated data available.
-    critcl::cheaders generated/cqcs.c
-    return
-}
-
 proc generate-tables {{urange bmp}} {
     set selfdir [file dirname [file normalize [info script]]]
     

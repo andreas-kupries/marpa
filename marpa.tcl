@@ -36,7 +36,6 @@ critcl::cutil::alloc
 # (3) Debugging symbols, memory tracking
 
 generate-tables ;# 'bmp' (default), or 'full'
-generate-cstring
 
 critcl::cutil::assertions on
 critcl::cutil::tracer     off
@@ -208,7 +207,6 @@ critcl::tsources export/clex-critcl.tcl   ; # RTC engine, lex only - Critcl clas
 
 critcl::cheaders rtc/*.h
 critcl::csources rtc/*.c
-critcl::csources generated/cqcs.c
 
 critcl::ccode {
     TRACE_OFF;

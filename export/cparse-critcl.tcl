@@ -43,26 +43,8 @@ proc ::marpa::export::cparse-critcl::container {gc} {
     set config [marpa::export::core::rtc::config [$gc serialize] {
 	prefix {	}
     }]
-    lappend config @cqcs@ [CQCS]
     set template [string trim [marpa asset $self]]
     return [string map $config $template]
-}
-
-proc ::marpa::export::cparse-critcl::CQCS {} {
-    ## See also tools/cqcs.tcl ##    
-    # char quote cstring
-    # over \0 to \ff
-    lappend lines "const char* marpatcl_qcs \[\] = \{"
-    for {set c 0} {$c < 256} {incr c} {
-	if {$c > 127} {
-	    set cq \\[format %o $c]
-	} else {
-	    set cq [char quote tcl [format %c $c]]
-	}
-	lappend lines "    /* [format %3d $c] = */ \"[char quote cstring $cq]\","
-    }
-    lappend lines "    0\n\};"
-    join $lines \n
 }
 
 # # ## ### ##### ######## #############
@@ -239,8 +221,6 @@ critcl::ccode {
 	/* .g1mask     */  { @g1-masking-c@, @cname@_g1masking }
     };
     /* --- end of generated data structures --- */
-
-@cqcs@
 }
 
 # # ## ### ##### ######## ############# #####################

@@ -23,20 +23,13 @@ TRACE_OFF;
  * Shorthands, externals, and forward declarations for internals.
  */
 
-extern const char* marpatcl_qcs [256];
+#define TAKE   Tcl_IncrRefCount
+#define RELE   Tcl_DecrRefCount
 
-#define QCS  marpatcl_qcs
-#define TAKE Tcl_IncrRefCount
-#define RELE Tcl_DecrRefCount
-
-static Tcl_Obj*
-marpatcl_rtc_sv_astcl_do (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, Tcl_Obj* null);
-
-static Tcl_Obj*
-marpatcl_rtc_sv_vec_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_vec v, Tcl_Obj* null);
-
-static void
-marpatcl_rtc_error (Tcl_Interp* ip, marpatcl_rtc_p p);
+static Tcl_Obj*    astcl_do  (Tcl_Interp* ip, marpatcl_rtc_sv_p   sv, Tcl_Obj* null);
+static Tcl_Obj*    vec_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_vec v,  Tcl_Obj* null);
+static void        make_err  (Tcl_Interp* ip, marpatcl_rtc_p p);
+static const char* qcs       (int i);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -70,7 +63,7 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p 
 	/* Assumes that an error message was left in ip */
     } else {
 	TRACE ("FAIL", 0);
-	marpatcl_rtc_error (ip, p);
+	make_err (ip, p);
     }
     TRACE_RETURN ("ERROR", TCL_ERROR);
 }
@@ -83,7 +76,7 @@ marpatcl_rtc_sv_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_p sv)
 
     null = Tcl_NewListObj (0,0);
     TAKE (null);
-    svres = marpatcl_rtc_sv_astcl_do (ip, sv, null);
+    svres = astcl_do (ip, sv, null);
     if (svres) TAKE (svres);
     RELE (null);
 
@@ -96,7 +89,7 @@ marpatcl_rtc_sv_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_p sv)
  */
 
 static Tcl_Obj*
-marpatcl_rtc_sv_astcl_do (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, Tcl_Obj* null)
+astcl_do (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, Tcl_Obj* null)
 {
     if (!sv) {
 	return null;
@@ -113,7 +106,7 @@ marpatcl_rtc_sv_astcl_do (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, Tcl_Obj* null)
 	return Tcl_NewDoubleObj (FLT);
 	/**/
     case marpatcl_rtc_sv_type_vec:
-	return marpatcl_rtc_sv_vec_astcl (ip, VEC, null);
+	return vec_astcl (ip, VEC, null);
 	/**/
     default:
 	/* TODO -- custom data -- quick HACK - null it - work out a better rep later */
@@ -123,14 +116,14 @@ marpatcl_rtc_sv_astcl_do (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, Tcl_Obj* null)
 }
 
 static Tcl_Obj*
-marpatcl_rtc_sv_vec_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_vec v, Tcl_Obj* null)
+vec_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_vec v, Tcl_Obj* null)
 {
     int k;
     Tcl_Obj* svres = Tcl_NewListObj (0 /*n*/,0);
     // TODO CHECK: Will using n > 0 pre-alloc an internal array (I suspect not) */
 
     for (k = 0; k < v->size; k++) {
-	Tcl_Obj* el = marpatcl_rtc_sv_astcl_do (ip, v->data[k], null);
+	Tcl_Obj* el = astcl_do (ip, v->data[k], null);
 	if (!el || (Tcl_ListObjAppendElement(ip, svres, el) != TCL_OK)) {
 	    RELE (svres);
 	    return 0;
@@ -183,17 +176,17 @@ error_match_candidate (Tcl_DString *ds, marpatcl_rtc_p p)
         Tcl_DStringAppend (ds, " after reading '", -1);
 	while (marpatcl_rtc_stack_size (LEX.lexeme)) {
 	    char c = marpatcl_rtc_stack_pop (LEX.lexeme);
-	    Tcl_DStringAppend (ds, QCS [c], -1);
+	    Tcl_DStringAppend (ds, qcs (c), -1);
 	}
 	if (GATE.lastchar >= 0) {
 	    ASSERT_BOUNDS (GATE.lastchar, MARPATCL_RTC_BSMAX);
-	    Tcl_DStringAppend (ds, QCS [GATE.lastchar], -1);
+	    Tcl_DStringAppend (ds, qcs (GATE.lastchar), -1);
 	}
 	Tcl_DStringAppend (ds, "'", -1);
     } else if (GATE.lastchar >= 0) {
 	ASSERT_BOUNDS (GATE.lastchar, MARPATCL_RTC_BSMAX);
 	Tcl_DStringAppend (ds, " after reading '", -1);
-	Tcl_DStringAppend (ds, QCS [GATE.lastchar], -1);
+	Tcl_DStringAppend (ds, qcs (GATE.lastchar), -1);
 	Tcl_DStringAppend (ds, "'", -1);
     }
     Tcl_DStringAppend (ds, ".", -1);
@@ -209,7 +202,7 @@ error_lex_accept (Tcl_DString *ds, marpatcl_rtc_p p)
 
 	for (k=0; k < MARPATCL_RTC_BSMAX; k++) {
 	    if (!marpatcl_rtc_byteset_contains (&GATE.acceptable, k)) continue;
-	    Tcl_DStringAppend (ds, QCS [k], -1);
+	    Tcl_DStringAppend (ds, qcs (k), -1);
 	}
 	Tcl_DStringAppend (ds, "]", -1);
     }
@@ -294,7 +287,7 @@ error_lex_mismatch (Tcl_DString *ds, marpatcl_rtc_p p)
 	char buf [30];
 
 	Tcl_DStringAppend (ds, "\nMismatch:\n'", -1);
-	Tcl_DStringAppend (ds, QCS [GATE.lastchar], -1);
+	Tcl_DStringAppend (ds, qcs (GATE.lastchar), -1);
 	Tcl_DStringAppend (ds, "' => (", -1);
 	sprintf (buf, "%d", GATE.lastchar);
 	Tcl_DStringAppend (ds, buf, -1);
@@ -308,7 +301,7 @@ error_lex_mismatch (Tcl_DString *ds, marpatcl_rtc_p p)
 		sprintf (buf, "%4d", k);
 		Tcl_DStringAppend (ds, buf, -1);
 		Tcl_DStringAppend (ds, ": '", -1);
-		Tcl_DStringAppend (ds, QCS [k], -1);
+		Tcl_DStringAppend (ds, qcs (k), -1);
 		Tcl_DStringAppend (ds, "'", -1);
 	    }
 	}
@@ -316,7 +309,7 @@ error_lex_mismatch (Tcl_DString *ds, marpatcl_rtc_p p)
 }
 
 static void
-marpatcl_rtc_error (Tcl_Interp* ip, marpatcl_rtc_p p)
+make_err (Tcl_Interp* ip, marpatcl_rtc_p p)
 {
     // *** ATTENTION ***
     //
@@ -343,6 +336,272 @@ marpatcl_rtc_error (Tcl_Interp* ip, marpatcl_rtc_p p)
     Tcl_DStringResult (ip, &ds);
 
     Tcl_DStringFree (&ds);
+}
+
+static const char*
+qcs (int i)
+{
+    static const char* qcs_map [256] = {
+	/*   0 = */ "\\0",
+	/*   1 = */ "\\1",
+	/*   2 = */ "\\2",
+	/*   3 = */ "\\3",
+	/*   4 = */ "\\4",
+	/*   5 = */ "\\5",
+	/*   6 = */ "\\6",
+	/*   7 = */ "\\7",
+	/*   8 = */ "\\10",
+	/*   9 = */ "\\t",
+	/*  10 = */ "\\n",
+	/*  11 = */ "\\13",
+	/*  12 = */ "\\14",
+	/*  13 = */ "\\r",
+	/*  14 = */ "\\16",
+	/*  15 = */ "\\17",
+	/*  16 = */ "\\20",
+	/*  17 = */ "\\21",
+	/*  18 = */ "\\22",
+	/*  19 = */ "\\23",
+	/*  20 = */ "\\24",
+	/*  21 = */ "\\25",
+	/*  22 = */ "\\26",
+	/*  23 = */ "\\27",
+	/*  24 = */ "\\30",
+	/*  25 = */ "\\31",
+	/*  26 = */ "\\32",
+	/*  27 = */ "\\33",
+	/*  28 = */ "\\34",
+	/*  29 = */ "\\35",
+	/*  30 = */ "\\36",
+	/*  31 = */ "\\37",
+	/*  32 = */ "\\40",
+	/*  33 = */ "!",
+	/*  34 = */ "\\42",
+	/*  35 = */ "#",
+	/*  36 = */ "$",
+	/*  37 = */ "%",
+	/*  38 = */ "&",
+	/*  39 = */ "'",
+	/*  40 = */ "\\50",
+	/*  41 = */ "\\51",
+	/*  42 = */ "*",
+	/*  43 = */ "+",
+	/*  44 = */ ",",
+	/*  45 = */ "-",
+	/*  46 = */ ".",
+	/*  47 = */ "/",
+	/*  48 = */ "0",
+	/*  49 = */ "1",
+	/*  50 = */ "2",
+	/*  51 = */ "3",
+	/*  52 = */ "4",
+	/*  53 = */ "5",
+	/*  54 = */ "6",
+	/*  55 = */ "7",
+	/*  56 = */ "8",
+	/*  57 = */ "9",
+	/*  58 = */ ":",
+	/*  59 = */ "\\73",
+	/*  60 = */ "<",
+	/*  61 = */ "=",
+	/*  62 = */ ">",
+	/*  63 = */ "?",
+	/*  64 = */ "@",
+	/*  65 = */ "A",
+	/*  66 = */ "B",
+	/*  67 = */ "C",
+	/*  68 = */ "D",
+	/*  69 = */ "E",
+	/*  70 = */ "F",
+	/*  71 = */ "G",
+	/*  72 = */ "H",
+	/*  73 = */ "I",
+	/*  74 = */ "J",
+	/*  75 = */ "K",
+	/*  76 = */ "L",
+	/*  77 = */ "M",
+	/*  78 = */ "N",
+	/*  79 = */ "O",
+	/*  80 = */ "P",
+	/*  81 = */ "Q",
+	/*  82 = */ "R",
+	/*  83 = */ "S",
+	/*  84 = */ "T",
+	/*  85 = */ "U",
+	/*  86 = */ "V",
+	/*  87 = */ "W",
+	/*  88 = */ "X",
+	/*  89 = */ "Y",
+	/*  90 = */ "Z",
+	/*  91 = */ "\\133",
+	/*  92 = */ "\\134",
+	/*  93 = */ "\\135",
+	/*  94 = */ "^",
+	/*  95 = */ "_",
+	/*  96 = */ "`",
+	/*  97 = */ "a",
+	/*  98 = */ "b",
+	/*  99 = */ "c",
+	/* 100 = */ "d",
+	/* 101 = */ "e",
+	/* 102 = */ "f",
+	/* 103 = */ "g",
+	/* 104 = */ "h",
+	/* 105 = */ "i",
+	/* 106 = */ "j",
+	/* 107 = */ "k",
+	/* 108 = */ "l",
+	/* 109 = */ "m",
+	/* 110 = */ "n",
+	/* 111 = */ "o",
+	/* 112 = */ "p",
+	/* 113 = */ "q",
+	/* 114 = */ "r",
+	/* 115 = */ "s",
+	/* 116 = */ "t",
+	/* 117 = */ "u",
+	/* 118 = */ "v",
+	/* 119 = */ "w",
+	/* 120 = */ "x",
+	/* 121 = */ "y",
+	/* 122 = */ "z",
+	/* 123 = */ "\\173",
+	/* 124 = */ "|",
+	/* 125 = */ "\\175",
+	/* 126 = */ "~",
+	/* 127 = */ "\\177",
+	/* 128 = */ "\\200",
+	/* 129 = */ "\\201",
+	/* 130 = */ "\\202",
+	/* 131 = */ "\\203",
+	/* 132 = */ "\\204",
+	/* 133 = */ "\\205",
+	/* 134 = */ "\\206",
+	/* 135 = */ "\\207",
+	/* 136 = */ "\\210",
+	/* 137 = */ "\\211",
+	/* 138 = */ "\\212",
+	/* 139 = */ "\\213",
+	/* 140 = */ "\\214",
+	/* 141 = */ "\\215",
+	/* 142 = */ "\\216",
+	/* 143 = */ "\\217",
+	/* 144 = */ "\\220",
+	/* 145 = */ "\\221",
+	/* 146 = */ "\\222",
+	/* 147 = */ "\\223",
+	/* 148 = */ "\\224",
+	/* 149 = */ "\\225",
+	/* 150 = */ "\\226",
+	/* 151 = */ "\\227",
+	/* 152 = */ "\\230",
+	/* 153 = */ "\\231",
+	/* 154 = */ "\\232",
+	/* 155 = */ "\\233",
+	/* 156 = */ "\\234",
+	/* 157 = */ "\\235",
+	/* 158 = */ "\\236",
+	/* 159 = */ "\\237",
+	/* 160 = */ "\\240",
+	/* 161 = */ "\\241",
+	/* 162 = */ "\\242",
+	/* 163 = */ "\\243",
+	/* 164 = */ "\\244",
+	/* 165 = */ "\\245",
+	/* 166 = */ "\\246",
+	/* 167 = */ "\\247",
+	/* 168 = */ "\\250",
+	/* 169 = */ "\\251",
+	/* 170 = */ "\\252",
+	/* 171 = */ "\\253",
+	/* 172 = */ "\\254",
+	/* 173 = */ "\\255",
+	/* 174 = */ "\\256",
+	/* 175 = */ "\\257",
+	/* 176 = */ "\\260",
+	/* 177 = */ "\\261",
+	/* 178 = */ "\\262",
+	/* 179 = */ "\\263",
+	/* 180 = */ "\\264",
+	/* 181 = */ "\\265",
+	/* 182 = */ "\\266",
+	/* 183 = */ "\\267",
+	/* 184 = */ "\\270",
+	/* 185 = */ "\\271",
+	/* 186 = */ "\\272",
+	/* 187 = */ "\\273",
+	/* 188 = */ "\\274",
+	/* 189 = */ "\\275",
+	/* 190 = */ "\\276",
+	/* 191 = */ "\\277",
+	/* 192 = */ "\\300",
+	/* 193 = */ "\\301",
+	/* 194 = */ "\\302",
+	/* 195 = */ "\\303",
+	/* 196 = */ "\\304",
+	/* 197 = */ "\\305",
+	/* 198 = */ "\\306",
+	/* 199 = */ "\\307",
+	/* 200 = */ "\\310",
+	/* 201 = */ "\\311",
+	/* 202 = */ "\\312",
+	/* 203 = */ "\\313",
+	/* 204 = */ "\\314",
+	/* 205 = */ "\\315",
+	/* 206 = */ "\\316",
+	/* 207 = */ "\\317",
+	/* 208 = */ "\\320",
+	/* 209 = */ "\\321",
+	/* 210 = */ "\\322",
+	/* 211 = */ "\\323",
+	/* 212 = */ "\\324",
+	/* 213 = */ "\\325",
+	/* 214 = */ "\\326",
+	/* 215 = */ "\\327",
+	/* 216 = */ "\\330",
+	/* 217 = */ "\\331",
+	/* 218 = */ "\\332",
+	/* 219 = */ "\\333",
+	/* 220 = */ "\\334",
+	/* 221 = */ "\\335",
+	/* 222 = */ "\\336",
+	/* 223 = */ "\\337",
+	/* 224 = */ "\\340",
+	/* 225 = */ "\\341",
+	/* 226 = */ "\\342",
+	/* 227 = */ "\\343",
+	/* 228 = */ "\\344",
+	/* 229 = */ "\\345",
+	/* 230 = */ "\\346",
+	/* 231 = */ "\\347",
+	/* 232 = */ "\\350",
+	/* 233 = */ "\\351",
+	/* 234 = */ "\\352",
+	/* 235 = */ "\\353",
+	/* 236 = */ "\\354",
+	/* 237 = */ "\\355",
+	/* 238 = */ "\\356",
+	/* 239 = */ "\\357",
+	/* 240 = */ "\\360",
+	/* 241 = */ "\\361",
+	/* 242 = */ "\\362",
+	/* 243 = */ "\\363",
+	/* 244 = */ "\\364",
+	/* 245 = */ "\\365",
+	/* 246 = */ "\\366",
+	/* 247 = */ "\\367",
+	/* 248 = */ "\\370",
+	/* 249 = */ "\\371",
+	/* 250 = */ "\\372",
+	/* 251 = */ "\\373",
+	/* 252 = */ "\\374",
+	/* 253 = */ "\\375",
+	/* 254 = */ "\\376",
+	/* 255 = */ "\\377",
+	0
+    };
+
+    return qcs_map [i];
 }
 
 
