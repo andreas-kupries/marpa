@@ -28,6 +28,23 @@
 ## - cproc argument type
 ## - cproc result type
 
+critcl::iassoc::def marpatcl_unicontext {} {
+    Tcl_ObjType*     listType;
+    Tcl_ObjType*     intType;
+} {
+    Tcl_Obj* lst;
+    Tcl_Obj* elt;
+
+    elt = Tcl_NewIntObj(0);
+    data->intType = elt->typePtr;
+
+    lst = Tcl_NewListObj (1, &elt);
+    data->listType = lst->typePtr;
+    Tcl_DecrRefCount (lst);
+} {
+    /* nothing to do */
+}
+
 critcl::ccode {
     #define INT_REP       internalRep.otherValuePtr
     #define OTSCR_REP(o) ((OTSCR*) (o)->INT_REP)
@@ -232,7 +249,7 @@ critcl::ccode {
 	SCR*      scr   = NULL;
 	OTSCR*    otscr = NULL;
 	int       start, end, i;
-	marpatcl_context_data ctx =  marpatcl_context (ip);
+	marpatcl_unicontext_data ctx =  marpatcl_unicontext (ip);
 
 	TRACE_FUNC ("(ip %p, o %p)", ip, o);
 	/*

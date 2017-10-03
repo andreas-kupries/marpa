@@ -34,6 +34,7 @@
 
 critcl::ccode {
     #include <string.h> /* memcpy */
+    #include <stdlib.h> /* qsort */
     
     #undef  MAX
     #define MAX(a,b) (((a) > (b)) ? (a) : (b))

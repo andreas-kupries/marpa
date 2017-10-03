@@ -25,22 +25,10 @@ critcl::iassoc::def marpatcl_context {} {
     Marpa_Config     config;
     Marpa_Grammar    grammar;    /* Communication: Grammar -> Recognizer constructor */
     Marpa_Recognizer recognizer; /* Communication: Recognizer -> Bocage constructor */
-    Tcl_ObjType*     listType;
-    Tcl_ObjType*     intType;
 } {
-    Tcl_Obj* lst;
-    Tcl_Obj* elt;
-    
     data->grammar    = NULL;
     data->recognizer = NULL;
     (void) marpa_c_init (&data->config);
-
-    elt = Tcl_NewIntObj(0);
-    data->intType = elt->typePtr;
-
-    lst = Tcl_NewListObj (1, &elt);
-    data->listType = lst->typePtr;
-    Tcl_DecrRefCount (lst);
 } {
     /* nothing to do */
 }

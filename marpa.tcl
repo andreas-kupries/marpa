@@ -26,16 +26,12 @@ if {![critcl::compiling]} {
     error "Unable to build Marpa, no proper compiler found."
 }
 
-critcl::source c/utilities.tcl
 critcl::cutil::alloc
 
 # # ## ### ##### ######## #############
 ## Build configuration
-# (1) Choose the unicode range to support.
-# (2) Assertions, and tracing
-# (3) Debugging symbols, memory tracking
-
-generate-tables ;# 'bmp' (default), or 'full'
+# (1) Assertions, and tracing
+# (2) Debugging symbols, memory tracking
 
 critcl::cutil::assertions on
 critcl::cutil::tracer     off
@@ -104,9 +100,6 @@ critcl::include    marpa.h
 critcl::tsources generic/sequencing.tcl ; # Method call sequence validation
 critcl::tsources generic/timing.tcl     ; # Method call benchmarking
 critcl::tsources generic/support.tcl    ; # General Tcl level
-critcl::tsources generic/unicode.tcl    ; # Unicode / UTF-8
-
-					  # This is a generated file (See tools/unidata.tcl)
 critcl::tsources generic/location.tcl   ; # Location/Range handling
 
 # # ## ### ##### ######## #############
@@ -219,10 +212,6 @@ critcl::source c/support.tcl          ; # General utilities and types.
 critcl::source c/type_conversions.tcl ; # Custom argument & result types
 critcl::source c/context.tcl          ; # Per-interp package information, shared
 					# with all classes and instances.
-
-critcl::source c/unicode.tcl          ; # Unicode support functions.
-critcl::source c/cc_objtype.tcl       ; # Tcl_ObjType for uni char classes (SCR).
-critcl::source c/asbr_objtype.tcl     ; # Tcl_ObjType for ASBR char class format.
 
 # # ## ### ##### ######## #############
 ## C classes for the various types of objects.

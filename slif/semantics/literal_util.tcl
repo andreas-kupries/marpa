@@ -17,6 +17,9 @@ package require debug
 package require debug::caller
 package require oo::util      ;# mymethod
 
+# Unicode tables, classes, operations.
+package require marpa::unicode
+
 debug define marpa/slif/literal
 
 # # ## ### ##### ######## #############

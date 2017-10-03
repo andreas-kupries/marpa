@@ -9,16 +9,16 @@
 ## Build configuration utilities
 
 proc generate-tables {{urange bmp}} {
-    set selfdir [file dirname [file normalize [info script]]]
+    set topdir [file dirname [file dirname [file normalize [info script]]]]
     
-    set generator  $selfdir/tools/unidata.tcl
-    set unitables  $selfdir/unidata/UnicodeData.txt
-    set uniscripts $selfdir/unidata/Scripts.txt
+    set generator  $topdir/tools/unidata.tcl
+    set unitables  $topdir/unidata/UnicodeData.txt
+    set uniscripts $topdir/unidata/Scripts.txt
 
-    set outdir     $selfdir/generated
-    set codefortcl $selfdir/generated/unidata-${urange}.tcl ;# Data, commands in Tcl
-    set codeforc   $selfdir/generated/unidata-${urange}.h   ;# Declarations: Constants, data structures
-    #set codeforc   $selfdir/generated/unidata-${urange}.c  ;# Definitions --TODO--
+    set outdir     $topdir/generated
+    set codefortcl $topdir/generated/unidata-${urange}.tcl ;# Data, commands in Tcl
+    set codeforc   $topdir/generated/unidata-${urange}.h   ;# Declarations: Constants, data structures
+    #set codeforc   $topdir/generated/unidata-${urange}.c  ;# Definitions --TODO--
 
     if {
 	[file exists $codefortcl] &&
@@ -57,8 +57,8 @@ proc generate-tables {{urange bmp}} {
 
     # Last, make the generated data available.
 
-    critcl::tsources generated/unidata-${urange}.tcl
-    critcl::cheaders generated/unidata-${urange}.h
+    critcl::tsources $topdir/generated/unidata-${urange}.tcl
+    critcl::cheaders $topdir/generated/unidata-${urange}.h
     critcl::include  unidata-${urange}.h
     return
 }
