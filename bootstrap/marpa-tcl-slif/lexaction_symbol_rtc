@@ -1,0 +1,1607 @@
+:default
+op declare bnf
+{Perl name} action {bare name} {standard name}
+=>
+{array descriptor} {character class}
+{Perl name} {bare name} lexeme {standard name}
+{Perl name} {bare name} default {standard name}
+=
+{Perl name} action {bare name} {standard name}
+=>
+{array descriptor} {character class}
+{Perl name} {bare name} latm {standard name}
+=>
+{Perl name} {bare name} boolean {signed integer}
+:start
+op declare bnf
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+op declare bnf
+{Perl name} {bare name} {standard name}
++
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{single quoted name} {single quoted string}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+\51
+{Perl name} {bare name} {standard name}
+{single quoted name} {single quoted string}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+bracketed name
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+bracketed name
+\51
+{Perl name} {bare name} {standard name} symbol
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+{Perl name} {bare name} {standard name} symbol
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+\50
+bracketed name
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+{Perl name} {bare name} {standard name}
+\50
+bracketed name
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+\50
+bracketed name
+\51
+bracketed name
+{Perl name} {bare name} {standard name}
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+{Perl name} {bare name} {standard name}
+\50
+bracketed name
+\51
+bracketed name
+{Perl name} {bare name} {standard name}
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+bracketed name
+\51
+{Perl name} {bare name} {standard name} symbol
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+\50
+{single quoted name} {single quoted string}
+bracketed name
+\51
+bracketed name
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+bracketed name
+\51
+{Perl name} {bare name} {standard name} symbol
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+\51
+bracketed name
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+\51
+bracketed name
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+\51
+bracketed name
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{single quoted name} {single quoted string}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+\50
+bracketed name
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+{Perl name} {bare name} {standard name}
+\50
+bracketed name
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
++
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+{Perl name} {bare name} separator {standard name}
+=>
+bracketed name
+{Perl name} {bare name} proper {standard name}
+=>
+{Perl name} {bare name} boolean {signed integer}
+bracketed name
+op declare bnf
+bracketed name
++
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+{Perl name} {bare name} separator {standard name}
+=>
+bracketed name
+{Perl name} {bare name} proper {standard name}
+=>
+{Perl name} {bare name} boolean {signed integer}
+bracketed name
+op declare bnf
+bracketed name
++
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+{Perl name} {bare name} separator {standard name}
+=>
+bracketed name
+{Perl name} {bare name} proper {standard name}
+=>
+{Perl name} {bare name} boolean {signed integer}
+bracketed name
+op declare bnf
+bracketed name
++
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+{Perl name} {bare name} separator {standard name}
+=>
+bracketed name
+{Perl name} {bare name} proper {standard name}
+=>
+{Perl name} {bare name} boolean {signed integer}
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+*
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+*
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+*
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+*
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+*
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+*
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+*
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+*
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+*
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+*
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+*
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{Perl name} action {bare name} {standard name}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{Perl name} action {bare name} {standard name}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{Perl name} action {bare name} {standard name}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{Perl name} action {bare name} {standard name}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{Perl name} action {bare name} {standard name}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{single quoted name} {single quoted string}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+{Perl name} action {bare name} {standard name}
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{single quoted name} {single quoted string}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+\51
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{single quoted name} {single quoted string}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+op declare bnf
+bracketed name
++
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+\50
+{single quoted name} {single quoted string}
+\51
+bracketed name
+\50
+{single quoted name} {single quoted string}
+\51
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
++
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+{Perl name} {bare name} {standard name} symbol
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name} symbol
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+bracketed name
+op declare bnf
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+bracketed name
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+op declare bnf
+{single quoted name} {single quoted string}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} name {standard name}
+=>
+{single quoted name} {single quoted string}
+:discard
+op declare match
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+op declare match
+character class
++
+:discard
+op declare match
+bracketed name
+bracketed name
+op declare match
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+bracketed name
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+bracketed name
+op declare match
+bracketed name
+*
+bracketed name
+op declare match
+character class
+bracketed name
+op declare match
+character class
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+bracketed name
+op declare match
+character class
+bracketed name
+op declare match
+character class
++
+{Perl name} {bare name} {standard name}
+op declare match
+character class
+bracketed name
+op declare match
+bracketed name
+bracketed name
+bracketed name
+op declare match
+bracketed name
+bracketed name
+bracketed name
+op declare match
+character class
++
+bracketed name
+op declare match
+character class
+*
+bracketed name
+op declare match
+bracketed name
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+bracketed name
++
+{Perl name} {bare name} separator {standard name}
+=>
+bracketed name
+{Perl name} {bare name} proper {standard name}
+=>
+{Perl name} {bare name} boolean {signed integer}
+bracketed name
+op declare match
+bracketed name
+bracketed name
+op declare match
+character class
+bracketed name
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+character class
++
+bracketed name
+op declare match
+bracketed name
+bracketed name
+bracketed name
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+{Perl name} {bare name} {standard name}
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+bracketed name
+*
+{Perl name} {bare name} separator {standard name}
+=>
+bracketed name
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+bracketed name
+bracketed name
+bracketed name
+op declare match
+bracketed name
+bracketed name
+op declare match
+bracketed name
+bracketed name
+bracketed name
+op declare match
+bracketed name
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare match
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+bracketed name
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare match
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+character class
+bracketed name
+op declare match
+character class
+{Perl name} {bare name} {standard name}
+op declare match
+character class
+bracketed name
+op declare match
+character class
+{Perl name} {bare name} {standard name}
+op declare match
+character class
+{Perl name} {bare name} {standard name}
+op declare match
+character class
+{Perl name} {bare name} {standard name}
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+character class
+bracketed name
+op declare match
+character class
+bracketed name
+op declare match
+character class
+bracketed name
+op declare match
+bracketed name
+bracketed name
+bracketed name
+op declare match
+bracketed name
+bracketed name
+bracketed name
+op declare match
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+bracketed name
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+bracketed name
+op declare match
+bracketed name
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+bracketed name
+op declare match
+bracketed name
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare match
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare match
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+bracketed name
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+bracketed name
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{Perl name} {bare name} {standard name}
+bracketed name
+bracketed name
+op declare match
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op equal priority
+bracketed name
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+op equal priority
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+character class
+bracketed name
+op declare match
+character class
+bracketed name
+op declare match
+character class
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+character class
++
+bracketed name
+op declare match
+bracketed name
+*
+bracketed name
+op declare match
+{single quoted name} {single quoted string}
+bracketed name
+op declare match
+{single quoted name} {single quoted string}

@@ -25,5 +25,14 @@ proc redir {args} {
     return [file normalize [file join [td] results {*}$args]]
 }
 
+proc locate {base args} {
+    foreach file $args {
+	set path [file join $base $file]
+	if {![file exists $path]} continue
+	return $path
+    }
+    return -code error "Unable to find any of [join $args {, }] for $base"
+}
+
 # # ## ### ##### ######## #############
 return

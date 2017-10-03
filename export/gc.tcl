@@ -40,6 +40,7 @@ namespace eval ::marpa::export::gc {
 
 proc ::marpa::export::gc::container {gc} {
     debug.marpa/export/gc {}
+    marpa::fqn gc
     return [Generate [$gc serialize]]
 }
 

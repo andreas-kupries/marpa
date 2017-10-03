@@ -21,12 +21,12 @@ package require debug
 package require debug::caller
 package require char
 
-debug define marpa/export/rtc-critcl
-debug prefix marpa/export/rtc-critcl {[debug caller] | }
+debug define marpa/export/cparse-critcl
+debug prefix marpa/export/cparse-critcl {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-namespace eval ::marpa::export::rtc-critcl {
+namespace eval ::marpa::export::cparse-critcl {
     namespace export container
     namespace ensemble create
 
@@ -36,9 +36,10 @@ namespace eval ::marpa::export::rtc-critcl {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::rtc-critcl::container {gc} {
-    debug.marpa/export/rtc-critcl {}
+proc ::marpa::export::cparse-critcl::container {gc} {
+    debug.marpa/export/cparse-critcl {}
     variable self
+    marpa::fqn gc
     set config [marpa::export::core::rtc::config [$gc serialize] {
 	prefix {	}
     }]
@@ -47,7 +48,7 @@ proc ::marpa::export::rtc-critcl::container {gc} {
     return [string map $config $template]
 }
 
-proc ::marpa::export::rtc-critcl::CQCS {} {
+proc ::marpa::export::cparse-critcl::CQCS {} {
     ## See also tools/cqcs.tcl ##    
     # char quote cstring
     # over \0 to \ff

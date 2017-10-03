@@ -130,7 +130,7 @@ critcl::tsources engine/tcl/rt_parse.tcl  ; # Engine assembly / Runtime: Lexer+P
 ## SLIF support commands and classes
 ## Parser, semantics, grammar container
 
-critcl::tsources slif/boot_parser.tcl             ; # SLIF Parser (hardwired)
+#critcl::tsources slif/boot_parser.tcl             ; # SLIF Parser Tcl (hardwired)
 
 critcl::tsources slif/semantics/literal_util.tcl  ; # SLIF, support commands for literals
 critcl::tsources slif/semantics/semantics.tcl     ; # SLIF semantics, driven by AST
@@ -187,8 +187,9 @@ critcl::tsources export/tlex.tcl          ; # Tcl engine - lexing
 critcl::tsources export/tparse.tcl        ; # Tcl engine - lexing+parsing
 
 critcl::tsources export/core/rtc.tcl      ; # Support for generators emitting C engines
-critcl::tsources export/rtc-raw.tcl       ; # Raw RTC-based C parser
-critcl::tsources export/rtc-critcl.tcl    ; # Critcl class around RTC-based C code.
+critcl::tsources export/cparse-raw.tcl    ; # RTC engine - Raw C code
+critcl::tsources export/cparse-critcl.tcl ; # RTC engine - Critcl class around the C code
+critcl::tsources export/clex-critcl.tcl   ; # RTC engine, lex only - Critcl class wrapper
 
 # # ## ### ##### ######## #############
 ## Main C section.
@@ -236,7 +237,9 @@ critcl::source c/recognizer.tcl ; # Recognizer class
 critcl::source c/grammar.tcl    ; # Grammar class
 
 # # ## ### ##### ######## #############
-## Tcl level parts of the system.
+## 
+
+critcl::source slif/boot_parser.tcl                ; # SLIF Parser RTC (hardwired)
 
 # # ## ### ##### ######## #############
 ## Make the C pieces ready. Immediate build of the binaries, no deferal.

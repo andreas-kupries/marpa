@@ -76,6 +76,15 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
     LRD   = marpatcl_rtc_spec_setup (LEX.g, SPEC->l0, TRACE_TAG_VAR (lexer_progress));
     marpatcl_rtc_symset_init (ACCEPT, SPEC->lexemes + SPEC->discards);
     marpatcl_rtc_symset_init (FOUND,  SPEC->lexemes);
+
+    if (!SPEC->g1) {
+	// Lexing only mode. Initialize ACCEPT to accept everything, always.
+	int k, n = SPEC->lexemes + SPEC->discards;
+	Marpa_Symbol_ID* buf = marpatcl_rtc_symset_dense (ACCEPT);
+	for (k=0; k < n; k++) buf [k] = k;
+	marpatcl_rtc_symset_link (ACCEPT, n);
+    }
+
     LEX.lexeme = marpatcl_rtc_stack_cons (80);
     LEX.start = -1;
     LEX.recce = 0;
@@ -83,11 +92,15 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
     LEX.single_sv = 1;
     for (k = 0; k < SPEC->l0semantic.size; k++) {
 	int key = SPEC->l0semantic.data[k];
-	if ((k == MARPATCL_SV_RULE_ID) ||
-	    (k == MARPATCL_SV_LHS_ID)) {
+	if ((key == MARPATCL_SV_RULE_NAME) ||
+	    (key == MARPATCL_SV_RULE_ID) ||
+	    (key == MARPATCL_SV_LHS_NAME) ||
+	    (key == MARPATCL_SV_LHS_ID)) {
 	    LEX.single_sv = 0;
 	}
     }
+
+    TRACE ("single_sv := %d", LEX.single_sv);
 
     res = marpa_g_precompute (LEX.g);
     marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 precompute");
@@ -206,10 +219,13 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
 
     if (!keep) {
 	buf = marpatcl_rtc_symset_dense (ACCEPT);
-	n   = marpa_r_terminals_expected (PARS_R, buf);
-	marpatcl_rtc_fail_syscheck (p, PAR.g, n, "g1 terminals_expected");
-	marpatcl_rtc_symset_link    (ACCEPT, n);
-	marpatcl_rtc_symset_include (ACCEPT, ALWAYS.size, ALWAYS.data);
+	if (SPEC->g1) {
+	    n = marpa_r_terminals_expected (PARS_R, buf);
+	    marpatcl_rtc_fail_syscheck (p, PAR.g, n, "g1 terminals_expected");
+	    marpatcl_rtc_symset_link    (ACCEPT, n);
+	    marpatcl_rtc_symset_include (ACCEPT, ALWAYS.size, ALWAYS.data);
+	}
+	// Lexing-only mode was set up by `lexer_init`.
     }
     
     /* And feed the results into the new lexer recce */
@@ -342,9 +358,11 @@ complete (marpatcl_rtc_p p)
 	    continue;
 	}
 
-	TRACE_ADD (" terminal %d (%s)",
-		   token, marpatcl_rtc_spec_symname (SPEC->g1, token, 0));
-
+	if (SPEC->g1) {
+	    TRACE_ADD (" terminal %d (%s)",
+		       token, marpatcl_rtc_spec_symname (SPEC->g1, token, 0));
+	}
+	
 	if (marpatcl_rtc_symset_contains (FOUND, token)) {
 	    TRACE_ADD (" duplicate, skip", 0);
 	    TRACE_CLOSER;
@@ -353,9 +371,16 @@ complete (marpatcl_rtc_p p)
 	}
 	TRACE_ADD (" save", 0);
 
-	// On first alternative going through to the parser show its progress
-	// for the location.
-	if (!marpatcl_rtc_symset_size(FOUND)) { PAR_P (p); }
+	if (!marpatcl_rtc_symset_size(FOUND)) {
+	    // First non-discarded token.
+	    if (SPEC->g1) {
+		// Show the parser's progress for the location.
+		PAR_P (p);
+	    } else {
+		// Lexing-only mode. Start "enter"
+		p->result (p->rcdata, NULL);
+	    }
+	}
 
 	marpatcl_rtc_symset_include (FOUND, 1, &token);
 
@@ -367,15 +392,27 @@ complete (marpatcl_rtc_p p)
 
 	if (!LEX.single_sv || !sv) {
 	    sv = get_sv (p, token, rule);
-	    svid = marpatcl_rtc_store_add (p, sv);
-
-	    TRACE_ADD (" [%d] :=", svid);
 	    SHOW_SV (sv);
+	    if (SPEC->g1) {
+		// Parsing. Convert semantic values to identifiers we can
+		// carry within the marpa engine.
+		svid = marpatcl_rtc_store_add (p, sv);
+		TRACE_ADD (" [%d] :=", svid);
+	    }
 	}
 	TRACE_CLOSER;
-
-	res = marpa_r_alternative (PARS_R, token, svid, 1);
-	marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 alternative");
+	if (SPEC->g1) {
+	    // And enter the token/value combination
+	    res = marpa_r_alternative (PARS_R, token, svid, 1);
+	    marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 alternative");
+	} else {
+	    // Lexing-only mode. Post token/value through "enter"
+	    const char*       s  = marpatcl_rtc_spec_symname (SPEC->l0, TO_ACS (token), 0);
+	    marpatcl_rtc_sv_p tv = marpatcl_rtc_sv_cons_string (strdup (s), 1);
+	    
+	    p->result (p->rcdata, tv);
+	    p->result (p->rcdata, sv);
+	}
     }
 
     marpa_t_unref (t);
@@ -388,12 +425,18 @@ complete (marpatcl_rtc_p p)
 	// current set of acceptable symbols.
 	TRACE ("(rtc*) %p restart", p);
 	marpatcl_rtc_lexer_acceptable (p, 1);
-    } else {
+    } else if (SPEC->g1) {
 	// Tell parser about number of alternatives given to it (See (%%))
 	TRACE ("(rtc*) %p parse #%d (%d..%d/%d)", p, marpatcl_rtc_symset_size(FOUND),
 	       LEX_START, LEX_END, LEX_LEN);
 	marpatcl_rtc_parser_enter (p, marpatcl_rtc_symset_size(FOUND));
 	// MAYBE FAIL
+    } else {
+	// Lexing-only mode. Complete "enter", and restart the lower parts
+	// (normally done by the parser)
+	p->result (p->rcdata, ((marpatcl_rtc_sv_p) 1));
+
+	marpatcl_rtc_lexer_acceptable (p, 0);
     }
 
     marpatcl_rtc_gate_redo (p, redo);
@@ -534,6 +577,7 @@ get_sv (marpatcl_rtc_p   p,
     };						\
     marpatcl_rtc_sv_vec_push (sv, (cache))
     
+#define L0_SNAME(token)  marpatcl_rtc_spec_symname (SPEC->l0, token, NULL)
 #define G1_SNAME(token)  marpatcl_rtc_spec_symname (SPEC->g1, token, NULL)
 #define LEX_STR          get_lexeme (p, NULL)
 
@@ -542,17 +586,32 @@ get_sv (marpatcl_rtc_p   p,
 	case MARPATCL_SV_START:		DO (start, marpatcl_rtc_sv_cons_int (LEX_START));		break;
 	case MARPATCL_SV_END:		DO (end, marpatcl_rtc_sv_cons_int (LEX_END));			break;
 	case MARPATCL_SV_LENGTH:	DO (length, marpatcl_rtc_sv_cons_int (LEX_LEN));		break;
-	case MARPATCL_SV_G1START:	DO (g1start, marpatcl_rtc_sv_cons_int (-1));			break;//TODO
-	case MARPATCL_SV_G1END:		DO (g1end, marpatcl_rtc_sv_cons_int (-1));			break;//TODO
+	case MARPATCL_SV_G1START:	DO (g1start, marpatcl_rtc_sv_cons_string ("",0));		break;//TODO
+	case MARPATCL_SV_G1END:		DO (g1end, marpatcl_rtc_sv_cons_string ("",0));			break;//TODO
 	case MARPATCL_SV_G1LENGTH:	DO (g1length, marpatcl_rtc_sv_cons_int (1));			break;
 	case MARPATCL_SV_RULE_NAME:	/* See below, LHS_NAME -- Specific to lexer semantics */
-	case MARPATCL_SV_LHS_NAME:	DO (lhsname, marpatcl_rtc_sv_cons_string (G1_SNAME(token), 0));	break;
+	case MARPATCL_SV_LHS_NAME:
+	    if (SPEC->g1) {
+		DO (lhsname, marpatcl_rtc_sv_cons_string (G1_SNAME (token), 0));
+	    } else {
+		DO (lhsname, marpatcl_rtc_sv_cons_string (L0_SNAME (TO_ACS (token)), 0));
+	    }
+	    break;
 	case MARPATCL_SV_RULE_ID:	DO (ruleid, marpatcl_rtc_sv_cons_int (rule));			break;
 	case MARPATCL_SV_LHS_ID:	DO (lhsid, marpatcl_rtc_sv_cons_int (token));			break;
 	case MARPATCL_SV_VALUE:		DO (value, marpatcl_rtc_sv_cons_string (LEX_STR, 1));		break;
 	default: ASSERT (0, "Invalid array descriptor key");
 	}
     }
+
+    if (marpatcl_rtc_sv_vec_size (sv) == 1) {
+	marpatcl_rtc_sv_p el = marpatcl_rtc_sv_vec_get (sv, 0);
+	marpatcl_rtc_sv_ref (el);
+	marpatcl_rtc_sv_unref (sv);
+	marpatcl_rtc_sv_unref (el);
+	sv = el;
+    }
+    
     return sv ;//TRACE_RETURN ("%p", sv);
 }
 

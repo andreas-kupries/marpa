@@ -38,6 +38,7 @@ namespace eval ::marpa::export::tparse {
 proc ::marpa::export::tparse::container {gc} {
     debug.marpa/export/tparse {}
     variable self
+    marpa::fqn gc
     set config   [marpa::export::core::tcl config [$gc serialize]]
     set template [string trim [marpa asset $self]]
     return [string map $config $template]

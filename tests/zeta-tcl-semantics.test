@@ -1,0 +1,33 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::slif::semantics + (marpa::engine::tcl::tparse + z-marpa-tcl)
+##
+
+##
+## Larger testing of exporter results, and runtime
+## - export::tparse,
+## - engine::tcl
+## 
+
+kt source support/gen.tcl
+
+# # ## ### ##### ######## ############# #####################
+## API to the semantics-core
+
+gen configure \
+    cl engine-tcl-parser \
+    ex tparse
+
+proc result {base} { locate $base ctrace_tcl ctrace }
+proc label      {} { return "engine_tcl_slif" }
+proc initialize {} { gen setup   }
+proc finalize   {} { gen cleanup }
+
+# # ## ### ##### ######## ############# #####################
+##
+
+kt source common/semantics-core.testsuite
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

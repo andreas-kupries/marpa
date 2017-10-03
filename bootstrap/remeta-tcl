@@ -1,0 +1,63 @@
+#!/usr/bin/env tclsh
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## Regenerate the SLIF boot parser
+
+package require Tcl 8.5
+package require marpa
+package require fileutil
+
+if {[llength $argv] != 1} {
+    puts "Usage: $argv0 /path/to/destination/file"
+    exit 1
+}
+
+set dst     [lindex $argv 0]
+set selfdir [file dirname [file normalize [info script]]]
+set meta    [file join $selfdir marpa-tcl-slif slif]
+
+proc F {n} { format "%.2f" $n }
+
+#debug on util/benchmarking
+
+# _ __ ___ _____ ________ _____________ _____________________
+# Process the slif meta grammar
+set sz [file size $meta]
+puts "Processing $meta ($sz bytes) ..."
+marpa::slif::container create GC
+marpa::slif::semantics create SEMA GC
+marpa::slif::parser    create BOOT
+
+set start [clock milliseconds]
+SEMA process [BOOT process-file $meta]
+
+set done [clock milliseconds]
+set millis [expr {$done-$start}]
+set sec [expr {double($millis)/1000}]
+set speed [expr {$sz/$sec}]
+puts "Processing done in [F $sec] seconds (@ [F $speed] bytes/sec)"
+
+# GC now holds the grammar
+BOOT destroy
+# Note: SEMA auto-destroys at the end of 'process'.
+
+# _ __ ___ _____ ________ _____________ _____________________
+# Generate the SLIF parser class
+puts "Generating ..."
+marpa::export config! version  1
+marpa::export config! writer   {Jeffrey Kegler + Andreas Kupries}
+marpa::export config! year     [clock format [clock seconds] -format %Y]
+marpa::export config! name     marpa::slif::parser
+marpa::export config! operator $::tcl_platform(user)@[info hostname]
+marpa::export config! tool     [file tail [info script]]
+set parser [marpa::export::tparse container GC]
+GC destroy
+
+# _ __ ___ _____ ________ _____________ _____________________
+# Write to file for debugging.
+puts "Saving to $dst ..."
+fileutil::writeFile $dst [string map {package #package} $parser]
+
+puts {... OK}
+exit

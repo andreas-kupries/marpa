@@ -1,0 +1,34 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::slif::semantics + ((cparse) rtc-critcl + z-marpa-tcl)
+##
+
+##
+## Larger testing of exporter results, and runtime
+## - export::cparse-critcl,
+## - rtc
+## 
+
+kt require support critcl   ;# compile & run
+kt source  support/gen.tcl
+
+# # ## ### ##### ######## ############# #####################
+## API to the semantics-core
+
+gen configure \
+    cl engine-rtc-parser \
+    ex cparse
+
+proc result {base} { locate $base ctrace_rtc ctrace }
+proc label      {} { return "engine_rtc_slif" }
+proc initialize {} { gen setup }
+proc finalize   {} { gen cleanup }
+
+# # ## ### ##### ######## ############# #####################
+##
+
+kt source common/semantics-core.testsuite
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

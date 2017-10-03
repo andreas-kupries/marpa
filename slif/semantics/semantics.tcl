@@ -57,6 +57,7 @@ oo::class create marpa::slif::semantics {
 	    link {INDENT INDENT}
 	    link {UNDENT UNDENT}
 	}]}
+	marpa::fqn container
 	marpa::import $container Container
 	set mycc  {}
 	set myrhs {}
