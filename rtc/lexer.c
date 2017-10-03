@@ -92,11 +92,15 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
     LEX.single_sv = 1;
     for (k = 0; k < SPEC->l0semantic.size; k++) {
 	int key = SPEC->l0semantic.data[k];
-	if ((k == MARPATCL_SV_RULE_ID) ||
-	    (k == MARPATCL_SV_LHS_ID)) {
+	if ((key == MARPATCL_SV_RULE_NAME) ||
+	    (key == MARPATCL_SV_RULE_ID) ||
+	    (key == MARPATCL_SV_LHS_NAME) ||
+	    (key == MARPATCL_SV_LHS_ID)) {
 	    LEX.single_sv = 0;
 	}
     }
+
+    TRACE ("single_sv := %d", LEX.single_sv);
 
     res = marpa_g_precompute (LEX.g);
     marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 precompute");
@@ -388,12 +392,12 @@ complete (marpatcl_rtc_p p)
 
 	if (!LEX.single_sv || !sv) {
 	    sv = get_sv (p, token, rule);
+	    SHOW_SV (sv);
 	    if (SPEC->g1) {
 		// Parsing. Convert semantic values to identifiers we can
 		// carry within the marpa engine.
 		svid = marpatcl_rtc_store_add (p, sv);
 		TRACE_ADD (" [%d] :=", svid);
-		SHOW_SV (sv);
 	    }
 	}
 	TRACE_CLOSER;
@@ -405,7 +409,7 @@ complete (marpatcl_rtc_p p)
 	    // Lexing-only mode. Post token/value through "enter"
 	    const char*       s  = marpatcl_rtc_spec_symname (SPEC->l0, TO_ACS (token), 0);
 	    marpatcl_rtc_sv_p tv = marpatcl_rtc_sv_cons_string (strdup (s), 1);
-
+	    
 	    p->result (p->rcdata, tv);
 	    p->result (p->rcdata, sv);
 	}
@@ -582,8 +586,8 @@ get_sv (marpatcl_rtc_p   p,
 	case MARPATCL_SV_START:		DO (start, marpatcl_rtc_sv_cons_int (LEX_START));		break;
 	case MARPATCL_SV_END:		DO (end, marpatcl_rtc_sv_cons_int (LEX_END));			break;
 	case MARPATCL_SV_LENGTH:	DO (length, marpatcl_rtc_sv_cons_int (LEX_LEN));		break;
-	case MARPATCL_SV_G1START:	DO (g1start, marpatcl_rtc_sv_cons_int (-1));			break;//TODO
-	case MARPATCL_SV_G1END:		DO (g1end, marpatcl_rtc_sv_cons_int (-1));			break;//TODO
+	case MARPATCL_SV_G1START:	DO (g1start, marpatcl_rtc_sv_cons_string ("",0));		break;//TODO
+	case MARPATCL_SV_G1END:		DO (g1end, marpatcl_rtc_sv_cons_string ("",0));			break;//TODO
 	case MARPATCL_SV_G1LENGTH:	DO (g1length, marpatcl_rtc_sv_cons_int (1));			break;
 	case MARPATCL_SV_RULE_NAME:	/* See below, LHS_NAME -- Specific to lexer semantics */
 	case MARPATCL_SV_LHS_NAME:
@@ -599,6 +603,15 @@ get_sv (marpatcl_rtc_p   p,
 	default: ASSERT (0, "Invalid array descriptor key");
 	}
     }
+
+    if (marpatcl_rtc_sv_vec_size (sv) == 1) {
+	marpatcl_rtc_sv_p el = marpatcl_rtc_sv_vec_get (sv, 0);
+	marpatcl_rtc_sv_ref (el);
+	marpatcl_rtc_sv_unref (sv);
+	marpatcl_rtc_sv_unref (el);
+	sv = el;
+    }
+    
     return sv ;//TRACE_RETURN ("%p", sv);
 }
 
