@@ -51,7 +51,7 @@ marpa::export config! year     [clock format [clock seconds] -format %Y]
 marpa::export config! name     marpa::slif::parser
 marpa::export config! operator $::tcl_platform(user)@[info hostname]
 marpa::export config! tool     [file tail [info script]]
-set parser [marpa::export::cparse-critcl container GC]
+set parser [marpa::export::tparse container GC]
 GC destroy
 
 # _ __ ___ _____ ________ _____________ _____________________

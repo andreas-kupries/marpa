@@ -10,7 +10,7 @@ kt source  support/gen.tcl
 
 gen configure cl marpa::slif::parser
 
-proc result {base} { locate $base ast_tcl ast }
+proc result {base} { locate $base ast_rtc ast }
 proc label      {} { return "builtin" }
 proc initialize {} {}
 proc finalize   {} {}
