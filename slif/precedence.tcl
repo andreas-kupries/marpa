@@ -10,6 +10,27 @@
 ##
 # See doc/precedence-rewrite
 # See doc.1/facts-precedence.txt
+    
+# # ## ### ##### ######## #############
+## Administrivia
+
+# @@ Meta Begin
+# Package marpa::slif::precedence 0
+# Meta author      {Andreas Kupries}
+# Meta category    {Parser/Lexer Generator}
+# Meta description Part of TclMarpa. Grammar transformer.
+# Meta description Rewrites precedenced priority rules into sets where
+# Meta description the precedence is directly encoded in the structure
+# Meta description of the rules
+# Meta location    http:/core.tcl.tk/akupries/marpa
+# Meta platform    tcl
+# Meta require     {Tcl 8.5}
+# Meta require     TclOO
+# Meta require     debug
+# Meta require     debug::caller
+# Meta require     marpa::util
+# Meta subject     marpa transform precedence
+# @@ Meta End
 
 # Notes
 # - Precedences are integers <= 0.
@@ -81,7 +102,7 @@ package require Tcl 8.5
 package require TclOO         ;# Implies Tcl 8.5 requirement.
 package require debug
 package require debug::caller
-package require oo::util      ;# mymethod
+package require marpa::util
 
 debug define marpa/slif/precedence
 
@@ -267,4 +288,5 @@ proc ::marpa::slif::precedence::P {sym rhs} {
 }
 
 # # ## ### ##### ######## #############
+package provide marpa::slif::precedence 1
 return

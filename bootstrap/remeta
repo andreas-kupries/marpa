@@ -32,14 +32,15 @@ marpa::slif::semantics create SEMA GC
 marpa::slif::parser    create BOOT
 
 set start [clock milliseconds]
-SEMA process [BOOT process-file $meta]
-
+set ast [BOOT process-file $meta]
 set done [clock milliseconds]
+
 set millis [expr {$done-$start}]
 set sec [expr {double($millis)/1000}]
 set speed [expr {$sz/$sec}]
 puts "Processing done in [F $sec] seconds (@ [F $speed] bytes/sec)"
 
+SEMA process $ast
 # GC now holds the grammar
 BOOT destroy
 # Note: SEMA auto-destroys at the end of 'process'.

@@ -11,6 +11,28 @@
 #   Code is formatted with newlines and indentation.
 
 # # ## ### ##### ######## #############
+## Administrivia
+
+# @@ Meta Begin
+# Package marpa::export::core::tcl 1
+# Meta author      {Andreas Kupries}
+# Meta category    {Parser/Lexer Generator}
+# Meta description Part of TclMarpa. Functionality shared between
+# Meta description the tlex and tparse generators
+# Meta location    http:/core.tcl.tk/akupries/marpa
+# Meta platform    tcl
+# Meta require     {Tcl 8.5}
+# Meta require     TclOO
+# Meta require     debug
+# Meta require     debug::caller
+# Meta require     marpa::slif::container
+# Meta require     marpa::slif::literal
+# Meta require     marpa::slif::precedence
+# Meta require     marpa::export::config
+# Meta subject     marpa {generator tcl}
+# @@ Meta End
+
+# # ## ### ##### ######## #############
 ## Requisites
 
 package require Tcl 8.5
@@ -18,6 +40,8 @@ package require debug
 package require debug::caller
 package require marpa::slif::container
 package require marpa::slif::literal
+package require marpa::slif::precedence
+package require marpa::export::config
 
 debug define marpa/export/core/tcl
 debug prefix marpa/export/core/tcl {[debug caller] | }
@@ -104,7 +128,7 @@ proc ::marpa::export::core::tcl::config {serial} {
     $gc destroy
 
     # Generate the configuration for the templating engine.
-    
+
     set     map [core-config]
     lappend map @characters@    [FormatDict $characters 0] ; # literal: map sym -> char
     lappend map @classes@       [FormatDict $classes]      ; # literal: map sym -> spec
@@ -125,10 +149,10 @@ proc ::marpa::export::core::tcl::config {serial} {
 
 proc ::marpa::export::core::tcl::Ingest {serial} {
     debug.marpa/export/core/tcl {}
-        
+
     # Create a local copy of the grammar for the upcoming
     # rewrites. Validate the input as well, now.
-    
+
     set gc [marpa::slif::container new]
     $gc deserialize $serial
     $gc validate
@@ -151,7 +175,7 @@ proc ::marpa::export::core::tcl::LowerLiterals {gc} {
     debug.marpa/export/core/tcl {}
 
     # Rewrite the literals into forms supported by the runtime (Tcl engine).
-    
+
     marpa::slif::literal r2container \
 	[marpa::slif::literal reduce [concat {*}[lmap {sym rhs} [dict get [$gc l0 serialize] literal] {
 	    list $sym [lindex $rhs 0]
@@ -191,7 +215,7 @@ proc ::marpa::export::core::tcl::ExtendRules {rv gc area symbols} {
     # redefinition. Implied, if all rules have the same action it is
     # defined only once.
     set lastaction {}
-    
+
     foreach sym [lsort -dict $symbols] {
 	foreach def [lsort -dict [$gc $area get $sym]] {
 	    Process $def $area $sym
@@ -224,7 +248,7 @@ proc ::marpa::export::core::tcl::Process {def area sym} {
 	    Action
 	    Name
 	    set op {}
-	    lappend op [expr {$pos ? "+" : "*"}] $rhs		    
+	    lappend op [expr {$pos ? "+" : "*"}] $rhs
 	    if {[info exists separator]} {
 		# value = (symbol bool)
 		# matches the order of arguments taken by the engine
@@ -440,4 +464,5 @@ proc ::marpa::export::core::tcl::FormatDict {dict {listify 1} {sort 1}} {
 }
 
 # # ## ### ##### ######## #############
+package provide marpa::export::core::tcl 1
 return

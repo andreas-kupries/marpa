@@ -9,9 +9,10 @@ kt check tcltest 2
 kt require support debug
 kt require support debug::caller
 
-kt local   testing marpa
+kt local   testing marpa::export::config
 
 # # ## ### ##### ######## ############# #####################
+## TODO: list-plugins
 
 # # ## ### ##### ######## ############# #####################
 ## [ok] config

@@ -5,7 +5,29 @@
 ##
 # This code is BSD-licensed.
 
-# Support for exporters/generators. Common configuration information.
+# Support for exporters/generators.
+# - Common configuration information.
+# - Plugin / package search/listing.
+
+# # ## ### ##### ######## #############
+## Administrivia
+
+# @@ Meta Begin
+# Package marpa::export::config 1
+# Meta author      {Andreas Kupries}
+# Meta category    {Parser/Lexer Generator}
+# Meta description Part of TclMarpa. Configuration data for generators, exporters.
+# Meta description Plus support for finding proper plugin packages.
+# Meta location    http:/core.tcl.tk/akupries/marpa
+# Meta platform    tcl
+# Meta require     {Tcl 8.5}
+# Meta require     TclOO
+# Meta require     debug
+# Meta require     debug::caller
+# Meta require     marpa::util
+# Meta subject     marpa {generator config} {generator search} {plugin listing}
+# Meta subject     {listing plugin packages} {search generator packages}
+# @@ Meta End
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -14,13 +36,14 @@ package require Tcl 8.5
 package require TclOO         ;# Implies Tcl 8.5 requirement.
 package require debug
 package require debug::caller
+package require marpa::util
 
 debug define marpa/export/config
 
 # # ## ### ##### ######## #############
 
 namespace eval ::marpa::export {
-    namespace export config config! config-reset config?
+    namespace export config config! config-reset config? list-plugins
     namespace ensemble create
     namespace import ::marpa::X
 
@@ -37,6 +60,10 @@ namespace eval ::marpa::export {
 
 # # ## ### ##### ######## #############
 ## Public API
+
+proc ::marpa::export::list-plugins {} {
+
+}
 
 proc ::marpa::export::config-reset {} {
     debug.marpa/export/config {}
@@ -103,4 +130,5 @@ proc ::marpa::export::config? {key} {
 ## Helpers
 
 # # ## ### ##### ######## #############
+package provide marpa::export::config 1
 return

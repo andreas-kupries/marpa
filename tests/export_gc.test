@@ -8,8 +8,8 @@ kt check tcltest 2
 
 kt require support debug
 kt require support debug::caller
-
-kt local   testing marpa
+kt local   support marpa::slif::container
+kt local   testing marpa::export::gc
 
 # # ## ### ##### ######## ############# #####################
 

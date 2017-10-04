@@ -15,11 +15,33 @@
 #   template itself.
 
 # # ## ### ##### ######## #############
+## Administrivia
+
+# @@ Meta Begin
+# Package marpa::export::gc-compact 1
+# Meta author      {Andreas Kupries}
+# Meta category    {Parser/Lexer Generator}
+# Meta description Part of TclMarpa. Generator for grammar containers.
+# Meta description Compact formatting
+# Meta location    http:/core.tcl.tk/akupries/marpa
+# Meta platform    tcl
+# Meta require     {Tcl 8.5}
+# Meta require     TclOO
+# Meta require     debug
+# Meta require     debug::caller
+# Meta require     marpa::util
+# Meta require     marpa::export::config
+# Meta subject     marpa {container generator} lexing {generator container}
+# @@ Meta End
+
+# # ## ### ##### ######## #############
 ## Requisites
 
 package require Tcl 8.5
 package require debug
 package require debug::caller
+package require marpa::export::config
+package require marpa::util
 
 debug define marpa/export/gc-compact
 debug prefix marpa/export/gc-compact {[debug caller] | }
@@ -57,6 +79,7 @@ proc ::marpa::export::gc-compact::Generate {serial} {
 }
 
 # # ## ### ##### ######## #############
+package provide marpa::export::gc-compact 1
 return
 ##
 ## Template following (`source` will not process it)

@@ -89,17 +89,8 @@ critcl::include    marpa.h
 ## Declare the Tcl layer aggregating the C primitives / classes into
 ## useful commands and hierarchies.
 
-## !ATTENTION! During package assembly by critcl the hierarchy below
-## !ATTENTION! is flattened into a single directory. This means that
-## !ATTENTION! file names must be unique across the directories.
-## This does not apply to the critcl::source'd files coming after.
-
 # # ## ### ##### ######## #############
-## Mostly generic utilities for various things
-
-
-# # ## ### ##### ######## #############
-## Basic Tcl-based parsing engine
+## Basic Tcl-based parsing engine - runtime::tcl 
 
 critcl::tsources engine/tcl/pre.tcl    ; # Dependencies
 
@@ -115,35 +106,6 @@ critcl::tsources engine/tcl/parser.tcl       ; # Parser, structure lexemes into 
 
 critcl::tsources engine/tcl/rt_lex.tcl    ; # Engine assembly / Runtime: Lexer
 critcl::tsources engine/tcl/rt_parse.tcl  ; # Engine assembly / Runtime: Lexer+Parser
-
-# # ## ### ##### ######## #############
-## SLIF support commands and classes
-## Parser
-
-# # ## ### ##### ######## #############
-## Generator backends
-
-critcl::tsources export/config.tcl       ; # Comon generator configuration support
-
-# Backend: Dumping a GC as Tcl code implementing a derived GC class
-#          loading the grammar on construction.
-# 1. gc-compact - compact, no formatting
-# 2. gc         - formatted for human readability (indented multi-line)
-# Backend: Dumping a GC as Tcl code implementing a rt_lex-derived lexer engine class
-# Backend: Dumping a GC as Tcl code implementing a rt_parse-derived parser engine class
-# Backend: Dumping a GC as C code implementing a rtc-derived parser engine
-
-critcl::tsources export/gc_compact.tcl    ; # Container compact
-critcl::tsources export/gc.tcl            ; # Container formatted
-
-critcl::tsources export/core/tcl.tcl      ; # Support for generators emitting Tcl engines
-critcl::tsources export/tlex.tcl          ; # Tcl engine - lexing
-critcl::tsources export/tparse.tcl        ; # Tcl engine - lexing+parsing
-
-critcl::tsources export/core/rtc.tcl      ; # Support for generators emitting C engines
-critcl::tsources export/cparse-raw.tcl    ; # RTC engine - Raw C code
-critcl::tsources export/cparse-critcl.tcl ; # RTC engine - Critcl class around the C code
-critcl::tsources export/clex-critcl.tcl   ; # RTC engine, lex only - Critcl class wrapper
 
 # # ## ### ##### ######## #############
 ## Main C section.

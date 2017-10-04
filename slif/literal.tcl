@@ -19,14 +19,12 @@
 # Meta description and transform L0 literals.
 # Meta location    http:/core.tcl.tk/akupries/marpa
 # Meta platform    tcl
-
 # Meta require     {Tcl 8.5}
 # Meta require     TclOO
 # Meta require     debug
 # Meta require     debug::caller
 # Meta require     marpa::unicode
 # Meta require     marpa::util
-
 # Meta subject     marpa literal transform reduction
 # @@ Meta End
 

@@ -14,12 +14,34 @@
 #   terms of construction and methods.
 
 # # ## ### ##### ######## #############
+## Administrivia
+
+# @@ Meta Begin
+# Package marpa::export::clex-critcl 1
+# Meta author      {Andreas Kupries}
+# Meta category    {Parser/Lexer Generator}
+# Meta description Part of TclMarpa. Generator for lexers
+# Meta description based on the C runtime
+# Meta location    http:/core.tcl.tk/akupries/marpa
+# Meta platform    tcl
+# Meta require     {Tcl 8.5}
+# Meta require     TclOO
+# Meta require     debug
+# Meta require     debug::caller
+# Meta require     marpa::util
+# Meta require     marpa::export::core::rtc
+# Meta subject     marpa {lexer generator} lexing {generator lexer}
+# Meta subject     {C runtime lexing} {lexer C runtime}
+# @@ Meta End
+
+# # ## ### ##### ######## #############
 ## Requisites
 
 package require Tcl 8.5
 package require debug
 package require debug::caller
-package require char
+package require marpa::util
+package require marpa::export::core::rtc
 
 debug define marpa/export/clex-critcl
 debug prefix marpa/export/clex-critcl {[debug caller] | }
@@ -48,6 +70,7 @@ proc ::marpa::export::clex-critcl::container {gc} {
 }
 
 # # ## ### ##### ######## #############
+package provide marpa::export::clex-critcl 1
 return
 ##
 ## Template following (`source` will not process it)

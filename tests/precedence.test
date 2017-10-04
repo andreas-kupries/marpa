@@ -11,8 +11,10 @@ kt require support debug::caller
 kt require support oo::util
 kt require support TclOO
 
+kt local   support marpa::export::gc ;# Reformat - TODO: Refactor
 kt local   support marpa::slif::container
-kt local   testing marpa
+kt local   testing marpa::slif::precedence
+#kt local   testing marpa
 
 # # ## ### ##### ######## ############# #####################
 

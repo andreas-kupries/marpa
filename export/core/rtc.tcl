@@ -11,6 +11,29 @@
 #   Code is formatted with newlines and indentation.
 
 # # ## ### ##### ######## #############
+## Administrivia
+
+# @@ Meta Begin
+# Package marpa::export::core::rtc 1
+# Meta author      {Andreas Kupries}
+# Meta category    {Parser/Lexer Generator}
+# Meta description Part of TclMarpa. Functionality shared between
+# Meta description the clex and cparse generators
+# Meta location    http:/core.tcl.tk/akupries/marpa
+# Meta platform    tcl
+# Meta require     {Tcl 8.5}
+# Meta require     TclOO
+# Meta require     debug
+# Meta require     debug::caller
+# Meta require     marpa::slif::container
+# Meta require     marpa::slif::literal
+# Meta require     marpa::slif::precedence
+# Meta require     marpa::export::config
+# Meta require     marpa::export::core::tcl
+# Meta subject     marpa {generator c}
+# @@ Meta End
+
+# # ## ### ##### ######## #############
 ## Requisites
 
 package require Tcl 8.5
@@ -18,6 +41,9 @@ package require debug
 package require debug::caller
 package require marpa::slif::container
 package require marpa::slif::literal
+package require marpa::slif::precedence
+package require marpa::export::config
+package require marpa::export::core::tcl ;# Remask - TODO refactor
 
 debug define marpa/export/core/rtc
 debug prefix marpa/export/core/rtc {[debug caller] | }
@@ -90,15 +116,15 @@ namespace eval ::marpa::export::core::rtc {
 
     variable ak {
 	start    MARPATCL_SV_START
-	length	 MARPATCL_SV_LENGTH  
-	g1start	 MARPATCL_SV_G1START 
+	length	 MARPATCL_SV_LENGTH
+	g1start	 MARPATCL_SV_G1START
 	g1length MARPATCL_SV_G1LENGTH
 	symbol	 MARPATCL_SV_LHS_NAME
-	lhs	 MARPATCL_SV_LHS_ID  
+	lhs	 MARPATCL_SV_LHS_ID
 	name	 MARPATCL_SV_RULE_NAME
-	rule	 MARPATCL_SV_RULE_ID 
-	value	 MARPATCL_SV_VALUE   
-	values   MARPATCL_SV_VALUE   
+	rule	 MARPATCL_SV_RULE_ID
+	value	 MARPATCL_SV_VALUE
+	values   MARPATCL_SV_VALUE
     }
 }
 
@@ -115,13 +141,13 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
     dict unset config from
     dict unset config to
     dict unset config n
-    
+
     set gc [Ingest $serial]
     EncodePrecedences $gc
     LowerLiterals     $gc
     # Types we can get out of the reduction:
     # - byte, brange
-    
+
     # Pull various required parts out of the container ...
 
     set lit       [GetL0 $gc literal]
@@ -132,7 +158,7 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
 
     # Ignoring class 'terminal'. That is the same as the l0 lexemes,
     # and the semantics made sure, as did the container validation.
-    
+
     # sem       :: map ('array -> list(semantic-code))
     # latm      :: map (sym -> bool) (sym == lexemes)
     # lit       :: list (sym)
@@ -150,7 +176,7 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
     Rules create GR G P 1
     SemaG create A
     Mask  create M
-    
+
     set acs_discards [lmap w $discards { set _ @ACS:$w }]
     set acs_lex      [lmap w $lex      { set _ @ACS:$w }]
     set l0start      @L0:START
@@ -164,7 +190,7 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
 
     A add $g1rules
     M add $g1rules
-    
+
     # Symbol allocations in L0. See also rtc/spec.h -- Keep In Sync
     #
     # characters  :   0         ... 255
@@ -252,7 +278,7 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
 	# NOTE: See (%%accept/always%%) in rtc/lexer.c
 	expr {[L 2id $w] - 256}
     }]
-    
+
     $gc destroy
 
     set map {}
@@ -267,7 +293,7 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
     # marpatcl_rtc_spec	72 = (2+2+2+2+16+8+8+16+16)
     # ----------------- ------------
     # Note: Inner (..) values are padding
-    
+
     lappend map {*}[core-config]
     # C code placeholders ...
 
@@ -291,7 +317,7 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
 
     # L0 grammar: symbols, rules, semantics
     Limit12 "\#l0 symbols" [L size]
-    
+
     incr dsz [* 2 [L size]]       ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @l0-symbols-sz@		[* 2 [L size]]
     lappend map @l0-symbols-c@		[L size]
@@ -312,10 +338,10 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
     lappend map @l0-semantics-v@        [TabularArray $sem $config]
 
     incr dsz 48                   ; # sizeof(marpatcl_rtc_rules) = 48
-    
+
     # G1 grammar: symbols, rules
     Limit12 "\#g1 symbols" [L size]
-    
+
     incr dsz [* 2 [G size]]      ; # sizeof(marpatcl_rtc_sym) = 2
     lappend map @g1-symbols-sz@		[* 2 [G size]]
     lappend map @g1-symbols-c@	   	[G size]
@@ -347,7 +373,7 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
     lappend map @g1-semantics-sz@       [* 2 $asz]
     lappend map @g1-semantics-c@        $asz
     lappend map @g1-semantics-v@        $acode
-    
+
     # G1 grammar: masking
     set mcode [FormatRD msz Mask $config [M tag] [M content] [GR size]]
     Limit16 "\#g1 masking" $msz
@@ -355,7 +381,7 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
     lappend map @g1-masking-sz@       [* 2 $msz]
     lappend map @g1-masking-c@        $msz
     lappend map @g1-masking-v@        $mcode
-    
+
     # Overarching spec info (various counts, always-on symbols)
     lappend map @lexemes-c@		[llength $lex]
     lappend map @discards-c@		[llength $discards]
@@ -369,7 +395,7 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
     incr dsz 72 ; # sizeof(marpatcl_rtc_spec) = 72
 
     lappend map @space@ $dsz
-    
+
     # todo - actions, masking
 
     P destroy
@@ -388,10 +414,10 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
 
 proc ::marpa::export::core::rtc::Ingest {serial} {
     debug.marpa/export/core/rtc {}
-        
+
     # Create a local copy of the grammar for the upcoming
     # rewrites. Validate the input as well, now.
-    
+
     set gc [marpa::slif::container new]
     $gc deserialize $serial
     $gc validate
@@ -495,7 +521,7 @@ proc ::marpa::export::core::rtc::RefactorRanges {gc} {
     # print the set of byte ranges as pseudo bitmaps, showing the
     # distribution before and after the refactoring. Extract them with
     # grep, then sort by start and end bytes.
-    
+
     set ranges {}   ; # ranges :: (start -> (stop -> symbol))
     set cover  {}   ; # cover  :: ((start,stop) -> sym)
 
@@ -506,7 +532,7 @@ proc ::marpa::export::core::rtc::RefactorRanges {gc} {
 	    debug.marpa/export/core/rtc {Range: $sym ($start - $stop)}
 	    # Print range as bitmap.
 	    #puts AAA_[format %3d $start]-[format %3d $stop]|[string repeat { } [expr {$start-1}]][string repeat * [expr {$stop-$start+1}]]
-	    
+
 	    # Collect ranges with the same start together.
 	    dict set ranges $start $stop $sym
 
@@ -523,7 +549,7 @@ proc ::marpa::export::core::rtc::RefactorRanges {gc} {
     }
 
     #debug.marpa/export/core/rtc {[debug::pdict $cover]}
-    
+
     while {[dict size $ranges]} {
 	# ranges is the table/queue of things to refactor.
 	set start [lindex [lsort -integer [dict keys $ranges]] 0]
@@ -537,7 +563,7 @@ proc ::marpa::export::core::rtc::RefactorRanges {gc} {
 	dict unset ranges $start
 
 	debug.marpa/export/core/rtc {Processing [format %3d $start] :: [dictsort $defs]}
-	
+
 	# For each set of ranges starting the same point, sort them by
 	# ascending endpoint. The first definition stands as is. If it
 	# is the sole definition we drop the entire set from processing.
@@ -554,18 +580,18 @@ proc ::marpa::export::core::rtc::RefactorRanges {gc} {
 	# may be refactored too. As the start of any suffix range is
 	# greater than the current start they are processed in
 	# upcoming iterations.
-	
+
 	set remainder [lassign [lsort -integer [dict keys $defs]] prefixstop]
 	set prefixsym [dict get $defs $prefixstop]
 
 	debug.marpa/export/core/rtc {...Multiple ranges, refactor 2+}
-	
+
 	foreach stop $remainder {
 	    debug.marpa/export/core/rtc {...Prefix  ([format %3d $start]-[format %3d $prefixstop]) $prefixsym}
 
 	    set currentsym [dict get $defs $stop]
 	    debug.marpa/export/core/rtc {...Current ([format %3d $start]-[format %3d $stop]) $currentsym}
-	    
+
 	    # suffix = prefixstop+1 ... stop
 	    set suffixstart $prefixstop
 	    incr suffixstart
@@ -597,14 +623,14 @@ proc ::marpa::export::core::rtc::RefactorRanges {gc} {
 		set suffixsym [dict get $cover $key]
 		debug.marpa/export/core/rtc {...Suffix  ([format %3d $suffixstart]-[format %3d $stop]) $suffixsym (reused)}
 	    }
-	    
+
 	    # create priority alternation of prefix and suffix ranges
 	    $gc l0 remove        $currentsym
 	    $gc l0 priority-rule $currentsym [list $prefixsym] 0
 	    $gc l0 priority-rule $currentsym [list $suffixsym] 0
 
 	    debug.marpa/export/core/rtc {...Replace $currentsym ::= $prefixsym | $suffixsym}
-	    
+
 	    # The processed definition becomes the prefix for the next.
 	    set prefixstop $stop
 	    set prefixsym  $currentsym
@@ -669,7 +695,7 @@ proc ::marpa::export::core::rtc::SemaCode {keys} {
 
 proc ::marpa::export::core::rtc::CName {} {
     debug.marpa/export/core/rtc {}
-    string map {:: _ - _} [core-config? name] 
+    string map {:: _ - _} [core-config? name]
 }
 
 proc ::marpa::export::core::rtc::Names {rules} {
@@ -777,7 +803,7 @@ proc ::marpa::export::core::rtc::TabularArray {words {config {}}} {
     set sf %${max}s
 
     append result $prefix
-    
+
     set k $n
     foreach w $words {
 	if {$k == 0} {
@@ -800,7 +826,7 @@ proc ::marpa::export::core::rtc::FlowArray {words {config {}}} {
 
     # Note, this can be used force a line break after each element,
     # simply set maxcol to 0, or 1.
-    
+
     set defaults {
 	prefix    {    }
 	separator {, }
@@ -857,7 +883,7 @@ proc ::marpa::export::core::rtc::RuleC {label data nr} {
     lappend chunks [list "$label Offsets"] $nr
 
     set label "$label Data"
-    
+
     while {[set n [lindex $data $nr]] ne {}} {
 	# strip comments coded before the length
 	regexp { (\d+)$} $n -> n
@@ -901,7 +927,7 @@ oo::class create marpa::export::core::rtc::Mask {
     variable myfinal
     variable mytag
     variable mycode
-    
+
     constructor {} {
 	set mycount 0
 	set mymask  {}
@@ -922,12 +948,12 @@ oo::class create marpa::export::core::rtc::Mask {
 	my Finalize
 	return $mytag
     }
-    
+
     method content {} {
 	my Finalize
 	return $mycode
     }
-    
+
     method add {rules} {
 	foreach rule $rules {
 	    my Process $rule
@@ -952,7 +978,7 @@ oo::class create marpa::export::core::rtc::Mask {
 	    set filter 0
 	}
 	# filter = (length, i'0 ... i'length-1)
-	
+
 	dict lappend mymask $filter $mycount
 	return
     }
@@ -977,7 +1003,7 @@ oo::class create marpa::export::core::rtc::Mask {
 	    incr max [llength $s]
 	}
 	set df %[string length $max]d
-	
+
 	foreach s [lsort -dict [dict keys $mymask]] {
 	    if {[lindex $s 0] == 0} {
 		# Do not store empty mask definitions.
@@ -1005,7 +1031,7 @@ oo::class create marpa::export::core::rtc::SemaG {
     variable myfinal
     variable mytag
     variable mycode
-    
+
     constructor {} {
 	set mycount 0
 	set mysema  {}
@@ -1026,12 +1052,12 @@ oo::class create marpa::export::core::rtc::SemaG {
 	my Finalize
 	return $mytag
     }
-    
+
     method content {} {
 	my Finalize
 	return $mycode
     }
-    
+
     method add {rules} {
 	foreach rule $rules {
 	    my Process $rule
@@ -1125,7 +1151,7 @@ oo::class create marpa::export::core::rtc::Rules {
 	set maxd [marpa::export::core::rtc::Width $mydisplay1]
 	set fmta "${prefix}%-${maxr}s /* %-${maxd}s %s */"
 	set fmtb "${prefix}%s"
-	
+
 	return [join [lmap ins $myrules lhs $mydisplay1 rhs $mydisplay2 {
 	    if {$lhs ne {}} {
 		format $fmta $ins $lhs $rhs
@@ -1571,4 +1597,5 @@ oo::class create marpa::export::core::rtc::Pool {
 }
 
 # # ## ### ##### ######## #############
+package provide marpa::export::core::rtc 1
 return

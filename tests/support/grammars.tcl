@@ -13,6 +13,7 @@
 kt require support fileutil::traverse
 kt require support fileutil
 kt require support lambda
+kt local   support marpa::unicode
 
 proc test-grammar-files {key __ iv varname script} {
     upvar 1 $iv id $varname iter

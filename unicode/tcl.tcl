@@ -24,6 +24,7 @@ package require Tcl 8.5
 package require TclOO
 package require debug
 package require debug::caller
+package require marpa::util
 
 debug define marpa/unicode
 debug prefix marpa/unicode {[debug caller] | }

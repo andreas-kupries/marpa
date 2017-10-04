@@ -6,6 +6,7 @@
 
 kt local support marpa::slif::container
 kt local support marpa::slif::semantics
+kt local support marpa::export::config
 
 namespace eval ::gen {
     namespace export {[a-z]*}
@@ -77,6 +78,7 @@ proc ::gen::setup {args} {
     marpa::export config! operator $::tcl_platform(user)@[info hostname]
     marpa::export config! tool     [info script]
 
+    kt local support $ex
     set engine [$ex container GC]
     GC destroy
 

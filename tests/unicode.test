@@ -11,7 +11,7 @@ kt require support debug::caller
 kt require support oo::util
 kt require support TclOO
 
-kt local   testing marpa
+kt local   testing marpa::unicode
 
 proc UM {str} { string map [list @@@ [marpa unicode max]] $str }
 

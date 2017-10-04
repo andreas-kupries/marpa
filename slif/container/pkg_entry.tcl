@@ -65,7 +65,6 @@ package require marpa::util
 # @owns: grammar.tcl
 # @owns: grammar_g1.tcl
 # @owns: grammar_l0.tcl
-# @owns: precedence.tcl
 # @owns: priority.tcl
 # @owns: priority_g1.tcl
 # @owns: priority_l0.tcl
@@ -95,7 +94,6 @@ apply {{selfdir} {
     source $selfdir/attr_prio_l0.tcl  ; #   - Priority L0 rule attributes
     source $selfdir/attr_quant_g1.tcl ; #   - Quantified G1 rule attributes
     source $selfdir/attr_quant_l0.tcl ; #   - Quantified L0 rule attributes
-    source $selfdir/precedence.tcl    ; # SLIF, precedence utilities, rewrite
 }} [file dirname [file normalize [info script]]]
 
 # # ## ### ##### ######## #############
