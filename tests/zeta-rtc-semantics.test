@@ -10,7 +10,6 @@
 ## - rtc
 ## 
 
-kt require support critcl   ;# compile & run
 kt source  support/gen.tcl
 
 # # ## ### ##### ######## ############# #####################

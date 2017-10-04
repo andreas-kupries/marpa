@@ -29,6 +29,7 @@ kt require support oo::util
 kt require support TclOO
 kt require support fileutil ;# cat
 
+# marpa::slif::semantics - See gen.tcl in calling files.
 kt local   testing marpa
 
 # # ## ### ##### ######## ############# #####################

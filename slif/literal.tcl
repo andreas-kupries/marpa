@@ -7,6 +7,28 @@
 
 # SLIF support. Utilies for working with L0 literals.
 # See doc/atoms.md
+    
+# # ## ### ##### ######## #############
+## Administrivia
+
+# @@ Meta Begin
+# Package marpa::slif::literal 0
+# Meta author      {Andreas Kupries}
+# Meta category    {Parser/Lexer Generator}
+# Meta description Part of TclMarpa. Utilities operate on
+# Meta description and transform L0 literals.
+# Meta location    http:/core.tcl.tk/akupries/marpa
+# Meta platform    tcl
+
+# Meta require     {Tcl 8.5}
+# Meta require     TclOO
+# Meta require     debug
+# Meta require     debug::caller
+# Meta require     marpa::unicode
+# Meta require     marpa::util
+
+# Meta subject     marpa literal transform reduction
+# @@ Meta End
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -15,10 +37,10 @@ package require Tcl 8.5
 package require TclOO         ;# Implies Tcl 8.5 requirement.
 package require debug
 package require debug::caller
-package require oo::util      ;# mymethod
 
 # Unicode tables, classes, operations.
 package require marpa::unicode
+package require marpa::util
 
 debug define marpa/slif/literal
 
@@ -1110,4 +1132,5 @@ oo::class create marpa::slif::literal::rstate {
 }
 
 # # ## ### ##### ######## #############
+package provide marpa::slif::literal 0
 return

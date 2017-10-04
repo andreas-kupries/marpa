@@ -5,6 +5,7 @@
 ## Enables dynamic creation of parsers and lexers to test.
 
 kt local support marpa::slif::container
+kt local support marpa::slif::semantics
 
 namespace eval ::gen {
     namespace export {[a-z]*}

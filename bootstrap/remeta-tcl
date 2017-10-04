@@ -5,8 +5,9 @@
 ## Regenerate the SLIF boot parser
 
 package require Tcl 8.5
-package require marpa
 package require marpa::slif::container
+package require marpa::slif::semantics
+package require marpa
 package require fileutil
 
 if {[llength $argv] != 1} {

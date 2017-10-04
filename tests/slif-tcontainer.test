@@ -13,6 +13,7 @@ kt require support TclOO
 kt require support fileutil ;# cat
 
 kt local   testing marpa::slif::container
+kt local   testing marpa::slif::literal
 kt local   support marpa
 
 # # ## ### ##### ######## ############# #####################

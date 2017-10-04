@@ -118,21 +118,7 @@ critcl::tsources engine/tcl/rt_parse.tcl  ; # Engine assembly / Runtime: Lexer+P
 
 # # ## ### ##### ######## #############
 ## SLIF support commands and classes
-## Parser, Semantics
-
-#critcl::tsources slif/boot_parser.tcl             ; # SLIF Parser Tcl (hardwired)
-
-critcl::tsources slif/semantics/literal_util.tcl  ; # SLIF, support commands for literals
-critcl::tsources slif/semantics/semantics.tcl     ; # SLIF semantics, driven by AST
-critcl::tsources slif/semantics/debug.tcl         ; # - Debug support
-critcl::tsources slif/semantics/start.tcl         ; # - Start symbol handling
-critcl::tsources slif/semantics/fixup.tcl         ; # - Defered adverb handling
-critcl::tsources slif/semantics/defaults.tcl      ; # - Defaults, generic
-critcl::tsources slif/semantics/context.tcl       ; # - Symbol context
-critcl::tsources slif/semantics/flags.tcl         ; # - Flags, generic
-critcl::tsources slif/semantics/singleton.tcl     ; # - Singleton, generic
-critcl::tsources slif/semantics/locations.tcl     ; # - Locations for items
-critcl::tsources slif/semantics/symbols.tcl       ; # - Item state machine
+## Parser
 
 # # ## ### ##### ######## #############
 ## Generator backends
