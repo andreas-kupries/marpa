@@ -6,7 +6,7 @@
 ##
 # (c) <Year> Grammar <Name> By <Writer>
 ##
-##	rt_parse-derived Engine for grammar "<Name>". Lexing + Parsing.
+##	`marpa::runtime::tcl`-derived Parser for grammar "<Name>".
 ##	Generated On <GenerationTime>
 ##		  By <Operator>
 ##		 Via <Tool>
@@ -16,11 +16,11 @@ package provide <Name> <Version>
 # # ## ### ##### ######## #############
 ## Requisites
 
-package require marpa	      ;# marpa::engine::tcl::parse
-package require Tcl 8.5       ;# -- Foundation
-package require TclOO         ;# -- Implies Tcl 8.5 requirement.
-package require debug         ;# Tracing
-package require debug::caller ;#
+package require Tcl 8.5             ;# -- Foundation
+package require TclOO               ;# -- Implies Tcl 8.5 requirement.
+package require debug               ;# Tracing
+package require debug::caller       ;# Tracing
+package require marpa::runtime::tcl ;# Engine
 
 # # ## ### ##### ######## #############
 

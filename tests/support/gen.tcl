@@ -99,6 +99,7 @@ proc ::gen::setup {args} {
 
 proc ::gen::LoadTcl {} {
     upvar 1 cl cl
+    kt local* support marpa::runtime::tcl
     uplevel #0 [list source [td]/${cl}.tcl]
     return
 }

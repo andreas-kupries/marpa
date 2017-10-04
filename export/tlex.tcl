@@ -80,7 +80,7 @@ return
 ##
 # (c) @slif-year@ Grammar @slif-name@ By @slif-writer@
 ##
-##	rt_lex-derived Engine for grammar "@slif-name@". Lexing only.
+##	`marpa::runtime::tcl`-derived Lexer for grammar "@slif-name@".
 ##	Generated On @generation-time@
 ##		  By @tool-operator@
 ##		 Via @tool@
@@ -90,11 +90,11 @@ package provide @slif-name@ @slif-version@
 # # ## ### ##### ######## #############
 ## Requisites
 
-package require marpa	      ;# marpa::engine::tcl::lex
-package require Tcl 8.5       ;# -- Foundation
-package require TclOO         ;# -- Implies Tcl 8.5 requirement.
-package require debug         ;# Tracing
-package require debug::caller ;#
+package require Tcl 8.5             ;# -- Foundation
+package require TclOO               ;# -- Implies Tcl 8.5 requirement.
+package require debug               ;# Tracing
+package require debug::caller       ;# Tracing
+package require marpa::runtime::tcl ;# Engine
 
 # # ## ### ##### ######## #############
 

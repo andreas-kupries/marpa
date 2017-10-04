@@ -86,31 +86,6 @@ critcl::cheaders   -I/usr/local/include     ; # XXX TODO automatic search/config
 critcl::include    marpa.h
 
 # # ## ### ##### ######## #############
-## Declare the Tcl layer aggregating the C primitives / classes into
-## useful commands and hierarchies.
-
-# # ## ### ##### ######## #############
-## Basic Tcl-based parsing engine - runtime::tcl 
-
-critcl::tsources engine/tcl/pre.tcl    ; # Dependencies
-
-critcl::tsources engine/tcl/semstd.tcl    ; # Standard behaviours for SV handling
-critcl::tsources engine/tcl/semstore.tcl  ; # Store for semantic values (interning strings)
-critcl::tsources engine/tcl/semcore.tcl   ; # Common core for the execution of step instructions.
-critcl::tsources engine/tcl/inbound.tcl   ; # Character streamer.
-critcl::tsources engine/tcl/gate.tcl      ; # Character translation, class handling, symbol gating
-critcl::tsources engine/tcl/engine.tcl       ; # Base class for lexer, parser
-critcl::tsources engine/tcl/engine_debug.tcl ; # - Debugging support, active on request
-critcl::tsources engine/tcl/lexer.tcl        ; # Lexer, aggregate characters to lexemes
-critcl::tsources engine/tcl/parser.tcl       ; # Parser, structure lexemes into ASTs
-
-critcl::tsources engine/tcl/rt_lex.tcl    ; # Engine assembly / Runtime: Lexer
-critcl::tsources engine/tcl/rt_parse.tcl  ; # Engine assembly / Runtime: Lexer+Parser
-
-# # ## ### ##### ######## #############
-## Main C section.
-
-# # ## ### ##### ######## #############
 ## Supporting C code
 
 ## NOTE: We use the prefix "marpatcl_" / "MarpaTcl_" for our
