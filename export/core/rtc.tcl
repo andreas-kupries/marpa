@@ -16,6 +16,7 @@
 package require Tcl 8.5
 package require debug
 package require debug::caller
+package require marpa::slif::container
 
 debug define marpa/export/core/rtc
 debug prefix marpa/export/core/rtc {[debug caller] | }

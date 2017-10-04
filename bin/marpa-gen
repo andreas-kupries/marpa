@@ -122,6 +122,7 @@ proc supported-types {} {
 proc ingest {path} {
     global out name
     package require marpa
+    package require marpa::slif::container
     # _ __ ___ _____ ________ _____________ _____________________
     # Process the slif meta grammar
     # TODO: progress callbacks from the parser (call per token ...)

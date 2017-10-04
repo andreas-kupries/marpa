@@ -67,11 +67,11 @@ return
 # http://wiki.tcl.tk/andreas%20kupries
 # http://core.tcl.tk/akupries/
 package provide @slif-name@ @slif-version@
-package require marpa
 package require Tcl 8.5
 package require TclOO
 package require debug
 package require debug::caller
+package require marpa::slif::container
 debug define marpa/grammar/@slif-name@
 debug prefix marpa/grammar/@slif-name@ {[debug caller] | }
 oo::class create @slif-name@ { superclass marpa::slif::container ; constructor {} { debug.marpa/grammar/@slif-name@ ; my deserialize {@slif-serial@}}}

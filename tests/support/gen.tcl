@@ -4,6 +4,8 @@
 ## A variant of `marpa-gen` built into the test suite.
 ## Enables dynamic creation of parsers and lexers to test.
 
+kt local support marpa::slif::container
+
 namespace eval ::gen {
     namespace export {[a-z]*}
     namespace ensemble create

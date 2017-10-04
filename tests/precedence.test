@@ -11,6 +11,7 @@ kt require support debug::caller
 kt require support oo::util
 kt require support TclOO
 
+kt local   support marpa::slif::container
 kt local   testing marpa
 
 # # ## ### ##### ######## ############# #####################

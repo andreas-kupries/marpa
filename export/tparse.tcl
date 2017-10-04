@@ -63,7 +63,7 @@ package provide @slif-name@ @slif-version@
 # # ## ### ##### ######## #############
 ## Requisites
 
-package require marpa	      ;# marpa::slif::container
+package require marpa	      ;# marpa::engine::tcl::parse
 package require Tcl 8.5       ;# -- Foundation
 package require TclOO         ;# -- Implies Tcl 8.5 requirement.
 package require debug         ;# Tracing

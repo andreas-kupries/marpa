@@ -97,13 +97,11 @@ critcl::include    marpa.h
 # # ## ### ##### ######## #############
 ## Mostly generic utilities for various things
 
-critcl::tsources generic/sequencing.tcl ; # Method call sequence validation
-critcl::tsources generic/timing.tcl     ; # Method call benchmarking
-critcl::tsources generic/support.tcl    ; # General Tcl level
-critcl::tsources generic/location.tcl   ; # Location/Range handling
 
 # # ## ### ##### ######## #############
 ## Basic Tcl-based parsing engine
+
+critcl::tsources engine/tcl/pre.tcl    ; # Dependencies
 
 critcl::tsources engine/tcl/semstd.tcl    ; # Standard behaviours for SV handling
 critcl::tsources engine/tcl/semstore.tcl  ; # Store for semantic values (interning strings)
@@ -120,7 +118,7 @@ critcl::tsources engine/tcl/rt_parse.tcl  ; # Engine assembly / Runtime: Lexer+P
 
 # # ## ### ##### ######## #############
 ## SLIF support commands and classes
-## Parser, semantics, grammar container
+## Parser, Semantics
 
 #critcl::tsources slif/boot_parser.tcl             ; # SLIF Parser Tcl (hardwired)
 
@@ -135,28 +133,6 @@ critcl::tsources slif/semantics/flags.tcl         ; # - Flags, generic
 critcl::tsources slif/semantics/singleton.tcl     ; # - Singleton, generic
 critcl::tsources slif/semantics/locations.tcl     ; # - Locations for items
 critcl::tsources slif/semantics/symbols.tcl       ; # - Item state machine
-
-critcl::tsources slif/container/serdes.tcl        ; # - Abstract (de)serialization base
-critcl::tsources slif/container/container.tcl     ; # SLIF container
-critcl::tsources slif/container/atom.tcl          ; # - Lexical and structural atoms (literals, terminals)
-critcl::tsources slif/container/alter.tcl         ; # - Generic alternative in priority rules
-critcl::tsources slif/container/priority.tcl      ; # - Generic priority rules
-critcl::tsources slif/container/priority_g1.tcl   ; #   - Specialized to G1 (attributes)
-critcl::tsources slif/container/priority_l0.tcl   ; #   - Specialized to L0 (attributes)
-critcl::tsources slif/container/quantified.tcl    ; # - Generic quantified rules
-critcl::tsources slif/container/quantified_g1.tcl ; #   - Specialized to G1 (attributes)
-critcl::tsources slif/container/quantified_l0.tcl ; #   - Specialized to L0 (attributes)
-critcl::tsources slif/container/grammar.tcl       ; # - Basic grammar (symbols in various forms)
-critcl::tsources slif/container/grammar_g1.tcl    ; #   - G1-specific extension of the basics
-critcl::tsources slif/container/grammar_l0.tcl    ; #   - L0-specific extension of the basics
-critcl::tsources slif/container/attribute.tcl     ; # - Attribute base
-critcl::tsources slif/container/attr_global.tcl   ; #   - global container attributes
-critcl::tsources slif/container/attr_lexsem.tcl   ; #   - lexeme-semantics attributes
-critcl::tsources slif/container/attr_prio_g1.tcl  ; #   - Priority G1 rule attributes
-critcl::tsources slif/container/attr_prio_l0.tcl  ; #   - Priority L0 rule attributes
-critcl::tsources slif/container/attr_quant_g1.tcl ; #   - Quantified G1 rule attributes
-critcl::tsources slif/container/attr_quant_l0.tcl ; #   - Quantified L0 rule attributes
-critcl::tsources slif/container/precedence.tcl    ; # SLIF, precedence utilities, rewrite
 
 # # ## ### ##### ######## #############
 ## Generator backends
