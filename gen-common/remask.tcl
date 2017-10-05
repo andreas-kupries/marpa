@@ -13,7 +13,7 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::gen::remask
+# Package marpa::gen::remask 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Conversion of RHS
