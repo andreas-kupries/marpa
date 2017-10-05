@@ -1,32 +1,67 @@
-/* Runtime for C-engine (RTC). Declarations. (Grammar specification)
+/* Runtime for C-engine (RTC). Declarations. (Engine: API types)
  * - - -- --- ----- -------- ------------- ---------------------
  * (c) 2017 Andreas Kupries
+ *
+ * Header for the public types, i.e the types exposed through the stub
+ * functions.
+ * 
  */
 
-#ifndef MARPATCL_RTC_SPEC_H
-#define MARPATCL_RTC_SPEC_H
+#ifndef MARPATCL_RTC_TYPES_H
+#define MARPATCL_RTC_TYPES_H
+
+// stdint.h, cinttypes.h, inttypes.h, types.h -- uint16_t
+#include <stdint.h>
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
- * Requirements
+ * Opaque structure types, pointer/public.
+ * Other types seen in the interface.
  */
 
-// stdint.h, cinttypes.h, inttypes.h, types.h
-#include <stdint.h>
-#include <marpa.h>
-#include <sem.h>
-#include <stack.h>
+typedef struct marpatcl_rtc_spec* marpatcl_rtc_spec_p;
+typedef struct marpatcl_rtc*      marpatcl_rtc_p;
+typedef struct marpatcl_rtc_sv*   marpatcl_rtc_sv_p;
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Type of the callback invoked to return the results (semantic values).
+ */
+
+typedef void (*marpatcl_rtc_result) (void*             clientdata,
+				     marpatcl_rtc_sv_p x);
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Type of the callback invoked to run user-specified semantic
+ * actions.  Takes an action code, and a vector SV and returns the
+ * action's result, as some SV.
+ */
+
+typedef marpatcl_rtc_sv_p (*marpatcl_rtc_sv_cmd) (int               action,
+						  const char*       aname,
+						  marpatcl_rtc_sv_p children);
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Visible structures for grammar specification. These are open
+ * because generated lexers and parsers contain static, constant
+ * instances of these types. They effectively describe a C-level
+ * grammar container. See marpa::slif::container for the Tcl-level
+ * variant.
+ */
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * Constants, and types (mostly structures)
  *
  * Type and space for a single symbol reference/id.
- * uint32_t = 4 byte -- 4G symbols
- * uint16_t = 2 byte -- 64K symbols -- good enough
+ * uint32_t = 4 byte -- long  -- 4G symbols
+ * uint16_t = 2 byte -- short -- 64K symbols -- good enough
  *
- * 2 byte (64K) should be good enough for the string lengths used in symbol
- * and rule names. Number of symbols are limited to 12 bits, i.e. 4K.
+ * A short (64K) should be good enough for the string lengths used in
+ * symbol and rule names. The number of symbols is limited to 12 bits,
+ * i.e. 4K. Again should be enough.
  */
 
 typedef uint16_t marpatcl_rtc_sym;
@@ -36,16 +71,17 @@ typedef uint16_t marpatcl_rtc_size;
  * - - -- --- ----- -------- ------------- ---------------------
  * -- String pool
  *
- * No special structures - 2 parallel arrays, lengths and string pointers. A
- * structure with both is 8 or 16 bytes (32/64 system, 4/8 byte pointers) due
- * to 4/8 alignment and padding. The two arrays eliminate the padding.  That
- * said, the pointers to the arrays are captured in a structure.
+ * No special structures - 2 parallel arrays, lengths and string
+ * pointers. A structure with both is 8 or 16 bytes (32/64 system, 4/8
+ * byte pointers) due to 4/8 alignment and padding. Using two parallel
+ * arrays eliminates the padding.  That said, the pointers to the
+ * arrays are captured in a structure.
  */
 
 typedef struct marpatcl_rtc_string {
     marpatcl_rtc_size*  length; /* Array of string lengths */
     marpatcl_rtc_size*  offset; /* Array of string offset */
-    const char*  string; /* String data */
+    const char*         string; /* String data */
 } marpatcl_rtc_string;
 
 /*
@@ -64,10 +100,10 @@ typedef struct marpatcl_rtc_symvec {
  */
 
 typedef struct marpatcl_rtc_rules {
-    marpatcl_rtc_string* sname;   /* Table of strings, shared pool */
-    marpatcl_rtc_symvec  symbols; /* Table of symbol(name)s. References into string pool */
-    marpatcl_rtc_symvec  rules;   /* Table of rule(name)s. References into string pool */
-    marpatcl_rtc_symvec  lhs;     /* Table of rule lhs ids. */
+    marpatcl_rtc_string* sname;   /* Table of strings, shared pool -- SP */
+    marpatcl_rtc_symvec  symbols; /* Table of symbol(name)s. References SP */
+    marpatcl_rtc_symvec  rules;   /* Table of rule(name)s. References SP */
+    marpatcl_rtc_symvec  lhs;     /* Table of rule lhs identifiers */
     marpatcl_rtc_sym*    rcode;   /* Bytecode specifying the rules */
 } marpatcl_rtc_rules;
 
@@ -108,22 +144,25 @@ typedef struct marpatcl_rtc_rules {
 #define MARPATCL_SYTOP ((~0) << (MARPATCL_SYSZ-4))
 #define MARPATCL_SYLOW (~MARPATCL_SYTOP) 
 
-#define MARPATCL_CMD(t,v)   (((t & 15) << (MARPATCL_SYSZ-4)) | ((v) & MARPATCL_SYLOW))
+#define MARPATCL_CMD(t,v) (((t & 15) << (MARPATCL_SYSZ-4)) | ((v) & MARPATCL_SYLOW))
 
 #define MARPATCL_RCMD_SETUP(n) (MARPATCL_CMD (MARPATCL_RC_SETUP, n))
-#define MARPATCL_RCMD_DONE(n)  (MARPATCL_CMD (MARPATCL_RC_DONE, n))
-#define MARPATCL_RCMD_PRIO(n)  (MARPATCL_CMD (MARPATCL_RC_PRIO, n))
-#define MARPATCL_RCMD_PRIS(n)  (MARPATCL_CMD (MARPATCL_RC_PRIS, n))
-#define MARPATCL_RCMD_QUN(s)   (MARPATCL_CMD (MARPATCL_RC_QUN, s))
-#define MARPATCL_RCMD_QUP(s)   (MARPATCL_CMD (MARPATCL_RC_QUP, s))
-#define MARPATCL_RCMD_QUNS(s)  (MARPATCL_CMD (MARPATCL_RC_QUNS, s))
-#define MARPATCL_RCMD_QUPS(s)  (MARPATCL_CMD (MARPATCL_RC_QUPS, s))
-#define MARPATCL_RCMD_BRAN(s)  (MARPATCL_CMD (MARPATCL_RC_BRAN, s))
+#define MARPATCL_RCMD_DONE(n)  (MARPATCL_CMD (MARPATCL_RC_DONE,  n))
+#define MARPATCL_RCMD_PRIO(n)  (MARPATCL_CMD (MARPATCL_RC_PRIO,  n))
+#define MARPATCL_RCMD_PRIS(n)  (MARPATCL_CMD (MARPATCL_RC_PRIS,  n))
+#define MARPATCL_RCMD_QUN(s)   (MARPATCL_CMD (MARPATCL_RC_QUN,   s))
+#define MARPATCL_RCMD_QUP(s)   (MARPATCL_CMD (MARPATCL_RC_QUP,   s))
+#define MARPATCL_RCMD_QUNS(s)  (MARPATCL_CMD (MARPATCL_RC_QUNS,  s))
+#define MARPATCL_RCMD_QUPS(s)  (MARPATCL_CMD (MARPATCL_RC_QUPS,  s))
+#define MARPATCL_RCMD_BRAN(s)  (MARPATCL_CMD (MARPATCL_RC_BRAN,  s))
 
 #define MARPATCL_RCMD_SEP(s)  (MARPATCL_CMD (0, s))
 #define MARPATCL_RCMD_SEPP(s) (MARPATCL_CMD (1, s))
 
-#define MARPATCL_RCMD_UNBOX(x, tv, vv) { tv = (x) >> (MARPATCL_SYSZ-4) ; vv = (x) & MARPATCL_SYLOW ; }
+#define MARPATCL_RCMD_UNBOX(x, tv, vv) { \
+    tv = (x) >> (MARPATCL_SYSZ-4) ;	 \
+    vv = (x) & MARPATCL_SYLOW ;		 \
+  }
 
 #define MARPATCL_RCMD_BOXR(a,b)      (((a) << 8)|(b))
 #define MARPATCL_RCMD_UNBXR(x, a, b) { a = (x) >> 8 ; b = (x) & 255 ; }
@@ -185,65 +224,15 @@ typedef struct marpatcl_rtc_spec {
 #define MARPATCL_S_SINGLE (0) /* Single semantic, mask, rule-independent */
 #define MARPATCL_S_PER    (1) /* Per-rule semantic, mask information */
 
-/* SV handler for user actions. Input value is a vector of children values.
- * Result is value from the action.
- */
-typedef marpatcl_rtc_sv_p (*marpatcl_rtc_sv_cmd) (int action, const char* aname,
-						  marpatcl_rtc_sv_p children);
-/*
- * TODO: G1 semantic handler needs access to more context:
- * TODO: - active marpa step instruction
- * TODO: - dynamic parser state (implies: static grammar structures)
- */
 
-/*
- * - - -- --- ----- -------- ------------- ---------------------
- * Notes:
- * - MARPATCL_SV_CMD : 2 arguments, string pool reference (action name)
- *                           and action code, counted from 0
- *   Dispatch function decides which to use.
- */
 
-/*
- * - - -- --- ----- -------- ------------- ---------------------
- * See also export/rtc.tcl -- Keep In Sync
- *
- * -- symbol allocations in l0           -- in g1
- * --   0     ... 255         characters
- * -- 256     ... 256+L-1     lexemes    -- 0   ... L-1 terminals == lexemes
- * -- 256+L   ... 256+L+D-1   discards   -- L           start symbol
- * -- 256+L+D ... 256+L+D+X-1 other      -- L+1 ... G-1 other
- *
- * lexeme <-> terminal mapping   i.e. lexer vs parser
- *
- *   @ lexeme   <-- terminal + 256
- *   @ terminal <-- lexeme   - 256
- *
- * Further:
- *   In L0 the first L+D internal symbols are the actual lexeme and discard
- *   symbols. The first set actually are their ACS symbols. This means:
- *
- *   @ lex/dis symbol <-- ACS symbol     + (L+D)
- *   @ ACS symbol     <-- lex/dis symbol - (L+D)
- */
 
-/*
- * - - -- --- ----- -------- ------------- ---------------------
- * API
- *
- * setup - Use the static structures to fill an active Marpa grammar
- */
 
-marpatcl_rtc_stack_p marpatcl_rtc_spec_setup_rd (marpatcl_rtc_rules* s);
-marpatcl_rtc_stack_p marpatcl_rtc_spec_setup    (Marpa_Grammar g, marpatcl_rtc_rules* s, int rd);
-const char*          marpatcl_rtc_spec_symname  (marpatcl_rtc_rules* g,  marpatcl_rtc_sym id, int* len);
-const char*          marpatcl_rtc_spec_rulename (marpatcl_rtc_rules* g,  marpatcl_rtc_sym id, int* len);
-const char*          marpatcl_rtc_spec_string   (marpatcl_rtc_string* p, marpatcl_rtc_sym id, int* len);
-marpatcl_rtc_sym*    marpatcl_rtc_spec_g1decode (marpatcl_rtc_symvec* coding, marpatcl_rtc_sym rule, int* len);
-marpatcl_rtc_sym     marpatcl_rtc_spec_g1map    (marpatcl_rtc_symvec* map, marpatcl_rtc_sym id);
+
+
+
 
 #endif
-
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  */

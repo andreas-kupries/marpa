@@ -7,7 +7,7 @@
 # (c) 2017 Grammar marpa::slif::parser 1 By Jeffrey Kegler + Andreas Kupries
 ##
 ##	rtc-derived Engine for grammar "marpa::slif::parser". Lexing + Parsing.
-##	Generated On Mon Oct 02 20:49:52 PDT 2017
+##	Generated On Wed Oct 04 20:33:29 PDT 2017
 ##		  By aku@hephaistos
 ##		 Via remeta
 ##
@@ -26,42 +26,34 @@
 #* - #Rule Insn: 154 (+2: setup, start-sym)
 #* - #Rules:     154 (match insn)
 
-#package require Tcl 8.5 ;# apply, lassign, ...
-#package require critcl 3.1
-#critcl::buildrequirement {
-    #package require critcl::class 1
-    #package require critcl::emap     1.1 ; # need support for gen-mode "C"
-    #package require critcl::literals 1.2 ; # need support for gen-mode "C"
-    #package require critcl::cutil
-#}
-#if {![critcl::compiling]} { error "Unable to build marpa::slif::parser, no compiler found." }
+package provide marpa::slif::parser 0
 
-#critcl::cutil::alloc
-#critcl::cutil::assertions on
-#critcl::cutil::tracer     on
+# # ## ### ##### ######## #############
+## Requisites
 
-#critcl::debug symbols
+package require Tcl 8.5 ;# apply, lassign, ...
+package require critcl 3.1
+critcl::buildrequirement {
+    package require critcl::class
+    package require critcl::cutil
+}
+
+if {![critcl::compiling]} {
+    error "Unable to build marpa::slif::parser, no compiler found."
+}
+
+critcl::cutil::alloc
+critcl::cutil::assertions on
+critcl::cutil::tracer     on
+
+critcl::debug symbols
 #critcl::debug memory
 #critcl::debug symbols memory
 
 # # ## ### ##### ######## ############# #####################
 ## Requirements
 
-#critcl::clibraries -L/usr/local/lib -lmarpa ; # XXX TODO automatic search/configuration
-#critcl::cheaders   -I/usr/local/include     ; # XXX TODO automatic search/configuration
-
-#critcl::cheaders rtc/*.h
-#critcl::csources rtc/*.c
-
-#critcl::include marpa.h
-critcl::include spec.h    ; # RTC grammar specification structures, for the static data below
-critcl::include rtc.h     ; # RTC runtime structures and API
-critcl::include fail.h    ; # RTC failure API
-critcl::include sem_tcl.h ; # Tcl-specific RTC glue we can keep out of the template.
-
-#critcl::source c/errors.tcl           ; # Mapping marpa error codes to strings.
-#critcl::source c/events.tcl           ; # Mapping marpa event types to strings.
-#critcl::source c/steps.tcl            ; # String pool for valuation-steps.
+critcl::api import marpa::runtime::c 0
 
 # # ## ### ##### ######## ############# #####################
 ## Static data structures declaring the grammar
@@ -4290,5 +4282,4 @@ critcl::class def marpa::slif::parser {
 }
 
 # # ## ### ##### ######## ############# #####################
-#package provide marpa_slif_parser 1
 return

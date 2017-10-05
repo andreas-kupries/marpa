@@ -18,7 +18,7 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::export::gc 1
+# Package marpa::export::gc 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Generator for grammar containers.
@@ -294,7 +294,7 @@ proc ::marpa::export::gc::AddLine {text} {
 }
 
 # # ## ### ##### ######## #############
-package provide marpa::export::gc 1
+package provide marpa::export::gc 0
 return
 ##
 ## Template following (`source` will not process it)

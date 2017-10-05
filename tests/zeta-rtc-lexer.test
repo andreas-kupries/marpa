@@ -9,7 +9,7 @@ kt source  support/gen.tcl
 ## API to the lexer-core
 
 gen configure \
-    cl engine-tcl-lexer \
+    cl engine-rtc-lexer \
     ex clex
 
 proc suffix     {} { return rtc }

@@ -17,7 +17,7 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::export::clex-critcl 1
+# Package marpa::export::clex-critcl 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Generator for lexers
@@ -70,7 +70,7 @@ proc ::marpa::export::clex-critcl::container {gc} {
 }
 
 # # ## ### ##### ######## #############
-package provide marpa::export::clex-critcl 1
+package provide marpa::export::clex-critcl 0
 return
 ##
 ## Template following (`source` will not process it)
@@ -82,7 +82,7 @@ return
 ##
 # (c) @slif-year@ Grammar @slif-name@ @slif-version@ By @slif-writer@
 ##
-##	rtc-derived Engine for grammar "@slif-name@". Lexing only.
+##	`marpa::runtime::c`-derived Lexer for grammar "@slif-name@".
 ##	Generated On @generation-time@
 ##		  By @tool-operator@
 ##		 Via @tool@
@@ -98,15 +98,21 @@ return
 #* - #Rule Insn: @l0-insn-c@ (+2: setup, start-sym)
 #* - #Rules:     @l0-rule-c@ (>= insn, brange)
 
+package provide @slif-name@ @slif-version@
+
+# # ## ### ##### ######## #############
+## Requisites
+
 package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
 critcl::buildrequirement {
-    package require critcl::class 1
-    package require critcl::emap     1.1 ; # need support for gen-mode "C"
-    package require critcl::literals 1.2 ; # need support for gen-mode "C"
+    package require critcl::class
     package require critcl::cutil
 }
-if {![critcl::compiling]} { error "Unable to build @slif-name@, no compiler found." }
+
+if {![critcl::compiling]} {
+    error "Unable to build @slif-name@, no compiler found."
+}
 
 critcl::cutil::alloc
 critcl::cutil::assertions on
@@ -119,25 +125,12 @@ critcl::debug symbols
 # # ## ### ##### ######## ############# #####################
 ## Requirements
 
-critcl::clibraries -L/usr/local/lib -lmarpa ; # XXX TODO automatic search/configuration
-critcl::cheaders   -I/usr/local/include     ; # XXX TODO automatic search/configuration
-
-critcl::cheaders rtc/*.h
-critcl::csources rtc/*.c
-
-critcl::include marpa.h
-critcl::include spec.h    ; # RTC grammar specification structures, for the static data below
-critcl::include rtc.h     ; # RTC runtime structures and API
-critcl::include fail.h    ; # RTC failure API
-critcl::include sem_tcl.h ; # Tcl-specific RTC glue we can keep out of the template.
-
-critcl::source c/errors.tcl           ; # Mapping marpa error codes to strings.
-critcl::source c/events.tcl           ; # Mapping marpa event types to strings.
-critcl::source c/steps.tcl            ; # String pool for valuation-steps.
+critcl::api import marpa::runtime::c 0
 
 # # ## ### ##### ######## ############# #####################
 ## Static data structures declaring the grammar
 
+critcl::include string.h ;# memcpy
 critcl::ccode {
     /*
     ** Shared string pool (@string-length-sz@ bytes lengths over @string-c@ entries)
@@ -434,5 +427,4 @@ critcl::class def @slif-name@ {
 }
 
 # # ## ### ##### ######## ############# #####################
-package provide @cname@ @slif-version@
 return

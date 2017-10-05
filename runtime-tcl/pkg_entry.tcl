@@ -17,7 +17,7 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::runtime::tcl 1
+# Package marpa::runtime::tcl 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Runtime for Tcl-based lexers and parsers.
@@ -39,7 +39,7 @@
 
 package require Tcl 8.5 ;# apply, lassign, ...
 package require marpa::util
-package require marpa ;# C pieces -- marpa::c in future, TODO
+package require marpa::c
 
 ## Find a way to have this list only once.
 # @owns: semstd.tcl
@@ -70,7 +70,7 @@ apply {{selfdir} {
 
 # # ## ### ##### ######## #############
 
-package provide marpa::runtime::tcl 1
+package provide marpa::runtime::tcl 0
 return
 
 # vim: set sts=4 sw=4 tw=80 et ft=tcl:

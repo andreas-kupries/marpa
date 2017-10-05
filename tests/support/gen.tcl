@@ -6,6 +6,9 @@
 
 kt local support marpa::slif::container
 kt local support marpa::slif::semantics
+kt local support marpa::runtime::tcl
+kt local support marpa::runtime::c
+kt local support marpa::slif::parser
 kt local support marpa::export::config
 
 namespace eval ::gen {
@@ -37,6 +40,7 @@ proc ::gen::configure {args} {
 proc ::gen::cleanup {} {
     removeFile      [td]/[cget cl].tcl
     removeDirectory [td]/OUT_[cget cl]
+    removeFile      [td]/OUT_[cget cl]_LOG
     return
 }
 
@@ -99,6 +103,7 @@ proc ::gen::setup {args} {
 
 proc ::gen::LoadTcl {} {
     upvar 1 cl cl
+    kt local* support marpa::c
     kt local* support marpa::runtime::tcl
     uplevel #0 [list source [td]/${cl}.tcl]
     return
@@ -118,21 +123,27 @@ proc ::gen::LoadRTC {} {
     exec ln -s [file normalize [td]/../rtc] rtc
     exec ln -s [file normalize [td]/../c] c
 
-    exec >& $out/LOG critcl -pkg -keep \
+    # NOTE: The localprefix gives the location of the main debug
+    # installation of marpa packages under test. That is also where we
+    # have the stub decls for the C runtime package needed by the
+    # lexer/parser to-be.
+    
+    exec >& ${out}_LOG critcl -pkg -keep \
 	-cache  $out/C \
 	-libdir $out/L \
+	-I ${kt::localprefix}/include \
 	[td]/${cl}.tcl
     
     file delete rtc c
 
     # At last load the resulting parser package
+    kt local* support marpa::runtime::c
     
     set dir [glob -directory $out/L *]
     source $dir/pkgIndex.tcl
-    package require [string map {- _} $cl]
+    package require $cl
     
     # Actual compile to and loading of shlib happens on first use.
-    ::exit 2
     return
 }
 

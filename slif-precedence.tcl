@@ -288,5 +288,5 @@ proc ::marpa::slif::precedence::P {sym rhs} {
 }
 
 # # ## ### ##### ######## #############
-package provide marpa::slif::precedence 1
+package provide marpa::slif::precedence 0
 return

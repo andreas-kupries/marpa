@@ -17,7 +17,7 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::export::tlex 1
+# Package marpa::export::tlex 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Generator for lexers
@@ -68,7 +68,7 @@ proc ::marpa::export::tlex::container {gc} {
 }
 
 # # ## ### ##### ######## #############
-package provide marpa::export::tlex 1
+package provide marpa::export::tlex 0
 return
 ##
 ## Template following (`source` will not process it)
