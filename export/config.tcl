@@ -62,7 +62,18 @@ namespace eval ::marpa::export {
 ## Public API
 
 proc ::marpa::export::list-plugins {} {
-
+    # I. Force look for general packages
+    # II. Force look for specific Tcl modules
+    catch { package require __\001bogus }
+    catch { package require marpa::export::__\001bogus }
+    # Look for marpa::export::* (exclude core::*, config)
+    return [lmap p [package names] {
+	if {![string match marpa::export::* $p]} continue
+	if {[string match marpa::export::core::* $p]} continue
+	set p [namespace tail $p]
+	if {$p in { config }} continue
+	set p
+    }]
 }
 
 proc ::marpa::export::config-reset {} {

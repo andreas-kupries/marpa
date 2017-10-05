@@ -112,18 +112,15 @@ proc usage {{text {}}} {
 }
 
 proc supported-types {} {
-    package require marpa
-    return [lsort -dict [lmap e [info commands ::marpa::export::*] {
-	if {![llength [info commands ${e}::container]]} continue
-	string map {::marpa::export:: {}} $e
-    }]]
+    package require marpa::export::config
+    return [lsort -dict [marpa::export list-plugins]]
 }
 
 proc ingest {path} {
     global out name
     package require marpa::slif::container
     package require marpa::slif::semantics
-    package require marpa
+    package require marpa::slif::parser
     # _ __ ___ _____ ________ _____________ _____________________
     # Process the slif meta grammar
     # TODO: progress callbacks from the parser (call per token ...)
@@ -141,12 +138,13 @@ proc ingest {path} {
     marpa::slif::semantics create SEMA GC
     marpa::slif::parser    create BOOT
     set start [clock milliseconds]
-    SEMA process [BOOT process-file $path]
+    set ast [BOOT process-file $path]
     set done [clock milliseconds]
     set millis [expr {$done-$start}]
     set sec [expr {double($millis)/1000}]
     set speed [expr {$sz/$sec}]
     note "Processing done in [F $sec] seconds (@ [F $speed] bytes/sec)"
+    SEMA process $ast
     # GC now holds the grammar
     BOOT destroy
     # Note: SEMA auto-destroys at the end of 'process'.
@@ -158,6 +156,8 @@ proc F {n} { format "%.2f" $n }
 
 proc generate {type gc} {
     global author version name
+    package require marpa::export::config
+    package require marpa::export::${type}
     # _ __ ___ _____ ________ _____________ _____________________
     # Generate the SLIF parser class
     note "Generating ..."
