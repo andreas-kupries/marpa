@@ -23,10 +23,8 @@ critcl::buildrequirement {
 }
 
 if {![critcl::compiling]} {
-    error "Unable to build Marpa, no proper compiler found."
+    error "Unable to build `marpa::c`, no proper compiler found."
 }
-
-critcl::cutil::alloc
 
 # # ## ### ##### ######## #############
 ## Build configuration
@@ -42,6 +40,8 @@ critcl::debug symbols
     
 # # ## ### ##### ######## #############
 ## Administrivia
+
+critcl::cutil::alloc
 
 critcl::config lines 1
 critcl::config trace 0
@@ -88,55 +88,35 @@ critcl::include    marpa.h
 # # ## ### ##### ######## #############
 ## Supporting C code
 
-## NOTE: We use the prefix "marpatcl_" / "MarpaTcl_" for our
-##       declarations, to avoid conflicts with libmarpa's public
-##       symbols.
-
-## The RTC is the C-based runtime-to-be. It is technically not needed
-## by marpa itself (until after we have moved boot parser to generated
-## C code). It is included to force problems with it to break the
-## marpa built itself, i.e. as canary.
-
-critcl::cheaders rtc/*.h
-critcl::csources rtc/*.c
-
 critcl::ccode {
     TRACE_OFF;
 }
 
-critcl::source c/errors.tcl           ; # Mapping marpa error codes to strings.
-critcl::source c/events.tcl           ; # Mapping marpa event types to strings.
-critcl::source c/steps.tcl            ; # String pool for valuation-steps.
-critcl::source c/support.tcl          ; # General utilities and types.
-critcl::source c/type_conversions.tcl ; # Custom argument & result types
-critcl::source c/context.tcl          ; # Per-interp package information, shared
+critcl::source errors.tcl           ; # Mapping marpa error codes to strings.
+critcl::source events.tcl           ; # Mapping marpa event types to strings.
+critcl::source steps.tcl            ; # String pool for valuation-steps.
+critcl::source support.tcl          ; # General utilities and types.
+critcl::source type_conversions.tcl ; # Custom argument & result types
+critcl::source context.tcl          ; # Per-interp package information, shared
 					# with all classes and instances.
-
-# # ## ### ##### ######## #############
-## C classes for the various types of objects.
 
 # Value    \  No separate classes for parse forest ordering,
 # Tree     \| iteration and valuation. All in the bocage class.
 # Ordering  V
-critcl::source c/bocage.tcl     ; # Bocage aka parse forest class.
-critcl::source c/recognizer.tcl ; # Recognizer class
-critcl::source c/grammar.tcl    ; # Grammar class
-
-# # ## ### ##### ######## #############
-## 
-
-critcl::source slif/boot_parser.tcl                ; # SLIF Parser RTC (hardwired)
+critcl::source bocage.tcl     ; # Bocage aka parse forest class.
+critcl::source recognizer.tcl ; # Recognizer class
+critcl::source grammar.tcl    ; # Grammar class
 
 # # ## ### ##### ######## #############
 ## Make the C pieces ready. Immediate build of the binaries, no deferal.
 
 if {![critcl::load]} {
-    error "Building and loading Marpa failed."
+    error "Building and loading `marpa::c` failed."
 }
 
 # # ## ### ##### ######## #############
 
-package provide marpa 0
+package provide marpa::c 0
 return
 
 # vim: set sts=4 sw=4 tw=80 et ft=tcl:

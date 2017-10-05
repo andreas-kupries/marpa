@@ -14,7 +14,7 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::export::cparse-raw 1
+# Package marpa::export::cparse-raw 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Generator for parsers
@@ -65,7 +65,7 @@ proc ::marpa::export::cparse-raw::container {gc} {
 }
 
 # # ## ### ##### ######## #############
-package provide marpa::export::cparse-raw 1
+package provide marpa::export::cparse-raw 0
 return
 ##
 ## Template following (`source` will not process it)

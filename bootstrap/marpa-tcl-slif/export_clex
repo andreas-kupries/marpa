@@ -6,7 +6,7 @@
 ##
 # (c) <Year> Grammar <Name> <Version> By <Writer>
 ##
-##	rtc-derived Engine for grammar "<Name>". Lexing only.
+##	`marpa::runtime::c`-derived Lexer for grammar "<Name>".
 ##	Generated On <GenerationTime>
 ##		  By <Operator>
 ##		 Via <Tool>
@@ -22,15 +22,21 @@
 #* - #Rule Insn: 2584 (+2: setup, start-sym)
 #* - #Rules:     2942 (>= insn, brange)
 
+package provide <Name> <Version>
+
+# # ## ### ##### ######## #############
+## Requisites
+
 package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
 critcl::buildrequirement {
-    package require critcl::class 1
-    package require critcl::emap     1.1 ; # need support for gen-mode "C"
-    package require critcl::literals 1.2 ; # need support for gen-mode "C"
+    package require critcl::class
     package require critcl::cutil
 }
-if {![critcl::compiling]} { error "Unable to build <Name>, no compiler found." }
+
+if {![critcl::compiling]} {
+    error "Unable to build <Name>, no compiler found."
+}
 
 critcl::cutil::alloc
 critcl::cutil::assertions on
@@ -43,25 +49,12 @@ critcl::debug symbols
 # # ## ### ##### ######## ############# #####################
 ## Requirements
 
-critcl::clibraries -L/usr/local/lib -lmarpa ; # XXX TODO automatic search/configuration
-critcl::cheaders   -I/usr/local/include     ; # XXX TODO automatic search/configuration
-
-critcl::cheaders rtc/*.h
-critcl::csources rtc/*.c
-
-critcl::include marpa.h
-critcl::include spec.h    ; # RTC grammar specification structures, for the static data below
-critcl::include rtc.h     ; # RTC runtime structures and API
-critcl::include fail.h    ; # RTC failure API
-critcl::include sem_tcl.h ; # Tcl-specific RTC glue we can keep out of the template.
-
-critcl::source c/errors.tcl           ; # Mapping marpa error codes to strings.
-critcl::source c/events.tcl           ; # Mapping marpa event types to strings.
-critcl::source c/steps.tcl            ; # String pool for valuation-steps.
+critcl::api import marpa::runtime::c 0
 
 # # ## ### ##### ######## ############# #####################
 ## Static data structures declaring the grammar
 
+critcl::include string.h ;# memcpy
 critcl::ccode {
     /*
     ** Shared string pool (2050 bytes lengths over 1025 entries)
@@ -4171,5 +4164,4 @@ critcl::class def <Name> {
 }
 
 # # ## ### ##### ######## ############# #####################
-package provide <Name> <Version>
 return

@@ -13,7 +13,7 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::export::config 1
+# Package marpa::export::config 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Configuration data for generators, exporters.
@@ -130,5 +130,5 @@ proc ::marpa::export::config? {key} {
 ## Helpers
 
 # # ## ### ##### ######## #############
-package provide marpa::export::config 1
+package provide marpa::export::config 0
 return

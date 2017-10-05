@@ -28,8 +28,6 @@ kt require support oo::util
 kt require support TclOO
 kt require support fileutil ;# cat
 
-kt local   testing marpa
-
 # # ## ### ##### ######## ############# #####################
 ## Local shorthands
 
