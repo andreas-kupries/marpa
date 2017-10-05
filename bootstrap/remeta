@@ -7,6 +7,8 @@
 package require Tcl 8.5
 package require marpa::slif::container
 package require marpa::slif::semantics
+package require marpa::export::config
+package require marpa::export::cparse-critcl
 package require marpa
 package require fileutil
 
