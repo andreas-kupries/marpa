@@ -17,7 +17,7 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::export::tparse 0
+# Package marpa::gen::format::tparse 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Generator for parsers
@@ -29,7 +29,7 @@
 # Meta require     debug
 # Meta require     debug::caller
 # Meta require     marpa::util
-# Meta require     marpa::export::core::tcl
+# Meta require     marpa::gen::runtime::tcl
 # Meta subject     marpa {parser generator} lexing {generator parser}
 # Meta subject     {Tcl runtime parsing} {parsing Tcl runtime}
 # @@ Meta End
@@ -40,15 +40,15 @@
 package require Tcl 8.5
 package require debug
 package require debug::caller
-package require marpa::export::core::tcl
+package require marpa::gen::runtime::tcl
 package require marpa::util
 
-debug define marpa/export/tparse
-debug prefix marpa/export/tparse {[debug caller] | }
+debug define marpa/gen/format/tparse
+debug prefix marpa/gen/format/tparse {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-namespace eval ::marpa::export::tparse {
+namespace eval ::marpa::gen::format::tparse {
     namespace export container
     namespace ensemble create
 
@@ -58,17 +58,17 @@ namespace eval ::marpa::export::tparse {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::tparse::container {gc} {
-    debug.marpa/export/tparse {}
+proc ::marpa::gen::format::tparse::container {gc} {
+    debug.marpa/gen/format/tparse {}
     variable self
-    marpa::fqn gc
-    set config   [marpa::export::core::tcl config [$gc serialize]]
+    marpa fqn gc
+    set config   [marpa::gen::runtime::tcl config [$gc serialize]]
     set template [string trim [marpa asset $self]]
     return [string map $config $template]
 }
 
 # # ## ### ##### ######## #############
-package provide marpa::export::tparse 0
+package provide marpa::gen::format::tparse 0
 return
 ##
 ## Template following (`source` will not process it)

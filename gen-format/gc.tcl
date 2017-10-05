@@ -18,7 +18,7 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::export::gc 0
+# Package marpa::gen::format::gc 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Generator for grammar containers.
@@ -30,7 +30,7 @@
 # Meta require     debug
 # Meta require     debug::caller
 # Meta require     marpa::util
-# Meta require     marpa::export::config
+# Meta require     marpa::gen
 # Meta subject     marpa {container generator} lexing {generator container}
 # @@ Meta End
 
@@ -40,19 +40,19 @@
 package require Tcl 8.5
 package require debug
 package require debug::caller
-package require marpa::export::config
+package require marpa::gen
 package require marpa::util
 
-debug define marpa/export/gc
-debug prefix marpa/export/gc {[debug caller] | }
+debug define marpa/gen/format/gc
+debug prefix marpa/gen/format/gc {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-namespace eval ::marpa::export::gc {
+namespace eval ::marpa::gen::format::gc {
     namespace export container
     namespace ensemble create
 
-    namespace import ::marpa::export::config
+    namespace import ::marpa::gen::config
 
     variable self [info script]
 }
@@ -60,8 +60,8 @@ namespace eval ::marpa::export::gc {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::gc::container {gc} {
-    debug.marpa/export/gc {}
+proc ::marpa::gen::format::gc::container {gc} {
+    debug.marpa/gen/format/gc {}
     marpa::fqn gc
     return [Generate [$gc serialize]]
 }
@@ -70,8 +70,8 @@ proc ::marpa::export::gc::container {gc} {
 ## Helpers - Format for readability.
 ## Snarfed from tests/support/gcontainer_state.tcl
 
-proc ::marpa::export::gc::Generate {serial} {
-    debug.marpa/export/gc {}
+proc ::marpa::gen::format::gc::Generate {serial} {
+    debug.marpa/gen/format/gc {}
 
     lappend map {*}[config]
     lappend map @slif-serial@ \n[Reformat $serial]\n\t
@@ -80,14 +80,14 @@ proc ::marpa::export::gc::Generate {serial} {
     return [string map $map [string trim [marpa asset $self]]]
 }
 
-proc ::marpa::export::gc::Reformat {serial {indent {	}} {step {    }}} {
-    debug.marpa/export/gc {}
+proc ::marpa::gen::format::gc::Reformat {serial {indent {	}} {step {    }}} {
+    debug.marpa/gen/format/gc {}
     set lines {}
     FormatInto lines $serial $indent $step / /
     return [string trimright [join $lines \n]] ;# chop trailing whitespace
 }
 
-proc ::marpa::export::gc::FormatInto {lv serial indent step parent key} {
+proc ::marpa::gen::format::gc::FormatInto {lv serial indent step parent key} {
     upvar 1 $lv lines
     #set key [lindex [split $parent /] end]
 
@@ -221,7 +221,7 @@ proc ::marpa::export::gc::FormatInto {lv serial indent step parent key} {
     return
 }
 
-proc ::marpa::export::gc::Spec {spec} {
+proc ::marpa::gen::format::gc::Spec {spec} {
     upvar 1 indent indent step step
     switch -exact -- [lindex $spec 0] {
 	quantified {
@@ -278,7 +278,7 @@ proc ::marpa::export::gc::Spec {spec} {
     }
 }
 
-proc ::marpa::export::gc::Indent {script} {
+proc ::marpa::gen::format::gc::Indent {script} {
     upvar 1 indent indent step step
     set save $indent
     append indent $step
@@ -287,14 +287,14 @@ proc ::marpa::export::gc::Indent {script} {
     return
 }
 
-proc ::marpa::export::gc::AddLine {text} {
+proc ::marpa::gen::format::gc::AddLine {text} {
     upvar 1 lines lines indent indent
     lappend lines "${indent}$text"
     return
 }
 
 # # ## ### ##### ######## #############
-package provide marpa::export::gc 0
+package provide marpa::gen::format::gc 0
 return
 ##
 ## Template following (`source` will not process it)

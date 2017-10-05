@@ -14,7 +14,7 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::export::core::tcl 1
+# Package marpa::gen::runtime::tcl 1
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Functionality shared between
@@ -28,7 +28,8 @@
 # Meta require     marpa::slif::container
 # Meta require     marpa::slif::literal
 # Meta require     marpa::slif::precedence
-# Meta require     marpa::export::config
+# Meta require     marpa::gen
+# Meta require     marpa::gen::remask
 # Meta subject     marpa {generator tcl}
 # @@ Meta End
 
@@ -41,10 +42,11 @@ package require debug::caller
 package require marpa::slif::container
 package require marpa::slif::literal
 package require marpa::slif::precedence
-package require marpa::export::config
+package require marpa::gen
+package require marpa::gen::remask
 
-debug define marpa/export/core/tcl
-debug prefix marpa/export/core/tcl {[debug caller] | }
+debug define marpa/gen/runtime/tcl
+debug prefix marpa/gen/runtime/tcl {[debug caller] | }
 
 # # ## ### ##### ######## #############
 ## Configuration coming out of this supporting module.
@@ -75,9 +77,9 @@ debug prefix marpa/export/core/tcl {[debug caller] | }
 ##
 ## [Ad %%] special forms declare the g1 rule semantics and names
 
-namespace eval ::marpa::export::core {}
-namespace eval ::marpa::export::core::tcl {
-    namespace import ::marpa::export::config
+namespace eval ::marpa::gen::runtime {}
+namespace eval ::marpa::gen::runtime::tcl {
+    namespace import ::marpa::gen::config
     rename config core-config
     namespace export config
     namespace ensemble create
@@ -86,8 +88,8 @@ namespace eval ::marpa::export::core::tcl {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::core::tcl::config {serial} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::config {serial} {
+    debug.marpa/gen/runtime/tcl {}
 
     set gc [Ingest $serial]
     EncodePrecedences $gc
@@ -147,8 +149,8 @@ proc ::marpa::export::core::tcl::config {serial} {
 # # ## ### ##### ######## #############
 ## Internals
 
-proc ::marpa::export::core::tcl::Ingest {serial} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::Ingest {serial} {
+    debug.marpa/gen/runtime/tcl {}
 
     # Create a local copy of the grammar for the upcoming
     # rewrites. Validate the input as well, now.
@@ -159,8 +161,8 @@ proc ::marpa::export::core::tcl::Ingest {serial} {
     return $gc
 }
 
-proc ::marpa::export::core::tcl::EncodePrecedences {gc} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::EncodePrecedences {gc} {
+    debug.marpa/gen/runtime/tcl {}
 
     # Replace higher-precedenced rules with groups of rules encoding
     # the precedences directly into their structure. (**)
@@ -171,8 +173,8 @@ proc ::marpa::export::core::tcl::EncodePrecedences {gc} {
     return
 }
 
-proc ::marpa::export::core::tcl::LowerLiterals {gc} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::LowerLiterals {gc} {
+    debug.marpa/gen/runtime/tcl {}
 
     # Rewrite the literals into forms supported by the runtime (Tcl engine).
 
@@ -188,16 +190,16 @@ proc ::marpa::export::core::tcl::LowerLiterals {gc} {
     return
 }
 
-proc ::marpa::export::core::tcl::GetL0 {gc class} {
-        debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::GetL0 {gc class} {
+        debug.marpa/gen/runtime/tcl {}
     if {$class ni [$gc l0 classes]} {
 	return {}
     }
     return [lsort -dict [$gc l0 symbols-of $class]]
 }
 
-proc ::marpa::export::core::tcl::L0Semantics {gc} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::L0Semantics {gc} {
+    debug.marpa/gen/runtime/tcl {}
     set keys [$gc lexeme-semantics? action]
     # sem - Check for array, and unpack...
     if {![dict exists $keys array]} {
@@ -207,8 +209,8 @@ proc ::marpa::export::core::tcl::L0Semantics {gc} {
     return [dict get $keys array]
 }
 
-proc ::marpa::export::core::tcl::ExtendRules {rv gc area symbols} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::ExtendRules {rv gc area symbols} {
+    debug.marpa/gen/runtime/tcl {}
     upvar 1 $rv rules
 
     # Remember last declared action, to avoid superfluous
@@ -224,8 +226,8 @@ proc ::marpa::export::core::tcl::ExtendRules {rv gc area symbols} {
     return
 }
 
-proc ::marpa::export::core::tcl::Process {def area sym} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::Process {def area sym} {
+    debug.marpa/gen/runtime/tcl {}
     upvar 1 rules rules lastaction lastaction
     switch -exact -- [lindex $def 0] {
 	priority {
@@ -235,7 +237,7 @@ proc ::marpa::export::core::tcl::Process {def area sym} {
 	    Name
 	    set op {}
 	    if {($area eq "g1") && [info exists mask] && ("1" in $mask)} {
-		lappend op :M [Remask $mask]
+		lappend op :M [::marpa::gen remask $mask]
 	    } else {
 		lappend op :=
 	    }
@@ -263,8 +265,8 @@ proc ::marpa::export::core::tcl::Process {def area sym} {
     return
 }
 
-proc ::marpa::export::core::tcl::Name {} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::Name {} {
+    debug.marpa/gen/runtime/tcl {}
     upvar 1 name name area area rules rules
     # Ignore for L0, and no name, or empty.
     if {$area ne "g1"} return
@@ -276,8 +278,8 @@ proc ::marpa::export::core::tcl::Name {} {
     return
 }
 
-proc ::marpa::export::core::tcl::Action {} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::Action {} {
+    debug.marpa/gen/runtime/tcl {}
     upvar 1 lastaction lastaction action action area area rules rules
     # Ignore for L0, and no action, or empty.
     if {$area ne "g1"} return
@@ -303,22 +305,8 @@ proc ::marpa::export::core::tcl::Action {} {
     return
 }
 
-proc ::marpa::export::core::tcl::Remask {mask} {
-    debug.marpa/export/core/tcl {}
-    # Convert mask from the semantics: list (bool), true => hide, 0 => visible
-    # The engine takes a list of indices to remove instead.
-    set i -1
-    set filter {}
-    foreach flag $mask {
-	incr i
-	if {!$flag} continue
-	lappend filter $i
-    }
-    return $filter
-}
-
-proc ::marpa::export::core::tcl::ConvertLiterals {gc symbols} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::ConvertLiterals {gc symbols} {
+    debug.marpa/gen/runtime/tcl {}
     set characters {}
     set classes {}
     foreach sym $symbols {
@@ -342,19 +330,19 @@ proc ::marpa::export::core::tcl::ConvertLiterals {gc symbols} {
     return [list $characters $classes]
 }
 
-proc ::marpa::export::core::tcl::+CH {spec} {
+proc ::marpa::gen::runtime::tcl::+CH {spec} {
     upvar 1 characters characters sym sym
     lappend characters $sym $spec
     return
 }
 
-proc ::marpa::export::core::tcl::+CL {spec} {
+proc ::marpa::gen::runtime::tcl::+CL {spec} {
     upvar 1 classes classes sym sym
     lappend classes $sym $spec
     return
 }
 
-proc ::marpa::export::core::tcl::CC {ccelts} {
+proc ::marpa::gen::runtime::tcl::CC {ccelts} {
     join [lmap elt $ccelts {
 	switch -exact -- [::marpa::slif::literal::eltype $elt] {
 	    character   { CX $elt    }
@@ -364,8 +352,8 @@ proc ::marpa::export::core::tcl::CC {ccelts} {
     }] ""
 }
 
-proc ::marpa::export::core::tcl::RA {s e} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::RA {s e} {
+    debug.marpa/gen/runtime/tcl {}
     if {$s == $e} {
 	# Equal. Not truly a range
 	return [CX $s]
@@ -379,23 +367,23 @@ proc ::marpa::export::core::tcl::RA {s e} {
     return "${sx}-${ex}"
 }
 
-proc ::marpa::export::core::tcl::NC {name} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::NC {name} {
+    debug.marpa/gen/runtime/tcl {}
     return "\[:${name}:\]"
 }
 
-proc ::marpa::export::core::tcl::Class {spec} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::Class {spec} {
+    debug.marpa/gen/runtime/tcl {}
     return "\[${spec}\]"
 }
 
-proc ::marpa::export::core::tcl::NegC {spec} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::NegC {spec} {
+    debug.marpa/gen/runtime/tcl {}
     return "\[^${spec}\]"
 }
 
-proc ::marpa::export::core::tcl::CX {code} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::CX {code} {
+    debug.marpa/gen/runtime/tcl {}
     switch -exact -- $code {
 	1  { return "\\001" }
 	2  { return "\\002" }
@@ -410,13 +398,13 @@ proc ::marpa::export::core::tcl::CX {code} {
     return [Char $code]
 }
 
-proc ::marpa::export::core::tcl::Char {code} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::Char {code} {
+    debug.marpa/gen/runtime/tcl {}
     return [char quote tcl [format %c $code]]
 }
 
-proc ::marpa::export::core::tcl::FormatList {words {listify 1} {sort 1}} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::FormatList {words {listify 1} {sort 1}} {
+    debug.marpa/gen/runtime/tcl {}
     # The context of the list in the template is
     # <TAB>return {@@}
     # where @@ is the laceholder for the list.
@@ -432,8 +420,8 @@ proc ::marpa::export::core::tcl::FormatList {words {listify 1} {sort 1}} {
     return "$prefix[join $words $prefix]\n\t"
 }
 
-proc ::marpa::export::core::tcl::FormatDict {dict {listify 1} {sort 1}} {
-    debug.marpa/export/core/tcl {}
+proc ::marpa::gen::runtime::tcl::FormatDict {dict {listify 1} {sort 1}} {
+    debug.marpa/gen/runtime/tcl {}
     # The context of the dict in the template is
     # <TAB>return {@@}
     # where @@ is the laceholder for the list.
@@ -464,5 +452,5 @@ proc ::marpa::export::core::tcl::FormatDict {dict {listify 1} {sort 1}} {
 }
 
 # # ## ### ##### ######## #############
-package provide marpa::export::core::tcl 1
+package provide marpa::gen::runtime::tcl 1
 return

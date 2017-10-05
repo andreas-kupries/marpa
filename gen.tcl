@@ -13,71 +13,69 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::export::config 0
+# Package marpa::gen 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
-# Meta description Part of TclMarpa. Configuration data for generators, exporters.
-# Meta description Plus support for finding proper plugin packages.
+# Meta description Part of TclMarpa. Configuration data for generators.
+# Meta description Plus support for finding and executing the proper
+# Meta description plugin generator packages doing the actual formatting.
 # Meta location    http:/core.tcl.tk/akupries/marpa
 # Meta platform    tcl
 # Meta require     {Tcl 8.5}
-# Meta require     TclOO
 # Meta require     debug
 # Meta require     debug::caller
 # Meta require     marpa::util
-# Meta subject     marpa {generator config} {generator search} {plugin listing}
-# Meta subject     {listing plugin packages} {search generator packages}
+# Meta subject     marpa {generator configuration} {generator search}
+# Meta subject     {plugin listing} {listing plugin packages}
+# Meta subject     {search generator packages}
 # @@ Meta End
 
 # # ## ### ##### ######## #############
 ## Requisites
 
 package require Tcl 8.5
-package require TclOO         ;# Implies Tcl 8.5 requirement.
 package require debug
 package require debug::caller
-package require marpa::util
+package require marpa::util ;# marpa::X
 
-debug define marpa/export/config
+debug define marpa/gen
 
 # # ## ### ##### ######## #############
 
-namespace eval ::marpa::export {
-    namespace export config config! config-reset config? list-plugins
+namespace eval ::marpa::gen {
+    namespace export formats do
+    namespace export config config! config-reset config?
     namespace ensemble create
     namespace import ::marpa::X
 
-    variable data {
-	version  {}
-	writer   {}
-	year     {}
-	name     {}
-	operator {}
-	tool     {}
-	gentime  {}
-    }
+    # Configuration information. Initialized at the bottom.
+    variable data {}
 }
 
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::list-plugins {} {
-    # I. Force look for general packages
-    # II. Force look for specific Tcl modules
+proc ::marpa::gen::do {format container} {
+    debug.marpa/gen {}
+    package require marpa::gen::format::${format}
+    return [marpa::gen::format::${format} container $container]
+}
+
+proc ::marpa::gen::formats {} {
+    debug.marpa/gen {}
+    # I.  Force look for general packages
     catch { package require __\001bogus }
-    catch { package require marpa::export::__\001bogus }
-    # Look for marpa::export::* (exclude core::*, config)
+    # II. Force look for specific Tcl modules
+    catch { package require marpa::gen::format::__\001bogus }
+    # Look for marpa::gen::format::*
     return [lmap p [package names] {
-	if {![string match marpa::export::* $p]} continue
-	if {[string match marpa::export::core::* $p]} continue
-	set p [namespace tail $p]
-	if {$p in { config }} continue
-	set p
+	if {![string match marpa::gen::format::* $p]} continue
+	namespace tail $p
     }]
 }
 
-proc ::marpa::export::config-reset {} {
-    debug.marpa/export/config {}
+proc ::marpa::gen::config-reset {} {
+    debug.marpa/gen {}
     variable data {
 	version  {}
 	writer   {}
@@ -90,8 +88,8 @@ proc ::marpa::export::config-reset {} {
     return
 }
 
-proc ::marpa::export::config {} {
-    debug.marpa/export/config {}
+proc ::marpa::gen::config {} {
+    debug.marpa/gen {}
     variable data
     dict with data {}
 
@@ -114,8 +112,8 @@ proc ::marpa::export::config {} {
     return $map
 }
 
-proc ::marpa::export::config! {key value} {
-    debug.marpa/export/config {}
+proc ::marpa::gen::config! {key value} {
+    debug.marpa/gen {}
     variable data
     if {![dict exists $data $key]} {
 	set e [linsert [join [lsort -dict [dict keys $data]] {, }] end-1 or]
@@ -126,8 +124,8 @@ proc ::marpa::export::config! {key value} {
     return
 }
 
-proc ::marpa::export::config? {key} {
-    debug.marpa/export/config {}
+proc ::marpa::gen::config? {key} {
+    debug.marpa/gen {}
     variable data
     if {![dict exists $data $key]} {
 	set e [linsert [join [lsort -dict [dict keys $data]] {, }] end-1 or]
@@ -138,8 +136,9 @@ proc ::marpa::export::config? {key} {
 }
 
 # # ## ### ##### ######## #############
-## Helpers
+## Initialization
+::marpa::gen::config-reset
 
 # # ## ### ##### ######## #############
-package provide marpa::export::config 0
+package provide marpa::gen 0
 return

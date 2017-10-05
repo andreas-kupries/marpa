@@ -14,7 +14,7 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::export::cparse-raw 0
+# Package marpa::gen::format::cparse-raw 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Generator for parsers
@@ -26,7 +26,7 @@
 # Meta require     debug
 # Meta require     debug::caller
 # Meta require     marpa::util
-# Meta require     marpa::export::core::rtc
+# Meta require     marpa::gen::runtime::c
 # Meta subject     marpa {parser generator} lexing {generator parser}
 # Meta subject     {C runtime parsing} {parsing C runtime}
 # @@ Meta End
@@ -38,14 +38,14 @@ package require Tcl 8.5
 package require debug
 package require debug::caller
 package require marpa::util
-package require marpa::export::core::rtc
+package require marpa::gen::runtime::c
 
-debug define marpa/export/cparse-raw
-debug prefix marpa/export/cparse-raw {[debug caller] | }
+debug define marpa/gen/format/cparse-raw
+debug prefix marpa/gen/format/cparse-raw {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-namespace eval ::marpa::export::cparse-raw {
+namespace eval ::marpa::gen::format::cparse-raw {
     namespace export container
     namespace ensemble create
 
@@ -55,17 +55,17 @@ namespace eval ::marpa::export::cparse-raw {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::cparse-raw::container {gc} {
-    debug.marpa/export/cparse-raw {}
+proc ::marpa::gen::format::cparse-raw::container {gc} {
+    debug.marpa/gen/format/cparse-raw {}
     variable self
-    marpa::fqn gc
-    set config   [marpa::export::core::rtc::config [$gc serialize]]
+    marpa fqn gc
+    set config   [marpa::gen::runtime::c::config [$gc serialize]]
     set template [string trim [marpa asset $self]]
     return [string map $config $template]
 }
 
 # # ## ### ##### ######## #############
-package provide marpa::export::cparse-raw 0
+package provide marpa::gen::format::cparse-raw 0
 return
 ##
 ## Template following (`source` will not process it)

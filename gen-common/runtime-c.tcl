@@ -14,7 +14,7 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::export::core::rtc 1
+# Package marpa::gen::runtime::c 1
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Functionality shared between
@@ -28,8 +28,8 @@
 # Meta require     marpa::slif::container
 # Meta require     marpa::slif::literal
 # Meta require     marpa::slif::precedence
-# Meta require     marpa::export::config
-# Meta require     marpa::export::core::tcl
+# Meta require     marpa::gen
+# Meta require     marpa::gen::remask
 # Meta subject     marpa {generator c}
 # @@ Meta End
 
@@ -37,16 +37,17 @@
 ## Requisites
 
 package require Tcl 8.5
+package require TclOO
 package require debug
 package require debug::caller
 package require marpa::slif::container
 package require marpa::slif::literal
 package require marpa::slif::precedence
-package require marpa::export::config
-package require marpa::export::core::tcl ;# Remask - TODO refactor
+package require marpa::gen
+package require marpa::gen::remask
 
-debug define marpa/export/core/rtc
-debug prefix marpa/export/core/rtc {[debug caller] | }
+debug define marpa/gen/runtime/c
+debug prefix marpa/gen/runtime/c {[debug caller] | }
 
 # # ## ### ##### ######## #############
 ## Configuration coming out of this supporting module.
@@ -107,13 +108,14 @@ debug prefix marpa/export/core/rtc {[debug caller] | }
 ## @string-offset-sz@ 	-- Informational: #bytes for the offset data of the pool
 ## @string-offset-v@  	-- Offset data for the strings in the pool
 
-namespace eval ::marpa::export::core {}
-namespace eval ::marpa::export::core::rtc {
-    namespace import ::marpa::export::config  ; rename config  core-config
-    namespace import ::marpa::export::config? ; rename config? core-config?
+namespace eval ::marpa::gen::runtime {}
+namespace eval ::marpa::gen::runtime::c {
+    namespace import ::marpa::gen::config  ; rename config  core-config
+    namespace import ::marpa::gen::config? ; rename config? core-config?
     namespace export config
     namespace ensemble create
 
+    # Map from SLIF array-codes to the runtime's equivalent C defines
     variable ak {
 	start    MARPATCL_SV_START
 	length	 MARPATCL_SV_LENGTH
@@ -131,8 +133,8 @@ namespace eval ::marpa::export::core::rtc {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::core::rtc::config {serial {config {}}} {
-    debug.marpa/export/core/rtc {}
+proc ::marpa::gen::runtime::c::config {serial {config {}}} {
+    debug.marpa/gen/runtime/c {}
     set defaults {prefix {    }}
     set config [dict merge $defaults $config]
     # Carry the prefix into all *Array commands, i.e. Flow, Tabular, and Chunked.
@@ -412,8 +414,8 @@ proc ::marpa::export::core::rtc::config {serial {config {}}} {
 # # ## ### ##### ######## #############
 ## Internals
 
-proc ::marpa::export::core::rtc::Ingest {serial} {
-    debug.marpa/export/core/rtc {}
+proc ::marpa::gen::runtime::c::Ingest {serial} {
+    debug.marpa/gen/runtime/c {}
 
     # Create a local copy of the grammar for the upcoming
     # rewrites. Validate the input as well, now.
@@ -424,8 +426,8 @@ proc ::marpa::export::core::rtc::Ingest {serial} {
     return $gc
 }
 
-proc ::marpa::export::core::rtc::EncodePrecedences {gc} {
-    debug.marpa/export/core/rtc {}
+proc ::marpa::gen::runtime::c::EncodePrecedences {gc} {
+    debug.marpa/gen/runtime/c {}
 
     # Replace higher-precedenced rules with groups of rules encoding
     # the precedences directly into their structure. (**)
@@ -436,8 +438,8 @@ proc ::marpa::export::core::rtc::EncodePrecedences {gc} {
     return
 }
 
-proc ::marpa::export::core::rtc::LowerLiterals {gc} {
-    debug.marpa/export/core/rtc {}
+proc ::marpa::gen::runtime::c::LowerLiterals {gc} {
+    debug.marpa/gen/runtime/c {}
 
     # Rewrite the literals into forms supported by the runtime
     # (C engine). These are bytes and byte ranges. The latter are
@@ -458,16 +460,16 @@ proc ::marpa::export::core::rtc::LowerLiterals {gc} {
     return
 }
 
-proc ::marpa::export::core::rtc::RefactorRanges {gc} {
-    debug.marpa/export/core/rtc {}
+proc ::marpa::gen::runtime::c::RefactorRanges {gc} {
+    debug.marpa/gen/runtime/c {}
     # Global refactoring of byte ranges.
     #
-    # The byte ranges in the ASBR for describe unicode classes often
+    # The byte ranges in the ASBR for the used unicode classes often
     # overlap significantly. One of the patterns seen are many byte
     # ranges starting at the same byte and just having different end
     # bytes.
 
-    # Without refactorization is range is coded on its own, as
+    # Without refactorization each range is coded on its own, as
     # alternation of all the bytes in the range. This generates
     # (end-start+1) rules for a range, one per byte/alternate. Due to
     # the strong overlap between ranges many of the generated
@@ -486,28 +488,28 @@ proc ::marpa::export::core::rtc::RefactorRanges {gc} {
     # mentioned before, i.e. sets of ranges starting at the same
     # byte. This is easy to do, compared to comparing all ranges
     # against all others for overlap and then trying to find
-    # advantegeous splits.
+    # advantageous splits.
     ##
     # After ordering by end byte the first range is left as is,
-    # becoming the initial prefix, while all following are refactored
-    # into an alternation of the known prefix and the left-over
-    # suffix, becoming prefix to the next in turn. By properly
-    # ordering the overall refactoring itself, i.e. processing sets in
-    # ascending order of their start byte the generated range suffixes
-    # may in turn be refactored further.
+    # becoming the initial prefix, while all the following ranges are
+    # refactored into an alternation of the current prefix and the
+    # left-over suffix, becoming in turn the current prefix to the
+    # next range. By properly ordering the overall refactoring itself,
+    # i.e. processing sets in ascending order of their start byte the
+    # generated range suffixes may in turn be refactored further.
     ##
     # For our example this results in
     ##
-    # 2584 setup instructions (+18%) are used to describe 2942 rules
-    # (-56%). About only 4% (91 exactly) are instructions for byte
-    # ranges, expanding into 449 rules (15%) for the range
-    # alternates. The remaining 2493 instructions (96%) account for
-    # the remaining 2493 rules (85%). As the 600 other rules from
-    # before the refactoring are the basic lexical structure we can
-    # infer that 1893 of these instructions and rules are newly-made
-    # alternations aggregating the atomic small ranges into the large
-    # ranges of the grammar.
-
+    #   2584 setup instructions (+18%) are used to describe 2942 rules
+    #   (-56%). About only 4% (91 exactly) are instructions for byte
+    #   ranges, expanding into 449 rules (15%) for the range
+    #   alternates. The remaining 2493 instructions (96%) account for
+    #   the remaining 2493 rules (85%). As the 600 other rules from
+    #   before the refactoring are the basic lexical structure we can
+    #   infer that 1893 of these instructions and rules are newly-made
+    #   alternations aggregating the atomic small ranges into the
+    #   larger ranges used by the grammar.
+    ##
     # As end result we can expect that the number of instructions
     # needed to encode an L0 sub-grammar goes moderately up while the
     # number of actual rules they generate should fall dramatically.
@@ -529,7 +531,7 @@ proc ::marpa::export::core::rtc::RefactorRanges {gc} {
 	set details [lassign [lindex [$gc l0 get $sym] 0] type]
 	if {$type eq "brange"} {
 	    lassign $details start stop
-	    debug.marpa/export/core/rtc {Range: $sym ($start - $stop)}
+	    debug.marpa/gen/runtime/c {Range: $sym ($start - $stop)}
 	    # Print range as bitmap.
 	    #puts AAA_[format %3d $start]-[format %3d $stop]|[string repeat { } [expr {$start-1}]][string repeat * [expr {$stop-$start+1}]]
 
@@ -543,12 +545,12 @@ proc ::marpa::export::core::rtc::RefactorRanges {gc} {
 	    # type is a "byte". We put this into the symbol mapping
 	    # for reuse, but not in the table for refactoring.
 	    lassign $details byte
-	    debug.marpa/export/core/rtc {Byte: $sym ($byte)}
+	    debug.marpa/gen/runtime/c {Byte: $sym ($byte)}
 	    dict set cover [list $byte $byte] $sym
 	}
     }
 
-    #debug.marpa/export/core/rtc {[debug::pdict $cover]}
+    #debug.marpa/gen/runtime/c {[debug::pdict $cover]}
 
     while {[dict size $ranges]} {
 	# ranges is the table/queue of things to refactor.
@@ -562,14 +564,14 @@ proc ::marpa::export::core::rtc::RefactorRanges {gc} {
 	set defs [dict get $ranges $start]
 	dict unset ranges $start
 
-	debug.marpa/export/core/rtc {Processing [format %3d $start] :: [dictsort $defs]}
+	debug.marpa/gen/runtime/c {Processing [format %3d $start] :: [dictsort $defs]}
 
 	# For each set of ranges starting the same point, sort them by
 	# ascending endpoint. The first definition stands as is. If it
 	# is the sole definition we drop the entire set from processing.
 
 	if {[llength [dict keys $defs]] == 1} {
-	    debug.marpa/export/core/rtc {...Single range, skip}
+	    debug.marpa/gen/runtime/c {...Single range, skip}
 	    continue
 	}
 
@@ -584,13 +586,13 @@ proc ::marpa::export::core::rtc::RefactorRanges {gc} {
 	set remainder [lassign [lsort -integer [dict keys $defs]] prefixstop]
 	set prefixsym [dict get $defs $prefixstop]
 
-	debug.marpa/export/core/rtc {...Multiple ranges, refactor 2+}
+	debug.marpa/gen/runtime/c {...Multiple ranges, refactor 2+}
 
 	foreach stop $remainder {
-	    debug.marpa/export/core/rtc {...Prefix  ([format %3d $start]-[format %3d $prefixstop]) $prefixsym}
+	    debug.marpa/gen/runtime/c {...Prefix  ([format %3d $start]-[format %3d $prefixstop]) $prefixsym}
 
 	    set currentsym [dict get $defs $stop]
-	    debug.marpa/export/core/rtc {...Current ([format %3d $start]-[format %3d $stop]) $currentsym}
+	    debug.marpa/gen/runtime/c {...Current ([format %3d $start]-[format %3d $stop]) $currentsym}
 
 	    # suffix = prefixstop+1 ... stop
 	    set suffixstart $prefixstop
@@ -609,19 +611,19 @@ proc ::marpa::export::core::rtc::RefactorRanges {gc} {
 		    dict set cover [list $suffixstart $suffixstart] $suffixsym
 		    $gc l0 literal $suffixsym byte $suffixstart
 
-		    debug.marpa/export/core/rtc {...Suffix  ([format %3d $suffixstart]) $suffixsym (BYTE)}
+		    debug.marpa/gen/runtime/c {...Suffix  ([format %3d $suffixstart]) $suffixsym (BYTE)}
 		} else {
 		    set suffixsym BRAN<d${suffixstart}-d${stop}>
 		    dict set cover $key $suffixsym
 		    dict set ranges $suffixstart $stop $suffixsym
 		    $gc l0 literal $suffixsym brange $suffixstart $stop
-		    debug.marpa/export/core/rtc {...Suffix  ([format %3d $suffixstart]-[format %3d $stop]) $suffixsym (NEW)}
+		    debug.marpa/gen/runtime/c {...Suffix  ([format %3d $suffixstart]-[format %3d $stop]) $suffixsym (NEW)}
 		}
 	    } else {
 		# We have a symbol for the suffix. Reuse it. No new
 		# entries are needed.
 		set suffixsym [dict get $cover $key]
-		debug.marpa/export/core/rtc {...Suffix  ([format %3d $suffixstart]-[format %3d $stop]) $suffixsym (reused)}
+		debug.marpa/gen/runtime/c {...Suffix  ([format %3d $suffixstart]-[format %3d $stop]) $suffixsym (reused)}
 	    }
 
 	    # create priority alternation of prefix and suffix ranges
@@ -629,7 +631,7 @@ proc ::marpa::export::core::rtc::RefactorRanges {gc} {
 	    $gc l0 priority-rule $currentsym [list $prefixsym] 0
 	    $gc l0 priority-rule $currentsym [list $suffixsym] 0
 
-	    debug.marpa/export/core/rtc {...Replace $currentsym ::= $prefixsym | $suffixsym}
+	    debug.marpa/gen/runtime/c {...Replace $currentsym ::= $prefixsym | $suffixsym}
 
 	    # The processed definition becomes the prefix for the next.
 	    set prefixstop $stop
@@ -653,7 +655,7 @@ proc ::marpa::export::core::rtc::RefactorRanges {gc} {
     return
 }
 
-proc ::marpa::export::core::rtc::L0C {lex discards} {
+proc ::marpa::gen::runtime::c::L0C {lex discards} {
     set l [llength $lex]
     set d [llength $discards]
     return [list \
@@ -665,25 +667,25 @@ proc ::marpa::export::core::rtc::L0C {lex discards} {
 		Internal]
 }
 
-proc ::marpa::export::core::rtc::G1C {terminals} {
+proc ::marpa::gen::runtime::c::G1C {terminals} {
     set t [llength $terminals]
     return [list \
 		Terminals $t \
 		Structure]
 }
 
-proc ::marpa::export::core::rtc::* {sz n} {
+proc ::marpa::gen::runtime::c::* {sz n} {
     expr {$n * $sz}
 }
 
-proc ::marpa::export::core::rtc::GetL0 {gc class} {
+proc ::marpa::gen::runtime::c::GetL0 {gc class} {
     if {$class ni [$gc l0 classes]} {
 	return {}
     }
     return [lsort -dict [$gc l0 symbols-of $class]]
 }
 
-proc ::marpa::export::core::rtc::SemaCode {keys} {
+proc ::marpa::gen::runtime::c::SemaCode {keys} {
     variable ak
     # sem - Check for array, and unpack...
     if {![dict exists $keys array]} {
@@ -693,22 +695,22 @@ proc ::marpa::export::core::rtc::SemaCode {keys} {
     return [lmap w [dict get $keys array] { dict get $ak $w }]
 }
 
-proc ::marpa::export::core::rtc::CName {} {
-    debug.marpa/export/core/rtc {}
+proc ::marpa::gen::runtime::c::CName {} {
+    debug.marpa/gen/runtime/c {}
     string map {:: _ - _} [core-config? name]
 }
 
-proc ::marpa::export::core::rtc::Names {rules} {
+proc ::marpa::gen::runtime::c::Names {rules} {
     return [lmap rule $rules { RName $rule }]
 }
 
-proc ::marpa::export::core::rtc::Sema {rules} {
+proc ::marpa::gen::runtime::c::Sema {rules} {
     foreach rule $rules {
 	Sem $rule
     }
 }
 
-proc ::marpa::export::core::rtc::RName {rule} {
+proc ::marpa::gen::runtime::c::RName {rule} {
     lassign $rule lhs def
     set attr [lassign $def type _ _]
     dict with attr {}
@@ -717,7 +719,7 @@ proc ::marpa::export::core::rtc::RName {rule} {
     return $name
 }
 
-proc ::marpa::export::core::rtc::RulesOf {gc area syms} {
+proc ::marpa::gen::runtime::c::RulesOf {gc area syms} {
     set r {}
     foreach s $syms {
 	foreach def [$gc $area get $s] {
@@ -727,7 +729,7 @@ proc ::marpa::export::core::rtc::RulesOf {gc area syms} {
     return $r
 }
 
-proc ::marpa::export::core::rtc::LTM {lex gc} {
+proc ::marpa::gen::runtime::c::LTM {lex gc} {
     set latm [$gc l0 latm]
     return [lmap w $lex {
 	if {[dict get $latm $w]} continue
@@ -735,7 +737,7 @@ proc ::marpa::export::core::rtc::LTM {lex gc} {
     }]
 }
 
-proc ::marpa::export::core::rtc::ChunkedArray {words chunking {config {}}} {
+proc ::marpa::gen::runtime::c::ChunkedArray {words chunking {config {}}} {
     # Sectioned array ...
     set indent [dict get $config prefix]
     set result ""
@@ -763,7 +765,7 @@ proc ::marpa::export::core::rtc::ChunkedArray {words chunking {config {}}} {
     return $result
 }
 
-proc ::marpa::export::core::rtc::Hdr {n label} {
+proc ::marpa::gen::runtime::c::Hdr {n label} {
     upvar 1 pfx pfx indent indent
     if {$label eq {}} {
 	# custom prefix
@@ -772,7 +774,7 @@ proc ::marpa::export::core::rtc::Hdr {n label} {
     return "$pfx/* --- ($n) --- --- --- $label\n$indent */\n"
 }
 
-proc ::marpa::export::core::rtc::TabularArray {words {config {}}} {
+proc ::marpa::gen::runtime::c::TabularArray {words {config {}}} {
     # Generate an array with `n` aligned columns, regardless of extend
     # in columns of characters.
 
@@ -818,7 +820,7 @@ proc ::marpa::export::core::rtc::TabularArray {words {config {}}} {
     return [string trimright $result]
 }
 
-proc ::marpa::export::core::rtc::FlowArray {words {config {}}} {
+proc ::marpa::gen::runtime::c::FlowArray {words {config {}}} {
     # Generate an array with as many elements packed into each line
     # while staying under the configured maximal column `n` (default:
     # 79). Note however that to have progress each line will contain
@@ -865,7 +867,7 @@ proc ::marpa::export::core::rtc::FlowArray {words {config {}}} {
 
 }
 
-proc ::marpa::export::core::rtc::FormatRD {cv label config tag data nr} {
+proc ::marpa::gen::runtime::c::FormatRD {cv label config tag data nr} {
     upvar 1 $cv size
     set  size [llength $data]
     incr size
@@ -878,7 +880,7 @@ proc ::marpa::export::core::rtc::FormatRD {cv label config tag data nr} {
     return [ChunkedArray $all $chunks $config]
 }
 
-proc ::marpa::export::core::rtc::RuleC {label data nr} {
+proc ::marpa::gen::runtime::c::RuleC {label data nr} {
     lappend chunks Tag 1
     lappend chunks [list "$label Offsets"] $nr
 
@@ -896,22 +898,22 @@ proc ::marpa::export::core::rtc::RuleC {label data nr} {
     return $chunks
 }
 
-proc ::marpa::export::core::rtc::Limit16 {label n} {
+proc ::marpa::gen::runtime::c::Limit16 {label n} {
     if {$n < 65536} return
     return -code error "ZZZ:$label $n > 64K"
 }
 
-proc ::marpa::export::core::rtc::Limit12 {label n} {
+proc ::marpa::gen::runtime::c::Limit12 {label n} {
     if {$n < 4096} return
     return -code error "ZZZ:$label $n > 4K"
 }
 
-proc ::marpa::export::core::rtc::Width {words} {
+proc ::marpa::gen::runtime::c::Width {words} {
     return [tcl::mathfunc::max {*}[lmap w $words { string length $w }]]
 }
 
 
-proc ::marpa::export::core::rtc::dictsort {dict} {
+proc ::marpa::gen::runtime::c::dictsort {dict} {
     foreach k [lsort -dict [dict keys $dict]] {
 	lappend r $k [dict get $dict $k]
     }
@@ -921,7 +923,7 @@ proc ::marpa::export::core::rtc::dictsort {dict} {
 # # ## ### ##### ######## #############
 ## Various helper classes to hold generator state
 
-oo::class create marpa::export::core::rtc::Mask {
+oo::class create marpa::gen::runtime::c::Mask {
     variable mymask ; # dict (mask -> list(rule id))
     variable mycount
     variable myfinal
@@ -971,7 +973,7 @@ oo::class create marpa::export::core::rtc::Mask {
 	    if {![info exists mask]} { error MASK-MISSING:($rule) }
 	    if {$mask eq {}} { error MASK-EMPTY:($rule) }
 	    # mask is bit vector (true -> hidden, convert to filter)
-	    set filter [::marpa::export::core::tcl::Remask $mask]
+	    set filter [::marpa::gen remask $mask]
 	    set filter [linsert $filter 0 [llength $filter]]
 	} else {
 	    # quantified, or empty rule - No mask, no filter
@@ -1025,7 +1027,7 @@ oo::class create marpa::export::core::rtc::Mask {
 
 # # ## ### ##### ######## #############
 
-oo::class create marpa::export::core::rtc::SemaG {
+oo::class create marpa::gen::runtime::c::SemaG {
     variable mysema ; # dict (semantics -> list(rule id))
     variable mycount
     variable myfinal
@@ -1074,7 +1076,7 @@ oo::class create marpa::export::core::rtc::SemaG {
 	if {![info exists action]} { error ACTION-MISSING }
 	if {$action eq {}} { error ACTION-EMPTY }
 
-	set action [::marpa::export::core::rtc::SemaCode $action]
+	set action [::marpa::gen::runtime::c::SemaCode $action]
 	set action [linsert $action 0 [llength $action]]
 	dict lappend mysema $action $mycount
 	return
@@ -1114,7 +1116,7 @@ oo::class create marpa::export::core::rtc::SemaG {
 
 # # ## ### ##### ######## #############
 
-oo::class create marpa::export::core::rtc::Rules {
+oo::class create marpa::gen::runtime::c::Rules {
     variable myrules    ; # list (string) : rule instructions
     variable mydisplay1 ; # list (string) : rule lhs (parallels myrules)
     variable mydisplay2 ; # list (string) : rule rhs (parallels myrules)
@@ -1147,8 +1149,8 @@ oo::class create marpa::export::core::rtc::Rules {
     }
 
     method content {{prefix {    }}} {
-	set maxr [marpa::export::core::rtc::Width $myrules]
-	set maxd [marpa::export::core::rtc::Width $mydisplay1]
+	set maxr [marpa::gen::runtime::c::Width $myrules]
+	set maxd [marpa::gen::runtime::c::Width $mydisplay1]
 	set fmta "${prefix}%-${maxr}s /* %-${maxd}s %s */"
 	set fmtb "${prefix}%s"
 
@@ -1175,7 +1177,7 @@ oo::class create marpa::export::core::rtc::Rules {
 	    set details [lassign $def type]
 	    my P_$type $lhs {*}$details
 	    if {!$myusenames} continue
-	    lappend mynames  [P id [marpa::export::core::rtc::RName $rule]]
+	    lappend mynames  [P id [marpa::gen::runtime::c::RName $rule]]
 	    lappend mylhsids [S 2id $lhs]
 	}
 	return
@@ -1209,7 +1211,7 @@ oo::class create marpa::export::core::rtc::Rules {
 	set lhid [S 2id $lhs]
 
 	set rl [llength $rhs]
-	::marpa::export::core::rtc::Limit12 {priority rhs length} $rl
+	::marpa::gen::runtime::c::Limit12 {priority rhs length} $rl
 	if {$rl > $mymaxpad} { set mymaxpad $rl }
 	incr myelements $rl
 	incr myrnum
@@ -1335,7 +1337,7 @@ oo::class create marpa::export::core::rtc::Rules {
 
 # # ## ### ##### ######## #############
 
-oo::class create marpa::export::core::rtc::Sym {
+oo::class create marpa::gen::runtime::c::Sym {
     variable mycounter
     variable myid
     variable mysym
@@ -1396,7 +1398,7 @@ oo::class create marpa::export::core::rtc::Sym {
 
 # # ## ### ##### ######## #############
 
-oo::class create marpa::export::core::rtc::Bytes {
+oo::class create marpa::gen::runtime::c::Bytes {
     # Literals are bytes - The complexity in the code below comes from
     # the possibility that the bytes and byte-ranges from the grammar
     # do not cover the entire set. Thus we
@@ -1447,7 +1449,7 @@ oo::class create marpa::export::core::rtc::Bytes {
 
 # # ## ### ##### ######## #############
 
-oo::class create marpa::export::core::rtc::Pool {
+oo::class create marpa::gen::runtime::c::Pool {
     variable mystr     ; # dict (string -> string) : external -> transformed
     variable mypool    ; # dict (string -> length),
     #       post-finalize: dict (string -> id)
@@ -1580,7 +1582,7 @@ oo::class create marpa::export::core::rtc::Pool {
 	set index 0
 	set offset 0
 	foreach str [lsort -dict [dict keys $mypool]] {
-	    ::marpa::export::core::rtc::Limit16 {string pool offset} $offset
+	    ::marpa::gen::runtime::c::Limit16 {string pool offset} $offset
 	    set len [dict get $mypool $str]
 	    incr mystrsize $len
 	    incr mystrsize ;# \0
@@ -1597,5 +1599,5 @@ oo::class create marpa::export::core::rtc::Pool {
 }
 
 # # ## ### ##### ######## #############
-package provide marpa::export::core::rtc 1
+package provide marpa::gen::runtime::c 1
 return

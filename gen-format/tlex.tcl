@@ -17,7 +17,7 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::export::tlex 0
+# Package marpa::gen::format::tlex 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Generator for lexers
@@ -29,7 +29,7 @@
 # Meta require     debug
 # Meta require     debug::caller
 # Meta require     marpa::util
-# Meta require     marpa::export::core::tcl
+# Meta require     marpa::gen::runtime::tcl
 # Meta subject     marpa {lexer generator} lexing {generator lexer}
 # Meta subject     {Tcl runtime lexing} {lexer Tcl runtime}
 # @@ Meta End
@@ -41,14 +41,14 @@ package require Tcl 8.5
 package require debug
 package require debug::caller
 package require marpa::util
-package require marpa::export::core::tcl
+package require marpa::gen::runtime::tcl
 
-debug define marpa/export/tlex
-debug prefix marpa/export/tlex {[debug caller] | }
+debug define marpa/gen/format/tlex
+debug prefix marpa/gen/format/tlex {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-namespace eval ::marpa::export::tlex {
+namespace eval ::marpa::gen::format::tlex {
     namespace export container
     namespace ensemble create
 
@@ -58,17 +58,17 @@ namespace eval ::marpa::export::tlex {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::tlex::container {gc} {
-    debug.marpa/export/tlex {}
+proc ::marpa::gen::format::tlex::container {gc} {
+    debug.marpa/gen/format/tlex {}
     variable self
-    marpa::fqn gc
-    set config   [marpa::export::core::tcl config [$gc serialize]]
+    marpa fqn gc
+    set config   [marpa::gen::runtime::tcl config [$gc serialize]]
     set template [string trim [marpa asset $self]]
     return [string map $config $template]
 }
 
 # # ## ### ##### ######## #############
-package provide marpa::export::tlex 0
+package provide marpa::gen::format::tlex 0
 return
 ##
 ## Template following (`source` will not process it)

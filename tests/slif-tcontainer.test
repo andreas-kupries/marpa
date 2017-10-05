@@ -12,11 +12,9 @@ kt require support oo::util
 kt require support TclOO
 kt require support fileutil ;# cat
 
-kt local   support marpa::export::gc ;# Reformat - TODO: Refactor
 kt local   testing marpa::slif::precedence
 kt local   testing marpa::slif::container
 kt local   testing marpa::slif::literal
-#kt local   support marpa
 
 # # ## ### ##### ######## ############# #####################
 ## TODO: Testing inspection

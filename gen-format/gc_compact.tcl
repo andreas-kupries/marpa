@@ -18,7 +18,7 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::export::gc-compact 0
+# Package marpa::gen::format::gc-compact 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Generator for grammar containers.
@@ -30,7 +30,7 @@
 # Meta require     debug
 # Meta require     debug::caller
 # Meta require     marpa::util
-# Meta require     marpa::export::config
+# Meta require     marpa::gen
 # Meta subject     marpa {container generator} lexing {generator container}
 # @@ Meta End
 
@@ -40,19 +40,19 @@
 package require Tcl 8.5
 package require debug
 package require debug::caller
-package require marpa::export::config
+package require marpa::gen
 package require marpa::util
 
-debug define marpa/export/gc-compact
-debug prefix marpa/export/gc-compact {[debug caller] | }
+debug define marpa/gen/format/gc-compact
+debug prefix marpa/gen/format/gc-compact {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-namespace eval ::marpa::export::gc-compact {
+namespace eval ::marpa::gen::format::gc-compact {
     namespace export container
     namespace ensemble create
 
-    namespace import ::marpa::export::config
+    namespace import ::marpa::gen::config
 
     variable self [info script]
 }
@@ -60,16 +60,16 @@ namespace eval ::marpa::export::gc-compact {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::export::gc-compact::container {gc} {
-    debug.marpa/export/gc-compact {}
+proc ::marpa::gen::format::gc-compact::container {gc} {
+    debug.marpa/gen/format/gc-compact {}
     marpa::fqn gc
     return [Generate [$gc serialize]]
 }
 
 # # ## ### ##### ######## #############
 
-proc ::marpa::export::gc-compact::Generate {serial} {
-    debug.marpa/export/gc-compact {}
+proc ::marpa::gen::format::gc-compact::Generate {serial} {
+    debug.marpa/gen/format/gc-compact {}
 
     lappend map {*}[config]
     lappend map @slif-serial@ $serial
@@ -79,7 +79,7 @@ proc ::marpa::export::gc-compact::Generate {serial} {
 }
 
 # # ## ### ##### ######## #############
-package provide marpa::export::gc-compact 0
+package provide marpa::gen::format::gc-compact 0
 return
 ##
 ## Template following (`source` will not process it)

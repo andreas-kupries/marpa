@@ -7,8 +7,8 @@
 package require Tcl 8.5
 package require marpa::slif::container
 package require marpa::slif::semantics
-package require marpa::export::config
-package require marpa::export::cparse-critcl
+package require marpa::gen
+package require marpa::gen::format::cparse-critcl
 package require marpa
 package require fileutil
 
@@ -33,30 +33,29 @@ marpa::slif::container create GC
 marpa::slif::semantics create SEMA GC
 marpa::slif::parser    create BOOT
 
-set start [clock milliseconds]
+set start  [clock milliseconds]
 set ast [BOOT process-file $meta]
-set done [clock milliseconds]
-
+set done   [clock milliseconds]
 set millis [expr {$done-$start}]
-set sec [expr {double($millis)/1000}]
-set speed [expr {$sz/$sec}]
+set sec    [expr {double($millis)/1000}]
+set speed  [expr {$sz/$sec}]
 puts "Processing done in [F $sec] seconds (@ [F $speed] bytes/sec)"
 
 SEMA process $ast
 # GC now holds the grammar
 BOOT destroy
-# Note: SEMA auto-destroys at the end of 'process'.
+# Note: SEMA auto-destroys itself at the end of 'process'.
 
 # _ __ ___ _____ ________ _____________ _____________________
 # Generate the SLIF parser class
 puts "Generating ..."
-marpa::export config! version  1
-marpa::export config! writer   {Jeffrey Kegler + Andreas Kupries}
-marpa::export config! year     [clock format [clock seconds] -format %Y]
-marpa::export config! name     marpa::slif::parser
-marpa::export config! operator $::tcl_platform(user)@[info hostname]
-marpa::export config! tool     [file tail [info script]]
-set parser [marpa::export::cparse-critcl container GC]
+marpa::gen config! version  1
+marpa::gen config! writer   {Jeffrey Kegler + Andreas Kupries}
+marpa::gen config! year     [clock format [clock seconds] -format %Y]
+marpa::gen config! name     marpa::slif::parser
+marpa::gen config! operator $::tcl_platform(user)@[info hostname]
+marpa::gen config! tool     [file tail [info script]]
+set parser [marpa::gen::format::cparse-critcl container GC]
 GC destroy
 
 # _ __ ___ _____ ________ _____________ _____________________

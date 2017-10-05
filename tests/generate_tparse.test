@@ -1,7 +1,7 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
 ## (c) 2017 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
-## marpa::export::tlex
+## marpa::gen::format::tparse
 
 kt check Tcl     8.5
 kt check tcltest 2
@@ -9,7 +9,7 @@ kt check tcltest 2
 kt require support debug
 kt require support debug::caller
 
-kt local   testing marpa::export::tlex
+kt local   testing marpa::gen::format::tparse
 
 # # ## ### ##### ######## ############# #####################
 
@@ -22,47 +22,47 @@ kt source support/textutils.tcl
 ##  [ok] container
 
 # # ## ### ##### ######## ############# #####################
-## container - state driven export
+## container - state driven generators
 
-test marpa-export-tlex-container-1.0 {container, wrong args, not enough} -body {
-    marpa::export::tlex container
-} -returnCodes error -result {wrong # args: should be "marpa::export::tlex container gc"}
+test marpa-gen-format-tparse-container-1.0 {container, wrong args, not enough} -body {
+    marpa::gen::format::tparse container
+} -returnCodes error -result {wrong # args: should be "marpa::gen::format::tparse container gc"}
 
-test marpa-export-tlex-container-1.1 {container, wrong args, too many} -body {
-    marpa::export::tlex container GC X
-} -returnCodes error -result {wrong # args: should be "marpa::export::tlex container gc"}
+test marpa-gen-format-tparse-container-1.1 {container, wrong args, too many} -body {
+    marpa::gen::format::tparse container GC X
+} -returnCodes error -result {wrong # args: should be "marpa::gen::format::tparse container gc"}
 
 # # ## ### ##### ######## ############# #####################
 
 set max 0
-test-grammar-files export_tlex --> __ __ { incr max }
+test-grammar-files generated_tparse --> __ __ { incr max }
 set format %0[string length $max]d
 unset max
 
 set k 0
-test-grammar-map export_tlex --> id export base {
+test-grammar-map generated_tparse --> id gen base {
     set input    [string trimright [fget $base/gcstate]]
     set kd       [format $format $k]
-    set expected [test-grammar-result $base export_tlex]
+    set expected [test-grammar-result $base generated_tparse]
 
-    test marpa-export-tlex-2.${kd}---${id} "export tlex $id" -setup {
-	marpa::export config! version  <Version>
-	marpa::export config! writer   <Writer>
-	marpa::export config! year     <Year>
-	marpa::export config! name     <Name>
-	marpa::export config! operator <Operator>
-	marpa::export config! tool     <Tool>
-	marpa::export config! gentime  <GenerationTime>
+    test marpa-gen-format-tparse-2.${kd}---${id} "gen tparse $id" -setup {
+	marpa::gen config! version  <Version>
+	marpa::gen config! writer   <Writer>
+	marpa::gen config! year     <Year>
+	marpa::gen config! name     <Name>
+	marpa::gen config! operator <Operator>
+	marpa::gen config! tool     <Tool>
+	marpa::gen config! gentime  <GenerationTime>
 	marpa::slif::container create GC
 	GC deserialize [dict get $input grammar]
 	GC validate ;# Deserialize should create only valid
 		     # containers, if serialization is from a valid
 		     # container.
     } -body {
-	marpa::export::tlex container GC
+	marpa::gen::format::tparse container GC
     } -cleanup {
 	GC destroy
-	marpa::export config-reset
+	marpa::gen config-reset
     } -result $expected
 
     incr k

@@ -9,7 +9,7 @@ kt local support marpa::slif::semantics
 kt local support marpa::runtime::tcl
 kt local support marpa::runtime::c
 kt local support marpa::slif::parser
-kt local support marpa::export::config
+kt local support marpa::gen
 
 namespace eval ::gen {
     namespace export {[a-z]*}
@@ -75,12 +75,12 @@ proc ::gen::setup {args} {
 
     # _ __ ___ _____ ________ _____________ _____________________
     # III. Generate a tcl-based parser class
-    marpa::export config! version  1
-    marpa::export config! writer   {TclMarpa Testsuite}
-    marpa::export config! year     2017
-    marpa::export config! name     $cl
-    marpa::export config! operator $::tcl_platform(user)@[info hostname]
-    marpa::export config! tool     [info script]
+    marpa::gen config! version  1
+    marpa::gen config! writer   {TclMarpa Testsuite}
+    marpa::gen config! year     2017
+    marpa::gen config! name     $cl
+    marpa::gen config! operator $::tcl_platform(user)@[info hostname]
+    marpa::gen config! tool     [info script]
 
     kt local support $ex
     set engine [$ex container GC]
@@ -154,10 +154,10 @@ proc ::gen::Init {} {
 	cl generated
     }
     variable export {
-	tlex   marpa::export::tlex
-	tparse marpa::export::tparse
-	cparse marpa::export::cparse-critcl
-	clex   marpa::export::clex-critcl
+	tlex   marpa::gen::format::tlex
+	tparse marpa::gen::format::tparse
+	cparse marpa::gen::format::cparse-critcl
+	clex   marpa::gen::format::clex-critcl
     }
     variable load {
 	tlex   { LoadTcl }
