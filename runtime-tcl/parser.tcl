@@ -401,29 +401,30 @@ oo::class create marpa::parser {
 	    }
 	}
 
-	# Pull all the valid parses
-	set steps {}
+	debug.marpa/parser {Trees: ...}
+	# Pull all the valid parses and evaluate them with the
+	# configured semantics, hand the resulting semantic value to
+	# the backend, immediately.
 	while {![catch {
-	    lappend steps [FOREST get-parse]
-	    debug.marpa/parser/forest {[my parse-tree [lindex $steps end]]}
-	    debug.marpa/parser/forest/save {[my dump-parse-tree "TP.${latest}.[incr fcounter]" [lindex $steps end]]}
-	}]} {}
+	    set tree [FOREST get-parse]
+	    debug.marpa/parser {Tree [incr trees]}
+	    debug.marpa/parser/forest {[my parse-tree $tree]}
+	    debug.marpa/parser/forest/save {[my dump-parse-tree "TP.${latest}.[incr fcounter]" $tree]}
+	}]} {
+	    Forward enter [Semantics eval $tree]
+	}
 	FOREST destroy
 
-	debug.marpa/parser {Trees: [llength $steps]}
+	# From here on only an eof signal is allowed to come from the
+	# input. Note however that we cannot assume that there is no
+	# more input at all. The G1 end marker may still be followed
+	# by L0 discards. As these do not make it to the parser's
+	# enter.
+	debug.marpa/parser {Feedback, lexemes, discard only}
+	Lexer acceptable [RECCE expected-terminals]
 
 	# The parser is done.
 	RECCE destroy
-
-	# Evaluate the parses with the configured semantics, and hand
-	# the resulting semantic value to the backend, immediately.
-
-	# TODO ? Tell the semantics or backend how many trees are there to handle ?
-	foreach tree $steps {
-	    Forward enter [Semantics eval $tree]
-	}
-
-	# From here on only an eof signal may come from the input.
 	return
     }
 
