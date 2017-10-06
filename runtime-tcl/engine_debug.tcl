@@ -120,6 +120,7 @@ oo::class create marpa::engine::debug {
 		token {
 		    dict set details token [my 2Name1 $id]
 		    #dict set details sv    [TSV [Store get $value]]
+		    dict set details sv [Store get $value]
 		}
 		rule  {
 		    dict set details lhs [lindex [my RuleNameData $id] 0]
