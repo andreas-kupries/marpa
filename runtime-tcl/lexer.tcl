@@ -622,7 +622,7 @@ oo::class create marpa::lexer {
 	    lappend forest [FOREST get-parse]
 	    debug.marpa/lexer/forest {__________________________________________ Tree [incr fcounter] ([llength [lindex $forest end]])}
 	    debug.marpa/lexer/forest {[my parse-tree [lindex $forest end]]}
-	    debug.marpa/lexer/forest/save {[my dump-parse-tree "TL.@${mystart}+${latest}.$fcounter" [lindex $forest end]]}
+	    debug.marpa/lexer/forest/save {[upvar 1 latest latest][my dump-parse-tree "TL.@${mystart}+${latest}.$fcounter" [lindex $forest end]]}
 	}]} {}
 	FOREST destroy
 	return $forest
