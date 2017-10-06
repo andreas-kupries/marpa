@@ -11,7 +11,8 @@ kt require support debug::caller
 kt require support oo::util
 kt require support TclOO
 
-kt local   testing marpa
+kt local   support marpa::c
+kt local   testing marpa::runtime::tcl
 
 # # ## ### ##### ######## ############# #####################\
 

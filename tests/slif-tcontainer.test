@@ -12,7 +12,9 @@ kt require support oo::util
 kt require support TclOO
 kt require support fileutil ;# cat
 
-kt local   testing marpa
+kt local   testing marpa::slif::precedence
+kt local   testing marpa::slif::container
+kt local   testing marpa::slif::literal
 
 # # ## ### ##### ######## ############# #####################
 ## TODO: Testing inspection

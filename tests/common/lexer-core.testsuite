@@ -27,8 +27,6 @@ kt require support oo::util
 kt require support TclOO
 kt require support fileutil ;# writeFile
 
-kt local   testing marpa
-
 # # ## ### ##### ######## ############# #####################
 ## Local shorthands
 
@@ -69,6 +67,7 @@ proc lex-cleanup {lexaction} {
     global clsave
     file delete        [td]/[gen cget cl].tcl
     file delete -force [td]/OUT_[gen cget cl]
+    file delete        [td]/OUT_[gen cget cl]_LOG
     gen configure cl $clsave
     return
 }

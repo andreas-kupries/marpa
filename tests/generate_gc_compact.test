@@ -1,0 +1,72 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::gen::format::gc-compact
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt local   support marpa::slif::container
+kt local   testing marpa::gen::format::gc-compact
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/common.tcl
+kt source support/dirs.tcl
+kt source support/grammars.tcl
+kt source support/textutils.tcl
+
+# # ## ### ##### ######## ############# #####################
+##  [ok] container
+
+# # ## ### ##### ######## ############# #####################
+## container - state driven generators
+
+test marpa-gen-format-gc-compact-container-1.0 {container, wrong args, not enough} -body {
+    marpa::gen::format::gc-compact container
+} -returnCodes error -result {wrong # args: should be "marpa::gen::format::gc-compact container gc"}
+
+test marpa-gen-format-gc-compact-container-1.1 {container, wrong args, too many} -body {
+    marpa::gen::format::gc-compact container GC X
+} -returnCodes error -result {wrong # args: should be "marpa::gen::format::gc-compact container gc"}
+
+# # ## ### ##### ######## ############# #####################
+
+set max 0
+test-grammar-files generated_gc_compact --> __ __ { incr max }
+set format %0[string length $max]d
+unset max
+
+set k 0
+test-grammar-map generated_gc_compact --> id gen base {
+    set input    [string trimright [fget $base/gcstate]]
+    set kd       [format $format $k]
+    set expected [test-grammar-result $base generated_gc_compact]
+
+    test marpa-gen-format-gc-compact-2.${kd}---${id} "gen gc $id" -setup {
+	marpa::gen config! version  <Version>
+	marpa::gen config! writer   <Writer>
+	marpa::gen config! year     <Year>
+	marpa::gen config! name     <Name>
+	marpa::gen config! operator <Operator>
+	marpa::gen config! tool     <Tool>
+	marpa::gen config! gentime  <GenerationTime>
+	marpa::slif::container create GC
+	GC deserialize [dict get $input grammar]
+	GC validate ;# Deserialize should create only valid
+		     # containers, if serialization is from a valid
+		     # container.
+    } -body {
+	marpa::gen::format::gc-compact container GC
+    } -cleanup {
+	GC destroy
+	marpa::gen config-reset
+    } -result $expected
+
+    incr k
+}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

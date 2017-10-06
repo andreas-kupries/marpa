@@ -1,4 +1,4 @@
-BUILD-marpa*
+BUILD-*
 core*
 generated
 tests/core*

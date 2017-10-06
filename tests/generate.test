@@ -1,0 +1,116 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::gen config
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+
+kt local   testing marpa::gen
+
+# # ## ### ##### ######## ############# #####################
+## TODO: formats, do -- See other test suites.
+
+# # ## ### ##### ######## ############# #####################
+## [ok] config
+## [ok] config!
+## [..] config-reset
+
+# # ## ### ##### ######## ############# #####################
+## config
+
+test marpa-gen-config-1.0 {config, wrong args, too many} -body {
+    marpa::gen config X
+} -returnCodes error -result {wrong # args: should be "marpa::gen config"}
+
+test marpa-gen-config-2.0 {config, defaults} -body {
+    marpa::gen config
+} -match glob -result [lrange {
+    @slif-version@    {}
+    @slif-writer@     {}
+    @slif-year@       {}
+    @slif-name@       {}
+    @slif-name-tag@   {}
+    @tool-operator@   {}
+    @tool@            {}
+    @generation-time@ *
+} 0 end]
+
+# # ## ### ##### ######## ############# #####################
+## config!
+
+test marpa-gen-config!-1.0 {config!, wrong args, not enough} -body {
+    marpa::gen config!
+} -returnCodes error -result {wrong # args: should be "marpa::gen config! key value"}
+
+test marpa-gen-config!-1.1 {config!, wrong args, not enough} -body {
+    marpa::gen config! K
+} -returnCodes error -result {wrong # args: should be "marpa::gen config! key value"}
+
+test marpa-gen-config!-1.2 {config!, wrong args, too many} -body {
+    marpa::gen config! K V X
+} -returnCodes error -result {wrong # args: should be "marpa::gen config! key value"}
+
+test marpa-gen-config!-2.0 {config!, bad key} -body {
+    marpa::gen config! bogus V
+} -returnCodes error \
+    -result {Bad configuration key "bogus", expected one of gentime, name, operator, tool, version, writer, or year}
+
+test marpa-gen-config!-3.0 {config!} -body {
+    marpa::gen config! version  version
+    marpa::gen config! writer   writer
+    marpa::gen config! year     year
+    marpa::gen config! name     a::name
+    marpa::gen config! operator operator
+    marpa::gen config! tool     tool
+    marpa::gen config! gentime  gentime
+    marpa::gen config
+} -cleanup {
+    marpa::gen config-reset
+} -result [lrange {
+    @slif-version@    version
+    @slif-writer@     writer
+    @slif-year@       year
+    @slif-name@       a::name
+    @slif-name-tag@   a/name
+    @tool-operator@   operator
+    @tool@            tool
+    @generation-time@ gentime
+} 0 end]
+
+# # ## ### ##### ######## ############# #####################
+## config-reset
+
+test marpa-gen-config-reset-1.0 {config-reset, wrong args, too many} -body {
+    marpa::gen config-reset X
+} -returnCodes error -result {wrong # args: should be "marpa::gen config-reset"}
+
+test marpa-gen-config-reset-2.0 {config-reset} -setup {
+    marpa::gen config! version  version
+    marpa::gen config! writer   writer
+    marpa::gen config! year     year
+    marpa::gen config! name     name
+    marpa::gen config! operator operator
+    marpa::gen config! tool     tool
+    marpa::gen config! gentime  gentime
+} -body {
+    marpa::gen config-reset
+    marpa::gen config
+} -cleanup {
+    marpa::gen config-reset
+} -match glob -result [lrange {
+    @slif-version@    {}
+    @slif-writer@     {}
+    @slif-year@       {}
+    @slif-name@       {}
+    @slif-name-tag@   {}
+    @tool-operator@   {}
+    @tool@            {}
+    @generation-time@ *
+} 0 end]
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

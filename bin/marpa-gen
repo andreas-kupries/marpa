@@ -12,16 +12,12 @@
 # Meta description generating parsers which use Marpa/Tcl
 # Meta location    http:/core.tcl.tk/akupries/marpa
 # Meta platform    tcl
-# Meta require     marpa
 # Meta require     {Tcl 8.5}
-# Meta require     oo::util
-# Meta require     struct::matrix
+# Meta require     marpa::gen
+# Meta require     marpa::slif::container
+# Meta require     marpa::slif::semantics
+# Meta require     marpa::slif::parser
 # Meta require     fileutil
-# Meta require     debug
-# Meta require     debug::caller
-# Meta require     char
-# Meta require     lambda
-# Meta require     try
 # Meta subject     marpa parsing lexing earley aycock horspool
 # Meta subject     {joop leo} {nigel horspool} {table parsing}
 # Meta subject     regex {character classes}
@@ -33,6 +29,10 @@
 
 package require Tcl 8.5
 package require fileutil
+package require marpa::gen
+package require marpa::slif::container
+package require marpa::slif::semantics
+package require marpa::slif::parser
 
 proc main {} {
     global type grammar out
@@ -72,8 +72,7 @@ proc cmdline {} {
 	default usage
     }
 
-    # check export, check supported
-
+    # check chosen format against the list of supported
     set st [supported-types]
     if {$type ni $st} {
 	append msg "Output type \"$type\" not supported.\n"
@@ -112,16 +111,11 @@ proc usage {{text {}}} {
 }
 
 proc supported-types {} {
-    package require marpa
-    return [lsort -dict [lmap e [info commands ::marpa::export::*] {
-	if {![llength [info commands ${e}::container]]} continue
-	string map {::marpa::export:: {}} $e
-    }]]
+    return [lsort -dict [marpa::gen formats]]
 }
 
 proc ingest {path} {
     global out name
-    package require marpa
     # _ __ ___ _____ ________ _____________ _____________________
     # Process the slif meta grammar
     # TODO: progress callbacks from the parser (call per token ...)
@@ -137,18 +131,18 @@ proc ingest {path} {
     note "Processing $path ($sz bytes) ..."
     marpa::slif::container create GC
     marpa::slif::semantics create SEMA GC
-    marpa::slif::parser    create BOOT
-    set start [clock milliseconds]
-    SEMA process [BOOT process-file $path]
-    set done [clock milliseconds]
+    marpa::slif::parser    create PARSE
+    set start  [clock milliseconds]
+    set ast [PARSE process-file $path]
+    set done   [clock milliseconds]
     set millis [expr {$done-$start}]
-    set sec [expr {double($millis)/1000}]
-    set speed [expr {$sz/$sec}]
+    set sec    [expr {double($millis)/1000}]
+    set speed  [expr {$sz/$sec}]
     note "Processing done in [F $sec] seconds (@ [F $speed] bytes/sec)"
+    SEMA process $ast
     # GC now holds the grammar
-    BOOT destroy
-    # Note: SEMA auto-destroys at the end of 'process'.
-
+    PARSE destroy
+    # Note: SEMA auto-destroys itself at the end of 'process'.
     return GC
 }
 
@@ -159,15 +153,14 @@ proc generate {type gc} {
     # _ __ ___ _____ ________ _____________ _____________________
     # Generate the SLIF parser class
     note "Generating ..."
-    marpa::export config! year     [clock format [clock seconds] -format %Y]
-    marpa::export config! operator $::tcl_platform(user)@[info hostname]
-    marpa::export config! tool     [file tail [info script]]
+    marpa::gen config! year     [clock format [clock seconds] -format %Y]
+    marpa::gen config! operator $::tcl_platform(user)@[info hostname]
+    marpa::gen config! tool     [file tail [info script]]
+    marpa::gen config! version  $version
+    marpa::gen config! writer   $author
+    marpa::gen config! name     $name
 
-    marpa::export config! version  $version
-    marpa::export config! writer   $author
-    marpa::export config! name     $name
-
-    set parser [marpa::export::$type container $gc]
+    set parser [marpa::gen do $type $gc]
     $gc destroy
     return $parser
 }
@@ -176,11 +169,11 @@ proc dump {out code} {
     # _ __ ___ _____ ________ _____________ _____________________
     # Write out
     if {$out ne {}} {
-	note "Saving to $out ..."
+	note "Saving to $out ([string length $code] bytes) ..."
 	# diverted into file
 	fileutil::writeFile $out $code
     } else {
-	note "Saving to stdout ..."
+	note "Saving to stdout ([string length $code] bytes) ..."
 	# stdout
 	puts $code
     }

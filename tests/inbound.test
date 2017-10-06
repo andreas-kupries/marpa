@@ -10,9 +10,10 @@ kt require support debug
 kt require support debug::caller
 kt require support oo::util
 kt require support TclOO
-
 kt require support tcl::chan::string ;# string channel for 'read' method.
-kt local   testing marpa
+
+kt local   support marpa::c
+kt local   testing marpa::runtime::tcl
 
 # # ## ### ##### ######## ############# #####################
 ## Activate method sequence checking for all instances
