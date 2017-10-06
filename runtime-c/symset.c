@@ -91,7 +91,7 @@ marpatcl_rtc_symset_link (marpatcl_rtc_symset* s, int n)
 {
     int k;
     TRACE_FUNC ("((symset*) %p, n %d)", s, n);
-    ASSERT (n, "Size underflow");
+    ASSERT (0 <= n, "Size underflow");
     ASSERT (n <= CAP, "Size beyond capacity");
 
     SZ = n;

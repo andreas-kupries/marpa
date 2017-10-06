@@ -56,7 +56,7 @@ marpatcl_rtc_byteset_link (marpatcl_rtc_byteset* s, int n)
 {
     int k;
     TRACE_FUNC ("((byteset*) %p, n %d)", s, n);
-    ASSERT (n, "Size underflow");
+    ASSERT (0 <= n, "Size underflow");
     ASSERT (n <= MARPATCL_RTC_BSMAX, "Size beyond capacity");
 
     SZ = n;
