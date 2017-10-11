@@ -363,6 +363,7 @@ oo::class create marpa::lexer {
 	#  Note that the flush leaves us with a just-started
 	# recognizer, which we have to remove again.
 	if {$myrecce ne {}} {
+	    debug.marpa/lexer {[debug caller] | RECCE kill [namespace which -command RECCE]}
 	    RECCE destroy
 	    set myrecce {}
 	}
@@ -380,7 +381,7 @@ oo::class create marpa::lexer {
 	# them into the recognizer.
 
 	set myrecce [GRAMMAR recognizer create RECCE [mymethod Events]]
-	debug.marpa/lexer {[debug caller 1] | RECCE = [namespace which -command RECCE]}
+	debug.marpa/lexer {[debug caller 1] | RECCE ::=  [namespace which -command RECCE]}
 	set mystart  {}
 	set mylexeme {}
 
@@ -553,6 +554,7 @@ oo::class create marpa::lexer {
 	# default mode.
 
 	# The current recognizer is done.
+	debug.marpa/lexer {[debug caller] | RECCE kill [namespace which -command RECCE]}
 	RECCE destroy
 	set myrecce {}
 
@@ -602,6 +604,7 @@ oo::class create marpa::lexer {
 	my get-context context
 
 	# The current recognizer is done.
+	debug.marpa/lexer {[debug caller] | RECCE kill [namespace which -command RECCE]}
 	RECCE destroy
 	set myrecce {}
 
