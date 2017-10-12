@@ -96,6 +96,7 @@ oo::class create marpa::gate {
     variable myhistory    ;# Entered characters and semantic values.
     variable mylastchar   ;# last character "enter"ed into the gate
     variable mylastloc    ;# and its location
+    variable myflushed    ;# flush state
 
     # # -- --- ----- -------- -------------
     ## Configuration
@@ -139,7 +140,8 @@ oo::class create marpa::gate {
 	set myhistory    {} ;# queue of processed characters (and locations)
 	set myaccmemo    {}
 	set myacceptable {} ;# set of expected/allowed symbols,
-			     # initially none
+	# initially none
+	set myflushed    0
 
 	# Static configuration
 	set mymap        {}
@@ -225,7 +227,7 @@ oo::class create marpa::gate {
 	# here, allow for _one_ re-try after a flush was forced to the
 	# postprocessor.
 
-	set flushed 0
+	set myflushed 0
 	while {1} {
 	    debug.marpa/gate {[debug caller 1] | match ($myacceptable)}
 	    set match {}
@@ -263,7 +265,9 @@ oo::class create marpa::gate {
 	    # that it may check if it is has a lexeme, after which the
 	    # character may be accepted. If we flushed already, then
 	    # we have to error out, there is no forward from here.
-	    if {$flushed} {
+	    if {$myflushed} {
+		debug.marpa/gate {[debug caller 1] | ...flushed}
+		
 		my ExtendContext context $char $location
 		Forward fail context
 
@@ -276,7 +280,8 @@ oo::class create marpa::gate {
 		    INTERNAL ILLEGAL RETURN $context
 	    }
 
-	    incr flushed
+	    incr myflushed
+	    debug.marpa/gate {[debug caller 1] | flush...}
 	    debug.marpa/gate {[debug caller 1] | push ($match)}
 
 	    Forward enter $match $char $location
@@ -288,7 +293,7 @@ oo::class create marpa::gate {
     method acceptable {syms} {
 	debug.marpa/gate {[debug caller] | }
 	# numeric ids, dict => dict exists// list(id)
-	if {[dict exists $myaccmemo $syms]} {
+	if {0&&[dict exists $myaccmemo $syms]} {
 	    set myacceptable [dict get $myaccmemo $syms]
 	} else {
 	    set myacceptable {}
@@ -304,6 +309,12 @@ oo::class create marpa::gate {
     method redo {n} {
 	debug.marpa/gate {[debug caller] | }
 	if {$n} {
+	    # Reset flush state. The redo implies that the flushed
+	    # token did not cover the input till the character causing
+	    # the flush. That means that we may have another token in
+	    # the redone part of the input which the current character
+	    # has to flush again.
+	    set myflushed 0
 	    # Redo/enter the last n characters
 	    # Note: 2 slots per char (char + value) => Times 2.
 	    incr n $n
