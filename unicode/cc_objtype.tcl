@@ -263,16 +263,19 @@ critcl::ccode {
 	TRACE ("CAP %d", objc);
 	for (i = 0; i < objc; i++) {
 	    Tcl_Obj* elt = objv[i];
-
+	    TRACE ("PROCESS. [%02d] %p", i, elt);
+	    
 	    /*
 	    // First handle objects which already have a suitable type.
 	    // No conversions required, only data extraction and validation.
 	    */
 
 	    if (elt->typePtr == ctx->intType) {
+		TRACE ("INT. ... [%02d] %p", i, elt);
 		Tcl_GetIntFromObj(ip, elt, &start);
 
-	    process_int:
+		process_int:
+		TRACE ("INT. CHK [%02d] %p", i, elt);
 		if (marpatcl_scr_bad_codepoint (ip, "Point", start)) {
 		    goto fail;
 		}
@@ -283,9 +286,18 @@ critcl::ccode {
 	    }
 
 	    if (elt->typePtr == ctx->listType) {
+		TRACE ("LIST ... [%02d] %p", i, elt);
 		Tcl_ListObjGetElements(ip, elt, &robjc, &robjv);
 
-	    process_list:
+		process_list:
+		TRACE ("LIST CHK [%02d] %p", i, elt);
+		if (robjc != 2) {
+	    #define MSG "Expected 2-element list for range"
+		    Tcl_SetErrorCode (ip, "MARPA", NULL);
+		    Tcl_SetObjResult (ip, Tcl_NewStringObj(MSG,-1));
+		    goto fail;
+	    #undef MSG
+		}
 		if ((Tcl_GetIntFromObj (ip, robjv[0], &start) != TCL_OK) ||
 		    marpatcl_scr_bad_codepoint (ip, "Range (start)", start) ||
 		    (Tcl_GetIntFromObj (ip, robjv[1], &end) != TCL_OK) ||
@@ -305,13 +317,16 @@ critcl::ccode {
 	    */
 
 	    if (Tcl_GetIntFromObj(ip, elt, &start) == TCL_OK) {
+		TRACE ("INT. CVT [%02d] %p", i, elt);
 		goto process_int;
 	    }
 
 	    if (Tcl_ListObjGetElements(ip, elt, &robjc, &robjv) == TCL_OK) {
+		TRACE ("LIST CVT [%02d] %p", i, elt);
 		goto process_list;
 	    }
 
+	    TRACE ("NO.. CVT [%02d] %p", i, elt);
 	    /*
 	    // No suitable type, and not convertible to such either.
 	    */

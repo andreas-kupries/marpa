@@ -148,6 +148,26 @@ foreach {charclass normalized notes} {
     } -result $normalized
 }
 
+
+set k 0
+foreach {charclass message notes} {
+    {-1}          {Point out of range (0...*): -1} {out of range, under}
+    {500000000}   {Point out of range (0...*): 500000000} {out of range, over, regardless of mode}
+    {2 {3 3 4} 4} {Expected 2-element list for range} {too many elements for interval/range}
+    {2 {} 4}      {Expected 2-element list for range} {not enough element for interval/range}
+    {2 {-1 3} 4}  {Range (start) out of range (0...*): -1} {out of range, under}
+    {2 {3 500000000} 4} {Range (end) out of range (0...*): 500000000} {out of range, over, regardless of mode}
+    {2 {5 2} 4} {Range empty (end (5) before start (2))} {}
+    {2 {{} 3} 4} {expected integer but got ""} {}
+    {2 {3 {}} 4} {expected integer but got ""} {}
+    {bogus} {Expected 2-element list for range} {}
+} {
+    incr k
+    test marpa-unicode-norm-class-3.$k "norm-class, bad $charclass" -body {
+	marpa unicode norm-class $charclass
+    } -returnCodes error -result $message -match glob
+}
+
 # # ## ### ##### ######## ############# #####################
 ## negate-class - Complement a char class.
 
