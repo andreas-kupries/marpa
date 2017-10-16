@@ -1,0 +1,10 @@
+Parsing failed in lexer. Stopped at offset 28 after reading '3'. Expected any character in [=[[:space:]]] while looking for any of (WS).
+L0 Report:
+______ P0    @1-1 <@STR:<======>> --> . <@CHR:<=>> <@CHR:<=>> <@CHR:<=>> <@CHR:<=>> <@CHR:<=>> <@CHR:<=>>
+______ P6    @1-1 <WS>            --> . <@STR:<======>>
+______ P7    @1-1 <WS>            --> . <@NCC:<[:space:]>>
+______ R11:1 @0-1 <@START>        --> <ACS:WS> . <WS>
+Mismatch:
+'3' => (7) ni
+    0: '='
+    8: [[:space:]]
