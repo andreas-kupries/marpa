@@ -44,6 +44,7 @@ oo::class create marpa::parser {
 
     # Static
     variable myparts
+    variable mydone
 
     ##
     # API self:
@@ -102,6 +103,7 @@ oo::class create marpa::parser {
 	set mypreviouslhs -1 ; # ord state
 	set myplhscount   0  ; # ord counter
 	set myname        {} ; # custom rule name
+	set mydone        0  ; # parser not exhausted
 
 	debug.marpa/semcore {[marpa::D {
 	    # Provide semcore with access to engine internals for use
@@ -112,6 +114,12 @@ oo::class create marpa::parser {
 	return
     }
 
+    destructor {
+	# The parser is done.
+	catch { RECCE destroy }
+	return
+    }
+    
     # # -- --- ----- -------- -------------
     ## Public API
 
@@ -211,6 +219,8 @@ oo::class create marpa::parser {
 	# situation.
 
 	Forward eof
+
+	catch { RECCE destroy }
 	return
     }
 
@@ -225,7 +235,9 @@ oo::class create marpa::parser {
 
 	oo::objdefine [self] mixin marpa::engine::debug
 	dict set context g1 report [my progress-report-current]
-	
+
+	RECCE destroy
+
 	Forward fail context
 
 	# Note: This method must not return, but throw an error at
@@ -392,38 +404,38 @@ oo::class create marpa::parser {
 		set context {}
 		catch { Lexer get-context context }
 		dict set context origin parser
-		
-		# The parser is done.
-		RECCE destroy
 
+		set mydone 1 ; # Now exhausted
+		
 		Forward fail context
 		return
 	    }
 	}
 
-	# Pull all the valid parses
-	set steps {}
+	debug.marpa/parser {Trees: ...}
+	# Pull all the valid parses and evaluate them with the
+	# configured semantics, hand the resulting semantic value to
+	# the backend, immediately.
 	while {![catch {
-	    lappend steps [FOREST get-parse]
-	    debug.marpa/parser/forest {[my parse-tree [lindex $steps end]]}
-	    debug.marpa/parser/forest/save {[my dump-parse-tree "TP.${latest}.[incr fcounter]" [lindex $steps end]]}
-	}]} {}
-	FOREST destroy
-
-	debug.marpa/parser {Trees: [llength $steps]}
-
-	# The parser is done.
-	RECCE destroy
-
-	# Evaluate the parses with the configured semantics, and hand
-	# the resulting semantic value to the backend, immediately.
-
-	# TODO ? Tell the semantics or backend how many trees are there to handle ?
-	foreach tree $steps {
+	    set tree [FOREST get-parse]
+	    debug.marpa/parser {Tree [incr trees]}
+	    debug.marpa/parser/forest {[my parse-tree $tree]}
+	    debug.marpa/parser/forest/save {[my dump-parse-tree "TP.${latest}.[incr fcounter]" $tree]}
+	}]} {
 	    Forward enter [Semantics eval $tree]
 	}
+	FOREST destroy
 
-	# From here on only an eof signal may come from the input.
+	# From here on only an eof signal is allowed to come from the
+	# input. Note however that we cannot assume that there is no
+	# more input at all. The G1 end marker may still be followed
+	# by L0 discards. As these do not make it to the parser's
+	# enter.
+	debug.marpa/parser {Feedback, lexemes, discard only}
+	Lexer acceptable [RECCE expected-terminals]
+
+	# The parser is done. Destruction happens in "eof" or "fail".
+	set mydone 1
 	return
     }
 
@@ -432,7 +444,7 @@ oo::class create marpa::parser {
 
     method exhausted {} {
 	# 'enter' destroys RECCE when it is exhausted.
-	string equal [info commands RECCE] {}
+	return $mydone; #string equal [info commands RECCE] {}
     }
 
     # # ## ### ##### ######## #############

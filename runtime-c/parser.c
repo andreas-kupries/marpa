@@ -331,6 +331,13 @@ complete (marpatcl_rtc_p p)
     marpatcl_rtc_sva_free (&es);
     marpa_t_unref (t);
     marpa_o_unref (o);
+
+    // From here on only an eof signal is allowed to come from the input. Note
+    // however that we cannot assume that there is no more input at all. The
+    // G1 end marker may still be followed by L0 discards. As these do not
+    // make it to the parser's enter.
+    marpatcl_rtc_lexer_acceptable (p, 0);
+
     marpa_r_unref (PAR.recce);
     PAR.recce = 0;
 
