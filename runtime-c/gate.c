@@ -95,6 +95,9 @@ marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
 	TRACE_ADD ("(rtc*) %p, rejected", p);
 
 	if (flushed) {
+	    GATE.lastchar = ch;
+	    GATE.lastloc  = IN.location;
+
 	    TRACE_ADD (" - flush failed", 0);
 	    TRACE_CLOSER;
 
@@ -152,7 +155,7 @@ marpatcl_rtc_gate_redo (marpatcl_rtc_p p, int n)
 {
     TRACE_FUNC ("(rtc*) %p, n %d)", p, n);
     TRACE_TAG (stream, "gate stream :: /CUT", 0);
-    
+
     if (!n) {
 	marpatcl_rtc_stack_clear (GATE.history);
     } else {

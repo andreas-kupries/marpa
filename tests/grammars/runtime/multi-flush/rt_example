@@ -1,0 +1,23 @@
+# This grammar and its example input demonstrate how the lexer has to
+# reset its flush state when a redo is triggered, as the redone input
+# may contain another token forcing another proper flush. Which would
+# be denied without the reset.
+
+lexeme default =    latm => 1 action => [start,length,value]
+:default ::=   	    action => [name,values]
+
+:discard ~ whitespace
+whitespace ~ SPACE_PLUS
+SPACE_PLUS ~ [[:space:]] +
+
+<general text> ::= <general text lex>
+
+<general text lex> ~ <general text limiter>
+<general text lex> ~ <general text limiter> <general text limiter>
+<general text lex> ~ <general text limiter> <general text middle> <general text limiter>
+<general text limiter> ~ [^\133\135[:space:]]
+<general text middle> ~ [^\133\135\n\r\t\f\v] +
+
+words	::= word +
+word	::= LB | <general text>
+LB    	::= ( '[lb]' )
