@@ -312,6 +312,7 @@ marpatcl_rtc_spec_g1decode (marpatcl_rtc_symvec* coding, marpatcl_rtc_sym rule, 
 	TRACE_RETURN ("(sym*) %p", coding->data + 1 + offset + 1);
     }
     ASSERT (0, "Unsupported type of g1 coding");
+    TRACE_RETURN ("(sym*) %p FAIL", 0);
 }
 
 marpatcl_rtc_stack_p

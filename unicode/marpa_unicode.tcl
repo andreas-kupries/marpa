@@ -75,6 +75,10 @@ critcl::subject marpa unicode {character class} charclass case-folding
 
 critcl::tcl 8.5
 
+critcl::ccode {
+    TRACE_OFF;
+}
+
 # # ## ### ##### ######## #############
 ## Declare the Tcl layer
 
