@@ -49,7 +49,7 @@ static marpatcl_rtc_sv_p get_sv    (marpatcl_rtc_p   p,
 
 #define LEX_START      (LEX.start)
 #define LEX_LEN        (LEX.length)
-#define LEX_END        (LEX.start + LEX_LEN - 1)
+#define LEX_END        (LEX_START + LEX_LEN - 1)
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -305,6 +305,8 @@ complete (marpatcl_rtc_p p)
 	    // FAIL, aborting. Callers `lexer_enter`, `lexer_eof`.
 	    TRACE_RETURN_VOID;
 	}
+	LEX.length --;
+	(void) marpatcl_rtc_stack_pop (LEX.lexeme);
 	TRACE_CLOSER;
     }
 

@@ -40,7 +40,8 @@ marpatcl_rtc_byteset_contains (marpatcl_rtc_byteset* s, unsigned char c)
 {
     // sizeof (unsigned char) == 8 --> max(c) = 255, no assertion required
     TRACE_FUNC ("((byteset*) %p, byte %d)", s, c);
-    ASSERT (c < MARPATCL_RTC_BSMAX, "Symbol beyond set capacity");
+    // ATT: assert not required for (unsigned char) == byte, always true
+    //ASSERT (c < MARPATCL_RTC_BSMAX, "Symbol beyond set capacity");
     TRACE_RETURN ("%d", (XL [c] < SZ) && (DE [XL [c]] == c));
 }
 

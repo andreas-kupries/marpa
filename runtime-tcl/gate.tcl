@@ -281,7 +281,7 @@ oo::class create marpa::gate {
 	    }
 
 	    incr myflushed
-	    debug.marpa/gate {[debug caller 1] | flush...}
+	    debug.marpa/gate {[debug caller 1] | flush ($myflushed) ...}
 	    debug.marpa/gate {[debug caller 1] | push ($match)}
 
 	    Forward enter $match $char $location
@@ -314,6 +314,7 @@ oo::class create marpa::gate {
 	    # the flush. That means that we may have another token in
 	    # the redone part of the input which the current character
 	    # has to flush again.
+	    debug.marpa/gate {[debug caller] | flush reset}
 	    set myflushed 0
 	    # Redo/enter the last n characters
 	    # Note: 2 slots per char (char + value) => Times 2.

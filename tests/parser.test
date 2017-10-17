@@ -919,6 +919,12 @@ test marpa-parser-8.5.2 {eof, when exhausted, externals} -setup {
 } -cleanup {
     PARSER destroy
 } -result {{} {
+  SEM C {eval {token {id 4 start-es 0 end-es 1 dst 0 value 1} rule {id 1 start-es 0 end-es 1 dst 0 first 0 last 0} rule {id 3 start-es 0 end-es 1 dst 0 first 0 last 0}}}
+  SEM R {eval {token {id 4 start-es 0 end-es 1 dst 0 value 1} rule {id 1 start-es 0 end-es 1 dst 0 first 0 last 0} rule {id 3 start-es 0 end-es 1 dst 0 first 0 last 0}}} = {}
+  AST C {enter {}}
+  AST R {enter {}} = {}
+  GATE C {acceptable {}}
+  GATE R {acceptable {}} = {}
   AST C eof
   AST R eof = {}
 }}

@@ -1,0 +1,25 @@
+# This grammar and its example input demonstrate that the runtime has
+# to and can handle L0 discard tokens found in the input after the G1
+# end marker. A concrete example would be Pascal comments found after
+# the last 'end' keyword of a module.
+
+lexeme default =
+	latm => 1
+	action => [start,length,value]
+
+:default ::=
+	action => [name,values]
+
+BEGIN ~ 'BEGIN'
+END   ~ 'END'
+WS    ~ [[:space:]]
+WS    ~ '======'
+ID    ~ [[:digit:]] +
+
+:discard ~ WS
+
+code  ::= begin ids end
+begin ::= ( BEGIN )
+end   ::= ( END )
+ids   ::= id +
+id    ::= ID
