@@ -78,7 +78,7 @@ test-grammar-map rt_example --> id rte base {
     set input  [fget [input  $base]]
     set result [string trimright [fget [result $base]]]
     set kd     [format $format $k]
-
+    
     test marpa-[label]-runtime-process-2.${kd}---${id} "[label] :: process $id" -body {
 	catch {
 	    ast-format [PARSE process $input]
@@ -91,6 +91,8 @@ test-grammar-map rt_example --> id rte base {
 
     gen cleanup
     incr k
+
+    break
 }
 
 # # ## ### ##### ######## ############# #####################

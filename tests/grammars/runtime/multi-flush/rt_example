@@ -7,17 +7,16 @@ lexeme default =    latm => 1 action => [start,length,value]
 :default ::=   	    action => [name,values]
 
 :discard ~ whitespace
-whitespace ~ SPACE_PLUS
-SPACE_PLUS ~ [[:space:]] +
-
-<general text> ::= <general text lex>
-
-<general text lex> ~ <general text limiter>
-<general text lex> ~ <general text limiter> <general text limiter>
-<general text lex> ~ <general text limiter> <general text middle> <general text limiter>
-<general text limiter> ~ [^\133\135[:space:]]
-<general text middle> ~ [^\133\135\n\r\t\f\v] +
+whitespace ~ [[:space:]] +
 
 words	::= word +
-word	::= LB | <general text>
+word	::= LB | <general>
 LB    	::= ( '[lb]' )
+
+<general> ::= <general lex>
+
+<general lex>     ~ <general limiter>
+<general lex>     ~ <general limiter> <general limiter>
+<general lex>     ~ <general limiter> <general middle> <general limiter>
+<general limiter> ~ [^\133\135[:space:]]
+<general middle>  ~ [^\133\135\n\r\t\f\v] +

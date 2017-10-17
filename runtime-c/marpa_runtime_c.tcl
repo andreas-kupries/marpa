@@ -30,7 +30,7 @@ if {![critcl::compiling]} {
 # (2) Debugging symbols, memory tracking
 
 critcl::cutil::assertions on
-critcl::cutil::tracer     off
+critcl::cutil::tracer     on
 
 critcl::debug symbols
 #critcl::debug memory
