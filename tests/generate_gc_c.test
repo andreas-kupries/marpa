@@ -1,7 +1,7 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
 ## (c) 2017 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
-## marpa::gen::format::gc-compact
+## marpa::gen::format::gc
 
 kt check Tcl     8.5
 kt check tcltest 2
@@ -9,7 +9,7 @@ kt check tcltest 2
 kt require support debug
 kt require support debug::caller
 kt local   support marpa::slif::container
-kt local   testing marpa::gen::format::gc-compact
+kt local   testing marpa::gen::format::gc-c
 
 # # ## ### ##### ######## ############# #####################
 
@@ -24,28 +24,28 @@ kt source support/textutils.tcl
 # # ## ### ##### ######## ############# #####################
 ## container - state driven generators
 
-test marpa-gen-format-gc-compact-container-1.0 {container, wrong args, not enough} -body {
-    marpa::gen::format::gc-compact container
-} -returnCodes error -result {wrong # args: should be "marpa::gen::format::gc-compact container gc"}
+test marpa-gen-format-gc-c-container-1.0 {container, wrong args, not enough} -body {
+    marpa::gen::format::gc-c container
+} -returnCodes error -result {wrong # args: should be "marpa::gen::format::gc-c container gc"}
 
-test marpa-gen-format-gc-compact-container-1.1 {container, wrong args, too many} -body {
-    marpa::gen::format::gc-compact container GC X
-} -returnCodes error -result {wrong # args: should be "marpa::gen::format::gc-compact container gc"}
+test marpa-gen-format-gc-c-container-1.1 {container, wrong args, too many} -body {
+    marpa::gen::format::gc-c container GC X
+} -returnCodes error -result {wrong # args: should be "marpa::gen::format::gc-c container gc"}
 
 # # ## ### ##### ######## ############# #####################
 
 set max 0
-test-grammar-files generated_gc_compact --> __ __ { incr max }
+test-grammar-files generated_gc --> __ __ { incr max }
 set format %0[string length $max]d
 unset max
 
 set k 0
-test-grammar-map generated_gc_compact --> id gen base {
+test-grammar-map generated_gc --> id gen base {
     set input    [string trimright [fget $base/gcstate]]
     set kd       [format $format $k]
-    set expected [test-grammar-result $base generated_gc_compact]
+    set expected [test-grammar-result $base generated_gc_c]
 
-    test marpa-gen-format-gc-compact-2.${kd}---${id} "gen gc-compact $id" -setup {
+    test marpa-gen-format-gc-c-2.${kd}---${id} "gen gc-c $id" -setup {
 	marpa::gen config! version  <Version>
 	marpa::gen config! writer   <Writer>
 	marpa::gen config! year     <Year>
@@ -59,7 +59,7 @@ test-grammar-map generated_gc_compact --> id gen base {
 		     # containers, if serialization is from a valid
 		     # container.
     } -body {
-	marpa::gen::format::gc-compact container GC
+	marpa::gen::format::gc-c container GC
     } -cleanup {
 	GC destroy
 	marpa::gen config-reset

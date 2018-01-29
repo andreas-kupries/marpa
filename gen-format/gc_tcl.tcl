@@ -14,15 +14,19 @@
 #   Expanded formatting of the serialization, with newlines and proper
 #   indentation to show nesting. Human readability over size.
 
+#   Grammar is reduced as for tparse/tlex. IOW it shows how the
+#   literals got encoded for this, and the rewritten precedenced
+#   rules.
+
 # # ## ### ##### ######## #############
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::gen::format::gc 0
+# Package marpa::gen::format::gc-tcl 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Generator for grammar containers.
-# Meta description Human-readable formatting.
+# Meta description Human-readable formatting. Reduced as for the Tcl runtime.
 # Meta location    http:/core.tcl.tk/akupries/marpa
 # Meta platform    tcl
 # Meta require     {Tcl 8.5}
@@ -42,14 +46,15 @@ package require debug
 package require debug::caller
 package require marpa::gen
 package require marpa::gen::reformat
+package require marpa::gen::runtime::tcl
 package require marpa::util
 
-debug define marpa/gen/format/gc
-debug prefix marpa/gen/format/gc {[debug caller] | }
+debug define marpa/gen/format/gc-tcl
+debug prefix marpa/gen/format/gc-tcl {[debug caller] | }
 
 # # ## ### ##### ######## #############
 
-namespace eval ::marpa::gen::format::gc {
+namespace eval ::marpa::gen::format::gc-tcl {
     namespace export container
     namespace ensemble create
 
@@ -61,18 +66,21 @@ namespace eval ::marpa::gen::format::gc {
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::gen::format::gc::container {gc} {
-    debug.marpa/gen/format/gc {}
+proc ::marpa::gen::format::gc-tcl::container {gc} {
+    debug.marpa/gen/format/gc-tcl {}
     marpa::fqn gc
-    return [Generate [$gc serialize]]
+
+    set gcr [marpa::gen::runtime::tcl gc [$gc serialize]]
+    set serial [$gcr serialize]
+    $gcr destroy
+    
+    return [Generate $serial]
 }
 
 # # ## ### ##### ######## #############
-## Helpers - Format for readability.
-## Snarfed from tests/support/gcontainer_state.tcl
 
-proc ::marpa::gen::format::gc::Generate {serial} {
-    debug.marpa/gen/format/gc {}
+proc ::marpa::gen::format::gc-tcl::Generate {serial} {
+    debug.marpa/gen/format/gc-tcl {}
 
     lappend map {*}[config]
     lappend map @slif-serial@ \n[marpa::gen reformat $serial]\n\t
@@ -82,7 +90,7 @@ proc ::marpa::gen::format::gc::Generate {serial} {
 }
 
 # # ## ### ##### ######## #############
-package provide marpa::gen::format::gc 0
+package provide marpa::gen::format::gc-tcl 0
 return
 ##
 ## Template following (`source` will not process it)

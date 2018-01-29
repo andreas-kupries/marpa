@@ -81,19 +81,27 @@ namespace eval ::marpa::gen::runtime {}
 namespace eval ::marpa::gen::runtime::tcl {
     namespace import ::marpa::gen::config
     rename config core-config
-    namespace export config
+    namespace export config gc
     namespace ensemble create
 }
 
 # # ## ### ##### ######## #############
 ## Public API
 
-proc ::marpa::gen::runtime::tcl::config {serial} {
+proc ::marpa::gen::runtime::tcl::gc {serial} {
     debug.marpa/gen/runtime/tcl {}
 
     set gc [Ingest $serial]
     EncodePrecedences $gc
     LowerLiterals     $gc
+
+    return $gc
+}
+
+proc ::marpa::gen::runtime::tcl::config {serial} {
+    debug.marpa/gen/runtime/tcl {}
+
+    set gc [gc $serial]
     # Types we can get out of the reduction:
     # - character,   ^character
     # - charclass,   ^charclass
@@ -204,7 +212,7 @@ proc ::marpa::gen::runtime::tcl::L0Semantics {gc} {
     # sem - Check for array, and unpack...
     if {![dict exists $keys array]} {
 	# TODO: Test case required -- Check what the semantics and syntax say
-	error XXX
+	error XXX|$keys|
     }
     return [dict get $keys array]
 }
@@ -297,7 +305,7 @@ proc ::marpa::gen::runtime::tcl::Action {} {
 	    lappend rules [list __ :A $adetails]
 	}
 	default {
-	    error XXX ;# non-array not supported yet.
+	    error XXX|$action| ;# non-array not supported yet.
 	}
     }
 

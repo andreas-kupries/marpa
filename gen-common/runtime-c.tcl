@@ -112,7 +112,7 @@ namespace eval ::marpa::gen::runtime {}
 namespace eval ::marpa::gen::runtime::c {
     namespace import ::marpa::gen::config  ; rename config  core-config
     namespace import ::marpa::gen::config? ; rename config? core-config?
-    namespace export config
+    namespace export config gc
     namespace ensemble create
 
     # Map from SLIF array-codes to the runtime's equivalent C defines
@@ -133,6 +133,16 @@ namespace eval ::marpa::gen::runtime::c {
 # # ## ### ##### ######## #############
 ## Public API
 
+proc ::marpa::gen::runtime::c::gc {serial} {
+    debug.marpa/gen/runtime/c {}
+    
+    set gc [Ingest $serial]
+    EncodePrecedences $gc
+    LowerLiterals     $gc
+
+    return $gc
+}
+
 proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     debug.marpa/gen/runtime/c {}
     set defaults {prefix {    }}
@@ -144,9 +154,7 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     dict unset config to
     dict unset config n
 
-    set gc [Ingest $serial]
-    EncodePrecedences $gc
-    LowerLiterals     $gc
+    set gc [gc $serial]
     # Types we can get out of the reduction:
     # - byte, brange
 

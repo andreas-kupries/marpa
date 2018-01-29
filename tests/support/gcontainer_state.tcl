@@ -11,10 +11,10 @@
 ## Reusing internals of generator "marpa::gen::format::gc".
 
 kt local   support marpa::gen
-kt local   support marpa::gen::format::gc
+kt local   support marpa::gen::reformat
 
 proc gc-format {serial {step {    }}} {
-    return "grammar \{\n[marpa::gen::format::gc::Reformat $serial {} $step]\n\}"
+    return "grammar \{\n[marpa::gen reformat $serial {} $step]\n\}"
 }
 
 # # ## ### ##### ######## #############
