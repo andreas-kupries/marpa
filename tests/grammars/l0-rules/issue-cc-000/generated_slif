@@ -1,0 +1,8 @@
+:start ::= lang
+inaccessible is warn by default
+lexeme default = action => [values]
+lang ::= plain
+         action => [values]
+         assoc => left
+plain ~ [^\42\134[:control:]]
+        latm => 1

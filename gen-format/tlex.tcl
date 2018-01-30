@@ -5,7 +5,7 @@
 ##
 # This code is BSD-licensed.
 
-# Exporter (Generator) -- Core functionality see `export::core::tcl`
+# Exporter (Generator) -- Core functionality see `marpa::gen::runtime::tcl`
 ##
 # - Output format: Tcl code
 #   Subclass of "marpa::engine::tcl::lex" with embedded deconstructed (*) grammar

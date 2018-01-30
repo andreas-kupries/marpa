@@ -1,0 +1,27 @@
+plain ~ [^"\\[:control:]]
+lang ::= plain
+
+# This charclass is mangled in the output of
+# generator `tparse`. One of the generated
+# char ranges is rejected by Tcl's regexp
+# command, as invalid syntax.
+##
+# This test case serves as the demonstration
+# of both issue and fix.
+##
+# See also
+# - literal.test:
+#   - decode-class-2.9,
+#   - literal-parse-2.42
+#   - ccranges-2.6
+#   - reduce1-2.47.[1-4]
+##
+# Issue located in `marpa::gen::runtime::tcl`:
+# -> ConvertLiterals -> CC -> RA -> CX -> Char -> `char quote tcl`
+
+# The issue with `char quote tcl` is its conversion of any control
+# char to octal representation. This is missing that we have control
+# chars outside the ASCII range, in the higher BMP, and that is where
+# bogosity happened. Bogus octal reps, longer than 3 octal
+# digits. Forcing all characters outside of the ASCII range to \u
+# and \U representation fixes the problem.

@@ -99,6 +99,7 @@ foreach {data result} {
     braille         {{10240 10495}}
     {10 braille}    {10 {10240 10495}}
     {10245 braille} {{10240 10495}}
+    {34 92 control} {{0 31} 34 92 {127 159} 173 {1536 1541} 1564 1757 1807 2274 6158 {8203 8207} {8234 8238} {8288 8292} {8294 8303} {57344 63743} 65279 {65529 65531}}
 } {
     incr k
     test marpa-slif-literal-ccranges-2.$k "ccranges, $data" -body {
@@ -533,6 +534,12 @@ foreach {literal toexpect} {
 	K-^CHR ok    {@q {^character 300}}
 	D-^CHR ok    {@x {charclass {0 299} {301 @@@}}}
 	!----- ----- { using 2 ranges,    -^- 300 excluded }
+    }
+    {^charclass 34 92 control} {
+	{}      error RT
+	K-^CLS  ok    {@q {^charclass 34 92 control}}
+	D-^CLS1 ok    {@x {charclass {32 33} {35 91} {93 126} {160 172} {174 1535} {1542 1563} {1565 1756} {1758 1806} {1808 2273} {2275 6157} {6159 8202} {8208 8233} {8239 8287} 8293 {8304 57343} {63744 65278} {65280 65528} {65532 @@@}}}
+	D-^CLS2 ok    {@q {^charclass {0 31} 34 92 {127 159} 173 {1536 1541} 1564 1757 1807 2274 6158 {8203 8207} {8234 8238} {8288 8292} {8294 8303} {57344 63743} 65279 {65529 65531}}}
     }
 } {
     # Skip annotations
@@ -997,6 +1004,8 @@ foreach {rule litstring res} {
     N20 {[^[:braille:]a-f]:i}        {^charclass {65 70} {97 102} %braille}
     N20 {[^[:braille:]\--/]:i}       {^charclass {45 47} %braille}
     N20 {[^\055abcdef[:braille:]]:i} {^charclass 45 {65 70} {97 102} %braille}
+
+    CC0 {[^"\\[:control:]]}          {^charclass 34 92 control}
 } {
     incr k
     test marpa-slif-literal-parse-2.$k "parse, $rule, $litstring" -body {
@@ -1217,6 +1226,7 @@ foreach {lit res} {
     a-z0-9%                {37 {48 57} {97 122}}
     {0-9[:alnum:]}         {{48 57} alnum}
     {[:braille:][:alnum:]} {alnum braille}
+    {"\\[:control:]}       {34 92 control}
 } {
     incr k
     test marpa-slif-literal-decode-class-2.$k "decode-class, $lit" -body {
