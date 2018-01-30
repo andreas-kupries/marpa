@@ -1,0 +1,31 @@
+grammar {
+    global {
+        start lang
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            lang { {priority plain 0
+                    action {array values}
+                    assoc left
+                    mask 0} }
+        }
+        terminal {
+            plain { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        latm {
+            plain 1
+        }
+        lexeme {
+            plain { {priority {{@^CLS:<\42\134[:control:]>}} 0} }
+        }
+        literal {
+            {@^CLS:<\42\134[:control:]>} { {^charclass {0 31} 34 92 {127 159} 173 {1536 1541} 1564 1757 1807 2274 6158 {8203 8207} {8234 8238} {8288 8292} {8294 8303} {57344 63743} 65279 {65529 65531}} }
+        }
+    }
+}

@@ -1,0 +1,22 @@
+GC comment definition plain 0 5
+GC comment l0-definition plain undef --> {JMP match}
+GC comment usage {@^CLS:<\42\134[:control:]>} 8 17
+GC comment definition {@^CLS:<\42\134[:control:]>} 8 17
+GC comment <literal> {@^CLS:<\42\134[:control:]>} undef --> {JMP literal}
+
+	GC l0 literal {@^CLS:<\42\134[:control:]>} ^charclass 34 92 control
+
+GC comment l0-usage {@^CLS:<\42\134[:control:]>} literal --> NOP
+GC l0 priority-rule plain {{@^CLS:<\42\134[:control:]>}} 0
+GC comment definition lang 26 4
+GC comment g1-definition lang undef --> {JMP brick}
+GC comment usage plain 35 5
+GC comment g1-usage plain match --> {JMP lexeme make-lexeme}
+GC l0 lexeme plain
+GC g1 terminal plain
+GC g1 priority-rule lang plain 0 action {array values} mask 0
+GC comment Semantics completion processing
+GC start! lang
+GC comment LATM fix 1
+GC l0 configure plain latm 1
+GC comment DDE fix {}

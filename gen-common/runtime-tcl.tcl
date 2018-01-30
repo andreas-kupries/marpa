@@ -408,6 +408,20 @@ proc ::marpa::gen::runtime::tcl::CX {code} {
 
 proc ::marpa::gen::runtime::tcl::Char {code} {
     debug.marpa/gen/runtime/tcl {}
+    
+    # Note: Older versions of `char` (v1.0.1 or earlier) convert all
+    #       control characters they encounter to octal before checking
+    #       for `beyond ASCII`. This causes them to convert non-ASCII
+    #       control characters (Ex: \u06dd) into a representation
+    #       longer than three octal digits, the max Tcl can handle.
+    #       This causes here the generation of bogus character
+    #       references and ranges. Forcing \u representation for
+    #       non-ASCII in the BMP, and \U above BMP solves the issue.
+    #
+    # The test grammar `l0-rules/issue-cc-000` demonstrates the bogus
+    # output when the next 2 lines are disabled.
+    if {$code >   127} { return \\u[format %04x $code] } ;# >ASCII, <=BMP
+    if {$code > 65535} { return \\U[format %08x $code] } ;# >BMP
     return [char quote tcl [format %c $code]]
 }
 

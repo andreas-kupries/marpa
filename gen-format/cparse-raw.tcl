@@ -5,7 +5,7 @@
 ##
 # This code is BSD-licensed.
 
-# Exporter (Generator) -- Core functionality see `export::core::rtc`
+# Exporter (Generator) -- Core functionality see `marpa::gen::runtime::c`
 ##
 # - Output format: C code, structures for RTC.
 #   Code is formatted with newlines and indentation.
