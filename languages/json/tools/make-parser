@@ -1,0 +1,18 @@
+#!/bin/bash
+
+g="g/json.slif"
+v=1
+a="Andreas Kupries"
+base="json::parser::"
+
+marpa-gen \
+    -V $v -A "${a}" \
+    -T cparse-critcl \
+    -N ${base}c \
+    $g json-c.tcl
+
+marpa-gen \
+    -V $v -A "${a}" \
+    -T tparse \
+    -N ${base}tcl \
+    $g json-tcl.tcl

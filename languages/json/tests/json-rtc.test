@@ -1,0 +1,32 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2018 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## (cparse) rtc-critcl + json.slif
+##
+
+##
+## Test json parser on top of RT-C.
+## 
+
+kt require support critcl   ;# compile & run
+kt source  support/gen.tcl
+
+# # ## ### ##### ######## ############# #####################
+## API to the json-core
+
+gen configure \
+    cl json-rtc \
+    ex cparse
+
+proc result {base} { locate $base ast_rtc ast }
+proc label      {} { return "json_rtc" }
+proc initialize {} { gen setup }
+proc finalize   {} { gen cleanup }
+
+# # ## ### ##### ######## ############# #####################
+##
+
+kt source common/json-core.testsuite
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

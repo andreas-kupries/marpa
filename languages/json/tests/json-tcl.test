@@ -1,0 +1,31 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2018 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## rt-tcl + json.slif
+##
+
+##
+## Test json parser on top of RT-Tcl.
+## 
+
+kt source  support/gen.tcl
+
+# # ## ### ##### ######## ############# #####################
+## API to the json-core
+
+gen configure \
+    cl json-tcl \
+    ex tparse
+
+proc result {base} { locate $base ast_tcl ast }
+proc label      {} { return "json_tcl" }
+proc initialize {} { gen setup }
+proc finalize   {} { gen cleanup }
+
+# # ## ### ##### ######## ############# #####################
+##
+
+kt source common/json-core.testsuite
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

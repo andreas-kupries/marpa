@@ -1,0 +1,160 @@
+#!/usr/bin/env tclsh
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2018 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## json utility - parse json into AST.
+
+# @@ Meta Begin
+# Application jq 0.1
+# Meta author      {Andreas Kupries}
+# Meta category    Parser
+# Meta description A minimal JSON parser and dumper.
+# Meta description Prints the abstract syntax tree of
+# Meta description the JSON read from file or stdin.
+# Meta location    http:/core.tcl.tk/akupries/marpa
+# Meta platform    tcl
+# Meta require     {Tcl 8.5}
+# Meta require     json::parser::c
+# Meta require     marpa::util
+# Meta require     fileutil
+# Meta subject     parsing json {abstract syntax tree}
+# Meta summary     A minimal JSON parser based on the Tcl binding to
+# Meta summary     Jeffrey Kegler's libmarpa.
+# @@ Meta End
+
+# Alternate: Meta require     json::parser::tcl
+
+# Tcl's recursion limit is in the way of deeply nested arrays and objects.
+#interp recursionlimit {} 5000
+
+lappend auto_path [file dirname [file dirname [file normalize [info script]]]]/lib
+
+proc rtbase {} { return c }
+proc pclass {} { return json::parser::[rtbase] }
+
+package require Tcl 8.5
+package require [pclass]
+package require fileutil
+package require marpa::util ;# for AST formatting.
+
+proc main {} {
+    puts [ast-format [ingest [cmdline]]]
+    return
+}
+
+proc cmdline {} {
+    global argv note
+
+    switch -exact -- [llength $argv] {
+	1 {
+	    lassign $argv document
+	    set note stderr
+	}
+	default usage
+    }
+    return $document
+}
+	
+proc usage {{text {}}} {
+    global argv0
+    puts stderr "Usage: $argv0 /path/to/json"
+    exit 1
+}
+
+proc ingest {path} {
+    # _ __ ___ _____ ________ _____________ _____________________
+    # Process the json data
+    
+    # TODO: progress callbacks from the parser (call per token ...)
+   
+    #puts [package ifneeded debug [package present debug]]
+    #exit    
+    #debug on marpa/lexer
+    #debug on marpa/lexer/stream
+    #debug on marpa/lexer/progress
+    #debug on marpa/lexer/forest
+    #debug on marpa/lexer/forest/save
+    #debug on marpa/parser
+    #debug on marpa/inbound
+    debug on marpa/gate
+    #debug on marpa/parser/report
+    #debug on marpa/parser/forest/save
+    #debug on marpa/parser/stream
+    #debug on marpa/lexer/stream
+    #debug on marpa/engine/tcl/parse
+    #puts [join [info loaded] \n]
+
+    [pclass] create PARSE
+    
+    if {$path eq "-"} {
+	set json [read stdin]
+	set sz [string length $json]
+	Time "Processing stdin ($sz bytes) ..." $sz {
+	    set ast [PARSE process $json]
+	}
+    } else {
+	set sz [file size $path]
+	Time "Processing $path ($sz bytes) ..." $sz {
+	    set ast [PARSE process-file $path]
+	}
+    }
+
+    PARSE destroy
+    return $ast
+}
+
+proc Time {label sz script} {
+    note $label
+    set start  [clock milliseconds]
+
+    uplevel 1 $script
+    
+    set done   [clock milliseconds]
+    set millis [expr {$done-$start}]
+    set sec    [expr {double($millis)/1000}]
+    set speed  [expr {$sz/$sec}]
+
+    append msg "Processing done in [F $sec] seconds"
+    append msg " (@ [F $speed] bytes/sec)"
+    note $msg
+}
+
+proc F {n} { format "%.2f" $n }
+
+proc note {text} {
+    global note
+    puts  $note $text
+    flush $note
+    return
+}
+
+# see marpa/test/support/ast.tcl
+# maybe promote to utility command ?
+
+proc ast-format {ast {step {  }}} {
+    set lines {}
+    ast-format-acc $ast {} $step
+    return [join $lines \n]
+}
+
+proc ast-format-acc {ast indent step} {
+    upvar 1 lines lines
+
+    if {[string is integer [lindex $ast 0]]} {
+	# Terminal, Data is offset, length, and lexeme value.
+	lappend lines ${indent}@($ast);#[marpa location show $ast]
+	return
+    }
+
+    lassign $ast symbol children
+
+    lappend lines $indent$symbol
+    append indent $step
+    foreach child $children {
+	ast-format-acc $child $indent $step
+    }
+    return
+}
+
+main
+exit

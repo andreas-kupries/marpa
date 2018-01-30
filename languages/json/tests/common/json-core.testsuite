@@ -1,0 +1,172 @@
+# -*- tcl -*-
+## (c) 2018 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## Execution core for testing the JSON parser on top of different runtimes.
+## Configured by the caller with methods for
+## - overall initialization and finalization
+## - parser creation and destruction
+## - AST result selection
+#
+## The methods expected to exist are
+#
+## * label      :: return string to name the tests
+## * initialize :: global setup, for the suite
+## * finalize   :: global cleanup, for the suite
+## * result     :: result selection by label / base directory
+
+## The name of the parser class is stored in the `gen` config, under
+## key `cl`.
+
+# # ## ### ##### ######## ############# #####################
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+kt require support fileutil ;# cat
+
+# # ## ### ##### ######## ############# #####################
+## Local shorthands
+
+proc setup   {} { [gen cget cl] create PARSE }
+proc cleanup {} { PARSE destroy }
+
+# # ## ### ##### ######## ############# #####################
+## No method sequence checking for the parser.
+## Methods can be called in any order.
+
+# # ## ### ##### ######## ############# #####################
+
+#kt source support/ast.tcl
+kt source support/dirs.tcl
+#kt source support/grammars.tcl
+#kt source support/textutils.tcl
+
+# # ## ### ##### ######## ############# #####################
+
+initialize
+
+# # ## ### ##### ######## ############# #####################
+##  1 constructor/0
+##  2 process/1		(string)
+##  3 process-file/1	(path-to-file)
+
+# # ## ### ##### ######## ############# #####################
+## constructor - wrong args, initial state, calls
+
+test lang-[label]-parser-constructor-1.0 "[label] :: constructor, wrong args, too many" -body {
+    [gen cget cl] new X
+}   -returnCodes error \
+    -result "wrong # args: should be \"[gen cget cl] new\""
+
+# # ## ### ##### ######## ############# #####################
+## process - argument checking
+
+test lang-[label]-parser-process-1.0 "[label] :: process, wrong args, not enough" -body {
+    PARSE process
+}   -setup   setup \
+    -cleanup cleanup \
+    -returnCodes error \
+    -result {wrong # args: should be "PARSE process string"}
+
+test lang-[label]-parser-process-1.1 "[label] :: process, wrong args, too many" -body {
+    PARSE process DATA X
+}   -setup   setup \
+    -cleanup cleanup \
+    -returnCodes error \
+    -result {wrong # args: should be "PARSE process string"}
+
+# # ## ### ##### ######## ############# #####################
+## process-file - argument checking
+
+test lang-[label]-parser-process-file-1.0 "[label] :: process-file, wrong args, not enough" -body {
+    PARSE process-file
+}   -setup   setup \
+    -cleanup cleanup \
+    -returnCodes error \
+    -result {wrong # args: should be "PARSE process-file path"}
+
+test lang-[label]-parser-process-file-1.1 "[label] :: process-file, wrong args, too many" -body {
+    PARSE process-file DATA X
+}   -setup   setup \
+    -cleanup cleanup \
+    -returnCodes error \
+    -result {wrong # args: should be "PARSE process-file path"}
+
+finalize
+return
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+# # ## ### ##### ######## ############# #####################
+## process, process-file - Actual processing - Id formatting prep
+
+incr max
+test-grammar-files slif --> __ __ { incr max }
+set format %0[string length $max]d
+unset max
+
+# # ## ### ##### ######## ############# #####################
+
+incr k
+test-grammar-map slif --> id slif base {
+    set input    [fget $slif]
+    set expected [string trimright [fget [result $base]]]
+    set kd       [format $format $k]
+
+    if {0} {
+	test lang-[label]-parser-debug-911.${kd}---${id} "[label] :: process $id" -body {
+	    if {[catch {
+		ast-format [PARSE process $input]
+	    } msg]} {
+		puts ZZZ:$::errorInfo
+	    }
+	    set msg
+	} -setup setup -cleanup {
+	    cleanup
+	    unset msg
+	} -result $expected
+
+	incr k
+	continue
+    }
+
+    test lang-[label]-parser-process-2.${kd}---${id} "[label] :: process $id" -body {
+	catch {
+	    ast-format [PARSE process $input]
+	} msg
+	set msg
+    } -setup setup -cleanup {
+	cleanup
+	unset msg
+    } -result $expected
+
+    test lang-[label]-parser-process-file-3.${kd}---${id} "[label] :: process-file $id" -body {
+	catch {
+	    ast-format [PARSE process-file $slif]
+	} msg
+	set msg
+    } -setup setup -cleanup {
+	cleanup
+	unset msg
+    } -result $expected
+
+    incr k
+}
+
+# # ## ### ##### ######## ############# #####################
+unset k slif base format expected kd input
+rename setup   {}
+rename cleanup {}
+
+# # ## ### ##### ######## ############# #####################
+finalize
+
+# # ## ### ##### ######## ############# #####################
+rename label      {}
+rename result     {}
+rename initialize {}
+rename finalize   {}
+return
