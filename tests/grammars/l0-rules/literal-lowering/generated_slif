@@ -1,0 +1,102 @@
+:start ::= A
+inaccessible is warn by default
+lexeme default = action => [values]
+A ::= B C D E F G H I J K L M N O P Q R S T U
+      action => [values]
+      assoc => left
+B ::= @LEX:@CHR:<a>
+      action => [values]
+      assoc => left
+C ::= @LEX:@STR:<abc>
+      action => [values]
+      assoc => left
+D ::= @LEX:@CLS:<Aa>
+      action => [values]
+      assoc => left
+E ::= @LEX:@%STR:<ABC>
+      action => [values]
+      assoc => left
+F ::= @LEX:@CHR:<a>
+      action => [values]
+      assoc => left
+G ::= @LEX:@RAN:<az>
+      action => [values]
+      assoc => left
+H ::= @LEX:@NCC:<[:alnum:]>
+      action => [values]
+      assoc => left
+I ::= @LEX:@CLS:<0-9a[:braille:]>
+      action => [values]
+      assoc => left
+J ::= @LEX:@CLS:<Aa>
+      action => [values]
+      assoc => left
+K ::= @LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>
+      action => [values]
+      assoc => left
+L ::= @LEX:@%NCC:<[:alnum:]>
+      action => [values]
+      assoc => left
+M ::= @LEX:@CLS:<0-9Aa[:%braille:]>
+      action => [values]
+      assoc => left
+N ::= @LEX:@^CHR:<a>
+      action => [values]
+      assoc => left
+O ::= @LEX:@^RAN:<az>
+      action => [values]
+      assoc => left
+P ::= @LEX:@^NCC:<[:alnum:]>
+      action => [values]
+      assoc => left
+Q ::= @LEX:@^CLS:<0-9a[:braille:]>
+      action => [values]
+      assoc => left
+R ::= @LEX:@^CLS:<Aa>
+      action => [values]
+      assoc => left
+S ::= @LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>
+      action => [values]
+      assoc => left
+T ::= @LEX:@^%NCC:<[:alnum:]>
+      action => [values]
+      assoc => left
+U ::= @LEX:@^CLS:<0-9Aa[:%braille:]>
+      action => [values]
+      assoc => left
+@LEX:@%NCC:<[:alnum:]>                       ~ [[:alnum:]]:i
+                                               latm => 1
+@LEX:@%STR:<ABC>                             ~ 'ABC':i
+                                               latm => 1
+@LEX:@^%NCC:<[:alnum:]>                      ~ [^[:alnum:]]:i
+                                               latm => 1
+@LEX:@^CHR:<a>                               ~ [^a]
+                                               latm => 1
+@LEX:@^CLS:<0-9a[:braille:]>                 ~ [^0-9a[:braille:]]
+                                               latm => 1
+@LEX:@^CLS:<0-9Aa[:%braille:]>               ~ [^0-9Aa[:braille:]]:i
+                                               latm => 1
+@LEX:@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a> ~ [^A-Za-z\u0130-\u0131\u017f\u212a]
+                                               latm => 1
+@LEX:@^CLS:<Aa>                              ~ [^Aa]
+                                               latm => 1
+@LEX:@^NCC:<[:alnum:]>                       ~ [^[:alnum:]]
+                                               latm => 1
+@LEX:@^RAN:<az>                              ~ [^a-z]
+                                               latm => 1
+@LEX:@CHR:<a>                                ~ 'a'
+                                               latm => 1
+@LEX:@CLS:<0-9a[:braille:]>                  ~ [0-9a[:braille:]]
+                                               latm => 1
+@LEX:@CLS:<0-9Aa[:%braille:]>                ~ [0-9Aa[:braille:]]:i
+                                               latm => 1
+@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>  ~ [A-Za-z\u0130-\u0131\u017f\u212a]
+                                               latm => 1
+@LEX:@CLS:<Aa>                               ~ [Aa]
+                                               latm => 1
+@LEX:@NCC:<[:alnum:]>                        ~ [[:alnum:]]
+                                               latm => 1
+@LEX:@RAN:<az>                               ~ [a-z]
+                                               latm => 1
+@LEX:@STR:<abc>                              ~ 'abc'
+                                               latm => 1

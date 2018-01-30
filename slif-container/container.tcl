@@ -58,6 +58,7 @@ oo::class create marpa::slif::container {
 
     forward lexeme-semantics? LS get
     forward start?            GA get start
+    forward inaccessible?     GA get inaccessible
 
     # Ignore comments from the semantics
     method comment {args} {}

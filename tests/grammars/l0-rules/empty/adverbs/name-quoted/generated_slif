@@ -1,0 +1,9 @@
+:start ::= F
+inaccessible is warn by default
+lexeme default = action => [values]
+F ::= A
+      action => [values]
+      assoc => left
+A ~ 
+    latm => 1
+    name => 'a/b reduction'

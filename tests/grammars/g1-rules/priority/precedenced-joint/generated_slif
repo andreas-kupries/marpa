@@ -1,0 +1,40 @@
+:start ::= E
+inaccessible is warn by default
+lexeme default = action => [values]
+E ::= N
+      action => [values]
+      assoc => left
+  |   PO E PC
+      action => [values]
+      assoc => group
+  ||  E POW E
+      action => [values]
+      assoc => right
+  ||  E MUL E
+      action => [values]
+      assoc => left
+  |   E DIV E
+      action => [values]
+      assoc => left
+  ||  E ADD E
+      action => [values]
+      assoc => left
+  |   E SUB E
+      action => [values]
+      assoc => left
+ADD ~ '+'
+      latm => 1
+DIV ~ '/'
+      latm => 1
+MUL ~ '*'
+      latm => 1
+N   ~ [0-9] +
+      latm => 1
+PC  ~ '\51'
+      latm => 1
+PO  ~ '\50'
+      latm => 1
+POW ~ '**'
+      latm => 1
+SUB ~ '\55'
+      latm => 1

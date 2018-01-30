@@ -1,0 +1,8 @@
+:start ::= A
+inaccessible is warn by default
+lexeme default = action => [values]
+A ::= @LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>
+      action => [values]
+      assoc => left
+@LEX:@CLS:<A-Za-z\u0130-\u0131\u017f\u212a> ~ [A-Za-z\u0130-\u0131\u017f\u212a]
+                                              latm => 1

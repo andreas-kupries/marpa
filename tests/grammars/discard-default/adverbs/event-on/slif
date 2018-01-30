@@ -2,3 +2,5 @@ discard default = event => snafu = on
 
 B ::= A
 A ~ 'a'
+
+# Defaults not saved to GC, nothing uses them

@@ -2,3 +2,5 @@ discard default = event => ::symbol
 
 B ::= A
 A ~ 'a'
+
+# Defaults not saved to GC, nothing uses them

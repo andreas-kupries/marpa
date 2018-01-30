@@ -1,0 +1,8 @@
+:start ::= A
+inaccessible is fatal by default
+lexeme default = action => [values]
+A ::= @LEX:@CHR:<a>
+      action => [values]
+      assoc => left
+@LEX:@CHR:<a> ~ 'a'
+                latm => 1

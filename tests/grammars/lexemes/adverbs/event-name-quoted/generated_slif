@@ -1,0 +1,10 @@
+:start ::= B
+inaccessible is warn by default
+lexeme default = action => [values]
+B ::= A
+      action => [values]
+      assoc => left
+:lexeme ~ A
+          event => 'fu bar' = on
+          pause => before
+A ~ 'a'
