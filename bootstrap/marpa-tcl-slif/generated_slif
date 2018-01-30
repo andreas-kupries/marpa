@@ -1,0 +1,878 @@
+:start ::= statements
+inaccessible is warn by default
+lexeme default = action => [start,length,value]
+action                                ::= ( @LEX:@STR:<action> @LEX:@STR:<=>> ) <action name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => action/0
+<action name>                         ::= <Perl name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'action name/0'
+                                      |   <reserved action name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'action name/1'
+                                      |   <array descriptor>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'action name/2'
+<adverb item bnf alternative>         ::= action
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf alternative/0'
+                                      |   <left association>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf alternative/1'
+                                      |   <right association>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf alternative/2'
+                                      |   <group association>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf alternative/3'
+                                      |   naming
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf alternative/4'
+                                      |   <null adverb>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf alternative/5'
+<adverb item bnf empty>               ::= action
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf empty/0'
+                                      |   <left association>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf empty/1'
+                                      |   <right association>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf empty/2'
+                                      |   <group association>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf empty/3'
+                                      |   naming
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf empty/4'
+                                      |   <null adverb>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf empty/5'
+<adverb item bnf quantified>          ::= action
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf quantified/0'
+                                      |   <separator specification>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf quantified/1'
+                                      |   <proper specification>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf quantified/2'
+                                      |   naming
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf quantified/3'
+                                      |   <null adverb>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item bnf quantified/4'
+<adverb item default>                 ::= action
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item default/0'
+                                      |   <null adverb>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item default/1'
+<adverb item discard>                 ::= <event specification>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item discard/0'
+                                      |   <null adverb>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item discard/1'
+<adverb item discard default>         ::= <event specification>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item discard default/0'
+                                      |   <null adverb>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item discard default/1'
+<adverb item lexeme>                  ::= <event specification>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item lexeme/0'
+                                      |   <latm specification>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item lexeme/1'
+                                      |   <priority specification>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item lexeme/2'
+                                      |   <pause specification>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item lexeme/3'
+                                      |   <null adverb>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item lexeme/4'
+<adverb item lexeme default>          ::= action
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item lexeme default/0'
+                                      |   <latm specification>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item lexeme default/1'
+                                      |   <null adverb>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item lexeme default/2'
+<adverb item match alternative>       ::= naming
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item match alternative/0'
+                                      |   <null adverb>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item match alternative/1'
+<adverb item match empty>             ::= naming
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item match empty/0'
+                                      |   <null adverb>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item match empty/1'
+<adverb item match quantified>        ::= <separator specification>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item match quantified/0'
+                                      |   <proper specification>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item match quantified/1'
+                                      |   <null adverb>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb item match quantified/2'
+<adverb list bnf alternative>         ::= <adverb list items bnf alternative>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb list bnf alternative/0'
+<adverb list bnf empty>               ::= <adverb list items bnf empty>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb list bnf empty/0'
+<adverb list bnf quantified>          ::= <adverb list items bnf quantified>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb list bnf quantified/0'
+<adverb list default>                 ::= <adverb list items default>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb list default/0'
+<adverb list discard>                 ::= <adverb list items discard>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb list discard/0'
+<adverb list discard default>         ::= <adverb list items discard default>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb list discard default/0'
+<adverb list items bnf alternative>   ::= <adverb item bnf alternative> *
+                                          action => [name,values]
+                                          name => 'adverb list items bnf alternative/0'
+<adverb list items bnf empty>         ::= <adverb item bnf empty> *
+                                          action => [name,values]
+                                          name => 'adverb list items bnf empty/0'
+<adverb list items bnf quantified>    ::= <adverb item bnf quantified> *
+                                          action => [name,values]
+                                          name => 'adverb list items bnf quantified/0'
+<adverb list items default>           ::= <adverb item default> *
+                                          action => [name,values]
+                                          name => 'adverb list items default/0'
+<adverb list items discard>           ::= <adverb item discard> *
+                                          action => [name,values]
+                                          name => 'adverb list items discard/0'
+<adverb list items discard default>   ::= <adverb item discard default> *
+                                          action => [name,values]
+                                          name => 'adverb list items discard default/0'
+<adverb list items lexeme>            ::= <adverb item lexeme> *
+                                          action => [name,values]
+                                          name => 'adverb list items lexeme/0'
+<adverb list items lexeme default>    ::= <adverb item lexeme default> *
+                                          action => [name,values]
+                                          name => 'adverb list items lexeme default/0'
+<adverb list items match alternative> ::= <adverb item match alternative> *
+                                          action => [name,values]
+                                          name => 'adverb list items match alternative/0'
+<adverb list items match empty>       ::= <adverb item match empty> *
+                                          action => [name,values]
+                                          name => 'adverb list items match empty/0'
+<adverb list items match quantified>  ::= <adverb item match quantified> *
+                                          action => [name,values]
+                                          name => 'adverb list items match quantified/0'
+<adverb list lexeme>                  ::= <adverb list items lexeme>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb list lexeme/0'
+<adverb list lexeme default>          ::= <adverb list items lexeme default>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb list lexeme default/0'
+<adverb list match alternative>       ::= <adverb list items match alternative>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb list match alternative/0'
+<adverb list match empty>             ::= <adverb list items match empty>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb list match empty/0'
+<adverb list match quantified>        ::= <adverb list items match quantified>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'adverb list match quantified/0'
+<alternative bnf>                     ::= rhs <adverb list bnf alternative>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'alternative bnf/0'
+<alternative match>                   ::= rhs <adverb list match alternative>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'alternative match/0'
+<alternative name>                    ::= <standard name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'alternative name/0'
+                                      |   <single quoted name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'alternative name/1'
+<alternatives bnf>                    ::= <alternative bnf> +
+                                          action => [name,values]
+                                          name => 'alternatives bnf/0'
+                                          proper => 1
+                                          separator => <op equal priority>
+<alternatives match>                  ::= <alternative match> +
+                                          action => [name,values]
+                                          name => 'alternatives match/0'
+                                          proper => 1
+                                          separator => <op equal priority>
+<completion event declaration>        ::= ( @LEX:@STR:<event> ) <event initialization> ( @LEX:@CHR:<=> @LEX:@STR:<completed> ) <symbol name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'completion event declaration/0'
+<current lexer statement>             ::= ( @LEX:@STR:<current> @LEX:@STR:<lexer> @LEX:@STR:<is> ) <lexer name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'lexeme rule/1'
+<default rule>                        ::= ( @LEX:@STR:<:default> <op declare bnf> ) <adverb list default>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'default rule/0'
+<discard default statement>           ::= ( @LEX:@STR:<discard> @LEX:@STR:<default> @LEX:@CHR:<=> ) <adverb list discard default>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'discard default statement/0'
+<discard rule>                        ::= ( @LEX:@STR:<:discard> <op declare match> ) symbol <adverb list discard>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'discard rule/0'
+                                      |   ( @LEX:@STR:<:discard> <op declare match> ) <character class> <adverb list discard>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'discard rule/1'
+<empty rule>                          ::= lhs ( <op declare bnf> ) <adverb list bnf empty>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'empty rule/0'
+                                      |   lhs ( <op declare match> ) <adverb list match empty>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'empty rule/1'
+<event initialization>                ::= <event name> <event initializer>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'event initialization/0'
+<event initializer>                   ::= ( @LEX:@CHR:<=> ) <on or off>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'event initializer/0'
+                                      |   
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'event initializer/1'
+<event name>                          ::= <standard name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'event name/0'
+                                      |   <single quoted name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'event name/1'
+                                      |   <reserved event name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'event name/2'
+<event specification>                 ::= ( @LEX:@STR:<event> @LEX:@STR:<=>> ) <event initialization>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'event specification/0'
+<group association>                   ::= ( @LEX:@STR:<assoc> @LEX:@STR:<=>> @LEX:@STR:<group>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'group association/0'
+<inaccessible statement>              ::= ( @LEX:@STR:<inaccessible> @LEX:@STR:<is> ) <inaccessible treatment> ( @LEX:@STR:<by> @LEX:@STR:<default>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'inaccessible statement/0'
+<inaccessible treatment>              ::= @LEX:@STR:<warn>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'inaccessible treatment/0'
+                                      |   @LEX:@STR:<ok>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'inaccessible treatment/1'
+                                      |   @LEX:@STR:<fatal>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'inaccessible treatment/2'
+<latm specification>                  ::= ( @LEX:@STR:<forgiving> @LEX:@STR:<=>> ) boolean
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'latm specification/0'
+                                      |   ( @LEX:@STR:<latm> @LEX:@STR:<=>> ) boolean
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'latm specification/1'
+<left association>                    ::= ( @LEX:@STR:<assoc> @LEX:@STR:<=>> @LEX:@STR:<left>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'left association/0'
+<lexeme default statement>            ::= ( @LEX:@STR:<lexeme> @LEX:@STR:<default> @LEX:@CHR:<=> ) <adverb list lexeme default>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'lexeme default statement/0'
+<lexeme rule>                         ::= ( @LEX:@STR:<:lexeme> <op declare match> ) symbol <adverb list lexeme>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'lexeme rule/0'
+<lexer name>                          ::= <standard name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'lexer name/0'
+                                      |   <single quoted name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'lexer name/1'
+lhs                                   ::= <symbol name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => lhs/0
+naming                                ::= ( @LEX:@STR:<name> @LEX:@STR:<=>> ) <alternative name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => naming/0
+<null adverb>                         ::= @LEX:@CHR:<,>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'null adverb/0'
+<null ranking constant>               ::= @LEX:@STR:<low>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'null ranking constant/0'
+                                      |   @LEX:@STR:<high>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'null ranking constant/0'
+<null ranking specification>          ::= ( @LEX:@STR:<null-ranking> @LEX:@STR:<=>> ) <null ranking constant>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'null ranking specification/0'
+                                      |   ( @LEX:@STR:<null> @LEX:@STR:<rank> @LEX:@STR:<=>> ) <null ranking constant>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'null ranking specification/1'
+<null statement>                      ::= @LEX:@CHR:<\73>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'null statement/0'
+<nulled event declaration>            ::= ( @LEX:@STR:<event> ) <event initialization> ( @LEX:@CHR:<=> @LEX:@STR:<nulled> ) <symbol name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'nulled event declaration/0'
+<on or off>                           ::= @LEX:@STR:<on>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'on or off/0'
+                                      |   @LEX:@STR:<off>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'on or off/1'
+<parenthesized rhs primary list>      ::= ( @LEX:@CHR:<\50> ) <rhs primary list> ( @LEX:@CHR:<\51>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'parenthesized rhs primary list/0'
+<pause specification>                 ::= ( @LEX:@STR:<pause> @LEX:@STR:<=>> ) <before or after>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'pause specification/0'
+<prediction event declaration>        ::= ( @LEX:@STR:<event> ) <event initialization> ( @LEX:@CHR:<=> @LEX:@STR:<predicted> ) <symbol name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'prediction event declaration/0'
+<priorities bnf>                      ::= <alternatives bnf> +
+                                          action => [name,values]
+                                          name => 'priorities bnf/0'
+                                          proper => 1
+                                          separator => <op loosen>
+<priorities match>                    ::= <alternatives match> +
+                                          action => [name,values]
+                                          name => 'priorities match/0'
+                                          proper => 1
+                                          separator => <op loosen>
+<priority rule>                       ::= lhs ( <op declare bnf> ) <priorities bnf>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'priority rule/0'
+                                      |   lhs ( <op declare match> ) <priorities match>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'priority rule/1'
+<priority specification>              ::= ( @LEX:@STR:<priority> @LEX:@STR:<=>> ) <signed integer>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'priority specification/0'
+<proper specification>                ::= ( @LEX:@STR:<proper> @LEX:@STR:<=>> ) boolean
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'proper specification/0'
+<quantified rule>                     ::= lhs ( <op declare bnf> ) <single symbol> quantifier <adverb list bnf quantified>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'quantified rule/0'
+                                      |   lhs ( <op declare match> ) <single symbol> quantifier <adverb list match quantified>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'quantified rule/1'
+quantifier                            ::= @LEX:@CHR:<*>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => quantifier/0
+                                      |   @LEX:@CHR:<+>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => quantifier/1
+<rank specification>                  ::= ( @LEX:@STR:<rank> @LEX:@STR:<=>> ) <signed integer>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'rank specification/0'
+rhs                                   ::= <rhs primary> +
+                                          action => [name,values]
+                                          name => rhs/0
+<rhs primary>                         ::= <single symbol>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'rhs primary/0'
+                                      |   <single quoted string>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'rhs primary/1'
+                                      |   <parenthesized rhs primary list>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'rhs primary/2'
+<rhs primary list>                    ::= <rhs primary> +
+                                          action => [name,values]
+                                          name => 'rhs primary list/0'
+<right association>                   ::= ( @LEX:@STR:<assoc> @LEX:@STR:<=>> @LEX:@STR:<right>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'right association/0'
+<separator specification>             ::= ( @LEX:@STR:<separator> @LEX:@STR:<=>> ) <single symbol>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'separator specification/0'
+<single symbol>                       ::= symbol
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'single symbol/0'
+                                      |   <character class>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'single symbol/1'
+<start rule>                          ::= ( @LEX:@STR:<:start> <op declare bnf> ) symbol
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'start rule/0'
+                                      |   ( @LEX:@STR:<start> @LEX:@STR:<symbol> @LEX:@STR:<is> ) symbol
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'start rule/1'
+statement                             ::= <start rule>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/0
+                                      |   <empty rule>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/1
+                                      |   <null statement>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/2
+                                      |   <statement group>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/3
+                                      |   <priority rule>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/4
+                                      |   <quantified rule>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/5
+                                      |   <discard rule>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/6
+                                      |   <default rule>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/7
+                                      |   <lexeme default statement>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/8
+                                      |   <discard default statement>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/9
+                                      |   <lexeme rule>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/10
+                                      |   <completion event declaration>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/11
+                                      |   <nulled event declaration>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/12
+                                      |   <prediction event declaration>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/13
+                                      |   <current lexer statement>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/14
+                                      |   <inaccessible statement>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => statement/15
+<statement group>                     ::= ( @LEX:@CHR:<\173> ) statements @LEX:@CHR:<\175>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'statement group/0'
+statements                            ::= statement +
+                                          action => [name,values]
+                                          name => statements/0
+symbol                                ::= <symbol name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => symbol/0
+<symbol name>                         ::= <bare name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'symbol name/0'
+                                      |   <bracketed name>
+                                          action => [name,values]
+                                          assoc => left
+                                          name => 'symbol name/1'
+:discard ~ <hash comment>
+<hash comment> ~ <terminated hash comment>
+               | <unterminated final hash comment>
+:discard ~ whitespace    
+whitespace     ~ [[:space:]] +
+@LEX:@CHR:<*>            ~ '*'
+                           latm => 1
+@LEX:@CHR:<+>            ~ '+'
+                           latm => 1
+@LEX:@CHR:<,>            ~ ','
+                           latm => 1
+@LEX:@CHR:<=>            ~ '='
+                           latm => 1
+@LEX:@CHR:<\50>          ~ '\50'
+                           latm => 1
+@LEX:@CHR:<\51>          ~ '\51'
+                           latm => 1
+@LEX:@CHR:<\73>          ~ '\73'
+                           latm => 1
+@LEX:@CHR:<\173>         ~ '\173'
+                           latm => 1
+@LEX:@CHR:<\175>         ~ '\175'
+                           latm => 1
+@LEX:@STR:<:default>     ~ ':default'
+                           latm => 1
+@LEX:@STR:<:discard>     ~ ':discard'
+                           latm => 1
+@LEX:@STR:<:lexeme>      ~ ':lexeme'
+                           latm => 1
+@LEX:@STR:<:start>       ~ ':start'
+                           latm => 1
+@LEX:@STR:<=>>           ~ '=>'
+                           latm => 1
+@LEX:@STR:<action>       ~ 'action'
+                           latm => 1
+@LEX:@STR:<assoc>        ~ 'assoc'
+                           latm => 1
+@LEX:@STR:<by>           ~ 'by'
+                           latm => 1
+@LEX:@STR:<completed>    ~ 'completed'
+                           latm => 1
+@LEX:@STR:<current>      ~ 'current'
+                           latm => 1
+@LEX:@STR:<default>      ~ 'default'
+                           latm => 1
+@LEX:@STR:<discard>      ~ 'discard'
+                           latm => 1
+@LEX:@STR:<event>        ~ 'event'
+                           latm => 1
+@LEX:@STR:<fatal>        ~ 'fatal'
+                           latm => 1
+@LEX:@STR:<forgiving>    ~ 'forgiving'
+                           latm => 1
+@LEX:@STR:<group>        ~ 'group'
+                           latm => 1
+@LEX:@STR:<high>         ~ 'high'
+                           latm => 1
+@LEX:@STR:<inaccessible> ~ 'inaccessible'
+                           latm => 1
+@LEX:@STR:<is>           ~ 'is'
+                           latm => 1
+@LEX:@STR:<latm>         ~ 'latm'
+                           latm => 1
+@LEX:@STR:<left>         ~ 'left'
+                           latm => 1
+@LEX:@STR:<lexeme>       ~ 'lexeme'
+                           latm => 1
+@LEX:@STR:<lexer>        ~ 'lexer'
+                           latm => 1
+@LEX:@STR:<low>          ~ 'low'
+                           latm => 1
+@LEX:@STR:<name>         ~ 'name'
+                           latm => 1
+@LEX:@STR:<null-ranking> ~ 'null\55ranking'
+                           latm => 1
+@LEX:@STR:<null>         ~ 'null'
+                           latm => 1
+@LEX:@STR:<nulled>       ~ 'nulled'
+                           latm => 1
+@LEX:@STR:<off>          ~ 'off'
+                           latm => 1
+@LEX:@STR:<ok>           ~ 'ok'
+                           latm => 1
+@LEX:@STR:<on>           ~ 'on'
+                           latm => 1
+@LEX:@STR:<pause>        ~ 'pause'
+                           latm => 1
+@LEX:@STR:<predicted>    ~ 'predicted'
+                           latm => 1
+@LEX:@STR:<priority>     ~ 'priority'
+                           latm => 1
+@LEX:@STR:<proper>       ~ 'proper'
+                           latm => 1
+@LEX:@STR:<rank>         ~ 'rank'
+                           latm => 1
+@LEX:@STR:<right>        ~ 'right'
+                           latm => 1
+@LEX:@STR:<separator>    ~ 'separator'
+                           latm => 1
+@LEX:@STR:<start>        ~ 'start'
+                           latm => 1
+@LEX:@STR:<symbol>       ~ 'symbol'
+                           latm => 1
+@LEX:@STR:<warn>         ~ 'warn'
+                           latm => 1
+<array descriptor>       ~ <array descriptor left bracket> <result item descriptor list> <array descriptor right bracket>
+                           latm => 1
+<bare name>              ~ <one or more word characters>
+                           latm => 1
+<before or after>        ~ 'before'
+                           latm => 1
+                         | 'after'
+                           latm => 1
+boolean                  ~ [0-1]
+                           latm => 1
+<bracketed name>         ~ '<' <bracketed name string> '>'
+                           latm => 1
+<character class>        ~ <a character class> <character class modifiers>
+                           latm => 1
+<op declare bnf>         ~ '::='
+                           latm => 1
+<op declare match>       ~ '~'
+                           latm => 1
+<op equal priority>      ~ '|'
+                           latm => 1
+<op loosen>              ~ '||'
+                           latm => 1
+<Perl name>              ~ <Perl identifier> +
+                           latm => 1
+                           proper => 1
+                           separator => <double colon>
+<reserved action name>   ~ <double colon> <one or more word characters>
+                           latm => 1
+<reserved event name>    ~ <double colon> <one or more word characters>
+                           latm => 1
+<signed integer>         ~ integer
+                           latm => 1
+                         | sign integer
+                           latm => 1
+<single quoted name>     ~ <a single quoted string>
+                           latm => 1
+<single quoted string>   ~ <a single quoted string> <character class modifiers>
+                           latm => 1
+<standard name>          ~ [A-Za-z] <zero or more word characters>
+                           latm => 1
+<a character class>                             ~ <cc open> <cc element and more>
+<a single quoted string>                        ~ <string open> <non empty string>
+<array descriptor left bracket>                 ~ '\133'
+                                                | '\133' whitespace
+<array descriptor right bracket>                ~ '\135'
+                                                | whitespace '\135'
+<bracketed name string>                         ~ [_[:alnum:][:space:]] +
+<cc close>                                      ~ '\135'
+<cc element and more>                           ~ <plain cc element>
+                                                | <escaped cc element>
+<cc open>                                       ~ '\133'
+                                                | '\133^'
+<cc range completion>                           ~ '\55' <plain cc char> <nullable cc>
+                                                | '\55' <escaped cc char>
+                                                | <nullable cc>
+<cc range completion post short octal escape>   ~ '\55' <plain cc char> <nullable cc>
+                                                | '\55' <escaped cc char>
+                                                | <escaped cc element>
+                                                | <plain cc element without octal>
+                                                | <cc close>
+<cc range completion post short unicode escape> ~ '\55' <plain cc char> <nullable cc>
+                                                | '\55' <escaped cc char>
+                                                | <escaped cc element>
+                                                | <plain cc element without hex>
+                                                | <cc close>
+<character class modifier>                      ~ ':ic'
+                                                | ':i'
+<character class modifiers>                     ~ <character class modifier> *
+control                                         ~ [\134a-bfnrtv]
+<double colon>                                  ~ '::'
+escape                                          ~ '\134'
+<escaped cc char>                               ~ escape <escaped cc char details>
+<escaped cc char details>                       ~ control <nullable cc>
+                                                | 'x' hex hex <nullable cc>
+                                                | 'u' hex hex hex hex <nullable cc>
+                                                | 'u' hex hex hex <nullable cc post short unicode escape>
+                                                | 'u' hex hex <nullable cc post short unicode escape>
+                                                | 'u' hex <nullable cc post short unicode escape>
+                                                | <leading octal> octal octal <nullable cc>
+                                                | octal octal <nullable cc post short octal escape>
+                                                | octal <nullable cc post short octal escape>
+<escaped cc element>                            ~ escape <escaped cc element details>
+<escaped cc element details>                    ~ control <cc range completion>
+                                                | 'x' hex hex <cc range completion>
+                                                | 'u' hex hex hex hex <cc range completion>
+                                                | 'u' hex hex hex <cc range completion post short unicode escape>
+                                                | 'u' hex hex <cc range completion post short unicode escape>
+                                                | 'u' hex <cc range completion post short unicode escape>
+                                                | <leading octal> octal octal <cc range completion>
+                                                | octal octal <cc range completion post short octal escape>
+                                                | octal <cc range completion post short octal escape>
+<escaped string char>                           ~ escape <escaped string char details>
+<escaped string char details>                   ~ control <nullable string>
+                                                | 'x' hex hex <nullable string>
+                                                | 'u' hex hex hex hex <nullable string>
+                                                | 'u' hex hex hex <nullable string post short unicode escape>
+                                                | 'u' hex hex <nullable string post short unicode escape>
+                                                | 'u' hex <nullable string post short unicode escape>
+                                                | <leading octal> octal octal <nullable string>
+                                                | octal octal <nullable string post short octal escape>
+                                                | octal <nullable string post short octal escape>
+<hash comment body>                             ~ <hash comment char> *
+<hash comment char>                             ~ [^\n-\r\u2028-\u2029]
+hex                                             ~ [[:xdigit:]]
+integer                                         ~ [[:digit:]] +
+<leading octal>                                 ~ [0-3]
+<non empty string>                              ~ <plain string char> <nullable string>
+                                                | <escaped string char>
+<nullable cc>                                   ~ <cc close>
+                                                | <cc element and more>
+<nullable cc post short octal escape>           ~ <escaped cc char>
+                                                | <plain cc char without octal> <nullable cc>
+                                                | <cc close>
+<nullable cc post short unicode escape>         ~ <escaped cc char>
+                                                | <plain cc char without hex> <nullable cc>
+                                                | <cc close>
+<nullable string>                               ~ <string close>
+                                                | <non empty string>
+<nullable string post short octal escape>       ~ <escaped string char>
+                                                | <plain string char without octal> <nullable string>
+                                                | <string close>
+<nullable string post short unicode escape>     ~ <escaped string char>
+                                                | <plain string char without hex> <nullable string>
+                                                | <string close>
+octal                                           ~ [0-7]
+<one or more word characters>                   ~ [_[:alnum:]] +
+<Perl identifier>                               ~ <one or more word characters>
+<plain cc char>                                 ~ [^\7-\r\55\134-\135\u2028-\u2029]
+<plain cc char without hex>                     ~ [^\7-\r\55\134-\135\u2028-\u2029[:xdigit:]]
+<plain cc char without octal>                   ~ [^\7-\r\550-7\134-\135\u2028-\u2029]
+<plain cc element>                              ~ <plain cc char> <cc range completion>
+                                                | <posix char class> <nullable cc>
+<plain cc element without hex>                  ~ <plain cc char without hex> <cc range completion>
+                                                | <posix char class> <nullable cc>
+<plain cc element without octal>                ~ <plain cc char without octal> <cc range completion>
+                                                | <posix char class> <nullable cc>
+<plain string char>                             ~ [^\7-\10\n-\r'\134\u2028-\u2029]
+<plain string char without hex>                 ~ [^\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]]
+<plain string char without octal>               ~ [^\7-\10\n-\r'0-7\134\u2028-\u2029]
+<posix char class>                              ~ '\133:' <posix char class name> ':\135'
+<posix char class name>                         ~ [[:alnum:]] +
+<result item descriptor>                        ~ 'start'
+                                                | 'length'
+                                                | 'g1start'
+                                                | 'g1length'
+                                                | 'name'
+                                                | 'lhs'
+                                                | 'symbol'
+                                                | 'rule'
+                                                | 'value'
+                                                | 'values'
+                                                | 'ord'
+<result item descriptor list>                   ~ <result item descriptor> *
+                                                  proper => 0
+                                                  separator => <result item descriptor separator>
+<result item descriptor separator>              ~ ','
+                                                | ',' whitespace
+sign                                            ~ [+\55]
+<string close>                                  ~ '''
+<string open>                                   ~ '''
+<terminated hash comment>                       ~ '#' <hash comment body> <vertical space char>
+<unterminated final hash comment>               ~ '#' <hash comment body>
+<vertical space char>                           ~ [\n-\r\u2028-\u2029]
+<zero or more word characters>                  ~ [_[:alnum:]] *
