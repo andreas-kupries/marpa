@@ -14,5 +14,5 @@ echo
     $bindir/make-parser
 ) 2>&1 | tee LOG-GENERATE
 
-rm -f X.*
+rm -rf X.* BUILD-*
 ./build.tcl test --log X --test-include ~/opt/ActiveTcl/include
