@@ -1,0 +1,6 @@
+value
+  array
+    elements
+      element
+        value
+          @1 15 {'\"a/*b*/c/*d//e\"'}

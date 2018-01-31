@@ -9,19 +9,16 @@
 ## 
 
 kt require support critcl   ;# compile & run
-kt source  support/gen.tcl
 
 # # ## ### ##### ######## ############# #####################
 ## API to the json-core
 
-gen configure \
-    cl json-rtc \
-    ex cparse
-
 proc result {base} { locate $base ast_rtc ast }
 proc label      {} { return "json_rtc" }
-proc initialize {} { gen setup }
-proc finalize   {} { gen cleanup }
+proc initialize {} { kt local support [cl] }
+proc finalize   {} {}
+
+proc cl {} { return json::parser::c }
 
 # # ## ### ##### ######## ############# #####################
 ##

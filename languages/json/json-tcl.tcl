@@ -7,7 +7,7 @@
 # (c) 2018 Grammar json::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "json::parser::tcl".
-##	Generated On Tue Jan 30 15:23:20 PST 2018
+##	Generated On Tue Jan 30 16:42:41 PST 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 
@@ -91,15 +91,16 @@ oo::class create json::parser::tcl {
 	return {
 	    colon      1
 	    comma      1
-	    false      1
 	    lbrace     1
 	    lbracket   1
-	    null       1
-	    number     1
+	    lfalse     1
+	    lnull      1
+	    lnumber    1
+	    lstring    1
+	    ltrue      1
+	    quote      1
 	    rbrace     1
 	    rbracket   1
-	    string     1
-	    true       1
 	}
     }
     
@@ -121,7 +122,6 @@ oo::class create json::parser::tcl {
 	    @STR:<null>
 	    @STR:<true>
 	    char
-	    chars
 	    decimal
 	    digits
 	    digitz
@@ -132,7 +132,6 @@ oo::class create json::parser::tcl {
 	    int
 	    plain
 	    positive
-	    quote
 	    whitespace
 	    whole
 	}
@@ -148,7 +147,6 @@ oo::class create json::parser::tcl {
 	    {char := plain}
 	    {char := {@STR:<\134b>} {@CLS:<\10\42/bfnrt>}}
 	    {char := {@STR:<\134u>} hex hex hex hex}
-	    {chars * char}
 	    {colon := @CHR:<:>}
 	    {comma := @CHR:<,>}
 	    {decimal := @RAN:<09>}
@@ -158,25 +156,25 @@ oo::class create json::parser::tcl {
 	    {e := @CLS:<Ee> @CHR:<+>}
 	    {e := @CLS:<Ee> @CHR:<->}
 	    {exponent := e digits}
-	    {false := @STR:<false>}
 	    {fraction := @CHR:<.> digits}
 	    {hex := {@NCC:<[:xdigit:]>}}
 	    {int := @CHR:<-> whole}
 	    {int := whole}
 	    {lbrace := {@CHR:<\173>}}
 	    {lbracket := {@CHR:<\133>}}
-	    {null := @STR:<null>}
-	    {number := int}
-	    {number := int exponent}
-	    {number := int fraction}
-	    {number := int fraction exponent}
+	    {lfalse := @STR:<false>}
+	    {lnull := @STR:<null>}
+	    {lnumber := int}
+	    {lnumber := int exponent}
+	    {lnumber := int fraction}
+	    {lnumber := int fraction exponent}
+	    {lstring * char}
+	    {ltrue := @STR:<true>}
 	    {plain := {@^CLS:<\42\134[:control:]>}}
 	    {positive := @RAN:<19> digitz}
 	    {quote := {@CHR:<\42>}}
 	    {rbrace := {@CHR:<\175>}}
 	    {rbracket := {@CHR:<\135>}}
-	    {string := quote chars quote}
-	    {true := @STR:<true>}
 	    {whitespace + {@NCC:<[:space:]>}}
 	    {whole := @CHR:<0>}
 	    {whole := positive}
@@ -199,9 +197,14 @@ oo::class create json::parser::tcl {
 	    array
 	    element
 	    elements
+	    false
+	    null
+	    number
 	    object
 	    pair
 	    pairs
+	    string
+	    true
 	    value
 	}
     }
@@ -214,9 +217,14 @@ oo::class create json::parser::tcl {
 	    {array :M {0 2} lbracket elements rbracket}
 	    {element := value}
 	    {elements * element comma 1}
+	    {false := lfalse}
+	    {null := lnull}
+	    {number := lnumber}
 	    {object :M {0 2} lbrace pairs rbrace}
 	    {pair :M 1 string colon value}
 	    {pairs * pair comma 1}
+	    {string :M {0 2} quote lstring quote}
+	    {true := ltrue}
 	    {value := array}
 	    {value := false}
 	    {value := null}

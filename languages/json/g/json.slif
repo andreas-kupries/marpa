@@ -40,14 +40,19 @@ elements ::= element *
 	proper    => 1
 element  ::= value
 
-true   ~ 'true'
-false  ~ 'false'
-null   ~ 'null'
+string	 ::= (quote) lstring (quote)
+number	 ::= lnumber
+true	 ::= ltrue
+false	 ::= lfalse
+null	 ::= lnull
 
-string ~ quote chars quote
-chars  ~ char *
+ltrue	 ~ 'true'
+lfalse	 ~ 'false'
+lnull	 ~ 'null'
 
-number   ~ int fraction exponent
+lstring ~ char *
+
+lnumber  ~ int fraction exponent
 	 | int          exponent
 	 | int fraction
 	 | int

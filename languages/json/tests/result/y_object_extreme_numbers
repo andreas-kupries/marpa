@@ -1,0 +1,12 @@
+value
+  object
+    pairs
+      pair
+        @2 5 {'\"min\"'}
+        value
+          @9 8 '-1e+28'
+      @17 1 ','
+      pair
+        @19 5 {'\"max\"'}
+        value
+          @26 7 '1e+28'

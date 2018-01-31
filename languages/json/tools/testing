@@ -1,0 +1,18 @@
+#!/bin/bash
+
+self="$0"
+bindir="$(dirname "${self}")"
+
+# cleanup
+find . -name "*~" -print
+find . -name "*~" -exec rm "{}" \;
+clear
+echo
+
+# regenerate packages from grammar
+(
+    $bindir/make-parser
+) 2>&1 | tee LOG-GENERATE
+
+rm -f X.*
+./build.tcl test --log X --test-include ~/opt/ActiveTcl/include

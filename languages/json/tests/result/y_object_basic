@@ -1,0 +1,7 @@
+value
+  object
+    pairs
+      pair
+        @1 5 {'\"asd\"'}
+        value
+          @7 5 {'\"sdf\"'}

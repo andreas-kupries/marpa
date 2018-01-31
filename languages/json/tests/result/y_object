@@ -1,0 +1,12 @@
+value
+  object
+    pairs
+      pair
+        @1 5 {'\"asd\"'}
+        value
+          @7 5 {'\"sdf\"'}
+      @12 1 ','
+      pair
+        @14 5 {'\"dfg\"'}
+        value
+          @20 5 {'\"fgh\"'}

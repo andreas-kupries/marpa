@@ -1,0 +1,7 @@
+value
+  object
+    pairs
+      pair
+        @1 14 {'\"foo\\u0000bar\"'}
+        value
+          @17 2 '42'

@@ -8,19 +8,15 @@
 ## Test json parser on top of RT-Tcl.
 ## 
 
-kt source  support/gen.tcl
-
 # # ## ### ##### ######## ############# #####################
 ## API to the json-core
 
-gen configure \
-    cl json-tcl \
-    ex tparse
-
 proc result {base} { locate $base ast_tcl ast }
 proc label      {} { return "json_tcl" }
-proc initialize {} { gen setup }
-proc finalize   {} { gen cleanup }
+proc initialize {} { kt local support [cl] }
+proc finalize   {} {}
+
+proc cl {} { return json::parser::tcl }
 
 # # ## ### ##### ######## ############# #####################
 ##

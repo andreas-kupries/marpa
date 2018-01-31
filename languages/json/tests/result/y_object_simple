@@ -1,0 +1,8 @@
+value
+  object
+    pairs
+      pair
+        @1 3 {'\"a\"'}
+        value
+          array
+            @{} {} ''
