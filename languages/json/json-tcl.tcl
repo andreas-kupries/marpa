@@ -7,7 +7,7 @@
 # (c) 2018 Grammar json::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "json::parser::tcl".
-##	Generated On Tue Jan 30 16:42:41 PST 2018
+##	Generated On Wed Jan 31 13:08:14 PST 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 
@@ -53,7 +53,6 @@ oo::class create json::parser::tcl {
 	    @CHR:<0>        0
 	    @CHR:<:>        :
 	    @CHR:<a>        a
-	    @CHR:<b>        b
 	    @CHR:<e>        e
 	    @CHR:<f>        f
 	    @CHR:<l>        l
@@ -75,13 +74,13 @@ oo::class create json::parser::tcl {
 	debug.json/parser/tcl
 	# Literals: The character classes in use
 	return {
-	    @CLS:<Ee>                      {[Ee]}
-	    @RAN:<09>                      {[0-9]}
-	    @RAN:<19>                      {[1-9]}
-	    {@^CLS:<\42\134[:control:]>}   {[^\0-\37\42\134\177-\u009f\u00ad\u0600-\u0605\u061c\u06dd\u070f\u08e2\u180e\u200b-\u200f\u202a-\u202e\u2060-\u2064\u2066-\u206f\ue000-\uf8ff\ufeff\ufff9-\ufffb]}
-	    {@CLS:<\10\42/bfnrt>}          {[\10\42/bfnrt]}
-	    {@NCC:<[:space:]>}             {[[:space:]]}
-	    {@NCC:<[:xdigit:]>}            {[[:xdigit:]]}
+	    @CLS:<Ee>                 {[Ee]}
+	    @RAN:<09>                 {[0-9]}
+	    @RAN:<19>                 {[1-9]}
+	    {@^CLS:<\0-\37\42\134>}   {[^\0-\37\42\134]}
+	    {@CLS:<\42/\134bfnrt>}    {[\42/\134bfnrt]}
+	    {@NCC:<[:space:]>}        {[[:space:]]}
+	    {@NCC:<[:xdigit:]>}       {[[:xdigit:]]}
 	}
     }
     
@@ -116,7 +115,6 @@ oo::class create json::parser::tcl {
 	# Non-lexeme, non-literal symbols
 	debug.json/parser/tcl
 	return {
-	    {@STR:<\134b>}
 	    {@STR:<\134u>}
 	    @STR:<false>
 	    @STR:<null>
@@ -145,7 +143,7 @@ oo::class create json::parser::tcl {
 	    {@STR:<null> := @CHR:<n> @CHR:<u> @CHR:<l> @CHR:<l>}
 	    {@STR:<true> := @CHR:<t> @CHR:<r> @CHR:<u> @CHR:<e>}
 	    {char := plain}
-	    {char := {@STR:<\134b>} {@CLS:<\10\42/bfnrt>}}
+	    {char := {@CHR:<\134>} {@CLS:<\42/\134bfnrt>}}
 	    {char := {@STR:<\134u>} hex hex hex hex}
 	    {colon := @CHR:<:>}
 	    {comma := @CHR:<,>}
@@ -170,7 +168,7 @@ oo::class create json::parser::tcl {
 	    {lnumber := int fraction exponent}
 	    {lstring * char}
 	    {ltrue := @STR:<true>}
-	    {plain := {@^CLS:<\42\134[:control:]>}}
+	    {plain := {@^CLS:<\0-\37\42\134>}}
 	    {positive := @RAN:<19> digitz}
 	    {quote := {@CHR:<\42>}}
 	    {rbrace := {@CHR:<\175>}}
@@ -178,7 +176,6 @@ oo::class create json::parser::tcl {
 	    {whitespace + {@NCC:<[:space:]>}}
 	    {whole := @CHR:<0>}
 	    {whole := positive}
-	    {{@STR:<\134b>} := {@CHR:<\134>} @CHR:<b>}
 	    {{@STR:<\134u>} := {@CHR:<\134>} @CHR:<u>}
 	}
     }

@@ -3,4 +3,6 @@ value
     elements
       element
         value
-          @1 4 '100.0'
+          number
+            @1 4 '1E+2'
+

@@ -3,4 +3,6 @@ value
     elements
       element
         value
-          @1 8 {'\"\\u002c\"'}
+          string
+            @2 6 {'\\u002c'}
+

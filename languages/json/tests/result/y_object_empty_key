@@ -2,6 +2,9 @@ value
   object
     pairs
       pair
-        @1 2 {'\"\"'}
+        string
+          @2 0 ''
         value
-          @4 1 '0'
+          number
+            @4 1 '0'
+

@@ -4,5 +4,5 @@ value
       element
         value
           string
-            @2 6 {'\\u0022'}
+            @2 16 {'\\\"\\\\\\/\\b\\f\\n\\r\\t'}
 

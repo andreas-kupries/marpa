@@ -3,4 +3,6 @@ value
     elements
       element
         value
-          @1 10 '123.456789'
+          number
+            @1 10 '123.456789'
+

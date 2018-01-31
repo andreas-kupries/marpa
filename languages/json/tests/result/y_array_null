@@ -3,4 +3,6 @@ value
     elements
       element
         value
-          @1 4 'null'
+          null
+            @1 4 'null'
+

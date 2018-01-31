@@ -3,4 +3,6 @@ value
     elements
       element
         value
-          @1 26 {'\"\\ud83d\\ude39\\ud83d\\udc8d\"'}
+          string
+            @2 24 {'\\ud83d\\ude39\\ud83d\\udc8d'}
+

@@ -3,4 +3,6 @@ value
     elements
       element
         value
-          @1 14 {'\"\\uD834\\uDd1e\"'}
+          string
+            @2 12 {'\\uD834\\uDd1e'}
+

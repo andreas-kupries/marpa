@@ -3,4 +3,6 @@ value
     elements
       element
         value
-          @1 4 '1e+22'
+          number
+            @1 4 '1E22'
+

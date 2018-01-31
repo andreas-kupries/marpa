@@ -2,6 +2,9 @@ value
   object
     pairs
       pair
-        @2 3 {'\"a\"'}
+        string
+          @3 1 'a'
         value
-          @7 3 {'\"b\"'}
+          string
+            @8 1 'b'
+

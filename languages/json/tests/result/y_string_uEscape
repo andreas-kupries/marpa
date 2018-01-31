@@ -3,4 +3,6 @@ value
     elements
       element
         value
-          @1 26 {'\"\\u0061\\u30af\\u30EA\\u30b9\"'}
+          string
+            @2 24 {'\\u0061\\u30af\\u30EA\\u30b9'}
+

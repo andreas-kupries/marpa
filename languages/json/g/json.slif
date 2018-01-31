@@ -3,11 +3,13 @@
 ## (c) 2017-2018 Andreas Kupries
 #
 # References:
+# - https://core.tcl.tk/akupries/marpa/		Tcl+Marpa
 # - http://json.org/				Base spec
 # - https://tools.ietf.org/html/rfc7159		IETF spec
-# - http://seriot.ch/parsing_json.php		Test suite
-# - https://core.tcl.tk/akupries/marpa/		Tcl+Marpa
-#
+# - http://seriot.ch/parsing_json.php		Article on JSON spec minefield.
+#                                               Origin of the test suite inputs.
+
+# # ## ### ##### ######## ############# #####################
 
 :default ::=
 	action => [name,values]
@@ -19,6 +21,8 @@ lexeme default =
 :discard ~ whitespace
 
 :start ::= value
+
+# # ## ### ##### ######## ############# #####################
 
 value ::= object
       |	  array
@@ -45,6 +49,8 @@ number	 ::= lnumber
 true	 ::= ltrue
 false	 ::= lfalse
 null	 ::= lnull
+
+# # ## ### ##### ######## ############# #####################
 
 ltrue	 ~ 'true'
 lfalse	 ~ 'false'
@@ -82,10 +88,20 @@ rbracket ~ ']'
 comma    ~ ','
 colon    ~ ':'
 quote    ~ '"'
+
 char     ~ plain
-	 | '\\b' [bfnrt"/\b]
+	 | '\\' [bfnrt"/\134]
 	 | '\\u' hex hex hex hex
-plain    ~ [^"\\[:control:]]
 hex      ~ [[:xdigit:]]
+plain    ~ [^"\\\0-\37]
+# NOTE:
+#   In json `control` characters are defined as ASCII(0)-ASCII(31).
+#   Nothing more. Definitely not the unicode [:control:] class.
+#   Also, DEL (ASCII(127)) is not a control character to JSON
+#
+# ref: https://tools.ietf.org/html/rfc7159#section-7
+# ref: http://seriot.ch/parsing_json.php#25
 
 whitespace ~ [[:space:]] +
+
+# # ## ### ##### ######## ############# #####################

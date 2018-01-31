@@ -3,4 +3,6 @@ value
     elements
       element
         value
-          @1 15 {'\"a/*b*/c/*d//e\"'}
+          string
+            @2 13 'a/*b*/c/*d//e'
+

@@ -3,4 +3,6 @@ value
     elements
       element
         value
-          @1 15 {'\"new\\u000Aline\"'}
+          string
+            @2 13 {'new\\u000Aline'}
+

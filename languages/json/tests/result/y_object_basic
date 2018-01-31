@@ -2,6 +2,9 @@ value
   object
     pairs
       pair
-        @1 5 {'\"asd\"'}
+        string
+          @2 3 'asd'
         value
-          @7 5 {'\"sdf\"'}
+          string
+            @8 3 'sdf'
+

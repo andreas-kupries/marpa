@@ -3,4 +3,6 @@ value
     elements
       element
         value
-          @1 4 '-123'
+          number
+            @1 4 '-123'
+

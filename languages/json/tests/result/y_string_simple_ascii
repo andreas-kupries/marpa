@@ -3,4 +3,6 @@ value
     elements
       element
         value
-          @1 6 {'\"asd \"'}
+          string
+            @2 4 {'asd '}
+

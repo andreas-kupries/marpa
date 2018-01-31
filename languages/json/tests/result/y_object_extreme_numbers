@@ -2,11 +2,16 @@ value
   object
     pairs
       pair
-        @2 5 {'\"min\"'}
+        string
+          @3 3 'min'
         value
-          @9 8 '-1e+28'
+          number
+            @9 8 '-1.0e+28'
       @17 1 ','
       pair
-        @19 5 {'\"max\"'}
+        string
+          @20 3 'max'
         value
-          @26 7 '1e+28'
+          number
+            @26 7 '1.0e+28'
+

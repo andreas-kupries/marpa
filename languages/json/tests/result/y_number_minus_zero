@@ -3,4 +3,6 @@ value
     elements
       element
         value
-          @1 2 '0'
+          number
+            @1 2 '-0'
+

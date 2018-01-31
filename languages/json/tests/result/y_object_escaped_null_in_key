@@ -2,6 +2,9 @@ value
   object
     pairs
       pair
-        @1 14 {'\"foo\\u0000bar\"'}
+        string
+          @2 12 {'foo\\u0000bar'}
         value
-          @17 2 '42'
+          number
+            @17 2 '42'
+

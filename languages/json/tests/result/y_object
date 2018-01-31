@@ -2,11 +2,16 @@ value
   object
     pairs
       pair
-        @1 5 {'\"asd\"'}
+        string
+          @2 3 'asd'
         value
-          @7 5 {'\"sdf\"'}
+          string
+            @8 3 'sdf'
       @12 1 ','
       pair
-        @14 5 {'\"dfg\"'}
+        string
+          @15 3 'dfg'
         value
-          @20 5 {'\"fgh\"'}
+          string
+            @21 3 'fgh'
+
