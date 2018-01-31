@@ -474,7 +474,7 @@ oo::class create marpa::lexer {
 	}
 	debug.marpa/lexer {[debug caller] | Lexeme start:  $mystart}
 	debug.marpa/lexer {[debug caller] | Lexeme length: $latest}
-	debug.marpa/lexer {[debug caller] | Lexeme:        (([char quote cstring [expr {$redo ? [string range $mylexeme 0 end-$redo] : $mylexeme}]]))}
+	debug.marpa/lexer {[debug caller] | Lexeme:        (([char quote cstring [string range $mylexeme 0 end-$redo]]))}
 	debug.marpa/lexer {[debug caller] | Redo:          $redo}
 
 	# II. Pull all the valid parses at this location
@@ -700,10 +700,7 @@ oo::class create marpa::lexer {
 		lhs      { upvar 1 symbol symbol ; set symbol }
 		rule     { upvar 1 tree   tree   ; dict get [lindex $tree end-2] id }
 		value    -
-		values   {
-		    upvar 1 latest latest redo redo
-		    expr {$redo ? [string range $mylexeme 0 end-$redo] : $mylexeme}
-		}
+		values   { upvar 1 redo redo ; string range $mylexeme 0 end-$redo }
 	    }
 	}]
 	if {[llength $result] == 1} {
