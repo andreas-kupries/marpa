@@ -1,0 +1,13 @@
+Parsing failed in lexer. Stopped at offset 1 after reading '9'. Expected any character in [\"[[:space:]]\175] while looking for any of (quote, rbrace, whitespace).
+L0 Report:
+______ P31   @1-1 <quote>      --> . <@CHR:<\42>>
+______ P32   @1-1 <rbrace>     --> . <@CHR:<\175>>
+______ P34   @1-1 <whitespace> --> . <@NCC:<[:space:]>>
+______ R47:1 @0-1 <@START>     --> <ACS:quote> . <quote>
+______ R48:1 @0-1 <@START>     --> <ACS:rbrace> . <rbrace>
+______ R50:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
+Mismatch:
+'9' => (22 23 24 27) ni
+   15: '\"'
+   20: '\175'
+   26: [[:space:]]

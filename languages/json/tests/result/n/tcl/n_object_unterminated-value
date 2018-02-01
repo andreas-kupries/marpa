@@ -1,0 +1,5 @@
+Parsing failed in parser. Stopped at offset 6 after reading 'a'. Expected any character in [\"[[:space:]]] while looking for any of (quote, whitespace).
+Mismatch:
+'a' => (6 24 27) ni
+   15: '\"'
+   26: [[:space:]]

@@ -1,0 +1,4 @@
+Parsing failed in lexer. Stopped at offset 11 after reading 'u'. Expected any character in [e] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, rbracket, whitespace).
+Mismatch:
+'u' => (117) ni
+  101: 'e'

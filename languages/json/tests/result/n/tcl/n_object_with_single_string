@@ -1,0 +1,10 @@
+Parsing failed in gate. Stopped at offset 21 after reading '\175'. Expected any character in [:[[:space:]]] while looking for any of (colon, whitespace).
+L0 Report:
+______ P6    @1-1 <colon>      --> . <@CHR:<:>>
+______ P34   @1-1 <whitespace> --> . <@NCC:<[:space:]>>
+______ R38:1 @0-1 <@START>     --> <ACS:colon> . <colon>
+______ R50:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
+Mismatch:
+'\175' => (20 24) ni
+    5: ':'
+   26: [[:space:]]

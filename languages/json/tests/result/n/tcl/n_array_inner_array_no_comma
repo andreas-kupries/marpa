@@ -1,0 +1,13 @@
+Parsing failed in gate. Stopped at offset 2 after reading '['. Expected any character in [,[[:space:]]]] while looking for any of (comma, rbracket, whitespace).
+L0 Report:
+______ P7    @1-1 <comma>      --> . <@CHR:<,>>
+______ P33   @1-1 <rbracket>   --> . <@CHR:<\135>>
+______ P34   @1-1 <whitespace> --> . <@NCC:<[:space:]>>
+______ R39:1 @0-1 <@START>     --> <ACS:comma> . <comma>
+______ R49:1 @0-1 <@START>     --> <ACS:rbracket> . <rbracket>
+______ R50:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
+Mismatch:
+'[' => (16 24) ni
+    1: ','
+   18: ']'
+   26: [[:space:]]

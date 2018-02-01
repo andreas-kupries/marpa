@@ -1,0 +1,6 @@
+Parsing failed in parser. Stopped at offset 3 after reading '\"'. Expected any character in [,[[:space:]]]] while looking for any of (comma, rbracket, whitespace).
+Mismatch:
+'\"' => (15 25) ni
+    1: ','
+   18: ']'
+   26: [[:space:]]

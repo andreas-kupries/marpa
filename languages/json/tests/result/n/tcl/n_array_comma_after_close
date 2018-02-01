@@ -1,0 +1,7 @@
+Parsing failed in lexer. Stopped at offset 4 after reading ','. Expected any character in [[[:space:]]] while looking for any of (whitespace).
+L0 Report:
+______ P34   @1-1 <whitespace> --> . <@NCC:<[:space:]>>
+______ R50:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
+Mismatch:
+',' => (1 24) ni
+   26: [[:space:]]

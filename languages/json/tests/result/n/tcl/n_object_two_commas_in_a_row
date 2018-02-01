@@ -1,0 +1,10 @@
+Parsing failed in lexer. Stopped at offset 9 after reading ','. Expected any character in [\"[[:space:]]] while looking for any of (quote, whitespace).
+L0 Report:
+______ P31   @1-1 <quote>      --> . <@CHR:<\42>>
+______ P34   @1-1 <whitespace> --> . <@NCC:<[:space:]>>
+______ R47:1 @0-1 <@START>     --> <ACS:quote> . <quote>
+______ R50:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
+Mismatch:
+',' => (1 24) ni
+   15: '\"'
+   26: [[:space:]]

@@ -2,21 +2,19 @@
 ## (c) 2018 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## Execution core for testing the JSON parser on top of different runtimes.
-## Configured by the caller with methods for
+## Configured by the caller with procedures.
 ## - overall initialization and finalization
 ## - parser creation and destruction
 ## - AST result selection
 #
-## The methods expected to exist are
+## The procedures expected to exist are
+# * rt          :: Name of the runtime (`c` or `tcl`)
+# * coding      :: Encoding to use when reading files with `fgetc`.
+# * constraints :: Constraints for a particular test case id
 #
-## * label      :: return string to name the tests
-## * initialize :: global setup, for the suite
-## * finalize   :: global cleanup, for the suite
-## * result     :: result selection by label / base directory
-## * cl         :: name of the parser class?
-
-## The name of the parser class is stored in the `gen` config, under
-## key `cl`.
+## Derived from these are
+# * cl  :: Name of the parser class
+# * tnp :: Prefix for test case name
 
 # # ## ### ##### ######## ############# #####################
 
@@ -32,6 +30,8 @@ kt require support fileutil ;# cat
 # # ## ### ##### ######## ############# #####################
 ## Local shorthands
 
+proc tnp     {} { return lang-json-rt:[rt]  }
+proc cl      {} { return json::parser::[rt] }
 proc setup   {} { [cl] create PARSE }
 proc cleanup {} { PARSE destroy }
 
@@ -47,7 +47,7 @@ kt source support/textutils.tcl
 
 # # ## ### ##### ######## ############# #####################
 
-initialize
+kt local support [cl]
 
 # # ## ### ##### ######## ############# #####################
 ##  1 constructor/0
@@ -57,7 +57,7 @@ initialize
 # # ## ### ##### ######## ############# #####################
 ## constructor - wrong args, initial state, calls
 
-test lang-[label]-parser-constructor-1.0 "[label] :: constructor, wrong args, too many" -body {
+test [tnp]-constructor-1.0 "[cl] :: constructor, wrong args, too many" -body {
     [cl] new X
 }   -returnCodes error \
     -result "wrong # args: should be \"[cl] new\""
@@ -65,14 +65,14 @@ test lang-[label]-parser-constructor-1.0 "[label] :: constructor, wrong args, to
 # # ## ### ##### ######## ############# #####################
 ## process - argument checking
 
-test lang-[label]-parser-process-1.0 "[label] :: process, wrong args, not enough" -body {
+test [tnp]-process-1.0 "[cl] :: process, wrong args, not enough" -body {
     PARSE process
 }   -setup   setup \
     -cleanup cleanup \
     -returnCodes error \
     -result {wrong # args: should be "PARSE process string"}
 
-test lang-[label]-parser-process-1.1 "[label] :: process, wrong args, too many" -body {
+test [tnp]-process-1.1 "[cl] :: process, wrong args, too many" -body {
     PARSE process DATA X
 }   -setup   setup \
     -cleanup cleanup \
@@ -82,14 +82,14 @@ test lang-[label]-parser-process-1.1 "[label] :: process, wrong args, too many" 
 # # ## ### ##### ######## ############# #####################
 ## process-file - argument checking
 
-test lang-[label]-parser-process-file-1.0 "[label] :: process-file, wrong args, not enough" -body {
+test [tnp]-process-file-1.0 "[cl] :: process-file, wrong args, not enough" -body {
     PARSE process-file
 }   -setup   setup \
     -cleanup cleanup \
     -returnCodes error \
     -result {wrong # args: should be "PARSE process-file path"}
 
-test lang-[label]-parser-process-file-1.1 "[label] :: process-file, wrong args, too many" -body {
+test [tnp]-process-file-1.1 "[cl] :: process-file, wrong args, too many" -body {
     PARSE process-file DATA X
 }   -setup   setup \
     -cleanup cleanup \
@@ -100,22 +100,27 @@ test lang-[label]-parser-process-file-1.1 "[label] :: process-file, wrong args, 
 ## process, process-file - Actual processing - Id formatting prep
 
 # # ## ### ##### ######## ############# #####################
-## Must accept inputs
+## Will-accept inputs
+## - must-accept
 
-lappend yes {*}[glob -nocomplain -directory [td]/input y_*]
-set max [llength $yes]
+lappend will_accept {*}[glob -nocomplain -directory [td]/input/y y_*]
+set max [llength $will_accept]
 set fmt %0[string length $max]d
 
-set k 0
-foreach infile $yes {
+set k -1
+foreach infile $will_accept {
+    incr k
+    # - --   -----        -------------
     set kd       [format $fmt $k]
     set id       [file rootname [file tail $infile]]
-    set exfile   [td]/result/$id
+    set exfile   [td]/result/y/$id
     set input    [fgetc $infile [coding]]
     set expected {}
     catch { set expected [string trim [fget $exfile]] }
 
-    test lang-[label]-process-2.${kd}---${id} "[label] :: process $id" -body {
+    # - --   -----        -------------
+    
+    test [tnp]-process-2.${kd}---${id} "[cl] :: process $id" -body {
 	catch {
 	    ast-format [PARSE process $input]
 	} msg
@@ -125,7 +130,7 @@ foreach infile $yes {
 	unset msg
     } -result $expected -constraints [constraints $id]
 
-    test lang-[label]-process-file-3.${kd}---${id} "[label] :: process-file $id" -body {
+    test [tnp]-process-file-3.${kd}---${id} "[cl] :: process-file $id" -body {
 	catch {
 	    ast-format [PARSE process-file $infile]
 	} msg
@@ -134,26 +139,55 @@ foreach infile $yes {
 	cleanup
 	unset msg
     } -result $expected -constraints [constraints $id]
-
-    incr k
 }
 
 # # ## ### ##### ######## ############# #####################
-## Must reject inputs.
+## Will reject inputs.
+## - must reject
 
+lappend will_reject {*}[glob -nocomplain -directory [td]/input/n n_*]
+set max [llength $will_reject]
+set fmt %0[string length $max]d
 
+set k -1
+foreach infile $will_reject {
+    incr k
+    # - --   -----        -------------
+    set kd       [format $fmt $k]
+    set id       [file rootname [file tail $infile]]
+    set input    [fgetc $infile [coding]]
+    set expected {}
+    catch {
+	set exfile [locate [td]/result/n [rt]/$id $id]
+	set expected [fget $exfile]
+    }
+
+    # - --   -----        -------------
+    
+    test [tnp]-process-2.${kd}---${id} "[cl] :: process $id" -body {
+	PARSE process $input
+    } -setup setup -cleanup {
+	cleanup
+    } -returnCodes error -result $expected -constraints [constraints $id]
+
+    test [tnp]-process-file-3.${kd}---${id} "[cl] :: process-file $id" -body {
+	    PARSE process-file $infile
+    } -setup setup -cleanup {
+	cleanup
+    } -returnCodes error -result $expected -constraints [constraints $id]
+}
 
 # # ## ### ##### ######## ############# #####################
-unset yes max fmt k infile kd exfile input expected id
+unset will_accept will_reject max fmt k infile kd exfile input expected id
 rename setup   {}
 rename cleanup {}
+rename tnp     {}
+rename cl      {}
 
 # # ## ### ##### ######## ############# #####################
-finalize
+rename rt          {}
+rename coding      {}
+rename constraints {}
 
 # # ## ### ##### ######## ############# #####################
-rename label      {}
-rename result     {}
-rename initialize {}
-rename finalize   {}
 return

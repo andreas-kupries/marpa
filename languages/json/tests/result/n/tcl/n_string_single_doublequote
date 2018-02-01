@@ -1,0 +1,6 @@
+Parsing failed in parser. Stopped at offset 0 after reading '\"'. Expected any character in [[[:space:]][^\\0-\\37\\42\\134]\\] while looking for any of (lstring, whitespace).
+Mismatch:
+'\"' => (15 25) ni
+   17: '\\'
+   24: [^\0-\37\42\134]
+   26: [[:space:]]

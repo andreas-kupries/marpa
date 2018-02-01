@@ -1,0 +1,13 @@
+Parsing failed in lexer. Stopped at offset 2 after reading 'x'. Expected any character in [\t\n\13\14\r\40\302\341\342\343] while looking for any of (whitespace).
+Mismatch:
+'x' => (120) ni
+    9: '\t'
+   10: '\n'
+   11: '\13'
+   12: '\14'
+   13: '\r'
+   32: '\40'
+  194: '\302'
+  225: '\341'
+  226: '\342'
+  227: '\343'

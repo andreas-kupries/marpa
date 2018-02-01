@@ -1,0 +1,6 @@
+Parsing failed in lexer. Stopped at offset 11 after reading 'falss'. Expected any character in [e] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, whitespace).
+L0 Report:
+______ R0:4 @1-5 <@STR:<false>> --> <@CHR:<f>> <@CHR:<a>> <@CHR:<l>> <@CHR:<s>> . <@CHR:<e>>
+Mismatch:
+'s' => (12 24) ni
+    7: 'e'

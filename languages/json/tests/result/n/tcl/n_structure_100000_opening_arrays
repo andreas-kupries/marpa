@@ -1,0 +1,14 @@
+Parsing failed in parser. Stopped at offset 99999 after reading '['. Expected any character in [\"-0[[1-9][[:space:]]]fnt\173] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, rbracket, whitespace).
+Mismatch:
+'[' => (16 24) ni
+    2: '-'
+    4: '0'
+    8: 'f'
+   10: 'n'
+   13: 't'
+   15: '\"'
+   16: '['
+   18: ']'
+   19: '\173'
+   23: [1-9]
+   26: [[:space:]]

@@ -1,0 +1,14 @@
+Parsing failed in lexer. Stopped at offset 15 after reading '\134'. Expected any character in [\t\n\13\14\r\40\42\302\341\342\343] while looking for any of (quote, whitespace).
+Mismatch:
+'\134' => (92) ni
+    9: '\t'
+   10: '\n'
+   11: '\13'
+   12: '\14'
+   13: '\r'
+   32: '\40'
+   34: '\42'
+  194: '\302'
+  225: '\341'
+  226: '\342'
+  227: '\343'

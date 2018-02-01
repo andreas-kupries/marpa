@@ -1,0 +1,41 @@
+Parsing failed in lexer. Stopped at offset 0 after reading 'a'. Expected any character in [\"-0[[1-9][[:space:]]fnt\173] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, whitespace).
+L0 Report:
+______ P0    @1-1 <@STR:<false>> --> . <@CHR:<f>> <@CHR:<a>> <@CHR:<l>> <@CHR:<s>> <@CHR:<e>>
+______ P1    @1-1 <@STR:<null>>  --> . <@CHR:<n>> <@CHR:<u>> <@CHR:<l>> <@CHR:<l>>
+______ P2    @1-1 <@STR:<true>>  --> . <@CHR:<t>> <@CHR:<r>> <@CHR:<u>> <@CHR:<e>>
+______ P17   @1-1 <int>          --> . <@CHR:<->> <whole>
+______ P18   @1-1 <int>          --> . <whole>
+______ P19   @1-1 <lbrace>       --> . <@CHR:<\173>>
+______ P20   @1-1 <lbracket>     --> . <@CHR:<\133>>
+______ P21   @1-1 <lfalse>       --> . <@STR:<false>>
+______ P22   @1-1 <lnull>        --> . <@STR:<null>>
+______ P23   @1-1 <lnumber>      --> . <int>
+______ P24   @1-1 <lnumber>      --> . <int> <exponent>
+______ P25   @1-1 <lnumber>      --> . <int> <fraction>
+______ P26   @1-1 <lnumber>      --> . <int> <fraction> <exponent>
+______ P28   @1-1 <ltrue>        --> . <@STR:<true>>
+______ P30   @1-1 <positive>     --> . <@RAN:<19>> <digitz>
+______ P31   @1-1 <quote>        --> . <@CHR:<\42>>
+______ P34   @1-1 <whitespace>   --> . <@NCC:<[:space:]>>
+______ P35   @1-1 <whole>        --> . <@CHR:<0>>
+______ P36   @1-1 <whole>        --> . <positive>
+______ R40:1 @0-1 <@START>       --> <ACS:lbrace> . <lbrace>
+______ R41:1 @0-1 <@START>       --> <ACS:lbracket> . <lbracket>
+______ R42:1 @0-1 <@START>       --> <ACS:lfalse> . <lfalse>
+______ R43:1 @0-1 <@START>       --> <ACS:lnull> . <lnull>
+______ R44:1 @0-1 <@START>       --> <ACS:lnumber> . <lnumber>
+______ R46:1 @0-1 <@START>       --> <ACS:ltrue> . <ltrue>
+______ R47:1 @0-1 <@START>       --> <ACS:quote> . <quote>
+______ R50:1 @0-1 <@START>       --> <ACS:whitespace> . <whitespace>
+Mismatch:
+'a' => (6 24 27) ni
+    2: '-'
+    4: '0'
+    8: 'f'
+   10: 'n'
+   13: 't'
+   15: '\"'
+   16: '['
+   19: '\173'
+   23: [1-9]
+   26: [[:space:]]

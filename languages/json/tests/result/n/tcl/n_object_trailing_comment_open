@@ -1,0 +1,7 @@
+Parsing failed in lexer. Stopped at offset 9 after reading '/'. Expected any character in [[[:space:]]] while looking for any of (whitespace).
+L0 Report:
+______ P34   @1-1 <whitespace> --> . <@NCC:<[:space:]>>
+______ R50:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
+Mismatch:
+'/' => (24 25) ni
+   26: [[:space:]]
