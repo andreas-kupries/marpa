@@ -70,7 +70,7 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
      * recognizer. It was done this way to avoid the memory penalty of keeping
      * 256 superfluous and never-used entries for the L0 character symbols.
      */
-    
+
     LEX.g = marpa_g_new (CONF);
     (void) marpa_g_force_valued (LEX.g);
     LRD   = marpatcl_rtc_spec_setup (LEX.g, SPEC->l0, TRACE_TAG_VAR (lexer_progress));
@@ -113,12 +113,29 @@ void
 marpatcl_rtc_lexer_free (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
-    
+
     marpa_g_unref (LEX.g);
     marpatcl_rtc_symset_free (ACCEPT);
     marpatcl_rtc_symset_free (FOUND);
     marpatcl_rtc_stack_destroy (LEX.lexeme);
 
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_lexer_flush (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p, <einval> (@ %d))",
+		 p, GATE.lastloc);
+    LEX_P (p);
+
+    if (LEX.start == -1) {
+	LEX.start  = GATE.lastloc;
+	LEX.length = 0;
+    }
+
+    complete (p);
+    // MAYBE FAIL.
     TRACE_RETURN_VOID;
 }
 
@@ -137,12 +154,6 @@ marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
     if (LEX.start == -1) {
 	LEX.start  = GATE.lastloc;
 	LEX.length = 0;
-    }
-
-    if (ch == -1) {
-	complete (p);
-       	// MAYBE FAIL.
-	TRACE_RETURN_VOID;
     }
 
     marpatcl_rtc_stack_push (LEX.lexeme, ch);
@@ -173,7 +184,7 @@ void
 marpatcl_rtc_lexer_eof (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p (start %d))", p, LEX.start);
-    
+
     if (LEX.start >= 0) {
 	complete (p);
 	// MAYBE FAIL - TODO Handling ?
@@ -207,7 +218,7 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
     marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 start_input");
     marpatcl_rtc_lexer_events (p);
     LEX_P (p);
-    
+
     /* This code puts information from the parser's recognizer directly into
      * the `dense` array of the lexer's symset. It then links the retrieved
      * symbols through `sparse` to make it a proper set. Overall this is a
@@ -227,7 +238,7 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
 	}
 	// Lexing-only mode was set up by `lexer_init`.
     }
-    
+
     /* And feed the results into the new lexer recce */
     n = marpatcl_rtc_symset_size (ACCEPT);
     if (n) {
@@ -281,7 +292,7 @@ complete (marpatcl_rtc_p p)
     marpatcl_rtc_sv_p sv = 0;
     TRACE_RUN (int trees = -1);
     TRACE_FUNC ("((rtc*) %p (lex.recce %p))", p, LEX.recce);
-	
+
     if (!LEX.recce) {
 	TRACE_RETURN_VOID;
     }
@@ -291,7 +302,7 @@ complete (marpatcl_rtc_p p)
     redo = 0;
     while (1) {
 	TRACE_HEADER (1);
-	TRACE_ADD ("rtc %p ?? match %d", p, latest);
+	TRACE_ADD ("rtc %p ?? match %d |lex| %d", p, latest, LEX.length);
 
 	b = marpa_b_new (LEX.recce, latest);
 	if (b) break;
@@ -302,11 +313,28 @@ complete (marpatcl_rtc_p p)
 	    TRACE_CLOSER;
 
 	    mismatch (p);
-	    // FAIL, aborting. Callers `lexer_enter`, `lexer_eof`.
+	    // FAIL, aborting. Callers `lexer_enter`, `lexer_eof`, `lexer_flush`.
 	    TRACE_RETURN_VOID;
 	}
-	LEX.length --;
-	(void) marpatcl_rtc_stack_pop (LEX.lexeme);
+	/* We can reach this point with an empty-valued lexeme, i.e. no bytes
+	 * where entered into the lexer.
+	 *
+	 * This happens when the GATE found an invalid byte immediately after
+	 * the end of the previous lexeme and signaled a flush.
+	 *
+	 * This is not necessarily a mismatch however, which is why we do not
+	 * check and abort before the search loop. One or more of the
+	 * currently acceptable lexemes may allow to have an empty value.  In
+	 * that case we simply recognize these as usual, and then redo the
+	 * rejected byte in the new context, where it may be valid.
+	 *
+	 * Here now, we simply skip trying to make an empty value even
+	 * emptier.
+	 */
+	if (LEX.length) {
+	    LEX.length --;
+	    (void) marpatcl_rtc_stack_pop (LEX.lexeme);
+	}
 	TRACE_CLOSER;
     }
 
@@ -318,7 +346,7 @@ complete (marpatcl_rtc_p p)
 
     o = marpa_o_new (b);
     ASSERT (o, "Marpa_Order creation failed");
-		
+
     t = marpa_t_new (o);
     ASSERT (t, "Marpa_Tree creation failed");
 
@@ -330,7 +358,7 @@ complete (marpatcl_rtc_p p)
 	    TRACE ("rtc %p parse %d /done", p, status);
 	    break;
 	}
-	
+
 	TRACE_RUN (trees ++);
 	TRACE_HEADER (1);
 	TRACE_ADD ("rtc %p parse [%d] %d", p, trees, status);
@@ -342,7 +370,7 @@ complete (marpatcl_rtc_p p)
 	 * Range'L0: 256 ... 256+L+D-1
 	 * Range'G1: 0 ... L+D-1
 	 */
-	
+
 	token = TO_TERMINAL (token);
 
 	/* token = G1 terminal id (lexeme) or pseudo-terminal (discard)
@@ -364,7 +392,7 @@ complete (marpatcl_rtc_p p)
 	    TRACE_ADD (" terminal %d (%s)",
 		       token, marpatcl_rtc_spec_symname (SPEC->g1, token, 0));
 	}
-	
+
 	if (marpatcl_rtc_symset_contains (FOUND, token)) {
 	    TRACE_ADD (" duplicate, skip", 0);
 	    TRACE_CLOSER;
@@ -411,7 +439,7 @@ complete (marpatcl_rtc_p p)
 	    // Lexing-only mode. Post token/value through "enter"
 	    const char*       s  = marpatcl_rtc_spec_symname (SPEC->l0, TO_ACS (token), 0);
 	    marpatcl_rtc_sv_p tv = marpatcl_rtc_sv_cons_string (strdup (s), 1);
-	    
+
 	    p->result (p->rcdata, tv);
 	    p->result (p->rcdata, sv);
 	}
@@ -470,7 +498,7 @@ get_parse (marpatcl_rtc_p    p,
     v = marpa_v_new (t);
     ASSERT (v, "Marpa_Value creation failed");
     //TRACE_DO (_marpa_v_trace (v, 1));
-    
+
     stop = 0;
     while (!stop) {
 	Marpa_Step_Type stype = marpa_v_step (v);
@@ -571,14 +599,14 @@ get_sv (marpatcl_rtc_p   p,
 
     //TRACE_FUNC ("((rtc*) %p, token %d, rule %d)", p, token, rule);
     sv = marpatcl_rtc_sv_cons_vec (SPEC->l0semantic.size);
-    
+
 #define DO(cache,cmd)				\
     if (!(cache)) {				\
 	TRACE_ADD (" !%s", #cache);		\
 	(cache) = cmd;				\
     };						\
     marpatcl_rtc_sv_vec_push (sv, (cache))
-    
+
 #define L0_SNAME(token)  marpatcl_rtc_spec_symname (SPEC->l0, token, NULL)
 #define G1_SNAME(token)  marpatcl_rtc_spec_symname (SPEC->g1, token, NULL)
 #define LEX_STR          get_lexeme (p, NULL)
@@ -613,7 +641,7 @@ get_sv (marpatcl_rtc_p   p,
 	marpatcl_rtc_sv_unref (el);
 	sv = el;
     }
-    
+
     return sv ;//TRACE_RETURN ("%p", sv);
 }
 
@@ -625,15 +653,15 @@ get_lexeme (marpatcl_rtc_p p, int* len)
 
     //TRACE_FUNC ("(rtc %p, (len*) %p)", p, len);
     TRACE_ADD (" get_lexeme", 0);
-    
+
     n = marpatcl_rtc_stack_size (LEX.lexeme);
     v = NALLOC (char, n+1);
-    
+
     if (len) {
 	//TRACE ("rtc %p, (len*) %p := %d", p, len, n);
 	*len = n;
     }
-    
+
     v[n] = '\0';
     while (n) {
 	n--;

@@ -30,7 +30,7 @@ print_accept (marpatcl_rtc_p p, Marpa_Symbol_ID* v, int c)
     for (k=0; k < n; k++) {
 	TRACE_TAG (accept, "ACCEPT [%d]: %d = %s", k, v[k],
 		   marpatcl_rtc_spec_symname (SPEC->l0, v[k], 0));
-    }    
+    }
 }
 #else
 #endif
@@ -71,7 +71,7 @@ void
 marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
 {
 #define NAME(sym) marpatcl_rtc_spec_symname (SPEC->l0, sym, 0)
-    
+
     TRACE_FUNC ("((rtc*) %p, byte %d (@ %d <%s>))", p, ch, IN.location, NAME (ch));
     TRACE_TAG (stream, "gate stream :: byte %d (@ %d <%s>)", ch, IN.location, NAME (ch));
 
@@ -111,7 +111,7 @@ marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
 	TRACE_CLOSER;
 
 	GATE.flushed ++;
-	marpatcl_rtc_lexer_enter (p, -1);
+	marpatcl_rtc_lexer_flush (p);
     }
 
     TRACE_RETURN_VOID;

@@ -39,6 +39,7 @@ typedef struct marpatcl_rtc_lexer {
  * init       - initialize a lexer
  * free       - release lexer state
  * enter      - push a single byte of input
+ * flush      - signal end of lexeme (next byte to enter is invalid)
  * eof        - signal the end of the input
  * acceptable - information from parser about acceptable lexemes
  */
@@ -46,6 +47,7 @@ typedef struct marpatcl_rtc_lexer {
 void  marpatcl_rtc_lexer_init       (marpatcl_rtc_p p);
 void  marpatcl_rtc_lexer_free       (marpatcl_rtc_p p);
 void  marpatcl_rtc_lexer_enter      (marpatcl_rtc_p p, int ch); /* IN.location implied */
+void  marpatcl_rtc_lexer_flush      (marpatcl_rtc_p p);         /* IN.location implied */
 void  marpatcl_rtc_lexer_eof        (marpatcl_rtc_p p);
 void  marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep);
 #endif

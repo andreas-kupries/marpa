@@ -10,6 +10,26 @@
 #include <rtc_int.h>
 
 TRACE_OFF;
+TRACE_TAG_OFF (enter);
+
+#ifdef CRITCL_TRACER
+static void
+print_input (const char* bytes, int n)
+{
+    const char* c;
+    if (n < 0) {
+	int k;
+	for (k = 0, c = bytes; *c; k++, c++) {
+	    TRACE_TAG (enter, "[%8d] = %c (%d, %u)", k, *c, *c, (unsigned char) *c);
+	}
+    } else {
+	int k;
+	for (k = 0, c = bytes; n; k++, c++, n--) {
+	    TRACE_TAG (enter, "[%8d] = %c (%3d, %3u)", k, *c, *c, (unsigned char) *c);
+	}
+    }
+}
+#endif
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -34,7 +54,7 @@ marpatcl_rtc_inbound_free (marpatcl_rtc_p p)
     TRACE_RETURN_VOID;
 }
 
-int 
+int
 marpatcl_rtc_inbound_location (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
@@ -46,6 +66,7 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const char* bytes, int n)
 {
     const char* c;
     TRACE_FUNC ("(rtc %p bytes %p, n %d)", p, bytes, n);
+    TRACE_TAG_DO (enter, print_input (bytes, n));
 
     if (n < 0) {
 	for (c = bytes; *c && !FAIL.fail; c++) {
