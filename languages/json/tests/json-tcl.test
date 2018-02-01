@@ -11,12 +11,16 @@
 # # ## ### ##### ######## ############# #####################
 ## API to the json-core
 
+proc cl         {} { return json::parser::tcl }
+proc coding     {} { return utf-8 }
 proc result {base} { locate $base ast_tcl ast }
 proc label      {} { return "json_tcl" }
 proc initialize {} { kt local support [cl] }
 proc finalize   {} {}
 
-proc cl {} { return json::parser::tcl }
+proc constraints {id} {
+    return {}
+}
 
 # # ## ### ##### ######## ############# #####################
 ##

@@ -10,9 +10,8 @@ clear
 echo
 
 # regenerate packages from grammar
-(
-    $bindir/make-parser
-) 2>&1 | tee LOG-GENERATE
+# ( $bindir/make-parser ) 2>&1 | tee LOG-GENERATE
 
-rm -rf X.* BUILD-*
+rm -rf X.* BUILD-* tests/core
 ./build.tcl test --log X --test-include ~/opt/ActiveTcl/include
+#./build.tcl test --log-mode full --test-include ~/opt/ActiveTcl/include 2>&1 | tee TL

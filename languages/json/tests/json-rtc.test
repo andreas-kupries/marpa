@@ -13,12 +13,28 @@ kt require support critcl   ;# compile & run
 # # ## ### ##### ######## ############# #####################
 ## API to the json-core
 
+proc cl         {} { return json::parser::c }
+proc coding     {} { return binary }
 proc result {base} { locate $base ast_rtc ast }
 proc label      {} { return "json_rtc" }
 proc initialize {} { kt local support [cl] }
 proc finalize   {} {}
 
-proc cl {} { return json::parser::c }
+proc constraints {id} {
+    if {[dict exists {
+	y_string_nonCharacterInUTF-8_U+10FFFF	%
+	y_string_nonCharacterInUTF-8_U+1FFFF	%
+	y_string_nonCharacterInUTF-8_U+FFFF	%
+	y_string_pi				%
+	y_string_u+2028_line_sep		%
+	y_string_u+2029_par_sep			%
+	y_string_unicode_2			%
+	y_string_utf8				%
+    } $id]} {
+	return knownBug
+    }
+    return {}
+}
 
 # # ## ### ##### ######## ############# #####################
 ##
