@@ -10,9 +10,11 @@ marpa-gen \
     -T cparse-critcl \
     -N ${base}c \
     $g json-c.tcl
+echo
 
 marpa-gen \
     -V $v -A "${a}" \
     -T tparse \
     -N ${base}tcl \
     $g json-tcl.tcl
+echo
