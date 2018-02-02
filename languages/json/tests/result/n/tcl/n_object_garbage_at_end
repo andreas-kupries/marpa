@@ -1,8 +1,8 @@
-Parsing failed in gate. Stopped at offset 9 after reading '1'. Expected any character in [,[[:space:]]\175] while looking for any of (comma, rbrace, whitespace).
+Parsing failed in gate. Stopped at offset 9 after reading '1'. Expected any character in [,[\\t\\n\\r\\40]\175] while looking for any of (comma, rbrace, whitespace).
 L0 Report:
 ______ P7    @1-1 <comma>      --> . <@CHR:<,>>
 ______ P32   @1-1 <rbrace>     --> . <@CHR:<\175>>
-______ P34   @1-1 <whitespace> --> . <@NCC:<[:space:]>>
+______ P34   @1-1 <whitespace> --> . <@CLS:<\t-\n\r\40>>
 ______ R39:1 @0-1 <@START>     --> <ACS:comma> . <comma>
 ______ R48:1 @0-1 <@START>     --> <ACS:rbrace> . <rbrace>
 ______ R50:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
@@ -10,4 +10,4 @@ Mismatch:
 '1' => (22 23 24 27) ni
     1: ','
    20: '\175'
-   26: [[:space:]]
+   26: [\t\n\r\40]

@@ -1,4 +1,4 @@
-Parsing failed in gate. Stopped at offset 3 after reading '\"'. Expected any character in [[[:space:]][^\\0-\\37\\42\\134]\\] while looking for any of (lstring, whitespace).
+Parsing failed in gate. Stopped at offset 3 after reading '\"'. Expected any character in [[\\t\\n\\r\\40][^\\0-\\37\\42\\134]\\] while looking for any of (lstring, whitespace).
 L0 Report:
 ______ F45   @0-1 <@START>       --> <ACS:lstring> <lstring> .
 ______ P3    @1-1 <char>         --> . <plain>
@@ -6,7 +6,7 @@ ______ P4    @1-1 <char>         --> . <@CHR:<\134>> <@CLS:<\42/\134bfnrt>>
 ______ P5    @1-1 <char>         --> . <@STR:<\134u>> <hex> <hex> <hex> <hex>
 ______ P27   @1-1 <lstring>      --> . <char>
 ______ P29   @1-1 <plain>        --> . <@^CLS:<\0-\37\42\134>>
-______ P34   @1-1 <whitespace>   --> . <@NCC:<[:space:]>>
+______ P34   @1-1 <whitespace>   --> . <@CLS:<\t-\n\r\40>>
 ______ P37   @1-1 <@STR:<\134u>> --> . <@CHR:<\134>> <@CHR:<u>>
 ______ R45:1 @0-1 <@START>       --> <ACS:lstring> . <lstring>
 ______ R50:1 @0-1 <@START>       --> <ACS:whitespace> . <whitespace>
@@ -14,4 +14,4 @@ Mismatch:
 '\"' => (15 25) ni
    17: '\\'
    24: [^\0-\37\42\134]
-   26: [[:space:]]
+   26: [\t\n\r\40]

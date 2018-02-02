@@ -1,7 +1,7 @@
-Parsing failed in gate. Stopped at offset 12 after reading '\"'. Expected any character in [[[:space:]]] while looking for any of (whitespace).
+Parsing failed in gate. Stopped at offset 12 after reading '\"'. Expected any character in [[\\t\\n\\r\\40]] while looking for any of (whitespace).
 L0 Report:
-______ P34   @1-1 <whitespace> --> . <@NCC:<[:space:]>>
+______ P34   @1-1 <whitespace> --> . <@CLS:<\t-\n\r\40>>
 ______ R50:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
 Mismatch:
 '\"' => (15 25) ni
-   26: [[:space:]]
+   26: [\t\n\r\40]

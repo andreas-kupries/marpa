@@ -102,6 +102,12 @@ plain    ~ [^"\\\0-\37]
 # ref: https://tools.ietf.org/html/rfc7159#section-7
 # ref: http://seriot.ch/parsing_json.php#25
 
-whitespace ~ [[:space:]] +
+whitespace ~ [\t\n\r ] +
+# Note:
+#   JSON whitespace is limited to SPACE, TAB, CR, and LF.
+#   Do not use the unicode [:space:] class.
+#
+# ref: https://tools.ietf.org/html/rfc7159#section-2
+# ref: http://seriot.ch/parsing_json.php#21
 
 # # ## ### ##### ######## ############# #####################

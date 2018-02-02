@@ -1,15 +1,9 @@
-Parsing failed in lexer. Stopped at offset 1 after reading ','. Expected any character in [\t\n\13\14\r\40\42\175\302\341\342\343] while looking for any of (quote, rbrace, whitespace).
+Parsing failed in lexer. Stopped at offset 1 after reading ','. Expected any character in [\t\n\r\40\42\175] while looking for any of (quote, rbrace, whitespace).
 Mismatch:
 ',' => (44) ni
     9: '\t'
    10: '\n'
-   11: '\13'
-   12: '\14'
    13: '\r'
    32: '\40'
    34: '\42'
   125: '\175'
-  194: '\302'
-  225: '\341'
-  226: '\342'
-  227: '\343'

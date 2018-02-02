@@ -16,6 +16,8 @@
 # * cl  :: Name of the parser class
 # * tnp :: Prefix for test case name
 
+kt source support/utf.tcl
+
 # # ## ### ##### ######## ############# #####################
 
 kt check Tcl     8.5
@@ -118,6 +120,8 @@ foreach infile $will_accept {
     set expected {}
     catch { set expected [string trim [fget $exfile]] }
 
+    #utf-show [split $input {}]
+    
     # - --   -----        -------------
     
     test [tnp]-process-2.${kd}---${id} "[cl] :: process $id" -body {
@@ -162,9 +166,12 @@ foreach infile $will_reject {
 	set expected [fget $exfile]
     }
 
+    # utf-show [split $input {}] ; # rt-tcl
+    # For rt-c activate `TRACE` tag `enter` in `inbound.c` and use the rebuilt runtime.
+    
     # - --   -----        -------------
     
-    test [tnp]-process-2.${kd}---${id} "[cl] :: process $id" -body {
+    test [tnp]-process-2.${kd}---${id} "[cl] :: process $id ([coding])" -body {
 	PARSE process $input
     } -setup setup -cleanup {
 	cleanup

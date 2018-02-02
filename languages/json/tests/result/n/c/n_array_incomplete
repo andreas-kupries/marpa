@@ -1,15 +1,9 @@
-Parsing failed in parser. Stopped at offset 3 after reading '\42'. Expected any character in [\t\n\13\14\r\40,\135\302\341\342\343] while looking for any of (comma, rbracket, whitespace).
+Parsing failed in parser. Stopped at offset 3 after reading '\42'. Expected any character in [\t\n\r\40,\135] while looking for any of (comma, rbracket, whitespace).
 Mismatch:
 '\42' => (34) ni
     9: '\t'
    10: '\n'
-   11: '\13'
-   12: '\14'
    13: '\r'
    32: '\40'
    44: ','
    93: '\135'
-  194: '\302'
-  225: '\341'
-  226: '\342'
-  227: '\343'

@@ -1,1 +1,11 @@
-Parsing failed in lexer. Stopped at offset 3. Expected any character in [\t\n\13\14\r\40\42\302\341\342\343] while looking for any of (quote, whitespace).
+Parsing failed in gate. Stopped at offset 2. Expected any character in [\t\n\r\40\42] while looking for any of (quote, whitespace).
+L0 Report:
+______ P12    @1-1 <quote>        -->  . <\42>
+______ P15    @1-1 <whitespace>   -->  . <[\t-\n\r\40]>
+______ P34    @1-1 <[\t-\n\r\40]> -->  . <[\t-\n]>
+______ P35    @1-1 <[\t-\n\r\40]> -->  . <\r>
+______ P36    @1-1 <[\t-\n\r\40]> -->  . <\40>
+______ P200   @1-1 <[\t-\n]>      -->  . <\t>
+______ P201   @1-1 <[\t-\n]>      -->  . <\n>
+______ R308:1 @0-1 <@L0:START>    -->  <quote> . <quote>
+______ R311:1 @0-1 <@L0:START>    -->  <whitespace> . <whitespace>

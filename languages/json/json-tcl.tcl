@@ -7,7 +7,7 @@
 # (c) 2018 Grammar json::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "json::parser::tcl".
-##	Generated On Wed Jan 31 13:08:14 PST 2018
+##	Generated On Thu Feb 01 16:00:19 PST 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 
@@ -79,7 +79,7 @@ oo::class create json::parser::tcl {
 	    @RAN:<19>                 {[1-9]}
 	    {@^CLS:<\0-\37\42\134>}   {[^\0-\37\42\134]}
 	    {@CLS:<\42/\134bfnrt>}    {[\42/\134bfnrt]}
-	    {@NCC:<[:space:]>}        {[[:space:]]}
+	    {@CLS:<\t-\n\r\40>}       {[\t\n\r\40]}
 	    {@NCC:<[:xdigit:]>}       {[[:xdigit:]]}
 	}
     }
@@ -173,7 +173,7 @@ oo::class create json::parser::tcl {
 	    {quote := {@CHR:<\42>}}
 	    {rbrace := {@CHR:<\175>}}
 	    {rbracket := {@CHR:<\135>}}
-	    {whitespace + {@NCC:<[:space:]>}}
+	    {whitespace + {@CLS:<\t-\n\r\40>}}
 	    {whole := @CHR:<0>}
 	    {whole := positive}
 	    {{@STR:<\134u>} := {@CHR:<\134>} @CHR:<u>}

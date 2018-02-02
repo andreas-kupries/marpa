@@ -1,14 +1,8 @@
-Parsing failed in parser. Stopped at offset 5 after reading '\135'. Expected any character in [\t\n\13\14\r\40\42\302\341\342\343] while looking for any of (quote, whitespace).
+Parsing failed in parser. Stopped at offset 5 after reading '\135'. Expected any character in [\t\n\r\40\42] while looking for any of (quote, whitespace).
 Mismatch:
 '\135' => (93) ni
     9: '\t'
    10: '\n'
-   11: '\13'
-   12: '\14'
    13: '\r'
    32: '\40'
    34: '\42'
-  194: '\302'
-  225: '\341'
-  226: '\342'
-  227: '\343'
