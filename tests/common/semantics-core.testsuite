@@ -43,7 +43,7 @@ proc cleanup {} {
     # The semantics instance normally auto-destroys itself at the end
     # of "process"(file). However if the test failed this may not have
     # happend. Thus we try to destroy such leftovers so that they may
-    # not interfere with the next test, and the ignore the error when
+    # not interfere with the next test, and ignore the error thrown if
     # it was already gone.
 }
 
