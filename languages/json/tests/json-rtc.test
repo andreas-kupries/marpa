@@ -16,6 +16,7 @@ kt require support critcl   ;# compile & run
 proc rt          {} { return c }
 proc coding      {} { return binary }
 proc constraints {id} {
+    #return {} ;# activate to recheck known issues
     if {[dict exists {
 	y_string_nonCharacterInUTF-8_U+10FFFF	%
 	y_string_nonCharacterInUTF-8_U+1FFFF	%
@@ -25,6 +26,12 @@ proc constraints {id} {
 	y_string_u+2029_par_sep			%
 	y_string_unicode_2			%
 	y_string_utf8				%
+
+	n_multidigit_number_then_00		%cesu8
+	n_object_pi_in_key_and_trailing_comma	%broken-utf
+	n_string_unescaped_crtl_char		%cesu8
+	n_structure_null-byte-outside-string	%cesu8
+	
     } $id]} {
 	return knownBug
     }

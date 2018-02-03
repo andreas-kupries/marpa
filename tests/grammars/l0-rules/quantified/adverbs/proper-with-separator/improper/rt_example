@@ -1,0 +1,15 @@
+# Demonstrate that the runtime fails
+# when a trailing separator is given
+# to a quantified symbol marked as proper.
+
+lexeme default = latm => 1 action => [start,length,value]
+:default ::=   	 action => [name,values]
+
+L ::= A
+A ~ a +
+  proper => 1
+  separator => c
+a ~ 'a'
+c ~ ','
+:discard ~ W
+W ~ ' '

@@ -105,7 +105,7 @@ test [tnp]-process-file-1.1 "[cl] :: process-file, wrong args, too many" -body {
 ## Will-accept inputs
 ## - must-accept
 
-lappend will_accept {*}[glob -nocomplain -directory [td]/input/y y_*]
+lappend will_accept {*}[lsort -uniq [glob -nocomplain -directory [td]/input/y y_*]]
 set max [llength $will_accept]
 set fmt %0[string length $max]d
 
@@ -149,7 +149,7 @@ foreach infile $will_accept {
 ## Will reject inputs.
 ## - must reject
 
-lappend will_reject {*}[glob -nocomplain -directory [td]/input/n n_*]
+lappend will_reject {*}[lsort -uniq [glob -nocomplain -directory [td]/input/n n_*]]
 set max [llength $will_reject]
 set fmt %0[string length $max]d
 
@@ -185,7 +185,7 @@ foreach infile $will_reject {
 }
 
 # # ## ### ##### ######## ############# #####################
-unset will_accept will_reject max fmt k infile kd exfile input expected id
+unset -nocomplain will_accept will_reject max fmt k infile kd exfile input expected id
 rename setup   {}
 rename cleanup {}
 rename tnp     {}

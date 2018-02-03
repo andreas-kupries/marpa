@@ -1,4 +1,4 @@
-Parsing failed in parser. Stopped at offset 2 after reading ','. Expected any character in [\t\n\r\40\42-0123456789\133\135fnt\173] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, rbracket, whitespace).
+Parsing failed in parser. Stopped at offset 2 after reading ','. Expected any character in [\t\n\r\40\42-0123456789\133fnt\173] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, whitespace).
 Mismatch:
 ',' => (44) ni
     9: '\t'
@@ -18,7 +18,6 @@ Mismatch:
    56: '8'
    57: '9'
    91: '\133'
-   93: '\135'
   102: 'f'
   110: 'n'
   116: 't'

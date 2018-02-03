@@ -1,0 +1,7 @@
+Parsing failed in lexer. Stopped at offset 3 after reading ','. Expected any character in [ ] while looking for any of (W).
+L0 Report:
+______ P3   @1-1 <W>      --> . <@CHR:<\40>>
+______ R5:1 @0-1 <@START> --> <ACS:W> . <W>
+Mismatch:
+',' => (0) ni
+    2: ' '

@@ -1,6 +1,6 @@
-Parsing failed in parser. Stopped at offset 10 after reading ','. Expected any character in [\t\n\r\40\42-0123456789\133fnt\173] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, whitespace).
+Parsing failed in lexer. Stopped at offset 3 after reading '\135'. Expected any character in [\t\n\r\40\42-0123456789\133fnt\173] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, whitespace).
 Mismatch:
-',' => (44) ni
+'\135' => (93) ni
     9: '\t'
    10: '\n'
    13: '\r'

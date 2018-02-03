@@ -1,4 +1,4 @@
-Parsing failed in lexer. Stopped at offset 11 after reading 'l'. Expected any character in [l] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, rbracket, whitespace).
+Parsing failed in lexer. Stopped at offset 11 after reading 'l'. Expected any character in [l] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, whitespace).
 Mismatch:
 'l' => (108) ni
   108: 'l'
