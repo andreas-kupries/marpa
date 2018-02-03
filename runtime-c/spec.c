@@ -11,6 +11,12 @@
 
 TRACE_OFF;
 TRACE_TAG_OFF (names);
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Helper definitions
+ */
+
+#define FLAGS(p) ((p) ? MARPA_PROPER_SEPARATION : 0)
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -158,7 +164,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s, int rd)
 		       NAME (detail), NAME (pc[1]), NAME (sep));
 	    TRACE_CLOSER;
 
-	    marpa_g_sequence_new (g, detail, pc[1], sep, 0, proper);
+	    marpa_g_sequence_new (g, detail, pc[1], sep, 0, FLAGS(proper));
 	    PUSH (0);
 	    
 	    pc += 3;
@@ -176,7 +182,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s, int rd)
 		       NAME (detail), NAME (pc[1]), NAME (sep));
 	    TRACE_CLOSER;
 
-	    marpa_g_sequence_new (g, detail, pc[1], sep, 1, proper);
+	    marpa_g_sequence_new (g, detail, pc[1], sep, 1, FLAGS(proper));
 	    PUSH (0);
 	    
 	    pc += 3;

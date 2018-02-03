@@ -1,0 +1,5 @@
+Parsing failed in lexer. Stopped at offset 4 after reading '!'. Expected any character in [\40a] while looking for any of (a, W).
+Mismatch:
+'!' => (33) ni
+   32: '\40'
+   97: 'a'

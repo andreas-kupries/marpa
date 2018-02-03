@@ -1,0 +1,10 @@
+Parsing failed in lexer. Stopped at offset 4 after reading '!'. Expected any character in [ a] while looking for any of (@LEX:@CHR:<a>, W).
+L0 Report:
+______ P2   @1-1 <@LEX:@CHR:<a>> --> . <@CHR:<a>>
+______ P3   @1-1 <W>             --> . <@CHR:<\40>>
+______ R6:1 @0-1 <@START>        --> <ACS:@LEX:@CHR:<a>> . <@LEX:@CHR:<a>>
+______ R7:1 @0-1 <@START>        --> <ACS:W> . <W>
+Mismatch:
+'!' => (0) ni
+    2: 'a'
+    3: ' '
