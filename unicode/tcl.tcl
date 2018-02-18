@@ -38,7 +38,7 @@ namespace eval marpa {
 namespace eval marpa::unicode {
     namespace export \
 	norm-class negate-class point unfold fold/c \
-	2utf 2asbr asbr-format data mode max
+	2utf 2asbr asbr-format data max
     namespace ensemble create
 }
 
@@ -58,8 +58,7 @@ namespace eval marpa::unicode {
 ##                  case-equivalent uni(code)points
 ## - fold/c       - Convert a list of uni(code)points to a list of the primary
 ##                  case-equivalent uni(code)points.
-## - mode, max    - Return name of supported unicode range, and the number of
-##                  codepoints in that range
+## - max          - Return the number of supported codepoints.
 
 proc marpa::unicode::point {character} {
     debug.marpa/unicode {}

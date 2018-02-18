@@ -19,7 +19,7 @@ kt local   testing marpa::unicode
 # name of the variable/argument to read by `set`, which returns the
 # value we want. An implicit selection/choice instead of explicit via
 # if/switch/...
-proc MO {bmp full} { set [marpa unicode mode] }
+proc MO {bmp full} { set full }
 
 ## Accessors on top of the generated unicode data tables
 # # ## ### ##### ######## ############# #####################

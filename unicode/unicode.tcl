@@ -682,8 +682,7 @@ critcl::ccode {
 
 # # ## ### ##### ######## #############
 
-critcl::cconst marpa::unicode::mode   vstring UNI_MODE
-critcl::cconst marpa::unicode::max    int     UNI_MAX
+critcl::cconst marpa::unicode::max int UNI_MAX
 
 # # ## ### ##### ######## #############
 

@@ -139,20 +139,19 @@ proc main {selfdir} {
 
 proc cmdline {} {
     # Syntax ==> See usage
-    global argv outtcl outc pong unimax mode
-    if {[llength $argv] ni {3 4}} usage
-    lassign $argv mode outtcl outc pong
-    if {$mode ni {bmp full}} usage
+    global argv outtcl outc pong unimax
+    if {[llength $argv] ni {2 3}} usage
+    lassign $argv outtcl outc pong
     if {$pong eq {}} { set pong 1 }
     set outtcl [open $outtcl w]
     set outc   [open $outc w]
-    set unimax [expr {$mode eq "bmp" ? 0xFFFF : 0x10FFFF }]
+    set unimax 0x10FFFF
     return
 }
 
 proc usage {} {
     global argv0
-    puts stderr "Usage: $argv0 bmp|full output-for-tcl output-for-c ?pong?"
+    puts stderr "Usage: $argv0 output-for-tcl output-for-c ?pong?"
     exit 1
 }
 
@@ -402,25 +401,25 @@ proc write-c-comment {text} {
 }
 
 proc write-c-header {} {
-    global mode unimax
+    global unimax
     set m $unimax ; incr m 0
     wrc "/* -*- c -*-"
-    wrc "** Generator       tools/unidata.tcl"
-    wrc "** Data sources    unidata/{UnicodeData,Scripts}.txt"
-    wrc "** Build-Time      [clock format [clock seconds]]"
-    wrc "** Supported range $mode ($m codepoints)"
+    wrc "** Generator:       tools/unidata.tcl"
+    wrc "** Data sources:    unidata/{UnicodeData,Scripts}.txt"
+    wrc "** Build-Time:      [clock format [clock seconds]]"
+    wrc "** Supported range: $m codepoints"
     wrc "*/"
     wrc ""
 }
 
 proc write-header {} {
-    global mode unimax
+    global unimax
     set m $unimax ; incr m 0
     wr "# -*- tcl -*-"
-    wr "## Generator       tools/unidata.tcl"
-    wr "## Data sources    unidata/{UnicodeData,Scripts}.txt"
-    wr "## Build-Time      [clock format [clock seconds]]"
-    wr "## Supported range $mode ($m codepoints)"
+    wr "## Generator:       tools/unidata.tcl"
+    wr "## Data sources:    unidata/{UnicodeData,Scripts}.txt"
+    wr "## Build-Time:      [clock format [clock seconds]]"
+    wr "## Supported range: $m codepoints"
     wr ""
     write-sep {unicode information}
     lappend map {    } {} \t {    }
@@ -428,30 +427,26 @@ proc write-header {} {
 	variable cc      ;# character classes as a set of unicode points and ranges
 	variable foldmap ;# character mapped to equivalence class under folding
 	variable foldset ;# id -> equivalence class under folding
-	variable mode    ;# Name of supported unicode range
-	variable max     ;# Maximal codepoint in that range
+	variable max     ;# Maximal supported codepoint
     }}]
     wr ""
     return
 }
 
 proc write-limits {} {
-    global mode unimax
-    write-sep "unicode limits: $mode = $unimax"
-    wr "set marpa::unicode::mode $mode"
-    wr "set marpa::unicode::max  $unimax ;# $mode range"
+    global unimax
+    write-sep "unicode limits: $unimax"
+    wr "set marpa::unicode::max $unimax"
     wr ""
     return
 }
 
 proc write-c-limits {} {
-    global mode unimax
-    write-c-sep "unicode limits: $mode = $unimax"
+    global unimax
+    write-c-sep "unicode limits: $unimax"
     lappend map <<unimax>>  $unimax
-    lappend map <<unimode>> $mode
     lappend map \t {} {    } {}
     wrc [string map $map {
-	#define UNI_MODE "<<unimode>>" /* <<unimax>> codepoints */
 	#define UNI_MAX  <<unimax>>
     }]
     return

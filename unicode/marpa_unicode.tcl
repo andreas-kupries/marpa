@@ -9,7 +9,7 @@
 #   them
 #
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -37,11 +37,10 @@ critcl::cutil::alloc
 
 # # ## ### ##### ######## #############
 ## Build configuration
-# (1) Choose the unicode range to support.
-# (2) Assertions, and tracing
-# (3) Debugging symbols, memory tracking
+# (1) Assertions, and tracing
+# (2) Debugging symbols, memory tracking
 
-generate-tables ;# 'bmp' (default), or 'full'
+generate-tables
 
 critcl::cutil::assertions on
 critcl::cutil::tracer     off
