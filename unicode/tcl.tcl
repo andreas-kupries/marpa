@@ -61,50 +61,6 @@ namespace eval marpa::unicode {
 ## - mode, max    - Return name of supported unicode range, and the number of
 ##                  codepoints in that range
 
-proc marpa::unicode::mode {} {
-    debug.marpa/unicode {}
-    variable mode
-    return $mode
-}
-
-proc marpa::unicode::max {} {
-    debug.marpa/unicode {}
-    variable max
-    return $max
-}
-
-# TODO: 2utf --> see c/unicode.tcl :: decode
-proc marpa::unicode::2utf {code} {
-    debug.marpa/unicode {}
-    if {$code < 128} {
-	return [list [expr {$code & 0x7f}]]
-	# The expression does not change the value. It does normalize
-	# the string representation to decimal however. As that
-	# happens in all the fllowing branches as well having it
-	# happen here makes things cleaner, more the same.
-    }
-    if {$code < 2048} {
-	set a [expr {(($code >> 6) & 0x1f) | 0b11000000 }]
-	set b [expr {(($code >> 0) & 0x3f) | 0b10000000 }]
-	debug.marpa/unicode {==> (0x[format %02x $a] 0x[format %02x $b])}
-	return [list $a $b]
-    }
-    if {$code < 65536} {
-	set a [expr {(($code >> 12) & 0x0f) | 0b11100000 }]
-	set b [expr {(($code >>  6) & 0x3f) | 0b10000000 }]
-	set c [expr {(($code >>  0) & 0x3f) | 0b10000000 }]
-	debug.marpa/unicode {==> (0x[format %02x $a] 0x[format %02x $b] 0x[format %02x $c])}
-	return [list $a $b $c]
-    }
-
-    set a [expr {(($code >> 18) & 0x07) | 0b11110000 }]
-    set b [expr {(($code >> 12) & 0x3f) | 0b10000000 }]
-    set c [expr {(($code >>  6) & 0x3f) | 0b10000000 }]
-    set d [expr {(($code >>  0) & 0x3f) | 0b10000000 }]
-    debug.marpa/unicode {==> (0x[format %02x $a] 0x[format %02x $b] 0x[format %02x $c] 0x[format %02x $d])}
-    return [list $a $b $c $d]
-}
-
 proc marpa::unicode::point {character} {
     debug.marpa/unicode {}
     # Convert first character if we got a string.

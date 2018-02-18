@@ -681,4 +681,31 @@ critcl::ccode {
 }
 
 # # ## ### ##### ######## #############
+
+critcl::cconst marpa::unicode::mode   vstring UNI_MODE
+critcl::cconst marpa::unicode::max    int     UNI_MAX
+
+# # ## ### ##### ######## #############
+
+critcl::cproc marpa::unicode::2utf {
+    Tcl_Interp*     interp
+    int             code
+} object0 {
+    int r, i;
+    Tcl_Obj* b;
+    SBR sbr;
+    
+    decode (&sbr, code);
+
+    b = Tcl_NewListObj (0,0);
+    for (i = 0; i < sbr.n; i++) {
+	r = Tcl_ListObjAppendElement (interp, b, Tcl_NewIntObj (sbr.br[i].start));
+	if (r == TCL_OK) continue;
+	Tcl_DecrRefCount (b);
+	return 0;
+    }
+    return b;
+}
+
+# # ## ### ##### ######## #############
 return
