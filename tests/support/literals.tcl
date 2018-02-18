@@ -35,6 +35,7 @@ proc RR {result rules literal} {
     lappend map RIL "Unable to reduce incomplete literal $dlit"
     lappend map RT  "Unable to reduce type $dlit"
     lappend map REL "Unable to reduce empty literal $dlit"
+    lappend map RX  "Unable to reduce type"
 
     # Resolve result fragment references
     while {[regexp {@result<([^>]*)>} $result -> path]} {
@@ -44,6 +45,55 @@ proc RR {result rules literal} {
 
     # Resolve standard, fixed shorthands, and strip indentation
     FE [string map $map $result]
+}
+
+proc ++ {args} {
+    global map
+    lappend map {*}$args
+    return
+}
+
+proc >> {} {
+    global map maps
+    lappend maps $map
+    set map {}
+    return
+}
+
+proc << {} {
+    global map maps
+    set res $map
+    set map  [lindex $maps end]
+    set maps [lrange $maps 0 end-1]
+    lappend map $res
+    return
+}
+
+proc ** {} {
+    global map maps
+    set res $map
+    unset -nocomplain map maps
+    return $res
+}
+
+proc L {literal} {
+    global nlit
+    set nlit [string map [list @@@ [marpa unicode max]] $literal]
+    return
+}
+
+proc +C {rules code result} {
+    global nlit nmap
+    set expected [RR $result $rules $nlit]
+    dict set nmap $nlit $rules [list $code $expected]
+    return
+}
+
+proc // {} {
+    global nmap nlit
+    set r $nmap
+    unset -nocomplain nmap nlit
+    return $r
 }
 
 # # ## ### ##### ######## #############

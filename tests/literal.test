@@ -24,6 +24,15 @@ kt source support/literals.tcl
 
 # # ## ### ##### ######## ############# #####################
 
+kt source cases/ccranges.tcl
+kt source cases/lit-symbol.tcl
+kt source cases/lit-parse.tcl
+kt source cases/lit-norm.tcl
+kt source cases/lit-decode.tcl
+kt source cases/lit-unescape.tcl
+kt source cases/lit-reduce-full.tcl
+kt source cases/lit-reduce-step.tcl
+
 # # ## ### ##### ######## ############# #####################
 ## [ok] symbol        \
 ## [ok] parse         / API (normalization)
@@ -55,14 +64,7 @@ test marpa-slif-literal-ccranges-1.1 {ccranges, wrong args, too many} -body {
     marpa::slif::literal ccranges D X
 } -returnCodes error -result {wrong # args: should be "marpa::slif::literal ccranges data"}
 
-testcases k {cc ranges} {
-    10              10
-    {{10 20}}       {{10 20}}
-    braille         {{10240 10495}}
-    {10 braille}    {10 {10240 10495}}
-    {10245 braille} {{10240 10495}}
-    {34 92 control} {{0 31} 34 92 {127 159} 173 {1536 1541} 1564 1757 1807 2274 6158 {8203 8207} {8234 8238} {8288 8292} {8294 8303} {57344 63743} 65279 {65529 65531} 69821 {113824 113827} {119155 119162} 917505 {917536 917631} {983040 1048573} {1048576 1114109}}
-} {
+testcases k {cc ranges} [cc-ranges] {
     test marpa-slif-literal-ccranges-2.$k "ccranges, $cc" -body {
 	marpa::slif::literal ccranges $cc
     } -result $ranges
@@ -121,67 +123,14 @@ test marpa-slif-literal-reduce-1.2 {reduce, wrong args, too many} -body {
     marpa::slif::literal reduce W R X
 } -returnCodes error -result {wrong # args: should be "marpa::slif::literal reduce worklist rules"}
 
-testcases k {literal toexpect} {
-    string {
-	{} error RIL
-    }
-    {string 65 66 300} {
-	{}     error RT
-	K-STR  ok    {<symbol> {string 65 66 300}}
-	D-STR1 error {Unable to reduce type (character (300))}
-	{D-STR1 K-CHR} ok {
-	    @CHR:<A> {character 65}
-	    @CHR:<B> {character 66}
-	    {@CHR:<\u012c>} {character 300}
-	    <symbol> {composite {@CHR:<A> @CHR:<B> {@CHR:<\u012c>}}}
-	}
-	{D-STR1 D-CHR} ok {
-	    @CHR:<A> {byte 65}
-	    @CHR:<B> {byte 66}
-	    {@BYTE:<\u00c4>} {byte 196}
-	    {@BYTE:<\u00ac>} {byte 172}
-	    {@CHR:<\u012c>} {composite {{@BYTE:<\u00c4>} {@BYTE:<\u00ac>}}}
-	    <symbol> {composite {@CHR:<A> @CHR:<B> {@CHR:<\u012c>}}}
-	}
-	D-STR2 ok {
-	    @BYTE:<A> {byte 65}
-	    @BYTE:<B> {byte 66}
-	    {@BYTE:<\u00c4>} {byte 196}
-	    {@BYTE:<\u00ac>} {byte 172}
-	    <symbol> {composite {@BYTE:<A> @BYTE:<B> {@BYTE:<\u00c4>} {@BYTE:<\u00ac>}}}
-	}
-    }
-    {charclass 65 67} {
-	{}     error RT
-	K-CLS  ok    {<symbol> {charclass 65 67}}
-	D-CLS1 error {Unable to reduce type (character (67))}
-	{D-CLS1 K-CHR} ok {
-	    @CHR:<A> {character 65}
-	    @CHR:<C> {character 67}
-	    <symbol> {composite @CHR:<A> @CHR:<C>}
-	}
-	{D-CLS1 D-CHR} ok {
-	    @CHR:<A> {byte 65}
-	    @CHR:<C> {byte 67}
-	    <symbol> {composite @CHR:<A> @CHR:<C>}
-	}
-	D-CLS2 ok {
-	    @BYTE:<A> {byte 65}
-	    @BYTE:<C> {byte 67}
-	    <symbol> {composite @BYTE:<A> @BYTE:<C>}
-	}
-    }
-} {
-    # Incrementally fill the above table with cases.  The basic flow
-    # is covered by what we have now. Extending this is not about
-    # coverage anymore, but about seeing the whole deconstruction for
-    # all literal types and possible rule-sets.
-
-    testcases j {rules code result} $toexpect {
+testcases k {literal subcases} [lit-reduce-full] {
+    testcases j {rules result} $subcases {
+	lassign $result code expected
+	
 	test marpa-slif-literal-reduce-2.$k.$j "reduce $code ($literal) $rules, worklist" -body {
 	    F [lindex [marpa::slif::literal reduce [list <symbol> $literal] $rules] 0]
 	    # Access worklist, ignore the aliases, supposed to be empty
-	} -returnCodes $code -result [RR $result $rules $literal]
+	} -returnCodes $code -result $expected
 
 	if {$code eq "error"} continue
 
@@ -215,293 +164,9 @@ test marpa-slif-literal-reduce1-1.4 {reduce1, wrong args, too many} -body {
     marpa::slif::literal reduce1 S L R S X
 } -returnCodes error -result {wrong # args: should be "marpa::slif::literal reduce1 litsymbol literal rules state"}
 
-testcases k {literal toexpect} {
-    string {
-	{}     error RIL
-	K-STR  error RIL
-	D-STR1 error RIL
-	D-STR2 error RIL
-    }
-    {string 65 66 300} {
-	{}     error RT
-	K-STR  ok    {@q {string 65 66 300}}
-	D-STR1 ok    {@! {composite {{character 65} {character 66} {character 300}}}}
-	D-STR2 ok    {@! {composite {{byte 65} {byte 66} {byte 196} {byte 172}}}}
-    }
-    %string {
-	{}     error RIL
-	K-%STR error RIL
-	D-%STR error RIL
-    }
-    {%string 97 98} {
-	{}     error  RT
-	K-%STR ok     {@q {%string 97 98}}
-	D-%STR ok     {@! {composite {{%character 97} {%character 98}}}}
-	!----- ------ { -- reduce1 ^^ does not normalize, rstate place does -- }
-    }
-    character {
-	{}    error RIL
-	K-CHR error RIL
-	D-CHR error RIL
-    }
-    {character 65} {
-	{}    error RT
-	K-CHR ok    {@q {character 65}}
-	D-CHR ok    {@q {byte 65}}
-    }
-    {character 300} {
-	{}    error RT
-	K-CHR ok    {@q {character 300}}
-	D-CHR ok    {@! {composite {{byte 196} {byte 172}}}}
-	!---- ----- {                     ^110.00100 ^10.101100   }
-	!---- ----- {                     = 0b'00100  0b'101100   }
-	!---- ----- {                     = 0b'00100 101100 = 300 }
-    }
-    charclass {
-	{}     error RIL
-	K-CLS  error RIL
-	D-CLS1 error RIL
-	D-CLS2 error RIL
-	D-CLS3 error RIL
-    }
-    {charclass {10 20} 300} {
-	{}     error RT
-	K-CLS  ok    {@q {charclass {10 20} 300}}
-	D-CLS1 ok    {@! {composite {{range 10 20}} {{character 300}}}}
-	D-CLS2 ok    {@! {composite {{brange 10 20}} {{byte 196} {byte 172}}}}
-	D-CLS3 ok    {@q {charclass {10 20} 300}}
-    }
-    {charclass {10 20} braille} {
-	{}     error RT
-	K-CLS  ok    {@q {charclass {10 20} braille}}
-	D-CLS1 ok    {@! {composite {{range 10 20}} {{named-class braille}}}}
-	D-CLS2 ok    {@! {composite {{brange 10 20}} {{byte 226} {brange 160 163} {brange 128 191}}}}
-	D-CLS3 ok    {@q {charclass {10 20} {10240 10495}}}
-    }
-    {charclass 300 braille} {
-	{}     error RT
-	K-CLS  ok    {@q {charclass 300 braille}}
-	D-CLS1 ok    {@! {composite {{character 300}} {{named-class braille}}}}
-	D-CLS2 ok    {@! {composite {{byte 196} {byte 172}} {{byte 226} {brange 160 163} {brange 128 191}}}}
-	D-CLS3 ok    {@q {charclass 300 {10240 10495}}}
-    }
-    {charclass 300 print} {
-	{}     error RT
-	K-CLS  ok    {@q {charclass 300 print}}
-	D-CLS1 ok    {@! {composite {{character 300}} {{named-class print}}}}
-	!----- --    { D-CLS2 skipped, avoid large ASBR }
-	D-CLS3 ok    {@q {charclass 300 print}}
-    }
-    {charclass {10 20} 300 braille} {
-	{}     error RT
-	K-CLS  ok    {@q {charclass {10 20} 300 braille}}
-	D-CLS1 ok    {@! {composite {{range 10 20}} {{character 300}} {{named-class braille}}}}
-	D-CLS2 ok    {@! {composite {{brange 10 20}} {{byte 196} {byte 172}} {{byte 226} {brange 160 163} {brange 128 191}}}}
-	D-CLS3 ok    {@q {charclass {10 20} 300 {10240 10495}}}
-    }
-    ^charclass {
-	{}      error RIL
-	K-^CLS  error RIL
-	D-^CLS1 error RIL
-	D-^CLS2 error RIL
-    }
-    {^charclass {10 20} 300} {
-	{}      error RT
-	K-^CLS  ok    {@q {^charclass {10 20} 300}}
-	D-^CLS1 ok    {@x {charclass {0 9} {21 299} {301 @@@}}}
-	D-^CLS2 ok    {@q {^charclass {10 20} 300}}
-    }
-    {^charclass {10 20} braille} {
-	{}      error RT
-	K-^CLS  ok    {@q {^charclass {10 20} braille}}
-	D-^CLS1 ok    {@x {charclass {0 9} {21 10239} {10496 @@@}}}
-	D-^CLS2 ok    {@q {^charclass {10 20} {10240 10495}}}
-    }
-    {^charclass 300 braille} {
-	{}      error RT
-	K-^CLS  ok    {@q {^charclass 300 braille}}
-	D-^CLS1 ok    {@x {charclass {0 299} {301 10239} {10496 @@@}}}
-	D-^CLS2 ok    {@q {^charclass 300 {10240 10495}}}
-    }
-    {^charclass {10 20} 300 braille} {
-	{}      error RT
-	K-^CLS  ok    {@q {^charclass {10 20} 300 braille}}
-	D-^CLS1 ok    {@x {charclass {0 9} {21 299} {301 10239} {10496 @@@}}}
-	D-^CLS2 ok    {@q {^charclass {10 20} 300 {10240 10495}}}
-    }
-    {^charclass 20 punct} {
-	D-^CLS2 ok {@q {^charclass 20 punct}}
-    }
-    named-class {
-	{}     error RIL
-	K-NCC  error RIL
-	D-NCC1 error RIL
-	D-NCC2 error RIL
-	D-NCC3 error RIL
-    }
-    {named-class braille} {
-	{}     error RT
-	K-NCC  ok    {@q {named-class braille}}
-	D-NCC1 ok    {@x {charclass {0x2800 0x28FF}}}
-	D-NCC2 ok    {@! {composite {{byte 226} {brange 160 163} {brange 128 191}}}}
-	D-NCC3 ok    {@x {charclass {0x2800 0x28FF}}}
-    }
-    {named-class punct} {
-	D-NCC3 ok    {@q {named-class punct}}
-    }
-    %named-class {
-	{}      error RIL
-	K-%NCC  error RIL
-	D-%NCC1 error RIL
-	D-%NCC2 error RIL
-    }
-    {%named-class braille} {
-	{}      error RT
-	K-%NCC  ok    {@q {%named-class braille}}
-	D-%NCC1 ok    {@x {charclass {10240 10495}}}
-	D-%NCC2 ok    {@! {composite {{byte 226} {brange 160 163} {brange 128 191}}}}
-    }
-    {%named-class lu} {
-	{}      error RT
-	K-%NCC  ok    {@q {%named-class lu}}
-	D-%NCC1 ok    {@x {@result<lu.nocase.ncc1.<M>>}}
-	D-%NCC2 ok    {@! {@result<lu.nocase.ncc2.<M>>}}
-    }
-    ^named-class {
-	{}      error RIL
-	K-^NCC  error RIL
-	D-^NCC1 error RIL
-	D-^NCC2 error RIL
-    }
-    {^named-class braille} {
-	{}      error RT
-	K-^NCC  ok    {@q {^named-class braille}}
-	D-^NCC1 ok    {@x {charclass {0 10239} {10496 @@@}}}
-	D-^NCC2 ok    {@x {charclass {0 10239} {10496 @@@}}}
-    }
-    {^named-class punct} {
-	D-^NCC2 ok    {@q {^named-class punct}}
-    }
-    ^%named-class {
-	{}       error RIL
-	K-^%NCC  error RIL
-	D-^%NCC1 error RIL
-	D-^%NCC2 error RIL
-    }
-    {^%named-class braille} {
-	{}       error RT
-	K-^%NCC  ok    {@q {^%named-class braille}}
-	D-^%NCC1 ok    {@x {charclass {0 10239} {10496 @@@}}}
-	D-^%NCC2 ok    {@! {@result<braille.neg.nocase.ncc2.<M>>}}
-    }
-    {^%named-class lu} {
-	{}       error RT
-	K-^%NCC  ok    {@q {^%named-class lu}}
-	D-^%NCC1 ok    {@x {@result<lu.neg.nocase.ncc1.<M>>}}
-	D-^%NCC2 ok    {@! {@result<lu.neg.nocase.ncc2.<M>>}}
-    }
-    range {
-	{}     error RIL
-	K-RAN  error RIL
-	D-RAN1 error RIL
-	D-RAN2 error RIL
-    }
-    {range 20 10} {
-	{}     error REL
-	K-RAN  error REL
-	D-RAN1 error REL
-	D-RAN2 error REL
-    }
-    {range 10 10} {
-	{}     error REL
-	K-RAN  error REL
-	D-RAN1 error REL
-	D-RAN2 error REL
-    }
-    {range 10 11} {
-	{}     error RT
-	K-RAN  ok    {@q {range 10 11}}
-	D-RAN1 ok    {@! {composite {{character 10}} {{character 11}}}}
-	D-RAN2 ok    {@q {brange 10 11}}
-    }
-    %range {
-	{}     error RIL
-	K-%RAN error RIL
-	D-%RAN error RIL
-    }
-    {%range 20 10} {
-	{}     error REL
-	K-%RAN error REL
-	D-%RAN error REL
-    }
-    {%range 10 10} {
-	{}     error REL
-	K-%RAN error REL
-	D-%RAN error REL
-    }
-    {%range 97 99} {
-	{}     error RT
-	K-%RAN ok    {@q {%range 97 99}}
-	D-%RAN ok    {@x {charclass {65 67} {97 99}}}
-    }
-    ^range {
-	{}      error RIL
-	K-^RAN  error RIL
-	D-^RAN1 error RIL
-	D-^RAN2 error RIL
-    }
-    {^range 0 @@@} {
-	{}      error REL
-	K-^RAN  error REL
-	D-^RAN1 error REL
-	D-^RAN2 error REL
-    }
-    {^range 0 10} {
-	{}      error RT
-	K-^RAN  ok    {@q {^range 0 10}}
-	D-^RAN1 ok    {@x {range 11 @@@}}
-	D-^RAN2 ok    {@! {@result<range.0-10.neg.ran2.<M>>}}
-    }
-    {^range 20 @@@} {
-	{}      error RT
-	K-^RAN  ok    {@q {^range 20 @@@}}
-	D-^RAN1 ok    {@x {range 0 19}}
-	D-^RAN2 ok    {@q {brange 0 19}}
-    }
-    {^range 10 20} {
-	{}      error RT
-	K-^RAN  ok    {@q {^range 10 20}}
-	D-^RAN1 ok    {@x {charclass {0 9} {21 @@@}}}
-	D-^RAN2 ok    {@! {@result<range.10-20.neg.ran2.<M>>}}
-    }
-    ^character {
-	{}     error RIL
-	K-^CHR error RIL
-	D-^CHR error RIL
-    }
-    {^character 300} {
-	{}     error RT
-	K-^CHR ok    {@q {^character 300}}
-	D-^CHR ok    {@x {charclass {0 299} {301 @@@}}}
-	!----- ----- { using 2 ranges,    -^- 300 excluded }
-    }
-    {^charclass 34 92 control} {
-	{}      error RT
-	K-^CLS  ok    {@q {^charclass 34 92 control}}
-	D-^CLS1 ok    {@x {charclass {32 33} {35 91} {93 126} {160 172} {174 1535} {1542 1563} {1565 1756} {1758 1806} {1808 2273} {2275 6157} {6159 8202} {8208 8233} {8239 8287} 8293 {8304 57343} {63744 65278} {65280 65528} {65532 69820} {69822 113823} {113828 119154} {119163 917504} {917506 917535} {917632 983039} {1048574 1048575} {1114110 1114111}}}
-	D-^CLS2 ok    {@q {^charclass {0 31} 34 92 {127 159} 173 {1536 1541} 1564 1757 1807 2274 6158 {8203 8207} {8234 8238} {8288 8292} {8294 8303} {57344 63743} 65279 {65529 65531} 69821 {113824 113827} {119155 119162} 917505 {917536 917631} {983040 1048573} {1048576 1114109}}}
-    }
-} {
-    # Skip annotations
-    if {[string match !* $literal]} { puts XXX.reduce1.$literal ; continue }
-
-    # Fix placeholder for semi-dynamic upper unicode limit
-    set literal [string map [list @@@ [marpa unicode max]] $literal]
-
-    testcases j {rules code result} $toexpect {
-	# Skip annotations
-	if {[string match !* $rules]} continue ;#{ puts XXX.reduce1.$literal.$rules ; continue }
-	if {[string match X* $rules]} { puts XXX.reduce1.$literal.$rules ; continue }
+testcases k {literal subcases} [lit-reduce-step] {
+    testcases j {rules result} $subcases {
+	lassign $result code expected
 
 	test marpa-slif-literal-reduce1-2.$k.$j "reduce1 $code ($literal) $rules" -setup {
 	    set state [log STATE] ; /trace STATE
@@ -511,7 +176,7 @@ testcases k {literal toexpect} {
 	} -cleanup {
 	    catch { logged }
 	    unset state
-	} -returnCodes $code -result [RR $result $rules $literal]
+	} -returnCodes $code -result $expected
     }
 }
 
@@ -845,46 +510,7 @@ test marpa-slif-literal-symbol-1.1 {symbol, wrong args, too many} -body {
     marpa::slif::literal symbol LITERAL X
 } -returnCodes error -result {wrong # args: should be "marpa::slif::literal symbol literal"}
 
-testcases k {literal symbol} {
-    {%named-class braille}                        @%NCC:<[:braille:]>
-    {%string 65 45}                               @%STR:<A->
-    {^%named-class braille}                       @^%NCC:<[:braille:]>
-    {^character 45}                               @^CHR:<->
-    {^character 97}                               @^CHR:<a>
-    {^charclass 45 %braille}                      @^CLS:<-[:%braille:]>
-    {^charclass 45 {65 70} {97 102} %braille}     @^CLS:<-A-Fa-f[:%braille:]>
-    {^charclass 45 {65 70} {97 102}}              @^CLS:<-A-Fa-f>
-    {^charclass 45 {97 102} braille}              @^CLS:<-a-f[:braille:]>
-    {^charclass 45 {97 102}}                      @^CLS:<-a-f>
-    {^charclass 65 97 %braille}                   @^CLS:<Aa[:%braille:]>
-    {^charclass 65 97}                            @^CLS:<Aa>
-    {^charclass 97 braille}                       @^CLS:<a[:braille:]>
-    {^charclass {45 47} %braille}                 @^CLS:<--/[:%braille:]>
-    {^charclass {45 47} 65 97}                    @^CLS:<--/Aa>
-    {^charclass {65 70} {97 102} %braille}        @^CLS:<A-Fa-f[:%braille:]>
-    {^charclass {65 70} {97 102}}                 @^CLS:<A-Fa-f>
-    {^charclass {97 102} braille}                 @^CLS:<a-f[:braille:]>
-    {^named-class braille}                        @^NCC:<[:braille:]>
-    {^range 97 102}                               @^RAN:<af>
-    {character 45}                                @CHR:<->
-    {character 97}                                @CHR:<a>
-    {charclass 45 %braille}                       @CLS:<-[:%braille:]>
-    {charclass 45 {65 70} {97 102} %braille}      @CLS:<-A-Fa-f[:%braille:]>
-    {charclass 45 {65 70} {97 102}}               @CLS:<-A-Fa-f>
-    {charclass 45 {97 102} braille}               @CLS:<-a-f[:braille:]>
-    {charclass 45 {97 102}}                       @CLS:<-a-f>
-    {charclass 65 97 %braille}                    @CLS:<Aa[:%braille:]>
-    {charclass 65 97}                             @CLS:<Aa>
-    {charclass 97 braille}                        @CLS:<a[:braille:]>
-    {charclass {45 47} %braille}                  @CLS:<--/[:%braille:]>
-    {charclass {45 47} 65 97}                     @CLS:<--/Aa>
-    {charclass {65 70} {97 102} %braille}         @CLS:<A-Fa-f[:%braille:]>
-    {charclass {65 70} {97 102}}                  @CLS:<A-Fa-f>
-    {charclass {97 102} braille}                  @CLS:<a-f[:braille:]>
-    {named-class braille}                         @NCC:<[:braille:]>
-    {range 97 102}                                @RAN:<af>
-    {string 97 45}                                @STR:<a->
-} {
+testcases k {literal symbol} [lit-symbol] {
     test marpa-slif-literal-symbol-2.$k "symbol, $literal" -body {
 	marpa::slif::literal symbol $literal
     } -result $symbol
@@ -901,56 +527,7 @@ test marpa-slif-literal-parse-1.2 {parse, wrong args, too many} -body {
     marpa::slif::literal parse LITSTRING X
 } -returnCodes error -result {wrong # args: should be "marpa::slif::literal parse litstring"}
 
-testcases k {rule litstring res} {
-    N01 {'a'}                        {character 97}
-    N02 {'a-'}                       {string 97 45}
-
-    N03 {'a':i}                      {charclass 65 97}
-    N03 {'-':i}                      {character 45}
-    N04 {'a-':i}                     {%string 65 45}
-
-    N05 {[a]}                        {character 97}
-    N06 {[a-f]}                      {range 97 102}
-    N07 {[[:braille:]]}              {named-class braille}
-    N08 {[[:braille:]a]}             {charclass 97 braille}
-    N08 {[\-a-f]}                    {charclass 45 {97 102}}
-    N08 {[a-f[:braille:]]}           {charclass {97 102} braille}
-    N08 {[a-f[:braille:]\-]}         {charclass 45 {97 102} braille}
-
-    N09 {[a]:i}                      {charclass 65 97}
-    N09 {[\-]:i}                     {character 45}
-    N10 {[a-f]:i}                    {charclass {65 70} {97 102}}
-    N11 {[[:braille:]]:i}            {%named-class braille}
-    N12 {[a[:braille:]]:i}           {charclass 65 97 %braille}
-    N12 {[[:braille:]\-]:i}          {charclass 45 %braille}
-    N12 {[a-f\-]:i}                  {charclass 45 {65 70} {97 102}}
-    N12 {[\x2D-/a]:i}                {charclass {45 47} 65 97}
-    N12 {[[:braille:]a-f]:i}         {charclass {65 70} {97 102} %braille}
-    N12 {[\055-/[:braille:]]:i}      {charclass {45 47} %braille}
-    N12 {[\055[:braille:]a-f]:i}     {charclass 45 {65 70} {97 102} %braille}
-
-    N13 {[^a]}                       {^character 97}
-    N14 {[^abcdef]}                  {^range 97 102}
-    N15 {[^[:braille:]]}             {^named-class braille}
-    N16 {[^[:braille:]a]}            {^charclass 97 braille}
-    N16 {[^a-c\055d-f]}              {^charclass 45 {97 102}}
-    N16 {[^d-f[:braille:]a-e]}       {^charclass {97 102} braille}
-    N16 {[^a-c\055[:braille:]b-f]}  {^charclass 45 {97 102} braille}
-
-    N17 {[^a]:i}                     {^charclass 65 97}
-    N17 {[^\x2d]:i}                  {^character 45}
-    N18 {[^a-f]:i}                   {^charclass {65 70} {97 102}}
-    N19 {[^[:braille:]]:i}           {^%named-class braille}
-    N20 {[^[:braille:]a]:i}          {^charclass 65 97 %braille}
-    N20 {[^[:braille:]\055]:i}       {^charclass 45 %braille}
-    N20 {[^a-c\055b-f]:i}            {^charclass 45 {65 70} {97 102}}
-    N20 {[^\055\056\057a]:i}         {^charclass {45 47} 65 97}
-    N20 {[^[:braille:]a-f]:i}        {^charclass {65 70} {97 102} %braille}
-    N20 {[^[:braille:]\--/]:i}       {^charclass {45 47} %braille}
-    N20 {[^\055abcdef[:braille:]]:i} {^charclass 45 {65 70} {97 102} %braille}
-
-    CC0 {[^"\\[:control:]]}          {^charclass 34 92 control}
-} {
+testcases k {rule litstring res} [lit-parse] {
     test marpa-slif-literal-parse-2.$k "parse, $rule, $litstring" -body {
 	marpa::slif::literal parse $litstring
     } -result $res
@@ -968,54 +545,7 @@ test marpa-slif-literal-norm-1.2 {norm, wrong args, too many} -body {
     marpa::slif::literal norm LITERAL X
 } -returnCodes error -result {wrong # args: should be "marpa::slif::literal norm literal"}
 
-testcases k {rule literal res} {
-    N01 {string 97}             {character 97}
-    N02 {string 97 45}          --
-
-    N03 {%string 97}            {charclass 65 97}
-    N03 {%string 45}            {character 45}
-    N04 {%string 65 45}         --
-
-    N05 {charclass 97}                    {character 97}
-    N06 {charclass {97 102}}              {range 97 102}
-    N07 {charclass braille}               {named-class braille}
-    N08 {charclass 97 braille}            --mix:char,named
-    N08 {charclass 45 {97 102}}           --mix:char,range
-    N08 {charclass {97 102} braille}      --mix:range,named
-    N08 {charclass 45 {97 102} braille}   --mix:char,range,named
-
-    N09 {%charclass 97}                   {charclass 65 97}
-    N09 {%charclass 45}                   {character 45}
-    N10 {%charclass {97 102}}             {charclass {65 70} {97 102}}
-    N11 {%charclass braille}              {%named-class braille}
-    N12 {%charclass 97 braille}           {charclass 65 97 %braille}
-    N12 {%charclass 45 braille}           {charclass 45 %braille}
-    N12 {%charclass 45 {97 102}}          {charclass 45 {65 70} {97 102}}
-    N12 {%charclass {45 47} 97}           {charclass {45 47} 65 97}
-    N12 {%charclass {97 102} braille}     {charclass {65 70} {97 102} %braille}
-    N12 {%charclass {45 47} braille}      {charclass {45 47} %braille}
-    N12 {%charclass 45 {97 102} braille}  {charclass 45 {65 70} {97 102} %braille}
-
-    N13 {^charclass 97}                   {^character 97}
-    N14 {^charclass {97 102}}             {^range 97 102}
-    N15 {^charclass braille}              {^named-class braille}
-    N16 {^charclass 97 braille}           --mix:char,named
-    N16 {^charclass 45 {97 102}}          --mix:char,range
-    N16 {^charclass {97 102} braille}     --mix:range,named
-    N16 {^charclass 45 {97 102} braille}  --mix:char,range,named
-
-    N17 {^%charclass 97}                  {^charclass 65 97}
-    N17 {^%charclass 45}                  {^character 45}
-    N18 {^%charclass {97 102}}            {^charclass {65 70} {97 102}}
-    N19 {^%charclass braille}             {^%named-class braille}
-    N20 {^%charclass 97 braille}          {^charclass 65 97 %braille}
-    N20 {^%charclass 45 braille}          {^charclass 45 %braille}
-    N20 {^%charclass 45 {97 102}}         {^charclass 45 {65 70} {97 102}}
-    N20 {^%charclass {45 47} 97}          {^charclass {45 47} 65 97}
-    N20 {^%charclass {97 102} braille}    {^charclass {65 70} {97 102} %braille}
-    N20 {^%charclass {45 47} braille}     {^charclass {45 47} %braille}
-    N20 {^%charclass 45 {97 102} braille} {^charclass 45 {65 70} {97 102} %braille}
-} {
+testcases k {rule literal res} [lit-norm] {
     if {[string match --* $res]} { set res $literal }
     test marpa-slif-literal-norm-2.$k "norm, $rule, $literal" -body {
 	marpa::slif::literal norm $literal
@@ -1075,7 +605,8 @@ test marpa-slif-literal-ccsplit-1.2 {ccsplit, wrong args, too many} -body {
 } -returnCodes error -result {wrong # args: should be "marpa::slif::literal ccsplit data"}
 
 testcases k {data res} {
-    {37 {48 57} {97 122} alnum braille}    {{37 {48 57} {97 122}} {alnum braille}}
+    {37 {48 57} {97 122} alnum braille}
+    {{37 {48 57} {97 122}} {alnum braille}}
 } {
     test marpa-slif-literal-ccsplit-2.$k "ccsplit, $data" -body {
 	marpa::slif::literal ccsplit $data
@@ -1106,16 +637,7 @@ test marpa-slif-literal-decode-2.0 {decode, bogus type} -body {
 #       n   o   p   q   r   s   t   u   v   w   x   y   z
 # n-z = 110 111 112 113 114 115 116 117 118 119 120 121 122
 
-testcases k {lit rclass rstring} {
-    abcdef                 {{97 102}}            {97 98 99 100 101 102}
-    a-z                    {{97 122}}            {97 45 122}
-    {[:braille:]}          {braille}             {91 58 98 114 97 105 108 108 101 58 93}
-    --z                    {{45 122}}            {45 45 122}
-    %--                    {{37 45}}             {37 45 45}
-    a-z0-9%                {37 {48 57} {97 122}} {97 45 122 48 45 57 37}
-    {0-9[:alnum:]}         {{48 57} alnum}       {48 45 57 91 58 97 108 110 117 109 58 93}
-    {[:braille:][:alnum:]} {alnum braille}       {91 58 98 114 97 105 108 108 101 58 93 91 58 97 108 110 117 109 58 93}
-} {
+testcases k {lit rclass rstring} [lit-decode] {
     test marpa-slif-literal-decode-2.$k.1 "decode, string $lit" -body {
 	marpa::slif::literal decode string $lit
     } -result [linsert $rstring 0 string]
@@ -1146,17 +668,7 @@ test marpa-slif-literal-decode-class-1.1 {decode-class, wrong args, too many} -b
     marpa::slif::literal decode-class LITSTRING X
 } -returnCodes error -result {wrong # args: should be "marpa::slif::literal decode-class litstring"}
 
-testcases k {lit res} {
-    abcdef                 {{97 102}}
-    a-z                    {{97 122}}
-    {[:braille:]}          {braille}
-    --z                    {{45 122}}
-    %--                    {{37 45}}
-    a-z0-9%                {37 {48 57} {97 122}}
-    {0-9[:alnum:]}         {{48 57} alnum}
-    {[:braille:][:alnum:]} {alnum braille}
-    {"\\[:control:]}       {34 92 control}
-} {
+testcases k {lit res __} [lit-decode] {
     test marpa-slif-literal-decode-class-2.$k "decode-class, $lit" -body {
 	marpa::slif::literal decode-class $lit
     } -result $res
@@ -1233,14 +745,7 @@ test marpa-slif-literal-unescape-1.1 {unescape, wrong args, too many} -body {
     marpa::slif::literal unescape LITSTRING X
 } -returnCodes error -result {wrong # args: should be "marpa::slif::literal unescape litstring"}
   
-testcases k {lit res} [apply {{} {
-    lappend tcases "\\n\\r\\t\\f\\v\\a\\'\\\]\\-\\\\"  "\n\r\t\f\v\a'\]-\\"
-    lappend tcases "\\377"                             "\377"
-    lappend tcases "\xFFFFFFFFFFFF"                    [CORE "\xFF" "\377FFFFFFFFFF"]
-    lappend tcases "\\u2202"                           "\u2202"
-    lappend tcases "abcdef"                            "abcdef"
-    set tcases
-}}] {
+testcases k {lit res} [lit-unescape] {
     test marpa-slif-literal-unescape-2.$k "unescape, $lit" -body {
 	marpa::slif::literal unescape $lit
     } -result $res
