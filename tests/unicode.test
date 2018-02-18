@@ -1,5 +1,5 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2017 Andreas Kupries
+## (c) 2017-2018 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## marpa::unicode
 
@@ -12,6 +12,10 @@ kt require support oo::util
 kt require support TclOO
 
 kt local   testing marpa::unicode
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/common.tcl
 
 proc UM {str} { string map [list @@@ [marpa unicode max]] $str }
 
@@ -77,8 +81,7 @@ test marpa-unicode-point-1.1 {point, wrong args, too many} -body {
     marpa unicode point CHARACTER X
 } -returnCodes error -result {wrong # args: should be "marpa unicode point character"}
 
-set k 0
-foreach {char code} {
+testcases k {char code} {
     \0     0
     A      65
     \r     13
@@ -86,7 +89,6 @@ foreach {char code} {
     \u2202 8706
     CHAR   67
 } {
-    incr k
     test marpa-unicode-point-2.$k "point, $code" -body {
 	marpa unicode point $char
     } -result $code
@@ -103,8 +105,7 @@ test marpa-unicode-2utf-1.1 {2utf, wrong args, too many} -body {
     marpa unicode 2utf CODE X
 } -returnCodes error -result {wrong # args: should be "marpa unicode 2utf code"}
 
-set k 0
-foreach {code utf} {
+testcases k {code utf} {
     0        {0}
     127      {127}
     128      {194 128}
@@ -115,7 +116,6 @@ foreach {code utf} {
     0x10FFFE {244 143 191 190}
     0x10FFFF {244 143 191 191}
 } {
-    incr k
     test marpa-unicode-2utf-2.$k "2utf, $code" -body {
 	marpa unicode 2utf $code
     } -result $utf
@@ -132,8 +132,7 @@ test marpa-unicode-norm-class-1.1 {norm-class, wrong args, too many} -body {
     marpa unicode norm-class ITEMS X
 } -returnCodes error -result {wrong # args: should be "marpa unicode norm-class charclass"}
 
-set k 0
-foreach {charclass normalized notes} {
+testcases k {charclass normalized notes} {
     {6 3}         {3 6}    {sort ascending}
     {4 3}         {{3 4}}  {merge adjacent}
     {{1 5} {6 8}} {{1 8}}  {ditto}
@@ -142,15 +141,12 @@ foreach {charclass normalized notes} {
     {3}           {3}      {single item}
     {{4 7}}       {{4 7}}  {ditto}
 } {
-    incr k
     test marpa-unicode-norm-class-2.$k "norm-class, $charclass" -body {
 	marpa unicode norm-class $charclass
     } -result $normalized
 }
 
-
-set k 0
-foreach {charclass message notes} {
+testcases k {charclass message notes} {
     {-1}          {Point out of range (0...*): -1} {out of range, under}
     {500000000}   {Point out of range (0...*): 500000000} {out of range, over, regardless of mode}
     {2 {3 3 4} 4} {Expected 2-element list for range} {too many elements for interval/range}
@@ -163,7 +159,6 @@ foreach {charclass message notes} {
     {bogus} {Expected 2-element list for range} {Most bogus is convertible to list => range validation}
     {\{} {Expected codepoint or range, got neither} {Not even a list}
 } {
-    incr k
     test marpa-unicode-norm-class-3.$k "norm-class, bad $charclass" -body {
 	marpa unicode norm-class $charclass
     } -returnCodes error -result $message -match glob
@@ -212,8 +207,7 @@ test marpa-unicode-2asbr-1.1 {2asbr, wrong args, too many} -body {
     marpa unicode 2asbr CHARCLASS X
 } -returnCodes error -result {wrong # args: should be "marpa unicode 2asbr charclass"}
 
-set k 0
-foreach {charclass asbr pretty} {
+testcases k {charclass asbr pretty} {
     {{0 16}}
     {{{0 16}}}
     " [00-10]\n"
@@ -233,9 +227,6 @@ foreach {charclass asbr pretty} {
     {{{0 127}} {{194 223} {128 191}} {{224 224} {160 191} {128 191}} {{225 236} {128 191} {128 191}} {{237 237} {128 159} {128 191}} {{238 239} {128 191} {128 191}} {{240 240} {144 191} {128 191} {128 191}} {{241 243} {128 191} {128 191} {128 191}} {{244 244} {128 143} {128 191} {128 191}}}
     " [00-7f]\n|[c2-df][80-bf]\n|[e0]   [a0-bf][80-bf]\n|[e1-ec][80-bf][80-bf]\n|[ed]   [80-9f][80-bf]\n|[ee-ef][80-bf][80-bf]\n|[f0]   [90-bf][80-bf][80-bf]\n|[f1-f3][80-bf][80-bf][80-bf]\n|[f4]   [80-8f][80-bf][80-bf]\n"
 } {
-    if {[lindex $charclass end end] > [marpa unicode max]} continue
-    
-    incr k
     test marpa-unicode-2asbr-2.$k "2asbr, $charclass" -body {
 	marpa unicode 2asbr $charclass
     } -result $asbr

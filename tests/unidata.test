@@ -1,5 +1,5 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2017 Andreas Kupries
+## (c) 2017-2018 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## marpa::unidata
 
@@ -14,6 +14,8 @@ kt require support TclOO
 kt local   testing marpa::unicode
 
 # # ## ### ##### ######## ############# #####################
+
+kt source support/common.tcl
 
 # Trick: The mode string from the unicode sub-package is used as the
 # name of the variable/argument to read by `set`, which returns the
@@ -128,8 +130,7 @@ test marpa-unicode-data-fold-2.0 {fold, bogus} -body {
     marpa unicode data fold bogus
 } -returnCodes error -result {expected integer but got "bogus"}
 
-set k 0
-foreach {label codepoint cclass} {
+testcases k {label codepoint cclass} {
     a  97 {65 97}
     i 105 {73 105 304 305}
     k 107 {75 107 8490}
@@ -137,7 +138,6 @@ foreach {label codepoint cclass} {
     @  64 64
 } {
     # For the unexpected codepoints (>300), see (xx).
-    incr k
     test marpa-unicode-data-fold-2.$k "fold, $label" -body {
 	marpa unicode data fold $codepoint
     } -result $cclass
@@ -158,8 +158,7 @@ test marpa-unicode-data-fold/c-2.0 {fold/c, bogus} -body {
     marpa unicode data fold/c bogus
 } -returnCodes error -result {expected integer but got "bogus"}
 
-set k 0
-foreach {label codepoint primary} {
+testcases k {label codepoint primary} {
     a  97 65
     i 105 73
     k 107 75
@@ -167,7 +166,6 @@ foreach {label codepoint primary} {
     @  64 64
 } {
     # For the unexpected codepoints (>300), see (xx).
-    incr k
     test marpa-unicode-data-fold/c-2.$k "fold/c, $label" -body {
 	marpa unicode data fold/c $codepoint
     } -result $primary
