@@ -515,7 +515,6 @@ proc ::marpa::slif::literal::reduce1 {litsymbol literal rules state} {
     # IS-A       - Save converted representation of input
     # CC-ASBR    - Save an ASBR. Already in alt/seq format,
     #              only ranges need conversion to proper literals.
-    # CC-GRAMMAR - Save a GRAMMAR
     #
     # Notes:
     # - RULES/DEF inserts a new layer of symbols.
@@ -604,10 +603,6 @@ proc ::marpa::slif::literal::reduce1 {litsymbol literal rules state} {
 	    ON K-^CLS KEEP
 	}
 	named-class {
-	    ON D-NCC4 {
-		# named-class == GRAMMAR (take predefined)
-		CC-GRAMMAR [marpa unicode data cc grammar $data $litsymbol]
-	    }
 	    ON D-NCC3 {
 		if {[marpa unicode data cc have-tcl $data]} {
 		    # Supported by Tcl.
@@ -619,8 +614,9 @@ proc ::marpa::slif::literal::reduce1 {litsymbol literal rules state} {
 		}
 	    }
 	    ON D-NCC2 {
-		# named-class == ASBR (take predefined)
-		CC-ASBR [marpa unicode data cc asbr $data]
+		# named-class == ASBR (on the fly)
+		CC-ASBR [marpa unicode 2asbr \
+			     [marpa unicode data cc ranges $data]]
 	    }
 	    ON D-NCC1 {
 		# named-class == charclass (take predefined)
@@ -666,7 +662,6 @@ proc ::marpa::slif::literal::reduce1 {litsymbol literal rules state} {
 	    ON K-^NCC KEEP
 	}
 	^%named-class {
-	    # TODO CC-GRAMMAR on the fly
 	    ON D-^%NCC2 {
 		# ^%named-class == ASBR (on the fly, from codes unfolded, negated)
 		CC-ASBR [marpa unicode 2asbr \
@@ -826,35 +821,6 @@ proc ::marpa::slif::literal::CC-ASBR {asbr} {
 	foreach rhs $asbr {
 	    DEF* [lmap range $rhs { MK-RANGE $range }]
 	}
-    }
-    return
-}
-
-proc ::marpa::slif::literal::CC-GRAMMAR {grammar} {
-    upvar 1 state state litsymbol litsymbol
-    # grammar :: list (rule)
-    # rule    :: tuple (sym ":=" rhs...)
-    # rhs     :: tuple ("symbol" string) -- symbol ref
-    #          | tuple ("range" from to) -- byte range
-
-    # Note how the RHS are mix of symbols and literals.  Note, the
-    # data is already rewritten to have unique symbols within the
-    # current context. Still to do: Rewrite ranges into proper
-    # literals, and aggregate the rules per symbol.
-
-    set rules {}
-    foreach rule $grammar {
-	set rhs [lmap el [lassign $rule sym __] {
-	    set data [lassign $el type]
-	    switch -exact -- $type {
-		symbol { set el }
-		range  { MK-RANGE $data }
-	    }
-	}]
-	dict lappend rules $sym $rhs
-    }
-    dict for {sym alts} $rules {
-	$state place done done $sym [list composite {*}$alts]
     }
     return
 }

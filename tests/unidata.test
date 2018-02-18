@@ -28,8 +28,6 @@ proc MO {bmp full} { set [marpa unicode mode] }
 ## [ok] data cc tcl-names
 ## [ok] data cc names
 ## [ok] data cc ranges
-## [ok] data cc asbr
-## [ok] data cc grammar
 ## [ok] data fold
 ## [ok] data fold/c
 
@@ -113,52 +111,6 @@ test marpa-unicode-data-cc-ranges-2.0 {ranges, braille} -body {
 
 test marpa-unicode-data-cc-ranges-2.1 {ranges, bogus} -body {
     marpa unicode data cc ranges bogus
-} -returnCodes error -result {Bad character class bogus}
-
-# # ## ### ##### ######## ############# #####################
-## data cc asbr - Convert name of unicode class to ASBR form
-##                (Alternate Sequences of Byte Ranges)
-
-test marpa-unicode-data-cc-asbr-1.0 {asbr, wrong args, not enough} -body {
-    marpa unicode data cc asbr
-} -returnCodes error -result {wrong # args: should be "marpa unicode data cc asbr cclass"}
-
-test marpa-unicode-data-cc-asbr-1.1 {asbr, wrong args, too many} -body {
-    marpa unicode data cc asbr CCLASS X
-} -returnCodes error -result {wrong # args: should be "marpa unicode data cc asbr cclass"}
-
-test marpa-unicode-data-cc-asbr-2.0 {asbr, braille} -body {
-    lrange [marpa unicode data cc asbr braille] 0 end
-    # The lrange is used to strip formatting from the output of asbr.
-} -result {{{226 226} {160 163} {128 191}}}
-
-test marpa-unicode-data-cc-asbr-2.1 {asbr, bogus} -body {
-    marpa unicode data cc asbr bogus
-} -returnCodes error -result {Bad character class bogus}
-
-# # ## ### ##### ######## ############# #####################
-## data cc grammar - Convert name of unicode class to BNF grammar over byte ranges
-
-test marpa-unicode-data-cc-grammar-1.0 {grammar, wrong args, not enough} -body {
-    marpa unicode data cc grammar
-} -returnCodes error -result {wrong # args: should be "marpa unicode data cc grammar cclass ?base?"}
-
-test marpa-unicode-data-cc-grammar-1.1 {grammar, wrong args, too many} -body {
-    marpa unicode data cc grammar CCLASS PREFIX X
-} -returnCodes error -result {wrong # args: should be "marpa unicode data cc grammar cclass ?base?"}
-
-test marpa-unicode-data-cc-grammar-2.0 {grammar, braille} -body {
-    lrange [marpa unicode data cc grammar braille] 0 end
-    # The lrange is used to strip formatting from the output of grammar.
-} -result {{{} := {symbol A0}} {A0 := {range 226 226} {range 160 163} {range 128 191}}}
-
-test marpa-unicode-data-cc-grammar-2.1 {grammar, braille} -body {
-    lrange [marpa unicode data cc grammar braille PREFIX] 0 end
-    # The lrange is used to strip formatting from the output of grammar.
-} -result {{PREFIX := {symbol PREFIX:A0}} {PREFIX:A0 := {range 226 226} {range 160 163} {range 128 191}}}
-
-test marpa-unicode-data-cc-grammar-2.2 {grammar, bogus} -body {
-    marpa unicode data cc grammar bogus
 } -returnCodes error -result {Bad character class bogus}
 
 # # ## ### ##### ######## ############# #####################

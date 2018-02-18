@@ -383,7 +383,6 @@ foreach {literal toexpect} {
 	D-NCC1 error RIL
 	D-NCC2 error RIL
 	D-NCC3 error RIL
-	D-NCC4 error RIL
     }
     {named-class braille} {
 	{}     error RT
@@ -391,10 +390,6 @@ foreach {literal toexpect} {
 	D-NCC1 ok    {@x {charclass {0x2800 0x28FF}}}
 	D-NCC2 ok    {@! {composite {{byte 226} {brange 160 163} {brange 128 191}}}}
 	D-NCC3 ok    {@x {charclass {0x2800 0x28FF}}}
-	D-NCC4 ok    {
-	    @= {composite {{symbol <symbol>:A0}}}
-	    @=:A0 {composite {{byte 226} {brange 160 163} {brange 128 191}}}
-	}
     }
     {named-class punct} {
 	D-NCC3 ok    {@q {named-class punct}}
