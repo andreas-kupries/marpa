@@ -666,6 +666,17 @@ proc ::marpa::gen::runtime::c::RefactorRanges {gc} {
 proc ::marpa::gen::runtime::c::L0C {lex discards} {
     set l [llength $lex]
     set d [llength $discards]
+
+    if {!$d} {
+	# No discards, do not provide segments for them in the
+	# ChunkedArray
+	return [list \
+		    Characters       256 \
+		    {{ACS: Lexeme}}  $l \
+		    Lexeme           $l \
+		    Internal]
+    }
+    
     return [list \
 		Characters       256 \
 		{{ACS: Lexeme}}  $l \
@@ -756,6 +767,10 @@ proc ::marpa::gen::runtime::c::ChunkedArray {words chunking {config {}}} {
     while {[llength $chunking] && [llength $words]} {
 	set chunking  [lassign $chunking chunk]
 	set remainder [lrange $words $chunk end]
+	if {!$chunk} {
+	    return -code error \
+		"Cannot chunk zero-length segment \"$label\""
+	}
 	append result [Hdr $chunk $label]
 	incr chunk -1
 	set header [lrange $words 0 $chunk]
@@ -898,6 +913,8 @@ proc ::marpa::gen::runtime::c::RuleC {label data nr} {
 	# strip comments coded before the length
 	regexp { (\d+)$} $n -> n
 	incr n 1 ;# adjust for length entry
+	# NOTE: At this point n >= 1.
+	#       No chunk is zero-length
 	lappend chunks [list $label from 1] $n
 	incr nr $n
 	set label {}
