@@ -25,10 +25,11 @@ grammar {
                     R
                     S
                     T
-                    U} 0
+                    U
+                    V} 0
                         action {array values}
                         assoc left
-                        mask {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0}} }
+                        mask {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0}} }
             B { {priority @LEX:@CHR:<a> 0
                     action {array values}
                     assoc left
@@ -109,6 +110,10 @@ grammar {
                     action {array values}
                     assoc left
                     mask 0} }
+            V { {priority {{@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>}} 0
+                    action {array values}
+                    assoc left
+                    mask 0} }
         }
         terminal {
             {@LEX:@%NCC:<[:alnum:]>} { terminal }
@@ -128,6 +133,7 @@ grammar {
             @LEX:@CLS:<Aa> { terminal }
             {@LEX:@NCC:<[:alnum:]>} { terminal }
             @LEX:@RAN:<az> { terminal }
+            {@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} { terminal }
             @LEX:@STR:<abc> { terminal }
         }
     }
@@ -140,6 +146,13 @@ grammar {
                     @%CHR:<A>
                     @%CHR:<B>
                     @%CHR:<C>} 0} }
+            {@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} { {priority {
+                    {@CHR:<\uffff>}
+                    {@CHR:<\u10000>}
+                    {@CHR:<\u1ffff>}
+                    {@CHR:<\u10ffff>}
+                    {@CHR:<\u10fffe>}
+                    {@CHR:<\u10f60f>}} 0} }
             @STR:<abc> { {priority {
                     @CHR:<a>
                     @CHR:<b>
@@ -163,6 +176,7 @@ grammar {
             @LEX:@CLS:<Aa> 1
             {@LEX:@NCC:<[:alnum:]>} 1
             @LEX:@RAN:<az> 1
+            {@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} 1
             @LEX:@STR:<abc> 1
         }
         lexeme {
@@ -183,6 +197,7 @@ grammar {
             @LEX:@CLS:<Aa> { {priority @%CHR:<A> 0} }
             {@LEX:@NCC:<[:alnum:]>} { {priority {{@NCC:<[:alnum:]>}} 0} }
             @LEX:@RAN:<az> { {priority @RAN:<az> 0} }
+            {@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} { {priority {{@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>}} 0} }
             @LEX:@STR:<abc> { {priority @STR:<abc> 0} }
         }
         literal {
@@ -198,6 +213,12 @@ grammar {
             @^CLS:<Aa> { {^charclass 65 97} }
             {@^NCC:<[:alnum:]>} { {^named-class alnum} }
             @^RAN:<az> { {^range 97 122} }
+            {@CHR:<\u1ffff>} { {character 131071} }
+            {@CHR:<\u10f60f>} { {character 1111567} }
+            {@CHR:<\u10fffe>} { {character 1114110} }
+            {@CHR:<\u10ffff>} { {character 1114111} }
+            {@CHR:<\u10000>} { {character 65536} }
+            {@CHR:<\uffff>} { {character 65535} }
             @CHR:<a> { {character 97} }
             @CHR:<b> { {character 98} }
             @CHR:<c> { {character 99} }

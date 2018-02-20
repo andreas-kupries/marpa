@@ -25,10 +25,11 @@ grammar {
                     R
                     S
                     T
-                    U} 0
+                    U
+                    V} 0
                         action {array values}
                         assoc left
-                        mask {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0}} }
+                        mask {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0}} }
             B { {priority @LEX:@CHR:<a> 0
                     action {array values}
                     assoc left
@@ -109,6 +110,10 @@ grammar {
                     action {array values}
                     assoc left
                     mask 0} }
+            V { {priority {{@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>}} 0
+                    action {array values}
+                    assoc left
+                    mask 0} }
         }
         terminal {
             {@LEX:@%NCC:<[:alnum:]>} { terminal }
@@ -128,6 +133,7 @@ grammar {
             @LEX:@CLS:<Aa> { terminal }
             {@LEX:@NCC:<[:alnum:]>} { terminal }
             @LEX:@RAN:<az> { terminal }
+            {@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} { terminal }
             @LEX:@STR:<abc> { terminal }
         }
     }
@@ -12952,6 +12958,30 @@ grammar {
                         {@BYTE:<\u00a8>}
                         {@BRAN:<\200\235>}} 0}
             }
+            {@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} { {priority {
+                    {@BYTE:<\u00ef>}
+                    {@BYTE:<\u00bf>}
+                    {@BYTE:<\u00bf>}
+                    {@BYTE:<\u00f0>}
+                    {@BYTE:<\220>}
+                    {@BYTE:<\200>}
+                    {@BYTE:<\200>}
+                    {@BYTE:<\u00f0>}
+                    {@BYTE:<\237>}
+                    {@BYTE:<\u00bf>}
+                    {@BYTE:<\u00bf>}
+                    {@BYTE:<\u00f4>}
+                    {@BYTE:<\217>}
+                    {@BYTE:<\u00bf>}
+                    {@BYTE:<\u00bf>}
+                    {@BYTE:<\u00f4>}
+                    {@BYTE:<\217>}
+                    {@BYTE:<\u00bf>}
+                    {@BYTE:<\u00be>}
+                    {@BYTE:<\u00f4>}
+                    {@BYTE:<\217>}
+                    {@BYTE:<\230>}
+                    {@BYTE:<\217>}} 0} }
             @STR:<abc> { {priority {
                     @BYTE:<a>
                     @BYTE:<b>
@@ -12975,6 +13005,7 @@ grammar {
             @LEX:@CLS:<Aa> 1
             {@LEX:@NCC:<[:alnum:]>} 1
             @LEX:@RAN:<az> 1
+            {@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} 1
             @LEX:@STR:<abc> 1
         }
         lexeme {
@@ -12995,6 +13026,7 @@ grammar {
             @LEX:@CLS:<Aa> { {priority @%CHR:<A> 0} }
             {@LEX:@NCC:<[:alnum:]>} { {priority {{@NCC:<[:alnum:]>}} 0} }
             @LEX:@RAN:<az> { {priority @BRAN:<az> 0} }
+            {@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} { {priority {{@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>}} 0} }
             @LEX:@STR:<abc> { {priority @STR:<abc> 0} }
         }
         literal {
