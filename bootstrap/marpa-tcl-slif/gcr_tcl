@@ -1508,12 +1508,40 @@ grammar {
                         hex
                         {cc range completion}} 0}
                 {priority {
-                        @CHR:<u>
+                        @CHR:<U>
+                        hex
+                        hex
+                        hex
+                        hex
                         hex
                         hex
                         hex
                         hex
                         {cc range completion}} 0}
+                {priority {
+                        @CHR:<u>
+                        hex
+                        hex
+                        hex
+                        hex
+                        hex
+                        hex
+                        {cc range completion}} 0}
+                {priority {
+                        @CHR:<u>
+                        hex
+                        hex
+                        hex
+                        hex
+                        hex
+                        {cc range completion post short unicode escape}} 0}
+                {priority {
+                        @CHR:<u>
+                        hex
+                        hex
+                        hex
+                        hex
+                        {cc range completion post short unicode escape}} 0}
                 {priority {
                         @CHR:<u>
                         hex
@@ -1555,12 +1583,40 @@ grammar {
                         hex
                         {nullable string}} 0}
                 {priority {
-                        @CHR:<u>
+                        @CHR:<U>
+                        hex
+                        hex
+                        hex
+                        hex
                         hex
                         hex
                         hex
                         hex
                         {nullable string}} 0}
+                {priority {
+                        @CHR:<u>
+                        hex
+                        hex
+                        hex
+                        hex
+                        hex
+                        hex
+                        {nullable string}} 0}
+                {priority {
+                        @CHR:<u>
+                        hex
+                        hex
+                        hex
+                        hex
+                        hex
+                        {nullable string post short unicode escape}} 0}
+                {priority {
+                        @CHR:<u>
+                        hex
+                        hex
+                        hex
+                        hex
+                        {nullable string post short unicode escape}} 0}
                 {priority {
                         @CHR:<u>
                         hex
@@ -1924,6 +1980,7 @@ grammar {
             @CHR:<r> { {character 114} }
             @CHR:<s> { {character 115} }
             @CHR:<t> { {character 116} }
+            @CHR:<U> { {character 85} }
             @CHR:<u> { {character 117} }
             @CHR:<v> { {character 118} }
             @CHR:<w> { {character 119} }

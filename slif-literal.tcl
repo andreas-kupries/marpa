@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -25,6 +25,7 @@
 # Meta require     debug::caller
 # Meta require     marpa::unicode
 # Meta require     marpa::util
+# Meta require     marpa::slif::literal::parser
 # Meta subject     marpa literal transform reduction
 # @@ Meta End
 
@@ -39,6 +40,7 @@ package require debug::caller
 # Unicode tables, classes, operations.
 package require marpa::unicode
 package require marpa::util
+package require marpa::slif::literal::parser
 
 debug define marpa/slif/literal
 
@@ -46,7 +48,6 @@ debug define marpa/slif/literal
 
 namespace eval ::marpa::slif::literal {
     namespace export symbol parse norm eltype ccunfold ccsplit \
-	decode decode-string decode-class type unescape tags \
 	reduce reduce1 rstate r2container ccranges
     namespace ensemble create
     namespace import ::marpa::X
@@ -80,7 +81,13 @@ namespace eval ::marpa::slif::literal {
 
 proc ::marpa::slif::literal::parse {litstring} {
     debug.marpa/slif/literal {}
-    return [norm [decode {*}[type {*}[tags $litstring]]]]
+    parser create LD
+    try {
+	set lit [norm [semantics::Decode [LD process $litstring]]]
+    } finally {
+	LD destroy
+    }
+    return $lit
 }
 
 proc ::marpa::slif::literal::symbol {literal} {
@@ -93,13 +100,12 @@ proc ::marpa::slif::literal::symbol {literal} {
 	switch -exact -- [eltype $element] {
 	    character {
 		# Single character
-		append symbol [char quote tcl [format %c $element]]
+		append symbol [symchar $element]
 	    }
 	    range {
 		# Character range
 		lassign $element s e
-		append symbol [char quote tcl [format %c $s]] -
-		append symbol [char quote tcl [format %c $e]]
+		append symbol [symchar $s] - [symchar $e]
 	    }
 	    named-class {
 		# Named CC
@@ -109,6 +115,18 @@ proc ::marpa::slif::literal::symbol {literal} {
     }
     append symbol >
     return $symbol
+}
+
+proc ::marpa::slif::literal::symchar {codepoint} {
+    debug.marpa/slif/literal {}
+
+    if {$codepoint > 65535} {
+	# Beyond the BMP, \u notation
+	return \\u[format %x $codepoint]
+    }
+    # TODO XXX: handle control > 127 as \u, not octal
+    # TODO XXX: Divorce from `char quote tcl` ? Do our own ?
+    return [char quote tcl [format %c $codepoint]]
 }
 
 # # ## ### ##### ######## #############
@@ -315,131 +333,6 @@ proc ::marpa::slif::literal::ccsplit {data} {
 	}
     }
     list $codes $named
-}
-
-proc ::marpa::slif::literal::decode {type litstring} {
-    debug.marpa/slif/literal {}
-    list $type {*}[switch -glob -- $type {
-	*string    { decode-string $litstring }
-	*charclass { decode-class  $litstring }
-	default {
-	    X "Unable to decode bogus type \"$type\"" \
-		SLIF LITERAL INTERNAL
-	}
-    }]
-}
-
-proc ::marpa::slif::literal::decode-string {litstring} {
-    debug.marpa/slif/literal {}
-    upvar 1 type type
-    set codes [lmap ch [split $litstring {}] { marpa unicode point $ch }]
-    if {$type eq {%string}} {
-	set codes [marpa unicode fold/c $codes]
-    }
-    return $codes
-}
-
-proc ::marpa::slif::literal::decode-class {litstring} {
-    debug.marpa/slif/literal {}
-    # literal = element* (escapes aready handled, ditto negation),
-    # where
-    #   element = [:\w+:]       - named posix character class
-    #           | char '-' char - range of characters
-    #           | char          - single character
-    ##
-
-    set codes {}
-    set named {}
-    while {$litstring ne {}} {
-	switch -matchvar match -regexp -- $litstring {
-	    "^\\\[:(\\w+):\\\](.*)$" {
-		lassign $match _ name litstring
-		lappend named $name
-	    }
-	    {^(.)-(.)(.*)$} {
-		lassign $match _ start end litstring
-		lappend codes [list [marpa unicode point $start] \
-				   [marpa unicode point $end]]
-	    }
-	    {^(.)(.*)$} {
-		lassign $match _ character litstring
-		lappend codes [marpa unicode point $character]
-	    }
-	    default {
-		# Should not be reachable, the last pattern above
-		# should always match, taking a simple character off
-		# from the front of the literal.
-		X "Unable to decode remainder of char-class: \"$litstring\"" \
-		    SLIF LITERAL INTERNAL ;# internal error - semantic/syntax mismatch
-	    }
-	}
-    }
-    return [cc $codes $named]
-}
-
-proc ::marpa::slif::literal::cc {codes named} {
-    debug.marpa/slif/literal {}
-    set     codes [marpa unicode norm-class $codes]
-    lappend codes {*}[lsort -dict -unique $named]
-    return $codes
-}
-
-proc ::marpa::slif::literal::type {litstring nocase} {
-    debug.marpa/slif/literal {}
-    # litstring = ['].*[']  - string
-    #           | '['.*']'  - charclass
-    #           | '[^'.*']' - negated (^) charclass
-
-    set nocase [expr {$nocase ? "%" : "" }]
-    switch -glob -- $litstring {
-	'*' {
-	    set type ${nocase}string
-	    set litstring [string range $litstring 1 end-1]
-	}
-	{\[^*\]} {
-	    set type ^${nocase}charclass
-	    set litstring [string range $litstring 2 end-1]
-	}
-	{\[*\]} {
-	    set type ${nocase}charclass
-	    set litstring [string range $litstring 1 end-1]
-	}
-	default {
-	    X "Unable to determine type of literal \"$litstring\"" \
-		SLIF LITERAL UNKNOWN TYPE $litstring
-	}
-    }
-
-    return [list $type [unescape $litstring]]
-}
-
-proc ::marpa::slif::literal::unescape {litstring} {
-    debug.marpa/slif/literal {}
-    return [subst -nocommands -novariables $litstring]
-}
-
-proc ::marpa::slif::literal::tags {litstring} {
-    debug.marpa/slif/literal {}
-    # litstring = .*(:i|:ic)*
-    # Decode and strip literal modifiers
-
-    set nocase 0
-    while {1} {
-	switch -glob -- $litstring {
-	    *:i {
-		set litstring [string range $litstring 0 end-2]
-		set nocase 1
-		continue
-	    }
-	    *:ic {
-		set litstring [string range $litstring 0 end-3]
-		set nocase 1
-		continue
-	    }
-	}
-	break
-    }
-    return [list $litstring $nocase]
 }
 
 # # ## ### ##### ######## #############
@@ -888,6 +781,206 @@ proc ::marpa::slif::literal::CC-TCL {charclass} {
     }]
 
     return [list {*}[marpa unicode norm-class $codes] {*}$named]
+}
+
+# # ## ### ##### ######## #############
+## Semantics for the literal parser
+
+namespace eval ::marpa::slif::literal::semantics {
+    variable nocase  0
+    variable type    {}
+    variable details {}
+    variable names   {}
+}
+
+proc ::marpa::slif::literal::semantics::Init {} {
+    debug.marpa/slif/literal {}
+    variable nocase  0
+    variable type    {}
+    variable details {}
+    variable names   {}
+    return
+}
+
+proc ::marpa::slif::literal::semantics::Result {} {
+    debug.marpa/slif/literal {}
+    variable type
+    variable details
+    variable nocase
+    if {$nocase} {
+	lappend map %^ ^%
+	set type [string map $map %$type]
+    }
+    return [linsert $details 0 $type]
+}
+
+proc ::marpa::slif::literal::semantics::CC {codes named} {
+    debug.marpa/slif/literal {}
+    set     codes [marpa unicode norm-class $codes]
+    lappend codes {*}[lsort -dict -unique $named]
+    return $codes
+}
+
+proc ::marpa::slif::literal::semantics::Decode {ast} {
+    debug.marpa/slif/literal {}
+    Init
+    {*}$ast
+    Result
+}
+
+proc ::marpa::slif::literal::semantics::literal {values} {
+    debug.marpa/slif/literal {}
+    #   <single quoted string> <modifiers>
+    # | <character class>      <modifiers>
+    # | <negated class>        <modifiers>
+    # Modifiers first, informs initial normalization
+    foreach v [lreverse $values] { {*}$v }
+    return
+}
+
+proc {::marpa::slif::literal::semantics::single quoted string} {values} {
+    variable type string
+    variable nocase
+    # <string elements>
+    {*}[lindex $values 0]
+    if {$nocase} {
+	variable details
+	set details [marpa unicode fold/c $details]
+    }
+    return
+}
+
+proc {::marpa::slif::literal::semantics::string elements} {values} {
+    # <string element> *
+    foreach v $values { {*}$v }
+    return
+}
+
+proc {::marpa::slif::literal::semantics::string element} {values} {
+    #   <plain string char>
+    # | <escaped char>
+    {*}[lindex $values 0]
+    return
+}
+
+proc {::marpa::slif::literal::semantics::plain string char} {values} {
+    variable details
+    lappend details [lindex [scan [lindex $values 0 2] %c] 0]
+    return
+}
+
+proc {::marpa::slif::literal::semantics::escaped char} {values} {
+    #   unioct
+    # | unixhex
+    # | control
+    {*}[lindex $values 0]
+    return
+}
+
+proc ::marpa::slif::literal::semantics::unioct {values} {
+    variable details
+    lappend  details [expr 0o[lindex $values 0 2]]
+    return
+}
+
+proc ::marpa::slif::literal::semantics::unihex {values} {
+    variable details
+    lappend details [expr 0x[lindex $values 0 2]]
+    return
+}
+
+proc ::marpa::slif::literal::semantics::control {values} {
+    variable details
+    lappend  details [dict get {
+	a  7	b  8	f  12	n  10
+	r  13	t  9	v  11	\\ 92
+    } [lindex $values 0 2]]
+    return
+}
+
+proc ::marpa::slif::literal::semantics::modifiers {values} {
+    # modifier *
+    foreach v $values { {*}$v }
+    return
+}
+
+proc ::marpa::slif::literal::semantics::modifier {values} {
+    # nocase
+    {*}[lindex $values 0]
+    return
+}
+
+proc ::marpa::slif::literal::semantics::nocase {values} {
+    # --
+    variable nocase 1
+    return
+}
+
+proc {::marpa::slif::literal::semantics::character class} {values} {
+    variable type charclass
+    variable details
+    variable names
+    # <cc elements>
+    {*}[lindex $values 0]
+    set details [CC $details $names]
+    return
+}
+
+proc {::marpa::slif::literal::semantics::negated class} {values} {
+    variable type ^charclass
+    variable details
+    variable names
+    # <cc elements>
+    {*}[lindex $values 0]
+    set details [CC $details $names]
+    return
+}
+
+proc {::marpa::slif::literal::semantics::cc elements} {values} {
+    # <cc element> *
+    foreach v $values { {*}$v }
+    return
+}
+
+proc {::marpa::slif::literal::semantics::cc element} {values} {
+    #   <cc character>
+    #   <posix char class>
+    # | <cc range>
+    {*}[lindex $values 0]
+    return
+}
+
+proc {::marpa::slif::literal::semantics::cc character} {values} {
+    #   <plain cc char>
+    # | <escaped char>
+    {*}[lindex $values 0]
+    return
+}
+
+proc {::marpa::slif::literal::semantics::plain cc char} {values} {
+    variable details
+    # Note: We have to unpack the codepoint from the list it came in.
+    # Without doing that the `norm-class` call in CC will mis-interpret
+    # it as range element, with only a single element, an error.
+    lappend details [lindex [scan [lindex $values 0 2] %c] 0]
+    return
+}
+
+proc {::marpa::slif::literal::semantics::posix char class} {values} {
+    # add lexeme (class name)
+    variable names
+    lappend  names [lindex $values 0 2]
+    return
+}
+
+proc {::marpa::slif::literal::semantics::cc range} {values} {
+    # <cc character> <cc character>
+    foreach v $values { {*}$v }
+    # last two elements of details are the range
+    # rewrite
+    variable details
+    set details [linsert [lrange $details 0 end-2] end [lrange $details end-1 end]]
+    return
 }
 
 # # ## ### ##### ######## #############
