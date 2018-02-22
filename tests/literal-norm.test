@@ -1,0 +1,47 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017-2018 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::slif::literal
+## Normalization (Simplifications without breaking a literal into many)
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt local   testing marpa::slif::literal
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/common.tcl
+kt source support/literals.tcl
+
+# # ## ### ##### ######## ############# #####################
+
+kt source cases/lit-norm.tcl
+
+# # ## ### ##### ######## ############# #####################
+## norm - Normalize literal without deconstructing it into multiple pieces.
+##        Keeps named classes, ranges
+
+test marpa-slif-literal-norm-1.0 {norm, wrong args, not enough} -body {
+    marpa::slif::literal norm
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal norm literal"}
+
+test marpa-slif-literal-norm-1.2 {norm, wrong args, too many} -body {
+    marpa::slif::literal norm LITERAL X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal norm literal"}
+
+testcases k {rule literal res} [lit-norm] {
+    if {[string match --* $res]} { set res $literal }
+    test marpa-slif-literal-norm-2.$k "norm, $rule, $literal" -body {
+	marpa::slif::literal norm $literal
+    } -result $res
+}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests
+return

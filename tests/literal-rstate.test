@@ -1,0 +1,338 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017-2018 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::slif::literal
+## State class for reductions (literals to process, work and result queues)
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt local   testing marpa::slif::literal
+
+# # ## ### ##### ######## ############# #####################
+## rstate - state object for reducer
+## [ok] new, create
+## [ok] work?
+## [ok] take
+## [ok] place
+## [ok] queue
+## [ok] symbolize
+## [ok] results
+
+# # ## ### ##### ######## ############# #####################
+## rstate constructor
+
+test marpa-slif-literal-rstate-cons-1.0 {rstate, cons, wrong args, not enough} -body {
+    marpa::slif::literal rstate new
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal rstate new worklist"}
+
+test marpa-slif-literal-rstate-cons-1.1 {rstate, cons, wrong args, too many} -body {
+    marpa::slif::literal rstate new W X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal rstate new worklist"}
+
+test marpa-slif-literal-rstate-cons-1.2 {rstate, cons, wrong args, not enough} -body {
+    marpa::slif::literal rstate create R
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal rstate create R worklist"}
+
+test marpa-slif-literal-rstate-cons-1.3 {rstate, cons, wrong args, too many} -body {
+    marpa::slif::literal rstate create R W X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal rstate create R worklist"}
+
+test marpa-slif-literal-rstate-cons-2.0 {rstate, cons, auto} -body {
+    set r [marpa::slif::literal rstate new {}]
+} -cleanup {
+    $r destroy
+    unset r
+} -match glob -result ::oo::Obj*
+
+test marpa-slif-literal-rstate-cons-2.1 {rstate, cons, explicitly named} -body {
+    marpa::slif::literal rstate create R {}
+} -cleanup {
+    R destroy
+} -result ::R
+
+# # ## ### ##### ######## ############# #####################
+## rstate work?
+
+test marpa-slif-literal-rstate-work?-1.0 {rstate, work?, wrong args, too many} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R work? X
+} -cleanup {
+    R destroy
+} -returnCodes error -result {wrong # args: should be "R work?"}
+
+test marpa-slif-literal-rstate-work?-2.0 {rstate, work?, none} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R work?
+} -cleanup {
+    R destroy
+} -result 0
+
+test marpa-slif-literal-rstate-work?-2.1 {rstate, work?, some} -setup {
+    marpa::slif::literal rstate create R {
+	A {character 12}
+	B {string 65 66 67}
+    }
+} -body {
+    R work?
+} -cleanup {
+    R destroy
+} -result 2
+
+# # ## ### ##### ######## ############# #####################
+## rstate take
+
+test marpa-slif-literal-rstate-take-1.0 {rstate, take, wrong args, too many} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R take X
+} -cleanup {
+    R destroy
+} -returnCodes error -result {wrong # args: should be "R take"}
+
+test marpa-slif-literal-rstate-take-2.0 {rstate, take, nothing} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R take
+} -cleanup {
+    R destroy
+} -returnCodes error -result {No work available}
+
+test marpa-slif-literal-rstate-take-2.1 {rstate, take, last (stack)} -setup {
+    marpa::slif::literal rstate create R {
+	B {string 65 66 67}
+	A {character 78}
+    }
+} -body {
+    R take
+} -cleanup {
+    R destroy
+} -result {A {character 78}}
+
+# # ## ### ##### ######## ############# #####################
+## rstate place
+
+test marpa-slif-literal-rstate-place-1.0 {rstate, place, wrong args, not enough} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R place
+} -cleanup {
+    R destroy
+} -returnCodes error -result {wrong # args: should be "R place queue symqueue litsymbol literal"}
+
+test marpa-slif-literal-rstate-place-1.1 {rstate, place, wrong args, not enough} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R place Q
+} -cleanup {
+    R destroy
+} -returnCodes error -result {wrong # args: should be "R place queue symqueue litsymbol literal"}
+
+test marpa-slif-literal-rstate-place-1.2 {rstate, place, wrong args, not enough} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R place Q SQ
+} -cleanup {
+    R destroy
+} -returnCodes error -result {wrong # args: should be "R place queue symqueue litsymbol literal"}
+
+test marpa-slif-literal-rstate-place-1.3 {rstate, place, wrong args, not enough} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R place Q SQ S
+} -cleanup {
+    R destroy
+} -returnCodes error -result {wrong # args: should be "R place queue symqueue litsymbol literal"}
+
+test marpa-slif-literal-rstate-place-1.4 {rstate, place, wrong args, too many} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R place Q SQ S L X
+} -cleanup {
+    R destroy
+} -returnCodes error -result {wrong # args: should be "R place queue symqueue litsymbol literal"}
+
+test marpa-slif-literal-rstate-place-2.0.0 {rstate, place (literal), results} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R place done --- S {character 45}
+} -cleanup {
+    R destroy
+} -result S
+
+test marpa-slif-literal-rstate-place-2.0.1 {rstate, place (literal), results, state} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R place done --- S {character 45}
+    R results
+} -cleanup {
+    R destroy
+} -result {{S {character 45}} {}}
+
+test marpa-slif-literal-rstate-place-2.1.0 {rstate, place (literal), work} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R place work --- S {character 45}
+} -cleanup {
+    R destroy
+} -result S
+
+test marpa-slif-literal-rstate-place-2.1.1 {rstate, place (literal), work, state} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R place work --- S {character 45}
+    R take
+} -cleanup {
+    R destroy
+} -result {S {character 45}}
+
+test marpa-slif-literal-rstate-place-2.2.0 {rstate, place (composite), results} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R place done done S {composite {{character 45}} {{character 46}}}
+} -cleanup {
+    R destroy
+} -result S
+
+test marpa-slif-literal-rstate-place-2.2.1 {rstate, place (composite), results, state} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R place done done S {composite {{character 45}} {{character 46}}}
+    list [R work?] --- [R results]
+} -cleanup {
+    R destroy
+} -result {0 --- {{S {composite @CHR:<-> @CHR:<.>} @CHR:<.> {character 46} @CHR:<-> {character 45}} {}}}
+
+test marpa-slif-literal-rstate-place-2.3.0 {rstate, place (composite), work} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R place done work S {composite {{character 45}} {{character 46}}}
+} -cleanup {
+    R destroy
+} -result S
+
+test marpa-slif-literal-rstate-place-2.3.1 {rstate, place (composite), work, state} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R place done work S {composite {{character 45}} {{character 46}}}
+    list [R work?] --- [R results] --- [R take] --- [R take]
+} -cleanup {
+    R destroy
+} -result {2 --- {{S {composite @CHR:<-> @CHR:<.>}} {}} --- {@CHR:<.> {character 46}} --- {@CHR:<-> {character 45}}}
+
+# # ## ### ##### ######## ############# #####################
+## rstate queue
+
+test marpa-slif-literal-rstate-queue-1.0 {rstate, queue, wrong args, not enough} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R queue
+} -cleanup {
+    R destroy
+} -returnCodes error -result {wrong # args: should be "R queue queue litsymbol literal"}
+
+test marpa-slif-literal-rstate-queue-1.1 {rstate, queue, wrong args, not enough} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R queue Q
+} -cleanup {
+    R destroy
+} -returnCodes error -result {wrong # args: should be "R queue queue litsymbol literal"}
+
+test marpa-slif-literal-rstate-queue-1.2 {rstate, queue, wrong args, not enough} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R queue Q S
+} -cleanup {
+    R destroy
+} -returnCodes error -result {wrong # args: should be "R queue queue litsymbol literal"}
+
+test marpa-slif-literal-rstate-queue-1.3 {rstate, queue, wrong args, too many} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R queue Q S L X
+} -cleanup {
+    R destroy
+} -returnCodes error -result {wrong # args: should be "R queue queue litsymbol literal"}
+
+test marpa-slif-literal-rstate-queue-2.0.0 {rstate, queue, results} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R queue done S {character 45}
+} -cleanup {
+    R destroy
+} -result S
+
+test marpa-slif-literal-rstate-queue-2.0.1 {rstate, queue, results, state} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R queue done S {character 45}
+    R results
+} -cleanup {
+    R destroy
+} -result {{S {character 45}} {}}
+
+test marpa-slif-literal-rstate-queue-2.1.0 {rstate, queue, work} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R queue work S {character 45}
+} -cleanup {
+    R destroy
+} -result S
+
+test marpa-slif-literal-rstate-queue-2.1.1 {rstate, queue, work, state} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R queue work S {character 45}
+    R take
+} -cleanup {
+    R destroy
+} -result {S {character 45}}
+
+# # ## ### ##### ######## ############# #####################
+## rstate results
+
+test marpa-slif-literal-rstate-results-1.0 {rstate, results, wrong args, too many} -setup {
+    marpa::slif::literal rstate create R {}
+} -body {
+    R results X
+} -cleanup {
+    R destroy
+} -returnCodes error -result {wrong # args: should be "R results"}
+
+test marpa-slif-literal-rstate-results-2.0 {rstate, results} -setup {
+    marpa::slif::literal rstate create R {
+	A {character 12}
+	B {string 65 66 67}
+    }
+    # Empty results. Because this is all in the work-queue.
+} -body {
+    R results
+} -cleanup {
+    R destroy
+} -result {{} {}}
+
+test marpa-slif-literal-rstate-results-2.1 {rstate, results} -setup {
+    marpa::slif::literal rstate create R {
+	A {character 12}
+	B {string 65 66 67}
+    }
+    # Shift the initial work queue over into results, unchanged.
+    R queue done {*}[R take]
+    R queue done {*}[R take]
+} -body {
+    R results
+} -cleanup {
+    R destroy
+} -result {{A {character 12} B {string 65 66 67}} {}}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests
+return

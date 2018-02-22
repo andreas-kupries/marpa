@@ -1,0 +1,45 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017-2018 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::slif::literal
+## Parsing (Translation from SLIF lexeme to internal representation)
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt local   testing marpa::slif::literal
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/common.tcl
+kt source support/literals.tcl
+
+# # ## ### ##### ######## ############# #####################
+
+kt source cases/lit-parse.tcl
+
+# # ## ### ##### ######## ############# #####################
+## parse - Parse a literal string into a normalized internal representation.
+
+test marpa-slif-literal-parse-1.0 {parse, wrong args, not enough} -body {
+    marpa::slif::literal parse
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal parse litstring"}
+
+test marpa-slif-literal-parse-1.2 {parse, wrong args, too many} -body {
+    marpa::slif::literal parse LITSTRING X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal parse litstring"}
+
+testcases k {rule litstring res} [lit-parse] {
+    test marpa-slif-literal-parse-2.$k "parse, $rule, $litstring" -body {
+	marpa::slif::literal parse $litstring
+    } -result $res
+}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests
+return
