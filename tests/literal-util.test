@@ -12,7 +12,7 @@ kt require support debug::caller
 kt require support oo::util
 kt require support TclOO
 
-kt local   testing marpa::slif::literal
+kt local   testing marpa::slif::literal::util
 
 # # ## ### ##### ######## ############# #####################
 
@@ -35,16 +35,16 @@ kt source cases/lit-symbol.tcl
 ## ccranges - Expand a mixed charclass into pure set of ranges
 
 test marpa-slif-literal-ccranges-1.0 {ccranges, wrong args, not enough} -body {
-    marpa::slif::literal ccranges
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal ccranges data"}
+    marpa::slif::literal::util ccranges
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal::util ccranges data"}
 
 test marpa-slif-literal-ccranges-1.1 {ccranges, wrong args, too many} -body {
-    marpa::slif::literal ccranges D X
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal ccranges data"}
+    marpa::slif::literal::util ccranges D X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal::util ccranges data"}
 
 testcases k {cc ranges} [cc-ranges] {
     test marpa-slif-literal-ccranges-2.$k "ccranges, $cc" -body {
-	marpa::slif::literal ccranges $cc
+	marpa::slif::literal::util ccranges $cc
     } -result $ranges
 }
 
@@ -52,16 +52,16 @@ testcases k {cc ranges} [cc-ranges] {
 ## symbol - Generate a symbol for a literal from its representation.
 
 test marpa-slif-literal-symbol-1.0 {symbol, wrong args, not enough} -body {
-    marpa::slif::literal symbol
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal symbol literal"}
+    marpa::slif::literal::util symbol
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal::util symbol literal"}
 
 test marpa-slif-literal-symbol-1.1 {symbol, wrong args, too many} -body {
-    marpa::slif::literal symbol LITERAL X
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal symbol literal"}
+    marpa::slif::literal::util symbol LITERAL X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal::util symbol literal"}
 
 testcases k {literal symbol} [lit-symbol] {
     test marpa-slif-literal-symbol-2.$k "symbol, $literal" -body {
-	marpa::slif::literal symbol $literal
+	marpa::slif::literal::util symbol $literal
     } -result $symbol
 }
 
@@ -69,12 +69,12 @@ testcases k {literal symbol} [lit-symbol] {
 ## eltype - Determine type of charclass element
 
 test marpa-slif-literal-eltype-1.0 {eltype, wrong args, not enough} -body {
-    marpa::slif::literal eltype
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal eltype ccelement"}
+    marpa::slif::literal::util eltype
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal::util eltype ccelement"}
 
 test marpa-slif-literal-eltype-1.2 {eltype, wrong args, too many} -body {
-    marpa::slif::literal eltype CCELEMENT X
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal eltype ccelement"}
+    marpa::slif::literal::util eltype CCELEMENT X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal::util eltype ccelement"}
 
 testcases k {ccelement res} {
     37      character
@@ -82,7 +82,7 @@ testcases k {ccelement res} {
     alnum   named-class
 } {
     test marpa-slif-literal-eltype-2.$k "eltype, $ccelement" -body {
-	marpa::slif::literal eltype $ccelement
+	marpa::slif::literal::util eltype $ccelement
     } -result $res
 }
 
@@ -90,19 +90,19 @@ testcases k {ccelement res} {
 ## ccunfold - Case-expand a charclass to contain original and case-equivalent characters.
 
 test marpa-slif-literal-ccunfold-1.0 {ccunfold, wrong args, not enough} -body {
-    marpa::slif::literal ccunfold
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal ccunfold data"}
+    marpa::slif::literal::util ccunfold
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal::util ccunfold data"}
 
 test marpa-slif-literal-ccunfold-1.2 {ccunfold, wrong args, too many} -body {
-    marpa::slif::literal ccunfold DATA X
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal ccunfold data"}
+    marpa::slif::literal::util ccunfold DATA X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal::util ccunfold data"}
 
 testcases k {data res} {
     {37 {48 57} {97 122} alnum braille}
     {37 {48 57} {65 90} {97 122} {304 305} 383 8490 %alnum %braille}
 } {
     test marpa-slif-literal-ccunfold-2.$k "ccunfold, $data" -body {
-	marpa::slif::literal ccunfold $data
+	marpa::slif::literal::util ccunfold $data
     } -result $res
 }
 
@@ -110,19 +110,19 @@ testcases k {data res} {
 ## ccsplit - Split char class data into codes/ranges vs named
 
 test marpa-slif-literal-ccsplit-1.0 {ccsplit, wrong args, not enough} -body {
-    marpa::slif::literal ccsplit
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal ccsplit data"}
+    marpa::slif::literal::util ccsplit
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal::util ccsplit data"}
 
 test marpa-slif-literal-ccsplit-1.2 {ccsplit, wrong args, too many} -body {
-    marpa::slif::literal ccsplit DATA X
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal ccsplit data"}
+    marpa::slif::literal::util ccsplit DATA X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal::util ccsplit data"}
 
 testcases k {data res} {
     {37 {48 57} {97 122} alnum braille}
     {{37 {48 57} {97 122}} {alnum braille}}
 } {
     test marpa-slif-literal-ccsplit-2.$k "ccsplit, $data" -body {
-	marpa::slif::literal ccsplit $data
+	marpa::slif::literal::util ccsplit $data
     } -result $res
 }
 
