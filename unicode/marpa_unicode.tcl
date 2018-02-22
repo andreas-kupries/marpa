@@ -20,10 +20,7 @@
 package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
 critcl::buildrequirement {
-    #package require critcl::util 1
-    #package require critcl::class 1
-    #package require critcl::emap     1.1 ; # mode C support
-    #package require critcl::literals 1.2 ; # mode C support
+    package require critcl::bitmap
     package require critcl::iassoc
     package require critcl::cutil
 }
@@ -67,7 +64,7 @@ critcl::description {
     character classes, and operations on them.
 }
 
-critcl::subject marpa unicode {character class} charclass case-folding
+critcl::subject marpa unicode {character class} charclass case-folding codepoint
 
 # # ## ### ##### ######## #############
 ## Implementation.
@@ -81,7 +78,13 @@ critcl::ccode {
 # # ## ### ##### ######## #############
 ## Declare the Tcl layer
 
+critcl::cheaders c/*.h
+critcl::csources c/*.c
+
 critcl::tsources tcl.tcl          ; # Tcl-level operations
+
+critcl::source   unflags.tcl      ; # 2utf, 2asbr flag support
+critcl::source   points.tcl       ; # Codepoint argument type.
 critcl::source   unicode.tcl      ; # C-level support functions.
 critcl::source   cc_objtype.tcl   ; # ObjType for uni-char classes (SCR).
 critcl::source   asbr_objtype.tcl ; # ObjType for ASBR char class format.
