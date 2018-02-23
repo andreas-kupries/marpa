@@ -40,7 +40,8 @@ package require Tcl 8.5
 package require debug
 package require debug::caller
 package require marpa::slif::container
-package require marpa::slif::literal
+package require marpa::slif::literal::util
+package require marpa::slif::literal::reducer
 package require marpa::slif::precedence
 package require marpa::gen
 package require marpa::gen::remask
@@ -352,7 +353,7 @@ proc ::marpa::gen::runtime::tcl::+CL {spec} {
 
 proc ::marpa::gen::runtime::tcl::CC {ccelts} {
     join [lmap elt $ccelts {
-	switch -exact -- [::marpa::slif::literal::eltype $elt] {
+	switch -exact -- [::marpa::slif::literal::util::eltype $elt] {
 	    character   { CX $elt    }
 	    range       { RA {*}$elt }
 	    named-class { NC $elt    }

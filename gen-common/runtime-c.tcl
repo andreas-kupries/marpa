@@ -41,7 +41,8 @@ package require TclOO
 package require debug
 package require debug::caller
 package require marpa::slif::container
-package require marpa::slif::literal
+package require marpa::slif::literal::util
+package require marpa::slif::literal::reducer
 package require marpa::slif::precedence
 package require marpa::gen
 package require marpa::gen::remask

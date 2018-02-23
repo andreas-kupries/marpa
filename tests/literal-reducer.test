@@ -12,7 +12,11 @@ kt require support debug::caller
 kt require support oo::util
 kt require support TclOO
 
-kt local   testing marpa::slif::literal
+kt local   testing marpa::unicode
+#kt local   testing marpa::util
+kt local   testing marpa::slif::literal::rstate
+kt local   testing marpa::slif::literal::util
+kt local   testing marpa::slif::literal::reducer
 
 # # ## ### ##### ######## ############# #####################
 

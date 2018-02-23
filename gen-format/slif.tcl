@@ -35,7 +35,7 @@
 # Meta require     char
 # Meta require     marpa::util
 # Meta require     marpa::gen
-# Meta require     marpa::slif::literal
+# Meta require     marpa::slif::literal::util
 # Meta subject     marpa {slif generator}
 # @@ Meta End
 
@@ -48,7 +48,7 @@ package require debug::caller
 package require char
 package require marpa::gen
 package require marpa::util
-package require marpa::slif::literal
+package require marpa::slif::literal::util
 
 debug define marpa/gen/format/slif
 debug prefix marpa/gen/format/slif {[debug caller] | }
@@ -335,7 +335,7 @@ proc ::marpa::gen::format::slif::CC {pieces iv} {
     upvar 1 $iv imodifier
     set imodifier ""
     return [join [lmap element $pieces {
-	switch -exact -- [marpa::slif::literal::eltype $element] {
+	switch -exact -- [marpa::slif::literal::util::eltype $element] {
 	    character   { set _ [C $element] }
 	    range       { lassign $element s e ; set _ "[C $s]-[C $e]" }
 	    named-class {
