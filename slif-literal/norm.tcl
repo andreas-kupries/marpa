@@ -67,152 +67,220 @@ proc ::marpa::slif::literal::norm {literal} {
 # # ## ### ##### ######## #############
 ## Internals
 
-proc ::marpa::slif::literal::norm::DO {literal} {
+proc ::marpa::slif::literal::norm::DO {_literal} {
     debug.marpa/slif/literal/norm {}
-    set data [lassign $literal type]
-    while {1} {
-	switch -exact -- $type {
-	    string {
-		if {[llength $data] == 1} {
-		    TO character ;# N01
-		} else STOP ;# N02
-	    }
-	    %string {
-		if {[llength $data] == 1} {
-		    TO %character ;# N03
-		} else STOP ;# N04
-	    }
-	    charclass {
-		if {[llength $data] == 1} {
-		    set data [lindex $data 0]
-		    TO [eltype $data] ;# N05, N06, N07
-		} else STOP ;# N08
-	    }
-	    %charclass {
-		if {[llength $data] == 1} {
-		    set data [lindex $data 0]
-		    TO %[eltype $data] ;# N09, N10, N11
-		} else {
-		    set data [ccunfold $data]
-		    TO charclass ;# N12
-		}
-	    }
-	    ^charclass {
-		if {[llength $data] == 1} {
-		    set data [lindex $data 0]
-		    TO ^[eltype $data] ;# N13, N14, N15
-		} else STOP ;# N16
-	    }
-	    ^%charclass {
-		if {[llength $data] == 1} {
-		    set data [lindex $data 0]
-		    TO ^%[eltype $data] ;# N17, N18, N19
-		} else {
-		    set data [ccunfold $data]
-		    TO ^charclass ;# N20
-		}
-	    }
-	    character {
-		STOP ;# N21
-	    }
-	    %character {
-		set data [marpa unicode data fold $data]
-		TO charclass ;# N22
-	    }
-	    ^character {
-		STOP ;# N23
-	    }
-	    ^%character {
-		set data [marpa unicode data fold $data]
-		TO ^charclass ;# N24
-	    }
-	    range {
-		lassign $data s e
-		if {$s == $e} {
-		    set data $s
-		    TO character ;# N25
-		} else STOP ;# N26
-	    }
-	    %range {
-		set data [marpa unicode unfold [list $data]]
-		TO charclass ;# N28
-	    }
-	    ^range {
-		STOP ;# N29
-	    }
-	    ^%range {
-		set data [marpa unicode unfold [list $data]]
-		TO ^charclass ;# N30
-	    }
-	    named-class {
-		switch -glob -- $data {
-		    ^*  FAIL
-		    %*  {
-			set data [string range $data 1 end]
-			TO %named-class ;# N32
-		    }
-		    *   STOP
-		}
-	    }
-	    %named-class {
-		switch -glob -- $data {
-		    ^*  FAIL
-		    %*  {
-			set data [string range $data 1 end]
-			TO %named-class ;# N36
-		    }
-		    *   STOP
-		}
-	    }
-	    ^named-class {
-		switch -glob -- $data {
-		    ^*  FAIL
-		    %*  {
-			set data [string range $data 1 end]
-			TO ^%named-class ;# N40
-		    }
-		    *   STOP
-		}
-	    }
-	    ^%named-class {
-		switch -glob -- $data {
-		    ^*  FAIL
-		    %*  {
-			set data [string range $data 1 end]
-			TO ^%named-class ;# N44
-		    }
-		    *   STOP
-		}
-	    }
-	    byte {
-		STOP ;# N47
-	    }
-	    brange {
-		STOP ;# N48
-	    }
-	    default FAIL
-	}
+    variable continue
+    variable type
+    variable details
+    Init $_literal
+    while {$continue} {
+	if {![KnownType]} Fail
+	#puts <<[linsert $details 0 $type]>>
+	$type {*}$details
 	# Recurse (tailcall -> loop)
+    }
+    return [Result]
+}
+
+# # ## ### ##### ######## #############
+## Transformations by literal type.
+
+proc ::marpa::slif::literal::norm::string {args} {
+    if {[Single]} {
+	IsA character ;# N01
+    } else Stop ;# N02
+}
+
+proc ::marpa::slif::literal::norm::%string {args} {
+    if {[Single]} {
+	IsA %character ;# N03
+    } else Stop ;# N03
+}
+
+proc ::marpa::slif::literal::norm::charclass {args} {
+    if {[Single]} {
+	set elt [lindex $args 0]
+	IsA [eltype $elt] ;# N05, N06, N07
+	Of  $elt
+    } else Stop ;# N08
+}
+
+proc ::marpa::slif::literal::norm::%charclass {args} {
+    if {[Single]} {
+	set elt [lindex $args 0]
+	IsA %[eltype $elt] ;# N09, N10, N11
+	Of  $elt
+    } else {
+	IsA charclass ;# N12
+	Of  [ccunfold $args]
     }
 }
 
-proc ::marpa::slif::literal::norm::FAIL {} {
-    upvar 1 type type data data
-    X "Unable to normalize type ($type ($data))" \
+proc ::marpa::slif::literal::norm::^charclass {args} {
+    if {[Single]} {
+	set elt [lindex $args 0]
+	IsA ^[eltype $elt] ;# N13, N14, N15
+	Of  $elt
+    } else Stop ;# N16
+}
+
+proc ::marpa::slif::literal::norm::^%charclass {args} {
+    if {[Single]} {
+	set elt [lindex $args 0]
+	IsA ^%[eltype $elt] ;# N17, N18, N19
+	Of  $elt
+    } else {
+	IsA ^charclass ;# N20
+	Of  [ccunfold $args]
+    }
+}
+
+proc ::marpa::slif::literal::norm::character {args} {
+    Stop ;# N21
+}
+
+proc ::marpa::slif::literal::norm::%character {codepoint} {
+    IsA charclass ;# N22
+    Of  [marpa unicode data fold $codepoint]
+}
+
+proc ::marpa::slif::literal::norm::^character {args} {
+    Stop ;# N23
+}
+
+proc ::marpa::slif::literal::norm::^%character {codepoint} {
+    IsA ^charclass ;# N24
+    Of  [marpa unicode data fold $codepoint]
+}
+
+proc ::marpa::slif::literal::norm::range {s e} {
+    if {$s == $e} {
+	IsA character ;# N25
+	Of  $s
+    } else Stop ;# N26
+}
+
+proc ::marpa::slif::literal::norm::%range {args} {
+    IsA charclass ;# N28
+    Of  [marpa unicode unfold [list $args]]
+}
+
+proc ::marpa::slif::literal::norm::^range {s e} {
+    Stop ;# N29
+}
+
+proc ::marpa::slif::literal::norm::^%range {args} {
+    IsA ^charclass ;# N30
+    Of  [marpa unicode unfold [list $args]]
+}
+
+proc ::marpa::slif::literal::norm::named-class {ccname} {
+    switch -glob -- $ccname {
+	^*  Fail
+	%*  {
+	    IsA %named-class ;# N32
+	    Of  [string range $ccname 1 end]
+	}
+	*   Stop
+    }
+}
+
+proc ::marpa::slif::literal::norm::%named-class {ccname} {
+    switch -glob -- $ccname {
+	^*  Fail
+	%*  {
+	    IsA %named-class ;# N36
+	    Of  [string range $ccname 1 end]
+	}
+	*   Stop
+    }
+}
+
+proc ::marpa::slif::literal::norm::^named-class {ccname} {
+    switch -glob -- $ccname {
+	^*  Fail
+	%*  {
+	    IsA ^%named-class ;# N40
+	    Of  [string range $ccname 1 end]
+	}
+	*   Stop
+    }
+}
+
+proc ::marpa::slif::literal::norm::^%named-class {ccname} {
+    switch -glob -- $ccname {
+	^*  Fail
+	%*  {
+	    IsA ^%named-class ;# N44
+	    Of  [string range $ccname 1 end]
+	}
+	*   Stop
+    }
+}
+
+proc ::marpa::slif::literal::norm::byte {args} {
+    Stop
+}
+
+proc ::marpa::slif::literal::norm::brange {args} {
+    Stop
+}
+
+# # ## ### ##### ######## #############
+
+proc ::marpa::slif::literal::norm::Init {_literal} {
+    debug.marpa/slif/literal/norm {}
+    variable literal $_literal
+    variable type
+    variable details [lassign $literal type]
+    variable continue 1
+    return
+}
+
+proc ::marpa::slif::literal::norm::Result {} {
+    debug.marpa/slif/literal/norm {}
+    variable type
+    variable details
+    return [linsert $details 0 $type]
+}
+
+proc ::marpa::slif::literal::norm::Fail {} {
+    debug.marpa/slif/literal/norm {}
+    variable continue 0
+    variable type
+    variable details
+    X "Unable to normalize type ($type ($details))" \
 	SLIF LITERAL INTERNAL
 }
 
-proc ::marpa::slif::literal::norm::TO {new args} {
-    debug.marpa/slif/literal/norm {}
-    upvar 1 type type
-    set type $new
-    return -code continue
+proc ::marpa::slif::literal::norm::KnownType {} {
+    variable type
+    llength [info commands ::marpa::slif::literal::norm::$type]
 }
 
-proc ::marpa::slif::literal::norm::STOP {} {
+proc ::marpa::slif::literal::norm::Single {} {
+    variable details
+    expr {[llength $details] == 1}
+}
+
+proc ::marpa::slif::literal::norm::IsA {new args} {
     debug.marpa/slif/literal/norm {}
-    upvar 1 type type data data
-    return -code return [linsert $data 0 $type]
+    variable type $new
+    variable continue 1
+    return
+}
+
+proc ::marpa::slif::literal::norm::Of {_details} {
+    debug.marpa/slif/literal/norm {}
+    variable details $_details
+    variable continue 1
+    return
+}
+
+proc ::marpa::slif::literal::norm::Stop {} {
+    debug.marpa/slif/literal/norm {}
+    variable continue 0
+    return
 }
 
 # # ## ### ##### ######## #############
