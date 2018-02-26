@@ -63,13 +63,21 @@ oo::class create ::marpa::slif::literal::rstate {
     variable myresults ; # list (symbol) - queue of completed symbols
     variable mydef     ; # dict (symbol -> literal) - definition database
 
+    # The active literal is the literal currently being reduced
+    variable myctype    ; # Active literal, type
+    variable mycdetails ; # Ditto, details
+    variable mycsym     ; # Ditto, name of symbol
+    
     # # ## ### ##### ######## #############
 
     constructor {worklist} {
 	debug.marpa/slif/literal/rstate {}
-	set mywork    {}
-	set myresults {}
-	set mydef     {}
+	set mywork     {}
+	set myresults  {}
+	set mydef      {}
+	set mycsym     {}
+	set myctype    {}
+	set mycdetails {}
 	#my XB
 	foreach {litsymbol literal} $worklist {
 	    set data [lassign $literal type]
@@ -84,12 +92,93 @@ oo::class create ::marpa::slif::literal::rstate {
 	return
     }
 
-    method work? {} {
+    method reduce {cmd args} {
+	debug.marpa/slif/literal/rstate {}
+	set reducer [linsert $args 0 $cmd]
+	while {[my Work?]} {
+	    my Take
+	    {*}$reducer $myctype [self] {*}$mycdetails
+	    if {[my Undecided]} {
+		my E "Failed to reduce: \"$reducer $myctype [self] $mycdetails\"" \
+		    UNDECIDED
+	    }
+	}
+	set result [my Results]
+	my destroy
+	return $result
+    }
+
+    # Reducer API (reduction decisions)
+    method keep {} {
+	my Queue done $mycsym [linsert $mycdetails 0 $myctype]
+	my ClearActive
+	return -code return
+    }
+
+    method is-a {newtype args} {
+	if {$newtype eq "composite"} {
+	    my E "Bad type \"composite\" for simple change, use `rules` and variants" \
+		ILLEGAL COMPOSITE
+	}
+	my Queue work $mycsym [linsert $args 0 $newtype]
+	my ClearActive
+	return -code return
+    }
+
+    method is-a! {newtype args} {
+	if {$newtype eq "composite"} {
+	    my E "Bad type \"composite\" for simple change, use `rules` and variants" \
+		ILLEGAL COMPOSITE
+	}
+	my Queue done $mycsym [linsert $args 0 $newtype]
+	my ClearActive
+	return -code return
+    }
+
+    method rules {alternatives} {
+	my Place done work $mycsym [linsert $alternatives 0 composite]
+	my ClearActive
+	return -code return
+    }
+
+    method rules! {alternatives} {
+	my Place done done $mycsym [linsert $alternatives 0 composite]
+	my ClearActive
+	return -code return
+    }
+    
+    method rules* {args} {
+	my Place done work $mycsym [linsert $args 0 composite]
+	my ClearActive
+	return -code return
+    }
+
+    method rules*! {args} {
+	my Place done done $mycsym [linsert $args 0 composite]
+	my ClearActive
+	return -code return
+    }
+    
+    # # ## internals
+    
+    method ClearActive {} {
+	set mycsym    {}
+	set myctype   {}
+	set mcdetails {}
+	return
+    }
+    
+    method Undecided {} {
+	debug.marpa/slif/literal/rstate {}
+	expr {$myctype ne {}}
+    }
+    
+    method Work? {} {
 	debug.marpa/slif/literal/rstate {}
 	llength $mywork
     }
 
-    method take {} {
+    method Take {} {
 	#my XB
 	debug.marpa/slif/literal/rstate {}
 	if {![llength $mywork]} {
@@ -101,19 +190,27 @@ oo::class create ::marpa::slif::literal::rstate {
 	set literal   [dict get $mydef $litsymbol]
 	dict unset mydef $litsymbol
 	#my XC
-	list $litsymbol $literal
+	# Place taken information into active literal
+	set mycsym     $litsymbol
+	set mycdetails [lassign $literal myctype]
+	return
     }
 
-    method place {queue symqueue litsymbol literal} {
+    # Debug method only, used by the tests. Replaced inspection of `Take` result.
+    method Active {} {
+	return [list $mycsym [linsert $mycdetails 0 $myctype]]
+    }
+
+    method Place {queue symqueue litsymbol literal} {
 	#my XB
 	debug.marpa/slif/literal/rstate {}
-	set res [my queue $queue $litsymbol \
-		     [my symbolize $symqueue $literal]]
+	set res [my Queue $queue $litsymbol \
+		     [my Symbolize $symqueue $literal]]
 	#my XC
 	return $res
     }
 
-    method queue {queue litsymbol literal} {
+    method Queue {queue litsymbol literal} {
 	#my XB
 	debug.marpa/slif/literal/rstate {}
 	# queue in {work, done}
@@ -138,7 +235,7 @@ oo::class create ::marpa::slif::literal::rstate {
 	return $litsymbol
     }
 
-    method symbolize {queue literal} {
+    method Symbolize {queue literal} {
 	debug.marpa/slif/literal/rstate {}
 	# queue in {work, done}
 	set data [lassign $literal type]
@@ -157,7 +254,7 @@ oo::class create ::marpa::slif::literal::rstate {
 		    } else {
 			set childsym [my SYM $child]
 			if {![dict exists $mydef $childsym]} {
-			    my queue $queue $childsym $child
+			    my Queue $queue $childsym $child
 			}
 			set childsym
 		    }
@@ -170,7 +267,7 @@ oo::class create ::marpa::slif::literal::rstate {
     forward SYM  marpa::slif::literal::util::symbol
     forward NORM marpa::slif::literal::norm
 
-    method results {} {
+    method Results {} {
 	debug.marpa/slif/literal/rstate {}
 
 	# Look for literals which exist as multiple symbols, which
