@@ -38,7 +38,7 @@ namespace eval marpa {
 namespace eval marpa::unicode {
     namespace export \
 	norm-class negate-class point unfold fold/c \
-	2utf 2asbr asbr-format data max
+	2char 2utf 2asbr asbr-format data max
     namespace ensemble create
 }
 

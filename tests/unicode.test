@@ -17,8 +17,6 @@ kt local   testing marpa::unicode
 
 kt source support/common.tcl
 
-proc UM {str} { string map [list @@@ [marpa unicode max]] $str }
-
 # # ## ### ##### ######## ############# #####################
 ## [ok] norm-class
 ## [ok] negate-class
@@ -28,6 +26,7 @@ proc UM {str} { string map [list @@@ [marpa unicode max]] $str }
 ## [ok] 2utf
 ## [ok] 2asbr
 ## [ok] asbr-format
+## [ok] 2char
 ##
 
 # # ## ### ##### ######## ############# #####################
@@ -139,6 +138,7 @@ testcases k {code full tcl} {
     65536     {240 144 128 128}  {237 160 128 237 176 128}
     0x10FFFE  {244 143 191 190}  {237 175 191 237 191 190}
     0x10FFFF  {244 143 191 191}  {237 175 191 237 191 191}
+    0x10F60F  {244 143 152 143}  {237 175 189 237 184 143}
 } {
     test marpa-unicode-2utf-2.$k.0 "2utf, $code, full" -body {
 	marpa unicode 2utf $code
@@ -147,6 +147,50 @@ testcases k {code full tcl} {
     test marpa-unicode-2utf-2.$k.1 "2utf, $code, tcl" -body {
 	marpa unicode 2utf $code tcl
     } -result $tcl
+}
+
+# # ## ### ##### ######## ############# #####################
+## 2char - uni(code)point to bmp encoding (list of chars (as decimal integers))
+
+test marpa-unicode-2char-1.0 {2char, wrong args, not enough} -body {
+    marpa unicode 2char
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2char code"}
+
+test marpa-unicode-2char-1.1 {2char, wrong args, too many} -body {
+    marpa unicode 2char CODE X
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2char code"}
+
+test marpa-unicode-2char-1.2 {2char, ok num args, bad codepoint, type} -body {
+    marpa unicode 2char CODE
+} -returnCodes error -result {Expected integer for codepoint in [0...1114111], got "CODE"}
+
+test marpa-unicode-2char-1.3 {2char, ok num args, bad codepoint, out of range} -body {
+    marpa unicode 2char -1
+} -returnCodes error -result {Expected integer for codepoint in [0...1114111], got "-1"}
+
+test marpa-unicode-2char-1.4 {2char, ok num args, bad codepoint, out of range} -body {
+    marpa unicode 2char 1114112
+} -returnCodes error -result {Expected integer for codepoint in [0...1114111], got "1114112"}
+
+test marpa-unicode-2char-1.5 {2char, ok num args, ok codepoint} -body {
+    marpa unicode 2char 32
+} -result 32
+
+testcases k {code chars} {
+    0         {0}                
+    127       {127}		 
+    128       {128}	         
+    2047      {2047}	         
+    2048      {2048}	 
+    65535     {65535}	 
+    65536     {55296 56320}  
+    0x10FFFE  {56319 57342}
+    0x10FFFF  {56319 57343}
+    0x10F60F  {56317 56847}
+} {
+    test marpa-unicode-2char-2.$k "2char, $code" -body {
+	marpa unicode 2char $code
+    } -result $chars
 }
 
 # # ## ### ##### ######## ############# #####################
@@ -317,5 +361,4 @@ test marpa-unicode-asbr-format-1.1 {asbr-format, wrong args, too many} -body {
 } -returnCodes error -result {wrong # args: should be "marpa unicode asbr-format asbr ?compact?"}
 
 # # ## ### ##### ######## ############# #####################
-rename UM {}
 cleanupTests
