@@ -89,6 +89,7 @@ critcl::source   unicode.tcl      ; # C-level support functions.
 critcl::source   unichar.tcl      ; # C-level support functions.
 critcl::source   cc_objtype.tcl   ; # ObjType for uni-char classes (SCR).
 critcl::source   asbr_objtype.tcl ; # ObjType for ASBR char class format.
+critcl::source   assr_objtype.tcl ; # ObjType for ASSR char class format.
 
 # # ## ### ##### ######## #############
 ## Make the C pieces ready. Immediate build of the binaries, no deferal.

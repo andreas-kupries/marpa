@@ -27,6 +27,8 @@ kt source support/common.tcl
 ## [ok] 2asbr
 ## [ok] asbr-format
 ## [ok] 2char
+## [ok] 2assr
+## [ok] assr-format
 ##
 
 # # ## ### ##### ######## ############# #####################
@@ -359,6 +361,70 @@ test marpa-unicode-asbr-format-1.0 {asbr-format, wrong args, not enough} -body {
 test marpa-unicode-asbr-format-1.1 {asbr-format, wrong args, too many} -body {
     marpa unicode asbr-format CLASS COMPACT X
 } -returnCodes error -result {wrong # args: should be "marpa unicode asbr-format asbr ?compact?"}
+
+# # ## ### ##### ######## ############# #####################
+## 2assr - Convert char class (uni(code)points and ranges)
+##         into ASSR form (Alternate Squences of Byte Ranges)
+
+test marpa-unicode-2assr-1.0 {2assr, wrong args, not enough} -body {
+    marpa unicode 2assr
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2assr charclass"}
+
+test marpa-unicode-2assr-1.1 {2assr, wrong args, too many} -body {
+    marpa unicode 2assr CHARCLASS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2assr charclass"}
+
+testcases k {cclass theerror} {
+    CLASS         {Expected 2-element list for range}
+    -1            {Expected integer for codepoint in [0...1114111], got "-1"}
+    1114112       {Expected integer for codepoint in [0...1114111], got "1114112"}
+    {{a b c}}     {Expected 2-element list for range}
+    {{a b}}       {Expected integer for range start in [0...1114111], got "a"}
+    {{-1 0}}      {Expected integer for range start in [0...1114111], got "-1"}
+    {{0 -1}}      {Expected integer for range end in [0...1114111], got "-1"}
+    {{1114112 0}} {Expected integer for range start in [0...1114111], got "1114112"}
+    {{0 1114112}} {Expected integer for range end in [0...1114111], got "1114112"}
+} {
+    test marpa-unicode-2assr-1.2.$k {2assr, bad args} -body {
+	marpa unicode 2assr $cclass
+    } -returnCodes error -result $theerror
+}
+
+testcases k {charclass assr pretty} {
+    {{0 16}}            {{{0 16}}}              " [0000-0010]\n"
+    {{0 16} {33 45}}    {{{0 16}} {{33 45}}}    " [0000-0010]\n|[0021-002d]\n"
+    {{0 127}}           {{{0 127}}}             " [0000-007f]\n"
+    {{0 2047}}          {{{0 2047}}}            " [0000-07ff]\n"
+    {{0 65535}}         {{{0 65535}}}           " [0000-ffff]\n"
+
+    {{65530 65600}}  {{{65530 65535}} {{55296 55296} {56320 56384}}}
+    " [fffa-ffff]\n|[d800]     [dc00-dc40]\n"
+
+    {{65600 65700}}  {{{55296 55296} {56384 56484}}}
+    " [d800]     [dc40-dca4]\n"
+
+    {{0 0x10ffff}}   {{{0 65535}} {{55296 56319} {56320 57343}}}
+    " [0000-ffff]\n|[d800-dbff][dc00-dfff]\n"
+} {
+    test marpa-unicode-2assr-2.$k.0 "2assr, $charclass" -body {
+	marpa unicode 2assr $charclass
+    } -result $assr
+
+    test marpa-unicode-assr-format-2.$k.0 "assr-format, $charclass" -body {
+	marpa unicode assr-format $assr
+    } -result $pretty
+}
+
+# # ## ### ##### ######## ############# #####################
+## assr-format - Convert ASSR into a human-readable form.
+
+test marpa-unicode-assr-format-1.0 {assr-format, wrong args, not enough} -body {
+    marpa unicode assr-format
+} -returnCodes error -result {wrong # args: should be "marpa unicode assr-format assr ?compact?"}
+
+test marpa-unicode-assr-format-1.1 {assr-format, wrong args, too many} -body {
+    marpa unicode assr-format CLASS COMPACT X
+} -returnCodes error -result {wrong # args: should be "marpa unicode assr-format assr ?compact?"}
 
 # # ## ### ##### ######## ############# #####################
 cleanupTests
