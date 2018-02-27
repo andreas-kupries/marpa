@@ -14,6 +14,8 @@
 #include <critcl_assert.h>
 #include <critcl_alloc.h>
 
+TRACE_OFF;
+
 /*
  * Type definition
  */

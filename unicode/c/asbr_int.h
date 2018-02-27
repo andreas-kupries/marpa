@@ -38,25 +38,6 @@ typedef struct ASBR {
     SBR sbr[1]; /* Alternates allocated as part of structure */
 } ASBR;
 
-/*
- * Debug API
- */
-
-#ifdef CRITCL_TRACER
-extern void __marpatcl_SBR_DUMP   (const char* msg, SBR*   sbr);
-extern void __marpatcl_CCSBR_DUMP (const char* msg, ccSBR* ccsbr);
-extern void __marpatcl_ASBR_DUMP  (const char* msg, ASBR*  asbr);
-
-#define SBR_DUMP(sbr)     __marpatcl_SBR_DUMP(__func__,sbr)
-#define CCSBR_DUMP(ccsbr) __marpatcl_CCSBR_DUMP(__func__,ccsbr)
-#define ASBR_DUMP(asbr)   __marpatcl_ASBR_DUMP(__func__,asbr)
-#else
-
-#define SBR_DUMP(sbr)
-#define CCSBR_DUMP(ccsbr)
-#define ASBR_DUMP(asbr)
-#endif
-
 #endif
 
 /*

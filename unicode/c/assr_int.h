@@ -38,25 +38,6 @@ typedef struct ASSR {
     SSR ssr[1]; /* Alternates allocated as part of structure */
 } ASSR;
 
-/*
- * Debug API
- */
-
-#ifdef CRITCL_TRACER
-extern void __marpatcl_SSR_DUMP   (const char* msg, SSR*   sbr);
-extern void __marpatcl_CCSSR_DUMP (const char* msg, ccSSR* ccsbr);
-extern void __marpatcl_ASSR_DUMP  (const char* msg, ASSR*  assr);
-
-#define SSR_DUMP(sbr)     __marpatcl_SSR_DUMP(__func__,sbr)
-#define CCSSR_DUMP(ccsbr) __marpatcl_CCSSR_DUMP(__func__,ccsbr)
-#define ASSR_DUMP(assr)   __marpatcl_ASSR_DUMP(__func__,assr)
-#else
-
-#define SSR_DUMP(sbr)
-#define CCSSR_DUMP(ccsbr)
-#define ASSR_DUMP(assr)
-#endif
-
 #endif
 
 /*

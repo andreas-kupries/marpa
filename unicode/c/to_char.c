@@ -13,6 +13,8 @@
 #include <critcl_trace.h>
 #include <critcl_assert.h>
 #include <critcl_alloc.h>
+
+TRACE_OFF;
   
 #define EMIT(v)					\
     ASSERT (index < 2, "too many characters");	\

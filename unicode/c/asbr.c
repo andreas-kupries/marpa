@@ -17,6 +17,8 @@
 #include <critcl_assert.h>
 #include <critcl_alloc.h>
 
+TRACE_OFF;
+
 /*
  * Internal support
  */
@@ -37,6 +39,25 @@ static int  merge2   (ASBRState* state);
 static int  merging  (SBR* prev, SBR* top);
 static void push     (ASBRState* state, SBR* current);
 static void finalize (ASBRState* state);
+
+/*
+ * Internal debug support
+ */
+
+#ifdef CRITCL_TRACER
+static void __SBR_DUMP   (const char* msg, SBR*   sbr);
+static void __CCSBR_DUMP (const char* msg, ccSBR* ccsbr);
+static void __ASBR_DUMP  (const char* msg, ASBR*  asbr);
+
+#define SBR_DUMP(sbr)     __SBR_DUMP(__func__,sbr)
+#define CCSBR_DUMP(ccsbr) __CCSBR_DUMP(__func__,ccsbr)
+#define ASBR_DUMP(asbr)   __ASBR_DUMP(__func__,asbr)
+#else
+
+#define SBR_DUMP(sbr)
+#define CCSBR_DUMP(ccsbr)
+#define ASBR_DUMP(asbr)
+#endif
 
 /*
  * ASBR
@@ -265,8 +286,8 @@ merging (SBR* prev, SBR* top)
  */
 
 #ifdef CRITCL_TRACER
-void
-__marpatcl_SBR_DUMP (const char* msg, SBR* sbr) {
+static void
+__SBR_DUMP (const char* msg, SBR* sbr) {
 #define BR(i) sbr->br[i].start, sbr->br[i].end
     switch (sbr->n) {
     case 1: {
@@ -302,24 +323,24 @@ __marpatcl_SBR_DUMP (const char* msg, SBR* sbr) {
 #undef BR
 }
 
-void
-__marpatcl_CCSBR_DUMP (const char* msg, ccSBR* ccsbr) {
+static void
+__CCSBR_DUMP (const char* msg, ccSBR* ccsbr) {
     int i = 0;
     char buf [60]; /* ATTENTION: Size of msg limited by this to 46 chars */
     while (ccsbr) {
 	sprintf(buf, "CCSBR %s %4d %s", msg, i, ccsbr->closed ? "-" : " ");
-	__marpatcl_SBR_DUMP (buf, &ccsbr->sbr);
+	__SBR_DUMP (buf, &ccsbr->sbr);
 	ccsbr = ccsbr->next;
     }
 }
 
-void
-__marpatcl_ASBR_DUMP (const char* msg, ASBR* asbr) {
+static void
+__ASBR_DUMP (const char* msg, ASBR* asbr) {
     int i;
     char buf [30]; /* ATTENTION: msg limited by this to 19 chars */
     for (i=0; i < asbr->n ; i++) {
 	sprintf(buf, "ASBR %s %4d", msg, i);
-	__marpatcl_SBR_DUMP (buf, &asbr->sbr[i]);
+	__SBR_DUMP (buf, &asbr->sbr[i]);
     }
 }
 #endif
