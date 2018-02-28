@@ -38,16 +38,20 @@ namespace eval marpa {
 namespace eval marpa::unicode {
     namespace export \
 	norm-class negate-class point unfold fold/c \
-	2utf 2asbr asbr-format data max
+	2char 2utf 2asbr asbr-format data max \
+	2assr assr-format
     namespace ensemble create
 }
 
 # # ## ### ##### ######## #############
 ## Public API
 ##
+## - 2char        - Convert uni(code)point to sequence of points in the BMP
 ## - 2utf         - Convert uni(code)point to sequence of bytes
 ## - 2asbr        - Convert unicode class to utf8 asbr
 ## - asbr-format  - Convert the result of 2asbr into a human-readable form.
+## - 2assr        - Convert unicode class to ASSR
+## - assr-format  - Convert the result of 2assr into a human-readable form.
 ## - norm-class   - normalize a series of ranges and code points (i.e. a
 ##                  char class).
 ## - negate-class - Negate a series of ranges and code points (i.e. a
@@ -104,6 +108,30 @@ proc marpa::unicode::asbr-format {asbr {compact 0}} {
 		append r \]
 	    } else {
 		append r \] {   }
+	    }
+	}
+	append r \n
+	set prefix |
+    }
+    return $r
+}
+
+proc marpa::unicode::assr-format {assr {compact 0}} {
+    debug.marpa/unicode {}
+    set r {}
+    set prefix " "
+    foreach alternative $assr {
+	append r $prefix
+	foreach range $alternative {
+	    lassign $range s e
+	    append r \[
+	    append r [format %04x $s]
+	    if {$s != $e} {
+		append r - [format %04x $e] \]
+	    } elseif {$compact} {
+		append r \]
+	    } else {
+		append r \] {     }
 	    }
 	}
 	append r \n

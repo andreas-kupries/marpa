@@ -139,13 +139,14 @@ proc main {selfdir} {
 
 proc cmdline {} {
     # Syntax ==> See usage
-    global argv outtcl outc pong unimax
+    global argv outtcl outc pong unimax bmpmax
     if {[llength $argv] ni {2 3}} usage
     lassign $argv outtcl outc pong
     if {$pong eq {}} { set pong 1 }
     set outtcl [open $outtcl w]
     set outc   [open $outc w]
     set unimax 0x10FFFF
+    set bmpmax 0xFFFF
     return
 }
 
@@ -168,10 +169,38 @@ proc do-unidata {first last name category __ __ __ __ __ __ __ __ __ up low __} 
 
     #                       1    2        3  4  5  6  7  8  9  10 11 12 13  14
     #pong "Unidata $first .. $last = $category"
-    add-to-class   $category [list $first $last]
+    add-to-class-plus $category $first $last
+        
     add-to-folding $first $up $low
     return
 }
+
+proc add-to-class-plus {class first last} {
+    global bmpmax
+    # Generate two derived classes per category, ranges in the BMP,
+    # and ranges outside. Any empty derived class will not exist.
+
+    add-to-class $class [list $first $last]
+    
+    # XXX TODO: FUTURE: Look into space saving storage methods (aliases, and others)
+    
+    if {$last <= $bmpmax} {
+	# This part is in the BMP
+	add-to-class ${class}:bmp [list $first $last]
+    }
+    if {$first > $bmpmax} {
+	# This part is outside BMP
+	add-to-class ${class}:high [list $first $last]
+    }
+    if {($first <= $bmpmax) && ($bmpmax < $last)} {
+	# And a range straddling the border, this one gets split
+	add-to-class ${class}:bmp  [list $first $bmpmax]
+	add-to-class ${class}:high [list [expr {$bmpmax+1}] $last]
+    }
+
+    return
+}
+
 
 proc add-to-class {class args} {
     global cc
@@ -248,12 +277,14 @@ proc do-script {first last script} {
     if {$last > $unimax} return
 
     #pong "Script $first .. $last = $script"
-    add-to-class $script [list $first $last]
+    add-to-class-plus $script $first $last
     return
 }
 
 proc make-derived-tcl-classes {} {
     global derived
+    # The bmp/high split is handled by pulling from the bmp/high
+    # derivations of the origin classes.
     foreach {key spec} $derived {
 	pong "Making $key"
 	set ranges {}
@@ -262,6 +293,12 @@ proc make-derived-tcl-classes {} {
 		add-to-class $key {*}[get-class $cc]
 	    } else {
 		add-to-class $key $cc
+	    }
+	    if {[is-class ${cc}:bmp]} {
+		add-to-class ${key}:bmp {*}[get-class ${cc}:bmp]
+	    }
+	    if {[is-class ${cc}:high]} {
+		add-to-class ${key}:high {*}[get-class ${cc}:high]
 	    }
 	}
 	def-label $key "= [join $spec { + }]"
@@ -286,10 +323,12 @@ proc classes {} {
 
 proc make-direct-tcl-classes {} {
     global special
+    # Note: The tcl specials are all BMP only
     foreach {key spec} $special {
 	pong "Making $key"
 	# spec = ranges
-	add-to-class $key {*}$spec
+	add-to-class $key       {*}$spec
+	add-to-class ${key}:bmp {*}$spec
 	def-label    $key special
     }
     return

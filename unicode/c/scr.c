@@ -16,6 +16,7 @@
 #include <critcl_assert.h>
 #include <critcl_alloc.h>
 
+TRACE_OFF;
 
 /*
  * Internal support
@@ -45,14 +46,18 @@ marpatcl_scr_new (int n)
     if (n < 1) { n = 1; }
     TRACE ("Allocating %d", n);
 	
-    scr = (SCR*) ckalloc (sizeof(SCR) + (n-1)*sizeof(CR));
+    scr = (SCR*) ckalloc (sizeof(SCR) + n*sizeof(CR));
     TRACE ("NEW scr    = %p .. %p [%d] [%d+%d*%d]", scr,
-	   ((char*) scr)+sizeof(SCR)+(n-1)*sizeof(CR),
-	   sizeof(SCR)+(n-1)*sizeof(CR),
-	   sizeof(SCR), n-1, sizeof(CR));
-    scr->n     = 0;  /* Nothing stored yet */
-    scr->max   = n;  /* Note the 'cr[1]' in SCR itself */
+	   ((char*) scr)+sizeof(SCR)+n*sizeof(CR),
+	   sizeof(SCR)+n*sizeof(CR),
+	   sizeof(SCR), n, sizeof(CR));
+
     scr->canon = 0;  /* Not normalized */
+    scr->n     = 0;  /* Nothing stored yet */
+    scr->max   = n;
+    scr->cr    = (CR*) (((char*) scr) + sizeof(SCR));
+
+    TRACE ("NEW scr->cr= %p", scr->cr);
     TRACE_RETURN ("(SCR*) %p", scr);
 }
 
@@ -64,9 +69,14 @@ void
 marpatcl_scr_destroy (SCR_p scr)
 {
     /*
-     * Trivial because the ranges are allocated as part of the structure
+     * Trivial because the ranges are allocated as part of the structure.
+     * (See marpatcl_scr_new).
+     *
+     * While the creation of variants where the ranges are stored separately
+     * is allowed, such variants are __not permitted__ to use this function.
+     * The creators of such variants are responsible for arranging this.
      */
-    TRACE_FUNC ("((SCR*) %p (elt %d))", scr, scr->n);
+    TRACE_FUNC ("((SCR*) %p (elt %d @ %p))", scr, scr->n, scr->cr);
     FREE (scr);
     TRACE_RETURN_VOID;
 }
@@ -78,8 +88,8 @@ marpatcl_scr_destroy (SCR_p scr)
 void
 marpatcl_scr_add_range (SCR_p scr, int first, int last)
 {
-    TRACE_FUNC ("((SCR*) %p [%d/%d], fl (%d...%d))",
-		scr, scr->n, scr->max, first, last);
+    TRACE_FUNC ("((SCR*) %p [%d/%d] @ %p, f/l (%d...%d))",
+		scr, scr->n, scr->max, scr->cr, first, last);
     ASSERT (scr->n < scr->max, "Unable to add range to full SCR");
 
     scr->cr[scr->n].start = first;
@@ -102,7 +112,7 @@ marpatcl_scr_add_code (SCR_p scr, int codepoint)
 void
 marpatcl_scr_norm (SCR_p scr)
 {
-    TRACE_FUNC ("((SCR*) %p (elt %d))", scr, scr->n);
+    TRACE_FUNC ("((SCR*) %p (elt %d @ %p))", scr, scr->n, scr->cr);
 	
     /*
      * Normalization is done in place. This is possible because the resulting
@@ -131,7 +141,7 @@ marpatcl_scr_norm (SCR_p scr)
 #define CE current->end
 
 	SCR_DUMP("I", scr);
-	qsort (&scr->cr, scr->n, sizeof(CR), compare);
+	qsort (scr->cr, scr->n, sizeof(CR), compare);
 	SCR_DUMP("S", scr);
 
 	/* Assertions, for all cr[i], cr[i+1] (P, C)
@@ -224,7 +234,7 @@ marpatcl_scr_complement (SCR_p scr)
     int cmin, cmax;
     CR *current, *sentinel, *store;
 
-    TRACE_FUNC ("((SCR*) %p (elt %d))", scr, scr->n);
+    TRACE_FUNC ("((SCR*) %p (elt %d @ %p))", scr, scr->n, scr->cr);
 	
     if (scr->n == 0) {
 	/*

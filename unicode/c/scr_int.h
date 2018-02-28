@@ -29,7 +29,7 @@ typedef struct SCR {
     int n;     /* #ranges in the class, cr[0...n-1] */
     int max;   /* Allocated #ranges (n <= max) */
     int canon; /* Boolean flag, class is normalized, in canonical form */
-    CR  cr[1]; /* Ranges allocated as part of the structure */
+    CR* cr;    /* Ranges in the class, may be allocated as part of the structure */
 } SCR;
 
 /*
