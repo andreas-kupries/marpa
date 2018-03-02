@@ -429,7 +429,7 @@ critcl::ccode {
 	    TRACE ("  Skip  %d", cmin);
 	}
 
-	if (cmin < cmax) {
+	if (cmin <= cmax) {
 	    store->start = cmin;
 	    store->end   = cmax;
 	    TRACE ("  Sto/C %d...%d", store->start, store->end);
