@@ -269,6 +269,10 @@ test marpa-unicode-negate-class-2.4 {negate-class, all} -body {
     marpa unicode negate-class {{0 1114111}}
 } -result {}
 
+test marpa-unicode-negate-class-2.5 {negate-class, final element} -body {
+    marpa unicode negate-class {45 97 127 300 1114110}
+} -result {{0 44} {46 96} {98 126} {128 299} {301 1114109} 1114111}
+
 # # ## ### ##### ######## ############# #####################
 ## 2asbr - Convert char class (uni(code)points and ranges)
 ##         into ASBR form (Alternate Squences of Byte Ranges)
