@@ -190,12 +190,12 @@ proc add-to-class-plus {class first last} {
     }
     if {$first > $bmpmax} {
 	# This part is outside BMP
-	add-to-class ${class}:high [list $first $last]
+	add-to-class ${class}:smp [list $first $last]
     }
     if {($first <= $bmpmax) && ($bmpmax < $last)} {
 	# And a range straddling the border, this one gets split
-	add-to-class ${class}:bmp  [list $first $bmpmax]
-	add-to-class ${class}:high [list [expr {$bmpmax+1}] $last]
+	add-to-class ${class}:bmp [list $first $bmpmax]
+	add-to-class ${class}:smp [list [expr {$bmpmax+1}] $last]
     }
 
     return
@@ -297,8 +297,8 @@ proc make-derived-tcl-classes {} {
 	    if {[is-class ${cc}:bmp]} {
 		add-to-class ${key}:bmp {*}[get-class ${cc}:bmp]
 	    }
-	    if {[is-class ${cc}:high]} {
-		add-to-class ${key}:high {*}[get-class ${cc}:high]
+	    if {[is-class ${cc}:smp]} {
+		add-to-class ${key}:smp {*}[get-class ${cc}:smp]
 	    }
 	}
 	def-label $key "= [join $spec { + }]"
@@ -440,25 +440,29 @@ proc write-c-comment {text} {
 }
 
 proc write-c-header {} {
-    global unimax
+    global unimax bmpmax
     set m $unimax ; incr m 0
+    set b $bmpmax ; incr b 0
     wrc "/* -*- c -*-"
-    wrc "** Generator:       tools/unidata.tcl"
-    wrc "** Data sources:    unidata/{UnicodeData,Scripts}.txt"
-    wrc "** Build-Time:      [clock format [clock seconds]]"
-    wrc "** Supported range: $m codepoints"
+    wrc "** Generator:           tools/unidata.tcl"
+    wrc "** Data sources:        unidata/{UnicodeData,Scripts}.txt"
+    wrc "** Build-Time:          [clock format [clock seconds]]"
+    wrc "** Supported range:     $m codepoints"
+    wrc "** Basic multi-lingual: $b codepoints"
     wrc "*/"
     wrc ""
 }
 
 proc write-header {} {
-    global unimax
+    global unimax bmpmax
     set m $unimax ; incr m 0
+    set b $bmpmax ; incr b 0
     wr "# -*- tcl -*-"
-    wr "## Generator:       tools/unidata.tcl"
-    wr "## Data sources:    unidata/{UnicodeData,Scripts}.txt"
-    wr "## Build-Time:      [clock format [clock seconds]]"
-    wr "## Supported range: $m codepoints"
+    wr "## Generator:           tools/unidata.tcl"
+    wr "## Data sources:        unidata/{UnicodeData,Scripts}.txt"
+    wr "## Build-Time:          [clock format [clock seconds]]"
+    wr "## Supported range:     $m codepoints"
+    wr "## Basic multi-lingual: $b codepoints"
     wr ""
     write-sep {unicode information}
     lappend map {    } {} \t {    }
@@ -467,26 +471,30 @@ proc write-header {} {
 	variable foldmap ;# character mapped to equivalence class under folding
 	variable foldset ;# id -> equivalence class under folding
 	variable max     ;# Maximal supported codepoint
+	variable bmp     ;# Maximal supported codepoint, BMP
     }}]
     wr ""
     return
 }
 
 proc write-limits {} {
-    global unimax
-    write-sep "unicode limits: $unimax"
+    global unimax bmpmax
+    write-sep "unicode limits"
     wr "set marpa::unicode::max $unimax"
+    wr "set marpa::unicode::bmp $bmpmax"
     wr ""
     return
 }
 
 proc write-c-limits {} {
-    global unimax
-    write-c-sep "unicode limits: $unimax"
+    global unimax bmpmax
+    write-c-sep "unicode limits"
     lappend map <<unimax>>  $unimax
+    lappend map <<bmpmax>>  $bmpmax
     lappend map \t {} {    } {}
     wrc [string map $map {
 	#define UNI_MAX  <<unimax>>
+	#define UNI_BMP  <<bmpmax>>
     }]
     return
 }
