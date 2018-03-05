@@ -74,7 +74,9 @@ proc ::marpa::slif::literal::norm::DO {_literal} {
     variable details
     Init $_literal
     while {$continue} {
-	if {![KnownType]} Fail
+	# Unknown tags are passed as-is. This allows reducers to use
+	# custom tags to control chains of reductions.
+	if {![KnownType]} break
 	#puts <<[linsert $details 0 $type]>>
 	$type {*}$details
 	# Recurse (tailcall -> loop)
@@ -84,58 +86,66 @@ proc ::marpa::slif::literal::norm::DO {_literal} {
 
 # # ## ### ##### ######## #############
 ## Transformations by literal type.
+## Attention
+## - The local `string` shadows the global builtin.
 
-proc ::marpa::slif::literal::norm::string {args} {
+proc ::marpa::slif::literal::norm::string {c args} {
     if {[Single]} {
 	IsA character ;# N01
     } else Stop ;# N02
 }
 
-proc ::marpa::slif::literal::norm::%string {args} {
+proc ::marpa::slif::literal::norm::%string {c args} {
     if {[Single]} {
 	IsA %character ;# N03
     } else Stop ;# N03
+    # TODO XXX: If all elements of the string have no case folding
+    # TODO XXX: then we can go to plain `string`.
 }
 
-proc ::marpa::slif::literal::norm::charclass {args} {
+proc ::marpa::slif::literal::norm::charclass {elt args} {
     if {[Single]} {
-	set elt [lindex $args 0]
 	IsA [eltype $elt] ;# N05, N06, N07
 	Of  $elt
-    } else Stop ;# N08
+    } else {
+	Of [ccnorm [linsert $args 0 $elt]]
+	if {![Single]} Stop ; #N08
+	# Single -> iterate, return to above.
+    }
 }
 
-proc ::marpa::slif::literal::norm::%charclass {args} {
+proc ::marpa::slif::literal::norm::%charclass {elt args} {
     if {[Single]} {
-	set elt [lindex $args 0]
 	IsA %[eltype $elt] ;# N09, N10, N11
 	Of  $elt
     } else {
 	IsA charclass ;# N12
-	Of  [ccunfold $args]
+	Of  [ccunfold [linsert $args 0 $elt]]
     }
 }
 
-proc ::marpa::slif::literal::norm::^charclass {args} {
+proc ::marpa::slif::literal::norm::^charclass {elt args} {
     if {[Single]} {
-	set elt [lindex $args 0]
 	IsA ^[eltype $elt] ;# N13, N14, N15
 	Of  $elt
-    } else Stop ;# N16
+    } else {
+	Of [ccnorm [linsert $args 0 $elt]]
+	if {![Single]} Stop ; #N16
+	# Single -> iterate, return to above.
+    }
 }
 
-proc ::marpa::slif::literal::norm::^%charclass {args} {
+proc ::marpa::slif::literal::norm::^%charclass {elt args} {
     if {[Single]} {
-	set elt [lindex $args 0]
 	IsA ^%[eltype $elt] ;# N17, N18, N19
 	Of  $elt
     } else {
 	IsA ^charclass ;# N20
-	Of  [ccunfold $args]
+	Of  [ccunfold [linsert $args 0 $elt]]
     }
 }
 
-proc ::marpa::slif::literal::norm::character {args} {
+proc ::marpa::slif::literal::norm::character {codepoint} {
     Stop ;# N21
 }
 
@@ -144,7 +154,7 @@ proc ::marpa::slif::literal::norm::%character {codepoint} {
     Of  [marpa unicode data fold $codepoint]
 }
 
-proc ::marpa::slif::literal::norm::^character {args} {
+proc ::marpa::slif::literal::norm::^character {codepoint} {
     Stop ;# N23
 }
 
@@ -160,18 +170,18 @@ proc ::marpa::slif::literal::norm::range {s e} {
     } else Stop ;# N26
 }
 
-proc ::marpa::slif::literal::norm::%range {args} {
+proc ::marpa::slif::literal::norm::%range {s e} {
     IsA charclass ;# N28
-    Of  [marpa unicode unfold [list $args]]
+    Of  [marpa unicode unfold [list [list $s $e]]]
 }
 
 proc ::marpa::slif::literal::norm::^range {s e} {
     Stop ;# N29
 }
 
-proc ::marpa::slif::literal::norm::^%range {args} {
+proc ::marpa::slif::literal::norm::^%range {s e} {
     IsA ^charclass ;# N30
-    Of  [marpa unicode unfold [list $args]]
+    Of  [marpa unicode unfold [list [list $s $e]]]
 }
 
 proc ::marpa::slif::literal::norm::named-class {ccname} {
@@ -179,7 +189,7 @@ proc ::marpa::slif::literal::norm::named-class {ccname} {
 	^*  Fail
 	%*  {
 	    IsA %named-class ;# N32
-	    Of  [string range $ccname 1 end]
+	    Of  [::string range $ccname 1 end]
 	}
 	*   Stop
     }
@@ -190,7 +200,7 @@ proc ::marpa::slif::literal::norm::%named-class {ccname} {
 	^*  Fail
 	%*  {
 	    IsA %named-class ;# N36
-	    Of  [string range $ccname 1 end]
+	    Of  [::string range $ccname 1 end]
 	}
 	*   Stop
     }
@@ -201,7 +211,7 @@ proc ::marpa::slif::literal::norm::^named-class {ccname} {
 	^*  Fail
 	%*  {
 	    IsA ^%named-class ;# N40
-	    Of  [string range $ccname 1 end]
+	    Of  [::string range $ccname 1 end]
 	}
 	*   Stop
     }
@@ -212,17 +222,17 @@ proc ::marpa::slif::literal::norm::^%named-class {ccname} {
 	^*  Fail
 	%*  {
 	    IsA ^%named-class ;# N44
-	    Of  [string range $ccname 1 end]
+	    Of  [::string range $ccname 1 end]
 	}
 	*   Stop
     }
 }
 
-proc ::marpa::slif::literal::norm::byte {args} {
+proc ::marpa::slif::literal::norm::byte {b} {
     Stop
 }
 
-proc ::marpa::slif::literal::norm::brange {args} {
+proc ::marpa::slif::literal::norm::brange {s e} {
     Stop
 }
 

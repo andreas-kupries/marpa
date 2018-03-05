@@ -1,0 +1,584 @@
+# characters:    bmp, high, fold-cases and not, borders
+# named classes: braille (bmp) adlam (high) arabic (bmp+high), lu, punct
+# strings:       See characters, mixed
+
+custom ...
+
+byte 0
+byte 255
+byte 128
+
+brange 0 255
+brange 1 254
+brange 3 7
+
+wrong # args: should be "character codepoint"
+character 0
+character 1111567
+character 1114110
+character 1114111
+character 127
+character 128
+character 300
+character 45
+character 65
+character 65535
+character 65536
+character 97
+
+wrong # args: should be "^character codepoint"
+^character 0
+^character 1111567
+^character 1114110
+^character 1114111
+^character 127
+^character 128
+^character 300
+^character 45
+^character 65
+^character 65535
+^character 65536
+^character 97
+
+wrong # args: should be "%character codepoint"
+character 0
+character 1111567
+character 1114110
+character 1114111
+character 127
+character 128
+range 300 301
+character 45
+charclass 65 97
+character 65535
+character 65536
+charclass 65 97
+
+wrong # args: should be "^%character codepoint"
+^character 0
+^character 1111567
+^character 1114110
+^character 1114111
+^character 127
+^character 128
+^range 300 301
+^character 45
+^charclass 65 97
+^character 65535
+^character 65536
+^charclass 65 97
+
+wrong # args: should be "string c ..."
+character 0
+string 0 127 128 300 45 65 97 65535
+string 0 65536 128 1111567
+character 1111567
+character 1114110
+string 1114110 300 127 97 45
+character 1114111
+character 127
+character 128
+character 300
+character 45
+character 65
+character 65535
+character 65536
+string 65536 1114111 1111567 1114110
+character 97
+
+wrong # args: should be "%string c ..."
+character 0
+%string 0 127 128 300 45 65 97 65535
+%string 0 65536 128 1111567
+character 1111567
+character 1114110
+%string 1114110 300 127 97 45
+character 1114111
+character 127
+character 128
+range 300 301
+character 45
+charclass 65 97
+character 65535
+character 65536
+%string 65536 1114111 1111567 1114110
+charclass 65 97
+
+wrong # args: should be "named-class ccname"
+named-class adlam
+named-class arabic
+named-class braille
+named-class lu
+named-class punct
+
+Unable to normalize type (named-class (^adlam))
+Unable to normalize type (named-class (^arabic))
+Unable to normalize type (named-class (^braille))
+Unable to normalize type (named-class (^lu))
+Unable to normalize type (named-class (^punct))
+
+%named-class adlam
+%named-class arabic
+%named-class braille
+%named-class lu
+%named-class punct
+
+Unable to normalize type (named-class (^%adlam))
+Unable to normalize type (named-class (^%arabic))
+Unable to normalize type (named-class (^%braille))
+Unable to normalize type (named-class (^%lu))
+Unable to normalize type (named-class (^%punct))
+
+wrong # args: should be "%named-class ccname"
+%named-class adlam
+%named-class arabic
+%named-class braille
+%named-class lu
+%named-class punct
+
+Unable to normalize type (%named-class (^adlam))
+Unable to normalize type (%named-class (^arabic))
+Unable to normalize type (%named-class (^braille))
+Unable to normalize type (%named-class (^lu))
+Unable to normalize type (%named-class (^punct))
+
+%named-class adlam
+%named-class arabic
+%named-class braille
+%named-class lu
+%named-class punct
+
+Unable to normalize type (%named-class (^%adlam))
+Unable to normalize type (%named-class (^%arabic))
+Unable to normalize type (%named-class (^%braille))
+Unable to normalize type (%named-class (^%lu))
+Unable to normalize type (%named-class (^%punct))
+
+wrong # args: should be "^named-class ccname"
+^named-class adlam
+^named-class arabic
+^named-class braille
+^named-class lu
+^named-class punct
+
+Unable to normalize type (^named-class (^adlam))
+Unable to normalize type (^named-class (^arabic))
+Unable to normalize type (^named-class (^braille))
+Unable to normalize type (^named-class (^lu))
+Unable to normalize type (^named-class (^punct))
+
+^%named-class adlam
+^%named-class arabic
+^%named-class braille
+^%named-class lu
+^%named-class punct
+
+Unable to normalize type (^named-class (^%adlam))
+Unable to normalize type (^named-class (^%arabic))
+Unable to normalize type (^named-class (^%braille))
+Unable to normalize type (^named-class (^%lu))
+Unable to normalize type (^named-class (^%punct))
+
+wrong # args: should be "^%named-class ccname"
+^%named-class adlam
+^%named-class arabic
+^%named-class braille
+^%named-class lu
+^%named-class punct
+
+Unable to normalize type (^%named-class (^adlam))
+Unable to normalize type (^%named-class (^arabic))
+Unable to normalize type (^%named-class (^braille))
+Unable to normalize type (^%named-class (^lu))
+Unable to normalize type (^%named-class (^punct))
+
+^%named-class adlam
+^%named-class arabic
+^%named-class braille
+^%named-class lu
+^%named-class punct
+
+Unable to normalize type (^%named-class (^%adlam))
+Unable to normalize type (^%named-class (^%arabic))
+Unable to normalize type (^%named-class (^%braille))
+Unable to normalize type (^%named-class (^%lu))
+Unable to normalize type (^%named-class (^%punct))
+
+wrong # args: should be "range s e"
+range 1 20
+range 0 10
+range 0 1114111
+range 127 65535
+range 128 65535
+range 97 65536
+range 65535 1111567
+range 65536 1111567
+range 65535 1114111
+range 65536 1114111
+range 1111567 1114110
+
+wrong # args: should be "^range s e"
+^range 1 20
+^range 0 10
+^range 0 1114111
+^range 127 65535
+^range 128 65535
+^range 97 65536
+^range 65535 1111567
+^range 65536 1111567
+^range 65535 1114111
+^range 65536 1114111
+^range 1111567 1114110
+
+wrong # args: should be "%range s e"
+range 1 20
+range 0 10
+range 0 1114111
+range 127 65535
+range 128 65535
+charclass {65 90} {97 65536}
+range 65535 1111567
+range 65536 1111567
+range 65535 1114111
+range 65536 1114111
+range 1111567 1114110
+
+wrong # args: should be "^%range s e"
+^range 1 20
+^range 0 10
+^range 0 1114111
+^range 127 65535
+^range 128 65535
+^charclass {65 90} {97 65536}
+^range 65535 1111567
+^range 65536 1111567
+^range 65535 1114111
+^range 65536 1114111
+^range 1111567 1114110
+
+# - char classes from characters, ranges, named-classes
+
+wrong # args: should be "charclass elt ..."
+character 0
+character 1111567
+character 1114110
+character 1114111
+character 127
+character 128
+character 300
+character 45
+character 65
+character 65535
+character 65536
+character 97
+
+wrong # args: should be "^charclass elt ..."
+^character 0
+^character 1111567
+^character 1114110
+^character 1114111
+^character 127
+^character 128
+^character 300
+^character 45
+^character 65
+^character 65535
+^character 65536
+^character 97
+
+wrong # args: should be "%charclass elt ..."
+character 0
+character 1111567
+character 1114110
+character 1114111
+character 127
+character 128
+range 300 301
+character 45
+charclass 65 97
+character 65535
+character 65536
+charclass 65 97
+
+wrong # args: should be "^%charclass elt ..."
+^character 0
+^character 1111567
+^character 1114110
+^character 1114111
+^character 127
+^character 128
+^range 300 301
+^character 45
+^charclass 65 97
+^character 65535
+^character 65536
+^charclass 65 97
+
+named-class adlam
+named-class arabic
+named-class braille
+named-class lu
+named-class punct
+
+Unable to normalize type (named-class (^adlam))
+Unable to normalize type (named-class (^arabic))
+Unable to normalize type (named-class (^braille))
+Unable to normalize type (named-class (^lu))
+Unable to normalize type (named-class (^punct))
+
+%named-class adlam
+%named-class arabic
+%named-class braille
+%named-class lu
+%named-class punct
+
+Unable to normalize type (named-class (^%adlam))
+Unable to normalize type (named-class (^%arabic))
+Unable to normalize type (named-class (^%braille))
+Unable to normalize type (named-class (^%lu))
+Unable to normalize type (named-class (^%punct))
+
+%named-class adlam
+%named-class arabic
+%named-class braille
+%named-class lu
+%named-class punct
+
+Unable to normalize type (%named-class (^adlam))
+Unable to normalize type (%named-class (^arabic))
+Unable to normalize type (%named-class (^braille))
+Unable to normalize type (%named-class (^lu))
+Unable to normalize type (%named-class (^punct))
+
+%named-class adlam
+%named-class arabic
+%named-class braille
+%named-class lu
+%named-class punct
+
+Unable to normalize type (%named-class (^%adlam))
+Unable to normalize type (%named-class (^%arabic))
+Unable to normalize type (%named-class (^%braille))
+Unable to normalize type (%named-class (^%lu))
+Unable to normalize type (%named-class (^%punct))
+
+^named-class adlam
+^named-class arabic
+^named-class braille
+^named-class lu
+^named-class punct
+
+Unable to normalize type (^named-class (^adlam))
+Unable to normalize type (^named-class (^arabic))
+Unable to normalize type (^named-class (^braille))
+Unable to normalize type (^named-class (^lu))
+Unable to normalize type (^named-class (^punct))
+
+^%named-class adlam
+^%named-class arabic
+^%named-class braille
+^%named-class lu
+^%named-class punct
+
+Unable to normalize type (^named-class (^%adlam))
+Unable to normalize type (^named-class (^%arabic))
+Unable to normalize type (^named-class (^%braille))
+Unable to normalize type (^named-class (^%lu))
+Unable to normalize type (^named-class (^%punct))
+
+^%named-class adlam
+^%named-class arabic
+^%named-class braille
+^%named-class lu
+^%named-class punct
+
+Unable to normalize type (^%named-class (^adlam))
+Unable to normalize type (^%named-class (^arabic))
+Unable to normalize type (^%named-class (^braille))
+Unable to normalize type (^%named-class (^lu))
+Unable to normalize type (^%named-class (^punct))
+
+^%named-class adlam
+^%named-class arabic
+^%named-class braille
+^%named-class lu
+^%named-class punct
+
+Unable to normalize type (^%named-class (^%adlam))
+Unable to normalize type (^%named-class (^%arabic))
+Unable to normalize type (^%named-class (^%braille))
+Unable to normalize type (^%named-class (^%lu))
+Unable to normalize type (^%named-class (^%punct))
+
+range 1 20
+range 0 10
+range 0 1114111
+range 127 65535
+range 128 65535
+range 97 65536
+range 65535 1111567
+range 65536 1111567
+range 65535 1114111
+range 65536 1114111
+range 1111567 1114110
+
+^range 1 20
+^range 0 10
+^range 0 1114111
+^range 127 65535
+^range 128 65535
+^range 97 65536
+^range 65535 1111567
+^range 65536 1111567
+^range 65535 1114111
+^range 65536 1114111
+^range 1111567 1114110
+
+range 1 20
+range 0 10
+range 0 1114111
+range 127 65535
+range 128 65535
+charclass {65 90} {97 65536}
+range 65535 1111567
+range 65536 1111567
+range 65535 1114111
+range 65536 1114111
+range 1111567 1114110
+
+^range 1 20
+^range 0 10
+^range 0 1114111
+^range 127 65535
+^range 128 65535
+^charclass {65 90} {97 65536}
+^range 65535 1111567
+^range 65536 1111567
+^range 65535 1114111
+^range 65536 1114111
+^range 1111567 1114110
+
+# char classes with multiple elements (same and different kinds)
+
+charclass 0 45 65 97 {127 128} 300 65535
+charclass 0 128 65536 1111567
+charclass 45 97 127 300 1114110
+charclass 65536 1111567 {1114110 1114111}
+
+charclass {1 20} {65536 1111567}
+range 97 65536
+range 97 65536
+charclass {0 10} {65535 1111567}
+range 0 20
+
+charclass adlam arabic
+charclass arabic braille
+charclass braille lu
+charclass lu punct
+
+charclass {1 20} 45 {127 128} 300 {65536 1111567}
+charclass {97 65536} 1111567
+charclass {0 10} 45 97 127 300 1114110
+charclass {1 20} 65536 1111567 {1114110 1114111}
+
+charclass 0 45 65 97 {127 128} 300 65535 adlam
+charclass 0 128 65536 1111567 arabic
+charclass 45 97 127 300 1114110 braille
+charclass 65536 1111567 {1114110 1114111} lu
+
+charclass {1 20} 45 {127 128} 300 {65536 1111567} punct
+charclass {97 65536} 1111567 adlam
+charclass {0 10} 45 97 127 300 1114110 arabic
+charclass {1 20} 65536 1111567 {1114110 1114111} braille
+
+^charclass 0 45 65 97 {127 128} 300 65535
+^charclass 0 128 65536 1111567
+^charclass 45 97 127 300 1114110
+^charclass 65536 1111567 {1114110 1114111}
+
+^charclass {1 20} {65536 1111567}
+^range 97 65536
+^range 97 65536
+^charclass {0 10} {65535 1111567}
+^range 0 20
+
+^charclass adlam arabic
+^charclass arabic braille
+^charclass braille lu
+^charclass lu punct
+
+^charclass {1 20} 45 {127 128} 300 {65536 1111567}
+^charclass {97 65536} 1111567
+^charclass {0 10} 45 97 127 300 1114110
+^charclass {1 20} 65536 1111567 {1114110 1114111}
+
+^charclass 0 45 65 97 {127 128} 300 65535 adlam
+^charclass 0 128 65536 1111567 arabic
+^charclass 45 97 127 300 1114110 braille
+^charclass 65536 1111567 {1114110 1114111} lu
+
+^charclass {1 20} 45 {127 128} 300 {65536 1111567} punct
+^charclass {97 65536} 1111567 adlam
+^charclass {0 10} 45 97 127 300 1114110 arabic
+^charclass {1 20} 65536 1111567 {1114110 1114111} braille
+
+charclass 0 45 65 97 {127 128} {300 301} 65535
+charclass 0 128 65536 1111567
+charclass 45 65 97 127 {300 301} 1114110
+charclass 65536 1111567 {1114110 1114111}
+
+charclass {1 20} {65536 1111567}
+charclass {65 90} {97 65536}
+charclass {65 90} {97 65536}
+charclass {0 10} {65535 1111567}
+range 0 20
+
+charclass %adlam %arabic
+charclass %arabic %braille
+charclass %braille %lu
+charclass %lu %punct
+
+charclass {1 20} 45 {127 128} {300 301} {65536 1111567}
+charclass {65 90} {97 65536} 1111567
+charclass {0 10} 45 65 97 127 {300 301} 1114110
+charclass {1 20} 65536 1111567 {1114110 1114111}
+
+charclass 0 45 65 97 {127 128} {300 301} 65535 %adlam
+charclass 0 128 65536 1111567 %arabic
+charclass 45 65 97 127 {300 301} 1114110 %braille
+charclass 65536 1111567 {1114110 1114111} %lu
+
+charclass {1 20} 45 {127 128} {300 301} {65536 1111567} %punct
+charclass {65 90} {97 65536} 1111567 %adlam
+charclass {0 10} 45 65 97 127 {300 301} 1114110 %arabic
+charclass {1 20} 65536 1111567 {1114110 1114111} %braille
+
+^charclass 0 45 65 97 {127 128} {300 301} 65535
+^charclass 0 128 65536 1111567
+^charclass 45 65 97 127 {300 301} 1114110
+^charclass 65536 1111567 {1114110 1114111}
+^charclass {1 20} {65536 1111567}
+^charclass {65 90} {97 65536}
+^charclass {65 90} {97 65536}
+^charclass {0 10} {65535 1111567}
+^range 0 20
+
+^charclass %adlam %arabic
+^charclass %arabic %braille
+^charclass %braille %lu
+^charclass %lu %punct
+
+^charclass {1 20} 45 {127 128} {300 301} {65536 1111567}
+^charclass {65 90} {97 65536} 1111567
+^charclass {0 10} 45 65 97 127 {300 301} 1114110
+^charclass {1 20} 65536 1111567 {1114110 1114111}
+
+^charclass 0 45 65 97 {127 128} {300 301} 65535 %adlam
+^charclass 0 128 65536 1111567 %arabic
+^charclass 45 65 97 127 {300 301} 1114110 %braille
+^charclass 65536 1111567 {1114110 1114111} %lu
+
+^charclass {1 20} 45 {127 128} {300 301} {65536 1111567} %punct
+^charclass {65 90} {97 65536} 1111567 %adlam
+^charclass {0 10} 45 65 97 127 {300 301} 1114110 %arabic
+^charclass {1 20} 65536 1111567 {1114110 1114111} %braille

@@ -44,7 +44,7 @@ debug define marpa/slif/literal/util
 # # ## ### ##### ######## #############
 
 namespace eval ::marpa::slif::literal::util {
-    namespace export   eltype ccunfold ccsplit ccranges symbol
+    namespace export   eltype ccunfold ccnorm ccsplit ccranges symbol
     namespace ensemble create
 }
 
@@ -87,6 +87,14 @@ proc ::marpa::slif::literal::util::ccranges {data} {
 	lappend codes {*}$ccodes
     }
     return [marpa unicode norm-class $codes]
+}
+
+proc ::marpa::slif::literal::util::ccnorm {data} {
+    debug.marpa/slif/literal/util {}
+    lassign [ccsplit $data] codes names
+    lappend r {*}[marpa unicode norm-class $codes]
+    lappend r {*}[lsort -dict -unique $names]
+    return $r    
 }
 
 proc ::marpa::slif::literal::util::ccsplit {data} {
@@ -165,7 +173,7 @@ proc ::marpa::slif::literal::util::symtype {type} {
 proc ::marpa::slif::literal::util::symchar {codepoint} {
     debug.marpa/slif/literal/util {}
 
-    if {$codepoint > 65535} {
+    if {$codepoint > [marpa unicode bmp]} {
 	# Beyond the BMP, \u notation
 	return \\u[format %x $codepoint]
     }

@@ -10,6 +10,7 @@ kt check tcltest 2
 kt require support debug
 kt require support debug::caller
 kt require support oo::util
+kt require support fileutil
 kt require support TclOO
 
 kt local   testing marpa::slif::literal::util
@@ -17,12 +18,8 @@ kt local   testing marpa::slif::literal::norm
 
 # # ## ### ##### ######## ############# #####################
 
+kt source support/dirs.tcl
 kt source support/common.tcl
-kt source support/literals.tcl
-
-# # ## ### ##### ######## ############# #####################
-
-kt source cases/lit-norm.tcl
 
 # # ## ### ##### ######## ############# #####################
 ## norm - Normalize literal without deconstructing it into multiple pieces.
@@ -36,12 +33,32 @@ test marpa-slif-literal-norm-1.2 {norm, wrong args, too many} -body {
     marpa::slif::literal norm LITERAL X
 } -returnCodes error -result {wrong # args: should be "marpa::slif::literal norm literal"}
 
-testcases k {rule literal res} [lit-norm] {
-    if {[string match --* $res]} { set res $literal }
-    test marpa-slif-literal-norm-2.$k "norm, $rule, $literal" -body {
-	marpa::slif::literal norm $literal
-    } -result $res
+foreach literal [cases literals] norm [cases normalized] {
+    lassign $literal lline literal
+    lassign $norm    nline norm
+    incr k
+
+    # run only
+    #if {![string match *named-class* $literal]} continue
+    #if {![string match *range*       $literal]} continue
+    #if {![string match *charclass*   $literal]} continue
+    #if {![string match *character*   $literal]} continue
+    #if {![string match *string*      $literal]} continue
+
+    # exclude
+    #if {[string match *named-class* $literal]} continue
+    #if {[string match *range*       $literal]} continue
+    #if {[string match *charclass*   $literal]} continue
+    #if {[string match *character*   $literal]} continue
+    #if {[string match *string*      $literal]} continue
+    
+    test marpa-slif-literal-norm-2.$k "norm, $literal (@$lline) -> @$nline" -body {
+	catch {
+	    marpa::slif::literal norm $literal
+	} r ; set r
+    } -result $norm
 }
+unset k r literal norm
 
 # # ## ### ##### ######## ############# #####################
 cleanupTests
