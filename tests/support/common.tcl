@@ -6,6 +6,20 @@
 # This code is BSD-licensed.
 
 package require TclOO
+package require fileutil
+
+# # ## ### ##### ######## #############
+
+proc cases {name} {
+    set num 0
+    lmap line [split [fileutil::cat [file join [td] cases $name]] \n] {
+	incr num
+	set line [string trim $line]
+	if {$line eq {}} continue
+	if {[string match #* $line]} continue
+	list $num $line
+    }
+}
 
 # # ## ### ##### ######## #############
 ## Small wrapper around foreach to make tables of test cases look
