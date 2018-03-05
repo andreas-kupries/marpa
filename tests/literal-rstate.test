@@ -12,7 +12,7 @@ kt require support debug::caller
 kt require support oo::util
 kt require support TclOO
 
-kt local   testing marpa::slif::literal::rstate
+kt local   testing marpa::slif::literal::redux
 
 # # ## ### ##### ######## ############# #####################
 
@@ -20,7 +20,8 @@ kt source support/common.tcl
 kt source support/literals.tcl
 
 proc setup {{w {}}} {
-    marpa::slif::literal rstate create R $w
+    marpa::slif::literal rstate create R
+    if {[llength $w]} { R work-on $w }
     # Access to internal methods, for testing.
     oo::objdefine R {
 	export Active
@@ -42,9 +43,16 @@ proc RX {args} {
 }
 
 # # ## ### ##### ######## ############# #####################
+## redux - Main API to reduction
+
+# # ## ### ##### ######## ############# #####################
 ## rstate - state object for reducer, including main loop and DSL API.
 ## [ok] new, create
 ## [ok] reduce
+## [..] process		TODO
+## [..] to-container	TODO
+## [..] from-container	TODO
+## [..] work-on		TODO
 # - - -- --- ----- -------- Internals
 ## [ok] Work?
 ## [ok] Take
@@ -66,31 +74,23 @@ proc RX {args} {
 # # ## ### ##### ######## ############# #####################
 ## rstate constructor
 
-test marpa-slif-literal-rstate-cons-1.0 {rstate, cons, wrong args, not enough} -body {
-    marpa::slif::literal rstate new
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal rstate new worklist"}
+test marpa-slif-literal-rstate-cons-1.0 {rstate, cons, wrong args, too many} -body {
+    marpa::slif::literal rstate new X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal rstate new"}
 
 test marpa-slif-literal-rstate-cons-1.1 {rstate, cons, wrong args, too many} -body {
-    marpa::slif::literal rstate new W X
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal rstate new worklist"}
-
-test marpa-slif-literal-rstate-cons-1.2 {rstate, cons, wrong args, not enough} -body {
-    marpa::slif::literal rstate create R
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal rstate create R worklist"}
-
-test marpa-slif-literal-rstate-cons-1.3 {rstate, cons, wrong args, too many} -body {
     marpa::slif::literal rstate create R W X
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal rstate create R worklist"}
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal rstate create R"}
 
 test marpa-slif-literal-rstate-cons-2.0 {rstate, cons, auto} -body {
-    set r [marpa::slif::literal rstate new {}]
+    set r [marpa::slif::literal rstate new]
 } -cleanup {
     $r destroy
     unset r
 } -match glob -result ::oo::Obj*
 
 test marpa-slif-literal-rstate-cons-2.1 {rstate, cons, explicitly named} -body {
-    marpa::slif::literal rstate create R {}
+    marpa::slif::literal rstate create R
 } -cleanup {
     R destroy
 } -result ::R
@@ -150,6 +150,7 @@ test marpa-slif-literal-rstate-reduce-1.1 {rstate, reduce, fail decision} -setup
 
 test marpa-slif-literal-rstate-reduce-2.0 {rstate, reduce, callback} -setup {
     proc foo {type r args} {
+	#puts XXX\t<<[info level 0]>>
 	switch -exact -- $type {
 	    charclass {
 		# For this test we know that the CC details are codepoints
@@ -164,15 +165,18 @@ test marpa-slif-literal-rstate-reduce-2.0 {rstate, reduce, callback} -setup {
 	}
 	error X|$type
     }
+    # Do not use adjacent codepoints for our example. They cause the
+    # class normalize to a range, which `foo` above will not deal
+    # with.
     setup {
-	A {charclass 45 46}
+	A {charclass 45 48}
     }
 } -body {
     R reduce foo
 } -cleanup {
     rename foo {}
     catch {R destroy}
-} -result {{@CHR:<-> {character 45} @CHR:<.> {character 46} A {composite @CHR:<-> @CHR:<.>}} {}}
+} -result {{@CHR:<-> {character 45} @CHR:<0> {character 48} A {composite @CHR:<-> @CHR:<0>}} {}}
 
 # # ## ### ##### ######## ############# #####################
 ## rstate Take
