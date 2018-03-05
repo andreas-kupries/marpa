@@ -64,11 +64,12 @@ critcl::resulttype Marpa_CharClass {
 critcl::cproc marpa::unicode::negate-class {
     Tcl_Interp*     interp
     Marpa_CharClass charclass
+    boolean         {smp 0}
 } Marpa_CharClass {
     /* charclass :: OTSCR_p */
     TRACE_FUNC ("((OTSCR*) %p (rc=%d))", charclass, charclass->refCount);
     TRACE ("(SCR*) %p", charclass->scr);
-    charclass = marpatcl_otscr_new (marpatcl_scr_complement (charclass->scr));
+    charclass = marpatcl_otscr_new (marpatcl_scr_complement (charclass->scr, smp));
     TRACE_RETURN ("(OTSCR*) %p", charclass);
 }
 

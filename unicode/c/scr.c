@@ -224,7 +224,7 @@ marpatcl_scr_norm (SCR_p scr)
  */
 
 SCR_p
-marpatcl_scr_complement (SCR_p scr)
+marpatcl_scr_complement (SCR_p scr, int smp)
 {
     /*
      * NOTE: UNI_MAX originates from `unidata.h` (generated).
@@ -255,13 +255,16 @@ marpatcl_scr_complement (SCR_p scr)
      * depends on which of the two unicode limits are touched by the class, or
      * not.
      */
+	
+    cmin = (smp ? (UNI_BMP+1) : 0);
+    cmax = UNI_MAX;
 
     nc = scr->n + 1;
-    if (scr->cr[0].start == 0) {
+    if (scr->cr[0].start == cmin) {
 	TRACE ("Bump 0", nc);
 	nc --;
     }
-    if (scr->cr[scr->n-1].end == UNI_MAX) {
+    if (scr->cr[scr->n-1].end == cmax) {
 	TRACE ("Bump MAX", nc);
 	nc --;
     }
@@ -285,9 +288,6 @@ marpatcl_scr_complement (SCR_p scr)
 	TRACE ("ncr out %p :: #elements: %d, canonical", ncr, ncr->n);
 	TRACE_RETURN ("(SCR*) %p", ncr);
     }
-	
-    cmin = 0;
-    cmax = UNI_MAX;
 
     for (current  = &scr->cr[0],
 	 sentinel = &scr->cr[scr->n],
