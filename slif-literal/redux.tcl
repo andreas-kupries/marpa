@@ -12,11 +12,12 @@
 ## Administrivia
 
 # @@ Meta Begin
-# Package marpa::slif::literal::rstate 0
+# Package marpa::slif::literal::redux 0
 # Meta author      {Andreas Kupries}
 # Meta category    {Parser/Lexer Generator}
 # Meta description Part of TclMarpa. Utilities operate on
-# Meta description and transform L0 literals.
+# Meta description and transform L0 literals. Reduction core.
+# Meta summary     L0 literal reduction core
 # Meta location    http:/core.tcl.tk/akupries/marpa
 # Meta platform    tcl
 # Meta require     {Tcl 8.5}
@@ -47,12 +48,17 @@ debug define marpa/slif/literal/rstate
 # # ## ### ##### ######## #############
 
 namespace eval ::marpa::slif::literal {
-    namespace export rstate
+    namespace export rstate redux
     namespace ensemble create
 }
 
 # # ## ### ##### ######## #############
 ## Public API
+
+proc ::marpa::slif::literal::redux {gc args} {
+    [rstate new] process $gc {*}$args
+    return
+}
 
 # # ## ### ##### ######## #############
 
@@ -70,7 +76,7 @@ oo::class create ::marpa::slif::literal::rstate {
     
     # # ## ### ##### ######## #############
 
-    constructor {worklist} {
+    constructor {} {
 	debug.marpa/slif/literal/rstate {}
 	set mywork     {}
 	set myresults  {}
@@ -78,6 +84,59 @@ oo::class create ::marpa::slif::literal::rstate {
 	set mycsym     {}
 	set myctype    {}
 	set mycdetails {}
+	return
+    }
+
+    method process {gc args} {
+	my from-container $gc
+	my to-container $gc [my reduce {*}$args]
+	return
+    }
+    
+    method to-container {gc reductions} {
+	debug.marpa/slif/literal/rstate {}
+	lassign $reductions worklist aliases
+
+	foreach {litsymbol literal} $worklist {
+	    $gc l0 remove $litsymbol
+
+	    # Do not re-create symbols without definition. This is how
+	    # the symbols we optimized away get removed.
+	    if {$literal eq {}} continue
+
+	    set data [lassign $literal type]
+	    switch -exact -- $type {
+		composite {
+		    # Alternation of sequences of elements
+		    # alt == data
+		    foreach rhsequence $data {
+			$gc l0 priority-rule $litsymbol $rhsequence 0
+		    }
+		}
+		default {
+		    # Regular literal, (re)create
+		    $gc l0 literal $litsymbol $type {*}$data
+		}
+	    }
+	}
+
+	if {![dict size $aliases]} return
+	# Pass the alias table to the relevant grammar so that it can
+	# rewrite the rules which have the aliased symbols in their RHS.
+	$gc l0 fixup $aliases
+	return
+    }
+    
+    method from-container {gc} {
+	debug.marpa/slif/literal/rstate {}
+	my work-on [concat {*}[lmap {sym rhs} [dict get [$gc l0 serialize] literal] {
+	    list $sym [lindex $rhs 0]
+	}]]
+	return
+    }
+    
+    method work-on {worklist} {
+	debug.marpa/slif/literal/rstate {}
 	#my XB
 	foreach {litsymbol literal} $worklist {
 	    set data [lassign $literal type]
@@ -85,7 +144,7 @@ oo::class create ::marpa::slif::literal::rstate {
 		my E "Unable to reduce incomplete literal ($type ($data))" \
 		    SLIF LITERAL INCOMPLETE
 	    }
-	    dict set mydef $litsymbol $literal
+	    dict set mydef $litsymbol [my NORM $literal]
 	    lappend mywork $litsymbol
 	}
 	#my XC
@@ -357,5 +416,5 @@ oo::class create ::marpa::slif::literal::rstate {
 }
 
 # # ## ### ##### ######## #############
-package provide marpa::slif::literal::rstate 0
+package provide marpa::slif::literal::redux 0
 return
