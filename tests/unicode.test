@@ -18,6 +18,9 @@ kt local   testing marpa::unicode
 kt source support/common.tcl
 
 # # ## ### ##### ######## ############# #####################
+## [ok] max
+## [ok] bmp
+## [ok] smp
 ## [ok] norm-class
 ## [ok] negate-class
 ## [ok] point
@@ -30,6 +33,39 @@ kt source support/common.tcl
 ## [ok] 2assr
 ## [ok] assr-format
 ##
+
+# # ## ### ##### ######## ############# #####################
+## max
+
+test marpa-unicode-max-1.0 {max, wrong args, too many} -body {
+    marpa unicode max X
+} -returnCodes error -result {wrong # args: should be "marpa unicode max"}
+
+test marpa-unicode-max-2.0 {max value} -body {
+    marpa unicode max
+} -result 1114111
+
+# # ## ### ##### ######## ############# #####################
+## bmp
+
+test marpa-unicode-bmp-1.0 {bmp, wrong args, too many} -body {
+    marpa unicode bmp X
+} -returnCodes error -result {wrong # args: should be "marpa unicode bmp"}
+
+test marpa-unicode-bmp-2.0 {bmp value} -body {
+    marpa unicode bmp
+} -result 65535
+
+# # ## ### ##### ######## ############# #####################
+## smp
+
+test marpa-unicode-smp-1.0 {smp, wrong args, too many} -body {
+    marpa unicode smp X
+} -returnCodes error -result {wrong # args: should be "marpa unicode smp"}
+
+test marpa-unicode-smp-2.0 {smp value} -body {
+    marpa unicode smp
+} -result 65536
 
 # # ## ### ##### ######## ############# #####################
 ## unfold - Expand a charclass to include all case-equivalencet characters.
