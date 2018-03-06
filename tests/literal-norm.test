@@ -33,10 +33,17 @@ test marpa-slif-literal-norm-1.2 {norm, wrong args, too many} -body {
     marpa::slif::literal norm LITERAL X
 } -returnCodes error -result {wrong # args: should be "marpa::slif::literal norm literal"}
 
+# # ## ### ##### ######## ############# #####################
+#proc SA {x} { set c [open 2N a] ; puts $c $x ; close $c ; return }
+
 foreach literal [cases literals] norm [cases normalized] {
     lassign $literal lline literal
     lassign $norm    nline norm
     incr k
+
+    if {$lline != $nline} {
+	error "Line mismatch: literals $lline vs normalized $nline"
+    }
 
     # run only
     #if {![string match *named-class* $literal]} continue
@@ -44,6 +51,7 @@ foreach literal [cases literals] norm [cases normalized] {
     #if {![string match *charclass*   $literal]} continue
     #if {![string match *character*   $literal]} continue
     #if {![string match *string*      $literal]} continue
+    #if {![string match cc/*          $literal]} continue
 
     # exclude
     #if {[string match *named-class* $literal]} continue
@@ -52,10 +60,12 @@ foreach literal [cases literals] norm [cases normalized] {
     #if {[string match *character*   $literal]} continue
     #if {[string match *string*      $literal]} continue
     
-    test marpa-slif-literal-norm-2.$k "norm, $literal (@$lline) -> @$nline" -body {
+    test marpa-slif-literal-norm-2.$k.@$nline "norm, $literal (@$lline) -> @$nline" -body {
 	catch {
 	    marpa::slif::literal norm $literal
-	} r ; set r
+	} r
+	#SA "$nline\t$r"
+	set r
     } -result $norm
 }
 unset k r literal norm

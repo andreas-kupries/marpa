@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -26,7 +26,9 @@
 # Meta require     debug
 # Meta require     debug::caller
 # Meta require     marpa::slif::container
-# Meta require     marpa::slif::literal
+# Meta require     marpa::slif::literal::util
+# Meta require     marpa::slif::literal::redux
+# Meta require     marpa::slif::literal::reduce::2tcl
 # Meta require     marpa::slif::precedence
 # Meta require     marpa::gen
 # Meta require     marpa::gen::remask
@@ -41,7 +43,8 @@ package require debug
 package require debug::caller
 package require marpa::slif::container
 package require marpa::slif::literal::util
-package require marpa::slif::literal::reducer
+package require marpa::slif::literal::redux
+package require marpa::slif::literal::reduce::2tcl
 package require marpa::slif::precedence
 package require marpa::gen
 package require marpa::gen::remask
@@ -187,15 +190,8 @@ proc ::marpa::gen::runtime::tcl::LowerLiterals {gc} {
 
     # Rewrite the literals into forms supported by the runtime (Tcl engine).
 
-    marpa::slif::literal r2container \
-	[marpa::slif::literal reduce [concat {*}[lmap {sym rhs} [dict get [$gc l0 serialize] literal] {
-	    list $sym [lindex $rhs 0]
-	}]] {
-	    D-STR1 D-%STR  D-CLS3  D-^CLS2
-	    D-NCC3 D-%NCC1 D-^NCC2 D-^%NCC1
-	    K-RAN  D-%RAN  K-^RAN  K-CHR
-	    K-^CHR
-	}] $gc
+    marpa::slif::literal::redux $gc \
+	marpa::slif::literal::reduce::2tcl
     return
 }
 

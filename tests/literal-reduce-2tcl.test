@@ -39,6 +39,8 @@ test marpa-slif-literal-reduce-2tcl-1.1 {reduce 2tcl, bogus sub-command} -body {
 } -returnCodes error -result {unknown or ambiguous subcommand "M": must be !!, %named-class, %range, %string, ^%named-class, ^character, ^charclass, ^named-class, ^range, cc/smp, character, charclass, named-class, range, or string}
 
 # # ## ### ##### ######## ############# #####################
+#proc SA {x} { set c [open 2T a] ; puts $c $x ; close $c ; return }
+
 foreach literal [cases literals] redex [cases redux2tcl] {
     lassign $literal lline literal
     lassign $redex   rline redex
@@ -47,6 +49,8 @@ foreach literal [cases literals] redex [cases redux2tcl] {
     if {$lline != $rline} {
 	error "Line mismatch: literals $lline vs redux2tcl $rline"
     }
+
+    #if {![string match cc/*          $literal]} continue
     
     test marpa-slif-literal-reduce-2tcl-2.$k.@$rline "reduce 2tcl, step, $literal (@$lline) -> @$rline" -setup {
     } -body {
@@ -54,8 +58,8 @@ foreach literal [cases literals] redex [cases redux2tcl] {
 	    marpa::slif::literal::reduce::2tcl \
 		{*}[linsert [marpa::slif::literal::norm $literal] 1 R+]
 	} r]} { set r [R=] }
+	#SA "$rline\t$r"
 	set r
-    } -cleanup {
     } -result $redex
 }
 unset -nocomplain k r literal redex rline lline
