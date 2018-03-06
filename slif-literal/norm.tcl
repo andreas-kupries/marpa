@@ -172,7 +172,7 @@ proc ::marpa::slif::literal::norm::range {s e} {
 
 proc ::marpa::slif::literal::norm::%range {s e} {
     IsA charclass ;# N28
-    Of  [marpa unicode unfold [list [list $s $e]]]
+    Of  [marpa unicode unfold [C [R $s $e]]]
 }
 
 proc ::marpa::slif::literal::norm::^range {s e} {
@@ -181,7 +181,7 @@ proc ::marpa::slif::literal::norm::^range {s e} {
 
 proc ::marpa::slif::literal::norm::^%range {s e} {
     IsA ^charclass ;# N30
-    Of  [marpa unicode unfold [list [list $s $e]]]
+    Of  [marpa unicode unfold [C [R $s $e]]]
 }
 
 proc ::marpa::slif::literal::norm::named-class {ccname} {
@@ -189,7 +189,7 @@ proc ::marpa::slif::literal::norm::named-class {ccname} {
 	^*  Fail
 	%*  {
 	    IsA %named-class ;# N32
-	    Of  [::string range $ccname 1 end]
+	    Of  [StringTail $ccname]
 	}
 	*   Stop
     }
@@ -200,7 +200,7 @@ proc ::marpa::slif::literal::norm::%named-class {ccname} {
 	^*  Fail
 	%*  {
 	    IsA %named-class ;# N36
-	    Of  [::string range $ccname 1 end]
+	    Of  [StringTail $ccname]
 	}
 	*   Stop
     }
@@ -211,7 +211,7 @@ proc ::marpa::slif::literal::norm::^named-class {ccname} {
 	^*  Fail
 	%*  {
 	    IsA ^%named-class ;# N40
-	    Of  [::string range $ccname 1 end]
+	    Of  [StringTail $ccname]
 	}
 	*   Stop
     }
@@ -222,7 +222,7 @@ proc ::marpa::slif::literal::norm::^%named-class {ccname} {
 	^*  Fail
 	%*  {
 	    IsA ^%named-class ;# N44
-	    Of  [::string range $ccname 1 end]
+	    Of  [StringTail $ccname]
 	}
 	*   Stop
     }
@@ -291,6 +291,23 @@ proc ::marpa::slif::literal::norm::Stop {} {
     debug.marpa/slif/literal/norm {}
     variable continue 0
     return
+}
+
+# # ## ### ##### ######## #############
+
+proc ::marpa::slif::literal::norm::StringTail {str} {
+    debug.marpa/slif/literal/norm {}
+    ::string range $str 1 end
+}
+
+proc ::marpa::slif::literal::norm::C {args} {
+    debug.marpa/slif/literal/norm {}
+    return $args
+}
+
+proc ::marpa::slif::literal::norm::R {s e} {
+    debug.marpa/slif/literal/norm {}
+    list $s $e
 }
 
 # # ## ### ##### ######## #############

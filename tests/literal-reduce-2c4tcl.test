@@ -1,0 +1,69 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017-2018 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::slif::literal
+## Reducer (Simplifications able to break a literal into many)
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+
+kt local   testing marpa::unicode
+#kt local   testing marpa::util
+kt local   testing marpa::slif::literal::util
+kt local   testing marpa::slif::literal::redux
+kt local   testing marpa::slif::literal::reduce::2c4tcl
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/common.tcl
+kt source support/dirs.tcl
+#kt source support/textutils.tcl
+
+proc R+ {args} { set ::redis $args ; return -code return }
+proc R= {}     { set r $::redis ; unset ::redis ; return $r }
+
+# # ## ### ##### ######## ############# #####################
+## reduce::2c4tcl
+
+test marpa-slif-literal-reduce-2c4tcl-1.0 {reduce 2c4tcl, wrong args, not enough} -body {
+    marpa::slif::literal::reduce::2c4tcl
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal::reduce::2c4tcl subcommand ?argument ...?"}
+
+test marpa-slif-literal-reduce-2c4tcl-1.1 {reduce 2c4tcl, bogus sub-command} -body {
+    marpa::slif::literal::reduce::2c4tcl M
+} -returnCodes error -result {unknown or ambiguous subcommand "M": must be %named-class, %range, %string, ^%named-class, ^character, ^charclass, ^named-class, ^range, brange, byte, cc/c, character, charclass, named-class, range, or string}
+
+# # ## ### ##### ######## ############# #####################
+#proc SA {x} { set c [open 2C a] ; puts $c $x ; close $c ; return }
+
+foreach literal [cases literals] redex [cases redux2c4tcl] {
+    lassign $literal lline literal
+    lassign $redex   rline redex
+    incr k
+
+    if {$lline != $rline} {
+	error "Line mismatch: literals $lline vs redux2c4tcl $rline"
+    }
+
+    #if {![string match cc/*          $literal]} continue
+    
+    test marpa-slif-literal-reduce-2c4tcl-2.$k.@$rline "reduce 2c4tcl, step, $literal (@$lline) -> @$rline" -setup {
+    } -body {
+	if {![catch {
+	    marpa::slif::literal::reduce::2c4tcl \
+		{*}[linsert [marpa::slif::literal::norm $literal] 1 R+]
+	} r]} { set r [R=] }
+	#SA "$rline\t$r"
+	set r
+    } -result $redex
+}
+unset -nocomplain k r literal redex rline lline
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests
+return

@@ -31,11 +31,6 @@
 # @@ Meta End
 
 # NOTES
-# - Sepa
-
-# TODO: cc/bmp (char)  --> character
-# TODO: cc/high (char) --> character
-# TODO ^range 65535 1111567  XXX BUG XXX straddler
 
 # # ## ### ##### ######## #############
 ## Requisites

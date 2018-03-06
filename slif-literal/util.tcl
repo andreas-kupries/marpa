@@ -78,13 +78,8 @@ proc ::marpa::slif::literal::util::ccranges {data} {
     debug.marpa/slif/literal/util {}
     lassign [ccsplit $data] codes names
     foreach name $names {
-	if {[regexp {^%(.*)$} $name -> base]} {
-	    set ccodes [marpa unicode data cc ranges $base]
-	    set ccodes [marpa unicode unfold $ccodes]
-	} else {
-	    set ccodes [marpa unicode data cc ranges $name]
-	}
-	lappend codes {*}$ccodes
+	# Note: %foo is handled by data cc ranges
+	lappend codes {*}[marpa unicode data cc ranges $name]
     }
     return [marpa unicode norm-class $codes]
 }
