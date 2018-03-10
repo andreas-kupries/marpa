@@ -17,7 +17,8 @@ proc generate-tables {} {
 
     set outdir     $topdir/generated
     set codefortcl $topdir/generated/unidata.tcl ;# Data, commands in Tcl
-    set codeforc   $topdir/generated/unidata.h   ;# Declarations: Constants, data structures
+    set codeforc   $topdir/generated/unidata.c   ;# C Data and accessor functions
+    set codeforh   $topdir/generated/unidata.h   ;# Declarations: Constants, data structures
     #set codeforc   $topdir/generated/unidata.c  ;# Definitions --TODO--
 
     if {
@@ -29,6 +30,10 @@ proc generate-tables {} {
 	([file mtime $codeforc] >= [file mtime $generator]) &&
 	([file mtime $codeforc] >= [file mtime $unitables]) &&
 	([file mtime $codeforc] >= [file mtime $uniscripts]) &&
+	[file exists $codeforh] &&
+	([file mtime $codeforh] >= [file mtime $generator]) &&
+	([file mtime $codeforh] >= [file mtime $unitables]) &&
+	([file mtime $codeforh] >= [file mtime $uniscripts]) &&
 	1
     } {
 	critcl::msg -nonewline " (Up-to-date unicode data tables available, skipping generation)"
@@ -40,9 +45,9 @@ proc generate-tables {} {
 
 	set start [clock seconds]
 	file mkdir $outdir
-	exec {*}[info nameofexecutable] $generator $codefortcl $codeforc 0
+	exec {*}[info nameofexecutable] $generator $codefortcl $codeforh $codeforc 0
 	set delta [expr { [clock seconds] - $start}]
-	critcl::msg -nonewline " Done in $delta seconds: Tcl: [file size $codefortcl] bytes, C: [file size $codeforc] bytes)"
+	critcl::msg -nonewline " Done in $delta seconds: Tcl: [file size $codefortcl] bytes, C: [file size $codeforc] bytes, Chdr: [file size $codeforh] bytes)"
     }
 
     # Last, make the generated data available.
@@ -50,6 +55,7 @@ proc generate-tables {} {
     critcl::tsources $topdir/generated/unidata.tcl
     critcl::cheaders $topdir/generated/unidata.h
     critcl::include  unidata.h
+    critcl::csources $topdir/generated/unidata.c
     return
 }
 
