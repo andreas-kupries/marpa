@@ -83,11 +83,12 @@ critcl::csources c/*.c
 
 critcl::tsources tcl.tcl          ; # Tcl-level operations
 
+critcl::source   types.tcl        ; # context and charclass
 critcl::source   unflags.tcl      ; # 2utf, 2asbr flag support
 critcl::source   points.tcl       ; # Codepoint argument type.
-critcl::source   unicode.tcl      ; # C-level support functions.
-critcl::source   unichar.tcl      ; # C-level support functions.
-critcl::source   unifold.tcl      ; # C-level support functions.
+critcl::source   unicode.tcl      ; # C-level support functions: ASBR
+critcl::source   unichar.tcl      ; # C-level support functions: ASSR
+critcl::source   unifold.tcl      ; # C-level support functions: Case-folding
 critcl::source   cc_objtype.tcl   ; # ObjType for uni-char classes (SCR).
 critcl::source   asbr_objtype.tcl ; # ObjType for ASBR char class format.
 critcl::source   assr_objtype.tcl ; # ObjType for ASSR char class format.

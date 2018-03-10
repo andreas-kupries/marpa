@@ -71,7 +71,7 @@ proc marpa::unicode::point {character} {
     return $codepoint
 }
 
-proc marpa::unicode::fold/c {codes} {
+if 0 {proc marpa::unicode::fold/c {codes} {
     debug.marpa/unicode {}
     lmap codepoint $codes { data fold/c $codepoint }
 }
@@ -90,7 +90,7 @@ proc marpa::unicode::unfold {codes} {
 	}
     }
     norm-class $result
-}
+}}
 
 proc marpa::unicode::asbr-format {asbr {compact 0}} {
     debug.marpa/unicode {}
