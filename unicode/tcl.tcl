@@ -71,7 +71,7 @@ proc marpa::unicode::point {character} {
     return $codepoint
 }
 
-proc marpa::unicode::fold/c {codes} {
+if 0 {proc marpa::unicode::fold/c {codes} {
     debug.marpa/unicode {}
     lmap codepoint $codes { data fold/c $codepoint }
 }
@@ -90,7 +90,7 @@ proc marpa::unicode::unfold {codes} {
 	}
     }
     norm-class $result
-}
+}}
 
 proc marpa::unicode::asbr-format {asbr {compact 0}} {
     debug.marpa/unicode {}
@@ -205,24 +205,6 @@ proc marpa::unicode::data::cc::ranges {cclass} {
 	X "Bad character class $cclass" UNICODE BAD CLASS
     }
     return [dict get $cc $cclass]
-}
-
-proc marpa::unicode::data::fold {codepoint} {
-    variable ::marpa::unicode::foldmap
-    variable ::marpa::unicode::foldset
-    # normalize codepoint to decimal integer
-    incr codepoint 0
-    if {![dict exists $foldmap $codepoint]} {
-	# Return character as its own fold class
-	return [list $codepoint]
-    }
-    return [dict get $foldset [dict get $foldmap $codepoint]]
-}
-
-proc marpa::unicode::data::fold/c {codepoint} {
-    # Locate the smallest entry in the fold set as the canonical form
-    # of the codepoint under folding.
-    return [lindex [fold $codepoint] 0]
 }
 
 # # ## ### ##### ######## #############

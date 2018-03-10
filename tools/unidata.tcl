@@ -126,12 +126,15 @@ proc main {selfdir} {
     write-header
     write-limits
     write-classes
-    write-folding
+    #write-folding
     write-sep {unidata done}
 
     write-c-header
-    write-c-limits
-    write-c-sep {unidata done}
+    write-c-folding
+
+    write-h-header
+    write-h-limits
+    write-h-sep {unidata done}
     
     pong-done
     return
@@ -139,11 +142,12 @@ proc main {selfdir} {
 
 proc cmdline {} {
     # Syntax ==> See usage
-    global argv outtcl outc pong unimax bmpmax
-    if {[llength $argv] ni {2 3}} usage
-    lassign $argv outtcl outc pong
+    global argv outtcl outc outh pong unimax bmpmax
+    if {[llength $argv] ni {3 4}} usage
+    lassign $argv outtcl outh outc pong
     if {$pong eq {}} { set pong 1 }
     set outtcl [open $outtcl w]
+    set outh   [open $outh w]
     set outc   [open $outc w]
     set unimax 0x10FFFF
     set bmpmax 0xFFFF
@@ -152,7 +156,7 @@ proc cmdline {} {
 
 proc usage {} {
     global argv0
-    puts stderr "Usage: $argv0 output-for-tcl output-for-c ?pong?"
+    puts stderr "Usage: $argv0 output-for-tcl output-for-c-hdr output-for-c ?pong?"
     exit 1
 }
 
@@ -439,6 +443,37 @@ proc write-c-comment {text} {
     return
 }
 
+proc wrh {text} {
+    global outh
+    puts $outh $text
+    return
+}
+
+proc wrh* {text} {
+    global outh
+    puts -nonewline $outh $text
+    return
+}
+
+proc write-h-comment {text} {
+    wrh "/* [join [split $text \n] "\n# "] */"
+    return
+}
+
+proc write-h-header {} {
+    global unimax bmpmax
+    set m $unimax ; incr m 0
+    set b $bmpmax ; incr b 0
+    wrh "/* -*- c -*-"
+    wrh "** Generator:           tools/unidata.tcl"
+    wrh "** Data sources:        unidata/{UnicodeData,Scripts}.txt"
+    wrh "** Build-Time:          [clock format [clock seconds]]"
+    wrh "** Supported range:     $m codepoints"
+    wrh "** Basic multi-lingual: $b codepoints"
+    wrh "*/"
+    wrh ""
+}
+
 proc write-c-header {} {
     global unimax bmpmax
     set m $unimax ; incr m 0
@@ -450,6 +485,8 @@ proc write-c-header {} {
     wrc "** Supported range:     $m codepoints"
     wrc "** Basic multi-lingual: $b codepoints"
     wrc "*/"
+    wrc ""
+    wrc "#include <unidata.h>"
     wrc ""
 }
 
@@ -486,15 +523,19 @@ proc write-limits {} {
     return
 }
 
-proc write-c-limits {} {
-    global unimax bmpmax
-    write-c-sep "unicode limits"
+proc write-h-limits {} {
+    global unimax bmpmax foldmax
+    write-h-sep "unicode limits"
     lappend map <<unimax>>  $unimax
     lappend map <<bmpmax>>  $bmpmax
+    lappend map <<foldmax>> $foldmax
     lappend map \t {} {    } {}
-    wrc [string map $map {
+    wrh [string map $map {
 	#define UNI_MAX  <<unimax>>
 	#define UNI_BMP  <<bmpmax>>
+	#define UNI_FMAX <<foldmax>>
+
+	extern void marpatcl_unfold (int codepoint, int* n, int** set);
     }]
     return
 }
@@ -536,10 +577,35 @@ proc write-items {max pfx items} {
     return
 }
 
+proc write-c-items {max pfx items} {
+    set col 0
+    set prefix $pfx
+    foreach item [lrange $items 0 end-1] {
+	wrc* $prefix[list $item],
+	set prefix { }
+	incr col
+	if {$col == $max} {
+	    set prefix \n$pfx
+	    set col 0
+	}
+    }
+
+    # Final element
+    wrc* $prefix[list [lindex $items end]]
+    return
+}
+
 proc write-sep {label} {
     wr "# _ __ ___ _____ ________ _____________ _____________________ $label"
     wr "##"
     wr ""
+    return
+}
+
+proc write-h-sep {label} {
+    wrh "/* _ __ ___ _____ ________ _____________ _____________________ $label"
+    wrh "*/"
+    wrh ""
     return
 }
 
@@ -561,6 +627,87 @@ proc class-size {ranges} {
 	}
     }
     return $sz
+}
+
+proc fill {lv top} {
+    upvar 1 $lv l
+    while {[llength $l] < $top} {
+	lappend l -1
+    }
+}
+
+proc write-c-folding {} {
+    global foldmap foldset foldmax unimax
+
+    pong "Writing folding (C)"
+
+    # simple data structures
+    # - foldmap int[]
+    # - foldset int[] (size,...)
+    #
+    # FUTURE: compress into similar pages (with delta coding)
+
+    set k 0
+    set sets {}
+    set maxn 0
+    foreach id [lsort -dict [dict keys $foldset]] {
+	dict set idmap $id $k
+	set fold [lsort -integer [lsort -unique [dict get $foldset $id]]]
+	set nfold [llength $fold]
+	if {$nfold > $maxn} { set maxn $nfold }
+	lappend sets $nfold {*}$fold
+	incr nfold
+	incr k $nfold
+    }
+
+    set map {}
+    set last -1
+    foreach ch [lsort -integer [dict keys $foldmap]] {
+	incr ch 0
+	fill map $ch
+	set id [dict get $foldmap $ch]
+	set k [dict get $idmap $id]
+	lappend map $k
+    }
+
+    set foldmax $maxn
+
+    write-c-sep {case folding, equivalence sets}
+    
+    wrc "static int fold_set\[[llength $sets]] = \{"
+    write-c-items 24 \t $sets
+    wrc "\};"
+    wrc ""
+
+    write-c-sep {case folding, map codepoints to set of equivalents}
+    wrc "#define FM_SIZE ([llength $map])"
+    wrc ""
+    wrc "static int fold_map\[FM_SIZE] = \{"
+    write-c-items 24 \t $map
+    wrc "\};"
+    wrc ""
+
+    write-c-sep {case folding, api}
+
+    lappend map "\t\t" \t "\t" {}
+    wrc [string map $map {
+	void
+	marpatcl_unfold (int codepoint, int* n, int** set)
+	{
+	    int id;
+	    if (codepoint >= FM_SIZE) {
+		*n = 0;
+		return;
+	    }
+	    id = fold_map [codepoint];
+	    if (id < 0) {
+		*n = 0;
+		return;
+	    }
+	    *n   = fold_set [id];
+	    *set = &fold_set [id+1];
+	}
+    }]
 }
 
 proc write-folding {} {

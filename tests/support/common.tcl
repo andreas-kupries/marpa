@@ -22,6 +22,16 @@ proc cases {name} {
 }
 
 # # ## ### ##### ######## #############
+
+proc iota {n} {
+    if {$n < 0} { set n 0 }
+    for {set i 0} {$i < $n} {incr i} {
+	lappend r $i
+    }
+    return $r
+}
+
+# # ## ### ##### ######## #############
 ## Small wrapper around foreach to make tables of test cases look
 ## nicer.
 

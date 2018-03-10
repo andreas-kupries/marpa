@@ -37,6 +37,7 @@ extern void  marpatcl_scr_add_range  (SCR_p scr, int first, int last);
 extern void  marpatcl_scr_add_code   (SCR_p scr, int codepoint);
 extern void  marpatcl_scr_norm       (SCR_p scr);
 extern SCR_p marpatcl_scr_complement (SCR_p scr, int smp);
+extern SCR_p marpatcl_scr_unfold     (SCR_p scr);
 
 #endif
 
