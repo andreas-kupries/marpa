@@ -282,7 +282,7 @@ critcl::class def @slif-name@ {
 	}
 	Tcl_SetChannelBufferSize (in, 4096);
 	Tcl_SetChannelOption (ip, in, "-translation", "binary");
-	Tcl_SetChannelOption (ip, in, "-encoding",    "binary");
+	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
 	// TODO: abort on failed set-channel-option
 
 	instance->outcmd_c = outcmd.c;

@@ -5335,7 +5335,7 @@ critcl::class def marpa::slif::parser {
 	}
 	Tcl_SetChannelBufferSize (in, 4096);
 	Tcl_SetChannelOption (ip, in, "-translation", "binary");
-	Tcl_SetChannelOption (ip, in, "-encoding",    "binary");
+	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
 	// TODO: abort on failed set-channel-option
 	
 	buf = NALLOC (char, 4096); // TODO: configurable
