@@ -45,6 +45,12 @@ package require marpa::slif::literal::norm
 
 debug define marpa/slif/literal/parse
 
+if {![llength [info commands try]]} {
+    # Builtin "try" exists from Tcl 8.6 forward. Before that use the
+    # 8.5+ compatibility implementation found in Tcllib
+    package require try
+}
+
 # # ## ### ##### ######## #############
 
 namespace eval ::marpa::slif::literal {
