@@ -22,9 +22,10 @@ TRACE_OFF;
  * Internal support
  */
 
-static int
-compare (const void* ain, const void* bin);
-    
+static int   compare (const void* ain, const void* bin);
+static SCR_p dup (SCR_p c);
+
+
 #undef  MAX
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 
@@ -224,7 +225,7 @@ marpatcl_scr_norm (SCR_p scr)
  */
 
 SCR_p
-marpatcl_scr_complement (SCR_p scr)
+marpatcl_scr_complement (SCR_p scr, int smp)
 {
     /*
      * NOTE: UNI_MAX originates from `unidata.h` (generated).
@@ -255,13 +256,16 @@ marpatcl_scr_complement (SCR_p scr)
      * depends on which of the two unicode limits are touched by the class, or
      * not.
      */
+	
+    cmin = (smp ? (UNI_BMP+1) : 0);
+    cmax = UNI_MAX;
 
     nc = scr->n + 1;
-    if (scr->cr[0].start == 0) {
+    if (scr->cr[0].start == cmin) {
 	TRACE ("Bump 0", nc);
 	nc --;
     }
-    if (scr->cr[scr->n-1].end == UNI_MAX) {
+    if (scr->cr[scr->n-1].end == cmax) {
 	TRACE ("Bump MAX", nc);
 	nc --;
     }
@@ -285,9 +289,6 @@ marpatcl_scr_complement (SCR_p scr)
 	TRACE ("ncr out %p :: #elements: %d, canonical", ncr, ncr->n);
 	TRACE_RETURN ("(SCR*) %p", ncr);
     }
-	
-    cmin = 0;
-    cmax = UNI_MAX;
 
     for (current  = &scr->cr[0],
 	 sentinel = &scr->cr[scr->n],
@@ -320,6 +321,107 @@ marpatcl_scr_complement (SCR_p scr)
 
     ASSERT (ncr->n <= nc, "Element overflow" );
     ASSERT (ncr->n == nc, "Missing elements" );
+    TRACE ("ncr out %p :: #elements: %d, canonical", ncr, ncr->n);
+    TRACE_RETURN ("(SCR*) %p", ncr);
+}
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
+
+SCR_p
+marpatcl_scr_unfold (SCR_p scr)
+{
+    /*
+     * We use a pseudo-SCR as temporary storage before normalization generates
+     * the final form. See `temp`.
+     */
+   
+    /*
+     * NOTE: UNI_MAX originates from `unidata.h` (generated).
+     */
+    int points, i;
+    SCR temp, *ncr;
+
+    TRACE_FUNC ("((SCR*) %p (elt %d @ %p))", scr, scr->n, scr->cr);
+    
+    if (scr->n == 0) {
+	/*
+	 * Expanding an empty class stays empty.
+	 */
+	ncr = marpatcl_scr_new (0);
+	ncr->canon = 1;
+	TRACE ("ncr out %p :: #elements: %d, canonical", ncr, ncr->n);
+	TRACE_RETURN ("(SCR*) %p", ncr);
+    }
+
+    /*
+     * Normalization of the non-empty input may reduce the amount of temp
+     * storage needed by removing possible duplicates and overlaps.
+     */
+    
+    marpatcl_scr_norm (scr);
+    TRACE ("#norm elt: %d @ %p", scr->n, scr->cr);
+    SCR_DUMP("N", scr);
+
+    /*
+     * Phase I, count the number of code points in the input class.  We need
+     * UNI_FMAX times that for temp storage, as each codepoint may expand that
+     * much.
+     */
+    
+    for (points = 0, i = 0; i < scr->n; i++) {
+	TRACE ("Count   %d...%d = %d",
+	       scr->cr[i].start,
+	       scr->cr[i].end,
+	       scr->cr[i].end - scr->cr[i].start + 1);
+	points += scr->cr[i].end - scr->cr[i].start + 1;
+    }
+
+    TRACE ("#points: %d", points);
+	
+    temp.canon = 0;
+    temp.n     = 0;
+    temp.max   = UNI_FMAX * points;
+    temp.cr    = NALLOC (CR, UNI_FMAX * points);
+
+    /*
+     * Phase II. Fill the temp storage with the case-expansion of the input
+     */
+
+    for (i = 0; i < scr->n; i++) {
+	int code;
+	TRACE ("Expand  %d...%d",
+	       scr->cr[i].start,
+	       scr->cr[i].end);
+	for (code = scr->cr[i].start; code <= scr->cr[i].end; code ++) {
+	    int j, n, *fold;
+
+	    marpatcl_unfold (code, &n, &fold);
+	    //TRACE ("______  %d -- %d", code, n?n:1);
+	    if (!n) {
+		temp.cr[temp.n].start = temp.cr[temp.n].end = code;
+		temp.n ++;
+		continue;
+	    }
+	    for (j=0; j < n; j++, temp.n ++) {
+		temp.cr[temp.n].start = temp.cr[temp.n].end = fold[j];
+	    }
+	}
+    }
+    ASSERT (temp.n <= temp.max, "unfold overflow");
+
+    TRACE ("#raw expanded: %d", temp.n);
+    
+    /*
+     * Finalization: normalize, and copy into actual result.
+     */
+
+    marpatcl_scr_norm (&temp);
+    ncr = dup (&temp);
+
+    FREE (temp.cr);
+
     TRACE ("ncr out %p :: #elements: %d, canonical", ncr, ncr->n);
     TRACE_RETURN ("(SCR*) %p", ncr);
 }
@@ -366,6 +468,20 @@ compare (const void* ain, const void* bin) {
      * Fully the same
      */
     return 0;
+}
+
+static SCR_p dup (SCR_p scr)
+{
+    SCR_p ncr;
+    TRACE_FUNC ("((SCR*) %p (elt %d @ %p))", scr, scr->n, scr->cr);
+
+    ncr = marpatcl_scr_new (scr->n);
+    ncr->n     = ncr->max;
+    ncr->canon = scr->canon;
+    memcpy (ncr->cr, scr->cr, ncr->n * sizeof(CR));
+
+    TRACE ("ncr out %p :: #elements: %d, canon %d", ncr, ncr->n, ncr->canon);
+    TRACE_RETURN ("(SCR*) %p", ncr);
 }
 
 /*

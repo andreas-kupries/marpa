@@ -14,6 +14,8 @@ critcl::include to_utf.h   ;# marpatcl_to_utf
 # # ## ### ##### ######## #############
 
 critcl::cconst marpa::unicode::max int UNI_MAX
+critcl::cconst marpa::unicode::bmp int UNI_BMP
+critcl::cconst marpa::unicode::smp int (UNI_BMP+1)
 
 # # ## ### ##### ######## #############
 

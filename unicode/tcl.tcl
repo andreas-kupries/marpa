@@ -38,7 +38,7 @@ namespace eval marpa {
 namespace eval marpa::unicode {
     namespace export \
 	norm-class negate-class point unfold fold/c \
-	2char 2utf 2asbr asbr-format data max \
+	2char 2utf 2asbr asbr-format data max bmp smp \
 	2assr assr-format
     namespace ensemble create
 }
@@ -71,7 +71,7 @@ proc marpa::unicode::point {character} {
     return $codepoint
 }
 
-proc marpa::unicode::fold/c {codes} {
+if 0 {proc marpa::unicode::fold/c {codes} {
     debug.marpa/unicode {}
     lmap codepoint $codes { data fold/c $codepoint }
 }
@@ -90,7 +90,7 @@ proc marpa::unicode::unfold {codes} {
 	}
     }
     norm-class $result
-}
+}}
 
 proc marpa::unicode::asbr-format {asbr {compact 0}} {
     debug.marpa/unicode {}
@@ -184,6 +184,7 @@ proc marpa::unicode::data::cc::tcl-names {} {
 
 proc marpa::unicode::data::cc::have {cclass} {
     variable ::marpa::unicode::cc
+    if {[string match %* $cclass]} { set cclass [string range $cclass 1 end] }
     return [dict exists $cc $cclass]
 }
 
@@ -194,77 +195,16 @@ proc marpa::unicode::data::cc::names {} {
 
 proc marpa::unicode::data::cc::ranges {cclass} {
     variable ::marpa::unicode::cc
+
+    if {[string match %* $cclass]} {
+	set cclass [string range $cclass 1 end]
+	return [marpa::unicode::unfold [ranges $cclass]]
+    }
+    
     if {![dict exists $cc $cclass]} {
 	X "Bad character class $cclass" UNICODE BAD CLASS
     }
     return [dict get $cc $cclass]
-}
-
-proc marpa::unicode::data::cc::asbr {cclass} {
-    variable ::marpa::unicode::asbr
-    variable ::marpa::unicode::range
-    if {![dict exists $asbr $cclass]} {
-	X "Bad character class $cclass" UNICODE BAD CLASS
-    }
-    # asbr  :: list (alt)
-    # alt   :: list (range)
-    # range :: string ~ "R[0-9]+"
-
-    # Decode range references into actuals
-    return [lmap alternate [dict get $asbr $cclass] {
-	lmap rangeid $alternate {
-	    dict get $range $rangeid
-	}
-    }]
-}
-
-proc marpa::unicode::data::cc::grammar {cclass {base {}}} {
-    variable ::marpa::unicode::gr
-    variable ::marpa::unicode::range
-    if {![dict exists $gr $cclass]} {
-	X "Bad character class $cclass" UNICODE BAD CLASS
-    }
-    # gr   :: list (rule)
-    # rule :: list (sym := range|sym...)
-
-    # Decode range references into actuals, and make them easily
-    # distinguishable from symbols. Prefix symbols with the chosen
-    # base (for uniqueness in the caller's context (if needed))
-    set cbase $base
-    if {$base ne {}} { set cbase ${base}: }
-
-    return [lmap rule [dict get $gr $cclass] {
-	set sequence [lassign $rule sym _]
-	if {$sym eq {}} {
-	    set sym $base
-	} else {
-	    set sym $cbase$sym
-	}
-	list $sym := {*}[lmap el $sequence {
-	    switch -glob -- $el {
-		R* { linsert [dict get $range $el] 0 range }
-		A* { list symbol $cbase$el }
-	    }
-	}]
-    }]
-}
-
-proc marpa::unicode::data::fold {codepoint} {
-    variable ::marpa::unicode::foldmap
-    variable ::marpa::unicode::foldset
-    # normalize codepoint to decimal integer
-    incr codepoint 0
-    if {![dict exists $foldmap $codepoint]} {
-	# Return character as its own fold class
-	return [list $codepoint]
-    }
-    return [dict get $foldset [dict get $foldmap $codepoint]]
-}
-
-proc marpa::unicode::data::fold/c {codepoint} {
-    # Locate the smallest entry in the fold set as the canonical form
-    # of the codepoint under folding.
-    return [lindex [fold $codepoint] 0]
 }
 
 # # ## ### ##### ######## #############

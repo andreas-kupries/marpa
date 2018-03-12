@@ -1,6 +1,6 @@
-GC error {Parsing failed in parser. Stopped at offset 20 after reading '\n'. Expected any character in [#:;<[[:space:]][_[:alnum:]]cdeils\173] while looking for any of (@LEX:@CHR:<\73>, @LEX:@CHR:<\173>, @LEX:@STR:<:default>, @LEX:@STR:<:discard>, @LEX:@STR:<:lexeme>, @LEX:@STR:<:start>, @LEX:@STR:<current>, @LEX:@STR:<discard>, @LEX:@STR:<event>, @LEX:@STR:<inaccessible>, @LEX:@STR:<lexeme>, @LEX:@STR:<start>, bare name, bracketed name, hash comment, whitespace).
+GC error {Parsing failed in parser. Stopped at offset 20 after reading '\n'. Expected any character in [#:;<[[:space:]][\\ud81c-\\ud820][\\ud86a-\\ud86c][\\ud86f-\\ud872][\\ud840-\\ud868][_[:alnum:]]cdeils\173\355\240\200\355\240\201\355\240\202\355\240\203\355\240\204\355\240\205\355\240\206\355\240\207\355\240\210\355\240\211\355\240\214\355\240\215\355\240\221\355\240\232\355\240\233\355\240\241\355\240\242\355\240\254\355\240\257\355\240\265\355\240\272\355\240\273\355\241\251\355\241\255\355\241\256\355\241\263\355\241\276] while looking for any of (@LEX:@CHR:<\73>, @LEX:@CHR:<\173>, @LEX:@STR:<:default>, @LEX:@STR:<:discard>, @LEX:@STR:<:lexeme>, @LEX:@STR:<:start>, @LEX:@STR:<current>, @LEX:@STR:<discard>, @LEX:@STR:<event>, @LEX:@STR:<inaccessible>, @LEX:@STR:<lexeme>, @LEX:@STR:<start>, bare name, bracketed name, hash comment, whitespace).
 Mismatch:
-'\n' => (58 60 63) ni
+'\n' => (179 181 184) ni
     0: '#'
     7: ':'
     8: '<'
@@ -10,9 +10,38 @@ Mismatch:
    20: 'i'
    22: 'l'
    28: 's'
-   39: ';'
-   43: '\173'
-   59: [_[:alnum:]]
-   63: [[:space:]]}
-
-
+   42: ';'
+   46: '\173'
+   48: '\355\240\214'
+   49: '\355\240\215'
+   50: '\355\240\232'
+   51: '\355\240\233'
+   52: '\355\240\254'
+   53: '\355\240\257'
+   54: '\355\240\272'
+   55: '\355\240\273'
+   56: '\355\241\255'
+   57: '\355\241\256'
+   58: '\355\241\276'
+   59: '\355\240\200'
+   60: '\355\240\201'
+   61: '\355\240\202'
+   62: '\355\240\203'
+   63: '\355\240\204'
+   64: '\355\240\205'
+   65: '\355\240\206'
+   66: '\355\240\207'
+   67: '\355\240\210'
+   68: '\355\240\211'
+   69: '\355\240\221'
+   70: '\355\240\241'
+   71: '\355\240\242'
+   72: '\355\240\265'
+   73: '\355\241\251'
+   74: '\355\241\263'
+  180: [_[:alnum:]]
+  184: [[:space:]]
+  186: [\ud81c-\ud820]
+  187: [\ud86a-\ud86c]
+  188: [\ud86f-\ud872]
+  190: [\ud840-\ud868]}

@@ -7,6 +7,7 @@
  * control the handling of \0, and of characters outside the BMP.
  */
 
+#include <unidata.h>
 #include <to_utf.h>
 #include <scr_int.h>
 
@@ -25,11 +26,11 @@ void
 marpatcl_to_char (CR cr[2], int* n, int codepoint) {
     int index = 0;
 
-    if (codepoint <= 65535) {
+    if (codepoint <= UNI_BMP) {
 	EMIT (codepoint);
 	return;
     }
-    codepoint -= 0x10000;
+    codepoint -= (UNI_BMP+1);
     EMIT (((codepoint >> 10) & 0x03FF) | 0xD800);
     EMIT (( codepoint        & 0x03FF) | 0xDC00);
     return;

@@ -52,7 +52,8 @@ package require debug::caller
 package require char ;# debugging narrative ?!
 package require oo::util
 package require marpa::util
-package require marpa::slif::literal
+package require marpa::slif::literal::parse
+package require marpa::slif::literal::util
 
 ## Find a way to have this list only once.
 

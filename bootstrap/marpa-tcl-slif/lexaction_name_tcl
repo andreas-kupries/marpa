@@ -1308,6 +1308,34 @@ op equal priority
 {Perl name} {bare name} {standard name}
 {Perl name} {bare name} {standard name}
 {Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
 bracketed name
 op equal priority
 {single quoted name} {single quoted string}
@@ -1445,6 +1473,34 @@ op declare match
 bracketed name
 op equal priority
 {single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+bracketed name
+op equal priority
+{single quoted name} {single quoted string}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
+{Perl name} {bare name} {standard name}
 {Perl name} {bare name} {standard name}
 {Perl name} {bare name} {standard name}
 bracketed name
