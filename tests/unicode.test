@@ -299,11 +299,15 @@ testcases k {charclass message notes} {
 
 test marpa-unicode-negate-class-1.0 {negate-class, wrong args, not enough} -body {
     marpa unicode negate-class
-} -returnCodes error -result {wrong # args: should be "marpa unicode negate-class charclass"}
+} -returnCodes error -result {wrong # args: should be "marpa unicode negate-class charclass ?smp?"}
 
 test marpa-unicode-negate-class-1.1 {negate-class, wrong args, too many} -body {
-    marpa unicode negate-class ITEMS X
-} -returnCodes error -result {wrong # args: should be "marpa unicode negate-class charclass"}
+    marpa unicode negate-class ITEMS F X
+} -returnCodes error -result {wrong # args: should be "marpa unicode negate-class charclass ?smp?"}
+
+test marpa-unicode-negate-class-1.1 {negate-class, bad flag type} -body {
+    marpa unicode negate-class {} X
+} -returnCodes error -result {expected boolean value but got "X"}
 
 test marpa-unicode-negate-class-2.0 {negate-class} -body {
     marpa unicode negate-class {{65 67} {97 99} 104}

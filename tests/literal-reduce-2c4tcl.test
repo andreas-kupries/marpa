@@ -28,14 +28,19 @@ proc R+ {args} { set ::redis $args ; return -code return }
 proc R= {}     { set r $::redis ; unset ::redis ; return $r }
 
 # # ## ### ##### ######## ############# #####################
-## reduce::2c4tcl
+## reduce::2c4tcl::symbol
+
+## TODO
+
+# # ## ### ##### ######## ############# #####################
+## reduce::2c4tcl::reduce
 
 test marpa-slif-literal-reduce-2c4tcl-1.0 {reduce 2c4tcl, wrong args, not enough} -body {
-    marpa::slif::literal::reduce::2c4tcl
-} -returnCodes error -result {wrong # args: should be "marpa::slif::literal::reduce::2c4tcl subcommand ?argument ...?"}
+    marpa::slif::literal::reduce::2c4tcl::reduce
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal::reduce::2c4tcl::reduce subcommand ?argument ...?"}
 
 test marpa-slif-literal-reduce-2c4tcl-1.1 {reduce 2c4tcl, bogus sub-command} -body {
-    marpa::slif::literal::reduce::2c4tcl M
+    marpa::slif::literal::reduce::2c4tcl::reduce M
 } -returnCodes error -result {unknown or ambiguous subcommand "M": must be %named-class, %range, %string, ^%named-class, ^character, ^charclass, ^named-class, ^range, brange, byte, cc/c, character, charclass, named-class, range, or string}
 
 # # ## ### ##### ######## ############# #####################
@@ -55,7 +60,7 @@ foreach literal [cases literals] redex [cases redux2c4tcl] {
     test marpa-slif-literal-reduce-2c4tcl-2.$k.@$rline "reduce 2c4tcl, step, $literal (@$lline) -> @$rline" -setup {
     } -body {
 	if {![catch {
-	    marpa::slif::literal::reduce::2c4tcl \
+	    marpa::slif::literal::reduce::2c4tcl::reduce \
 		{*}[linsert [marpa::slif::literal::norm $literal] 1 R+]
 	} r]} { set r [R=] }
 	#SA "$rline\t$r"

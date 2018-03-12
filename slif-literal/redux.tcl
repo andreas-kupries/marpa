@@ -44,6 +44,7 @@ package require marpa::slif::literal::util
 package require marpa::slif::literal::norm
 
 debug define marpa/slif/literal/rstate
+#debug on marpa/slif/literal/rstate
 
 # # ## ### ##### ######## #############
 
@@ -68,7 +69,8 @@ oo::class create ::marpa::slif::literal::rstate {
     variable mywork    ; # list (symbol) - stack of symbols to reduce
     variable myresults ; # list (symbol) - queue of completed symbols
     variable mydef     ; # dict (symbol -> literal) - definition database
-
+    variable mysym     ; # symbol callback (reducer ++ 'symbol')
+    
     # The active literal is the literal currently being reduced
     variable myctype    ; # Active literal, type
     variable mycdetails ; # Ditto, details
@@ -86,8 +88,9 @@ oo::class create ::marpa::slif::literal::rstate {
 	set mycdetails {}
 	return
     }
-
+    
     method process {gc args} {
+	debug.marpa/slif/literal/rstate {}
 	my from-container $gc
 	my to-container $gc [my reduce {*}$args]
 	return
@@ -153,7 +156,9 @@ oo::class create ::marpa::slif::literal::rstate {
 
     method reduce {cmd args} {
 	debug.marpa/slif/literal/rstate {}
-	set reducer [linsert $args 0 $cmd]
+	set cmd [linsert $args 0 $cmd]
+	set mysym   [linsert $cmd end symbol]
+	set reducer [linsert $cmd end reduce]
 	while {[my Work?]} {
 	    my Take
 	    {*}$reducer $myctype [self] {*}$mycdetails
@@ -169,12 +174,14 @@ oo::class create ::marpa::slif::literal::rstate {
 
     # Reducer API (reduction decisions)
     method keep {} {
+	debug.marpa/slif/literal/rstate {}
 	my Queue done $mycsym [linsert $mycdetails 0 $myctype]
 	my ClearActive
 	return -code return
     }
 
     method is-a {newtype args} {
+	debug.marpa/slif/literal/rstate {}
 	if {$newtype eq "composite"} {
 	    my E "Bad type \"composite\" for simple change, use `rules` and variants" \
 		ILLEGAL COMPOSITE
@@ -185,6 +192,7 @@ oo::class create ::marpa::slif::literal::rstate {
     }
 
     method is-a! {newtype args} {
+	debug.marpa/slif/literal/rstate {}
 	if {$newtype eq "composite"} {
 	    my E "Bad type \"composite\" for simple change, use `rules` and variants" \
 		ILLEGAL COMPOSITE
@@ -195,24 +203,28 @@ oo::class create ::marpa::slif::literal::rstate {
     }
 
     method rules {alternatives} {
+	debug.marpa/slif/literal/rstate {}
 	my Place done work $mycsym [linsert $alternatives 0 composite]
 	my ClearActive
 	return -code return
     }
 
     method rules! {alternatives} {
+	debug.marpa/slif/literal/rstate {}
 	my Place done done $mycsym [linsert $alternatives 0 composite]
 	my ClearActive
 	return -code return
     }
     
     method rules* {args} {
+	debug.marpa/slif/literal/rstate {}
 	my Place done work $mycsym [linsert $args 0 composite]
 	my ClearActive
 	return -code return
     }
 
     method rules*! {args} {
+	debug.marpa/slif/literal/rstate {}
 	my Place done done $mycsym [linsert $args 0 composite]
 	my ClearActive
 	return -code return
@@ -221,6 +233,7 @@ oo::class create ::marpa::slif::literal::rstate {
     # # ## internals
     
     method ClearActive {} {
+	debug.marpa/slif/literal/rstate {}
 	set mycsym    {}
 	set myctype   {}
 	set mcdetails {}
@@ -252,11 +265,17 @@ oo::class create ::marpa::slif::literal::rstate {
 	# Place taken information into active literal
 	set mycsym     $litsymbol
 	set mycdetails [lassign $literal myctype]
+
+	if {$myctype eq "composite"} {
+	    my E "Unable to reduce irreducible literal ($myctype ($mycdetails))" \
+		SLIF LITERAL IRREDUCIBLE
+	}
 	return
     }
 
     # Debug method only, used by the tests. Replaced inspection of `Take` result.
     method Active {} {
+	debug.marpa/slif/literal/rstate {}
 	return [list $mycsym [linsert $mycdetails 0 $myctype]]
     }
 
@@ -283,8 +302,17 @@ oo::class create ::marpa::slif::literal::rstate {
 	}
 	dict set mydef $litsymbol $literal
 	switch -exact -- $queue {
-	    continue - work { lappend mywork    $litsymbol }
-	    return   - done { lappend myresults $litsymbol }
+	    continue - work {
+		if {[lindex $literal 0] eq "composite"} {
+		    set details [lassign $literal type]
+		    my E "Unable to reduce irreducible literal ($type ($details))" \
+			SLIF LITERAL IRREDUCIBLE
+		}		
+		lappend mywork $litsymbol
+	    }
+	    return   - done {
+		lappend myresults $litsymbol
+	    }
 	    default {
 		my E "Bad queue \"$queue\", expected one of done, or work" \
 		    BAD QUEUE
@@ -323,8 +351,20 @@ oo::class create ::marpa::slif::literal::rstate {
 	return $literal
     }
 
-    forward SYM  marpa::slif::literal::util::symbol
-    forward NORM marpa::slif::literal::norm
+    forward NORM   marpa::slif::literal::norm
+    forward symbol my SYM
+
+    # Test support only. Private.
+    method ForSymbol {args} {
+	debug.marpa/slif/literal/rstate {}
+	set mysym $args
+	return
+    }
+    
+    method SYM {literal} {
+	debug.marpa/slif/literal/rstate {}
+	{*}$mysym [self] $literal
+    }
 
     method Results {} {
 	debug.marpa/slif/literal/rstate {}

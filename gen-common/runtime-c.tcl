@@ -244,7 +244,7 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 	    incr codepoint
 	} {
 	    if {[L has-id $codepoint]} continue
-	    set bsym [::marpa::slif::literal::symbol [list byte $codepoint]]
+	    set bsym [::marpa::slif::literal::util::symbol [list byte $codepoint]]
 	    P add* 1 $bsym
 	    L force  $bsym $codepoint
 	}

@@ -34,6 +34,7 @@
 # Meta require     debug::caller
 # Meta require     char
 # Meta require     marpa::util
+# Meta require     marpa::unicode
 # Meta require     marpa::gen
 # Meta require     marpa::slif::literal::util
 # Meta subject     marpa {slif generator}
@@ -46,6 +47,7 @@ package require Tcl 8.5
 package require debug
 package require debug::caller
 package require char
+package require marpa::unicode
 package require marpa::gen
 package require marpa::util
 package require marpa::slif::literal::util
@@ -644,9 +646,14 @@ proc ::marpa::gen::format::slif::DumpAttr {prefix attr} {
 }
 
 proc ::marpa::gen::format::slif::C {uni} {
+    # See also ::marpa::slif::literal::util::symchar
     switch -exact -- $uni {
 	45 { return "\\55" }
 	93 { return "\\135" }
+    }
+    if {$uni > [marpa unicode bmp]} {
+	# Beyond the BMP, \u notation
+	return \\u[format %x $uni]
     }
     char quote tcl [format %c $uni]
 }

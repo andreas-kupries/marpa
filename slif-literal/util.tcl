@@ -166,6 +166,7 @@ proc ::marpa::slif::literal::util::symtype {type} {
 }
 
 proc ::marpa::slif::literal::util::symchar {codepoint} {
+    # See also ::marpa::gen::format::slif::C
     debug.marpa/slif/literal/util {}
 
     if {$codepoint > [marpa unicode bmp]} {

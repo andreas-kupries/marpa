@@ -1,4 +1,4 @@
-GC error {Parsing failed in gate. Stopped at offset 26 after reading '='. Expected any character in [#'(,:;<[[[:space:]][_[:alnum:]]cdeilns\173|~] while looking for any of (@LEX:@CHR:<,>, @LEX:@CHR:<\50>, @LEX:@CHR:<\73>, @LEX:@CHR:<\173>, @LEX:@STR:<:default>, @LEX:@STR:<:discard>, @LEX:@STR:<:lexeme>, @LEX:@STR:<:start>, @LEX:@STR:<current>, @LEX:@STR:<discard>, @LEX:@STR:<event>, @LEX:@STR:<inaccessible>, @LEX:@STR:<lexeme>, @LEX:@STR:<name>, @LEX:@STR:<start>, bare name, bracketed name, character class, hash comment, op declare bnf, op declare match, op equal priority, op loosen, single quoted string, whitespace).
+GC error {Parsing failed in gate. Stopped at offset 26 after reading '='. Expected any character in [#'(,:;<[[[:space:]][\\ud81c-\\ud820][\\ud86a-\\ud86c][\\ud86f-\\ud872][\\ud840-\\ud868][_[:alnum:]]cdeilns\173|~\355\240\200\355\240\201\355\240\202\355\240\203\355\240\204\355\240\205\355\240\206\355\240\207\355\240\210\355\240\211\355\240\214\355\240\215\355\240\221\355\240\232\355\240\233\355\240\241\355\240\242\355\240\254\355\240\257\355\240\265\355\240\272\355\240\273\355\241\251\355\241\255\355\241\256\355\241\263\355\241\276] while looking for any of (@LEX:@CHR:<,>, @LEX:@CHR:<\50>, @LEX:@CHR:<\73>, @LEX:@CHR:<\173>, @LEX:@STR:<:default>, @LEX:@STR:<:discard>, @LEX:@STR:<:lexeme>, @LEX:@STR:<:start>, @LEX:@STR:<current>, @LEX:@STR:<discard>, @LEX:@STR:<event>, @LEX:@STR:<inaccessible>, @LEX:@STR:<lexeme>, @LEX:@STR:<name>, @LEX:@STR:<start>, bare name, bracketed name, character class, hash comment, op declare bnf, op declare match, op equal priority, op loosen, single quoted string, whitespace).
 L0 Report:
 ______ P2     @1-1 <@LEX:@CHR:<,>>                   --> . <@CHR:<,>>
 ______ P4     @1-1 <@LEX:@STR:<:default>>            --> . <@STR:<:default>>
@@ -12,69 +12,284 @@ ______ P21    @1-1 <@LEX:@STR:<inaccessible>>        --> . <@STR:<inaccessible>>
 ______ P25    @1-1 <@LEX:@STR:<lexeme>>              --> . <@STR:<lexeme>>
 ______ P28    @1-1 <@LEX:@STR:<name>>                --> . <@STR:<name>>
 ______ P42    @1-1 <@LEX:@STR:<start>>               --> . <@STR:<start>>
-______ P45    @1-1 <@STR:<::=>>                      --> . <@CHR:<:>> <@CHR:<:>> <@CHR:<=>>
-______ P47    @1-1 <@STR:<:default>>                 --> . <@CHR:<:>> <@CHR:<d>> <@CHR:<e>> <@CHR:<f>> <@CHR:<a>> <@CHR:<u>> <@CHR:<l>> <@CHR:<t>>
-______ P48    @1-1 <@STR:<:discard>>                 --> . <@CHR:<:>> <@CHR:<d>> <@CHR:<i>> <@CHR:<s>> <@CHR:<c>> <@CHR:<a>> <@CHR:<r>> <@CHR:<d>>
-______ P51    @1-1 <@STR:<:lexeme>>                  --> . <@CHR:<:>> <@CHR:<l>> <@CHR:<e>> <@CHR:<x>> <@CHR:<e>> <@CHR:<m>> <@CHR:<e>>
-______ P52    @1-1 <@STR:<:start>>                   --> . <@CHR:<:>> <@CHR:<s>> <@CHR:<t>> <@CHR:<a>> <@CHR:<r>> <@CHR:<t>>
-______ P60    @1-1 <@STR:<current>>                  --> . <@CHR:<c>> <@CHR:<u>> <@CHR:<r>> <@CHR:<r>> <@CHR:<e>> <@CHR:<n>> <@CHR:<t>>
-______ P62    @1-1 <@STR:<discard>>                  --> . <@CHR:<d>> <@CHR:<i>> <@CHR:<s>> <@CHR:<c>> <@CHR:<a>> <@CHR:<r>> <@CHR:<d>>
-______ P63    @1-1 <@STR:<event>>                    --> . <@CHR:<e>> <@CHR:<v>> <@CHR:<e>> <@CHR:<n>> <@CHR:<t>>
-______ P70    @1-1 <@STR:<inaccessible>>             --> . <@CHR:<i>> <@CHR:<n>> <@CHR:<a>> <@CHR:<c>> <@CHR:<c>> <@CHR:<e>> <@CHR:<s>> <@CHR:<s>> <@CHR:<i>> <@CHR:<b>> <@CHR:<l>> <@CHR:<e>>
-______ P75    @1-1 <@STR:<lexeme>>                   --> . <@CHR:<l>> <@CHR:<e>> <@CHR:<x>> <@CHR:<e>> <@CHR:<m>> <@CHR:<e>>
-______ P79    @1-1 <@STR:<name>>                     --> . <@CHR:<n>> <@CHR:<a>> <@CHR:<m>> <@CHR:<e>>
-______ P95    @1-1 <@STR:<start>>                    --> . <@CHR:<s>> <@CHR:<t>> <@CHR:<a>> <@CHR:<r>> <@CHR:<t>>
-______ P100   @1-1 <@STR:<||>>                       --> . <@CHR:<|>> <@CHR:<|>>
-______ P108   @1-1 <whitespace>                      --> . <@NCC:<[:space:]>>
-______ P109   @1-1 <@LEX:@CHR:<\50>>                 --> . <@CHR:<\50>>
-______ P111   @1-1 <@LEX:@CHR:<\73>>                 --> . <@CHR:<\73>>
-______ P112   @1-1 <@LEX:@CHR:<\173>>                --> . <@CHR:<\173>>
-______ P116   @1-1 <@STR:<\133^>>                    --> . <@CHR:<\133>> <@CHR:<^>>
-______ P117   @1-1 <a character class>               --> . <cc open> <cc element and more>
-______ P118   @1-1 <a single quoted string>          --> . <string open> <non empty string>
-______ P124   @1-1 <bare name>                       --> . <one or more word characters>
-______ P128   @1-1 <bracketed name>                  --> . <@CHR:<<>> <bracketed name string> <@CHR:<>>>
-______ P132   @1-1 <cc open>                         --> . <@CHR:<\133>>
-______ P133   @1-1 <cc open>                         --> . <@STR:<\133^>>
-______ P150   @1-1 <character class>                 --> . <a character class> <character class modifiers>
-______ P184   @1-1 <hash comment>                    --> . <terminated hash comment>
-______ P185   @1-1 <hash comment>                    --> . <unterminated final hash comment>
-______ P205   @1-1 <one or more word characters>     --> . <@CLS:<_[:alnum:]>>
-______ P206   @1-1 <op declare bnf>                  --> . <@STR:<::=>>
-______ P207   @1-1 <op declare match>                --> . <@CHR:<~>>
-______ P208   @1-1 <op equal priority>               --> . <@CHR:<|>>
-______ P209   @1-1 <op loosen>                       --> . <@STR:<||>>
-______ P245   @1-1 <single quoted string>            --> . <a single quoted string> <character class modifiers>
-______ P248   @1-1 <string open>                     --> . <@CHR:<'>>
-______ P249   @1-1 <terminated hash comment>         --> . <@CHR:<#>> <hash comment body> <vertical space char>
-______ P250   @1-1 <unterminated final hash comment> --> . <@CHR:<#>> <hash comment body>
-______ R255:1 @0-1 <@START>                          --> <ACS:@LEX:@CHR:<,>> . <@LEX:@CHR:<,>>
-______ R257:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<:default>> . <@LEX:@STR:<:default>>
-______ R258:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<:discard>> . <@LEX:@STR:<:discard>>
-______ R259:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<:lexeme>> . <@LEX:@STR:<:lexeme>>
-______ R260:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<:start>> . <@LEX:@STR:<:start>>
-______ R266:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<current>> . <@LEX:@STR:<current>>
-______ R268:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<discard>> . <@LEX:@STR:<discard>>
-______ R269:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<event>> . <@LEX:@STR:<event>>
-______ R274:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<inaccessible>> . <@LEX:@STR:<inaccessible>>
-______ R278:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<lexeme>> . <@LEX:@STR:<lexeme>>
-______ R281:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<name>> . <@LEX:@STR:<name>>
-______ R295:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<start>> . <@LEX:@STR:<start>>
-______ R299:1 @0-1 <@START>                          --> <ACS:@LEX:@CHR:<\50>> . <@LEX:@CHR:<\50>>
-______ R301:1 @0-1 <@START>                          --> <ACS:@LEX:@CHR:<\73>> . <@LEX:@CHR:<\73>>
-______ R302:1 @0-1 <@START>                          --> <ACS:@LEX:@CHR:<\173>> . <@LEX:@CHR:<\173>>
-______ R305:1 @0-1 <@START>                          --> <ACS:bare name> . <bare name>
-______ R307:1 @0-1 <@START>                          --> <ACS:bracketed name> . <bracketed name>
-______ R308:1 @0-1 <@START>                          --> <ACS:character class> . <character class>
-______ R309:1 @0-1 <@START>                          --> <ACS:op declare bnf> . <op declare bnf>
-______ R310:1 @0-1 <@START>                          --> <ACS:op declare match> . <op declare match>
-______ R311:1 @0-1 <@START>                          --> <ACS:op equal priority> . <op equal priority>
-______ R312:1 @0-1 <@START>                          --> <ACS:op loosen> . <op loosen>
-______ R318:1 @0-1 <@START>                          --> <ACS:single quoted string> . <single quoted string>
-______ R320:1 @0-1 <@START>                          --> <ACS:hash comment> . <hash comment>
-______ R321:1 @0-1 <@START>                          --> <ACS:whitespace> . <whitespace>
+______ P49    @1-1 <@STR:<::=>>                      --> . <@CHR:<:>> <@CHR:<:>> <@CHR:<=>>
+______ P51    @1-1 <@STR:<:default>>                 --> . <@CHR:<:>> <@CHR:<d>> <@CHR:<e>> <@CHR:<f>> <@CHR:<a>> <@CHR:<u>> <@CHR:<l>> <@CHR:<t>>
+______ P52    @1-1 <@STR:<:discard>>                 --> . <@CHR:<:>> <@CHR:<d>> <@CHR:<i>> <@CHR:<s>> <@CHR:<c>> <@CHR:<a>> <@CHR:<r>> <@CHR:<d>>
+______ P55    @1-1 <@STR:<:lexeme>>                  --> . <@CHR:<:>> <@CHR:<l>> <@CHR:<e>> <@CHR:<x>> <@CHR:<e>> <@CHR:<m>> <@CHR:<e>>
+______ P56    @1-1 <@STR:<:start>>                   --> . <@CHR:<:>> <@CHR:<s>> <@CHR:<t>> <@CHR:<a>> <@CHR:<r>> <@CHR:<t>>
+______ P64    @1-1 <@STR:<current>>                  --> . <@CHR:<c>> <@CHR:<u>> <@CHR:<r>> <@CHR:<r>> <@CHR:<e>> <@CHR:<n>> <@CHR:<t>>
+______ P66    @1-1 <@STR:<discard>>                  --> . <@CHR:<d>> <@CHR:<i>> <@CHR:<s>> <@CHR:<c>> <@CHR:<a>> <@CHR:<r>> <@CHR:<d>>
+______ P67    @1-1 <@STR:<event>>                    --> . <@CHR:<e>> <@CHR:<v>> <@CHR:<e>> <@CHR:<n>> <@CHR:<t>>
+______ P74    @1-1 <@STR:<inaccessible>>             --> . <@CHR:<i>> <@CHR:<n>> <@CHR:<a>> <@CHR:<c>> <@CHR:<c>> <@CHR:<e>> <@CHR:<s>> <@CHR:<s>> <@CHR:<i>> <@CHR:<b>> <@CHR:<l>> <@CHR:<e>>
+______ P79    @1-1 <@STR:<lexeme>>                   --> . <@CHR:<l>> <@CHR:<e>> <@CHR:<x>> <@CHR:<e>> <@CHR:<m>> <@CHR:<e>>
+______ P83    @1-1 <@STR:<name>>                     --> . <@CHR:<n>> <@CHR:<a>> <@CHR:<m>> <@CHR:<e>>
+______ P99    @1-1 <@STR:<start>>                    --> . <@CHR:<s>> <@CHR:<t>> <@CHR:<a>> <@CHR:<r>> <@CHR:<t>>
+______ P104   @1-1 <@STR:<||>>                       --> . <@CHR:<|>> <@CHR:<|>>
+______ P142   @1-1 <whitespace>                      --> . <@NCC:<[:space:]>>
+______ P157   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud80c>> <@RAN:<\udc00\udfff>>
+______ P158   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud80d>> <@RAN:<\udc00\udc2e>>
+______ P159   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud81a>> <@RAN:<\udc00\ude38>>
+______ P160   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud81a>> <@RAN:<\ude40\ude5e>>
+______ P161   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud81a>> <@RAN:<\ude60\ude69>>
+______ P162   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud81a>> <@RAN:<\uded0\udeed>>
+______ P163   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud81a>> <@RAN:<\udf00\udf2f>>
+______ P164   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud81a>> <@RAN:<\udf7d\udf8f>>
+______ P165   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud81a>> <@RAN:<\udf40\udf43>>
+______ P166   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud81a>> <@RAN:<\udf50\udf59>>
+______ P167   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud81a>> <@RAN:<\udf63\udf77>>
+______ P168   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud81b>> <@CHR:<\udf50>>
+______ P169   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud81b>> <@CHR:<\udfe0>>
+______ P170   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud81b>> <@RAN:<\udf00\udf44>>
+______ P171   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud81b>> <@RAN:<\udf93\udf9f>>
+______ P172   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud82c>> <@RAN:<\udc00\udc01>>
+______ P173   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud82f>> <@RAN:<\udc00\udc6a>>
+______ P174   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud82f>> <@RAN:<\udc70\udc7c>>
+______ P175   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud82f>> <@RAN:<\udc80\udc88>>
+______ P176   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud82f>> <@RAN:<\udc90\udc99>>
+______ P177   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83a>> <@RAN:<\udc00\udcc4>>
+______ P178   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83a>> <@RAN:<\udd00\udd43>>
+______ P179   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83a>> <@RAN:<\udd50\udd59>>
+______ P180   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude3b>>
+______ P181   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude4b>>
+______ P182   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude5b>>
+______ P183   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude5d>>
+______ P184   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude5f>>
+______ P185   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude7e>>
+______ P186   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude24>>
+______ P187   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude27>>
+______ P188   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude39>>
+______ P189   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude42>>
+______ P190   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude47>>
+______ P191   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude49>>
+______ P192   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude54>>
+______ P193   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude57>>
+______ P194   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude59>>
+______ P195   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@CHR:<\ude64>>
+______ P196   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\ude00\ude03>>
+______ P197   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\ude4d\ude4f>>
+______ P198   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\ude05\ude1f>>
+______ P199   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\ude6c\ude72>>
+______ P200   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\ude8b\ude9b>>
+______ P201   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\ude21\ude22>>
+______ P202   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\ude29\ude32>>
+______ P203   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\ude34\ude37>>
+______ P204   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\ude51\ude52>>
+______ P205   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\ude61\ude62>>
+______ P206   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\ude67\ude6a>>
+______ P207   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\ude74\ude77>>
+______ P208   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\ude79\ude7c>>
+______ P209   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\ude80\ude89>>
+______ P210   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\udea1\udea3>>
+______ P211   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\udea5\udea9>>
+______ P212   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud83b>> <@RAN:<\udeab\udebb>>
+______ P213   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud86d>> <@RAN:<\udc00\udf34>>
+______ P214   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud86d>> <@RAN:<\udf40\udfff>>
+______ P215   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud86e>> <@RAN:<\udc00\udc1d>>
+______ P216   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud86e>> <@RAN:<\udc20\udfff>>
+______ P217   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud87e>> <@RAN:<\udc00\ude1d>>
+______ P218   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udc00\udc0b>>
+______ P219   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udc0d\udc26>>
+______ P220   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udc3c\udc3d>>
+______ P221   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udc3f\udc4d>>
+______ P222   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udc28\udc3a>>
+______ P223   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udc50\udc5d>>
+______ P224   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udc80\udcfa>>
+______ P225   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\ude80\ude9c>>
+______ P226   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udea0\uded0>>
+______ P227   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udf00\udf1f>>
+______ P228   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udf30\udf40>>
+______ P229   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udf42\udf49>>
+______ P230   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udf50\udf75>>
+______ P231   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udf80\udf9d>>
+______ P232   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udfa0\udfc3>>
+______ P233   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud800>> <@RAN:<\udfc8\udfcf>>
+______ P234   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud801>> <@RAN:<\udc00\udc9d>>
+______ P235   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud801>> <@RAN:<\udca0\udca9>>
+______ P236   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud801>> <@RAN:<\udcb0\udcd3>>
+______ P237   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud801>> <@RAN:<\udcd8\udcfb>>
+______ P238   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud801>> <@RAN:<\udd00\udd27>>
+______ P239   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud801>> <@RAN:<\udd30\udd63>>
+______ P240   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud801>> <@RAN:<\ude00\udf36>>
+______ P241   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud801>> <@RAN:<\udf40\udf55>>
+______ P242   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud801>> <@RAN:<\udf60\udf67>>
+______ P243   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@CHR:<\udc3c>>
+______ P244   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@CHR:<\udc08>>
+______ P245   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@CHR:<\ude00>>
+______ P246   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udc00\udc05>>
+______ P247   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udc0a\udc35>>
+______ P248   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udc3f\udc55>>
+______ P249   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udc37\udc38>>
+______ P250   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udc60\udc76>>
+______ P251   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udc80\udc9e>>
+______ P252   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udce0\udcf2>>
+______ P253   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udcf4\udcf5>>
+______ P254   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udd00\udd15>>
+______ P255   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udd20\udd39>>
+______ P256   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udd80\uddb7>>
+______ P257   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\uddbe\uddbf>>
+______ P258   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\ude10\ude13>>
+______ P259   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\ude15\ude17>>
+______ P260   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\ude19\ude33>>
+______ P261   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\ude60\ude7c>>
+______ P262   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\ude80\ude9c>>
+______ P263   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udec0\udec7>>
+______ P264   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udec9\udee4>>
+______ P265   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udf00\udf35>>
+______ P266   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udf40\udf55>>
+______ P267   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udf60\udf72>>
+______ P268   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud802>> <@RAN:<\udf80\udf91>>
+______ P269   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud803>> <@RAN:<\udc00\udc48>>
+______ P270   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud803>> <@RAN:<\udc80\udcb2>>
+______ P271   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud803>> <@RAN:<\udcc0\udcf2>>
+______ P272   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@CHR:<\udd76>>
+______ P273   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@CHR:<\udddc>>
+______ P274   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@CHR:<\ude88>>
+______ P275   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@CHR:<\udf3d>>
+______ P276   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@CHR:<\udf50>>
+______ P277   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udc03\udc37>>
+______ P278   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udc66\udc6f>>
+______ P279   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udc83\udcaf>>
+______ P280   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udcd0\udce8>>
+______ P281   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udcf0\udcf9>>
+______ P282   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udd03\udd26>>
+______ P283   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udd36\udd3f>>
+______ P284   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udd50\udd72>>
+______ P285   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udd83\uddb2>>
+______ P286   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\uddc1\uddc4>>
+______ P287   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\uddd0\uddda>>
+______ P288   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\ude00\ude11>>
+______ P289   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\ude8a\ude8d>>
+______ P290   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\ude8f\ude9d>>
+______ P291   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\ude9f\udea8>>
+______ P292   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\ude13\ude2b>>
+______ P293   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\ude80\ude86>>
+______ P294   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udeb0\udede>>
+______ P295   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udef0\udef9>>
+______ P296   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udf0f\udf10>>
+______ P297   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udf2a\udf30>>
+______ P298   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udf05\udf0c>>
+______ P299   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udf5d\udf61>>
+______ P300   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udf13\udf28>>
+______ P301   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udf32\udf33>>
+______ P302   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud804>> <@RAN:<\udf35\udf39>>
+______ P303   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@CHR:<\udcc7>>
+______ P304   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@CHR:<\ude44>>
+______ P305   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@RAN:<\udc00\udc34>>
+______ P306   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@RAN:<\udc47\udc4a>>
+______ P307   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@RAN:<\udc50\udc59>>
+______ P308   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@RAN:<\udc80\udcaf>>
+______ P309   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@RAN:<\udcc4\udcc5>>
+______ P310   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@RAN:<\udcd0\udcd9>>
+______ P311   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@RAN:<\udd80\uddae>>
+______ P312   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@RAN:<\uddd8\udddb>>
+______ P313   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@RAN:<\ude00\ude2f>>
+______ P314   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@RAN:<\ude50\ude59>>
+______ P315   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@RAN:<\ude80\udeaa>>
+______ P316   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@RAN:<\udec0\udec9>>
+______ P317   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@RAN:<\udf00\udf19>>
+______ P318   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud805>> <@RAN:<\udf30\udf39>>
+______ P319   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud806>> <@CHR:<\udcff>>
+______ P320   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud806>> <@RAN:<\udca0\udce9>>
+______ P321   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud806>> <@RAN:<\udec0\udef8>>
+______ P322   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud807>> <@CHR:<\udc40>>
+______ P323   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud807>> <@RAN:<\udc00\udc08>>
+______ P324   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud807>> <@RAN:<\udc0a\udc2e>>
+______ P325   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud807>> <@RAN:<\udc50\udc59>>
+______ P326   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud807>> <@RAN:<\udc72\udc8f>>
+______ P327   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud808>> <@RAN:<\udc00\udf99>>
+______ P328   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud809>> <@RAN:<\udc80\udd43>>
+______ P329   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud811>> <@RAN:<\udc00\ude46>>
+______ P330   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud821>> <@RAN:<\udc00\udfec>>
+______ P331   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud822>> <@RAN:<\udc00\udef2>>
+______ P332   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@CHR:<\udca2>>
+______ P333   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@CHR:<\udcbb>>
+______ P334   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@CHR:<\udd46>>
+______ P335   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udc00\udc54>>
+______ P336   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udc9e\udc9f>>
+______ P337   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udc56\udc9c>>
+______ P338   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udca5\udca6>>
+______ P339   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udca9\udcac>>
+______ P340   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udcae\udcb9>>
+______ P341   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udcbd\udcc3>>
+______ P342   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udcc5\udd05>>
+______ P343   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udd0d\udd14>>
+______ P344   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udd1e\udd39>>
+______ P345   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udd3b\udd3e>>
+______ P346   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udd4a\udd50>>
+______ P347   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udd07\udd0a>>
+______ P348   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udd16\udd1c>>
+______ P349   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udd40\udd44>>
+______ P350   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udd52\udea5>>
+______ P351   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udea8\udec0>>
+______ P352   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udec2\udeda>>
+______ P353   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udedc\udefa>>
+______ P354   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udefc\udf14>>
+______ P355   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udf8a\udfa8>>
+______ P356   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udf16\udf34>>
+______ P357   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udf36\udf4e>>
+______ P358   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udf50\udf6e>>
+______ P359   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udf70\udf88>>
+______ P360   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udfaa\udfc2>>
+______ P361   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udfc4\udfcb>>
+______ P362   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud835>> <@RAN:<\udfce\udfff>>
+______ P363   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud869>> <@RAN:<\udc00\uded6>>
+______ P364   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud869>> <@RAN:<\udf00\udfff>>
+______ P365   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@CHR:<\ud873>> <@RAN:<\udc00\udea1>>
+______ P366   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@RAN:<\ud81c\ud820>> <@RAN:<\udc00\udfff>>
+______ P367   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@RAN:<\ud86a\ud86c>> <@RAN:<\udc00\udfff>>
+______ P368   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@RAN:<\ud86f\ud872>> <@RAN:<\udc00\udfff>>
+______ P369   @1-1 <@CLS:<[:alnum:smp:]>.SMP>        --> . <@RAN:<\ud840\ud868>> <@RAN:<\udc00\udfff>>
+______ P388   @1-1 <@CLS:<_[:alnum:]>>               --> . <@CLS:<[:alnum:smp:]>.SMP>
+______ P389   @1-1 <@CLS:<_[:alnum:]>>               --> . <@CLS:<_[:alnum:]>.BMP>
+______ P392   @1-1 <@LEX:@CHR:<\50>>                 --> . <@CHR:<\50>>
+______ P394   @1-1 <@LEX:@CHR:<\73>>                 --> . <@CHR:<\73>>
+______ P395   @1-1 <@LEX:@CHR:<\173>>                --> . <@CHR:<\173>>
+______ P527   @1-1 <@STR:<\133^>>                    --> . <@CHR:<\133>> <@CHR:<^>>
+______ P528   @1-1 <a character class>               --> . <cc open> <cc element and more>
+______ P529   @1-1 <a single quoted string>          --> . <string open> <non empty string>
+______ P535   @1-1 <bare name>                       --> . <one or more word characters>
+______ P539   @1-1 <bracketed name>                  --> . <@CHR:<<>> <bracketed name string> <@CHR:<>>>
+______ P543   @1-1 <cc open>                         --> . <@CHR:<\133>>
+______ P544   @1-1 <cc open>                         --> . <@STR:<\133^>>
+______ P561   @1-1 <character class>                 --> . <a character class> <character class modifiers>
+______ P601   @1-1 <hash comment>                    --> . <terminated hash comment>
+______ P602   @1-1 <hash comment>                    --> . <unterminated final hash comment>
+______ P622   @1-1 <one or more word characters>     --> . <@CLS:<_[:alnum:]>>
+______ P623   @1-1 <op declare bnf>                  --> . <@STR:<::=>>
+______ P624   @1-1 <op declare match>                --> . <@CHR:<~>>
+______ P625   @1-1 <op equal priority>               --> . <@CHR:<|>>
+______ P626   @1-1 <op loosen>                       --> . <@STR:<||>>
+______ P662   @1-1 <single quoted string>            --> . <a single quoted string> <character class modifiers>
+______ P665   @1-1 <string open>                     --> . <@CHR:<'>>
+______ P666   @1-1 <terminated hash comment>         --> . <@CHR:<#>> <hash comment body> <vertical space char>
+______ P667   @1-1 <unterminated final hash comment> --> . <@CHR:<#>> <hash comment body>
+______ R672:1 @0-1 <@START>                          --> <ACS:@LEX:@CHR:<,>> . <@LEX:@CHR:<,>>
+______ R674:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<:default>> . <@LEX:@STR:<:default>>
+______ R675:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<:discard>> . <@LEX:@STR:<:discard>>
+______ R676:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<:lexeme>> . <@LEX:@STR:<:lexeme>>
+______ R677:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<:start>> . <@LEX:@STR:<:start>>
+______ R683:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<current>> . <@LEX:@STR:<current>>
+______ R685:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<discard>> . <@LEX:@STR:<discard>>
+______ R686:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<event>> . <@LEX:@STR:<event>>
+______ R691:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<inaccessible>> . <@LEX:@STR:<inaccessible>>
+______ R695:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<lexeme>> . <@LEX:@STR:<lexeme>>
+______ R698:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<name>> . <@LEX:@STR:<name>>
+______ R712:1 @0-1 <@START>                          --> <ACS:@LEX:@STR:<start>> . <@LEX:@STR:<start>>
+______ R716:1 @0-1 <@START>                          --> <ACS:@LEX:@CHR:<\50>> . <@LEX:@CHR:<\50>>
+______ R718:1 @0-1 <@START>                          --> <ACS:@LEX:@CHR:<\73>> . <@LEX:@CHR:<\73>>
+______ R719:1 @0-1 <@START>                          --> <ACS:@LEX:@CHR:<\173>> . <@LEX:@CHR:<\173>>
+______ R722:1 @0-1 <@START>                          --> <ACS:bare name> . <bare name>
+______ R724:1 @0-1 <@START>                          --> <ACS:bracketed name> . <bracketed name>
+______ R725:1 @0-1 <@START>                          --> <ACS:character class> . <character class>
+______ R726:1 @0-1 <@START>                          --> <ACS:op declare bnf> . <op declare bnf>
+______ R727:1 @0-1 <@START>                          --> <ACS:op declare match> . <op declare match>
+______ R728:1 @0-1 <@START>                          --> <ACS:op equal priority> . <op equal priority>
+______ R729:1 @0-1 <@START>                          --> <ACS:op loosen> . <op loosen>
+______ R735:1 @0-1 <@START>                          --> <ACS:single quoted string> . <single quoted string>
+______ R737:1 @0-1 <@START>                          --> <ACS:hash comment> . <hash comment>
+______ R738:1 @0-1 <@START>                          --> <ACS:whitespace> . <whitespace>
 Mismatch:
-'=' => (9 50 51 52 53 54 55 56) ni
+'=' => (9 171 172 173 174 175 176 177) ni
     0: '#'
     1: '''
     4: ','
@@ -87,12 +302,42 @@ Mismatch:
    22: 'l'
    24: 'n'
    28: 's'
-   35: '|'
-   36: '~'
-   37: '('
-   39: ';'
-   40: '['
-   43: '\173'
-   59: [_[:alnum:]]
-   63: [[:space:]]}
-
+   36: '|'
+   37: '~'
+   40: '('
+   42: ';'
+   43: '['
+   46: '\173'
+   48: '\355\240\214'
+   49: '\355\240\215'
+   50: '\355\240\232'
+   51: '\355\240\233'
+   52: '\355\240\254'
+   53: '\355\240\257'
+   54: '\355\240\272'
+   55: '\355\240\273'
+   56: '\355\241\255'
+   57: '\355\241\256'
+   58: '\355\241\276'
+   59: '\355\240\200'
+   60: '\355\240\201'
+   61: '\355\240\202'
+   62: '\355\240\203'
+   63: '\355\240\204'
+   64: '\355\240\205'
+   65: '\355\240\206'
+   66: '\355\240\207'
+   67: '\355\240\210'
+   68: '\355\240\211'
+   69: '\355\240\221'
+   70: '\355\240\241'
+   71: '\355\240\242'
+   72: '\355\240\265'
+   73: '\355\241\251'
+   74: '\355\241\263'
+  180: [_[:alnum:]]
+  184: [[:space:]]
+  186: [\ud81c-\ud820]
+  187: [\ud86a-\ud86c]
+  188: [\ud86f-\ud872]
+  190: [\ud840-\ud868]}

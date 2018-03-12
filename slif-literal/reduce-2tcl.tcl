@@ -58,6 +58,11 @@ debug define marpa/slif/literal/reduce/2tcl
 ## Public API
 
 namespace eval ::marpa::slif::literal::reduce::2tcl {
+    namespace export reduce symbol
+        namespace ensemble create
+}
+
+namespace eval ::marpa::slif::literal::reduce::2tcl::reduce {
     namespace export %* ^* !! cc/* string charclass character range named-class
     namespace ensemble create
 
@@ -85,12 +90,35 @@ namespace eval ::marpa::slif::literal::reduce::2tcl {
 #
 
 # # ## ### ##### ######## #############
+## Custom symbol name callbacks for the custom tags below
+
+proc ::marpa::slif::literal::reduce::2tcl::symbol {state literal} {
+    switch -exact -- [lindex $literal 0] {
+	cc/smp {
+	    # The literal is effectively a charclass, generate a symbol from that.
+	    # Add a suffix to distinguish from normal symbols however, we might clash
+	    # otherwise and lose the new definition.
+	    return [marpa::slif::literal::util::symbol [lreplace $literal 0 0 charclass]].SMP
+	}
+	!! {
+	    # Strip the leading !! and generate a symbol from the hidden literal.
+	    # Beware, this may clash with the origin symbol and literal which got
+	    # split into the BMP and SMP parts. Add suffix to distinguish
+	    return [marpa::slif::literal::util::symbol [lrange $literal 1 end]].BMP
+	}
+    }
+    # Standard tag and symbol
+    marpa::slif::literal::util::symbol $literal
+}
+
+# # ## ### ##### ######## #############
 ## Type-specific handlers.
 ## Custom tags:
 ## - `cc/smp`
 ## - `!!`
 
-proc ::marpa::slif::literal::reduce::2tcl::cc/smp {state args} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::cc/smp {state args} {
+    debug.marpa/slif/literal/reduce/2tcl {}
     # charclass in the SMP, only.
     # NOTE: Can only handle a positive class definition.
 
@@ -106,14 +134,14 @@ proc ::marpa::slif::literal::reduce::2tcl::cc/smp {state args} {
     }]
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::!! {state args} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::!! {state args} {
     # Finalize the marked literal
     $state is-a! {*}$args
 }
 
 # # ## ### ##### ######## #############
 
-proc ::marpa::slif::literal::reduce::2tcl::string {state args} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::string {state args} {
     # strings are codepoint sequences
     # each codepoint may map to one or two BMP points
     # (surrogate pair for post-BMP codepoints)
@@ -125,27 +153,27 @@ proc ::marpa::slif::literal::reduce::2tcl::string {state args} {
     }]]
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::%string {state args} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::%string {state args} {
     # args = codepoints
     # convert into sequence of %character, to be reduced further, single alternative
 
     $state rules* [lmap codepoint $args { L %character $codepoint }]
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::charclass {state args} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::charclass {state args} {
     # args = codepoint|range|name ...
 
     $state {*}[CC 0 $args]
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::^charclass {state args} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::^charclass {state args} {
     # args = codepoint|range|named-class ...
     # Complement class, then normalize and reduce further
 
     $state {*}[CC 1 $args]
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::character {state codepoint} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::character {state codepoint} {
     # A codepoint may map to one or two characters in the BMP.
     # Regardless of which, the result is final
     set points [2char $codepoint]
@@ -160,7 +188,7 @@ proc ::marpa::slif::literal::reduce::2tcl::character {state codepoint} {
 # ^%character | s.a
 # ^%range     | s.a
 
-proc ::marpa::slif::literal::reduce::2tcl::^character {state codepoint} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::^character {state codepoint} {
     # A negated character generally is a class containing 2 ranges,
     # before and after the excluded character. This is then normalized
     # and reduced further.
@@ -168,14 +196,14 @@ proc ::marpa::slif::literal::reduce::2tcl::^character {state codepoint} {
     $state {*}[CC 1 [S $codepoint]]
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::range {state start end} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::range {state start end} {
     # an empty range is illegal
     if {$end <= $start} EmptyRange
 
     $state {*}[CC 0 [S [R $start $end]]]
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::%range {state start end} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::%range {state start end} {
     # an empty range is illegal
     if {$end <= $start} EmptyRange
     
@@ -185,28 +213,28 @@ proc ::marpa::slif::literal::reduce::2tcl::%range {state start end} {
     $state is-a charclass {*}[unfold [S [R $start $end]]]
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::^range {state start end} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::^range {state start end} {
     # an empty range is illegal
     if {($start <= 0) && ($end >= [max])} EmptyRange
 
     $state {*}[CC 1 [S [R $start $end]]]
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::named-class {state name} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::named-class {state name} {
     $state {*}[CC 0 [S $name]]
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::%named-class {state name} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::%named-class {state name} {
     # Must be unfolded and then goes through the regular CC reduction.
     # Tcl support of the name does not matter.
     $state is-a charclass {*}[unfold [data cc ranges $name]]
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::^named-class {state name} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::^named-class {state name} {
     $state {*}[CC 1 [S $name]]
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::^%named-class {state name} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::^%named-class {state name} {
     # See %named-class. case-unfold and negate before sending it on.
     
     $state is-a charclass {*}[negate-class [unfold [data cc ranges $name]]]
@@ -215,7 +243,7 @@ proc ::marpa::slif::literal::reduce::2tcl::^%named-class {state name} {
 # # ## ### ##### ######## #############
 ## Internal utilities
 
-proc ::marpa::slif::literal::reduce::2tcl::Lr {range} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::Lr {range} {
     lassign $range s e
     if {$s == $e} {
 	L character $s
@@ -224,23 +252,23 @@ proc ::marpa::slif::literal::reduce::2tcl::Lr {range} {
     }
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::EmptyRange {} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::EmptyRange {} {
     upvar 1 start start end end
     X "Unable to reduce empty literal (range ($start $end))" \
 	SLIF LITERAL EMPTY
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::L {args} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::L {args} {
     # Nicer name for L'iteral construction
     return $args
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::S {args} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::S {args} {
     # Nicer name for S'equence construction
     return $args
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::R {start end} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::R {start end} {
     # Nicer name for R'ange construction
     if {$end < $start} EmptyRange
     if {$start == $end} { return $start }
@@ -255,7 +283,8 @@ proc ::marpa::slif::literal::reduce::2tcl::R {start end} {
 ## BMP allowing for better optimization towards what is natively
 ## supported by Tcl.
 
-proc ::marpa::slif::literal::reduce::2tcl::CC {neg pieces} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::CC {neg pieces} {
+    debug.marpa/slif/literal/reduce/2tcl
     ##
     # 1. Split the incoming class into bmp vs smp, and also the
     #    different types of elements, i.e. characters, ranges, and
@@ -353,7 +382,7 @@ proc ::marpa::slif::literal::reduce::2tcl::CC {neg pieces} {
 	SLIF LITERAL BAD-CLASS
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::CC/lit {n chars ranges names {prefix {}}} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::CC/lit {n chars ranges names {prefix {}}} {
     if {$n == 1} {
 	if {[llength $chars]} {
 	    return [list {*}"${prefix}character" [lindex $chars 0]]
@@ -371,13 +400,13 @@ proc ::marpa::slif::literal::reduce::2tcl::CC/lit {n chars ranges names {prefix 
     return $cc
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::CC/data {chars ranges names} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::CC/data {chars ranges names} {
     lappend cc {*}[norm-class [list {*}$chars {*}$ranges]]
     lappend cc {*}[lsort -dict $names]
     return $cc
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::CC/split {pieces} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::CC/split {pieces} {
     set bmpn      0  ; set smpn      0 
     set bmpchars  {} ; set smpchars  {}
     set bmpranges {} ; set smpranges {}
@@ -434,13 +463,13 @@ proc ::marpa::slif::literal::reduce::2tcl::CC/split {pieces} {
     list $bmpn $bmpchars $bmpranges $bmpnames $smpn $smpchars $smpranges $smpnames
 }
 
-proc ::marpa::slif::literal::reduce::2tcl::++ {area type value} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::++ {area type value} {
     upvar 1 ${area}n n ${area}${type} l
     lappend l $value
     incr n
     return
 }
-proc ::marpa::slif::literal::reduce::2tcl::+r {area ranges} {
+proc ::marpa::slif::literal::reduce::2tcl::reduce::+r {area ranges} {
     upvar 1 ${area}n n ${area}chars c ${area}ranges r
     foreach el $ranges {
 	switch -exact -- [eltype $el] {
