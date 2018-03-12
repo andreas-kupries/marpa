@@ -41,6 +41,12 @@ package require Tcl 8.5 ;# apply, lassign, ...
 package require marpa::util
 package require marpa::c
 
+if {![llength [info commands try]]} {
+    # Builtin "try" exists from Tcl 8.6 forward. Before that use the
+    # 8.5+ compatibility implementation found in Tcllib
+    package require try
+}
+
 ## Find a way to have this list only once.
 # @owns: semstd.tcl
 # @owns: semstore.tcl
