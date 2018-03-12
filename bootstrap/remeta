@@ -20,7 +20,7 @@ if {[llength $argv] != 1} {
     puts "Usage: $argv0 /path/to/main/destination/directory"
     puts "Results are written to:"
     puts " - DST/slif-parser/parser.tcl"
-    puts " - DST/slif-literal-parser/lparser.tcl"
+    puts " - DST/slif-literal/lparser.tcl"
     puts ""
     exit 1
 }
@@ -87,7 +87,7 @@ Make marpa::slif::parser \
 
 Make marpa::slif::literal::parser \
     $literals \
-    $dst/slif-literal-parser/lparser.tcl \
+    $dst/slif-literal/lparser.tcl \
     {Andreas Kupries}
 
 exit
