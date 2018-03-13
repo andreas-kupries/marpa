@@ -2,8 +2,8 @@ Parsing failed in lexer. Stopped at offset 9 after reading '\175'. Expected any 
 L0 Report:
 ______ P31   @1-1 <quote>      --> . <@CHR:<\42>>
 ______ P34   @1-1 <whitespace> --> . <@CLS:<\t-\n\r\40>>
-______ R47:1 @0-1 <@START>     --> <ACS:quote> . <quote>
-______ R50:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
+______ R50:1 @0-1 <@START>     --> <ACS:quote> . <quote>
+______ R53:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
 Mismatch:
 '\175' => (20 24) ni
    15: '\"'

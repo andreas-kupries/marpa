@@ -32,7 +32,7 @@ kt require support fileutil ;# cat
 # # ## ### ##### ######## ############# #####################
 ## Local shorthands
 
-proc tnp     {} { return lang-json-rt:[rt]  }
+proc tnp     {} { return lang-json-rt_[rt]  }
 proc cl      {} { return json::parser::[rt] }
 proc setup   {} { [cl] create PARSE }
 proc cleanup {} { PARSE destroy }
@@ -111,6 +111,7 @@ set fmt %0[string length $max]d
 
 set k -1
 foreach infile $will_accept {
+    #continue
     incr k
     # - --   -----        -------------
     set kd       [format $fmt $k]
@@ -134,6 +135,8 @@ foreach infile $will_accept {
 	unset msg
     } -result $expected -constraints [constraints $id]
 
+    #continue
+    
     test [tnp]-process-file-3.${kd}---${id} "[cl] :: process-file $id" -body {
 	catch {
 	    ast-format [PARSE process-file $infile]
@@ -156,6 +159,7 @@ set fmt %0[string length $max]d
 set k -1
 foreach infile $will_reject {
     incr k
+    #if {$k != 29} continue
     # - --   -----        -------------
     set kd       [format $fmt $k]
     set id       [file rootname [file tail $infile]]
@@ -177,6 +181,8 @@ foreach infile $will_reject {
 	cleanup
     } -returnCodes error -result $expected -constraints [constraints $id]
 
+    #continue
+    
     test [tnp]-process-file-3.${kd}---${id} "[cl] :: process-file $id" -body {
 	    PARSE process-file $infile
     } -setup setup -cleanup {

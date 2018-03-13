@@ -3,9 +3,9 @@ L0 Report:
 ______ P31   @1-1 <quote>      --> . <@CHR:<\42>>
 ______ P32   @1-1 <rbrace>     --> . <@CHR:<\175>>
 ______ P34   @1-1 <whitespace> --> . <@CLS:<\t-\n\r\40>>
-______ R47:1 @0-1 <@START>     --> <ACS:quote> . <quote>
-______ R48:1 @0-1 <@START>     --> <ACS:rbrace> . <rbrace>
-______ R50:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
+______ R50:1 @0-1 <@START>     --> <ACS:quote> . <quote>
+______ R51:1 @0-1 <@START>     --> <ACS:rbrace> . <rbrace>
+______ R53:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
 Mismatch:
 ':' => (5 24) ni
    15: '\"'

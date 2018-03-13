@@ -7,7 +7,7 @@
 # (c) 2018 Grammar json::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "json::parser::tcl".
-##	Generated On Thu Feb 01 16:00:19 PST 2018
+##	Generated On Tue Mar 13 08:05:02 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 
@@ -74,13 +74,15 @@ oo::class create json::parser::tcl {
 	debug.json/parser/tcl
 	# Literals: The character classes in use
 	return {
-	    @CLS:<Ee>                 {[Ee]}
-	    @RAN:<09>                 {[0-9]}
-	    @RAN:<19>                 {[1-9]}
-	    {@^CLS:<\0-\37\42\134>}   {[^\0-\37\42\134]}
-	    {@CLS:<\42/\134bfnrt>}    {[\42/\134bfnrt]}
-	    {@CLS:<\t-\n\r\40>}       {[\t\n\r\40]}
-	    {@NCC:<[:xdigit:]>}       {[[:xdigit:]]}
+	    @CLS:<Ee>                     {[Ee]}
+	    @RAN:<09>                     {[0-9]}
+	    @RAN:<19>                     {[1-9]}
+	    {@^CLS:<\0-\37\42\134>.BMP}   {[^\0-\37\42\134]}
+	    {@CLS:<\42/\134bfnrt>}        {[\42/\134bfnrt]}
+	    {@CLS:<\t-\n\r\40>}           {[\t\n\r\40]}
+	    {@NCC:<[:xdigit:]>}           {[[:xdigit:]]}
+	    {@RAN:<\ud800\udbff>}         {[\ud800-\udbff]}
+	    {@RAN:<\udc00\udfff>}         {[\udc00-\udfff]}
 	}
     }
     
@@ -115,6 +117,8 @@ oo::class create json::parser::tcl {
 	# Non-lexeme, non-literal symbols
 	debug.json/parser/tcl
 	return {
+	    {@^CLS:<\0-\37\42\134>}
+	    {@CLS:<\u10000-\u10ffff>.SMP}
 	    {@STR:<\134u>}
 	    @STR:<false>
 	    @STR:<null>
@@ -176,6 +180,9 @@ oo::class create json::parser::tcl {
 	    {whitespace + {@CLS:<\t-\n\r\40>}}
 	    {whole := @CHR:<0>}
 	    {whole := positive}
+	    {{@^CLS:<\0-\37\42\134>} := {@^CLS:<\0-\37\42\134>.BMP}}
+	    {{@^CLS:<\0-\37\42\134>} := {@CLS:<\u10000-\u10ffff>.SMP}}
+	    {{@CLS:<\u10000-\u10ffff>.SMP} := {@RAN:<\ud800\udbff>} {@RAN:<\udc00\udfff>}}
 	    {{@STR:<\134u>} := {@CHR:<\134>} @CHR:<u>}
 	}
     }
