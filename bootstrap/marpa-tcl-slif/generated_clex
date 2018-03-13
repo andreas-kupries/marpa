@@ -5108,6 +5108,7 @@ critcl::class def <Name> {
     method process-file proc {Tcl_Interp* ip Tcl_Obj* path list outcmd} ok {
 	int res, got;
 	char* buf;
+	Tcl_Obj* cbuf = Tcl_NewObj();
 	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
 
 	if (!in) {
@@ -5121,14 +5122,17 @@ critcl::class def <Name> {
 	instance->outcmd_c = outcmd.c;
 	instance->outcmd_v = outcmd.v;
 
-	buf = NALLOC (char, 4096); // TODO: configurable
 	while (!Tcl_Eof(in)) {
-	    got = Tcl_Read (in, buf, 4096);
+	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
+	    if (got < 0) {
+		return TCL_ERROR;
+	    }
 	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
+	    buf = Tcl_GetStringFromObj (cbuf, &got);
 	    marpatcl_rtc_enter (instance->state, buf, got);
 	    if (marpatcl_rtc_failed (instance->state)) break;
 	}
-	FREE (buf);
+	Tcl_DecrRefCount (cbuf);
 
 	(void) Tcl_Close (ip, in);
 
