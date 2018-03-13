@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -38,16 +38,20 @@ namespace eval marpa {
 namespace eval marpa::unicode {
     namespace export \
 	norm-class negate-class point unfold fold/c \
-	2utf 2asbr asbr-format data mode max
+	2char 2utf 2asbr asbr-format data max bmp smp \
+	2assr assr-format
     namespace ensemble create
 }
 
 # # ## ### ##### ######## #############
 ## Public API
 ##
+## - 2char        - Convert uni(code)point to sequence of points in the BMP
 ## - 2utf         - Convert uni(code)point to sequence of bytes
 ## - 2asbr        - Convert unicode class to utf8 asbr
 ## - asbr-format  - Convert the result of 2asbr into a human-readable form.
+## - 2assr        - Convert unicode class to ASSR
+## - assr-format  - Convert the result of 2assr into a human-readable form.
 ## - norm-class   - normalize a series of ranges and code points (i.e. a
 ##                  char class).
 ## - negate-class - Negate a series of ranges and code points (i.e. a
@@ -58,52 +62,7 @@ namespace eval marpa::unicode {
 ##                  case-equivalent uni(code)points
 ## - fold/c       - Convert a list of uni(code)points to a list of the primary
 ##                  case-equivalent uni(code)points.
-## - mode, max    - Return name of supported unicode range, and the number of
-##                  codepoints in that range
-
-proc marpa::unicode::mode {} {
-    debug.marpa/unicode {}
-    variable mode
-    return $mode
-}
-
-proc marpa::unicode::max {} {
-    debug.marpa/unicode {}
-    variable max
-    return $max
-}
-
-# TODO: 2utf --> see c/unicode.tcl :: decode
-proc marpa::unicode::2utf {code} {
-    debug.marpa/unicode {}
-    if {$code < 128} {
-	return [list [expr {$code & 0x7f}]]
-	# The expression does not change the value. It does normalize
-	# the string representation to decimal however. As that
-	# happens in all the fllowing branches as well having it
-	# happen here makes things cleaner, more the same.
-    }
-    if {$code < 2048} {
-	set a [expr {(($code >> 6) & 0x1f) | 0b11000000 }]
-	set b [expr {(($code >> 0) & 0x3f) | 0b10000000 }]
-	debug.marpa/unicode {==> (0x[format %02x $a] 0x[format %02x $b])}
-	return [list $a $b]
-    }
-    if {$code < 65536} {
-	set a [expr {(($code >> 12) & 0x0f) | 0b11100000 }]
-	set b [expr {(($code >>  6) & 0x3f) | 0b10000000 }]
-	set c [expr {(($code >>  0) & 0x3f) | 0b10000000 }]
-	debug.marpa/unicode {==> (0x[format %02x $a] 0x[format %02x $b] 0x[format %02x $c])}
-	return [list $a $b $c]
-    }
-
-    set a [expr {(($code >> 18) & 0x07) | 0b11110000 }]
-    set b [expr {(($code >> 12) & 0x3f) | 0b10000000 }]
-    set c [expr {(($code >>  6) & 0x3f) | 0b10000000 }]
-    set d [expr {(($code >>  0) & 0x3f) | 0b10000000 }]
-    debug.marpa/unicode {==> (0x[format %02x $a] 0x[format %02x $b] 0x[format %02x $c] 0x[format %02x $d])}
-    return [list $a $b $c $d]
-}
+## - max          - Return the number of supported codepoints.
 
 proc marpa::unicode::point {character} {
     debug.marpa/unicode {}
@@ -112,7 +71,7 @@ proc marpa::unicode::point {character} {
     return $codepoint
 }
 
-proc marpa::unicode::fold/c {codes} {
+if 0 {proc marpa::unicode::fold/c {codes} {
     debug.marpa/unicode {}
     lmap codepoint $codes { data fold/c $codepoint }
 }
@@ -131,7 +90,7 @@ proc marpa::unicode::unfold {codes} {
 	}
     }
     norm-class $result
-}
+}}
 
 proc marpa::unicode::asbr-format {asbr {compact 0}} {
     debug.marpa/unicode {}
@@ -149,6 +108,30 @@ proc marpa::unicode::asbr-format {asbr {compact 0}} {
 		append r \]
 	    } else {
 		append r \] {   }
+	    }
+	}
+	append r \n
+	set prefix |
+    }
+    return $r
+}
+
+proc marpa::unicode::assr-format {assr {compact 0}} {
+    debug.marpa/unicode {}
+    set r {}
+    set prefix " "
+    foreach alternative $assr {
+	append r $prefix
+	foreach range $alternative {
+	    lassign $range s e
+	    append r \[
+	    append r [format %04x $s]
+	    if {$s != $e} {
+		append r - [format %04x $e] \]
+	    } elseif {$compact} {
+		append r \]
+	    } else {
+		append r \] {     }
 	    }
 	}
 	append r \n
@@ -201,6 +184,7 @@ proc marpa::unicode::data::cc::tcl-names {} {
 
 proc marpa::unicode::data::cc::have {cclass} {
     variable ::marpa::unicode::cc
+    if {[string match %* $cclass]} { set cclass [string range $cclass 1 end] }
     return [dict exists $cc $cclass]
 }
 
@@ -211,77 +195,16 @@ proc marpa::unicode::data::cc::names {} {
 
 proc marpa::unicode::data::cc::ranges {cclass} {
     variable ::marpa::unicode::cc
+
+    if {[string match %* $cclass]} {
+	set cclass [string range $cclass 1 end]
+	return [marpa::unicode::unfold [ranges $cclass]]
+    }
+    
     if {![dict exists $cc $cclass]} {
 	X "Bad character class $cclass" UNICODE BAD CLASS
     }
     return [dict get $cc $cclass]
-}
-
-proc marpa::unicode::data::cc::asbr {cclass} {
-    variable ::marpa::unicode::asbr
-    variable ::marpa::unicode::range
-    if {![dict exists $asbr $cclass]} {
-	X "Bad character class $cclass" UNICODE BAD CLASS
-    }
-    # asbr  :: list (alt)
-    # alt   :: list (range)
-    # range :: string ~ "R[0-9]+"
-
-    # Decode range references into actuals
-    return [lmap alternate [dict get $asbr $cclass] {
-	lmap rangeid $alternate {
-	    dict get $range $rangeid
-	}
-    }]
-}
-
-proc marpa::unicode::data::cc::grammar {cclass {base {}}} {
-    variable ::marpa::unicode::gr
-    variable ::marpa::unicode::range
-    if {![dict exists $gr $cclass]} {
-	X "Bad character class $cclass" UNICODE BAD CLASS
-    }
-    # gr   :: list (rule)
-    # rule :: list (sym := range|sym...)
-
-    # Decode range references into actuals, and make them easily
-    # distinguishable from symbols. Prefix symbols with the chosen
-    # base (for uniqueness in the caller's context (if needed))
-    set cbase $base
-    if {$base ne {}} { set cbase ${base}: }
-
-    return [lmap rule [dict get $gr $cclass] {
-	set sequence [lassign $rule sym _]
-	if {$sym eq {}} {
-	    set sym $base
-	} else {
-	    set sym $cbase$sym
-	}
-	list $sym := {*}[lmap el $sequence {
-	    switch -glob -- $el {
-		R* { linsert [dict get $range $el] 0 range }
-		A* { list symbol $cbase$el }
-	    }
-	}]
-    }]
-}
-
-proc marpa::unicode::data::fold {codepoint} {
-    variable ::marpa::unicode::foldmap
-    variable ::marpa::unicode::foldset
-    # normalize codepoint to decimal integer
-    incr codepoint 0
-    if {![dict exists $foldmap $codepoint]} {
-	# Return character as its own fold class
-	return [list $codepoint]
-    }
-    return [dict get $foldset [dict get $foldmap $codepoint]]
-}
-
-proc marpa::unicode::data::fold/c {codepoint} {
-    # Locate the smallest entry in the fold set as the canonical form
-    # of the codepoint under folding.
-    return [lindex [fold $codepoint] 0]
 }
 
 # # ## ### ##### ######## #############

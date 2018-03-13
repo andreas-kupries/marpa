@@ -1,0 +1,8 @@
+:start ::= A
+inaccessible is warn by default
+lexeme default = action => [values]
+A ::= @LEX:@CHR:<0>
+      action => [values]
+      assoc => left
+@LEX:@CHR:<0> ~ '0'
+                latm => 1

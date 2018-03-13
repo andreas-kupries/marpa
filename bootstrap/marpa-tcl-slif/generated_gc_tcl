@@ -1053,6 +1053,1003 @@ oo::class create <Name> {
 	    }
 	    l0 {
 	        {} {
+	            {@^CLS:<\7-\10\n-\r'0-7\134\u2028-\u2029>} {
+	                {priority {{@^CLS:<\7-\10\n-\r'0-7\134\u2028-\u2029>.BMP}} 0}
+	                {priority {{@CLS:<\u10000-\u10ffff>.SMP}} 0}
+	            }
+	            {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029>} {
+	                {priority {{@^CLS:<\7-\10\n-\r'\134\u2028-\u2029>.BMP}} 0}
+	                {priority {{@CLS:<\u10000-\u10ffff>.SMP}} 0}
+	            }
+	            {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]>} {
+	                {priority {{@^CLS:<\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]>.BMP}} 0}
+	                {priority {{@CLS:<\u10000-\u10ffff>.SMP}} 0}
+	            }
+	            {@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>} {
+	                {priority {{@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>.BMP}} 0}
+	                {priority {{@CLS:<\u10000-\u10ffff>.SMP}} 0}
+	            }
+	            {@^CLS:<\7-\r-\134-\135\u2028-\u2029>} {
+	                {priority {{@^CLS:<\7-\r-\134-\135\u2028-\u2029>.BMP}} 0}
+	                {priority {{@CLS:<\u10000-\u10ffff>.SMP}} 0}
+	            }
+	            {@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>} {
+	                {priority {{@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>.BMP}} 0}
+	                {priority {{@CLS:<\u10000-\u10ffff>.SMP}} 0}
+	            }
+	            {@^CLS:<\n-\r\u2028-\u2029>} {
+	                {priority {{@^CLS:<\n-\r\u2028-\u2029>.BMP}} 0}
+	                {priority {{@CLS:<\u10000-\u10ffff>.SMP}} 0}
+	            }
+	            {@CLS:<[:alnum:smp:]>.SMP} {
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udc00\udc0b>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udc0d\udc26>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udc28\udc3a>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udc3c\udc3d>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udc3f\udc4d>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udc50\udc5d>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udc80\udcfa>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\ude80\ude9c>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udea0\uded0>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udf00\udf1f>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udf30\udf40>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udf42\udf49>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udf50\udf75>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udf80\udf9d>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udfa0\udfc3>}} 0}
+	                {priority {
+	                        {@CHR:<\ud800>}
+	                        {@RAN:<\udfc8\udfcf>}} 0}
+	                {priority {
+	                        {@CHR:<\ud801>}
+	                        {@RAN:<\udc00\udc9d>}} 0}
+	                {priority {
+	                        {@CHR:<\ud801>}
+	                        {@RAN:<\udca0\udca9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud801>}
+	                        {@RAN:<\udcb0\udcd3>}} 0}
+	                {priority {
+	                        {@CHR:<\ud801>}
+	                        {@RAN:<\udcd8\udcfb>}} 0}
+	                {priority {
+	                        {@CHR:<\ud801>}
+	                        {@RAN:<\udd00\udd27>}} 0}
+	                {priority {
+	                        {@CHR:<\ud801>}
+	                        {@RAN:<\udd30\udd63>}} 0}
+	                {priority {
+	                        {@CHR:<\ud801>}
+	                        {@RAN:<\ude00\udf36>}} 0}
+	                {priority {
+	                        {@CHR:<\ud801>}
+	                        {@RAN:<\udf40\udf55>}} 0}
+	                {priority {
+	                        {@CHR:<\ud801>}
+	                        {@RAN:<\udf60\udf67>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udc00\udc05>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@CHR:<\udc08>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udc0a\udc35>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udc37\udc38>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@CHR:<\udc3c>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udc3f\udc55>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udc60\udc76>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udc80\udc9e>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udce0\udcf2>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udcf4\udcf5>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udd00\udd15>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udd20\udd39>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udd80\uddb7>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\uddbe\uddbf>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@CHR:<\ude00>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\ude10\ude13>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\ude15\ude17>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\ude19\ude33>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\ude60\ude7c>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\ude80\ude9c>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udec0\udec7>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udec9\udee4>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udf00\udf35>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udf40\udf55>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udf60\udf72>}} 0}
+	                {priority {
+	                        {@CHR:<\ud802>}
+	                        {@RAN:<\udf80\udf91>}} 0}
+	                {priority {
+	                        {@CHR:<\ud803>}
+	                        {@RAN:<\udc00\udc48>}} 0}
+	                {priority {
+	                        {@CHR:<\ud803>}
+	                        {@RAN:<\udc80\udcb2>}} 0}
+	                {priority {
+	                        {@CHR:<\ud803>}
+	                        {@RAN:<\udcc0\udcf2>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udc03\udc37>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udc66\udc6f>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udc83\udcaf>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udcd0\udce8>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udcf0\udcf9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udd03\udd26>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udd36\udd3f>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udd50\udd72>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@CHR:<\udd76>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udd83\uddb2>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\uddc1\uddc4>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\uddd0\uddda>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@CHR:<\udddc>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\ude00\ude11>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\ude13\ude2b>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\ude80\ude86>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@CHR:<\ude88>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\ude8a\ude8d>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\ude8f\ude9d>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\ude9f\udea8>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udeb0\udede>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udef0\udef9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udf05\udf0c>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udf0f\udf10>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udf13\udf28>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udf2a\udf30>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udf32\udf33>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udf35\udf39>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@CHR:<\udf3d>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@CHR:<\udf50>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udf5d\udf61>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\udc00\udc34>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\udc47\udc4a>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\udc50\udc59>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\udc80\udcaf>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\udcc4\udcc5>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@CHR:<\udcc7>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\udcd0\udcd9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\udd80\uddae>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\uddd8\udddb>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\ude00\ude2f>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@CHR:<\ude44>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\ude50\ude59>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\ude80\udeaa>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\udec0\udec9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\udf00\udf19>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\udf30\udf39>}} 0}
+	                {priority {
+	                        {@CHR:<\ud806>}
+	                        {@RAN:<\udca0\udce9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud806>}
+	                        {@CHR:<\udcff>}} 0}
+	                {priority {
+	                        {@CHR:<\ud806>}
+	                        {@RAN:<\udec0\udef8>}} 0}
+	                {priority {
+	                        {@CHR:<\ud807>}
+	                        {@RAN:<\udc00\udc08>}} 0}
+	                {priority {
+	                        {@CHR:<\ud807>}
+	                        {@RAN:<\udc0a\udc2e>}} 0}
+	                {priority {
+	                        {@CHR:<\ud807>}
+	                        {@CHR:<\udc40>}} 0}
+	                {priority {
+	                        {@CHR:<\ud807>}
+	                        {@RAN:<\udc50\udc59>}} 0}
+	                {priority {
+	                        {@CHR:<\ud807>}
+	                        {@RAN:<\udc72\udc8f>}} 0}
+	                {priority {
+	                        {@CHR:<\ud808>}
+	                        {@RAN:<\udc00\udf99>}} 0}
+	                {priority {
+	                        {@CHR:<\ud809>}
+	                        {@RAN:<\udc80\udd43>}} 0}
+	                {priority {
+	                        {@CHR:<\ud80c>}
+	                        {@RAN:<\udc00\udfff>}} 0}
+	                {priority {
+	                        {@CHR:<\ud80d>}
+	                        {@RAN:<\udc00\udc2e>}} 0}
+	                {priority {
+	                        {@CHR:<\ud811>}
+	                        {@RAN:<\udc00\ude46>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81a>}
+	                        {@RAN:<\udc00\ude38>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81a>}
+	                        {@RAN:<\ude40\ude5e>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81a>}
+	                        {@RAN:<\ude60\ude69>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81a>}
+	                        {@RAN:<\uded0\udeed>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81a>}
+	                        {@RAN:<\udf00\udf2f>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81a>}
+	                        {@RAN:<\udf40\udf43>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81a>}
+	                        {@RAN:<\udf50\udf59>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81a>}
+	                        {@RAN:<\udf63\udf77>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81a>}
+	                        {@RAN:<\udf7d\udf8f>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81b>}
+	                        {@RAN:<\udf00\udf44>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81b>}
+	                        {@CHR:<\udf50>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81b>}
+	                        {@RAN:<\udf93\udf9f>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81b>}
+	                        {@CHR:<\udfe0>}} 0}
+	                {priority {
+	                        {@RAN:<\ud81c\ud820>}
+	                        {@RAN:<\udc00\udfff>}} 0}
+	                {priority {
+	                        {@CHR:<\ud821>}
+	                        {@RAN:<\udc00\udfec>}} 0}
+	                {priority {
+	                        {@CHR:<\ud822>}
+	                        {@RAN:<\udc00\udef2>}} 0}
+	                {priority {
+	                        {@CHR:<\ud82c>}
+	                        {@RAN:<\udc00\udc01>}} 0}
+	                {priority {
+	                        {@CHR:<\ud82f>}
+	                        {@RAN:<\udc00\udc6a>}} 0}
+	                {priority {
+	                        {@CHR:<\ud82f>}
+	                        {@RAN:<\udc70\udc7c>}} 0}
+	                {priority {
+	                        {@CHR:<\ud82f>}
+	                        {@RAN:<\udc80\udc88>}} 0}
+	                {priority {
+	                        {@CHR:<\ud82f>}
+	                        {@RAN:<\udc90\udc99>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udc00\udc54>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udc56\udc9c>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udc9e\udc9f>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@CHR:<\udca2>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udca5\udca6>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udca9\udcac>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udcae\udcb9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@CHR:<\udcbb>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udcbd\udcc3>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udcc5\udd05>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udd07\udd0a>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udd0d\udd14>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udd16\udd1c>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udd1e\udd39>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udd3b\udd3e>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udd40\udd44>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@CHR:<\udd46>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udd4a\udd50>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udd52\udea5>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udea8\udec0>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udec2\udeda>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udedc\udefa>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udefc\udf14>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udf16\udf34>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udf36\udf4e>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udf50\udf6e>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udf70\udf88>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udf8a\udfa8>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udfaa\udfc2>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udfc4\udfcb>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udfce\udfff>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83a>}
+	                        {@RAN:<\udc00\udcc4>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83a>}
+	                        {@RAN:<\udd00\udd43>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83a>}
+	                        {@RAN:<\udd50\udd59>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\ude00\ude03>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\ude05\ude1f>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\ude21\ude22>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude24>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude27>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\ude29\ude32>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\ude34\ude37>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude39>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude3b>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude42>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude47>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude49>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude4b>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\ude4d\ude4f>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\ude51\ude52>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude54>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude57>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude59>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude5b>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude5d>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude5f>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\ude61\ude62>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude64>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\ude67\ude6a>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\ude6c\ude72>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\ude74\ude77>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\ude79\ude7c>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@CHR:<\ude7e>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\ude80\ude89>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\ude8b\ude9b>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\udea1\udea3>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\udea5\udea9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83b>}
+	                        {@RAN:<\udeab\udebb>}} 0}
+	                {priority {
+	                        {@RAN:<\ud840\ud868>}
+	                        {@RAN:<\udc00\udfff>}} 0}
+	                {priority {
+	                        {@CHR:<\ud869>}
+	                        {@RAN:<\udc00\uded6>}} 0}
+	                {priority {
+	                        {@CHR:<\ud869>}
+	                        {@RAN:<\udf00\udfff>}} 0}
+	                {priority {
+	                        {@RAN:<\ud86a\ud86c>}
+	                        {@RAN:<\udc00\udfff>}} 0}
+	                {priority {
+	                        {@CHR:<\ud86d>}
+	                        {@RAN:<\udc00\udf34>}} 0}
+	                {priority {
+	                        {@CHR:<\ud86d>}
+	                        {@RAN:<\udf40\udfff>}} 0}
+	                {priority {
+	                        {@CHR:<\ud86e>}
+	                        {@RAN:<\udc00\udc1d>}} 0}
+	                {priority {
+	                        {@CHR:<\ud86e>}
+	                        {@RAN:<\udc20\udfff>}} 0}
+	                {priority {
+	                        {@RAN:<\ud86f\ud872>}
+	                        {@RAN:<\udc00\udfff>}} 0}
+	                {priority {
+	                        {@CHR:<\ud873>}
+	                        {@RAN:<\udc00\udea1>}} 0}
+	                {priority {
+	                        {@CHR:<\ud87e>}
+	                        {@RAN:<\udc00\ude1d>}} 0}
+	            }
+	            {@CLS:<[:digit:smp:]>.SMP} {
+	                {priority {
+	                        {@CHR:<\ud801>}
+	                        {@RAN:<\udca0\udca9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udc66\udc6f>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udcf0\udcf9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udd36\udd3f>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\uddd0\uddd9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud804>}
+	                        {@RAN:<\udef0\udef9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\udc50\udc59>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\udcd0\udcd9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\ude50\ude59>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\udec0\udec9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud805>}
+	                        {@RAN:<\udf30\udf39>}} 0}
+	                {priority {
+	                        {@CHR:<\ud806>}
+	                        {@RAN:<\udce0\udce9>}} 0}
+	                {priority {
+	                        {@CHR:<\ud807>}
+	                        {@RAN:<\udc50\udc59>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81a>}
+	                        {@RAN:<\ude60\ude69>}} 0}
+	                {priority {
+	                        {@CHR:<\ud81a>}
+	                        {@RAN:<\udf50\udf59>}} 0}
+	                {priority {
+	                        {@CHR:<\ud835>}
+	                        {@RAN:<\udfce\udfff>}} 0}
+	                {priority {
+	                        {@CHR:<\ud83a>}
+	                        {@RAN:<\udd50\udd59>}} 0}
+	            }
+	            {@CLS:<\u10000-\u10ffff>.SMP} { {priority {
+	                    {@RAN:<\ud800\udbff>}
+	                    {@RAN:<\udc00\udfff>}} 0} }
+	            {@CLS:<_[:alnum:]>} {
+	                {priority {{@CLS:<_[:alnum:]>.BMP}} 0}
+	                {priority {{@CLS:<[:alnum:smp:]>.SMP}} 0}
+	            }
+	            {@CLS:<_[:alnum:][:space:]>} {
+	                {priority {{@CLS:<_[:alnum:][:space:]>.BMP}} 0}
+	                {priority {{@CLS:<[:alnum:smp:]>.SMP}} 0}
+	            }
+	            {@NCC:<[:alnum:]>} {
+	                {priority {{@NCC:<[:alnum:]>.BMP}} 0}
+	                {priority {{@CLS:<[:alnum:smp:]>.SMP}} 0}
+	            }
+	            {@NCC:<[:digit:]>} {
+	                {priority {{@NCC:<[:digit:]>.BMP}} 0}
+	                {priority {{@CLS:<[:digit:smp:]>.SMP}} 0}
+	            }
+	            @RAN:<03> {
+	                {priority @RAN:<01> 0}
+	                {priority RAN<d50-d51> 0}
+	            }
+	            @RAN:<07> {
+	                {priority @RAN:<03> 0}
+	                {priority RAN<d52-d55> 0}
+	            }
+	            {@RAN:<\udc00\udc0b>} {
+	                {priority {{@RAN:<\udc00\udc08>}} 0}
+	                {priority RAN<d56329-d56331> 0}
+	            }
+	            {@RAN:<\udc00\udc1d>} {
+	                {priority {{@RAN:<\udc00\udc0b>}} 0}
+	                {priority RAN<d56332-d56349> 0}
+	            }
+	            {@RAN:<\udc00\udc2e>} {
+	                {priority {{@RAN:<\udc00\udc1d>}} 0}
+	                {priority RAN<d56350-d56366> 0}
+	            }
+	            {@RAN:<\udc00\udc05>} {
+	                {priority {{@RAN:<\udc00\udc01>}} 0}
+	                {priority RAN<d56322-d56325> 0}
+	            }
+	            {@RAN:<\udc00\udc6a>} {
+	                {priority {{@RAN:<\udc00\udc54>}} 0}
+	                {priority RAN<d56405-d56426> 0}
+	            }
+	            {@RAN:<\udc00\udc08>} {
+	                {priority {{@RAN:<\udc00\udc05>}} 0}
+	                {priority RAN<d56326-d56328> 0}
+	            }
+	            {@RAN:<\udc00\udc9d>} {
+	                {priority {{@RAN:<\udc00\udc6a>}} 0}
+	                {priority RAN<d56427-d56477> 0}
+	            }
+	            {@RAN:<\udc00\udc34>} {
+	                {priority {{@RAN:<\udc00\udc2e>}} 0}
+	                {priority RAN<d56367-d56372> 0}
+	            }
+	            {@RAN:<\udc00\udc48>} {
+	                {priority {{@RAN:<\udc00\udc34>}} 0}
+	                {priority RAN<d56373-d56392> 0}
+	            }
+	            {@RAN:<\udc00\udc54>} {
+	                {priority {{@RAN:<\udc00\udc48>}} 0}
+	                {priority RAN<d56393-d56404> 0}
+	            }
+	            {@RAN:<\udc00\udcc4>} {
+	                {priority {{@RAN:<\udc00\udc9d>}} 0}
+	                {priority RAN<d56478-d56516> 0}
+	            }
+	            {@RAN:<\udc00\ude1d>} {
+	                {priority {{@RAN:<\udc00\udcc4>}} 0}
+	                {priority RAN<d56517-d56861> 0}
+	            }
+	            {@RAN:<\udc00\ude38>} {
+	                {priority {{@RAN:<\udc00\ude1d>}} 0}
+	                {priority RAN<d56862-d56888> 0}
+	            }
+	            {@RAN:<\udc00\ude46>} {
+	                {priority {{@RAN:<\udc00\ude38>}} 0}
+	                {priority RAN<d56889-d56902> 0}
+	            }
+	            {@RAN:<\udc00\udea1>} {
+	                {priority {{@RAN:<\udc00\ude46>}} 0}
+	                {priority RAN<d56903-d56993> 0}
+	            }
+	            {@RAN:<\udc00\uded6>} {
+	                {priority {{@RAN:<\udc00\udea1>}} 0}
+	                {priority RAN<d56994-d57046> 0}
+	            }
+	            {@RAN:<\udc00\udef2>} {
+	                {priority {{@RAN:<\udc00\uded6>}} 0}
+	                {priority RAN<d57047-d57074> 0}
+	            }
+	            {@RAN:<\udc00\udf34>} {
+	                {priority {{@RAN:<\udc00\udef2>}} 0}
+	                {priority RAN<d57075-d57140> 0}
+	            }
+	            {@RAN:<\udc00\udf99>} {
+	                {priority {{@RAN:<\udc00\udf34>}} 0}
+	                {priority RAN<d57141-d57241> 0}
+	            }
+	            {@RAN:<\udc00\udfec>} {
+	                {priority {{@RAN:<\udc00\udf99>}} 0}
+	                {priority RAN<d57242-d57324> 0}
+	            }
+	            {@RAN:<\udc00\udfff>} {
+	                {priority {{@RAN:<\udc00\udfec>}} 0}
+	                {priority RAN<d57325-d57343> 0}
+	            }
+	            {@RAN:<\udc0a\udc35>} {
+	                {priority {{@RAN:<\udc0a\udc2e>}} 0}
+	                {priority RAN<d56367-d56373> 0}
+	            }
+	            {@RAN:<\udc3f\udc55>} {
+	                {priority {{@RAN:<\udc3f\udc4d>}} 0}
+	                {priority RAN<d56398-d56405> 0}
+	            }
+	            {@RAN:<\udc50\udc5d>} {
+	                {priority {{@RAN:<\udc50\udc59>}} 0}
+	                {priority RAN<d56410-d56413> 0}
+	            }
+	            {@RAN:<\udc80\udc9e>} {
+	                {priority {{@RAN:<\udc80\udc88>}} 0}
+	                {priority RAN<d56457-d56478> 0}
+	            }
+	            {@RAN:<\udc80\udcaf>} {
+	                {priority {{@RAN:<\udc80\udc9e>}} 0}
+	                {priority RAN<d56479-d56495> 0}
+	            }
+	            {@RAN:<\udc80\udcb2>} {
+	                {priority {{@RAN:<\udc80\udcaf>}} 0}
+	                {priority RAN<d56496-d56498> 0}
+	            }
+	            {@RAN:<\udc80\udcfa>} {
+	                {priority {{@RAN:<\udc80\udcb2>}} 0}
+	                {priority RAN<d56499-d56570> 0}
+	            }
+	            {@RAN:<\udc80\udd43>} {
+	                {priority {{@RAN:<\udc80\udcfa>}} 0}
+	                {priority RAN<d56571-d56643> 0}
+	            }
+	            {@RAN:<\udca0\udce9>} {
+	                {priority RAN<d56480-d56516> 0}
+	                {priority RAN<d56517-d56553> 0}
+	            }
+	            {@RAN:<\udcb0\udcd3>} {
+	                {priority RAN<d56496-d56498> 0}
+	                {priority RAN<d56499-d56531> 0}
+	            }
+	            {@RAN:<\udcc5\udd05>} {
+	                {priority RAN<d56517-d56553> 0}
+	                {priority RAN<d56554-d56581> 0}
+	            }
+	            {@RAN:<\udcd0\udce8>} {
+	                {priority {{@RAN:<\udcd0\udcd9>}} 0}
+	                {priority RAN<d56538-d56552> 0}
+	            }
+	            {@RAN:<\udce0\udcf2>} {
+	                {priority {{@RAN:<\udce0\udce9>}} 0}
+	                {priority RAN<d56554-d56562> 0}
+	            }
+	            {@RAN:<\udd00\udd27>} {
+	                {priority {{@RAN:<\udd00\udd15>}} 0}
+	                {priority RAN<d56598-d56615> 0}
+	            }
+	            {@RAN:<\udd00\udd43>} {
+	                {priority {{@RAN:<\udd00\udd27>}} 0}
+	                {priority RAN<d56616-d56643> 0}
+	            }
+	            {@RAN:<\udd50\udd72>} {
+	                {priority {{@RAN:<\udd50\udd59>}} 0}
+	                {priority RAN<d56666-d56690> 0}
+	            }
+	            {@RAN:<\udd80\uddb7>} {
+	                {priority {{@RAN:<\udd80\uddae>}} 0}
+	                {priority RAN<d56751-d56759> 0}
+	            }
+	            {@RAN:<\uddd0\uddda>} {
+	                {priority {{@RAN:<\uddd0\uddd9>}} 0}
+	                {priority CHR<d56794> 0}
+	            }
+	            {@RAN:<\ude00\ude2f>} {
+	                {priority {{@RAN:<\ude00\ude11>}} 0}
+	                {priority RAN<d56850-d56879> 0}
+	            }
+	            {@RAN:<\ude00\ude11>} {
+	                {priority {{@RAN:<\ude00\ude03>}} 0}
+	                {priority RAN<d56836-d56849> 0}
+	            }
+	            {@RAN:<\ude00\udf36>} {
+	                {priority {{@RAN:<\ude00\ude2f>}} 0}
+	                {priority RAN<d56880-d57142> 0}
+	            }
+	            {@RAN:<\ude60\ude7c>} {
+	                {priority {{@RAN:<\ude60\ude69>}} 0}
+	                {priority RAN<d56938-d56956> 0}
+	            }
+	            {@RAN:<\ude80\ude9c>} {
+	                {priority {{@RAN:<\ude80\ude89>}} 0}
+	                {priority RAN<d56970-d56988> 0}
+	            }
+	            {@RAN:<\ude80\ude89>} {
+	                {priority {{@RAN:<\ude80\ude86>}} 0}
+	                {priority RAN<d56967-d56969> 0}
+	            }
+	            {@RAN:<\ude80\udeaa>} {
+	                {priority {{@RAN:<\ude80\ude9c>}} 0}
+	                {priority RAN<d56989-d57002> 0}
+	            }
+	            {@RAN:<\udec0\udec9>} {
+	                {priority {{@RAN:<\udec0\udec7>}} 0}
+	                {priority RAN<d57032-d57033> 0}
+	            }
+	            {@RAN:<\udec0\udef8>} {
+	                {priority {{@RAN:<\udec0\udec9>}} 0}
+	                {priority RAN<d57034-d57080> 0}
+	            }
+	            {@RAN:<\udf00\udf1f>} {
+	                {priority {{@RAN:<\udf00\udf19>}} 0}
+	                {priority RAN<d57114-d57119> 0}
+	            }
+	            {@RAN:<\udf00\udf2f>} {
+	                {priority {{@RAN:<\udf00\udf1f>}} 0}
+	                {priority RAN<d57120-d57135> 0}
+	            }
+	            {@RAN:<\udf00\udf35>} {
+	                {priority {{@RAN:<\udf00\udf2f>}} 0}
+	                {priority RAN<d57136-d57141> 0}
+	            }
+	            {@RAN:<\udf00\udf44>} {
+	                {priority {{@RAN:<\udf00\udf35>}} 0}
+	                {priority RAN<d57142-d57156> 0}
+	            }
+	            {@RAN:<\udf00\udfff>} {
+	                {priority {{@RAN:<\udf00\udf44>}} 0}
+	                {priority RAN<d57157-d57343> 0}
+	            }
+	            {@RAN:<\udf30\udf39>} {
+	                {priority RAN<d57136-d57141> 0}
+	                {priority RAN<d57142-d57145> 0}
+	            }
+	            {@RAN:<\udf30\udf40>} {
+	                {priority {{@RAN:<\udf30\udf39>}} 0}
+	                {priority RAN<d57146-d57152> 0}
+	            }
+	            {@RAN:<\udf36\udf4e>} {
+	                {priority RAN<d57142-d57156> 0}
+	                {priority RAN<d57157-d57166> 0}
+	            }
+	            {@RAN:<\udf40\udf55>} {
+	                {priority {{@RAN:<\udf40\udf43>}} 0}
+	                {priority RAN<d57156-d57173> 0}
+	            }
+	            {@RAN:<\udf40\udfff>} {
+	                {priority {{@RAN:<\udf40\udf55>}} 0}
+	                {priority RAN<d57174-d57343> 0}
+	            }
+	            {@RAN:<\udf50\udf6e>} {
+	                {priority {{@RAN:<\udf50\udf59>}} 0}
+	                {priority RAN<d57178-d57198> 0}
+	            }
+	            {@RAN:<\udf50\udf75>} {
+	                {priority {{@RAN:<\udf50\udf6e>}} 0}
+	                {priority RAN<d57199-d57205> 0}
+	            }
+	            {@RAN:<\udf60\udf72>} {
+	                {priority {{@RAN:<\udf60\udf67>}} 0}
+	                {priority RAN<d57192-d57202> 0}
+	            }
+	            {@RAN:<\udf80\udf9d>} {
+	                {priority {{@RAN:<\udf80\udf91>}} 0}
+	                {priority RAN<d57234-d57245> 0}
+	            }
 	            @STR:<::=> { {priority {
 	                    @CHR:<:>
 	                    @CHR:<:>
@@ -1545,12 +2542,40 @@ oo::class create <Name> {
 	                        hex
 	                        {cc range completion}} 0}
 	                {priority {
-	                        @CHR:<u>
+	                        @CHR:<U>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
 	                        hex
 	                        hex
 	                        hex
 	                        hex
 	                        {cc range completion}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {cc range completion}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {cc range completion post short unicode escape}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {cc range completion post short unicode escape}} 0}
 	                {priority {
 	                        @CHR:<u>
 	                        hex
@@ -1592,12 +2617,40 @@ oo::class create <Name> {
 	                        hex
 	                        {nullable string}} 0}
 	                {priority {
-	                        @CHR:<u>
+	                        @CHR:<U>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
 	                        hex
 	                        hex
 	                        hex
 	                        hex
 	                        {nullable string}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {nullable string}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {nullable string post short unicode escape}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {nullable string post short unicode escape}} 0}
 	                {priority {
 	                        @CHR:<u>
 	                        hex
@@ -1711,6 +2764,66 @@ oo::class create <Name> {
 	                    {posix char class name}
 	                    {@STR:<:\135>}} 0} }
 	            {posix char class name} { {quantified {@NCC:<[:alnum:]>} 1} }
+	            RAN<d56367-d56373> {
+	                {priority RAN<d56367-d56372> 0}
+	                {priority CHR<d56373> 0}
+	            }
+	            RAN<d56478-d56516> {
+	                {priority {{@RAN:<\udc9e\udc9f>}} 0}
+	                {priority RAN<d56480-d56516> 0}
+	            }
+	            RAN<d56480-d56516> {
+	                {priority {{@RAN:<\udca0\udca9>}} 0}
+	                {priority RAN<d56490-d56516> 0}
+	            }
+	            RAN<d56499-d56570> {
+	                {priority RAN<d56499-d56531> 0}
+	                {priority RAN<d56532-d56570> 0}
+	            }
+	            RAN<d56517-d56861> {
+	                {priority {{@RAN:<\udcc5\udd05>}} 0}
+	                {priority RAN<d56582-d56861> 0}
+	            }
+	            RAN<d56554-d56581> {
+	                {priority RAN<d56554-d56562> 0}
+	                {priority RAN<d56563-d56581> 0}
+	            }
+	            RAN<d56598-d56615> {
+	                {priority {{@RAN:<\udd16\udd1c>}} 0}
+	                {priority RAN<d56605-d56615> 0}
+	            }
+	            RAN<d56970-d56988> {
+	                {priority {{@RAN:<\ude8a\ude8d>}} 0}
+	                {priority RAN<d56974-d56988> 0}
+	            }
+	            RAN<d57141-d57241> {
+	                {priority {{@RAN:<\udf35\udf39>}} 0}
+	                {priority RAN<d57146-d57241> 0}
+	            }
+	            RAN<d57142-d57156> {
+	                {priority RAN<d57142-d57145> 0}
+	                {priority RAN<d57146-d57156> 0}
+	            }
+	            RAN<d57146-d57156> {
+	                {priority RAN<d57146-d57152> 0}
+	                {priority RAN<d57153-d57156> 0}
+	            }
+	            RAN<d57146-d57241> {
+	                {priority RAN<d57146-d57156> 0}
+	                {priority RAN<d57157-d57241> 0}
+	            }
+	            RAN<d57157-d57241> {
+	                {priority RAN<d57157-d57166> 0}
+	                {priority RAN<d57167-d57241> 0}
+	            }
+	            RAN<d57157-d57343> {
+	                {priority RAN<d57157-d57241> 0}
+	                {priority RAN<d57242-d57343> 0}
+	            }
+	            RAN<d57242-d57343> {
+	                {priority RAN<d57242-d57324> 0}
+	                {priority RAN<d57325-d57343> 0}
+	            }
 	            {result item descriptor} {
 	                {priority @STR:<start> 0}
 	                {priority @STR:<length> 0}
@@ -1916,13 +3029,13 @@ oo::class create <Name> {
 	                    {zero or more word characters}} 0} }
 	        }
 	        literal {
-	            {@^CLS:<\7-\10\n-\r'0-7\134\u2028-\u2029>} { {^charclass {7 8} {10 13} 39 {48 55} 92 {8232 8233}} }
-	            {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029>} { {^charclass {7 8} {10 13} 39 92 {8232 8233}} }
-	            {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]>} { {^charclass {7 8} {10 13} 39 92 {8232 8233} xdigit} }
-	            {@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>} { {^charclass {7 13} 45 {48 55} {92 93} {8232 8233}} }
-	            {@^CLS:<\7-\r-\134-\135\u2028-\u2029>} { {^charclass {7 13} 45 {92 93} {8232 8233}} }
-	            {@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>} { {^charclass {7 13} 45 {92 93} {8232 8233} xdigit} }
-	            {@^CLS:<\n-\r\u2028-\u2029>} { {^charclass {10 13} {8232 8233}} }
+	            {@^CLS:<\7-\10\n-\r'0-7\134\u2028-\u2029>.BMP} { {^charclass {7 8} {10 13} 39 {48 55} 92 {8232 8233}} }
+	            {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029>.BMP} { {^charclass {7 8} {10 13} 39 92 {8232 8233}} }
+	            {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]>.BMP} { {^charclass {7 8} {10 13} 39 92 {8232 8233} xdigit} }
+	            {@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>.BMP} { {^charclass {7 13} 45 {48 55} {92 93} {8232 8233}} }
+	            {@^CLS:<\7-\r-\134-\135\u2028-\u2029>.BMP} { {^charclass {7 13} 45 {92 93} {8232 8233}} }
+	            {@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>.BMP} { {^charclass {7 13} 45 {92 93} {8232 8233} xdigit} }
+	            {@^CLS:<\n-\r\u2028-\u2029>.BMP} { {^charclass {10 13} {8232 8233}} }
 	            @CHR:<#> { {character 35} }
 	            @CHR:<'> { {character 39} }
 	            @CHR:<*> { {character 42} }
@@ -1942,6 +3055,65 @@ oo::class create <Name> {
 	            {@CHR:<\135>} { {character 93} }
 	            {@CHR:<\173>} { {character 123} }
 	            {@CHR:<\175>} { {character 125} }
+	            {@CHR:<\ud80c>} { {character 55308} }
+	            {@CHR:<\ud80d>} { {character 55309} }
+	            {@CHR:<\ud81a>} { {character 55322} }
+	            {@CHR:<\ud81b>} { {character 55323} }
+	            {@CHR:<\ud82c>} { {character 55340} }
+	            {@CHR:<\ud82f>} { {character 55343} }
+	            {@CHR:<\ud83a>} { {character 55354} }
+	            {@CHR:<\ud83b>} { {character 55355} }
+	            {@CHR:<\ud86d>} { {character 55405} }
+	            {@CHR:<\ud86e>} { {character 55406} }
+	            {@CHR:<\ud87e>} { {character 55422} }
+	            {@CHR:<\ud800>} { {character 55296} }
+	            {@CHR:<\ud801>} { {character 55297} }
+	            {@CHR:<\ud802>} { {character 55298} }
+	            {@CHR:<\ud803>} { {character 55299} }
+	            {@CHR:<\ud804>} { {character 55300} }
+	            {@CHR:<\ud805>} { {character 55301} }
+	            {@CHR:<\ud806>} { {character 55302} }
+	            {@CHR:<\ud807>} { {character 55303} }
+	            {@CHR:<\ud808>} { {character 55304} }
+	            {@CHR:<\ud809>} { {character 55305} }
+	            {@CHR:<\ud811>} { {character 55313} }
+	            {@CHR:<\ud821>} { {character 55329} }
+	            {@CHR:<\ud822>} { {character 55330} }
+	            {@CHR:<\ud835>} { {character 55349} }
+	            {@CHR:<\ud869>} { {character 55401} }
+	            {@CHR:<\ud873>} { {character 55411} }
+	            {@CHR:<\udc3c>} { {character 56380} }
+	            {@CHR:<\udc08>} { {character 56328} }
+	            {@CHR:<\udc40>} { {character 56384} }
+	            {@CHR:<\udca2>} { {character 56482} }
+	            {@CHR:<\udcbb>} { {character 56507} }
+	            {@CHR:<\udcc7>} { {character 56519} }
+	            {@CHR:<\udcff>} { {character 56575} }
+	            {@CHR:<\udd46>} { {character 56646} }
+	            {@CHR:<\udd76>} { {character 56694} }
+	            {@CHR:<\udddc>} { {character 56796} }
+	            {@CHR:<\ude00>} { {character 56832} }
+	            {@CHR:<\ude3b>} { {character 56891} }
+	            {@CHR:<\ude4b>} { {character 56907} }
+	            {@CHR:<\ude5b>} { {character 56923} }
+	            {@CHR:<\ude5d>} { {character 56925} }
+	            {@CHR:<\ude5f>} { {character 56927} }
+	            {@CHR:<\ude7e>} { {character 56958} }
+	            {@CHR:<\ude24>} { {character 56868} }
+	            {@CHR:<\ude27>} { {character 56871} }
+	            {@CHR:<\ude39>} { {character 56889} }
+	            {@CHR:<\ude42>} { {character 56898} }
+	            {@CHR:<\ude44>} { {character 56900} }
+	            {@CHR:<\ude47>} { {character 56903} }
+	            {@CHR:<\ude49>} { {character 56905} }
+	            {@CHR:<\ude54>} { {character 56916} }
+	            {@CHR:<\ude57>} { {character 56919} }
+	            {@CHR:<\ude59>} { {character 56921} }
+	            {@CHR:<\ude64>} { {character 56932} }
+	            {@CHR:<\ude88>} { {character 56968} }
+	            {@CHR:<\udf3d>} { {character 57149} }
+	            {@CHR:<\udf50>} { {character 57168} }
+	            {@CHR:<\udfe0>} { {character 57312} }
 	            @CHR:<^> { {character 94} }
 	            @CHR:<a> { {character 97} }
 	            @CHR:<b> { {character 98} }
@@ -1961,6 +3133,7 @@ oo::class create <Name> {
 	            @CHR:<r> { {character 114} }
 	            @CHR:<s> { {character 115} }
 	            @CHR:<t> { {character 116} }
+	            @CHR:<U> { {character 85} }
 	            @CHR:<u> { {character 117} }
 	            @CHR:<v> { {character 118} }
 	            @CHR:<w> { {character 119} }
@@ -1971,16 +3144,195 @@ oo::class create <Name> {
 	            @CLS:<+-> { {charclass 43 45} }
 	            {@CLS:<\134a-bfnrtv>} { {charclass 92 {97 98} 102 110 114 116 118} }
 	            {@CLS:<\n-\r\u2028-\u2029>} { {charclass {10 13} {8232 8233}} }
-	            {@CLS:<_[:alnum:]>} { {charclass 95 alnum} }
-	            {@CLS:<_[:alnum:][:space:]>} { {charclass 95 alnum space} }
+	            {@CLS:<_[:alnum:]>.BMP} { {charclass 95 alnum} }
+	            {@CLS:<_[:alnum:][:space:]>.BMP} { {charclass 95 alnum space} }
 	            @CLS:<A-Za-z> { {charclass {65 90} {97 122}} }
-	            {@NCC:<[:alnum:]>} { {named-class alnum} }
-	            {@NCC:<[:digit:]>} { {named-class digit} }
+	            {@NCC:<[:alnum:]>.BMP} { {named-class alnum} }
+	            {@NCC:<[:digit:]>.BMP} { {named-class digit} }
 	            {@NCC:<[:space:]>} { {named-class space} }
 	            {@NCC:<[:xdigit:]>} { {named-class xdigit} }
 	            @RAN:<01> { {range 48 49} }
-	            @RAN:<03> { {range 48 51} }
-	            @RAN:<07> { {range 48 55} }
+	            {@RAN:<\ud81c\ud820>} { {range 55324 55328} }
+	            {@RAN:<\ud86a\ud86c>} { {range 55402 55404} }
+	            {@RAN:<\ud86f\ud872>} { {range 55407 55410} }
+	            {@RAN:<\ud800\udbff>} { {range 55296 56319} }
+	            {@RAN:<\ud840\ud868>} { {range 55360 55400} }
+	            {@RAN:<\udc00\udc01>} { {range 56320 56321} }
+	            {@RAN:<\udc0a\udc2e>} { {range 56330 56366} }
+	            {@RAN:<\udc0d\udc26>} { {range 56333 56358} }
+	            {@RAN:<\udc03\udc37>} { {range 56323 56375} }
+	            {@RAN:<\udc3c\udc3d>} { {range 56380 56381} }
+	            {@RAN:<\udc3f\udc4d>} { {range 56383 56397} }
+	            {@RAN:<\udc9e\udc9f>} { {range 56478 56479} }
+	            {@RAN:<\udc20\udfff>} { {range 56352 57343} }
+	            {@RAN:<\udc28\udc3a>} { {range 56360 56378} }
+	            {@RAN:<\udc37\udc38>} { {range 56375 56376} }
+	            {@RAN:<\udc47\udc4a>} { {range 56391 56394} }
+	            {@RAN:<\udc50\udc59>} { {range 56400 56409} }
+	            {@RAN:<\udc56\udc9c>} { {range 56406 56476} }
+	            {@RAN:<\udc60\udc76>} { {range 56416 56438} }
+	            {@RAN:<\udc66\udc6f>} { {range 56422 56431} }
+	            {@RAN:<\udc70\udc7c>} { {range 56432 56444} }
+	            {@RAN:<\udc72\udc8f>} { {range 56434 56463} }
+	            {@RAN:<\udc80\udc88>} { {range 56448 56456} }
+	            {@RAN:<\udc83\udcaf>} { {range 56451 56495} }
+	            {@RAN:<\udc90\udc99>} { {range 56464 56473} }
+	            {@RAN:<\udca0\udca9>} { {range 56480 56489} }
+	            {@RAN:<\udca5\udca6>} { {range 56485 56486} }
+	            {@RAN:<\udca9\udcac>} { {range 56489 56492} }
+	            {@RAN:<\udcae\udcb9>} { {range 56494 56505} }
+	            {@RAN:<\udcbd\udcc3>} { {range 56509 56515} }
+	            {@RAN:<\udcc0\udcf2>} { {range 56512 56562} }
+	            {@RAN:<\udcc4\udcc5>} { {range 56516 56517} }
+	            {@RAN:<\udcd0\udcd9>} { {range 56528 56537} }
+	            {@RAN:<\udcd8\udcfb>} { {range 56536 56571} }
+	            {@RAN:<\udce0\udce9>} { {range 56544 56553} }
+	            {@RAN:<\udcf0\udcf9>} { {range 56560 56569} }
+	            {@RAN:<\udcf4\udcf5>} { {range 56564 56565} }
+	            {@RAN:<\udd00\udd15>} { {range 56576 56597} }
+	            {@RAN:<\udd0d\udd14>} { {range 56589 56596} }
+	            {@RAN:<\udd1e\udd39>} { {range 56606 56633} }
+	            {@RAN:<\udd03\udd26>} { {range 56579 56614} }
+	            {@RAN:<\udd3b\udd3e>} { {range 56635 56638} }
+	            {@RAN:<\udd4a\udd50>} { {range 56650 56656} }
+	            {@RAN:<\udd07\udd0a>} { {range 56583 56586} }
+	            {@RAN:<\udd16\udd1c>} { {range 56598 56604} }
+	            {@RAN:<\udd20\udd39>} { {range 56608 56633} }
+	            {@RAN:<\udd30\udd63>} { {range 56624 56675} }
+	            {@RAN:<\udd36\udd3f>} { {range 56630 56639} }
+	            {@RAN:<\udd40\udd44>} { {range 56640 56644} }
+	            {@RAN:<\udd50\udd59>} { {range 56656 56665} }
+	            {@RAN:<\udd52\udea5>} { {range 56658 56997} }
+	            {@RAN:<\udd80\uddae>} { {range 56704 56750} }
+	            {@RAN:<\udd83\uddb2>} { {range 56707 56754} }
+	            {@RAN:<\uddbe\uddbf>} { {range 56766 56767} }
+	            {@RAN:<\uddc1\uddc4>} { {range 56769 56772} }
+	            {@RAN:<\uddd0\uddd9>} { {range 56784 56793} }
+	            {@RAN:<\uddd8\udddb>} { {range 56792 56795} }
+	            {@RAN:<\ude00\ude03>} { {range 56832 56835} }
+	            {@RAN:<\ude4d\ude4f>} { {range 56909 56911} }
+	            {@RAN:<\ude05\ude1f>} { {range 56837 56863} }
+	            {@RAN:<\ude6c\ude72>} { {range 56940 56946} }
+	            {@RAN:<\ude8a\ude8d>} { {range 56970 56973} }
+	            {@RAN:<\ude8b\ude9b>} { {range 56971 56987} }
+	            {@RAN:<\ude8f\ude9d>} { {range 56975 56989} }
+	            {@RAN:<\ude9f\udea8>} { {range 56991 57000} }
+	            {@RAN:<\ude10\ude13>} { {range 56848 56851} }
+	            {@RAN:<\ude13\ude2b>} { {range 56851 56875} }
+	            {@RAN:<\ude15\ude17>} { {range 56853 56855} }
+	            {@RAN:<\ude19\ude33>} { {range 56857 56883} }
+	            {@RAN:<\ude21\ude22>} { {range 56865 56866} }
+	            {@RAN:<\ude29\ude32>} { {range 56873 56882} }
+	            {@RAN:<\ude34\ude37>} { {range 56884 56887} }
+	            {@RAN:<\ude40\ude5e>} { {range 56896 56926} }
+	            {@RAN:<\ude50\ude59>} { {range 56912 56921} }
+	            {@RAN:<\ude51\ude52>} { {range 56913 56914} }
+	            {@RAN:<\ude60\ude69>} { {range 56928 56937} }
+	            {@RAN:<\ude61\ude62>} { {range 56929 56930} }
+	            {@RAN:<\ude67\ude6a>} { {range 56935 56938} }
+	            {@RAN:<\ude74\ude77>} { {range 56948 56951} }
+	            {@RAN:<\ude79\ude7c>} { {range 56953 56956} }
+	            {@RAN:<\ude80\ude86>} { {range 56960 56966} }
+	            {@RAN:<\udea0\uded0>} { {range 56992 57040} }
+	            {@RAN:<\udea1\udea3>} { {range 56993 56995} }
+	            {@RAN:<\udea5\udea9>} { {range 56997 57001} }
+	            {@RAN:<\udea8\udec0>} { {range 57000 57024} }
+	            {@RAN:<\udeab\udebb>} { {range 57003 57019} }
+	            {@RAN:<\udeb0\udede>} { {range 57008 57054} }
+	            {@RAN:<\udec0\udec7>} { {range 57024 57031} }
+	            {@RAN:<\udec2\udeda>} { {range 57026 57050} }
+	            {@RAN:<\udec9\udee4>} { {range 57033 57060} }
+	            {@RAN:<\uded0\udeed>} { {range 57040 57069} }
+	            {@RAN:<\udedc\udefa>} { {range 57052 57082} }
+	            {@RAN:<\udef0\udef9>} { {range 57072 57081} }
+	            {@RAN:<\udefc\udf14>} { {range 57084 57108} }
+	            {@RAN:<\udf00\udf19>} { {range 57088 57113} }
+	            {@RAN:<\udf0f\udf10>} { {range 57103 57104} }
+	            {@RAN:<\udf2a\udf30>} { {range 57130 57136} }
+	            {@RAN:<\udf05\udf0c>} { {range 57093 57100} }
+	            {@RAN:<\udf5d\udf61>} { {range 57181 57185} }
+	            {@RAN:<\udf7d\udf8f>} { {range 57213 57231} }
+	            {@RAN:<\udf8a\udfa8>} { {range 57226 57256} }
+	            {@RAN:<\udf13\udf28>} { {range 57107 57128} }
+	            {@RAN:<\udf16\udf34>} { {range 57110 57140} }
+	            {@RAN:<\udf32\udf33>} { {range 57138 57139} }
+	            {@RAN:<\udf35\udf39>} { {range 57141 57145} }
+	            {@RAN:<\udf40\udf43>} { {range 57152 57155} }
+	            {@RAN:<\udf42\udf49>} { {range 57154 57161} }
+	            {@RAN:<\udf50\udf59>} { {range 57168 57177} }
+	            {@RAN:<\udf60\udf67>} { {range 57184 57191} }
+	            {@RAN:<\udf63\udf77>} { {range 57187 57207} }
+	            {@RAN:<\udf70\udf88>} { {range 57200 57224} }
+	            {@RAN:<\udf80\udf91>} { {range 57216 57233} }
+	            {@RAN:<\udf93\udf9f>} { {range 57235 57247} }
+	            {@RAN:<\udfa0\udfc3>} { {range 57248 57283} }
+	            {@RAN:<\udfaa\udfc2>} { {range 57258 57282} }
+	            {@RAN:<\udfc4\udfcb>} { {range 57284 57291} }
+	            {@RAN:<\udfc8\udfcf>} { {range 57288 57295} }
+	            {@RAN:<\udfce\udfff>} { {range 57294 57343} }
+	            CHR<d56373> { {character 56373} }
+	            CHR<d56794> { {character 56794} }
+	            RAN<d50-d51> { {range 50 51} }
+	            RAN<d52-d55> { {range 52 55} }
+	            RAN<d56322-d56325> { {range 56322 56325} }
+	            RAN<d56326-d56328> { {range 56326 56328} }
+	            RAN<d56329-d56331> { {range 56329 56331} }
+	            RAN<d56332-d56349> { {range 56332 56349} }
+	            RAN<d56350-d56366> { {range 56350 56366} }
+	            RAN<d56367-d56372> { {range 56367 56372} }
+	            RAN<d56373-d56392> { {range 56373 56392} }
+	            RAN<d56393-d56404> { {range 56393 56404} }
+	            RAN<d56398-d56405> { {range 56398 56405} }
+	            RAN<d56405-d56426> { {range 56405 56426} }
+	            RAN<d56410-d56413> { {range 56410 56413} }
+	            RAN<d56427-d56477> { {range 56427 56477} }
+	            RAN<d56457-d56478> { {range 56457 56478} }
+	            RAN<d56479-d56495> { {range 56479 56495} }
+	            RAN<d56490-d56516> { {range 56490 56516} }
+	            RAN<d56496-d56498> { {range 56496 56498} }
+	            RAN<d56499-d56531> { {range 56499 56531} }
+	            RAN<d56517-d56553> { {range 56517 56553} }
+	            RAN<d56532-d56570> { {range 56532 56570} }
+	            RAN<d56538-d56552> { {range 56538 56552} }
+	            RAN<d56554-d56562> { {range 56554 56562} }
+	            RAN<d56563-d56581> { {range 56563 56581} }
+	            RAN<d56571-d56643> { {range 56571 56643} }
+	            RAN<d56582-d56861> { {range 56582 56861} }
+	            RAN<d56605-d56615> { {range 56605 56615} }
+	            RAN<d56616-d56643> { {range 56616 56643} }
+	            RAN<d56666-d56690> { {range 56666 56690} }
+	            RAN<d56751-d56759> { {range 56751 56759} }
+	            RAN<d56836-d56849> { {range 56836 56849} }
+	            RAN<d56850-d56879> { {range 56850 56879} }
+	            RAN<d56862-d56888> { {range 56862 56888} }
+	            RAN<d56880-d57142> { {range 56880 57142} }
+	            RAN<d56889-d56902> { {range 56889 56902} }
+	            RAN<d56903-d56993> { {range 56903 56993} }
+	            RAN<d56938-d56956> { {range 56938 56956} }
+	            RAN<d56967-d56969> { {range 56967 56969} }
+	            RAN<d56974-d56988> { {range 56974 56988} }
+	            RAN<d56989-d57002> { {range 56989 57002} }
+	            RAN<d56994-d57046> { {range 56994 57046} }
+	            RAN<d57032-d57033> { {range 57032 57033} }
+	            RAN<d57034-d57080> { {range 57034 57080} }
+	            RAN<d57047-d57074> { {range 57047 57074} }
+	            RAN<d57075-d57140> { {range 57075 57140} }
+	            RAN<d57114-d57119> { {range 57114 57119} }
+	            RAN<d57120-d57135> { {range 57120 57135} }
+	            RAN<d57136-d57141> { {range 57136 57141} }
+	            RAN<d57142-d57145> { {range 57142 57145} }
+	            RAN<d57146-d57152> { {range 57146 57152} }
+	            RAN<d57153-d57156> { {range 57153 57156} }
+	            RAN<d57156-d57173> { {range 57156 57173} }
+	            RAN<d57157-d57166> { {range 57157 57166} }
+	            RAN<d57167-d57241> { {range 57167 57241} }
+	            RAN<d57174-d57343> { {range 57174 57343} }
+	            RAN<d57178-d57198> { {range 57178 57198} }
+	            RAN<d57192-d57202> { {range 57192 57202} }
+	            RAN<d57199-d57205> { {range 57199 57205} }
+	            RAN<d57234-d57245> { {range 57234 57245} }
+	            RAN<d57242-d57324> { {range 57242 57324} }
+	            RAN<d57325-d57343> { {range 57325 57343} }
 	        }
 	    }
 	}

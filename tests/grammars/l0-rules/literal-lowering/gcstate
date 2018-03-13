@@ -25,10 +25,11 @@ grammar {
                     R
                     S
                     T
-                    U} 0
+                    U
+                    V} 0
                         action {array values}
                         assoc left
-                        mask {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0}} }
+                        mask {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0}} }
             B { {priority @LEX:@CHR:<a> 0
                     action {array values}
                     assoc left
@@ -109,6 +110,10 @@ grammar {
                     action {array values}
                     assoc left
                     mask 0} }
+            V { {priority {{@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>}} 0
+                    action {array values}
+                    assoc left
+                    mask 0} }
         }
         terminal {
             {@LEX:@%NCC:<[:alnum:]>} { terminal }
@@ -128,6 +133,7 @@ grammar {
             @LEX:@CLS:<Aa> { terminal }
             {@LEX:@NCC:<[:alnum:]>} { terminal }
             @LEX:@RAN:<az> { terminal }
+            {@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} { terminal }
             @LEX:@STR:<abc> { terminal }
         }
     }
@@ -153,6 +159,7 @@ grammar {
             @LEX:@CLS:<Aa> 1
             {@LEX:@NCC:<[:alnum:]>} 1
             @LEX:@RAN:<az> 1
+            {@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} 1
             @LEX:@STR:<abc> 1
         }
         lexeme {
@@ -173,6 +180,7 @@ grammar {
             @LEX:@CLS:<Aa> { {priority @CLS:<Aa> 0} }
             {@LEX:@NCC:<[:alnum:]>} { {priority {{@NCC:<[:alnum:]>}} 0} }
             @LEX:@RAN:<az> { {priority @RAN:<az> 0} }
+            {@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} { {priority {{@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>}} 0} }
             @LEX:@STR:<abc> { {priority @STR:<abc> 0} }
         }
         literal {
@@ -193,6 +201,7 @@ grammar {
             @CLS:<Aa> { {charclass 65 97} }
             {@NCC:<[:alnum:]>} { {named-class alnum} }
             @RAN:<az> { {range 97 122} }
+            {@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} { {string 65535 65536 131071 1114111 1114110 1111567} }
             @STR:<abc> { {string 97 98 99} }
         }
     }
