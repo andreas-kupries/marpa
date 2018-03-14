@@ -178,6 +178,15 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 
     # Data processing.
 
+    catch {B destroy} ;# Remove possible left overs from a previous failed run.
+    catch {P destroy}
+    catch {L destroy}
+    catch {G destroy}
+    catch {LR destroy}
+    catch {GR destroy}
+    catch {A destroy}
+    catch {M destroy}
+
     Bytes create B
     Pool  create P
     Sym   create L  P
