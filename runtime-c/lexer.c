@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: Lexing, Parser gating)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
@@ -241,6 +241,7 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
 
     /* And feed the results into the new lexer recce */
     n = marpatcl_rtc_symset_size (ACCEPT);
+    TRACE_TAG (accept, "ACCEPT# %d", n);
     if (n) {
 	int k;
 	buf = marpatcl_rtc_symset_dense (ACCEPT);
@@ -252,11 +253,15 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
 	    res = marpa_r_alternative (LEX.recce, TO_ACS (buf [k]), 1, 1);
 	    marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 alternative/b");
 	}
-
-	res = marpa_r_earleme_complete (LEX.recce);
-	marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 earleme_complete/b");
-	marpatcl_rtc_lexer_events (p);
     }
+
+    // Complete the feed.
+    res = marpa_r_earleme_complete (LEX.recce);
+    if (res && (marpa_g_error (LEX.g, NULL) != MARPA_ERR_PARSE_EXHAUSTED)) {
+	// any error but exhausted is a hard failure
+	marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 earleme_complete/b");
+    }
+    marpatcl_rtc_lexer_events (p);
 
     // Now the gate can update its acceptables (byte symbols) too.
     marpatcl_rtc_gate_acceptable (p);

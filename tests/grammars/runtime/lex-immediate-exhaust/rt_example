@@ -1,0 +1,9 @@
+# This grammar and its example demonstrate where a new lexer starts
+# with the parser exhausted, and not having any acceptable lexeme from
+# the beginning. This has to properly close the initial earleme with
+# no alternatives, and further properly communicate to the gate that
+# no input is acceptable.
+
+A ::= C
+C ::= B
+B ~ 'b'

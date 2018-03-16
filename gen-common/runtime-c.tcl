@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -1131,7 +1131,7 @@ oo::class create marpa::gen::runtime::c::SemaG {
 	set mycode [lrepeat $mycount -1]
 	set max $mycount
 
-	foreach s [dict keys $mymask] {
+	foreach s [dict keys $mysema] {
 	    if {[lindex $s 0] == 0} continue
 	    incr max [llength $s]
 	}
