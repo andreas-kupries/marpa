@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -323,6 +323,7 @@ oo::class create marpa::parser {
     ## TODO: support for general command prefix.
     
     method CompleteParts {parts id rid} {
+	debug.marpa/parser {}
 	# 'start'	offset where lexeme starts
 	# 'length'	length of the lexeme
 	# 'g1start'	G1 offset
@@ -336,6 +337,7 @@ oo::class create marpa::parser {
 	set result {}
 	foreach part $parts {
 	    switch -exact -- $part {
+		Afirst  -
 		g1start -
 		g1end   -
 		values  -

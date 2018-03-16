@@ -97,15 +97,24 @@ may contain, and their relation ships.
       * Its existence triggers testing by everything going through
       	`common/runtime-core`, i.e. `zeta-tcl-runtime`, and
       	`zeta-rtc-runtime`. These tests assume the existence of
-      	`example` files, and of `ast` and variants (`ast_rtc`,
-      	`ast_tcl`).
+      	`example` files, and of `r_ast`, `ast`, and their variants
+      	(`(r_)ast_rtc`, `(r_)ast_tcl`).
 
       * The tests triggered by the above generate a parser from the
         `rt_example`, fed it the `example` input and match the
-        resulting AST against the associated `ast` file or variant.
+        resulting AST against the associated `(r_)ast` file or variant.
 
    * `example` : Arbitrary string
 
       * These files are associated with `rt_example` above, see there
         for more information.
 
+   * `r_ast*` : An abstract syntax tree in a textual representation.
+
+      * Human-readable representation of the abstract syntax tree
+       	generated when parsing the SLIF grammar held in `slif`.
+
+      * May be present when `rt_example` is present, see above.
+      	`r_ast` indicates a tree independent of the runtime, whereas
+      	`r_ast_tcl` and `r_ast_rtc` indicate trees specific to the
+      	referenced runtime.

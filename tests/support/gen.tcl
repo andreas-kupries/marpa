@@ -1,5 +1,5 @@
 # -*- tcl -*-
-## (c) 2017 Andreas Kupries
+## (c) 2017-2018 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## A variant of `marpa-gen` built into the test suite.
 ## Enables dynamic creation of parsers and lexers to test.
@@ -123,16 +123,20 @@ proc ::gen::LoadRTC {} {
     exec ln -s [file normalize [td]/../rtc] rtc
     exec ln -s [file normalize [td]/../c] c
 
-    # NOTE: The localprefix gives the location of the main debug
-    # installation of marpa packages under test. That is also where we
-    # have the stub decls for the C runtime package needed by the
-    # lexer/parser to-be.
+    # NOTE: The kt::localprefix provides us with the location of the
+    # main debug installation of marpa packages under test. That is
+    # also where we will find the stub decls for the C runtime package
+    # needed by the lexer/parser to-be.
     
-    exec >& ${out}_LOG critcl -pkg -keep \
-	-cache  $out/C \
-	-libdir $out/L \
-	-I ${kt::localprefix}/include \
-	[td]/${cl}.tcl
+    if {[catch {
+	exec >& ${out}_LOG critcl -pkg -keep \
+	    -cache  $out/C \
+	    -libdir $out/L \
+	    -I ${kt::localprefix}/include \
+	    [td]/${cl}.tcl
+    }]} {
+	file copy ${out}_LOG ${out}_ERRLOG
+    }
     
     file delete rtc c
 

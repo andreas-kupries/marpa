@@ -127,6 +127,8 @@ namespace eval ::marpa::gen::runtime::c {
 	rule	 MARPATCL_SV_RULE_ID
 	value	 MARPATCL_SV_VALUE
 	values   MARPATCL_SV_VALUE
+
+	first    MARPATCL_SV_A_FIRST
     }
 }
 
@@ -290,7 +292,7 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     GR add $g1rules
     GR start [$gc start?]
 
-    set sem    [SemaCode [$gc lexeme-semantics? action]]
+    set sem    [SemaCodeL [$gc lexeme-semantics? action]]
     set always [lmap w [concat $acs_discards [LTM $lex $gc]] {
 	# Convert ACS down to terminal symbols and pseudo-terminals
 	# (latter are for the discards)
@@ -713,7 +715,7 @@ proc ::marpa::gen::runtime::c::GetL0 {gc class} {
     return [lsort -dict [$gc l0 symbols-of $class]]
 }
 
-proc ::marpa::gen::runtime::c::SemaCode {keys} {
+proc ::marpa::gen::runtime::c::SemaCodeL {keys} {
     variable ak
     # sem - Check for array, and unpack...
     if {![dict exists $keys array]} {
@@ -723,6 +725,24 @@ proc ::marpa::gen::runtime::c::SemaCode {keys} {
     return [lmap w [dict get $keys array] { dict get $ak $w }]
 }
 
+proc ::marpa::gen::runtime::c::SemaCodeG {keys} {
+    variable ak
+    # sem - Check for array, and unpack...
+    if {[dict exists $keys special]} {
+	set special [dict get $keys special]
+	if {[dict exists $ak $special]} {
+	    return [list [dict get $ak $special]]
+	}
+	# TODO: Test case required
+	error BAD-SPECIAL:$special
+    }
+    if {[dict exists $keys array]} {
+	return [lmap w [dict get $keys array] { dict get $ak $w }]
+    }
+    # TODO: Test case required -- Check what the semantics and syntax say
+    error BAD-SEMANTICS:$keys
+}
+
 proc ::marpa::gen::runtime::c::CName {} {
     debug.marpa/gen/runtime/c {}
     string map {:: _ - _} [core-config? name]
@@ -730,12 +750,6 @@ proc ::marpa::gen::runtime::c::CName {} {
 
 proc ::marpa::gen::runtime::c::Names {rules} {
     return [lmap rule $rules { RName $rule }]
-}
-
-proc ::marpa::gen::runtime::c::Sema {rules} {
-    foreach rule $rules {
-	Sem $rule
-    }
 }
 
 proc ::marpa::gen::runtime::c::RName {rule} {
@@ -1022,6 +1036,7 @@ oo::class create marpa::gen::runtime::c::Mask {
     method Finalize {} {
 	if {$myfinal} return
 	set myfinal 1
+
 	if {[dict size $mymask] == 1} {
 	    # Code global
 	    set mytag  MARPATCL_S_SINGLE
@@ -1110,7 +1125,7 @@ oo::class create marpa::gen::runtime::c::SemaG {
 	if {![info exists action]} { error ACTION-MISSING }
 	if {$action eq {}} { error ACTION-EMPTY }
 
-	set action [::marpa::gen::runtime::c::SemaCode $action]
+	set action [::marpa::gen::runtime::c::SemaCodeG $action]
 	set action [linsert $action 0 [llength $action]]
 	dict lappend mysema $action $mycount
 	return

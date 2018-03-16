@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -30,7 +30,14 @@ proc test-grammar-files {key __ iv varname script} {
     foreach iter $files {
 	set stem  [file dirname $iter]
 	set id    [string map {/ ,} [fileutil::stripPath $gdir $stem]]
-	uplevel 1 $script
+	set code [catch { uplevel 1 $script } msg]
+	switch -exact -- $code {
+	    0 {}
+	    1 { return -code error $msg }
+	    2 { return }
+	    3 { break }
+	    4 {}
+	}
     }
     return
 }
@@ -50,7 +57,14 @@ proc test-grammar-map {key __ iv varname basevar script} {
     foreach iter $files {
 	set stem   [file dirname $iter]
 	set id     [string map {/ ,} [fileutil::stripPath $gdir $stem]]
-	uplevel 1 $script
+	set code [catch { uplevel 1 $script } msg]
+	switch -exact -- $code {
+	    0 {}
+	    1 { return -code error $msg }
+	    2 { return }
+	    3 { break }
+	    4 {}
+	}
     }
     return
 }
