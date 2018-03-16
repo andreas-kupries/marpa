@@ -61,6 +61,8 @@ test-grammar-files slif --> __ __ { incr max }
 set format %0[string length $max]d
 unset max
 
+# TODO: Base this on presence of gcstate, i.e. result file ?
+
 set k 0
 test-grammar-map ctrace --> id ctrace base {
     set input [norm-trace-gc $ctrace]
@@ -131,6 +133,8 @@ test-grammar-files gcstate --> id gcstate {
 ## Reduction I [Tcl]: Tcl engine, see "s_parser.tcl", generalized
 ## Note, based on gcstate, reuse format.
 
+# TODO: Fix up when unicode mode becomes irrelevant
+
 set k 0
 test-grammar-map gcstate --> id gcstate base {
     set input [dict get [string trimright [fget $gcstate]] grammar]
@@ -138,6 +142,9 @@ test-grammar-map gcstate --> id gcstate base {
     # Ignore containers without literals to reduce
     if {![dict exists $input l0 literal]} continue
 
+    # Ignore cases without a result to check
+    if {![file exists $base/gcr_tcl]} continue
+    
     set expected [test-grammar-result $base gcr_tcl]
     set kd       [format $format $k]
 
@@ -171,12 +178,17 @@ test-grammar-map gcstate --> id gcstate base {
 ## Reduction II [C-lang]: Byte-based engine on UTF-8 input.
 ## Note, based on gcstate, reuse format.
 
+# TODO: Fix up when unicode mode becomes irrelevant
+
 set k 0
 test-grammar-map gcstate --> id gcstate base {
     set input [dict get [string trimright [fget $gcstate]] grammar]
 
     # Ignore containers without literals to reduce
     if {![dict exists $input l0 literal]} continue
+
+    # Ignore cases without a result to check
+    if {![file exists $base/gcr_c]} continue
 
     set expected [test-grammar-result $base gcr_c]
     set kd       [format $format $k]
