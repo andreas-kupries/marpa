@@ -1122,7 +1122,7 @@ oo::class create marpa::gen::runtime::c::SemaG {
 	set mycode [lrepeat $mycount -1]
 	set max $mycount
 
-	foreach s [dict keys $mymask] {
+	foreach s [dict keys $mysema] {
 	    if {[lindex $s 0] == 0} continue
 	    incr max [llength $s]
 	}
