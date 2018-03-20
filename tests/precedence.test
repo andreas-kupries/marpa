@@ -1,5 +1,5 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2017 Andreas Kupries
+## (c) 2017-2018 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## marpa::slif::precedence
 
@@ -213,13 +213,12 @@ set E_l0_trace_B {
 # Further, the location of the lhs in the ^rule encodes the association.
 # TERMs and FACTORs are left associated, POWERs are right.
 
-set k 0
-foreach {grcode specvar rvar} {
+testcases k {grcode specvar rvar} {
     g1 E_rules E_g1_trace
     l0 E_rules E_l0_trace
 } {
-    incr k
-    # Note: In calling rewrite1 with E_rules we are pushing attributes into the command, even for L0.
+    # Note: In calling rewrite1 with E_rules we are pushing attributes
+    # into the command, even for L0.
 
     test marpa-slif-precedence-rewrite1-2.$k "rewrite1 $grcode $specvar" -body {
 	NORM $grcode [marpa::slif::precedence rewrite1 $grcode {*}[set $specvar]]
@@ -237,14 +236,13 @@ test marpa-slif-precedence-rewrite-1.1 {rewrite, wrong args, too many} -body {
     marpa::slif::precedence rewrite C X
 } -returnCodes error -result {wrong # args: should be "marpa::slif::precedence rewrite container"}
 
-set k 0
-foreach {grcode specvar rvar rstate} {
+testcases k {grcode specvar rvar rstate} {
     g1 E_rules E_g1_trace   g1_prewrite
     l0 E_rules E_l0_trace_B l0_prewrite
 } {
-    incr k
-    # Note: For L0 the rules are stripped of attributes, making assoc "left" by default.
-    #       This affects the results (left-associative POW, no group assoc for PO/PC)
+    # Note: For L0 the rules are stripped of attributes, making assoc
+    #       "left" by default.  This affects the results
+    #       (left-associative POW, no group assoc for PO/PC)
 
     test marpa-slif-precedence-rewrite-2.$k "rewrite $grcode $specvar" -setup {
 	# Fill container from ((specvar))

@@ -19,14 +19,14 @@ ______ P31   @1-1 <quote>        --> . <@CHR:<\42>>
 ______ P34   @1-1 <whitespace>   --> . <@CLS:<\t-\n\r\40>>
 ______ P35   @1-1 <whole>        --> . <@CHR:<0>>
 ______ P36   @1-1 <whole>        --> . <positive>
-______ R40:1 @0-1 <@START>       --> <ACS:lbrace> . <lbrace>
-______ R41:1 @0-1 <@START>       --> <ACS:lbracket> . <lbracket>
-______ R42:1 @0-1 <@START>       --> <ACS:lfalse> . <lfalse>
-______ R43:1 @0-1 <@START>       --> <ACS:lnull> . <lnull>
-______ R44:1 @0-1 <@START>       --> <ACS:lnumber> . <lnumber>
-______ R46:1 @0-1 <@START>       --> <ACS:ltrue> . <ltrue>
-______ R47:1 @0-1 <@START>       --> <ACS:quote> . <quote>
-______ R50:1 @0-1 <@START>       --> <ACS:whitespace> . <whitespace>
+______ R43:1 @0-1 <@START>       --> <ACS:lbrace> . <lbrace>
+______ R44:1 @0-1 <@START>       --> <ACS:lbracket> . <lbracket>
+______ R45:1 @0-1 <@START>       --> <ACS:lfalse> . <lfalse>
+______ R46:1 @0-1 <@START>       --> <ACS:lnull> . <lnull>
+______ R47:1 @0-1 <@START>       --> <ACS:lnumber> . <lnumber>
+______ R49:1 @0-1 <@START>       --> <ACS:ltrue> . <ltrue>
+______ R50:1 @0-1 <@START>       --> <ACS:quote> . <quote>
+______ R53:1 @0-1 <@START>       --> <ACS:whitespace> . <whitespace>
 Mismatch:
 '\303\245' => (24) ni
     2: '-'

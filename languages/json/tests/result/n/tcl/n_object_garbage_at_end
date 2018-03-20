@@ -3,9 +3,9 @@ L0 Report:
 ______ P7    @1-1 <comma>      --> . <@CHR:<,>>
 ______ P32   @1-1 <rbrace>     --> . <@CHR:<\175>>
 ______ P34   @1-1 <whitespace> --> . <@CLS:<\t-\n\r\40>>
-______ R39:1 @0-1 <@START>     --> <ACS:comma> . <comma>
-______ R48:1 @0-1 <@START>     --> <ACS:rbrace> . <rbrace>
-______ R50:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
+______ R42:1 @0-1 <@START>     --> <ACS:comma> . <comma>
+______ R51:1 @0-1 <@START>     --> <ACS:rbrace> . <rbrace>
+______ R53:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
 Mismatch:
 '1' => (22 23 24 27) ni
     1: ','

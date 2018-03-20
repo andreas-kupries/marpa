@@ -1303,12 +1303,40 @@ hex
 hex
 <nullable string>
 |
-'u'
+'U'
+hex
+hex
+hex
+hex
 hex
 hex
 hex
 hex
 <nullable string>
+|
+'u'
+hex
+hex
+hex
+hex
+hex
+hex
+<nullable string>
+|
+'u'
+hex
+hex
+hex
+hex
+hex
+<nullable string post short unicode escape>
+|
+'u'
+hex
+hex
+hex
+hex
+<nullable string post short unicode escape>
 |
 'u'
 hex
@@ -1449,12 +1477,40 @@ hex
 hex
 <cc range completion>
 |
-'u'
+'U'
+hex
+hex
+hex
+hex
 hex
 hex
 hex
 hex
 <cc range completion>
+|
+'u'
+hex
+hex
+hex
+hex
+hex
+hex
+<cc range completion>
+|
+'u'
+hex
+hex
+hex
+hex
+hex
+<cc range completion post short unicode escape>
+|
+'u'
+hex
+hex
+hex
+hex
+<cc range completion post short unicode escape>
 |
 'u'
 hex

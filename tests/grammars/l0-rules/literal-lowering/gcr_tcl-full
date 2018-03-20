@@ -25,10 +25,11 @@ grammar {
                     R
                     S
                     T
-                    U} 0
+                    U
+                    V} 0
                         action {array values}
                         assoc left
-                        mask {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0}} }
+                        mask {0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0}} }
             B { {priority @LEX:@CHR:<a> 0
                     action {array values}
                     assoc left
@@ -109,6 +110,10 @@ grammar {
                     action {array values}
                     assoc left
                     mask 0} }
+            V { {priority {{@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>}} 0
+                    action {array values}
+                    assoc left
+                    mask 0} }
         }
         terminal {
             {@LEX:@%NCC:<[:alnum:]>} { terminal }
@@ -128,6 +133,7 @@ grammar {
             @LEX:@CLS:<Aa> { terminal }
             {@LEX:@NCC:<[:alnum:]>} { terminal }
             @LEX:@RAN:<az> { terminal }
+            {@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} { terminal }
             @LEX:@STR:<abc> { terminal }
         }
     }
@@ -136,10 +142,1365 @@ grammar {
     }
     l0 {
         {} {
+            {@%NCC:<[:alnum:]>} {
+                {priority {{@CLS:<0-9A-Za-z\u00aa\u00b5\u00ba\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0345\u0370-\u0374\u0376-\u0377\u037a-\u037d\u037f\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u052f\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05f2\u0620-\u064a\u0660-\u0669\u066e-\u066f\u0671-\u06d3\u06d5\u06e5-\u06e6\u06ee-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07c0-\u07ea\u07f4-\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u08a0-\u08b4\u08b6-\u08bd\u0904-\u0939\u093d\u0950\u0958-\u0961\u0966-\u096f\u0971-\u0980\u0985-\u098c\u098f-\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc-\u09dd\u09df-\u09e1\u09e6-\u09f1\u0a05-\u0a0a\u0a0f-\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32-\u0a33\u0a35-\u0a36\u0a38-\u0a39\u0a59-\u0a5c\u0a5e\u0a66-\u0a6f\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2-\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0-\u0ae1\u0ae6-\u0aef\u0af9\u0b05-\u0b0c\u0b0f-\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32-\u0b33\u0b35-\u0b39\u0b3d\u0b5c-\u0b5d\u0b5f-\u0b61\u0b66-\u0b6f\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99-\u0b9a\u0b9c\u0b9e-\u0b9f\u0ba3-\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0be6-\u0bef\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c39\u0c3d\u0c58-\u0c5a\u0c60-\u0c61\u0c66-\u0c6f\u0c80\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cde\u0ce0-\u0ce1\u0ce6-\u0cef\u0cf1-\u0cf2\u0d05-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d54-\u0d56\u0d5f-\u0d61\u0d66-\u0d6f\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0de6-\u0def\u0e01-\u0e30\u0e32-\u0e33\u0e40-\u0e46\u0e50-\u0e59\u0e81-\u0e82\u0e84\u0e87-\u0e88\u0e8a\u0e8d\u0e94-\u0e97\u0e99-\u0e9f\u0ea1-\u0ea3\u0ea5\u0ea7\u0eaa-\u0eab\u0ead-\u0eb0\u0eb2-\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0ed0-\u0ed9\u0edc-\u0edf\u0f00\u0f20-\u0f29\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f-\u1049\u1050-\u1055\u105a-\u105d\u1061\u1065-\u1066\u106e-\u1070\u1075-\u1081\u108e\u1090-\u1099\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f5\u13f8-\u13fd\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16f1-\u16f8\u1700-\u170c\u170e-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u17e0-\u17e9\u1810-\u1819\u1820-\u1877\u1880-\u1884\u1887-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191e\u1946-\u196d\u1970-\u1974\u1980-\u19ab\u19b0-\u19c9\u19d0-\u19d9\u1a00-\u1a16\u1a20-\u1a54\u1a80-\u1a89\u1a90-\u1a99\u1aa7\u1b05-\u1b33\u1b45-\u1b4b\u1b50-\u1b59\u1b83-\u1ba0\u1bae-\u1be5\u1c00-\u1c23\u1c40-\u1c49\u1c4d-\u1c7d\u1c80-\u1c88\u1ce9-\u1cec\u1cee-\u1cf1\u1cf5-\u1cf6\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2119-\u211d\u2124\u2126\u2128\u212a-\u212d\u212f-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2183-\u2184\u2c00-\u2c2e\u2c30-\u2c5e\u2c60-\u2ce4\u2ceb-\u2cee\u2cf2-\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u2e2f\u3005-\u3006\u3031-\u3035\u303b-\u303c\u3041-\u3096\u309d-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312d\u3131-\u318e\u31a0-\u31ba\u31f0-\u31ff\u3400-\u4db5\u4e00-\u9fd5\ua000-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua62b\ua640-\ua66e\ua67f-\ua69d\ua6a0-\ua6e5\ua717-\ua71f\ua722-\ua788\ua78b-\ua7ae\ua7b0-\ua7b7\ua7f7-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8d0-\ua8d9\ua8f2-\ua8f7\ua8fb\ua8fd\ua900-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf-\ua9d9\ua9e0-\ua9e4\ua9e6-\ua9fe\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa50-\uaa59\uaa60-\uaa76\uaa7a\uaa7e-\uaaaf\uaab1\uaab5-\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uab30-\uab5a\uab5c-\uab65\uab70-\uabe2\uabf0-\uabf9\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40-\ufb41\ufb43-\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff10-\uff19\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc>.BMP}} 0}
+                {priority {{@CLS:<[:alnum:smp:]>.SMP}} 0}
+            }
             @%STR:<ABC> { {priority {
                     @%CHR:<A>
                     @%CHR:<B>
                     @%CHR:<C>} 0} }
+            {@^%NCC:<[:alnum:]>} {
+                {priority {{@CLS:<\0-/:-@\133-`\173-\u00a9\u00ab-\u00b4\u00b6-\u00b9\u00bb-\u00bf\u00d7\u00f7\u02c2-\u02c5\u02d2-\u02df\u02e5-\u02eb\u02ed\u02ef-\u0344\u0346-\u036f\u0375\u0378-\u0379\u037e\u0380-\u0385\u0387\u038b\u038d\u03a2\u03f6\u0482-\u0489\u0530\u0557-\u0558\u055a-\u0560\u0588-\u05cf\u05eb-\u05ef\u05f3-\u061f\u064b-\u065f\u066a-\u066d\u0670\u06d4\u06d6-\u06e4\u06e7-\u06ed\u06fd-\u06fe\u0700-\3417\u0711\u0730-\u074c\u07a6-\u07b0\u07b2-\u07bf\u07eb-\u07f3\u07f6-\u07f9\u07fb-\u07ff\u0816-\u0819\u081b-\u0823\u0825-\u0827\u0829-\u083f\u0859-\u089f\u08b5\u08be-\u0903\u093a-\u093c\u093e-\u094f\u0951-\u0957\u0962-\u0965\u0970\u0981-\u0984\u098d-\u098e\u0991-\u0992\u09a9\u09b1\u09b3-\u09b5\u09ba-\u09bc\u09be-\u09cd\u09cf-\u09db\u09de\u09e2-\u09e5\u09f2-\u0a04\u0a0b-\u0a0e\u0a11-\u0a12\u0a29\u0a31\u0a34\u0a37\u0a3a-\u0a58\u0a5d\u0a5f-\u0a65\u0a70-\u0a71\u0a75-\u0a84\u0a8e\u0a92\u0aa9\u0ab1\u0ab4\u0aba-\u0abc\u0abe-\u0acf\u0ad1-\u0adf\u0ae2-\u0ae5\u0af0-\u0af8\u0afa-\u0b04\u0b0d-\u0b0e\u0b11-\u0b12\u0b29\u0b31\u0b34\u0b3a-\u0b3c\u0b3e-\u0b5b\u0b5e\u0b62-\u0b65\u0b70\u0b72-\u0b82\u0b84\u0b8b-\u0b8d\u0b91\u0b96-\u0b98\u0b9b\u0b9d\u0ba0-\u0ba2\u0ba5-\u0ba7\u0bab-\u0bad\u0bba-\u0bcf\u0bd1-\u0be5\u0bf0-\u0c04\u0c0d\u0c11\u0c29\u0c3a-\u0c3c\u0c3e-\u0c57\u0c5b-\u0c5f\u0c62-\u0c65\u0c70-\u0c7f\u0c81-\u0c84\u0c8d\u0c91\u0ca9\u0cb4\u0cba-\u0cbc\u0cbe-\u0cdd\u0cdf\u0ce2-\u0ce5\u0cf0\u0cf3-\u0d04\u0d0d\u0d11\u0d3b-\u0d3c\u0d3e-\u0d4d\u0d4f-\u0d53\u0d57-\u0d5e\u0d62-\u0d65\u0d70-\u0d79\u0d80-\u0d84\u0d97-\u0d99\u0db2\u0dbc\u0dbe-\u0dbf\u0dc7-\u0de5\u0df0-\u0e00\u0e31\u0e34-\u0e3f\u0e47-\u0e4f\u0e5a-\u0e80\u0e83\u0e85-\u0e86\u0e89\u0e8b-\u0e8c\u0e8e-\u0e93\u0e98\u0ea0\u0ea4\u0ea6\u0ea8-\u0ea9\u0eac\u0eb1\u0eb4-\u0ebc\u0ebe-\u0ebf\u0ec5\u0ec7-\u0ecf\u0eda-\u0edb\u0ee0-\u0eff\u0f01-\u0f1f\u0f2a-\u0f3f\u0f48\u0f6d-\u0f87\u0f8d-\u0fff\u102b-\u103e\u104a-\u104f\u1056-\u1059\u105e-\u1060\u1062-\u1064\u1067-\u106d\u1071-\u1074\u1082-\u108d\u108f\u109a-\u109f\u10c6\u10c8-\u10cc\u10ce-\u10cf\u10fb\u1249\u124e-\u124f\u1257\u1259\u125e-\u125f\u1289\u128e-\u128f\u12b1\u12b6-\u12b7\u12bf\u12c1\u12c6-\u12c7\u12d7\u1311\u1316-\u1317\u135b-\u137f\u1390-\u139f\u13f6-\u13f7\u13fe-\u1400\u166d-\u166e\u1680\u169b-\u169f\u16eb-\u16f0\u16f9-\u16ff\u170d\u1712-\u171f\u1732-\u173f\u1752-\u175f\u176d\u1771-\u177f\u17b4-\u17d6\u17d8-\u17db\u17dd-\u17df\u17ea-\u180f\u181a-\u181f\u1878-\u187f\u1885-\u1886\u18a9\u18ab-\u18af\u18f6-\u18ff\u191f-\u1945\u196e-\u196f\u1975-\u197f\u19ac-\u19af\u19ca-\u19cf\u19da-\u19ff\u1a17-\u1a1f\u1a55-\u1a7f\u1a8a-\u1a8f\u1a9a-\u1aa6\u1aa8-\u1b04\u1b34-\u1b44\u1b4c-\u1b4f\u1b5a-\u1b82\u1ba1-\u1bad\u1be6-\u1bff\u1c24-\u1c3f\u1c4a-\u1c4c\u1c7e-\u1c7f\u1c89-\u1ce8\u1ced\u1cf2-\u1cf4\u1cf7-\u1cff\u1dc0-\u1dff\u1f16-\u1f17\u1f1e-\u1f1f\u1f46-\u1f47\u1f4e-\u1f4f\u1f58\u1f5a\u1f5c\u1f5e\u1f7e-\u1f7f\u1fb5\u1fbd\u1fbf-\u1fc1\u1fc5\u1fcd-\u1fcf\u1fd4-\u1fd5\u1fdc-\u1fdf\u1fed-\u1ff1\u1ff5\u1ffd-\u2070\u2072-\u207e\u2080-\u208f\u209d-\u2101\u2103-\u2106\u2108-\u2109\u2114\u2116-\u2118\u211e-\u2123\u2125\u2127\u2129\u212e\u213a-\u213b\u2140-\u2144\u214a-\u214d\u214f-\u2182\u2185-\u2bff\u2c2f\u2c5f\u2ce5-\u2cea\u2cef-\u2cf1\u2cf4-\u2cff\u2d26\u2d28-\u2d2c\u2d2e-\u2d2f\u2d68-\u2d6e\u2d70-\u2d7f\u2d97-\u2d9f\u2da7\u2daf\u2db7\u2dbf\u2dc7\u2dcf\u2dd7\u2ddf-\u2e2e\u2e30-\u3004\u3007-\u3030\u3036-\u303a\u303d-\u3040\u3097-\u309c\u30a0\u30fb\u3100-\u3104\u312e-\u3130\u318f-\u319f\u31bb-\u31ef\u3200-\u33ff\u4db6-\u4dff\u9fd6-\u9fff\ua48d-\ua4cf\ua4fe-\ua4ff\ua60d-\ua60f\ua62c-\ua63f\ua66f-\ua67e\ua69e-\ua69f\ua6e6-\ua716\ua720-\ua721\ua789-\ua78a\ua7af\ua7b8-\ua7f6\ua802\ua806\ua80b\ua823-\ua83f\ua874-\ua881\ua8b4-\ua8cf\ua8da-\ua8f1\ua8f8-\ua8fa\ua8fc\ua8fe-\ua8ff\ua926-\ua92f\ua947-\ua95f\ua97d-\ua983\ua9b3-\ua9ce\ua9da-\ua9df\ua9e5\ua9ff\uaa29-\uaa3f\uaa43\uaa4c-\uaa4f\uaa5a-\uaa5f\uaa77-\uaa79\uaa7b-\uaa7d\uaab0\uaab2-\uaab4\uaab7-\uaab8\uaabe-\uaabf\uaac1\uaac3-\uaada\uaade-\uaadf\uaaeb-\uaaf1\uaaf5-\uab00\uab07-\uab08\uab0f-\uab10\uab17-\uab1f\uab27\uab2f\uab5b\uab66-\uab6f\uabe3-\uabef\uabfa-\uabff\ud7a4-\ud7af\ud7c7-\ud7ca\ud7fc-\174377\ufa6e-\ufa6f\ufada-\ufaff\ufb07-\ufb12\ufb18-\ufb1c\ufb1e\ufb29\ufb37\ufb3d\ufb3f\ufb42\ufb45\ufbb2-\ufbd2\ufd3e-\ufd4f\ufd90-\ufd91\ufdc8-\ufdef\ufdfc-\ufe6f\ufe75\ufefd-\uff0f\uff1a-\uff20\uff3b-\uff40\uff5b-\uff65\uffbf-\uffc1\uffc8-\uffc9\uffd0-\uffd1\uffd8-\uffd9\uffdd-\uffff>.BMP}} 0}
+                {priority {{@CLS:<\u1000c\u10027\u1003b\u1003e\u1004e-\u1004f\u1005e-\u1007f\u100fb-\u1027f\u1029d-\u1029f\u102d1-\u102ff\u10320-\u1032f\u10341\u1034a-\u1034f\u10376-\u1037f\u1039e-\u1039f\u103c4-\u103c7\u103d0-\u103ff\u1049e-\u1049f\u104aa-\u104af\u104d4-\u104d7\u104fc-\u104ff\u10528-\u1052f\u10564-\u105ff\u10737-\u1073f\u10756-\u1075f\u10768-\u107ff\u10806-\u10807\u10809\u10836\u10839-\u1083b\u1083d-\u1083e\u10856-\u1085f\u10877-\u1087f\u1089f-\u108df\u108f3\u108f6-\u108ff\u10916-\u1091f\u1093a-\u1097f\u109b8-\u109bd\u109c0-\u109ff\u10a01-\u10a0f\u10a14\u10a18\u10a34-\u10a5f\u10a7d-\u10a7f\u10a9d-\u10abf\u10ac8\u10ae5-\u10aff\u10b36-\u10b3f\u10b56-\u10b5f\u10b73-\u10b7f\u10b92-\u10bff\u10c49-\u10c7f\u10cb3-\u10cbf\u10cf3-\u11002\u11038-\u11065\u11070-\u11082\u110b0-\u110cf\u110e9-\u110ef\u110fa-\u11102\u11127-\u11135\u11140-\u1114f\u11173-\u11175\u11177-\u11182\u111b3-\u111c0\u111c5-\u111cf\u111db\u111dd-\u111ff\u11212\u1122c-\u1127f\u11287\u11289\u1128e\u1129e\u112a9-\u112af\u112df-\u112ef\u112fa-\u11304\u1130d-\u1130e\u11311-\u11312\u11329\u11331\u11334\u1133a-\u1133c\u1133e-\u1134f\u11351-\u1135c\u11362-\u113ff\u11435-\u11446\u1144b-\u1144f\u1145a-\u1147f\u114b0-\u114c3\u114c6\u114c8-\u114cf\u114da-\u1157f\u115af-\u115d7\u115dc-\u115ff\u11630-\u11643\u11645-\u1164f\u1165a-\u1167f\u116ab-\u116bf\u116ca-\u116ff\u1171a-\u1172f\u1173a-\u1189f\u118ea-\u118fe\u11900-\u11abf\u11af9-\u11bff\u11c09\u11c2f-\u11c3f\u11c41-\u11c4f\u11c5a-\u11c71\u11c90-\u11fff\u1239a-\u1247f\u12544-\u12fff\u1342f-\u143ff\u14647-\u167ff\u16a39-\u16a3f\u16a5f\u16a6a-\u16acf\u16aee-\u16aff\u16b30-\u16b3f\u16b44-\u16b4f\u16b5a-\u16b62\u16b78-\u16b7c\u16b90-\u16eff\u16f45-\u16f4f\u16f51-\u16f92\u16fa0-\u16fdf\u16fe1-\u16fff\u187ed-\u187ff\u18af3-\u1afff\u1b002-\u1bbff\u1bc6b-\u1bc6f\u1bc7d-\u1bc7f\u1bc89-\u1bc8f\u1bc9a-\u1d3ff\u1d455\u1d49d\u1d4a0-\u1d4a1\u1d4a3-\u1d4a4\u1d4a7-\u1d4a8\u1d4ad\u1d4ba\u1d4bc\u1d4c4\u1d506\u1d50b-\u1d50c\u1d515\u1d51d\u1d53a\u1d53f\u1d545\u1d547-\u1d549\u1d551\u1d6a6-\u1d6a7\u1d6c1\u1d6db\u1d6fb\u1d715\u1d735\u1d74f\u1d76f\u1d789\u1d7a9\u1d7c3\u1d7cc-\u1d7cd\u1d800-\u1e7ff\u1e8c5-\u1e8ff\u1e944-\u1e94f\u1e95a-\u1edff\u1ee04\u1ee20\u1ee23\u1ee25-\u1ee26\u1ee28\u1ee33\u1ee38\u1ee3a\u1ee3c-\u1ee41\u1ee43-\u1ee46\u1ee48\u1ee4a\u1ee4c\u1ee50\u1ee53\u1ee55-\u1ee56\u1ee58\u1ee5a\u1ee5c\u1ee5e\u1ee60\u1ee63\u1ee65-\u1ee66\u1ee6b\u1ee73\u1ee78\u1ee7d\u1ee7f\u1ee8a\u1ee9c-\u1eea0\u1eea4\u1eeaa\u1eebc-\u1ffff\u2a6d7-\u2a6ff\u2b735-\u2b73f\u2b81e-\u2b81f\u2cea2-\u2f7ff\u2fa1e-\u10ffff>.SMP}} 0}
+            }
+            @^CHR:<a> {
+                {priority @^CHR:<a>.BMP 0}
+                {priority {{@CLS:<\u10000-\u10ffff>.SMP}} 0}
+            }
+            {@^CLS:<0-9a[:braille:]>} {
+                {priority {{@^CLS:<0-9a\u2800-\u28ff>.BMP}} 0}
+                {priority {{@CLS:<\u10000-\u10ffff>.SMP}} 0}
+            }
+            {@^CLS:<0-9Aa[:%braille:]>} {
+                {priority {{@^CLS:<0-9Aa\u2800-\u28ff>.BMP}} 0}
+                {priority {{@CLS:<\u10000-\u10ffff>.SMP}} 0}
+            }
+            {@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} {
+                {priority {{@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>.BMP}} 0}
+                {priority {{@CLS:<\u10000-\u10ffff>.SMP}} 0}
+            }
+            @^CLS:<Aa> {
+                {priority @^CLS:<Aa>.BMP 0}
+                {priority {{@CLS:<\u10000-\u10ffff>.SMP}} 0}
+            }
+            {@^NCC:<[:alnum:]>} {
+                {priority {{@^NCC:<[:alnum:]>.BMP}} 0}
+                {priority {{@CLS:<\u1000c\u10027\u1003b\u1003e\u1004e-\u1004f\u1005e-\u1007f\u100fb-\u1027f\u1029d-\u1029f\u102d1-\u102ff\u10320-\u1032f\u10341\u1034a-\u1034f\u10376-\u1037f\u1039e-\u1039f\u103c4-\u103c7\u103d0-\u103ff\u1049e-\u1049f\u104aa-\u104af\u104d4-\u104d7\u104fc-\u104ff\u10528-\u1052f\u10564-\u105ff\u10737-\u1073f\u10756-\u1075f\u10768-\u107ff\u10806-\u10807\u10809\u10836\u10839-\u1083b\u1083d-\u1083e\u10856-\u1085f\u10877-\u1087f\u1089f-\u108df\u108f3\u108f6-\u108ff\u10916-\u1091f\u1093a-\u1097f\u109b8-\u109bd\u109c0-\u109ff\u10a01-\u10a0f\u10a14\u10a18\u10a34-\u10a5f\u10a7d-\u10a7f\u10a9d-\u10abf\u10ac8\u10ae5-\u10aff\u10b36-\u10b3f\u10b56-\u10b5f\u10b73-\u10b7f\u10b92-\u10bff\u10c49-\u10c7f\u10cb3-\u10cbf\u10cf3-\u11002\u11038-\u11065\u11070-\u11082\u110b0-\u110cf\u110e9-\u110ef\u110fa-\u11102\u11127-\u11135\u11140-\u1114f\u11173-\u11175\u11177-\u11182\u111b3-\u111c0\u111c5-\u111cf\u111db\u111dd-\u111ff\u11212\u1122c-\u1127f\u11287\u11289\u1128e\u1129e\u112a9-\u112af\u112df-\u112ef\u112fa-\u11304\u1130d-\u1130e\u11311-\u11312\u11329\u11331\u11334\u1133a-\u1133c\u1133e-\u1134f\u11351-\u1135c\u11362-\u113ff\u11435-\u11446\u1144b-\u1144f\u1145a-\u1147f\u114b0-\u114c3\u114c6\u114c8-\u114cf\u114da-\u1157f\u115af-\u115d7\u115dc-\u115ff\u11630-\u11643\u11645-\u1164f\u1165a-\u1167f\u116ab-\u116bf\u116ca-\u116ff\u1171a-\u1172f\u1173a-\u1189f\u118ea-\u118fe\u11900-\u11abf\u11af9-\u11bff\u11c09\u11c2f-\u11c3f\u11c41-\u11c4f\u11c5a-\u11c71\u11c90-\u11fff\u1239a-\u1247f\u12544-\u12fff\u1342f-\u143ff\u14647-\u167ff\u16a39-\u16a3f\u16a5f\u16a6a-\u16acf\u16aee-\u16aff\u16b30-\u16b3f\u16b44-\u16b4f\u16b5a-\u16b62\u16b78-\u16b7c\u16b90-\u16eff\u16f45-\u16f4f\u16f51-\u16f92\u16fa0-\u16fdf\u16fe1-\u16fff\u187ed-\u187ff\u18af3-\u1afff\u1b002-\u1bbff\u1bc6b-\u1bc6f\u1bc7d-\u1bc7f\u1bc89-\u1bc8f\u1bc9a-\u1d3ff\u1d455\u1d49d\u1d4a0-\u1d4a1\u1d4a3-\u1d4a4\u1d4a7-\u1d4a8\u1d4ad\u1d4ba\u1d4bc\u1d4c4\u1d506\u1d50b-\u1d50c\u1d515\u1d51d\u1d53a\u1d53f\u1d545\u1d547-\u1d549\u1d551\u1d6a6-\u1d6a7\u1d6c1\u1d6db\u1d6fb\u1d715\u1d735\u1d74f\u1d76f\u1d789\u1d7a9\u1d7c3\u1d7cc-\u1d7cd\u1d800-\u1e7ff\u1e8c5-\u1e8ff\u1e944-\u1e94f\u1e95a-\u1edff\u1ee04\u1ee20\u1ee23\u1ee25-\u1ee26\u1ee28\u1ee33\u1ee38\u1ee3a\u1ee3c-\u1ee41\u1ee43-\u1ee46\u1ee48\u1ee4a\u1ee4c\u1ee50\u1ee53\u1ee55-\u1ee56\u1ee58\u1ee5a\u1ee5c\u1ee5e\u1ee60\u1ee63\u1ee65-\u1ee66\u1ee6b\u1ee73\u1ee78\u1ee7d\u1ee7f\u1ee8a\u1ee9c-\u1eea0\u1eea4\u1eeaa\u1eebc-\u1ffff\u2a6d7-\u2a6ff\u2b735-\u2b73f\u2b81e-\u2b81f\u2cea2-\u2f7ff\u2fa1e-\u10ffff>.SMP}} 0}
+            }
+            @^RAN:<az> {
+                {priority @^RAN:<az>.BMP 0}
+                {priority {{@CLS:<\u10000-\u10ffff>.SMP}} 0}
+            }
+            {@CLS:<[:alnum:smp:]>.SMP} {
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udc00\udc0b>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udc0d\udc26>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udc28\udc3a>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udc3c\udc3d>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udc3f\udc4d>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udc50\udc5d>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udc80\udcfa>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\ude80\ude9c>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udea0\uded0>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udf00\udf1f>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udf30\udf40>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udf42\udf49>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udf50\udf75>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udf80\udf9d>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udfa0\udfc3>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udfc8\udfcf>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udc00\udc9d>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udca0\udca9>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udcb0\udcd3>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udcd8\udcfb>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udd00\udd27>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udd30\udd63>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\ude00\udf36>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udf40\udf55>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udf60\udf67>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udc00\udc05>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@CHR:<\udc08>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udc0a\udc35>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udc37\udc38>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@CHR:<\udc3c>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udc3f\udc55>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udc60\udc76>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udc80\udc9e>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udce0\udcf2>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udcf4\udcf5>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udd00\udd15>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udd20\udd39>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udd80\uddb7>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\uddbe\uddbf>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@CHR:<\ude00>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\ude10\ude13>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\ude15\ude17>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\ude19\ude33>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\ude60\ude7c>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\ude80\ude9c>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udec0\udec7>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udec9\udee4>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udf00\udf35>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udf40\udf55>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udf60\udf72>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udf80\udf91>}} 0}
+                {priority {
+                        {@CHR:<\ud803>}
+                        {@RAN:<\udc00\udc48>}} 0}
+                {priority {
+                        {@CHR:<\ud803>}
+                        {@RAN:<\udc80\udcb2>}} 0}
+                {priority {
+                        {@CHR:<\ud803>}
+                        {@RAN:<\udcc0\udcf2>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udc03\udc37>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udc66\udc6f>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udc83\udcaf>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udcd0\udce8>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udcf0\udcf9>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udd03\udd26>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udd36\udd3f>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udd50\udd72>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@CHR:<\udd76>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udd83\uddb2>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\uddc1\uddc4>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\uddd0\uddda>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@CHR:<\udddc>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\ude00\ude11>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\ude13\ude2b>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\ude80\ude86>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@CHR:<\ude88>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\ude8a\ude8d>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\ude8f\ude9d>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\ude9f\udea8>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udeb0\udede>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udef0\udef9>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udf05\udf0c>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udf0f\udf10>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udf13\udf28>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udf2a\udf30>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udf32\udf33>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udf35\udf39>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@CHR:<\udf3d>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@CHR:<\udf50>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udf5d\udf61>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udc00\udc34>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udc47\udc4a>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udc50\udc59>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udc80\udcaf>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udcc4\udcc5>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@CHR:<\udcc7>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udcd0\udcd9>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udd80\uddae>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\uddd8\udddb>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\ude00\ude2f>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@CHR:<\ude44>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\ude50\ude59>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\ude80\udeaa>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udec0\udec9>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udf00\udf19>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udf30\udf39>}} 0}
+                {priority {
+                        {@CHR:<\ud806>}
+                        {@RAN:<\udca0\udce9>}} 0}
+                {priority {
+                        {@CHR:<\ud806>}
+                        {@CHR:<\udcff>}} 0}
+                {priority {
+                        {@CHR:<\ud806>}
+                        {@RAN:<\udec0\udef8>}} 0}
+                {priority {
+                        {@CHR:<\ud807>}
+                        {@RAN:<\udc00\udc08>}} 0}
+                {priority {
+                        {@CHR:<\ud807>}
+                        {@RAN:<\udc0a\udc2e>}} 0}
+                {priority {
+                        {@CHR:<\ud807>}
+                        {@CHR:<\udc40>}} 0}
+                {priority {
+                        {@CHR:<\ud807>}
+                        {@RAN:<\udc50\udc59>}} 0}
+                {priority {
+                        {@CHR:<\ud807>}
+                        {@RAN:<\udc72\udc8f>}} 0}
+                {priority {
+                        {@CHR:<\ud808>}
+                        {@RAN:<\udc00\udf99>}} 0}
+                {priority {
+                        {@CHR:<\ud809>}
+                        {@RAN:<\udc80\udd43>}} 0}
+                {priority {
+                        {@CHR:<\ud80c>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud80d>}
+                        {@RAN:<\udc00\udc2e>}} 0}
+                {priority {
+                        {@CHR:<\ud811>}
+                        {@RAN:<\udc00\ude46>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\udc00\ude38>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\ude40\ude5e>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\ude60\ude69>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\uded0\udeed>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\udf00\udf2f>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\udf40\udf43>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\udf50\udf59>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\udf63\udf77>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\udf7d\udf8f>}} 0}
+                {priority {
+                        {@CHR:<\ud81b>}
+                        {@RAN:<\udf00\udf44>}} 0}
+                {priority {
+                        {@CHR:<\ud81b>}
+                        {@CHR:<\udf50>}} 0}
+                {priority {
+                        {@CHR:<\ud81b>}
+                        {@RAN:<\udf93\udf9f>}} 0}
+                {priority {
+                        {@CHR:<\ud81b>}
+                        {@CHR:<\udfe0>}} 0}
+                {priority {
+                        {@RAN:<\ud81c\ud820>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud821>}
+                        {@RAN:<\udc00\udfec>}} 0}
+                {priority {
+                        {@CHR:<\ud822>}
+                        {@RAN:<\udc00\udef2>}} 0}
+                {priority {
+                        {@CHR:<\ud82c>}
+                        {@RAN:<\udc00\udc01>}} 0}
+                {priority {
+                        {@CHR:<\ud82f>}
+                        {@RAN:<\udc00\udc6a>}} 0}
+                {priority {
+                        {@CHR:<\ud82f>}
+                        {@RAN:<\udc70\udc7c>}} 0}
+                {priority {
+                        {@CHR:<\ud82f>}
+                        {@RAN:<\udc80\udc88>}} 0}
+                {priority {
+                        {@CHR:<\ud82f>}
+                        {@RAN:<\udc90\udc99>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udc00\udc54>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udc56\udc9c>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udc9e\udc9f>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udca2>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udca5\udca6>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udca9\udcac>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udcae\udcb9>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udcbb>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udcbd\udcc3>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udcc5\udd05>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udd07\udd0a>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udd0d\udd14>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udd16\udd1c>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udd1e\udd39>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udd3b\udd3e>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udd40\udd44>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udd46>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udd4a\udd50>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udd52\udea5>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udea8\udec0>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udec2\udeda>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udedc\udefa>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udefc\udf14>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udf16\udf34>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udf36\udf4e>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udf50\udf6e>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udf70\udf88>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udf8a\udfa8>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udfaa\udfc2>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udfc4\udfcb>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udfce\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud83a>}
+                        {@RAN:<\udc00\udcc4>}} 0}
+                {priority {
+                        {@CHR:<\ud83a>}
+                        {@RAN:<\udd00\udd43>}} 0}
+                {priority {
+                        {@CHR:<\ud83a>}
+                        {@RAN:<\udd50\udd59>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude00\ude03>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude05\ude1f>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude21\ude22>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude24>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude27>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude29\ude32>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude34\ude37>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude39>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude3b>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude42>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude47>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude49>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude4b>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude4d\ude4f>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude51\ude52>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude54>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude57>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude59>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude5b>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude5d>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude5f>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude61\ude62>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude64>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude67\ude6a>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude6c\ude72>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude74\ude77>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude79\ude7c>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude7e>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude80\ude89>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude8b\ude9b>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\udea1\udea3>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\udea5\udea9>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\udeab\udebb>}} 0}
+                {priority {
+                        {@RAN:<\ud840\ud868>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud869>}
+                        {@RAN:<\udc00\uded6>}} 0}
+                {priority {
+                        {@CHR:<\ud869>}
+                        {@RAN:<\udf00\udfff>}} 0}
+                {priority {
+                        {@RAN:<\ud86a\ud86c>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud86d>}
+                        {@RAN:<\udc00\udf34>}} 0}
+                {priority {
+                        {@CHR:<\ud86d>}
+                        {@RAN:<\udf40\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud86e>}
+                        {@RAN:<\udc00\udc1d>}} 0}
+                {priority {
+                        {@CHR:<\ud86e>}
+                        {@RAN:<\udc20\udfff>}} 0}
+                {priority {
+                        {@RAN:<\ud86f\ud872>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud873>}
+                        {@RAN:<\udc00\udea1>}} 0}
+                {priority {
+                        {@CHR:<\ud87e>}
+                        {@RAN:<\udc00\ude1d>}} 0}
+            }
+            {@CLS:<\u1000c\u10027\u1003b\u1003e\u1004e-\u1004f\u1005e-\u1007f\u100fb-\u1027f\u1029d-\u1029f\u102d1-\u102ff\u10320-\u1032f\u10341\u1034a-\u1034f\u10376-\u1037f\u1039e-\u1039f\u103c4-\u103c7\u103d0-\u103ff\u1049e-\u1049f\u104aa-\u104af\u104d4-\u104d7\u104fc-\u104ff\u10528-\u1052f\u10564-\u105ff\u10737-\u1073f\u10756-\u1075f\u10768-\u107ff\u10806-\u10807\u10809\u10836\u10839-\u1083b\u1083d-\u1083e\u10856-\u1085f\u10877-\u1087f\u1089f-\u108df\u108f3\u108f6-\u108ff\u10916-\u1091f\u1093a-\u1097f\u109b8-\u109bd\u109c0-\u109ff\u10a01-\u10a0f\u10a14\u10a18\u10a34-\u10a5f\u10a7d-\u10a7f\u10a9d-\u10abf\u10ac8\u10ae5-\u10aff\u10b36-\u10b3f\u10b56-\u10b5f\u10b73-\u10b7f\u10b92-\u10bff\u10c49-\u10c7f\u10cb3-\u10cbf\u10cf3-\u11002\u11038-\u11065\u11070-\u11082\u110b0-\u110cf\u110e9-\u110ef\u110fa-\u11102\u11127-\u11135\u11140-\u1114f\u11173-\u11175\u11177-\u11182\u111b3-\u111c0\u111c5-\u111cf\u111db\u111dd-\u111ff\u11212\u1122c-\u1127f\u11287\u11289\u1128e\u1129e\u112a9-\u112af\u112df-\u112ef\u112fa-\u11304\u1130d-\u1130e\u11311-\u11312\u11329\u11331\u11334\u1133a-\u1133c\u1133e-\u1134f\u11351-\u1135c\u11362-\u113ff\u11435-\u11446\u1144b-\u1144f\u1145a-\u1147f\u114b0-\u114c3\u114c6\u114c8-\u114cf\u114da-\u1157f\u115af-\u115d7\u115dc-\u115ff\u11630-\u11643\u11645-\u1164f\u1165a-\u1167f\u116ab-\u116bf\u116ca-\u116ff\u1171a-\u1172f\u1173a-\u1189f\u118ea-\u118fe\u11900-\u11abf\u11af9-\u11bff\u11c09\u11c2f-\u11c3f\u11c41-\u11c4f\u11c5a-\u11c71\u11c90-\u11fff\u1239a-\u1247f\u12544-\u12fff\u1342f-\u143ff\u14647-\u167ff\u16a39-\u16a3f\u16a5f\u16a6a-\u16acf\u16aee-\u16aff\u16b30-\u16b3f\u16b44-\u16b4f\u16b5a-\u16b62\u16b78-\u16b7c\u16b90-\u16eff\u16f45-\u16f4f\u16f51-\u16f92\u16fa0-\u16fdf\u16fe1-\u16fff\u187ed-\u187ff\u18af3-\u1afff\u1b002-\u1bbff\u1bc6b-\u1bc6f\u1bc7d-\u1bc7f\u1bc89-\u1bc8f\u1bc9a-\u1d3ff\u1d455\u1d49d\u1d4a0-\u1d4a1\u1d4a3-\u1d4a4\u1d4a7-\u1d4a8\u1d4ad\u1d4ba\u1d4bc\u1d4c4\u1d506\u1d50b-\u1d50c\u1d515\u1d51d\u1d53a\u1d53f\u1d545\u1d547-\u1d549\u1d551\u1d6a6-\u1d6a7\u1d6c1\u1d6db\u1d6fb\u1d715\u1d735\u1d74f\u1d76f\u1d789\u1d7a9\u1d7c3\u1d7cc-\u1d7cd\u1d800-\u1e7ff\u1e8c5-\u1e8ff\u1e944-\u1e94f\u1e95a-\u1edff\u1ee04\u1ee20\u1ee23\u1ee25-\u1ee26\u1ee28\u1ee33\u1ee38\u1ee3a\u1ee3c-\u1ee41\u1ee43-\u1ee46\u1ee48\u1ee4a\u1ee4c\u1ee50\u1ee53\u1ee55-\u1ee56\u1ee58\u1ee5a\u1ee5c\u1ee5e\u1ee60\u1ee63\u1ee65-\u1ee66\u1ee6b\u1ee73\u1ee78\u1ee7d\u1ee7f\u1ee8a\u1ee9c-\u1eea0\u1eea4\u1eeaa\u1eebc-\u1ffff\u2a6d7-\u2a6ff\u2b735-\u2b73f\u2b81e-\u2b81f\u2cea2-\u2f7ff\u2fa1e-\u10ffff>.SMP} {
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@CHR:<\udc0c>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@CHR:<\udc27>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@CHR:<\udc3b>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@CHR:<\udc3e>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udc4e\udc4f>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udc5e\udc7f>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udcfb\ude7f>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\ude9d\ude9f>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\uded1\udeff>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udf20\udf2f>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@CHR:<\udf41>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udf4a\udf4f>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udf76\udf7f>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udf9e\udf9f>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udfc4\udfc7>}} 0}
+                {priority {
+                        {@CHR:<\ud800>}
+                        {@RAN:<\udfd0\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udc9e\udc9f>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udcaa\udcaf>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udcd4\udcd7>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udcfc\udcff>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udd28\udd2f>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udd64\uddff>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udf37\udf3f>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udf56\udf5f>}} 0}
+                {priority {
+                        {@CHR:<\ud801>}
+                        {@RAN:<\udf68\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udc06\udc07>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@CHR:<\udc09>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@CHR:<\udc36>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udc39\udc3b>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udc3d\udc3e>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udc56\udc5f>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udc77\udc7f>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udc9f\udcdf>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@CHR:<\udcf3>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udcf6\udcff>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udd16\udd1f>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udd3a\udd7f>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\uddb8\uddbd>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\uddc0\uddff>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\ude01\ude0f>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@CHR:<\ude14>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@CHR:<\ude18>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\ude34\ude5f>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\ude7d\ude7f>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\ude9d\udebf>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@CHR:<\udec8>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udee5\udeff>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udf36\udf3f>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udf56\udf5f>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udf73\udf7f>}} 0}
+                {priority {
+                        {@CHR:<\ud802>}
+                        {@RAN:<\udf92\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud803>}
+                        {@RAN:<\udc49\udc7f>}} 0}
+                {priority {
+                        {@CHR:<\ud803>}
+                        {@RAN:<\udcb3\udcbf>}} 0}
+                {priority {
+                        {@CHR:<\ud803>}
+                        {@RAN:<\udcf3\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udc00\udc02>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udc38\udc65>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udc70\udc82>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udcb0\udccf>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udce9\udcef>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udcfa\udd02>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udd27\udd35>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udd40\udd4f>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udd73\udd75>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udd77\udd82>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\uddb3\uddc0>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\uddc5\uddcf>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@CHR:<\udddb>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udddd\uddff>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@CHR:<\ude12>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\ude2c\ude7f>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@CHR:<\ude87>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@CHR:<\ude89>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@CHR:<\ude8e>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@CHR:<\ude9e>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udea9\udeaf>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udedf\udeef>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udefa\udf04>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udf0d\udf0e>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udf11\udf12>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@CHR:<\udf29>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@CHR:<\udf31>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@CHR:<\udf34>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udf3a\udf3c>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udf3e\udf4f>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udf51\udf5c>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udf62\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udc35\udc46>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udc4b\udc4f>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udc5a\udc7f>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udcb0\udcc3>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@CHR:<\udcc6>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udcc8\udccf>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udcda\udd7f>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\uddaf\uddd7>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udddc\uddff>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\ude30\ude43>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\ude45\ude4f>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\ude5a\ude7f>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udeab\udebf>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udeca\udeff>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udf1a\udf2f>}} 0}
+                {priority {
+                        {@CHR:<\ud805>}
+                        {@RAN:<\udf3a\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud806>}
+                        {@RAN:<\udc00\udc9f>}} 0}
+                {priority {
+                        {@CHR:<\ud806>}
+                        {@RAN:<\udcea\udcfe>}} 0}
+                {priority {
+                        {@CHR:<\ud806>}
+                        {@RAN:<\udd00\udebf>}} 0}
+                {priority {
+                        {@CHR:<\ud806>}
+                        {@RAN:<\udef9\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud807>}
+                        {@CHR:<\udc09>}} 0}
+                {priority {
+                        {@CHR:<\ud807>}
+                        {@RAN:<\udc2f\udc3f>}} 0}
+                {priority {
+                        {@CHR:<\ud807>}
+                        {@RAN:<\udc41\udc4f>}} 0}
+                {priority {
+                        {@CHR:<\ud807>}
+                        {@RAN:<\udc5a\udc71>}} 0}
+                {priority {
+                        {@CHR:<\ud807>}
+                        {@RAN:<\udc90\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud808>}
+                        {@RAN:<\udf9a\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud809>}
+                        {@RAN:<\udc00\udc7f>}} 0}
+                {priority {
+                        {@CHR:<\ud809>}
+                        {@RAN:<\udd44\udfff>}} 0}
+                {priority {
+                        {@RAN:<\ud80a\ud80b>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud80d>}
+                        {@RAN:<\udc2f\udfff>}} 0}
+                {priority {
+                        {@RAN:<\ud80e\ud810>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud811>}
+                        {@RAN:<\ude47\udfff>}} 0}
+                {priority {
+                        {@RAN:<\ud812\ud819>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\ude39\ude3f>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@CHR:<\ude5f>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\ude6a\udecf>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\udeee\udeff>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\udf30\udf3f>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\udf44\udf4f>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\udf5a\udf62>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\udf78\udf7c>}} 0}
+                {priority {
+                        {@CHR:<\ud81a>}
+                        {@RAN:<\udf90\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud81b>}
+                        {@RAN:<\udc00\udeff>}} 0}
+                {priority {
+                        {@CHR:<\ud81b>}
+                        {@RAN:<\udf45\udf4f>}} 0}
+                {priority {
+                        {@CHR:<\ud81b>}
+                        {@RAN:<\udf51\udf92>}} 0}
+                {priority {
+                        {@CHR:<\ud81b>}
+                        {@RAN:<\udfa0\udfdf>}} 0}
+                {priority {
+                        {@CHR:<\ud81b>}
+                        {@RAN:<\udfe1\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud821>}
+                        {@RAN:<\udfed\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud822>}
+                        {@RAN:<\udef3\udfff>}} 0}
+                {priority {
+                        {@RAN:<\ud823\ud82b>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud82c>}
+                        {@RAN:<\udc02\udfff>}} 0}
+                {priority {
+                        {@RAN:<\ud82d\ud82e>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud82f>}
+                        {@RAN:<\udc6b\udc6f>}} 0}
+                {priority {
+                        {@CHR:<\ud82f>}
+                        {@RAN:<\udc7d\udc7f>}} 0}
+                {priority {
+                        {@CHR:<\ud82f>}
+                        {@RAN:<\udc89\udc8f>}} 0}
+                {priority {
+                        {@CHR:<\ud82f>}
+                        {@RAN:<\udc9a\udfff>}} 0}
+                {priority {
+                        {@RAN:<\ud830\ud834>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udc55>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udc9d>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udca0\udca1>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udca3\udca4>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udca7\udca8>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udcad>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udcba>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udcbc>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udcc4>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udd06>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udd0b\udd0c>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udd15>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udd1d>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udd3a>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udd3f>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udd45>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udd47\udd49>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udd51>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udea6\udea7>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udec1>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udedb>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udefb>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udf15>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udf35>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udf4f>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udf6f>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udf89>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udfa9>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@CHR:<\udfc3>}} 0}
+                {priority {
+                        {@CHR:<\ud835>}
+                        {@RAN:<\udfcc\udfcd>}} 0}
+                {priority {
+                        {@RAN:<\ud836\ud839>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud83a>}
+                        {@RAN:<\udcc5\udcff>}} 0}
+                {priority {
+                        {@CHR:<\ud83a>}
+                        {@RAN:<\udd44\udd4f>}} 0}
+                {priority {
+                        {@CHR:<\ud83a>}
+                        {@RAN:<\udd5a\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\udc00\uddff>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude04>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude20>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude23>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude25\ude26>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude28>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude33>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude38>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude3a>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude3c\ude41>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude43\ude46>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude48>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude4a>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude4c>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude50>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude53>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude55\ude56>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude58>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude5a>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude5c>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude5e>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude60>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude63>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude65\ude66>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude6b>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude73>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude78>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude7d>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude7f>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\ude8a>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\ude9c\udea0>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\udea4>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@CHR:<\udeaa>}} 0}
+                {priority {
+                        {@CHR:<\ud83b>}
+                        {@RAN:<\udebc\udfff>}} 0}
+                {priority {
+                        {@RAN:<\ud83c\ud83f>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud869>}
+                        {@RAN:<\uded7\udeff>}} 0}
+                {priority {
+                        {@CHR:<\ud86d>}
+                        {@RAN:<\udf35\udf3f>}} 0}
+                {priority {
+                        {@CHR:<\ud86e>}
+                        {@RAN:<\udc1e\udc1f>}} 0}
+                {priority {
+                        {@CHR:<\ud873>}
+                        {@RAN:<\udea2\udfff>}} 0}
+                {priority {
+                        {@RAN:<\ud874\ud87d>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud87e>}
+                        {@RAN:<\ude1e\udfff>}} 0}
+                {priority {
+                        {@RAN:<\ud87f\udbff>}
+                        {@RAN:<\udc00\udfff>}} 0}
+            }
+            {@CLS:<\u10000-\u10ffff>.SMP} { {priority {
+                    {@RAN:<\ud800\udbff>}
+                    {@RAN:<\udc00\udfff>}} 0} }
+            {@NCC:<[:alnum:]>} {
+                {priority {{@NCC:<[:alnum:]>.BMP}} 0}
+                {priority {{@CLS:<[:alnum:smp:]>.SMP}} 0}
+            }
+            {@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} { {priority {
+                    {@CHR:<\uffff>}
+                    {@CHR:<\ud800>}
+                    {@CHR:<\udc00>}
+                    {@CHR:<\ud83f>}
+                    {@CHR:<\udfff>}
+                    {@CHR:<\udbff>}
+                    {@CHR:<\udfff>}
+                    {@CHR:<\udbff>}
+                    {@CHR:<\udffe>}
+                    {@CHR:<\udbfd>}
+                    {@CHR:<\ude0f>}} 0} }
             @STR:<abc> { {priority {
                     @CHR:<a>
                     @CHR:<b>
@@ -163,6 +1524,7 @@ grammar {
             @LEX:@CLS:<Aa> 1
             {@LEX:@NCC:<[:alnum:]>} 1
             @LEX:@RAN:<az> 1
+            {@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} 1
             @LEX:@STR:<abc> 1
         }
         lexeme {
@@ -183,28 +1545,489 @@ grammar {
             @LEX:@CLS:<Aa> { {priority @%CHR:<A> 0} }
             {@LEX:@NCC:<[:alnum:]>} { {priority {{@NCC:<[:alnum:]>}} 0} }
             @LEX:@RAN:<az> { {priority @RAN:<az> 0} }
+            {@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>} { {priority {{@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>}} 0} }
             @LEX:@STR:<abc> { {priority @STR:<abc> 0} }
         }
         literal {
             @%CHR:<A> { {charclass 65 97} }
             @%CHR:<B> { {charclass 66 98} }
             @%CHR:<C> { {charclass 67 99} }
-            {@%NCC:<[:alnum:]>} { {charclass {48 57} {65 90} {97 122} 170 181 186 {192 214} {216 246} {248 705} {710 721} {736 740} 748 750 837 {880 884} {886 887} {890 893} 895 902 {904 906} 908 {910 929} {931 1013} {1015 1153} {1162 1327} {1329 1366} 1369 {1377 1415} {1488 1514} {1520 1522} {1568 1610} {1632 1641} {1646 1647} {1649 1747} 1749 {1765 1766} {1774 1788} 1791 1808 {1810 1839} {1869 1957} 1969 {1984 2026} {2036 2037} 2042 {2048 2069} 2074 2084 2088 {2112 2136} {2208 2228} {2230 2237} {2308 2361} 2365 2384 {2392 2401} {2406 2415} {2417 2432} {2437 2444} {2447 2448} {2451 2472} {2474 2480} 2482 {2486 2489} 2493 2510 {2524 2525} {2527 2529} {2534 2545} {2565 2570} {2575 2576} {2579 2600} {2602 2608} {2610 2611} {2613 2614} {2616 2617} {2649 2652} 2654 {2662 2671} {2674 2676} {2693 2701} {2703 2705} {2707 2728} {2730 2736} {2738 2739} {2741 2745} 2749 2768 {2784 2785} {2790 2799} 2809 {2821 2828} {2831 2832} {2835 2856} {2858 2864} {2866 2867} {2869 2873} 2877 {2908 2909} {2911 2913} {2918 2927} 2929 2947 {2949 2954} {2958 2960} {2962 2965} {2969 2970} 2972 {2974 2975} {2979 2980} {2984 2986} {2990 3001} 3024 {3046 3055} {3077 3084} {3086 3088} {3090 3112} {3114 3129} 3133 {3160 3162} {3168 3169} {3174 3183} 3200 {3205 3212} {3214 3216} {3218 3240} {3242 3251} {3253 3257} 3261 3294 {3296 3297} {3302 3311} {3313 3314} {3333 3340} {3342 3344} {3346 3386} 3389 3406 {3412 3414} {3423 3425} {3430 3439} {3450 3455} {3461 3478} {3482 3505} {3507 3515} 3517 {3520 3526} {3558 3567} {3585 3632} {3634 3635} {3648 3654} {3664 3673} {3713 3714} 3716 {3719 3720} 3722 3725 {3732 3735} {3737 3743} {3745 3747} 3749 3751 {3754 3755} {3757 3760} {3762 3763} 3773 {3776 3780} 3782 {3792 3801} {3804 3807} 3840 {3872 3881} {3904 3911} {3913 3948} {3976 3980} {4096 4138} {4159 4169} {4176 4181} {4186 4189} 4193 {4197 4198} {4206 4208} {4213 4225} 4238 {4240 4249} {4256 4293} 4295 4301 {4304 4346} {4348 4680} {4682 4685} {4688 4694} 4696 {4698 4701} {4704 4744} {4746 4749} {4752 4784} {4786 4789} {4792 4798} 4800 {4802 4805} {4808 4822} {4824 4880} {4882 4885} {4888 4954} {4992 5007} {5024 5109} {5112 5117} {5121 5740} {5743 5759} {5761 5786} {5792 5866} {5873 5880} {5888 5900} {5902 5905} {5920 5937} {5952 5969} {5984 5996} {5998 6000} {6016 6067} 6103 6108 {6112 6121} {6160 6169} {6176 6263} {6272 6276} {6279 6312} 6314 {6320 6389} {6400 6430} {6470 6509} {6512 6516} {6528 6571} {6576 6601} {6608 6617} {6656 6678} {6688 6740} {6784 6793} {6800 6809} 6823 {6917 6963} {6981 6987} {6992 7001} {7043 7072} {7086 7141} {7168 7203} {7232 7241} {7245 7293} {7296 7304} {7401 7404} {7406 7409} {7413 7414} {7424 7615} {7680 7957} {7960 7965} {7968 8005} {8008 8013} {8016 8023} 8025 8027 8029 {8031 8061} {8064 8116} {8118 8124} 8126 {8130 8132} {8134 8140} {8144 8147} {8150 8155} {8160 8172} {8178 8180} {8182 8188} 8305 8319 {8336 8348} 8450 8455 {8458 8467} 8469 {8473 8477} 8484 8486 8488 {8490 8493} {8495 8505} {8508 8511} {8517 8521} 8526 {8579 8580} {11264 11310} {11312 11358} {11360 11492} {11499 11502} {11506 11507} {11520 11557} 11559 11565 {11568 11623} 11631 {11648 11670} {11680 11686} {11688 11694} {11696 11702} {11704 11710} {11712 11718} {11720 11726} {11728 11734} {11736 11742} 11823 {12293 12294} {12337 12341} {12347 12348} {12353 12438} {12445 12447} {12449 12538} {12540 12543} {12549 12589} {12593 12686} {12704 12730} {12784 12799} {13312 19893} {19968 40917} {40960 42124} {42192 42237} {42240 42508} {42512 42539} {42560 42606} {42623 42653} {42656 42725} {42775 42783} {42786 42888} {42891 42926} {42928 42935} {42999 43009} {43011 43013} {43015 43018} {43020 43042} {43072 43123} {43138 43187} {43216 43225} {43250 43255} 43259 43261 {43264 43301} {43312 43334} {43360 43388} {43396 43442} {43471 43481} {43488 43492} {43494 43518} {43520 43560} {43584 43586} {43588 43595} {43600 43609} {43616 43638} 43642 {43646 43695} 43697 {43701 43702} {43705 43709} 43712 43714 {43739 43741} {43744 43754} {43762 43764} {43777 43782} {43785 43790} {43793 43798} {43808 43814} {43816 43822} {43824 43866} {43868 43877} {43888 44002} {44016 44025} {44032 55203} {55216 55238} {55243 55291} {63744 64109} {64112 64217} {64256 64262} {64275 64279} 64285 {64287 64296} {64298 64310} {64312 64316} 64318 {64320 64321} {64323 64324} {64326 64433} {64467 64829} {64848 64911} {64914 64967} {65008 65019} {65136 65140} {65142 65276} {65296 65305} {65313 65338} {65345 65370} {65382 65470} {65474 65479} {65482 65487} {65490 65495} {65498 65500} {65536 65547} {65549 65574} {65576 65594} {65596 65597} {65599 65613} {65616 65629} {65664 65786} {66176 66204} {66208 66256} {66304 66335} {66352 66368} {66370 66377} {66384 66421} {66432 66461} {66464 66499} {66504 66511} {66560 66717} {66720 66729} {66736 66771} {66776 66811} {66816 66855} {66864 66915} {67072 67382} {67392 67413} {67424 67431} {67584 67589} 67592 {67594 67637} {67639 67640} 67644 {67647 67669} {67680 67702} {67712 67742} {67808 67826} {67828 67829} {67840 67861} {67872 67897} {67968 68023} {68030 68031} 68096 {68112 68115} {68117 68119} {68121 68147} {68192 68220} {68224 68252} {68288 68295} {68297 68324} {68352 68405} {68416 68437} {68448 68466} {68480 68497} {68608 68680} {68736 68786} {68800 68850} {69635 69687} {69734 69743} {69763 69807} {69840 69864} {69872 69881} {69891 69926} {69942 69951} {69968 70002} 70006 {70019 70066} {70081 70084} {70096 70106} 70108 {70144 70161} {70163 70187} {70272 70278} 70280 {70282 70285} {70287 70301} {70303 70312} {70320 70366} {70384 70393} {70405 70412} {70415 70416} {70419 70440} {70442 70448} {70450 70451} {70453 70457} 70461 70480 {70493 70497} {70656 70708} {70727 70730} {70736 70745} {70784 70831} {70852 70853} 70855 {70864 70873} {71040 71086} {71128 71131} {71168 71215} 71236 {71248 71257} {71296 71338} {71360 71369} {71424 71449} {71472 71481} {71840 71913} 71935 {72384 72440} {72704 72712} {72714 72750} 72768 {72784 72793} {72818 72847} {73728 74649} {74880 75075} {77824 78894} {82944 83526} {92160 92728} {92736 92766} {92768 92777} {92880 92909} {92928 92975} {92992 92995} {93008 93017} {93027 93047} {93053 93071} {93952 94020} 94032 {94099 94111} 94176 {94208 100332} {100352 101106} {110592 110593} {113664 113770} {113776 113788} {113792 113800} {113808 113817} {119808 119892} {119894 119964} {119966 119967} 119970 {119973 119974} {119977 119980} {119982 119993} 119995 {119997 120003} {120005 120069} {120071 120074} {120077 120084} {120086 120092} {120094 120121} {120123 120126} {120128 120132} 120134 {120138 120144} {120146 120485} {120488 120512} {120514 120538} {120540 120570} {120572 120596} {120598 120628} {120630 120654} {120656 120686} {120688 120712} {120714 120744} {120746 120770} {120772 120779} {120782 120831} {124928 125124} {125184 125251} {125264 125273} {126464 126467} {126469 126495} {126497 126498} 126500 126503 {126505 126514} {126516 126519} 126521 126523 126530 126535 126537 126539 {126541 126543} {126545 126546} 126548 126551 126553 126555 126557 126559 {126561 126562} 126564 {126567 126570} {126572 126578} {126580 126583} {126585 126588} 126590 {126592 126601} {126603 126619} {126625 126627} {126629 126633} {126635 126651} {131072 173782} {173824 177972} {177984 178205} {178208 183969} {194560 195101}} }
-            {@^%NCC:<[:alnum:]>} { {charclass {0 47} {58 64} {91 96} {123 169} {171 180} {182 185} {187 191} 215 247 {706 709} {722 735} {741 747} 749 {751 836} {838 879} 885 {888 889} 894 {896 901} 903 907 909 930 1014 {1154 1161} 1328 {1367 1368} {1370 1376} {1416 1487} {1515 1519} {1523 1567} {1611 1631} {1642 1645} 1648 1748 {1750 1764} {1767 1773} {1789 1790} {1792 1807} 1809 {1840 1868} {1958 1968} {1970 1983} {2027 2035} {2038 2041} {2043 2047} {2070 2073} {2075 2083} {2085 2087} {2089 2111} {2137 2207} 2229 {2238 2307} {2362 2364} {2366 2383} {2385 2391} {2402 2405} 2416 {2433 2436} {2445 2446} {2449 2450} 2473 2481 {2483 2485} {2490 2492} {2494 2509} {2511 2523} 2526 {2530 2533} {2546 2564} {2571 2574} {2577 2578} 2601 2609 2612 2615 {2618 2648} 2653 {2655 2661} {2672 2673} {2677 2692} 2702 2706 2729 2737 2740 {2746 2748} {2750 2767} {2769 2783} {2786 2789} {2800 2808} {2810 2820} {2829 2830} {2833 2834} 2857 2865 2868 {2874 2876} {2878 2907} 2910 {2914 2917} 2928 {2930 2946} 2948 {2955 2957} 2961 {2966 2968} 2971 2973 {2976 2978} {2981 2983} {2987 2989} {3002 3023} {3025 3045} {3056 3076} 3085 3089 3113 {3130 3132} {3134 3159} {3163 3167} {3170 3173} {3184 3199} {3201 3204} 3213 3217 3241 3252 {3258 3260} {3262 3293} 3295 {3298 3301} 3312 {3315 3332} 3341 3345 {3387 3388} {3390 3405} {3407 3411} {3415 3422} {3426 3429} {3440 3449} {3456 3460} {3479 3481} 3506 3516 {3518 3519} {3527 3557} {3568 3584} 3633 {3636 3647} {3655 3663} {3674 3712} 3715 {3717 3718} 3721 {3723 3724} {3726 3731} 3736 3744 3748 3750 {3752 3753} 3756 3761 {3764 3772} {3774 3775} 3781 {3783 3791} {3802 3803} {3808 3839} {3841 3871} {3882 3903} 3912 {3949 3975} {3981 4095} {4139 4158} {4170 4175} {4182 4185} {4190 4192} {4194 4196} {4199 4205} {4209 4212} {4226 4237} 4239 {4250 4255} 4294 {4296 4300} {4302 4303} 4347 4681 {4686 4687} 4695 4697 {4702 4703} 4745 {4750 4751} 4785 {4790 4791} 4799 4801 {4806 4807} 4823 4881 {4886 4887} {4955 4991} {5008 5023} {5110 5111} {5118 5120} {5741 5742} 5760 {5787 5791} {5867 5872} {5881 5887} 5901 {5906 5919} {5938 5951} {5970 5983} 5997 {6001 6015} {6068 6102} {6104 6107} {6109 6111} {6122 6159} {6170 6175} {6264 6271} {6277 6278} 6313 {6315 6319} {6390 6399} {6431 6469} {6510 6511} {6517 6527} {6572 6575} {6602 6607} {6618 6655} {6679 6687} {6741 6783} {6794 6799} {6810 6822} {6824 6916} {6964 6980} {6988 6991} {7002 7042} {7073 7085} {7142 7167} {7204 7231} {7242 7244} {7294 7295} {7305 7400} 7405 {7410 7412} {7415 7423} {7616 7679} {7958 7959} {7966 7967} {8006 8007} {8014 8015} 8024 8026 8028 8030 {8062 8063} 8117 8125 {8127 8129} 8133 {8141 8143} {8148 8149} {8156 8159} {8173 8177} 8181 {8189 8304} {8306 8318} {8320 8335} {8349 8449} {8451 8454} {8456 8457} 8468 {8470 8472} {8478 8483} 8485 8487 8489 8494 {8506 8507} {8512 8516} {8522 8525} {8527 8578} {8581 11263} 11311 11359 {11493 11498} {11503 11505} {11508 11519} 11558 {11560 11564} {11566 11567} {11624 11630} {11632 11647} {11671 11679} 11687 11695 11703 11711 11719 11727 11735 {11743 11822} {11824 12292} {12295 12336} {12342 12346} {12349 12352} {12439 12444} 12448 12539 {12544 12548} {12590 12592} {12687 12703} {12731 12783} {12800 13311} {19894 19967} {40918 40959} {42125 42191} {42238 42239} {42509 42511} {42540 42559} {42607 42622} {42654 42655} {42726 42774} {42784 42785} {42889 42890} 42927 {42936 42998} 43010 43014 43019 {43043 43071} {43124 43137} {43188 43215} {43226 43249} {43256 43258} 43260 {43262 43263} {43302 43311} {43335 43359} {43389 43395} {43443 43470} {43482 43487} 43493 43519 {43561 43583} 43587 {43596 43599} {43610 43615} {43639 43641} {43643 43645} 43696 {43698 43700} {43703 43704} {43710 43711} 43713 {43715 43738} {43742 43743} {43755 43761} {43765 43776} {43783 43784} {43791 43792} {43799 43807} 43815 43823 43867 {43878 43887} {44003 44015} {44026 44031} {55204 55215} {55239 55242} {55292 63743} {64110 64111} {64218 64255} {64263 64274} {64280 64284} 64286 64297 64311 64317 64319 64322 64325 {64434 64466} {64830 64847} {64912 64913} {64968 65007} {65020 65135} 65141 {65277 65295} {65306 65312} {65339 65344} {65371 65381} {65471 65473} {65480 65481} {65488 65489} {65496 65497} {65501 65535} 65548 65575 65595 65598 {65614 65615} {65630 65663} {65787 66175} {66205 66207} {66257 66303} {66336 66351} 66369 {66378 66383} {66422 66431} {66462 66463} {66500 66503} {66512 66559} {66718 66719} {66730 66735} {66772 66775} {66812 66815} {66856 66863} {66916 67071} {67383 67391} {67414 67423} {67432 67583} {67590 67591} 67593 67638 {67641 67643} {67645 67646} {67670 67679} {67703 67711} {67743 67807} 67827 {67830 67839} {67862 67871} {67898 67967} {68024 68029} {68032 68095} {68097 68111} 68116 68120 {68148 68191} {68221 68223} {68253 68287} 68296 {68325 68351} {68406 68415} {68438 68447} {68467 68479} {68498 68607} {68681 68735} {68787 68799} {68851 69634} {69688 69733} {69744 69762} {69808 69839} {69865 69871} {69882 69890} {69927 69941} {69952 69967} {70003 70005} {70007 70018} {70067 70080} {70085 70095} 70107 {70109 70143} 70162 {70188 70271} 70279 70281 70286 70302 {70313 70319} {70367 70383} {70394 70404} {70413 70414} {70417 70418} 70441 70449 70452 {70458 70460} {70462 70479} {70481 70492} {70498 70655} {70709 70726} {70731 70735} {70746 70783} {70832 70851} 70854 {70856 70863} {70874 71039} {71087 71127} {71132 71167} {71216 71235} {71237 71247} {71258 71295} {71339 71359} {71370 71423} {71450 71471} {71482 71839} {71914 71934} {71936 72383} {72441 72703} 72713 {72751 72767} {72769 72783} {72794 72817} {72848 73727} {74650 74879} {75076 77823} {78895 82943} {83527 92159} {92729 92735} 92767 {92778 92879} {92910 92927} {92976 92991} {92996 93007} {93018 93026} {93048 93052} {93072 93951} {94021 94031} {94033 94098} {94112 94175} {94177 94207} {100333 100351} {101107 110591} {110594 113663} {113771 113775} {113789 113791} {113801 113807} {113818 119807} 119893 119965 {119968 119969} {119971 119972} {119975 119976} 119981 119994 119996 120004 120070 {120075 120076} 120085 120093 120122 120127 120133 {120135 120137} 120145 {120486 120487} 120513 120539 120571 120597 120629 120655 120687 120713 120745 120771 {120780 120781} {120832 124927} {125125 125183} {125252 125263} {125274 126463} 126468 126496 126499 {126501 126502} 126504 126515 126520 126522 {126524 126529} {126531 126534} 126536 126538 126540 126544 126547 {126549 126550} 126552 126554 126556 126558 126560 126563 {126565 126566} 126571 126579 126584 126589 126591 126602 {126620 126624} 126628 126634 {126652 131071} {173783 173823} {177973 177983} {178206 178207} {183970 194559} {195102 1114111}} }
-            @^CHR:<a> { {^character 97} }
-            {@^CLS:<0-9a[:braille:]>} { {^charclass {48 57} 97 {10240 10495}} }
-            {@^CLS:<0-9Aa[:%braille:]>} { {^charclass {48 57} 65 97 {10240 10495}} }
-            {@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {^charclass {65 90} {97 122} {304 305} 383 8490} }
-            @^CLS:<Aa> { {^charclass 65 97} }
-            {@^NCC:<[:alnum:]>} { {^named-class alnum} }
-            @^RAN:<az> { {^range 97 122} }
+            @^CHR:<a>.BMP { {^character 97} }
+            {@^CLS:<0-9a\u2800-\u28ff>.BMP} { {^charclass {48 57} 97 {10240 10495}} }
+            {@^CLS:<0-9Aa\u2800-\u28ff>.BMP} { {^charclass {48 57} 65 97 {10240 10495}} }
+            {@^CLS:<A-Za-z\u0130-\u0131\u017f\u212a>.BMP} { {^charclass {65 90} {97 122} {304 305} 383 8490} }
+            @^CLS:<Aa>.BMP { {^charclass 65 97} }
+            {@^NCC:<[:alnum:]>.BMP} { {^named-class alnum} }
+            @^RAN:<az>.BMP { {^range 97 122} }
+            {@CHR:<\ud80c>} { {character 55308} }
+            {@CHR:<\ud80d>} { {character 55309} }
+            {@CHR:<\ud81a>} { {character 55322} }
+            {@CHR:<\ud81b>} { {character 55323} }
+            {@CHR:<\ud82c>} { {character 55340} }
+            {@CHR:<\ud82f>} { {character 55343} }
+            {@CHR:<\ud83a>} { {character 55354} }
+            {@CHR:<\ud83b>} { {character 55355} }
+            {@CHR:<\ud83f>} { {character 55359} }
+            {@CHR:<\ud86d>} { {character 55405} }
+            {@CHR:<\ud86e>} { {character 55406} }
+            {@CHR:<\ud87e>} { {character 55422} }
+            {@CHR:<\ud800>} { {character 55296} }
+            {@CHR:<\ud801>} { {character 55297} }
+            {@CHR:<\ud802>} { {character 55298} }
+            {@CHR:<\ud803>} { {character 55299} }
+            {@CHR:<\ud804>} { {character 55300} }
+            {@CHR:<\ud805>} { {character 55301} }
+            {@CHR:<\ud806>} { {character 55302} }
+            {@CHR:<\ud807>} { {character 55303} }
+            {@CHR:<\ud808>} { {character 55304} }
+            {@CHR:<\ud809>} { {character 55305} }
+            {@CHR:<\ud811>} { {character 55313} }
+            {@CHR:<\ud821>} { {character 55329} }
+            {@CHR:<\ud822>} { {character 55330} }
+            {@CHR:<\ud835>} { {character 55349} }
+            {@CHR:<\ud869>} { {character 55401} }
+            {@CHR:<\ud873>} { {character 55411} }
+            {@CHR:<\udbfd>} { {character 56317} }
+            {@CHR:<\udbff>} { {character 56319} }
+            {@CHR:<\udc00>} { {character 56320} }
+            {@CHR:<\udc0c>} { {character 56332} }
+            {@CHR:<\udc3b>} { {character 56379} }
+            {@CHR:<\udc3c>} { {character 56380} }
+            {@CHR:<\udc3e>} { {character 56382} }
+            {@CHR:<\udc08>} { {character 56328} }
+            {@CHR:<\udc09>} { {character 56329} }
+            {@CHR:<\udc9d>} { {character 56477} }
+            {@CHR:<\udc27>} { {character 56359} }
+            {@CHR:<\udc36>} { {character 56374} }
+            {@CHR:<\udc40>} { {character 56384} }
+            {@CHR:<\udc55>} { {character 56405} }
+            {@CHR:<\udca2>} { {character 56482} }
+            {@CHR:<\udcad>} { {character 56493} }
+            {@CHR:<\udcba>} { {character 56506} }
+            {@CHR:<\udcbb>} { {character 56507} }
+            {@CHR:<\udcbc>} { {character 56508} }
+            {@CHR:<\udcc4>} { {character 56516} }
+            {@CHR:<\udcc6>} { {character 56518} }
+            {@CHR:<\udcc7>} { {character 56519} }
+            {@CHR:<\udcf3>} { {character 56563} }
+            {@CHR:<\udcff>} { {character 56575} }
+            {@CHR:<\udd1d>} { {character 56605} }
+            {@CHR:<\udd3a>} { {character 56634} }
+            {@CHR:<\udd3f>} { {character 56639} }
+            {@CHR:<\udd06>} { {character 56582} }
+            {@CHR:<\udd15>} { {character 56597} }
+            {@CHR:<\udd45>} { {character 56645} }
+            {@CHR:<\udd46>} { {character 56646} }
+            {@CHR:<\udd51>} { {character 56657} }
+            {@CHR:<\udd76>} { {character 56694} }
+            {@CHR:<\udddb>} { {character 56795} }
+            {@CHR:<\udddc>} { {character 56796} }
+            {@CHR:<\ude00>} { {character 56832} }
+            {@CHR:<\ude0f>} { {character 56847} }
+            {@CHR:<\ude3a>} { {character 56890} }
+            {@CHR:<\ude3b>} { {character 56891} }
+            {@CHR:<\ude04>} { {character 56836} }
+            {@CHR:<\ude4a>} { {character 56906} }
+            {@CHR:<\ude4b>} { {character 56907} }
+            {@CHR:<\ude4c>} { {character 56908} }
+            {@CHR:<\ude5a>} { {character 56922} }
+            {@CHR:<\ude5b>} { {character 56923} }
+            {@CHR:<\ude5c>} { {character 56924} }
+            {@CHR:<\ude5d>} { {character 56925} }
+            {@CHR:<\ude5e>} { {character 56926} }
+            {@CHR:<\ude5f>} { {character 56927} }
+            {@CHR:<\ude6b>} { {character 56939} }
+            {@CHR:<\ude7d>} { {character 56957} }
+            {@CHR:<\ude7e>} { {character 56958} }
+            {@CHR:<\ude7f>} { {character 56959} }
+            {@CHR:<\ude8a>} { {character 56970} }
+            {@CHR:<\ude8e>} { {character 56974} }
+            {@CHR:<\ude9e>} { {character 56990} }
+            {@CHR:<\ude12>} { {character 56850} }
+            {@CHR:<\ude14>} { {character 56852} }
+            {@CHR:<\ude18>} { {character 56856} }
+            {@CHR:<\ude20>} { {character 56864} }
+            {@CHR:<\ude23>} { {character 56867} }
+            {@CHR:<\ude24>} { {character 56868} }
+            {@CHR:<\ude27>} { {character 56871} }
+            {@CHR:<\ude28>} { {character 56872} }
+            {@CHR:<\ude33>} { {character 56883} }
+            {@CHR:<\ude38>} { {character 56888} }
+            {@CHR:<\ude39>} { {character 56889} }
+            {@CHR:<\ude42>} { {character 56898} }
+            {@CHR:<\ude44>} { {character 56900} }
+            {@CHR:<\ude47>} { {character 56903} }
+            {@CHR:<\ude48>} { {character 56904} }
+            {@CHR:<\ude49>} { {character 56905} }
+            {@CHR:<\ude50>} { {character 56912} }
+            {@CHR:<\ude53>} { {character 56915} }
+            {@CHR:<\ude54>} { {character 56916} }
+            {@CHR:<\ude57>} { {character 56919} }
+            {@CHR:<\ude58>} { {character 56920} }
+            {@CHR:<\ude59>} { {character 56921} }
+            {@CHR:<\ude60>} { {character 56928} }
+            {@CHR:<\ude63>} { {character 56931} }
+            {@CHR:<\ude64>} { {character 56932} }
+            {@CHR:<\ude73>} { {character 56947} }
+            {@CHR:<\ude78>} { {character 56952} }
+            {@CHR:<\ude87>} { {character 56967} }
+            {@CHR:<\ude88>} { {character 56968} }
+            {@CHR:<\ude89>} { {character 56969} }
+            {@CHR:<\udea4>} { {character 56996} }
+            {@CHR:<\udeaa>} { {character 57002} }
+            {@CHR:<\udec1>} { {character 57025} }
+            {@CHR:<\udec8>} { {character 57032} }
+            {@CHR:<\udedb>} { {character 57051} }
+            {@CHR:<\udefb>} { {character 57083} }
+            {@CHR:<\udf3d>} { {character 57149} }
+            {@CHR:<\udf4f>} { {character 57167} }
+            {@CHR:<\udf6f>} { {character 57199} }
+            {@CHR:<\udf15>} { {character 57109} }
+            {@CHR:<\udf29>} { {character 57129} }
+            {@CHR:<\udf31>} { {character 57137} }
+            {@CHR:<\udf34>} { {character 57140} }
+            {@CHR:<\udf35>} { {character 57141} }
+            {@CHR:<\udf41>} { {character 57153} }
+            {@CHR:<\udf50>} { {character 57168} }
+            {@CHR:<\udf89>} { {character 57225} }
+            {@CHR:<\udfa9>} { {character 57257} }
+            {@CHR:<\udfc3>} { {character 57283} }
+            {@CHR:<\udfe0>} { {character 57312} }
+            {@CHR:<\udffe>} { {character 57342} }
+            {@CHR:<\udfff>} { {character 57343} }
+            {@CHR:<\uffff>} { {character 65535} }
             @CHR:<a> { {character 97} }
             @CHR:<b> { {character 98} }
             @CHR:<c> { {character 99} }
+            {@CLS:<0-9A-Za-z\u00aa\u00b5\u00ba\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0345\u0370-\u0374\u0376-\u0377\u037a-\u037d\u037f\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u052f\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05f2\u0620-\u064a\u0660-\u0669\u066e-\u066f\u0671-\u06d3\u06d5\u06e5-\u06e6\u06ee-\u06fc\u06ff\u0710\u0712-\u072f\u074d-\u07a5\u07b1\u07c0-\u07ea\u07f4-\u07f5\u07fa\u0800-\u0815\u081a\u0824\u0828\u0840-\u0858\u08a0-\u08b4\u08b6-\u08bd\u0904-\u0939\u093d\u0950\u0958-\u0961\u0966-\u096f\u0971-\u0980\u0985-\u098c\u098f-\u0990\u0993-\u09a8\u09aa-\u09b0\u09b2\u09b6-\u09b9\u09bd\u09ce\u09dc-\u09dd\u09df-\u09e1\u09e6-\u09f1\u0a05-\u0a0a\u0a0f-\u0a10\u0a13-\u0a28\u0a2a-\u0a30\u0a32-\u0a33\u0a35-\u0a36\u0a38-\u0a39\u0a59-\u0a5c\u0a5e\u0a66-\u0a6f\u0a72-\u0a74\u0a85-\u0a8d\u0a8f-\u0a91\u0a93-\u0aa8\u0aaa-\u0ab0\u0ab2-\u0ab3\u0ab5-\u0ab9\u0abd\u0ad0\u0ae0-\u0ae1\u0ae6-\u0aef\u0af9\u0b05-\u0b0c\u0b0f-\u0b10\u0b13-\u0b28\u0b2a-\u0b30\u0b32-\u0b33\u0b35-\u0b39\u0b3d\u0b5c-\u0b5d\u0b5f-\u0b61\u0b66-\u0b6f\u0b71\u0b83\u0b85-\u0b8a\u0b8e-\u0b90\u0b92-\u0b95\u0b99-\u0b9a\u0b9c\u0b9e-\u0b9f\u0ba3-\u0ba4\u0ba8-\u0baa\u0bae-\u0bb9\u0bd0\u0be6-\u0bef\u0c05-\u0c0c\u0c0e-\u0c10\u0c12-\u0c28\u0c2a-\u0c39\u0c3d\u0c58-\u0c5a\u0c60-\u0c61\u0c66-\u0c6f\u0c80\u0c85-\u0c8c\u0c8e-\u0c90\u0c92-\u0ca8\u0caa-\u0cb3\u0cb5-\u0cb9\u0cbd\u0cde\u0ce0-\u0ce1\u0ce6-\u0cef\u0cf1-\u0cf2\u0d05-\u0d0c\u0d0e-\u0d10\u0d12-\u0d3a\u0d3d\u0d4e\u0d54-\u0d56\u0d5f-\u0d61\u0d66-\u0d6f\u0d7a-\u0d7f\u0d85-\u0d96\u0d9a-\u0db1\u0db3-\u0dbb\u0dbd\u0dc0-\u0dc6\u0de6-\u0def\u0e01-\u0e30\u0e32-\u0e33\u0e40-\u0e46\u0e50-\u0e59\u0e81-\u0e82\u0e84\u0e87-\u0e88\u0e8a\u0e8d\u0e94-\u0e97\u0e99-\u0e9f\u0ea1-\u0ea3\u0ea5\u0ea7\u0eaa-\u0eab\u0ead-\u0eb0\u0eb2-\u0eb3\u0ebd\u0ec0-\u0ec4\u0ec6\u0ed0-\u0ed9\u0edc-\u0edf\u0f00\u0f20-\u0f29\u0f40-\u0f47\u0f49-\u0f6c\u0f88-\u0f8c\u1000-\u102a\u103f-\u1049\u1050-\u1055\u105a-\u105d\u1061\u1065-\u1066\u106e-\u1070\u1075-\u1081\u108e\u1090-\u1099\u10a0-\u10c5\u10c7\u10cd\u10d0-\u10fa\u10fc-\u1248\u124a-\u124d\u1250-\u1256\u1258\u125a-\u125d\u1260-\u1288\u128a-\u128d\u1290-\u12b0\u12b2-\u12b5\u12b8-\u12be\u12c0\u12c2-\u12c5\u12c8-\u12d6\u12d8-\u1310\u1312-\u1315\u1318-\u135a\u1380-\u138f\u13a0-\u13f5\u13f8-\u13fd\u1401-\u166c\u166f-\u167f\u1681-\u169a\u16a0-\u16ea\u16f1-\u16f8\u1700-\u170c\u170e-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176c\u176e-\u1770\u1780-\u17b3\u17d7\u17dc\u17e0-\u17e9\u1810-\u1819\u1820-\u1877\u1880-\u1884\u1887-\u18a8\u18aa\u18b0-\u18f5\u1900-\u191e\u1946-\u196d\u1970-\u1974\u1980-\u19ab\u19b0-\u19c9\u19d0-\u19d9\u1a00-\u1a16\u1a20-\u1a54\u1a80-\u1a89\u1a90-\u1a99\u1aa7\u1b05-\u1b33\u1b45-\u1b4b\u1b50-\u1b59\u1b83-\u1ba0\u1bae-\u1be5\u1c00-\u1c23\u1c40-\u1c49\u1c4d-\u1c7d\u1c80-\u1c88\u1ce9-\u1cec\u1cee-\u1cf1\u1cf5-\u1cf6\u1d00-\u1dbf\u1e00-\u1f15\u1f18-\u1f1d\u1f20-\u1f45\u1f48-\u1f4d\u1f50-\u1f57\u1f59\u1f5b\u1f5d\u1f5f-\u1f7d\u1f80-\u1fb4\u1fb6-\u1fbc\u1fbe\u1fc2-\u1fc4\u1fc6-\u1fcc\u1fd0-\u1fd3\u1fd6-\u1fdb\u1fe0-\u1fec\u1ff2-\u1ff4\u1ff6-\u1ffc\u2071\u207f\u2090-\u209c\u2102\u2107\u210a-\u2113\u2115\u2119-\u211d\u2124\u2126\u2128\u212a-\u212d\u212f-\u2139\u213c-\u213f\u2145-\u2149\u214e\u2183-\u2184\u2c00-\u2c2e\u2c30-\u2c5e\u2c60-\u2ce4\u2ceb-\u2cee\u2cf2-\u2cf3\u2d00-\u2d25\u2d27\u2d2d\u2d30-\u2d67\u2d6f\u2d80-\u2d96\u2da0-\u2da6\u2da8-\u2dae\u2db0-\u2db6\u2db8-\u2dbe\u2dc0-\u2dc6\u2dc8-\u2dce\u2dd0-\u2dd6\u2dd8-\u2dde\u2e2f\u3005-\u3006\u3031-\u3035\u303b-\u303c\u3041-\u3096\u309d-\u309f\u30a1-\u30fa\u30fc-\u30ff\u3105-\u312d\u3131-\u318e\u31a0-\u31ba\u31f0-\u31ff\u3400-\u4db5\u4e00-\u9fd5\ua000-\ua48c\ua4d0-\ua4fd\ua500-\ua60c\ua610-\ua62b\ua640-\ua66e\ua67f-\ua69d\ua6a0-\ua6e5\ua717-\ua71f\ua722-\ua788\ua78b-\ua7ae\ua7b0-\ua7b7\ua7f7-\ua801\ua803-\ua805\ua807-\ua80a\ua80c-\ua822\ua840-\ua873\ua882-\ua8b3\ua8d0-\ua8d9\ua8f2-\ua8f7\ua8fb\ua8fd\ua900-\ua925\ua930-\ua946\ua960-\ua97c\ua984-\ua9b2\ua9cf-\ua9d9\ua9e0-\ua9e4\ua9e6-\ua9fe\uaa00-\uaa28\uaa40-\uaa42\uaa44-\uaa4b\uaa50-\uaa59\uaa60-\uaa76\uaa7a\uaa7e-\uaaaf\uaab1\uaab5-\uaab6\uaab9-\uaabd\uaac0\uaac2\uaadb-\uaadd\uaae0-\uaaea\uaaf2-\uaaf4\uab01-\uab06\uab09-\uab0e\uab11-\uab16\uab20-\uab26\uab28-\uab2e\uab30-\uab5a\uab5c-\uab65\uab70-\uabe2\uabf0-\uabf9\uac00-\ud7a3\ud7b0-\ud7c6\ud7cb-\ud7fb\uf900-\ufa6d\ufa70-\ufad9\ufb00-\ufb06\ufb13-\ufb17\ufb1d\ufb1f-\ufb28\ufb2a-\ufb36\ufb38-\ufb3c\ufb3e\ufb40-\ufb41\ufb43-\ufb44\ufb46-\ufbb1\ufbd3-\ufd3d\ufd50-\ufd8f\ufd92-\ufdc7\ufdf0-\ufdfb\ufe70-\ufe74\ufe76-\ufefc\uff10-\uff19\uff21-\uff3a\uff41-\uff5a\uff66-\uffbe\uffc2-\uffc7\uffca-\uffcf\uffd2-\uffd7\uffda-\uffdc>.BMP} { {charclass {48 57} {65 90} {97 122} 170 181 186 {192 214} {216 246} {248 705} {710 721} {736 740} 748 750 837 {880 884} {886 887} {890 893} 895 902 {904 906} 908 {910 929} {931 1013} {1015 1153} {1162 1327} {1329 1366} 1369 {1377 1415} {1488 1514} {1520 1522} {1568 1610} {1632 1641} {1646 1647} {1649 1747} 1749 {1765 1766} {1774 1788} 1791 1808 {1810 1839} {1869 1957} 1969 {1984 2026} {2036 2037} 2042 {2048 2069} 2074 2084 2088 {2112 2136} {2208 2228} {2230 2237} {2308 2361} 2365 2384 {2392 2401} {2406 2415} {2417 2432} {2437 2444} {2447 2448} {2451 2472} {2474 2480} 2482 {2486 2489} 2493 2510 {2524 2525} {2527 2529} {2534 2545} {2565 2570} {2575 2576} {2579 2600} {2602 2608} {2610 2611} {2613 2614} {2616 2617} {2649 2652} 2654 {2662 2671} {2674 2676} {2693 2701} {2703 2705} {2707 2728} {2730 2736} {2738 2739} {2741 2745} 2749 2768 {2784 2785} {2790 2799} 2809 {2821 2828} {2831 2832} {2835 2856} {2858 2864} {2866 2867} {2869 2873} 2877 {2908 2909} {2911 2913} {2918 2927} 2929 2947 {2949 2954} {2958 2960} {2962 2965} {2969 2970} 2972 {2974 2975} {2979 2980} {2984 2986} {2990 3001} 3024 {3046 3055} {3077 3084} {3086 3088} {3090 3112} {3114 3129} 3133 {3160 3162} {3168 3169} {3174 3183} 3200 {3205 3212} {3214 3216} {3218 3240} {3242 3251} {3253 3257} 3261 3294 {3296 3297} {3302 3311} {3313 3314} {3333 3340} {3342 3344} {3346 3386} 3389 3406 {3412 3414} {3423 3425} {3430 3439} {3450 3455} {3461 3478} {3482 3505} {3507 3515} 3517 {3520 3526} {3558 3567} {3585 3632} {3634 3635} {3648 3654} {3664 3673} {3713 3714} 3716 {3719 3720} 3722 3725 {3732 3735} {3737 3743} {3745 3747} 3749 3751 {3754 3755} {3757 3760} {3762 3763} 3773 {3776 3780} 3782 {3792 3801} {3804 3807} 3840 {3872 3881} {3904 3911} {3913 3948} {3976 3980} {4096 4138} {4159 4169} {4176 4181} {4186 4189} 4193 {4197 4198} {4206 4208} {4213 4225} 4238 {4240 4249} {4256 4293} 4295 4301 {4304 4346} {4348 4680} {4682 4685} {4688 4694} 4696 {4698 4701} {4704 4744} {4746 4749} {4752 4784} {4786 4789} {4792 4798} 4800 {4802 4805} {4808 4822} {4824 4880} {4882 4885} {4888 4954} {4992 5007} {5024 5109} {5112 5117} {5121 5740} {5743 5759} {5761 5786} {5792 5866} {5873 5880} {5888 5900} {5902 5905} {5920 5937} {5952 5969} {5984 5996} {5998 6000} {6016 6067} 6103 6108 {6112 6121} {6160 6169} {6176 6263} {6272 6276} {6279 6312} 6314 {6320 6389} {6400 6430} {6470 6509} {6512 6516} {6528 6571} {6576 6601} {6608 6617} {6656 6678} {6688 6740} {6784 6793} {6800 6809} 6823 {6917 6963} {6981 6987} {6992 7001} {7043 7072} {7086 7141} {7168 7203} {7232 7241} {7245 7293} {7296 7304} {7401 7404} {7406 7409} {7413 7414} {7424 7615} {7680 7957} {7960 7965} {7968 8005} {8008 8013} {8016 8023} 8025 8027 8029 {8031 8061} {8064 8116} {8118 8124} 8126 {8130 8132} {8134 8140} {8144 8147} {8150 8155} {8160 8172} {8178 8180} {8182 8188} 8305 8319 {8336 8348} 8450 8455 {8458 8467} 8469 {8473 8477} 8484 8486 8488 {8490 8493} {8495 8505} {8508 8511} {8517 8521} 8526 {8579 8580} {11264 11310} {11312 11358} {11360 11492} {11499 11502} {11506 11507} {11520 11557} 11559 11565 {11568 11623} 11631 {11648 11670} {11680 11686} {11688 11694} {11696 11702} {11704 11710} {11712 11718} {11720 11726} {11728 11734} {11736 11742} 11823 {12293 12294} {12337 12341} {12347 12348} {12353 12438} {12445 12447} {12449 12538} {12540 12543} {12549 12589} {12593 12686} {12704 12730} {12784 12799} {13312 19893} {19968 40917} {40960 42124} {42192 42237} {42240 42508} {42512 42539} {42560 42606} {42623 42653} {42656 42725} {42775 42783} {42786 42888} {42891 42926} {42928 42935} {42999 43009} {43011 43013} {43015 43018} {43020 43042} {43072 43123} {43138 43187} {43216 43225} {43250 43255} 43259 43261 {43264 43301} {43312 43334} {43360 43388} {43396 43442} {43471 43481} {43488 43492} {43494 43518} {43520 43560} {43584 43586} {43588 43595} {43600 43609} {43616 43638} 43642 {43646 43695} 43697 {43701 43702} {43705 43709} 43712 43714 {43739 43741} {43744 43754} {43762 43764} {43777 43782} {43785 43790} {43793 43798} {43808 43814} {43816 43822} {43824 43866} {43868 43877} {43888 44002} {44016 44025} {44032 55203} {55216 55238} {55243 55291} {63744 64109} {64112 64217} {64256 64262} {64275 64279} 64285 {64287 64296} {64298 64310} {64312 64316} 64318 {64320 64321} {64323 64324} {64326 64433} {64467 64829} {64848 64911} {64914 64967} {65008 65019} {65136 65140} {65142 65276} {65296 65305} {65313 65338} {65345 65370} {65382 65470} {65474 65479} {65482 65487} {65490 65495} {65498 65500}} }
             {@CLS:<0-9a[:braille:]>} { {charclass {48 57} 97 {10240 10495}} }
             {@CLS:<0-9Aa[:%braille:]>} { {charclass {48 57} 65 97 {10240 10495}} }
+            {@CLS:<\0-/:-@\133-`\173-\u00a9\u00ab-\u00b4\u00b6-\u00b9\u00bb-\u00bf\u00d7\u00f7\u02c2-\u02c5\u02d2-\u02df\u02e5-\u02eb\u02ed\u02ef-\u0344\u0346-\u036f\u0375\u0378-\u0379\u037e\u0380-\u0385\u0387\u038b\u038d\u03a2\u03f6\u0482-\u0489\u0530\u0557-\u0558\u055a-\u0560\u0588-\u05cf\u05eb-\u05ef\u05f3-\u061f\u064b-\u065f\u066a-\u066d\u0670\u06d4\u06d6-\u06e4\u06e7-\u06ed\u06fd-\u06fe\u0700-\3417\u0711\u0730-\u074c\u07a6-\u07b0\u07b2-\u07bf\u07eb-\u07f3\u07f6-\u07f9\u07fb-\u07ff\u0816-\u0819\u081b-\u0823\u0825-\u0827\u0829-\u083f\u0859-\u089f\u08b5\u08be-\u0903\u093a-\u093c\u093e-\u094f\u0951-\u0957\u0962-\u0965\u0970\u0981-\u0984\u098d-\u098e\u0991-\u0992\u09a9\u09b1\u09b3-\u09b5\u09ba-\u09bc\u09be-\u09cd\u09cf-\u09db\u09de\u09e2-\u09e5\u09f2-\u0a04\u0a0b-\u0a0e\u0a11-\u0a12\u0a29\u0a31\u0a34\u0a37\u0a3a-\u0a58\u0a5d\u0a5f-\u0a65\u0a70-\u0a71\u0a75-\u0a84\u0a8e\u0a92\u0aa9\u0ab1\u0ab4\u0aba-\u0abc\u0abe-\u0acf\u0ad1-\u0adf\u0ae2-\u0ae5\u0af0-\u0af8\u0afa-\u0b04\u0b0d-\u0b0e\u0b11-\u0b12\u0b29\u0b31\u0b34\u0b3a-\u0b3c\u0b3e-\u0b5b\u0b5e\u0b62-\u0b65\u0b70\u0b72-\u0b82\u0b84\u0b8b-\u0b8d\u0b91\u0b96-\u0b98\u0b9b\u0b9d\u0ba0-\u0ba2\u0ba5-\u0ba7\u0bab-\u0bad\u0bba-\u0bcf\u0bd1-\u0be5\u0bf0-\u0c04\u0c0d\u0c11\u0c29\u0c3a-\u0c3c\u0c3e-\u0c57\u0c5b-\u0c5f\u0c62-\u0c65\u0c70-\u0c7f\u0c81-\u0c84\u0c8d\u0c91\u0ca9\u0cb4\u0cba-\u0cbc\u0cbe-\u0cdd\u0cdf\u0ce2-\u0ce5\u0cf0\u0cf3-\u0d04\u0d0d\u0d11\u0d3b-\u0d3c\u0d3e-\u0d4d\u0d4f-\u0d53\u0d57-\u0d5e\u0d62-\u0d65\u0d70-\u0d79\u0d80-\u0d84\u0d97-\u0d99\u0db2\u0dbc\u0dbe-\u0dbf\u0dc7-\u0de5\u0df0-\u0e00\u0e31\u0e34-\u0e3f\u0e47-\u0e4f\u0e5a-\u0e80\u0e83\u0e85-\u0e86\u0e89\u0e8b-\u0e8c\u0e8e-\u0e93\u0e98\u0ea0\u0ea4\u0ea6\u0ea8-\u0ea9\u0eac\u0eb1\u0eb4-\u0ebc\u0ebe-\u0ebf\u0ec5\u0ec7-\u0ecf\u0eda-\u0edb\u0ee0-\u0eff\u0f01-\u0f1f\u0f2a-\u0f3f\u0f48\u0f6d-\u0f87\u0f8d-\u0fff\u102b-\u103e\u104a-\u104f\u1056-\u1059\u105e-\u1060\u1062-\u1064\u1067-\u106d\u1071-\u1074\u1082-\u108d\u108f\u109a-\u109f\u10c6\u10c8-\u10cc\u10ce-\u10cf\u10fb\u1249\u124e-\u124f\u1257\u1259\u125e-\u125f\u1289\u128e-\u128f\u12b1\u12b6-\u12b7\u12bf\u12c1\u12c6-\u12c7\u12d7\u1311\u1316-\u1317\u135b-\u137f\u1390-\u139f\u13f6-\u13f7\u13fe-\u1400\u166d-\u166e\u1680\u169b-\u169f\u16eb-\u16f0\u16f9-\u16ff\u170d\u1712-\u171f\u1732-\u173f\u1752-\u175f\u176d\u1771-\u177f\u17b4-\u17d6\u17d8-\u17db\u17dd-\u17df\u17ea-\u180f\u181a-\u181f\u1878-\u187f\u1885-\u1886\u18a9\u18ab-\u18af\u18f6-\u18ff\u191f-\u1945\u196e-\u196f\u1975-\u197f\u19ac-\u19af\u19ca-\u19cf\u19da-\u19ff\u1a17-\u1a1f\u1a55-\u1a7f\u1a8a-\u1a8f\u1a9a-\u1aa6\u1aa8-\u1b04\u1b34-\u1b44\u1b4c-\u1b4f\u1b5a-\u1b82\u1ba1-\u1bad\u1be6-\u1bff\u1c24-\u1c3f\u1c4a-\u1c4c\u1c7e-\u1c7f\u1c89-\u1ce8\u1ced\u1cf2-\u1cf4\u1cf7-\u1cff\u1dc0-\u1dff\u1f16-\u1f17\u1f1e-\u1f1f\u1f46-\u1f47\u1f4e-\u1f4f\u1f58\u1f5a\u1f5c\u1f5e\u1f7e-\u1f7f\u1fb5\u1fbd\u1fbf-\u1fc1\u1fc5\u1fcd-\u1fcf\u1fd4-\u1fd5\u1fdc-\u1fdf\u1fed-\u1ff1\u1ff5\u1ffd-\u2070\u2072-\u207e\u2080-\u208f\u209d-\u2101\u2103-\u2106\u2108-\u2109\u2114\u2116-\u2118\u211e-\u2123\u2125\u2127\u2129\u212e\u213a-\u213b\u2140-\u2144\u214a-\u214d\u214f-\u2182\u2185-\u2bff\u2c2f\u2c5f\u2ce5-\u2cea\u2cef-\u2cf1\u2cf4-\u2cff\u2d26\u2d28-\u2d2c\u2d2e-\u2d2f\u2d68-\u2d6e\u2d70-\u2d7f\u2d97-\u2d9f\u2da7\u2daf\u2db7\u2dbf\u2dc7\u2dcf\u2dd7\u2ddf-\u2e2e\u2e30-\u3004\u3007-\u3030\u3036-\u303a\u303d-\u3040\u3097-\u309c\u30a0\u30fb\u3100-\u3104\u312e-\u3130\u318f-\u319f\u31bb-\u31ef\u3200-\u33ff\u4db6-\u4dff\u9fd6-\u9fff\ua48d-\ua4cf\ua4fe-\ua4ff\ua60d-\ua60f\ua62c-\ua63f\ua66f-\ua67e\ua69e-\ua69f\ua6e6-\ua716\ua720-\ua721\ua789-\ua78a\ua7af\ua7b8-\ua7f6\ua802\ua806\ua80b\ua823-\ua83f\ua874-\ua881\ua8b4-\ua8cf\ua8da-\ua8f1\ua8f8-\ua8fa\ua8fc\ua8fe-\ua8ff\ua926-\ua92f\ua947-\ua95f\ua97d-\ua983\ua9b3-\ua9ce\ua9da-\ua9df\ua9e5\ua9ff\uaa29-\uaa3f\uaa43\uaa4c-\uaa4f\uaa5a-\uaa5f\uaa77-\uaa79\uaa7b-\uaa7d\uaab0\uaab2-\uaab4\uaab7-\uaab8\uaabe-\uaabf\uaac1\uaac3-\uaada\uaade-\uaadf\uaaeb-\uaaf1\uaaf5-\uab00\uab07-\uab08\uab0f-\uab10\uab17-\uab1f\uab27\uab2f\uab5b\uab66-\uab6f\uabe3-\uabef\uabfa-\uabff\ud7a4-\ud7af\ud7c7-\ud7ca\ud7fc-\174377\ufa6e-\ufa6f\ufada-\ufaff\ufb07-\ufb12\ufb18-\ufb1c\ufb1e\ufb29\ufb37\ufb3d\ufb3f\ufb42\ufb45\ufbb2-\ufbd2\ufd3e-\ufd4f\ufd90-\ufd91\ufdc8-\ufdef\ufdfc-\ufe6f\ufe75\ufefd-\uff0f\uff1a-\uff20\uff3b-\uff40\uff5b-\uff65\uffbf-\uffc1\uffc8-\uffc9\uffd0-\uffd1\uffd8-\uffd9\uffdd-\uffff>.BMP} { {charclass {0 47} {58 64} {91 96} {123 169} {171 180} {182 185} {187 191} 215 247 {706 709} {722 735} {741 747} 749 {751 836} {838 879} 885 {888 889} 894 {896 901} 903 907 909 930 1014 {1154 1161} 1328 {1367 1368} {1370 1376} {1416 1487} {1515 1519} {1523 1567} {1611 1631} {1642 1645} 1648 1748 {1750 1764} {1767 1773} {1789 1790} {1792 1807} 1809 {1840 1868} {1958 1968} {1970 1983} {2027 2035} {2038 2041} {2043 2047} {2070 2073} {2075 2083} {2085 2087} {2089 2111} {2137 2207} 2229 {2238 2307} {2362 2364} {2366 2383} {2385 2391} {2402 2405} 2416 {2433 2436} {2445 2446} {2449 2450} 2473 2481 {2483 2485} {2490 2492} {2494 2509} {2511 2523} 2526 {2530 2533} {2546 2564} {2571 2574} {2577 2578} 2601 2609 2612 2615 {2618 2648} 2653 {2655 2661} {2672 2673} {2677 2692} 2702 2706 2729 2737 2740 {2746 2748} {2750 2767} {2769 2783} {2786 2789} {2800 2808} {2810 2820} {2829 2830} {2833 2834} 2857 2865 2868 {2874 2876} {2878 2907} 2910 {2914 2917} 2928 {2930 2946} 2948 {2955 2957} 2961 {2966 2968} 2971 2973 {2976 2978} {2981 2983} {2987 2989} {3002 3023} {3025 3045} {3056 3076} 3085 3089 3113 {3130 3132} {3134 3159} {3163 3167} {3170 3173} {3184 3199} {3201 3204} 3213 3217 3241 3252 {3258 3260} {3262 3293} 3295 {3298 3301} 3312 {3315 3332} 3341 3345 {3387 3388} {3390 3405} {3407 3411} {3415 3422} {3426 3429} {3440 3449} {3456 3460} {3479 3481} 3506 3516 {3518 3519} {3527 3557} {3568 3584} 3633 {3636 3647} {3655 3663} {3674 3712} 3715 {3717 3718} 3721 {3723 3724} {3726 3731} 3736 3744 3748 3750 {3752 3753} 3756 3761 {3764 3772} {3774 3775} 3781 {3783 3791} {3802 3803} {3808 3839} {3841 3871} {3882 3903} 3912 {3949 3975} {3981 4095} {4139 4158} {4170 4175} {4182 4185} {4190 4192} {4194 4196} {4199 4205} {4209 4212} {4226 4237} 4239 {4250 4255} 4294 {4296 4300} {4302 4303} 4347 4681 {4686 4687} 4695 4697 {4702 4703} 4745 {4750 4751} 4785 {4790 4791} 4799 4801 {4806 4807} 4823 4881 {4886 4887} {4955 4991} {5008 5023} {5110 5111} {5118 5120} {5741 5742} 5760 {5787 5791} {5867 5872} {5881 5887} 5901 {5906 5919} {5938 5951} {5970 5983} 5997 {6001 6015} {6068 6102} {6104 6107} {6109 6111} {6122 6159} {6170 6175} {6264 6271} {6277 6278} 6313 {6315 6319} {6390 6399} {6431 6469} {6510 6511} {6517 6527} {6572 6575} {6602 6607} {6618 6655} {6679 6687} {6741 6783} {6794 6799} {6810 6822} {6824 6916} {6964 6980} {6988 6991} {7002 7042} {7073 7085} {7142 7167} {7204 7231} {7242 7244} {7294 7295} {7305 7400} 7405 {7410 7412} {7415 7423} {7616 7679} {7958 7959} {7966 7967} {8006 8007} {8014 8015} 8024 8026 8028 8030 {8062 8063} 8117 8125 {8127 8129} 8133 {8141 8143} {8148 8149} {8156 8159} {8173 8177} 8181 {8189 8304} {8306 8318} {8320 8335} {8349 8449} {8451 8454} {8456 8457} 8468 {8470 8472} {8478 8483} 8485 8487 8489 8494 {8506 8507} {8512 8516} {8522 8525} {8527 8578} {8581 11263} 11311 11359 {11493 11498} {11503 11505} {11508 11519} 11558 {11560 11564} {11566 11567} {11624 11630} {11632 11647} {11671 11679} 11687 11695 11703 11711 11719 11727 11735 {11743 11822} {11824 12292} {12295 12336} {12342 12346} {12349 12352} {12439 12444} 12448 12539 {12544 12548} {12590 12592} {12687 12703} {12731 12783} {12800 13311} {19894 19967} {40918 40959} {42125 42191} {42238 42239} {42509 42511} {42540 42559} {42607 42622} {42654 42655} {42726 42774} {42784 42785} {42889 42890} 42927 {42936 42998} 43010 43014 43019 {43043 43071} {43124 43137} {43188 43215} {43226 43249} {43256 43258} 43260 {43262 43263} {43302 43311} {43335 43359} {43389 43395} {43443 43470} {43482 43487} 43493 43519 {43561 43583} 43587 {43596 43599} {43610 43615} {43639 43641} {43643 43645} 43696 {43698 43700} {43703 43704} {43710 43711} 43713 {43715 43738} {43742 43743} {43755 43761} {43765 43776} {43783 43784} {43791 43792} {43799 43807} 43815 43823 43867 {43878 43887} {44003 44015} {44026 44031} {55204 55215} {55239 55242} {55292 63743} {64110 64111} {64218 64255} {64263 64274} {64280 64284} 64286 64297 64311 64317 64319 64322 64325 {64434 64466} {64830 64847} {64912 64913} {64968 65007} {65020 65135} 65141 {65277 65295} {65306 65312} {65339 65344} {65371 65381} {65471 65473} {65480 65481} {65488 65489} {65496 65497} {65501 65535}} }
             {@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>} { {charclass {65 90} {97 122} {304 305} 383 8490} }
-            {@NCC:<[:alnum:]>} { {named-class alnum} }
+            {@NCC:<[:alnum:]>.BMP} { {named-class alnum} }
+            {@RAN:<\ud80a\ud80b>} { {range 55306 55307} }
+            {@RAN:<\ud80e\ud810>} { {range 55310 55312} }
+            {@RAN:<\ud81c\ud820>} { {range 55324 55328} }
+            {@RAN:<\ud82d\ud82e>} { {range 55341 55342} }
+            {@RAN:<\ud83c\ud83f>} { {range 55356 55359} }
+            {@RAN:<\ud86a\ud86c>} { {range 55402 55404} }
+            {@RAN:<\ud86f\ud872>} { {range 55407 55410} }
+            {@RAN:<\ud87f\udbff>} { {range 55423 56319} }
+            {@RAN:<\ud800\udbff>} { {range 55296 56319} }
+            {@RAN:<\ud812\ud819>} { {range 55314 55321} }
+            {@RAN:<\ud823\ud82b>} { {range 55331 55339} }
+            {@RAN:<\ud830\ud834>} { {range 55344 55348} }
+            {@RAN:<\ud836\ud839>} { {range 55350 55353} }
+            {@RAN:<\ud840\ud868>} { {range 55360 55400} }
+            {@RAN:<\ud874\ud87d>} { {range 55412 55421} }
+            {@RAN:<\udc00\udc0b>} { {range 56320 56331} }
+            {@RAN:<\udc00\udc01>} { {range 56320 56321} }
+            {@RAN:<\udc00\udc1d>} { {range 56320 56349} }
+            {@RAN:<\udc00\udc02>} { {range 56320 56322} }
+            {@RAN:<\udc00\udc2e>} { {range 56320 56366} }
+            {@RAN:<\udc00\udc05>} { {range 56320 56325} }
+            {@RAN:<\udc00\udc6a>} { {range 56320 56426} }
+            {@RAN:<\udc00\udc7f>} { {range 56320 56447} }
+            {@RAN:<\udc00\udc08>} { {range 56320 56328} }
+            {@RAN:<\udc00\udc9d>} { {range 56320 56477} }
+            {@RAN:<\udc00\udc9f>} { {range 56320 56479} }
+            {@RAN:<\udc00\udc34>} { {range 56320 56372} }
+            {@RAN:<\udc00\udc48>} { {range 56320 56392} }
+            {@RAN:<\udc00\udc54>} { {range 56320 56404} }
+            {@RAN:<\udc00\udcc4>} { {range 56320 56516} }
+            {@RAN:<\udc00\uddff>} { {range 56320 56831} }
+            {@RAN:<\udc00\ude1d>} { {range 56320 56861} }
+            {@RAN:<\udc00\ude38>} { {range 56320 56888} }
+            {@RAN:<\udc00\ude46>} { {range 56320 56902} }
+            {@RAN:<\udc00\udea1>} { {range 56320 56993} }
+            {@RAN:<\udc00\uded6>} { {range 56320 57046} }
+            {@RAN:<\udc00\udef2>} { {range 56320 57074} }
+            {@RAN:<\udc00\udeff>} { {range 56320 57087} }
+            {@RAN:<\udc00\udf34>} { {range 56320 57140} }
+            {@RAN:<\udc00\udf99>} { {range 56320 57241} }
+            {@RAN:<\udc00\udfec>} { {range 56320 57324} }
+            {@RAN:<\udc00\udfff>} { {range 56320 57343} }
+            {@RAN:<\udc0a\udc2e>} { {range 56330 56366} }
+            {@RAN:<\udc0a\udc35>} { {range 56330 56373} }
+            {@RAN:<\udc0d\udc26>} { {range 56333 56358} }
+            {@RAN:<\udc1e\udc1f>} { {range 56350 56351} }
+            {@RAN:<\udc02\udfff>} { {range 56322 57343} }
+            {@RAN:<\udc2f\udc3f>} { {range 56367 56383} }
+            {@RAN:<\udc2f\udfff>} { {range 56367 57343} }
+            {@RAN:<\udc03\udc37>} { {range 56323 56375} }
+            {@RAN:<\udc3c\udc3d>} { {range 56380 56381} }
+            {@RAN:<\udc3d\udc3e>} { {range 56381 56382} }
+            {@RAN:<\udc3f\udc4d>} { {range 56383 56397} }
+            {@RAN:<\udc3f\udc55>} { {range 56383 56405} }
+            {@RAN:<\udc4b\udc4f>} { {range 56395 56399} }
+            {@RAN:<\udc4e\udc4f>} { {range 56398 56399} }
+            {@RAN:<\udc5a\udc7f>} { {range 56410 56447} }
+            {@RAN:<\udc5a\udc71>} { {range 56410 56433} }
+            {@RAN:<\udc5e\udc7f>} { {range 56414 56447} }
+            {@RAN:<\udc06\udc07>} { {range 56326 56327} }
+            {@RAN:<\udc6b\udc6f>} { {range 56427 56431} }
+            {@RAN:<\udc7d\udc7f>} { {range 56445 56447} }
+            {@RAN:<\udc9a\udfff>} { {range 56474 57343} }
+            {@RAN:<\udc9e\udc9f>} { {range 56478 56479} }
+            {@RAN:<\udc9f\udcdf>} { {range 56479 56543} }
+            {@RAN:<\udc20\udfff>} { {range 56352 57343} }
+            {@RAN:<\udc28\udc3a>} { {range 56360 56378} }
+            {@RAN:<\udc35\udc46>} { {range 56373 56390} }
+            {@RAN:<\udc37\udc38>} { {range 56375 56376} }
+            {@RAN:<\udc38\udc65>} { {range 56376 56421} }
+            {@RAN:<\udc39\udc3b>} { {range 56377 56379} }
+            {@RAN:<\udc41\udc4f>} { {range 56385 56399} }
+            {@RAN:<\udc47\udc4a>} { {range 56391 56394} }
+            {@RAN:<\udc49\udc7f>} { {range 56393 56447} }
+            {@RAN:<\udc50\udc5d>} { {range 56400 56413} }
+            {@RAN:<\udc50\udc59>} { {range 56400 56409} }
+            {@RAN:<\udc56\udc5f>} { {range 56406 56415} }
+            {@RAN:<\udc56\udc9c>} { {range 56406 56476} }
+            {@RAN:<\udc60\udc76>} { {range 56416 56438} }
+            {@RAN:<\udc66\udc6f>} { {range 56422 56431} }
+            {@RAN:<\udc70\udc7c>} { {range 56432 56444} }
+            {@RAN:<\udc70\udc82>} { {range 56432 56450} }
+            {@RAN:<\udc72\udc8f>} { {range 56434 56463} }
+            {@RAN:<\udc77\udc7f>} { {range 56439 56447} }
+            {@RAN:<\udc80\udc9e>} { {range 56448 56478} }
+            {@RAN:<\udc80\udc88>} { {range 56448 56456} }
+            {@RAN:<\udc80\udcaf>} { {range 56448 56495} }
+            {@RAN:<\udc80\udcb2>} { {range 56448 56498} }
+            {@RAN:<\udc80\udcfa>} { {range 56448 56570} }
+            {@RAN:<\udc80\udd43>} { {range 56448 56643} }
+            {@RAN:<\udc83\udcaf>} { {range 56451 56495} }
+            {@RAN:<\udc89\udc8f>} { {range 56457 56463} }
+            {@RAN:<\udc90\udc99>} { {range 56464 56473} }
+            {@RAN:<\udc90\udfff>} { {range 56464 57343} }
+            {@RAN:<\udca0\udca1>} { {range 56480 56481} }
+            {@RAN:<\udca0\udca9>} { {range 56480 56489} }
+            {@RAN:<\udca0\udce9>} { {range 56480 56553} }
+            {@RAN:<\udca3\udca4>} { {range 56483 56484} }
+            {@RAN:<\udca5\udca6>} { {range 56485 56486} }
+            {@RAN:<\udca7\udca8>} { {range 56487 56488} }
+            {@RAN:<\udca9\udcac>} { {range 56489 56492} }
+            {@RAN:<\udcaa\udcaf>} { {range 56490 56495} }
+            {@RAN:<\udcae\udcb9>} { {range 56494 56505} }
+            {@RAN:<\udcb0\udcc3>} { {range 56496 56515} }
+            {@RAN:<\udcb0\udccf>} { {range 56496 56527} }
+            {@RAN:<\udcb0\udcd3>} { {range 56496 56531} }
+            {@RAN:<\udcb3\udcbf>} { {range 56499 56511} }
+            {@RAN:<\udcbd\udcc3>} { {range 56509 56515} }
+            {@RAN:<\udcc0\udcf2>} { {range 56512 56562} }
+            {@RAN:<\udcc4\udcc5>} { {range 56516 56517} }
+            {@RAN:<\udcc5\udcff>} { {range 56517 56575} }
+            {@RAN:<\udcc5\udd05>} { {range 56517 56581} }
+            {@RAN:<\udcc8\udccf>} { {range 56520 56527} }
+            {@RAN:<\udcd0\udcd9>} { {range 56528 56537} }
+            {@RAN:<\udcd0\udce8>} { {range 56528 56552} }
+            {@RAN:<\udcd4\udcd7>} { {range 56532 56535} }
+            {@RAN:<\udcd8\udcfb>} { {range 56536 56571} }
+            {@RAN:<\udcda\udd7f>} { {range 56538 56703} }
+            {@RAN:<\udce0\udcf2>} { {range 56544 56562} }
+            {@RAN:<\udce9\udcef>} { {range 56553 56559} }
+            {@RAN:<\udcea\udcfe>} { {range 56554 56574} }
+            {@RAN:<\udcf0\udcf9>} { {range 56560 56569} }
+            {@RAN:<\udcf3\udfff>} { {range 56563 57343} }
+            {@RAN:<\udcf4\udcf5>} { {range 56564 56565} }
+            {@RAN:<\udcf6\udcff>} { {range 56566 56575} }
+            {@RAN:<\udcfa\udd02>} { {range 56570 56578} }
+            {@RAN:<\udcfb\ude7f>} { {range 56571 56959} }
+            {@RAN:<\udcfc\udcff>} { {range 56572 56575} }
+            {@RAN:<\udd00\udd15>} { {range 56576 56597} }
+            {@RAN:<\udd00\udd27>} { {range 56576 56615} }
+            {@RAN:<\udd00\udd43>} { {range 56576 56643} }
+            {@RAN:<\udd00\udebf>} { {range 56576 57023} }
+            {@RAN:<\udd0b\udd0c>} { {range 56587 56588} }
+            {@RAN:<\udd0d\udd14>} { {range 56589 56596} }
+            {@RAN:<\udd1e\udd39>} { {range 56606 56633} }
+            {@RAN:<\udd03\udd26>} { {range 56579 56614} }
+            {@RAN:<\udd3a\udd7f>} { {range 56634 56703} }
+            {@RAN:<\udd3b\udd3e>} { {range 56635 56638} }
+            {@RAN:<\udd4a\udd50>} { {range 56650 56656} }
+            {@RAN:<\udd5a\udfff>} { {range 56666 57343} }
+            {@RAN:<\udd07\udd0a>} { {range 56583 56586} }
+            {@RAN:<\udd16\udd1c>} { {range 56598 56604} }
+            {@RAN:<\udd16\udd1f>} { {range 56598 56607} }
+            {@RAN:<\udd20\udd39>} { {range 56608 56633} }
+            {@RAN:<\udd27\udd35>} { {range 56615 56629} }
+            {@RAN:<\udd28\udd2f>} { {range 56616 56623} }
+            {@RAN:<\udd30\udd63>} { {range 56624 56675} }
+            {@RAN:<\udd36\udd3f>} { {range 56630 56639} }
+            {@RAN:<\udd40\udd4f>} { {range 56640 56655} }
+            {@RAN:<\udd40\udd44>} { {range 56640 56644} }
+            {@RAN:<\udd44\udd4f>} { {range 56644 56655} }
+            {@RAN:<\udd44\udfff>} { {range 56644 57343} }
+            {@RAN:<\udd47\udd49>} { {range 56647 56649} }
+            {@RAN:<\udd50\udd59>} { {range 56656 56665} }
+            {@RAN:<\udd50\udd72>} { {range 56656 56690} }
+            {@RAN:<\udd52\udea5>} { {range 56658 56997} }
+            {@RAN:<\udd64\uddff>} { {range 56676 56831} }
+            {@RAN:<\udd73\udd75>} { {range 56691 56693} }
+            {@RAN:<\udd77\udd82>} { {range 56695 56706} }
+            {@RAN:<\udd80\uddae>} { {range 56704 56750} }
+            {@RAN:<\udd80\uddb7>} { {range 56704 56759} }
+            {@RAN:<\udd83\uddb2>} { {range 56707 56754} }
+            {@RAN:<\uddaf\uddd7>} { {range 56751 56791} }
+            {@RAN:<\uddb3\uddc0>} { {range 56755 56768} }
+            {@RAN:<\uddb8\uddbd>} { {range 56760 56765} }
+            {@RAN:<\uddbe\uddbf>} { {range 56766 56767} }
+            {@RAN:<\uddc0\uddff>} { {range 56768 56831} }
+            {@RAN:<\uddc1\uddc4>} { {range 56769 56772} }
+            {@RAN:<\uddc5\uddcf>} { {range 56773 56783} }
+            {@RAN:<\uddd0\uddda>} { {range 56784 56794} }
+            {@RAN:<\uddd8\udddb>} { {range 56792 56795} }
+            {@RAN:<\udddc\uddff>} { {range 56796 56831} }
+            {@RAN:<\udddd\uddff>} { {range 56797 56831} }
+            {@RAN:<\ude00\ude2f>} { {range 56832 56879} }
+            {@RAN:<\ude00\ude03>} { {range 56832 56835} }
+            {@RAN:<\ude00\ude11>} { {range 56832 56849} }
+            {@RAN:<\ude00\udf36>} { {range 56832 57142} }
+            {@RAN:<\ude01\ude0f>} { {range 56833 56847} }
+            {@RAN:<\ude1e\udfff>} { {range 56862 57343} }
+            {@RAN:<\ude2c\ude7f>} { {range 56876 56959} }
+            {@RAN:<\ude3c\ude41>} { {range 56892 56897} }
+            {@RAN:<\ude4d\ude4f>} { {range 56909 56911} }
+            {@RAN:<\ude05\ude1f>} { {range 56837 56863} }
+            {@RAN:<\ude5a\ude7f>} { {range 56922 56959} }
+            {@RAN:<\ude6a\udecf>} { {range 56938 57039} }
+            {@RAN:<\ude6c\ude72>} { {range 56940 56946} }
+            {@RAN:<\ude7d\ude7f>} { {range 56957 56959} }
+            {@RAN:<\ude8a\ude8d>} { {range 56970 56973} }
+            {@RAN:<\ude8b\ude9b>} { {range 56971 56987} }
+            {@RAN:<\ude8f\ude9d>} { {range 56975 56989} }
+            {@RAN:<\ude9c\udea0>} { {range 56988 56992} }
+            {@RAN:<\ude9d\ude9f>} { {range 56989 56991} }
+            {@RAN:<\ude9d\udebf>} { {range 56989 57023} }
+            {@RAN:<\ude9f\udea8>} { {range 56991 57000} }
+            {@RAN:<\ude10\ude13>} { {range 56848 56851} }
+            {@RAN:<\ude13\ude2b>} { {range 56851 56875} }
+            {@RAN:<\ude15\ude17>} { {range 56853 56855} }
+            {@RAN:<\ude19\ude33>} { {range 56857 56883} }
+            {@RAN:<\ude21\ude22>} { {range 56865 56866} }
+            {@RAN:<\ude25\ude26>} { {range 56869 56870} }
+            {@RAN:<\ude29\ude32>} { {range 56873 56882} }
+            {@RAN:<\ude30\ude43>} { {range 56880 56899} }
+            {@RAN:<\ude34\ude5f>} { {range 56884 56927} }
+            {@RAN:<\ude34\ude37>} { {range 56884 56887} }
+            {@RAN:<\ude39\ude3f>} { {range 56889 56895} }
+            {@RAN:<\ude40\ude5e>} { {range 56896 56926} }
+            {@RAN:<\ude43\ude46>} { {range 56899 56902} }
+            {@RAN:<\ude45\ude4f>} { {range 56901 56911} }
+            {@RAN:<\ude47\udfff>} { {range 56903 57343} }
+            {@RAN:<\ude50\ude59>} { {range 56912 56921} }
+            {@RAN:<\ude51\ude52>} { {range 56913 56914} }
+            {@RAN:<\ude55\ude56>} { {range 56917 56918} }
+            {@RAN:<\ude60\ude7c>} { {range 56928 56956} }
+            {@RAN:<\ude60\ude69>} { {range 56928 56937} }
+            {@RAN:<\ude61\ude62>} { {range 56929 56930} }
+            {@RAN:<\ude65\ude66>} { {range 56933 56934} }
+            {@RAN:<\ude67\ude6a>} { {range 56935 56938} }
+            {@RAN:<\ude74\ude77>} { {range 56948 56951} }
+            {@RAN:<\ude79\ude7c>} { {range 56953 56956} }
+            {@RAN:<\ude80\ude9c>} { {range 56960 56988} }
+            {@RAN:<\ude80\ude86>} { {range 56960 56966} }
+            {@RAN:<\ude80\ude89>} { {range 56960 56969} }
+            {@RAN:<\ude80\udeaa>} { {range 56960 57002} }
+            {@RAN:<\udea0\uded0>} { {range 56992 57040} }
+            {@RAN:<\udea1\udea3>} { {range 56993 56995} }
+            {@RAN:<\udea2\udfff>} { {range 56994 57343} }
+            {@RAN:<\udea5\udea9>} { {range 56997 57001} }
+            {@RAN:<\udea6\udea7>} { {range 56998 56999} }
+            {@RAN:<\udea8\udec0>} { {range 57000 57024} }
+            {@RAN:<\udea9\udeaf>} { {range 57001 57007} }
+            {@RAN:<\udeab\udebb>} { {range 57003 57019} }
+            {@RAN:<\udeab\udebf>} { {range 57003 57023} }
+            {@RAN:<\udeb0\udede>} { {range 57008 57054} }
+            {@RAN:<\udebc\udfff>} { {range 57020 57343} }
+            {@RAN:<\udec0\udec7>} { {range 57024 57031} }
+            {@RAN:<\udec0\udec9>} { {range 57024 57033} }
+            {@RAN:<\udec0\udef8>} { {range 57024 57080} }
+            {@RAN:<\udec2\udeda>} { {range 57026 57050} }
+            {@RAN:<\udec9\udee4>} { {range 57033 57060} }
+            {@RAN:<\udeca\udeff>} { {range 57034 57087} }
+            {@RAN:<\uded0\udeed>} { {range 57040 57069} }
+            {@RAN:<\uded1\udeff>} { {range 57041 57087} }
+            {@RAN:<\uded7\udeff>} { {range 57047 57087} }
+            {@RAN:<\udedc\udefa>} { {range 57052 57082} }
+            {@RAN:<\udedf\udeef>} { {range 57055 57071} }
+            {@RAN:<\udee5\udeff>} { {range 57061 57087} }
+            {@RAN:<\udeee\udeff>} { {range 57070 57087} }
+            {@RAN:<\udef0\udef9>} { {range 57072 57081} }
+            {@RAN:<\udef3\udfff>} { {range 57075 57343} }
+            {@RAN:<\udef9\udfff>} { {range 57081 57343} }
+            {@RAN:<\udefa\udf04>} { {range 57082 57092} }
+            {@RAN:<\udefc\udf14>} { {range 57084 57108} }
+            {@RAN:<\udf00\udf1f>} { {range 57088 57119} }
+            {@RAN:<\udf00\udf2f>} { {range 57088 57135} }
+            {@RAN:<\udf00\udf19>} { {range 57088 57113} }
+            {@RAN:<\udf00\udf35>} { {range 57088 57141} }
+            {@RAN:<\udf00\udf44>} { {range 57088 57156} }
+            {@RAN:<\udf00\udfff>} { {range 57088 57343} }
+            {@RAN:<\udf0d\udf0e>} { {range 57101 57102} }
+            {@RAN:<\udf0f\udf10>} { {range 57103 57104} }
+            {@RAN:<\udf1a\udf2f>} { {range 57114 57135} }
+            {@RAN:<\udf2a\udf30>} { {range 57130 57136} }
+            {@RAN:<\udf3a\udf3c>} { {range 57146 57148} }
+            {@RAN:<\udf3a\udfff>} { {range 57146 57343} }
+            {@RAN:<\udf3e\udf4f>} { {range 57150 57167} }
+            {@RAN:<\udf4a\udf4f>} { {range 57162 57167} }
+            {@RAN:<\udf05\udf0c>} { {range 57093 57100} }
+            {@RAN:<\udf5a\udf62>} { {range 57178 57186} }
+            {@RAN:<\udf5d\udf61>} { {range 57181 57185} }
+            {@RAN:<\udf7d\udf8f>} { {range 57213 57231} }
+            {@RAN:<\udf8a\udfa8>} { {range 57226 57256} }
+            {@RAN:<\udf9a\udfff>} { {range 57242 57343} }
+            {@RAN:<\udf9e\udf9f>} { {range 57246 57247} }
+            {@RAN:<\udf11\udf12>} { {range 57105 57106} }
+            {@RAN:<\udf13\udf28>} { {range 57107 57128} }
+            {@RAN:<\udf16\udf34>} { {range 57110 57140} }
+            {@RAN:<\udf20\udf2f>} { {range 57120 57135} }
+            {@RAN:<\udf30\udf3f>} { {range 57136 57151} }
+            {@RAN:<\udf30\udf39>} { {range 57136 57145} }
+            {@RAN:<\udf30\udf40>} { {range 57136 57152} }
+            {@RAN:<\udf32\udf33>} { {range 57138 57139} }
+            {@RAN:<\udf35\udf3f>} { {range 57141 57151} }
+            {@RAN:<\udf35\udf39>} { {range 57141 57145} }
+            {@RAN:<\udf36\udf3f>} { {range 57142 57151} }
+            {@RAN:<\udf36\udf4e>} { {range 57142 57166} }
+            {@RAN:<\udf37\udf3f>} { {range 57143 57151} }
+            {@RAN:<\udf40\udf43>} { {range 57152 57155} }
+            {@RAN:<\udf40\udf55>} { {range 57152 57173} }
+            {@RAN:<\udf40\udfff>} { {range 57152 57343} }
+            {@RAN:<\udf42\udf49>} { {range 57154 57161} }
+            {@RAN:<\udf44\udf4f>} { {range 57156 57167} }
+            {@RAN:<\udf45\udf4f>} { {range 57157 57167} }
+            {@RAN:<\udf50\udf6e>} { {range 57168 57198} }
+            {@RAN:<\udf50\udf59>} { {range 57168 57177} }
+            {@RAN:<\udf50\udf75>} { {range 57168 57205} }
+            {@RAN:<\udf51\udf5c>} { {range 57169 57180} }
+            {@RAN:<\udf51\udf92>} { {range 57169 57234} }
+            {@RAN:<\udf56\udf5f>} { {range 57174 57183} }
+            {@RAN:<\udf60\udf67>} { {range 57184 57191} }
+            {@RAN:<\udf60\udf72>} { {range 57184 57202} }
+            {@RAN:<\udf62\udfff>} { {range 57186 57343} }
+            {@RAN:<\udf63\udf77>} { {range 57187 57207} }
+            {@RAN:<\udf68\udfff>} { {range 57192 57343} }
+            {@RAN:<\udf70\udf88>} { {range 57200 57224} }
+            {@RAN:<\udf73\udf7f>} { {range 57203 57215} }
+            {@RAN:<\udf76\udf7f>} { {range 57206 57215} }
+            {@RAN:<\udf78\udf7c>} { {range 57208 57212} }
+            {@RAN:<\udf80\udf9d>} { {range 57216 57245} }
+            {@RAN:<\udf80\udf91>} { {range 57216 57233} }
+            {@RAN:<\udf90\udfff>} { {range 57232 57343} }
+            {@RAN:<\udf92\udfff>} { {range 57234 57343} }
+            {@RAN:<\udf93\udf9f>} { {range 57235 57247} }
+            {@RAN:<\udfa0\udfc3>} { {range 57248 57283} }
+            {@RAN:<\udfa0\udfdf>} { {range 57248 57311} }
+            {@RAN:<\udfaa\udfc2>} { {range 57258 57282} }
+            {@RAN:<\udfc4\udfc7>} { {range 57284 57287} }
+            {@RAN:<\udfc4\udfcb>} { {range 57284 57291} }
+            {@RAN:<\udfc8\udfcf>} { {range 57288 57295} }
+            {@RAN:<\udfcc\udfcd>} { {range 57292 57293} }
+            {@RAN:<\udfce\udfff>} { {range 57294 57343} }
+            {@RAN:<\udfd0\udfff>} { {range 57296 57343} }
+            {@RAN:<\udfe1\udfff>} { {range 57313 57343} }
+            {@RAN:<\udfed\udfff>} { {range 57325 57343} }
             @RAN:<az> { {range 97 122} }
         }
     }

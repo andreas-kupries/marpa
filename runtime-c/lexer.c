@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: Lexing, Parser gating)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
@@ -33,6 +33,8 @@ static void              mismatch  (marpatcl_rtc_p p);
 static marpatcl_rtc_sv_p get_sv    (marpatcl_rtc_p   p,
 				    marpatcl_rtc_sym token,
 				    marpatcl_rtc_sym rule);
+
+static int num_utf_chars (const char *src);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -86,8 +88,9 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
     }
 
     LEX.lexeme = marpatcl_rtc_stack_cons (80);
-    LEX.start = -1;
-    LEX.recce = 0;
+    LEX.start  = -1;
+    LEX.cstart = -1;
+    LEX.recce  = 0;
 
     LEX.single_sv = 1;
     for (k = 0; k < SPEC->l0semantic.size; k++) {
@@ -131,6 +134,7 @@ marpatcl_rtc_lexer_flush (marpatcl_rtc_p p)
 
     if (LEX.start == -1) {
 	LEX.start  = GATE.lastloc;
+	LEX.cstart = GATE.lastcloc;
 	LEX.length = 0;
     }
 
@@ -153,6 +157,7 @@ marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
 
     if (LEX.start == -1) {
 	LEX.start  = GATE.lastloc;
+	LEX.cstart = GATE.lastcloc;
 	LEX.length = 0;
     }
 
@@ -183,7 +188,7 @@ marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
 void
 marpatcl_rtc_lexer_eof (marpatcl_rtc_p p)
 {
-    TRACE_FUNC ("((rtc*) %p (start %d))", p, LEX.start);
+    TRACE_FUNC ("((rtc*) %p (start B:%d, C:%d))", p, LEX.start, LEX.cstart);
 
     if (LEX.start >= 0) {
 	complete (p);
@@ -211,8 +216,9 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
     ASSERT (!LEX.recce, "lexer: left over recognizer");
 
     // create new recognizer for next match, reset match state
-    LEX.recce = marpa_r_new (LEX.g);
-    LEX.start = -1;
+    LEX.recce  = marpa_r_new (LEX.g);
+    LEX.start  = -1;
+    LEX.cstart = -1;
     marpatcl_rtc_stack_clear (LEX.lexeme);
     res = marpa_r_start_input (LEX.recce);
     marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 start_input");
@@ -241,6 +247,7 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
 
     /* And feed the results into the new lexer recce */
     n = marpatcl_rtc_symset_size (ACCEPT);
+    TRACE_TAG (accept, "ACCEPT# %d", n);
     if (n) {
 	int k;
 	buf = marpatcl_rtc_symset_dense (ACCEPT);
@@ -252,11 +259,15 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
 	    res = marpa_r_alternative (LEX.recce, TO_ACS (buf [k]), 1, 1);
 	    marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 alternative/b");
 	}
-
-	res = marpa_r_earleme_complete (LEX.recce);
-	marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 earleme_complete/b");
-	marpatcl_rtc_lexer_events (p);
     }
+
+    // Complete the feed.
+    res = marpa_r_earleme_complete (LEX.recce);
+    if (res && (marpa_g_error (LEX.g, NULL) != MARPA_ERR_PARSE_EXHAUSTED)) {
+	// any error but exhausted is a hard failure
+	marpatcl_rtc_fail_syscheck (p, LEX.g, res, "l0 earleme_complete/b");
+    }
+    marpatcl_rtc_lexer_events (p);
 
     // Now the gate can update its acceptables (byte symbols) too.
     marpatcl_rtc_gate_acceptable (p);
@@ -596,6 +607,8 @@ get_sv (marpatcl_rtc_p   p,
     marpatcl_rtc_sv_p lhsid    = 0;
     marpatcl_rtc_sv_p ruleid   = 0;
     marpatcl_rtc_sv_p value    = 0;
+    char* lexeme = 0;
+    int lex_length = -1;
 
     //TRACE_FUNC ("((rtc*) %p, token %d, rule %d)", p, token, rule);
     sv = marpatcl_rtc_sv_cons_vec (SPEC->l0semantic.size);
@@ -609,13 +622,17 @@ get_sv (marpatcl_rtc_p   p,
 
 #define L0_SNAME(token)  marpatcl_rtc_spec_symname (SPEC->l0, token, NULL)
 #define G1_SNAME(token)  marpatcl_rtc_spec_symname (SPEC->g1, token, NULL)
-#define LEX_STR          get_lexeme (p, NULL)
 
+#define LEX_STR          (lexeme ? lexeme : (lexeme = get_lexeme (p, NULL), lexeme))
+#define LEX_START_C      (LEX.cstart)
+#define LEX_LEN_C        (lex_length >= 0 ? lex_length : (lex_length = num_utf_chars (LEX_STR), lex_length))
+#define LEX_END_C        (LEX_START_C + LEX_LEN_C - 1)
+    
     for (k = 0; k < SPEC->l0semantic.size; k++) {
 	switch (SPEC->l0semantic.data[k]) {
 	case MARPATCL_SV_START:		DO (start, marpatcl_rtc_sv_cons_int (LEX_START));		break;
-	case MARPATCL_SV_END:		DO (end, marpatcl_rtc_sv_cons_int (LEX_END));			break;
-	case MARPATCL_SV_LENGTH:	DO (length, marpatcl_rtc_sv_cons_int (LEX_LEN));		break;
+	case MARPATCL_SV_END:		DO (end, marpatcl_rtc_sv_cons_int (LEX_END_C));			break;
+	case MARPATCL_SV_LENGTH:	DO (length, marpatcl_rtc_sv_cons_int (LEX_LEN_C));		break;
 	case MARPATCL_SV_G1START:	DO (g1start, marpatcl_rtc_sv_cons_string ("",0));		break;//TODO
 	case MARPATCL_SV_G1END:		DO (g1end, marpatcl_rtc_sv_cons_string ("",0));			break;//TODO
 	case MARPATCL_SV_G1LENGTH:	DO (g1length, marpatcl_rtc_sv_cons_int (1));			break;
@@ -669,6 +686,100 @@ get_lexeme (marpatcl_rtc_p p, int* len)
     }
 
     return v;//TRACE_RETURN ("'%s'", v);
+}
+
+static int
+num_utf_bytes (const char *src)
+{
+    /*
+     * Unicode characters less than this value are represented by themselves in
+     * UTF-8 strings.
+     */
+#define UNICODE_SELF	0x80
+
+    int ch;
+    register int byte;
+
+    /*
+     * Unroll 1 to 3 (or 4) byte UTF-8 sequences.
+     */
+
+    byte = *((unsigned char *) src);
+    if (byte < 0xC0) {
+	/*
+	 * Handles properly formed UTF-8 characters between 0x01 and 0x7F.
+	 * Also treats \0 and naked trail bytes 0x80 to 0xBF as valid
+	 * characters representing themselves.
+	 */
+
+	return 1;
+    } else if (byte < 0xE0) {
+	if ((src[1] & 0xC0) == 0x80) {
+	    /*
+	     * Two-byte-character lead-byte followed by a trail-byte.
+	     */
+
+	    ch = (int) (((byte & 0x1F) << 6) | (src[1] & 0x3F));
+	    if ((unsigned)(ch - 1) >= (UNICODE_SELF - 1)) {
+		return 2;
+	    }
+	}
+
+	/*
+	 * A two-byte-character lead-byte not followed by trail-byte
+	 * represents itself.
+	 */
+    } else if (byte < 0xF0) {
+	if (((src[1] & 0xC0) == 0x80) && ((src[2] & 0xC0) == 0x80)) {
+	    /*
+	     * Three-byte-character lead byte followed by two trail bytes.
+	     */
+
+	    ch = (int) (((byte & 0x0F) << 12)
+			| ((src[1] & 0x3F) << 6)
+			| (src[2] & 0x3F));
+	    if (ch > 0x7FF) {
+		return 3;
+	    }
+	}
+
+	/*
+	 * A three-byte-character lead-byte not followed by two trail-bytes
+	 * represents itself.
+	 */
+    } else if (byte < 0xF8) {
+	if (((src[1] & 0xC0) == 0x80) && ((src[2] & 0xC0) == 0x80) && ((src[3] & 0xC0) == 0x80)) {
+	    /*
+	     * Four-byte-character lead byte followed by three trail bytes.
+	     */
+	    ch = (int) (((byte & 0x07) << 18) | ((src[1] & 0x3F) << 12)
+		    | ((src[2] & 0x3F) << 6) | (src[3] & 0x3F));
+	    if ((unsigned)(ch - 0x10000) <= 0xFFFFF) {
+		return 4;
+	    }
+	}
+
+	/*
+	 * A four-byte-character lead-byte not followed by three trail-bytes
+	 * represents itself.
+	 */
+    }
+
+    return 1;
+}
+
+static int
+num_utf_chars (const char *src)
+{
+    Tcl_UniChar ch = 0;
+    register int i = 0;
+
+    while (*src != '\0') {
+	src += num_utf_bytes (src);
+	i++;
+    }
+    if (i < 0) i = INT_MAX; /* Bug [2738427] */
+    return i;
 }
 
 /*

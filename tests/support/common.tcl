@@ -1,11 +1,61 @@
 # -*- tcl -*-
 ##
-# (c) 2016 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2016-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
 package require TclOO
+package require fileutil
+
+# # ## ### ##### ######## #############
+
+proc cases {name} {
+    set num 0
+    lmap line [split [fileutil::cat [file join [td] cases $name]] \n] {
+	incr num
+	set line [string trim $line]
+	if {$line eq {}} continue
+	if {[string match #* $line]} continue
+	list $num $line
+    }
+}
+
+# # ## ### ##### ######## #############
+
+proc iota {n} {
+    if {$n < 0} { set n 0 }
+    for {set i 0} {$i < $n} {incr i} {
+	lappend r $i
+    }
+    return $r
+}
+
+# # ## ### ##### ######## #############
+## Small wrapper around foreach to make tables of test cases look
+## nicer.
+
+proc testcases {var varlist cases script} {
+    upvar 1 $var k
+    foreach v $varlist { upvar 1 $v $v }
+    set k 0
+    foreach $varlist $cases {
+	incr k
+	set code [catch {
+	    uplevel 1 $script
+	} m]
+	switch -exact -- $code {
+	    0 {}
+	    1 { return -code error $m }
+	    2 { return -code return }
+	    3 { break }
+	    4 {}
+	    default { return -code $code $m }
+	}
+    }
+    unset -nocomplain k {*}$varlist
+    return
+}
 
 # # ## ### ##### ######## #############
 ## Simplified Log API. Hiding (the complexity of) the classes and

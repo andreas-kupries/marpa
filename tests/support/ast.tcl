@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -9,7 +9,7 @@
 # # ## ### ##### ######## #############
 ## Pretty printing an AST coming out of the SLIF parser
 
-proc ast-format {ast {step {  }}} {
+proc ast-format {ast {step {  }}} { ;#return $ast ; # RAW
     set lines {}
     ast-format-acc $ast {} $step
     return [join $lines \n]

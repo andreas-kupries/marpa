@@ -1183,12 +1183,40 @@ oo::class create <Name> {
 	                        hex
 	                        {cc range completion}} 0}
 	                {priority {
-	                        @CHR:<u>
+	                        @CHR:<U>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
 	                        hex
 	                        hex
 	                        hex
 	                        hex
 	                        {cc range completion}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {cc range completion}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {cc range completion post short unicode escape}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {cc range completion post short unicode escape}} 0}
 	                {priority {
 	                        @CHR:<u>
 	                        hex
@@ -1230,12 +1258,40 @@ oo::class create <Name> {
 	                        hex
 	                        {nullable string}} 0}
 	                {priority {
-	                        @CHR:<u>
+	                        @CHR:<U>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
 	                        hex
 	                        hex
 	                        hex
 	                        hex
 	                        {nullable string}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {nullable string}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {nullable string post short unicode escape}} 0}
+	                {priority {
+	                        @CHR:<u>
+	                        hex
+	                        hex
+	                        hex
+	                        hex
+	                        {nullable string post short unicode escape}} 0}
 	                {priority {
 	                        @CHR:<u>
 	                        hex
@@ -1578,6 +1634,7 @@ oo::class create <Name> {
 	            {@CHR:<\135>} { {character 93} }
 	            {@CHR:<\173>} { {character 123} }
 	            {@CHR:<\175>} { {character 125} }
+	            @CHR:<U> { {character 85} }
 	            @CHR:<u> { {character 117} }
 	            @CHR:<x> { {character 120} }
 	            @CHR:<|> { {character 124} }

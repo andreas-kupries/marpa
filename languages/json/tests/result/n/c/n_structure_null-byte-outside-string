@@ -1,6 +1,6 @@
-Parsing failed in lexer. Stopped at offset 1 after reading '\0'. Expected any character in [\t\n\r\40\42-0123456789\133\135fnt\173] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, rbracket, whitespace).
+Parsing failed in lexer. Stopped at offset 0 (+1 byte)  after reading '\300'. Expected any character in [\t\n\r\40\42-0123456789\133\135fnt\173] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, rbracket, whitespace).
 Mismatch:
-'\0' => (0) ni
+'\300' => (192) ni
     9: '\t'
    10: '\n'
    13: '\r'

@@ -13,7 +13,7 @@
 # elements of the class.  The result of that is then used in generator
 # backends to provide unicode support.
 #
-# Copyright 2017 Andreas Kupries
+# Copyright 2017-2018 Andreas Kupries
 
 package require Tcl 8.5
 package require fileutil
@@ -23,13 +23,12 @@ package require lambda
 set     selfdir [file dirname [file normalize [info script]]]
 source $selfdir/unicode_reader.tcl
 
-# Get pure-Tcl implementations of norm-class, negate-class, and 2asbr.
-# While these are slower (especially 2asbr, for large classes) they
-# are also not dependent on the unicode mode/max setting of an
-# installed marpa. And we cannot use the uninstalled marpa code
-# because these operations are in C and thus only available after
-# building, and as this tool generates a piece needed for building,
-# well.
+# Get pure-Tcl implementations of norm-class, negate-class.
+
+# While these are slower, well, we cannot rely on having an installed
+# marpa. And we cannot use the uninstalled marpa code because these
+# operations are in C and thus only available after building, and as
+# this tool generates a piece needed for building, well.
 source $selfdir/unicode_ops.tcl
 
 set pongchan stderr
@@ -99,15 +98,9 @@ set catlabel {
 
 proc main {selfdir} {
     global cc      ; set cc      {} ;# char classes as ranges of unicode points
-    global asbr    ; set asbr    {} ;# ditto as alternatives of sequences of ranges.
-    global gr      ; set gr      {} ;# ditto as actual grammar (left-factored ASBR)
     global foldid  ; set foldid  0  ;# fold class id counter
     global foldmap ; set foldmap {} ;# map codepoint -> fold class
     global foldset ; set foldset {} ;# fold class id -> list(codepoint...)
-    global rid     ; set rid     0  ;# range id counter - num unique
-    global rnum    ; set rnum    0  ;# counter for all ranges out of ASBR compilation
-    global rdef    ; set rdef    {} ;# range -> id
-    global rname   ; set rname   {} ;# id -> range
 
     cmdline
 
@@ -125,22 +118,23 @@ proc main {selfdir} {
     normalize-classes
     clean-folds
 
-    compile-to-asbrs
-    compile-to-grammars
     ## compile-folds -- not sensible
     ## - Folds are small classes, just 1-4 elements
-    ##   Easier written as direct alternatives of characters.
+    ##   Easier written as direct alternatives of
+    ##   characters.
 
     write-header
     write-limits
-    write-ranges
     write-classes
-    write-folding
+    #write-folding
     write-sep {unidata done}
 
     write-c-header
-    write-c-limits
-    write-c-sep {unidata done}
+    write-c-folding
+
+    write-h-header
+    write-h-limits
+    write-h-sep {unidata done}
     
     pong-done
     return
@@ -148,20 +142,21 @@ proc main {selfdir} {
 
 proc cmdline {} {
     # Syntax ==> See usage
-    global argv outtcl outc pong unimax mode
+    global argv outtcl outc outh pong unimax bmpmax
     if {[llength $argv] ni {3 4}} usage
-    lassign $argv mode outtcl outc pong
-    if {$mode ni {bmp full}} usage
+    lassign $argv outtcl outh outc pong
     if {$pong eq {}} { set pong 1 }
     set outtcl [open $outtcl w]
+    set outh   [open $outh w]
     set outc   [open $outc w]
-    set unimax [expr {$mode eq "bmp" ? 0xFFFF : 0x10FFFF }]
+    set unimax 0x10FFFF
+    set bmpmax 0xFFFF
     return
 }
 
 proc usage {} {
     global argv0
-    puts stderr "Usage: $argv0 bmp|full output-for-tcl output-for-c ?pong?"
+    puts stderr "Usage: $argv0 output-for-tcl output-for-c-hdr output-for-c ?pong?"
     exit 1
 }
 
@@ -178,10 +173,38 @@ proc do-unidata {first last name category __ __ __ __ __ __ __ __ __ up low __} 
 
     #                       1    2        3  4  5  6  7  8  9  10 11 12 13  14
     #pong "Unidata $first .. $last = $category"
-    add-to-class   $category [list $first $last]
+    add-to-class-plus $category $first $last
+        
     add-to-folding $first $up $low
     return
 }
+
+proc add-to-class-plus {class first last} {
+    global bmpmax
+    # Generate two derived classes per category, ranges in the BMP,
+    # and ranges outside. Any empty derived class will not exist.
+
+    add-to-class $class [list $first $last]
+    
+    # XXX TODO: FUTURE: Look into space saving storage methods (aliases, and others)
+    
+    if {$last <= $bmpmax} {
+	# This part is in the BMP
+	add-to-class ${class}:bmp [list $first $last]
+    }
+    if {$first > $bmpmax} {
+	# This part is outside BMP
+	add-to-class ${class}:smp [list $first $last]
+    }
+    if {($first <= $bmpmax) && ($bmpmax < $last)} {
+	# And a range straddling the border, this one gets split
+	add-to-class ${class}:bmp [list $first $bmpmax]
+	add-to-class ${class}:smp [list [expr {$bmpmax+1}] $last]
+    }
+
+    return
+}
+
 
 proc add-to-class {class args} {
     global cc
@@ -258,12 +281,14 @@ proc do-script {first last script} {
     if {$last > $unimax} return
 
     #pong "Script $first .. $last = $script"
-    add-to-class $script [list $first $last]
+    add-to-class-plus $script $first $last
     return
 }
 
 proc make-derived-tcl-classes {} {
     global derived
+    # The bmp/high split is handled by pulling from the bmp/high
+    # derivations of the origin classes.
     foreach {key spec} $derived {
 	pong "Making $key"
 	set ranges {}
@@ -272,6 +297,12 @@ proc make-derived-tcl-classes {} {
 		add-to-class $key {*}[get-class $cc]
 	    } else {
 		add-to-class $key $cc
+	    }
+	    if {[is-class ${cc}:bmp]} {
+		add-to-class ${key}:bmp {*}[get-class ${cc}:bmp]
+	    }
+	    if {[is-class ${cc}:smp]} {
+		add-to-class ${key}:smp {*}[get-class ${cc}:smp]
 	    }
 	}
 	def-label $key "= [join $spec { + }]"
@@ -296,10 +327,12 @@ proc classes {} {
 
 proc make-direct-tcl-classes {} {
     global special
+    # Note: The tcl specials are all BMP only
     foreach {key spec} $special {
 	pong "Making $key"
 	# spec = ranges
-	add-to-class $key {*}$spec
+	add-to-class $key       {*}$spec
+	add-to-class ${key}:bmp {*}$spec
 	def-label    $key special
     }
     return
@@ -326,212 +359,6 @@ proc normalize-classes {} {
 	set-class $cc [norm-class [get-class $cc]]
     }
     return
-}
-
-proc compile-to-asbrs {} {
-    foreach cc [lsort -dict [classes]] {
-	pong "Compiling ASBR $cc"
-	set asbr   [2asbr [get-class $cc]]
-	set pretty [asbr-format $asbr 1]
-	set asbr   [encode-ranges $asbr]
-	set-asbr $cc [list $asbr $pretty]
-    }
-    return
-}
-
-proc encode-ranges {asbr} {
-    global rnum
-    set newasbr {}
-    foreach alternate $asbr {
-	# unique ranges
-	set newranges {}
-	foreach range $alternate {
-	    incr rnum
-	    lappend newranges [set-range $range]
-	}
-	lappend newasbr $newranges
-    }
-    return $newasbr
-}
-
-proc set-range {range} {
-    global rid rdef rname
-    if {[dict exists $rdef $range]} {
-	return [dict get $rdef $range]
-    }
-    set id R[incr rid]
-    dict set rdef $range $id
-    dict set rname $id $range
-    return $id
-}
-
-proc compile-to-grammars {} {
-    # Note: Ranges are already unique
-    # (See compile-to-asbr, must be called beforehand)
-
-    foreach cc [lsort -dict [classes]] {
-	pong "Compiling grammar $cc"
-	set-grammar $cc [asbr-to-grammar [lindex [get-asbr $cc] 0]]
-    }
-    return
-}
-
-
-proc asbr-to-grammar {asbr} {
-    # Note: Ranges are already unique
-    # (See encode-ranges, must be called beforehand)
-
-    # Phase I. Put the ASBR into tree/trie form, links stored in a dict.
-
-    set nid  0  ;# node id counter
-    set node {} ;# node -> node-id
-    set nval {} ;# node-id -> range
-    set tree {} ;# node-id -> list (node-id)
-    #           ;# node = (parent-id + range)
-
-    foreach alternate $asbr {
-	# Global root for all alternates
-	set parent N0
-
-	foreach range $alternate {
-	    set key [list $parent $range]
-
-	    if {[dict exists $node $key]} {
-		set current [dict get $node $key]
-	    } else {
-		set current N[incr nid]
-		dict set node $key $current
-		dict set nval $current $range
-	    }
-
-	    # Add, remove duplicates
-	    dict lappend tree $parent $current
-	    dict set tree $parent [lsort -dict [lsort -unique [dict get $tree $parent]]]
-
-	    set parent $current
-	}
-    }
-    # Each element in tree now points to its possible sucessors,
-    # i.e. alternates.
-
-    # Phase II. Scan the tree/trie and generate priority rules
-    #           (sequences, alternatives) which embody it.
-
-    set id 0
-    set series {}
-    set gr     {}
-
-    # Recursively traces the tree and builds the rules in the dict "gr".
-    # Upvars the required context: tree nval id gr
-    set root [tree-trace series N0]
-    set top  [incr id]
-
-    # Flip the enumeration of the rule symbols around. Thye were
-    # generated from the back/deep to front/top. Flipped they
-    # should be ordered top to bottom.
-    dict for {id spec} $gr {
-	dict set gr A[expr {$top - $id}] [tree-flip $top $spec]
-	dict unset gr $id
-    }
-
-    # Normalize the root, must be a single symbol, for one or more
-    # alternatives. We can check for "A1", because the last A
-    # generated is the one at the top, and after flipping its id
-    # is constant "1". If there is no such we have a sequence at
-    # the top and have to put a start symbol over it.
-    set root [tree-flip $top $root]
-    if {$root ne "A1"} {
-	dict set gr A0 [list $root]
-	set root A0
-    }
-    dict set gr {} $root
-
-    # Phase III. Linearize the grammar into priority rules, and
-    # store the result.
-
-    set rules {}
-    foreach sym [lsort -dict [dict keys $gr]] {
-	foreach alter [dict get $gr $sym] {
-	    lappend rules [list $sym := {*}$alter]
-	}
-    }
-
-    return $rules
-}
-
-proc tree-flip {top spec} {
-    global rname
-    upvar 1 gr gr
-    foreach alter $spec {
-	set new {}
-	foreach e $alter {
-	    if {[dict exists $rname $e]} {
-		lappend new $e
-	    } else {
-		lappend new A[expr {$top - $e}]
-	    }
-	}
-	lappend res $new
-    }
-    return $res
-}
-
-proc tree-trace {sv node} {
-    upvar 1 tree tree nval nval id id gr gr
-    upvar 1 $sv series
-
-    # Extend the current trace with the range symbol at the tree node,
-    # if any.
-    if {[dict exists $nval $node]} {
-	lappend series [dict get $nval $node]
-    }
-
-    # Handle the tree node as per its sucessors.
-
-    if {![dict exist $tree $node]} {
-	# Node has no sucessors.  Return the current trace and stop.
-	return $series
-    }
-
-    set post [dict get $tree $node]
-    if {[llength $post] == 1} {
-	# Node has a single sucessor.  Recursively extend the trace
-	# and stop.
-	return [tree-trace series [lindex $post 0]]
-    }
-
-    # Node has multiple sucessors.
-    # 1. Build sub-trace for each sucessor.
-    # 2. Add A(lt)-symbol which refers to all the sub-traces as to the grammar
-    # 3. Extend current trace with the new symbol, then return it and stop.
-
-    foreach nx $post { set subseries {} ; lappend alt [tree-trace subseries $nx] }
-    set new [incr id]
-    dict set gr $new $alt
-    lappend series $new
-    return $series
-}
-
-proc set-asbr {cc x} {
-    global asbr
-    dict set asbr $cc $x
-    return
-}
-
-proc get-asbr {cc} {
-    global asbr
-    return [dict get $asbr $cc]
-}
-
-proc set-grammar {cc x} {
-    global gr
-    dict set gr $cc $x
-    return
-}
-
-proc get-grammar {cc} {
-    global gr
-    return [dict get $gr $cc]
 }
 
 proc clean-folds {} {
@@ -562,24 +389,6 @@ proc clean-folds {} {
 	}
 	dict unset foldmap $ch
 	dict unset foldset $fid
-    }
-    return
-}
-
-proc compile-folds {} {
-    global foldset
-    # foldsets are character classes, of a different kind.
-    # As such they can be compiled into ASBR and grammars,
-    # and stored as such.
-
-    dict for {fid spec} $foldset {
-	pong "Compiling fold class $fid"
-
-	set asbr [2asbr $spec]
-	set asbr [encode-ranges $asbr]
-	set gr   [asbr-to-grammar $asbr]
-
-	dict set foldset $fid [list $asbr $gr]
     }
     return
 }
@@ -634,70 +443,108 @@ proc write-c-comment {text} {
     return
 }
 
-proc write-c-header {} {
-    global mode unimax
+proc wrh {text} {
+    global outh
+    puts $outh $text
+    return
+}
+
+proc wrh* {text} {
+    global outh
+    puts -nonewline $outh $text
+    return
+}
+
+proc write-h-comment {text} {
+    wrh "/* [join [split $text \n] "\n# "] */"
+    return
+}
+
+proc write-h-header {} {
+    global unimax bmpmax
     set m $unimax ; incr m 0
+    set b $bmpmax ; incr b 0
+    wrh "/* -*- c -*-"
+    wrh "** Generator:           tools/unidata.tcl"
+    wrh "** Data sources:        unidata/{UnicodeData,Scripts}.txt"
+    wrh "** Build-Time:          [clock format [clock seconds]]"
+    wrh "** Supported range:     $m codepoints"
+    wrh "** Basic multi-lingual: $b codepoints"
+    wrh "*/"
+    wrh ""
+}
+
+proc write-c-header {} {
+    global unimax bmpmax
+    set m $unimax ; incr m 0
+    set b $bmpmax ; incr b 0
     wrc "/* -*- c -*-"
-    wrc "** Generator       tools/unidata.tcl"
-    wrc "** Data sources    unidata/{UnicodeData,Scripts}.txt"
-    wrc "** Build-Time      [clock format [clock seconds]]"
-    wrc "** Supported range $mode ($m codepoints)"
+    wrc "** Generator:           tools/unidata.tcl"
+    wrc "** Data sources:        unidata/{UnicodeData,Scripts}.txt"
+    wrc "** Build-Time:          [clock format [clock seconds]]"
+    wrc "** Supported range:     $m codepoints"
+    wrc "** Basic multi-lingual: $b codepoints"
     wrc "*/"
+    wrc ""
+    wrc "#include <unidata.h>"
     wrc ""
 }
 
 proc write-header {} {
-    global mode unimax
+    global unimax bmpmax
     set m $unimax ; incr m 0
+    set b $bmpmax ; incr b 0
     wr "# -*- tcl -*-"
-    wr "## Generator       tools/unidata.tcl"
-    wr "## Data sources    unidata/{UnicodeData,Scripts}.txt"
-    wr "## Build-Time      [clock format [clock seconds]]"
-    wr "## Supported range $mode ($m codepoints)"
+    wr "## Generator:           tools/unidata.tcl"
+    wr "## Data sources:        unidata/{UnicodeData,Scripts}.txt"
+    wr "## Build-Time:          [clock format [clock seconds]]"
+    wr "## Supported range:     $m codepoints"
+    wr "## Basic multi-lingual: $b codepoints"
     wr ""
     write-sep {unicode information}
-    wr {namespace eval marpa::unicode {
-    variable cc      ;# character classes as a set of unicode points and ranges
-    variable asbr    ;# ditto as alternatives of sequences of byte ranges (utf-8)
-    variable gr      ;# ditto as list of priority rules (left-factored ASBR)
-    variable range   ;# Adjunct to asbr, and gr, their set of unique byte-ranges
-    variable foldmap ;# character mapped to equivalence class under folding
-    variable foldset ;# id -> equivalence class under folding
-    variable mode    ;# Name of supported unicode range
-    variable max     ;# Maximal codepoint in that range
-}}
+    lappend map {    } {} \t {    }
+    wr [string map $map {namespace eval marpa::unicode {
+	variable cc      ;# character classes as a set of unicode points and ranges
+	variable foldmap ;# character mapped to equivalence class under folding
+	variable foldset ;# id -> equivalence class under folding
+	variable max     ;# Maximal supported codepoint
+	variable bmp     ;# Maximal supported codepoint, BMP
+    }}]
     wr ""
     return
 }
 
 proc write-limits {} {
-    global mode unimax
-    write-sep "unicode limits: $mode = $unimax"
-    wr "set marpa::unicode::mode $mode"
-    wr "set marpa::unicode::max  $unimax ;# $mode range"
+    global unimax bmpmax
+    write-sep "unicode limits"
+    wr "set marpa::unicode::max $unimax"
+    wr "set marpa::unicode::bmp $bmpmax"
     wr ""
     return
 }
 
-proc write-c-limits {} {
-    global mode unimax
-    write-c-sep "unicode limits: $mode = $unimax"
+proc write-h-limits {} {
+    global unimax bmpmax foldmax
+    write-h-sep "unicode limits"
     lappend map <<unimax>>  $unimax
-    lappend map <<unimode>> $mode
-    wrc [string map $map {
-#define UNI_MODE "<<unimode>>" /* <<unimax>> codepoints */
-#define UNI_MAX  <<unimax>>
-}]
+    lappend map <<bmpmax>>  $bmpmax
+    lappend map <<foldmax>> $foldmax
+    lappend map \t {} {    } {}
+    wrh [string map $map {
+	#define UNI_MAX  <<unimax>>
+	#define UNI_BMP  <<bmpmax>>
+	#define UNI_FMAX <<foldmax>>
+
+	extern void marpatcl_unfold (int codepoint, int* n, int** set);
+    }]
     return
 }
 
 proc write-classes {} {
-    write-sep {character classes -- named, represented as ranges, asbr, grammar)}
+    write-sep {character classes -- named, represented as ranges)}
     foreach cc [lsort -dict [classes]] {
 	pong "Writing $cc"
 	set lcc    [string tolower $cc]
-	set gr     [get-grammar $cc]
-	lassign    [get-asbr    $cc] asbr pretty
 	set ranges [get-class   $cc]
 	set sz     [class-size $ranges]
 	set label "$cc ($sz)[get-label $cc]"
@@ -706,36 +553,12 @@ proc write-classes {} {
 
 	write-sep $label
 	write-comment "I Class $cc: Unicode ranges:  [llength $ranges]"
-	write-comment "I       $bl: ASBR alternates: [llength $asbr]"
-	write-comment "I       $bl: Grammar rules:   [llength $gr]"
-	wr "#"
-	write-comment $pretty
 	wr ""
 	wr "dict set marpa::unicode::cc $lcc \{"
 	write-items 5 \t $ranges
 	wr "\}"
 	wr ""
-	wr "dict set marpa::unicode::asbr $lcc \{"
-	set max [expr {([llength $asbr] > 9) ? 9 : 1}]
-	write-items $max \t $asbr
-	wr "\}"
-	wr ""
-	wr "dict set marpa::unicode::gr $lcc \{"
-	write-items 1 \t $gr
-	wr "\}"
-	wr ""
     }
-    return
-}
-
-proc write-ranges {} {
-    write-sep {character classes -- unique byte ranges in ASBRs/grammars}
-    global rname rid rnum
-    write-comment "$rid unique ranges out of $rnum"
-    wr "set marpa::unicode::range \{"
-    write-items 16 \t $rname
-    wr "\}"
-    wr ""
     return
 }
 
@@ -754,10 +577,35 @@ proc write-items {max pfx items} {
     return
 }
 
+proc write-c-items {max pfx items} {
+    set col 0
+    set prefix $pfx
+    foreach item [lrange $items 0 end-1] {
+	wrc* $prefix[list $item],
+	set prefix { }
+	incr col
+	if {$col == $max} {
+	    set prefix \n$pfx
+	    set col 0
+	}
+    }
+
+    # Final element
+    wrc* $prefix[list [lindex $items end]]
+    return
+}
+
 proc write-sep {label} {
     wr "# _ __ ___ _____ ________ _____________ _____________________ $label"
     wr "##"
     wr ""
+    return
+}
+
+proc write-h-sep {label} {
+    wrh "/* _ __ ___ _____ ________ _____________ _____________________ $label"
+    wrh "*/"
+    wrh ""
     return
 }
 
@@ -779,6 +627,87 @@ proc class-size {ranges} {
 	}
     }
     return $sz
+}
+
+proc fill {lv top} {
+    upvar 1 $lv l
+    while {[llength $l] < $top} {
+	lappend l -1
+    }
+}
+
+proc write-c-folding {} {
+    global foldmap foldset foldmax unimax
+
+    pong "Writing folding (C)"
+
+    # simple data structures
+    # - foldmap int[]
+    # - foldset int[] (size,...)
+    #
+    # FUTURE: compress into similar pages (with delta coding)
+
+    set k 0
+    set sets {}
+    set maxn 0
+    foreach id [lsort -dict [dict keys $foldset]] {
+	dict set idmap $id $k
+	set fold [lsort -integer [lsort -unique [dict get $foldset $id]]]
+	set nfold [llength $fold]
+	if {$nfold > $maxn} { set maxn $nfold }
+	lappend sets $nfold {*}$fold
+	incr nfold
+	incr k $nfold
+    }
+
+    set map {}
+    set last -1
+    foreach ch [lsort -integer [dict keys $foldmap]] {
+	incr ch 0
+	fill map $ch
+	set id [dict get $foldmap $ch]
+	set k [dict get $idmap $id]
+	lappend map $k
+    }
+
+    set foldmax $maxn
+
+    write-c-sep {case folding, equivalence sets}
+    
+    wrc "static int fold_set\[[llength $sets]] = \{"
+    write-c-items 24 \t $sets
+    wrc "\};"
+    wrc ""
+
+    write-c-sep {case folding, map codepoints to set of equivalents}
+    wrc "#define FM_SIZE ([llength $map])"
+    wrc ""
+    wrc "static int fold_map\[FM_SIZE] = \{"
+    write-c-items 24 \t $map
+    wrc "\};"
+    wrc ""
+
+    write-c-sep {case folding, api}
+
+    lappend map "\t\t" \t "\t" {}
+    wrc [string map $map {
+	void
+	marpatcl_unfold (int codepoint, int* n, int** set)
+	{
+	    int id;
+	    if (codepoint >= FM_SIZE) {
+		*n = 0;
+		return;
+	    }
+	    id = fold_map [codepoint];
+	    if (id < 0) {
+		*n = 0;
+		return;
+	    }
+	    *n   = fold_set [id];
+	    *set = &fold_set [id+1];
+	}
+    }]
 }
 
 proc write-folding {} {

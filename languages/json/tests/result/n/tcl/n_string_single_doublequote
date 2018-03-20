@@ -1,6 +1,7 @@
-Parsing failed in parser. Stopped at offset 0 after reading '\"'. Expected any character in [[\\t\\n\\r\\40][^\\0-\\37\\42\\134]\\] while looking for any of (lstring, whitespace).
+Parsing failed in parser. Stopped at offset 0 after reading '\"'. Expected any character in [[\\t\\n\\r\\40][\\ud800-\\udbff][^\\0-\\37\\42\\134]\\] while looking for any of (lstring, whitespace).
 Mismatch:
 '\"' => (15 25) ni
    17: '\\'
    24: [^\0-\37\42\134]
    26: [\t\n\r\40]
+   28: [\ud800-\udbff]

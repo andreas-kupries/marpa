@@ -860,7 +860,11 @@ oo::class create marpa::slif::semantics {
     }
     method {action name/1} {children} {
 	# reserved name ::....
-	list special [string range [LITERAL] 2 end]
+	set action [string range [LITERAL] 2 end]
+	switch -exact -- $action {
+	    array   { list array values }
+	    default { list special $action }
+	}
     }
     method {action name/2} {children} {
 	# array descriptor [xxx, ...]
@@ -927,8 +931,8 @@ oo::class create marpa::slif::semantics {
 	upvar 1 children children
 	lassign [lindex $children 0] start length litstring
 
-	set literal   [marpa::slif::literal parse  $litstring]
-	set litsymbol [marpa::slif::literal symbol $literal]
+	set literal   [marpa::slif::literal parse        $litstring]
+	set litsymbol [marpa::slif::literal::util symbol $literal]
 
 	usage      add $start $length  $litsymbol
 	definition add $start $length  $litsymbol

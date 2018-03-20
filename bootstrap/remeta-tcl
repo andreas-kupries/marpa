@@ -1,67 +1,93 @@
 #!/usr/bin/env tclsh
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2017 Andreas Kupries
+## (c) 2017-2018 Andreas Kupries
+#
 # # ## ### ##### ######## ############# #####################
 ## Regenerate the SLIF boot parser
+## Regenerate the LITERAL parser
 
 package require Tcl 8.5
+package require marpa::slif::parser
 package require marpa::slif::container
 package require marpa::slif::semantics
 package require marpa::gen
 package require marpa::gen::format::tparse
-package require marpa
 package require fileutil
-
-if {[llength $argv] != 1} {
-    puts "Usage: $argv0 /path/to/destination/file"
-    exit 1
-}
-
-set dst     [lindex $argv 0]
-set selfdir [file dirname [file normalize [info script]]]
-set meta    [file join $selfdir marpa-tcl-slif slif]
-
-proc F {n} { format "%.2f" $n }
 
 #debug on util/benchmarking
 
+if {[llength $argv] != 1} {
+    puts "Usage: $argv0 /path/to/main/destination/directory"
+    puts "Results are written to:"
+    puts " - DST/slif-parser/parser.tcl"
+    puts " - DST/slif-literal-parser/lparser.tcl"
+    puts ""
+    exit 1
+}
+
+set selfdir  [file dirname [file normalize [info script]]]
+set meta     [file join $selfdir marpa-tcl-slif slif]
+set literals [file join $selfdir marpa-tcl-slif literals]
+set dst      [lindex $argv 0]
+
+proc F {n} { format "%.2f" $n }
+
+proc Make {name src dst authors} {
+    # _ __ ___ _____ ________ _____________ _____________________
+    # Process the grammar
+    set sz [file size $src]
+    puts "Processing $src ($sz bytes) ..."
+    marpa::slif::container create GC
+    marpa::slif::semantics create SEMA GC
+    marpa::slif::parser    create BOOT
+
+    set start  [clock milliseconds]
+    set ast [BOOT process-file $src]
+    set done   [clock milliseconds]
+    set millis [expr {$done-$start}]
+    set sec    [expr {double($millis)/1000}]
+    set speed  [expr {$sz/$sec}]
+    puts "Processing done in [F $sec] seconds (@ [F $speed] bytes/sec)"
+
+    SEMA process $ast
+    # GC now holds the grammar
+    BOOT destroy
+    # Note: SEMA auto-destroys itself at the end of 'process'.
+
+    # _ __ ___ _____ ________ _____________ _____________________
+    # Generate the SLIF parser class
+    puts "Generating ..."
+    marpa::gen config! version  0
+    marpa::gen config! writer   $authors
+    marpa::gen config! year     [clock format [clock seconds] -format %Y]
+    marpa::gen config! name     $name
+    marpa::gen config! operator $::tcl_platform(user)@[info hostname]
+    marpa::gen config! tool     [file tail [info script]]
+    set parser [marpa::gen::format::tparse container GC]
+    GC destroy
+
+    # _ __ ___ _____ ________ _____________ _____________________
+    # Write to file for debugging.
+    puts "Saving to $dst ..."
+    fileutil::writeFile $dst $parser
+
+    puts {... OK}
+    return
+}
+
 # _ __ ___ _____ ________ _____________ _____________________
 # Process the slif meta grammar
-set sz [file size $meta]
-puts "Processing $meta ($sz bytes) ..."
-marpa::slif::container create GC
-marpa::slif::semantics create SEMA GC
-marpa::slif::parser    create BOOT
 
-set start  [clock milliseconds]
-set ast [BOOT process-file $meta]
-set done   [clock milliseconds]
-set millis [expr {$done-$start}]
-set sec    [expr {double($millis)/1000}]
-set speed  [expr {$sz/$sec}]
-puts "Processing done in [F $sec] seconds (@ [F $speed] bytes/sec)"
+file mkdir $dst/slif-parser $dst/slif-literal-parser
 
-SEMA process $ast
-# GC now holds the grammar
-BOOT destroy
-# Note: SEMA auto-destroys itsel at the end of 'process'.
+Make marpa::slif::parser \
+    $meta \
+    $dst/slif-parser/parser.tcl \
+    {Jeffrey Kegler + Andreas Kupries}
 
-# _ __ ___ _____ ________ _____________ _____________________
-# Generate the SLIF parser class
-puts "Generating ..."
-marpa::gen config! version  1
-marpa::gen config! writer   {Jeffrey Kegler + Andreas Kupries}
-marpa::gen config! year     [clock format [clock seconds] -format %Y]
-marpa::gen config! name     marpa::slif::parser
-marpa::gen config! operator $::tcl_platform(user)@[info hostname]
-marpa::gen config! tool     [file tail [info script]]
-set parser [marpa::gen::format::tparse container GC]
-GC destroy
+Make marpa::slif::literal::parser \
+    $literals \
+    $dst/slif-literal-parser/lparser.tcl \
+    {Andreas Kupries}
 
-# _ __ ___ _____ ________ _____________ _____________________
-# Write to file for debugging.
-puts "Saving to $dst ..."
-fileutil::writeFile $dst [string map {package #package} $parser]
-
-puts {... OK}
 exit

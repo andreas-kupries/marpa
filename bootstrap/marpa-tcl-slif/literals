@@ -1,0 +1,157 @@
+# # ## ### ##### ######## ############# #####################
+## Copyright 2018 Andreas Kupries
+
+# This grammar is a subset of the main slif grammar, reworked to parse
+# and expose the internal structure of literals, i.e. strings and
+# character classes.
+
+# # ## ### ##### ######## ############# #####################
+##
+# - Redefined the string and character class syntax to match Tcl with
+#   regard to the allowed escape sequences. The important point here
+#   is that I encode the relevant constraints into the syntax instead
+#   of letting the semantics break on bad input.
+#
+#   Using the longest-matching sub structures the structural rules
+#   become simple (versus a fully lexical matching, see `slif`).
+
+# The escapes handled here are (as a list of representative examples):
+#
+## \a   \r      \0      \uF    \uFFFFF
+## \b   \t      \10     \uFF   \uFFFFFF
+## \f   \v      \100    \uFFF
+## \n   \\      \xFF    \uFFFF \UFFFFFFFF
+#
+## In strings single-quotes (['], \134) may not appear directly.  In
+## char-classes dash ('-', \55) and closing bracket (']', \135) may
+## not appear directly. The line and paragraph separator characters
+## (\u2028, \u2029) are forbidden as well.
+#
+# character classes allow the sames escapes as strings.
+#
+# The low-level octal and hexadecimal digits, the special characters,
+# etc. can be re-used however, see the string section for their
+# definitions.
+
+## Note, the lexemes of literals do not contain whitespace, or
+## anything else to discard!
+
+# # ## ### ##### ######## ############# #####################
+## Let us begin
+
+:default ::=
+  action => [name,values]
+
+lexeme default =
+  action => [start,length,value]
+  latm   => 1
+
+:start ::= literal
+
+literal ::= <single quoted string> <modifiers>
+	|   <character class> 	   <modifiers>
+	|   <negated class> 	   <modifiers>
+
+modifiers ::= modifier *
+modifier  ::= nocase
+nocase    ::= (<nocase tag>)
+
+# # ## ### ##### ######## ############# #####################
+## Strings of various kinds.
+
+<single quoted string> ::= ( <string open>			 <string close> )
+  	 	       |   ( <string open> ) <string elements> ( <string close> )
+
+<string elements> ::= <string element> +
+<string element>  ::= <plain string char>
+     	      	  |   (escape) <escaped char>
+
+<plain string char> ::= <not special string char>
+
+# # ## ### ##### ######## ############# #####################
+## Character classes
+
+<character class> ::= ( <cc pos open>			<cc close> )
+ 	     	  |   ( <cc pos open> ) <cc elements> ( <cc close> )
+
+<negated class>   ::= ( <cc neg open>		        <cc close> )
+ 	     	  |   ( <cc neg open> ) <cc elements> ( <cc close> )
+
+<cc elements>	    ::= <cc element> +
+
+<cc element>	    ::= <cc character>
+    		    |	<cc range>
+		    | 	<posix char class>
+
+<cc range>	    ::= <cc character> (dash) <cc character>
+
+<cc character>	    ::= <plain cc char>
+        	    | 	(escape) <escaped char>
+
+<plain cc char>      ::= <not special cc char>
+<posix char class>   ::= (<posix open>) <posix char class name> (<posix close>)
+
+# # ## ### ##### ######## ############# #####################
+
+<escaped char> ::= control
+               |   unihex
+	       |   unioct
+
+control ::= specials
+
+unihex	::= (X) hex2
+	|   (u) hex1
+	|   (u) hex2
+	|   (u) hex3
+	|   (u) hex4
+	|   (u) hex5
+	|   (u) hex6
+	|   (U) hex8
+
+unioct  ::= oct3
+	|   oct2
+	|   oct1
+
+# # ## ### ##### ######## ############# #####################
+## 
+
+specials ~ [abfnrtv\\]
+
+oct3 ~ <leading octal> octal octal
+oct2 ~ octal octal
+oct1 ~ octal
+
+hex1 ~  hex
+hex2 ~  hex hex
+hex3 ~  hex hex hex
+hex4 ~  hex hex hex hex
+hex5 ~  hex hex hex hex hex
+hex6 ~  hex hex hex hex hex hex
+hex8 ~  hex hex hex hex hex hex hex hex
+
+<string open>   ~ [']
+<string close>  ~ [']
+
+octal           ~ [0-7]
+<leading octal> ~ [0-3]
+hex             ~ [[:xdigit:]]
+escape          ~ '\\'
+
+<cc close>    ~ ']'
+<cc pos open> ~ '['
+<cc neg open> ~ '[^'
+
+<posix char class name> ~ [[:alnum:]]+
+
+<nocase tag> ~ ':ic' | ':i'
+
+X    ~ 'x'
+u    ~ 'u'
+U    ~ 'U'
+dash ~ '-'
+
+<posix open>  ~ '[:'
+<posix close> ~ ':]'
+
+<not special string char> ~ [^\a\b\f\n\r\v\\\u2028\u2029']
+<not special cc char>     ~ [^\a\b\f\n\r\t\v\\\u2028\u2029\135\55]

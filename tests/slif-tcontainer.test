@@ -14,7 +14,9 @@ kt require support fileutil ;# cat
 
 kt local   testing marpa::slif::precedence
 kt local   testing marpa::slif::container
-kt local   testing marpa::slif::literal
+kt local   testing marpa::slif::literal::redux
+kt local   testing marpa::slif::literal::reduce::2tcl
+kt local   testing marpa::slif::literal::reduce::2c4tcl
 
 # # ## ### ##### ######## ############# #####################
 ## TODO: Testing inspection
@@ -60,6 +62,8 @@ set max 0
 test-grammar-files slif --> __ __ { incr max }
 set format %0[string length $max]d
 unset max
+
+# TODO: Base this on presence of gcstate, i.e. result file ?
 
 set k 0
 test-grammar-map ctrace --> id ctrace base {
@@ -131,6 +135,8 @@ test-grammar-files gcstate --> id gcstate {
 ## Reduction I [Tcl]: Tcl engine, see "s_parser.tcl", generalized
 ## Note, based on gcstate, reuse format.
 
+# TODO: Fix up when unicode mode becomes irrelevant
+
 set k 0
 test-grammar-map gcstate --> id gcstate base {
     set input [dict get [string trimright [fget $gcstate]] grammar]
@@ -138,6 +144,9 @@ test-grammar-map gcstate --> id gcstate base {
     # Ignore containers without literals to reduce
     if {![dict exists $input l0 literal]} continue
 
+    # Ignore cases without a result to check
+    if {![file exists $base/gcr_tcl]} continue
+    
     set expected [test-grammar-result $base gcr_tcl]
     set kd       [format $format $k]
 
@@ -146,18 +155,10 @@ test-grammar-map gcstate --> id gcstate base {
 	GC deserialize $input
     } -body {
 	# Reduce literals for a Tcl engine
-	set work [dict get $input l0 literal]
-	set work [concat {*}[lmap {sym rhs} $work {
-	    list $sym [lindex $rhs 0]
-	}]]
-	marpa::slif::literal r2container \
-	    [marpa::slif::literal reduce $work {
-		D-STR1 D-%STR  D-CLS3  D-^CLS2
-		D-NCC3 D-%NCC1 D-^NCC2 D-^%NCC1
-		K-RAN  D-%RAN  K-^RAN  K-CHR
-		K-^CHR
-	    }] GC
-	GC validate ;# Reduction should not invalidate the container
+	marpa::slif::literal::redux GC \
+	    marpa::slif::literal::reduce::2tcl
+	# Reduction should not invalidate the container
+	GC validate
 	gc-format [GC serialize]
     } -cleanup {
 	unset -nocomplain msg
@@ -171,12 +172,17 @@ test-grammar-map gcstate --> id gcstate base {
 ## Reduction II [C-lang]: Byte-based engine on UTF-8 input.
 ## Note, based on gcstate, reuse format.
 
+# TODO: Fix up when unicode mode becomes irrelevant
+
 set k 0
 test-grammar-map gcstate --> id gcstate base {
     set input [dict get [string trimright [fget $gcstate]] grammar]
 
     # Ignore containers without literals to reduce
     if {![dict exists $input l0 literal]} continue
+
+    # Ignore cases without a result to check
+    if {![file exists $base/gcr_c]} continue
 
     set expected [test-grammar-result $base gcr_c]
     set kd       [format $format $k]
@@ -185,19 +191,11 @@ test-grammar-map gcstate --> id gcstate base {
 	marpa::slif::container create GC
 	GC deserialize $input
     } -body {
-	# Reduce literals for a Tcl engine
-	set work [dict get $input l0 literal]
-	set work [concat {*}[lmap {sym rhs} $work {
-	    list $sym [lindex $rhs 0]
-	}]]
-	marpa::slif::literal r2container \
-	    [marpa::slif::literal reduce $work {
-		D-STR2 D-%STR  D-CLS2  D-^CLS1
-		D-NCC2 D-%NCC2 D-^NCC1 D-^%NCC2
-		D-RAN2 D-%RAN  D-^RAN2 D-CHR
-		D-^CHR
-	    }] GC
-	GC validate ;# Reduction should not invalidate the container
+	# Reduce literals for a C engine with Tcl encoding
+	marpa::slif::literal::redux GC \
+	    marpa::slif::literal::reduce::2c4tcl
+	# Reduction should not invalidate the container
+	GC validate
 	gc-format [GC serialize]
     } -cleanup {
 	unset -nocomplain msg

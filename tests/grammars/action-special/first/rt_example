@@ -1,0 +1,4 @@
+:default ::= action => [name,values]
+A ::= C action => ::first # hide A from the AST
+C ::= B
+B ~ 'b'

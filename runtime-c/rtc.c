@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: All together)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  *
  * Requirements - Note, allocations and tracing via an external environment header.
  */
@@ -65,7 +65,7 @@ marpatcl_rtc_destroy (marpatcl_rtc_p p)
 }
 
 void
-marpatcl_rtc_enter (marpatcl_rtc_p p, const char* bytes, int n)
+marpatcl_rtc_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
 {
     TRACE_FUNC ("((rtc*) %p, (char*) %p [%d]))", p, bytes, n);
 

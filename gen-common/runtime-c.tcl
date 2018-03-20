@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -26,7 +26,9 @@
 # Meta require     debug
 # Meta require     debug::caller
 # Meta require     marpa::slif::container
-# Meta require     marpa::slif::literal
+# Meta require     marpa::slif::literal::util
+# Meta require     marpa::slif::literal::redux
+# Meta require     marpa::slif::literal::reduce::2c4tcl
 # Meta require     marpa::slif::precedence
 # Meta require     marpa::gen
 # Meta require     marpa::gen::remask
@@ -41,7 +43,9 @@ package require TclOO
 package require debug
 package require debug::caller
 package require marpa::slif::container
-package require marpa::slif::literal
+package require marpa::slif::literal::util
+package require marpa::slif::literal::redux
+package require marpa::slif::literal::reduce::2c4tcl
 package require marpa::slif::precedence
 package require marpa::gen
 package require marpa::gen::remask
@@ -127,6 +131,8 @@ namespace eval ::marpa::gen::runtime::c {
 	rule	 MARPATCL_SV_RULE_ID
 	value	 MARPATCL_SV_VALUE
 	values   MARPATCL_SV_VALUE
+
+	first    MARPATCL_SV_A_FIRST
     }
 }
 
@@ -177,6 +183,15 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     # lex       :: list (sym)
 
     # Data processing.
+
+    catch {B destroy} ;# Remove possible left overs from a previous failed run.
+    catch {P destroy}
+    catch {L destroy}
+    catch {G destroy}
+    catch {LR destroy}
+    catch {GR destroy}
+    catch {A destroy}
+    catch {M destroy}
 
     Bytes create B
     Pool  create P
@@ -240,7 +255,7 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 	    incr codepoint
 	} {
 	    if {[L has-id $codepoint]} continue
-	    set bsym [::marpa::slif::literal::symbol [list byte $codepoint]]
+	    set bsym [::marpa::slif::literal::util::symbol [list byte $codepoint]]
 	    P add* 1 $bsym
 	    L force  $bsym $codepoint
 	}
@@ -281,7 +296,7 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     GR add $g1rules
     GR start [$gc start?]
 
-    set sem    [SemaCode [$gc lexeme-semantics? action]]
+    set sem    [SemaCodeL [$gc lexeme-semantics? action]]
     set always [lmap w [concat $acs_discards [LTM $lex $gc]] {
 	# Convert ACS down to terminal symbols and pseudo-terminals
 	# (latter are for the discards)
@@ -449,20 +464,13 @@ proc ::marpa::gen::runtime::c::EncodePrecedences {gc} {
 proc ::marpa::gen::runtime::c::LowerLiterals {gc} {
     debug.marpa/gen/runtime/c {}
 
-    # Rewrite the literals into forms supported by the runtime
-    # (C engine). These are bytes and byte ranges. The latter are
-    # expanded during setup at runtime, into alternations of bytes,
-    # with a subsequent explosion of rules.
+    # Rewrite the literals into forms supported by the runtime (C
+    # engine, with Tcl associated). These are bytes and byte
+    # ranges. The latter are expanded during setup at runtime, into
+    # alternations of bytes, with a subsequent explosion of rules.
 
-    marpa::slif::literal r2container \
-	[marpa::slif::literal reduce [concat {*}[lmap {sym rhs} [dict get [$gc l0 serialize] literal] {
-	    list $sym [lindex $rhs 0]
-	}]] {
-	    D-STR2 D-%STR  D-CLS2  D-^CLS1
-	    D-NCC2 D-%NCC2 D-^NCC1 D-^%NCC2
-	    D-RAN2 D-%RAN  D-^RAN2 D-CHR
-	    D-^CHR
-	}] $gc
+    marpa::slif::literal::redux $gc \
+	marpa::slif::literal::reduce::2c4tcl
 
     RefactorRanges $gc
     return
@@ -666,6 +674,17 @@ proc ::marpa::gen::runtime::c::RefactorRanges {gc} {
 proc ::marpa::gen::runtime::c::L0C {lex discards} {
     set l [llength $lex]
     set d [llength $discards]
+
+    if {!$d} {
+	# No discards, do not provide segments for them in the
+	# ChunkedArray
+	return [list \
+		    Characters       256 \
+		    {{ACS: Lexeme}}  $l \
+		    Lexeme           $l \
+		    Internal]
+    }
+    
     return [list \
 		Characters       256 \
 		{{ACS: Lexeme}}  $l \
@@ -693,7 +712,7 @@ proc ::marpa::gen::runtime::c::GetL0 {gc class} {
     return [lsort -dict [$gc l0 symbols-of $class]]
 }
 
-proc ::marpa::gen::runtime::c::SemaCode {keys} {
+proc ::marpa::gen::runtime::c::SemaCodeL {keys} {
     variable ak
     # sem - Check for array, and unpack...
     if {![dict exists $keys array]} {
@@ -703,6 +722,24 @@ proc ::marpa::gen::runtime::c::SemaCode {keys} {
     return [lmap w [dict get $keys array] { dict get $ak $w }]
 }
 
+proc ::marpa::gen::runtime::c::SemaCodeG {keys} {
+    variable ak
+    # sem - Check for array, and unpack...
+    if {[dict exists $keys special]} {
+	set special [dict get $keys special]
+	if {[dict exists $ak $special]} {
+	    return [list [dict get $ak $special]]
+	}
+	# TODO: Test case required
+	error BAD-SPECIAL:$special
+    }
+    if {[dict exists $keys array]} {
+	return [lmap w [dict get $keys array] { dict get $ak $w }]
+    }
+    # TODO: Test case required -- Check what the semantics and syntax say
+    error BAD-SEMANTICS:$keys
+}
+
 proc ::marpa::gen::runtime::c::CName {} {
     debug.marpa/gen/runtime/c {}
     string map {:: _ - _} [core-config? name]
@@ -710,12 +747,6 @@ proc ::marpa::gen::runtime::c::CName {} {
 
 proc ::marpa::gen::runtime::c::Names {rules} {
     return [lmap rule $rules { RName $rule }]
-}
-
-proc ::marpa::gen::runtime::c::Sema {rules} {
-    foreach rule $rules {
-	Sem $rule
-    }
 }
 
 proc ::marpa::gen::runtime::c::RName {rule} {
@@ -756,6 +787,10 @@ proc ::marpa::gen::runtime::c::ChunkedArray {words chunking {config {}}} {
     while {[llength $chunking] && [llength $words]} {
 	set chunking  [lassign $chunking chunk]
 	set remainder [lrange $words $chunk end]
+	if {!$chunk} {
+	    return -code error \
+		"Cannot chunk zero-length segment \"$label\""
+	}
 	append result [Hdr $chunk $label]
 	incr chunk -1
 	set header [lrange $words 0 $chunk]
@@ -898,6 +933,8 @@ proc ::marpa::gen::runtime::c::RuleC {label data nr} {
 	# strip comments coded before the length
 	regexp { (\d+)$} $n -> n
 	incr n 1 ;# adjust for length entry
+	# NOTE: At this point n >= 1.
+	#       No chunk is zero-length
 	lappend chunks [list $label from 1] $n
 	incr nr $n
 	set label {}
@@ -996,6 +1033,7 @@ oo::class create marpa::gen::runtime::c::Mask {
     method Finalize {} {
 	if {$myfinal} return
 	set myfinal 1
+
 	if {[dict size $mymask] == 1} {
 	    # Code global
 	    set mytag  MARPATCL_S_SINGLE
@@ -1084,7 +1122,7 @@ oo::class create marpa::gen::runtime::c::SemaG {
 	if {![info exists action]} { error ACTION-MISSING }
 	if {$action eq {}} { error ACTION-EMPTY }
 
-	set action [::marpa::gen::runtime::c::SemaCode $action]
+	set action [::marpa::gen::runtime::c::SemaCodeG $action]
 	set action [linsert $action 0 [llength $action]]
 	dict lappend mysema $action $mycount
 	return
@@ -1105,7 +1143,7 @@ oo::class create marpa::gen::runtime::c::SemaG {
 	set mycode [lrepeat $mycount -1]
 	set max $mycount
 
-	foreach s [dict keys $mymask] {
+	foreach s [dict keys $mysema] {
 	    if {[lindex $s 0] == 0} continue
 	    incr max [llength $s]
 	}

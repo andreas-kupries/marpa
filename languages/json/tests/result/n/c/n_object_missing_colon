@@ -2,13 +2,13 @@ Parsing failed in gate. Stopped at offset 5 after reading 'b'. Expected any char
 L0 Report:
 ______ P0     @1-1 <colon>        -->  . <:>
 ______ P15    @1-1 <whitespace>   -->  . <[\t-\n\r\40]>
-______ P34    @1-1 <[\t-\n\r\40]> -->  . <[\t-\n]>
-______ P35    @1-1 <[\t-\n\r\40]> -->  . <\r>
-______ P36    @1-1 <[\t-\n\r\40]> -->  . <\40>
-______ P200   @1-1 <[\t-\n]>      -->  . <\t>
-______ P201   @1-1 <[\t-\n]>      -->  . <\n>
-______ R299:1 @0-1 <@L0:START>    -->  <colon> . <colon>
-______ R311:1 @0-1 <@L0:START>    -->  <whitespace> . <whitespace>
+______ P37    @1-1 <[\t-\n\r\40]> -->  . <[\t-\n]>
+______ P38    @1-1 <[\t-\n\r\40]> -->  . <\r>
+______ P39    @1-1 <[\t-\n\r\40]> -->  . <\40>
+______ P203   @1-1 <[\t-\n]>      -->  . <\t>
+______ P204   @1-1 <[\t-\n]>      -->  . <\n>
+______ R302:1 @0-1 <@L0:START>    -->  <colon> . <colon>
+______ R314:1 @0-1 <@L0:START>    -->  <whitespace> . <whitespace>
 
 Mismatch:
 'b' => (98) ni
