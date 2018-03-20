@@ -46,51 +46,113 @@ oo::class create <Name> {
 	debug.<Name>
 	# Literals: The directly referenced (allowed) characters.
 	return {
-	    @CHR:<#>        #
-	    @CHR:<'>        '
-	    @CHR:<*>        *
-	    @CHR:<+>        +
-	    @CHR:<,>        ,
-	    @CHR:<->        -
-	    @CHR:<1>        1
-	    @CHR:<:>        :
-	    @CHR:<<>        <
-	    @CHR:<=>        =
-	    @CHR:<>>        >
-	    @CHR:<^>        ^
-	    @CHR:<a>        a
-	    @CHR:<b>        b
-	    @CHR:<c>        c
-	    @CHR:<d>        d
-	    @CHR:<e>        e
-	    @CHR:<f>        f
-	    @CHR:<g>        g
-	    @CHR:<h>        h
-	    @CHR:<i>        i
-	    @CHR:<k>        k
-	    @CHR:<l>        l
-	    @CHR:<m>        m
-	    @CHR:<n>        n
-	    @CHR:<o>        o
-	    @CHR:<p>        p
-	    @CHR:<r>        r
-	    @CHR:<s>        s
-	    @CHR:<t>        t
-	    @CHR:<u>        u
-	    @CHR:<v>        v
-	    @CHR:<w>        w
-	    @CHR:<x>        x
-	    @CHR:<y>        y
-	    @CHR:<|>        |
-	    @CHR:<~>        ~
-	    {@CHR:<\50>}    \50
-	    {@CHR:<\51>}    \51
-	    {@CHR:<\73>}    \73
-	    {@CHR:<\133>}   \133
-	    {@CHR:<\134>}   \134
-	    {@CHR:<\135>}   \135
-	    {@CHR:<\173>}   \173
-	    {@CHR:<\175>}   \175
+	    @CHR:<#>          #
+	    @CHR:<'>          '
+	    @CHR:<*>          *
+	    @CHR:<+>          +
+	    @CHR:<,>          ,
+	    @CHR:<->          -
+	    @CHR:<1>          1
+	    @CHR:<:>          :
+	    @CHR:<<>          <
+	    @CHR:<=>          =
+	    @CHR:<>>          >
+	    @CHR:<^>          ^
+	    @CHR:<a>          a
+	    @CHR:<b>          b
+	    @CHR:<c>          c
+	    @CHR:<d>          d
+	    @CHR:<e>          e
+	    @CHR:<f>          f
+	    @CHR:<g>          g
+	    @CHR:<h>          h
+	    @CHR:<i>          i
+	    @CHR:<k>          k
+	    @CHR:<l>          l
+	    @CHR:<m>          m
+	    @CHR:<n>          n
+	    @CHR:<o>          o
+	    @CHR:<p>          p
+	    @CHR:<r>          r
+	    @CHR:<s>          s
+	    @CHR:<t>          t
+	    @CHR:<U>          U
+	    @CHR:<u>          u
+	    @CHR:<v>          v
+	    @CHR:<w>          w
+	    @CHR:<x>          x
+	    @CHR:<y>          y
+	    @CHR:<|>          |
+	    @CHR:<~>          ~
+	    CHR<d56373>       \udc35
+	    CHR<d56794>       \uddda
+	    {@CHR:<\50>}      \50
+	    {@CHR:<\51>}      \51
+	    {@CHR:<\73>}      \73
+	    {@CHR:<\133>}     \133
+	    {@CHR:<\134>}     \134
+	    {@CHR:<\135>}     \135
+	    {@CHR:<\173>}     \173
+	    {@CHR:<\175>}     \175
+	    {@CHR:<\ud80c>}   \ud80c
+	    {@CHR:<\ud80d>}   \ud80d
+	    {@CHR:<\ud81a>}   \ud81a
+	    {@CHR:<\ud81b>}   \ud81b
+	    {@CHR:<\ud82c>}   \ud82c
+	    {@CHR:<\ud82f>}   \ud82f
+	    {@CHR:<\ud83a>}   \ud83a
+	    {@CHR:<\ud83b>}   \ud83b
+	    {@CHR:<\ud86d>}   \ud86d
+	    {@CHR:<\ud86e>}   \ud86e
+	    {@CHR:<\ud87e>}   \ud87e
+	    {@CHR:<\ud800>}   \ud800
+	    {@CHR:<\ud801>}   \ud801
+	    {@CHR:<\ud802>}   \ud802
+	    {@CHR:<\ud803>}   \ud803
+	    {@CHR:<\ud804>}   \ud804
+	    {@CHR:<\ud805>}   \ud805
+	    {@CHR:<\ud806>}   \ud806
+	    {@CHR:<\ud807>}   \ud807
+	    {@CHR:<\ud808>}   \ud808
+	    {@CHR:<\ud809>}   \ud809
+	    {@CHR:<\ud811>}   \ud811
+	    {@CHR:<\ud821>}   \ud821
+	    {@CHR:<\ud822>}   \ud822
+	    {@CHR:<\ud835>}   \ud835
+	    {@CHR:<\ud869>}   \ud869
+	    {@CHR:<\ud873>}   \ud873
+	    {@CHR:<\udc3c>}   \udc3c
+	    {@CHR:<\udc08>}   \udc08
+	    {@CHR:<\udc40>}   \udc40
+	    {@CHR:<\udca2>}   \udca2
+	    {@CHR:<\udcbb>}   \udcbb
+	    {@CHR:<\udcc7>}   \udcc7
+	    {@CHR:<\udcff>}   \udcff
+	    {@CHR:<\udd46>}   \udd46
+	    {@CHR:<\udd76>}   \udd76
+	    {@CHR:<\udddc>}   \udddc
+	    {@CHR:<\ude00>}   \ude00
+	    {@CHR:<\ude3b>}   \ude3b
+	    {@CHR:<\ude4b>}   \ude4b
+	    {@CHR:<\ude5b>}   \ude5b
+	    {@CHR:<\ude5d>}   \ude5d
+	    {@CHR:<\ude5f>}   \ude5f
+	    {@CHR:<\ude7e>}   \ude7e
+	    {@CHR:<\ude24>}   \ude24
+	    {@CHR:<\ude27>}   \ude27
+	    {@CHR:<\ude39>}   \ude39
+	    {@CHR:<\ude42>}   \ude42
+	    {@CHR:<\ude44>}   \ude44
+	    {@CHR:<\ude47>}   \ude47
+	    {@CHR:<\ude49>}   \ude49
+	    {@CHR:<\ude54>}   \ude54
+	    {@CHR:<\ude57>}   \ude57
+	    {@CHR:<\ude59>}   \ude59
+	    {@CHR:<\ude64>}   \ude64
+	    {@CHR:<\ude88>}   \ude88
+	    {@CHR:<\udf3d>}   \udf3d
+	    {@CHR:<\udf50>}   \udf50
+	    {@CHR:<\udfe0>}   \udfe0
 	}
     }
     
@@ -98,26 +160,203 @@ oo::class create <Name> {
 	debug.<Name>
 	# Literals: The character classes in use
 	return {
-	    @CLS:<+->                                           {[+\055]}
-	    @CLS:<A-Za-z>                                       {[A-Za-z]}
-	    @RAN:<01>                                           {[01]}
-	    @RAN:<03>                                           {[0-3]}
-	    @RAN:<07>                                           {[0-7]}
-	    {@^CLS:<\7-\10\n-\r'0-7\134\u2028-\u2029>}          {[^\007\10\n-\r'0-7\134\u2028\u2029]}
-	    {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029>}             {[^\007\10\n-\r'\134\u2028\u2029]}
-	    {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]>}   {[^\007\10\n-\r'\134\u2028\u2029[:xdigit:]]}
-	    {@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>}           {[^\007-\r\0550-7\134\135\u2028\u2029]}
-	    {@^CLS:<\7-\r-\134-\135\u2028-\u2029>}              {[^\007-\r\055\134\135\u2028\u2029]}
-	    {@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>}    {[^\007-\r\055\134\135\u2028\u2029[:xdigit:]]}
-	    {@^CLS:<\n-\r\u2028-\u2029>}                        {[^\n-\r\u2028\u2029]}
-	    {@CLS:<\134a-bfnrtv>}                               {[\134abfnrtv]}
-	    {@CLS:<\n-\r\u2028-\u2029>}                         {[\n-\r\u2028\u2029]}
-	    {@CLS:<_[:alnum:]>}                                 {[_[:alnum:]]}
-	    {@CLS:<_[:alnum:][:space:]>}                        {[_[:alnum:][:space:]]}
-	    {@NCC:<[:alnum:]>}                                  {[[:alnum:]]}
-	    {@NCC:<[:digit:]>}                                  {[[:digit:]]}
-	    {@NCC:<[:space:]>}                                  {[[:space:]]}
-	    {@NCC:<[:xdigit:]>}                                 {[[:xdigit:]]}
+	    @CLS:<+->                                               {[+\055]}
+	    @CLS:<A-Za-z>                                           {[A-Za-z]}
+	    @RAN:<01>                                               {[01]}
+	    RAN<d50-d51>                                            {[23]}
+	    RAN<d52-d55>                                            {[4-7]}
+	    RAN<d56322-d56325>                                      {[\udc02-\udc05]}
+	    RAN<d56326-d56328>                                      {[\udc06-\udc08]}
+	    RAN<d56329-d56331>                                      {[\udc09-\udc0b]}
+	    RAN<d56332-d56349>                                      {[\udc0c-\udc1d]}
+	    RAN<d56350-d56366>                                      {[\udc1e-\udc2e]}
+	    RAN<d56367-d56372>                                      {[\udc2f-\udc34]}
+	    RAN<d56373-d56392>                                      {[\udc35-\udc48]}
+	    RAN<d56393-d56404>                                      {[\udc49-\udc54]}
+	    RAN<d56398-d56405>                                      {[\udc4e-\udc55]}
+	    RAN<d56405-d56426>                                      {[\udc55-\udc6a]}
+	    RAN<d56410-d56413>                                      {[\udc5a-\udc5d]}
+	    RAN<d56427-d56477>                                      {[\udc6b-\udc9d]}
+	    RAN<d56457-d56478>                                      {[\udc89-\udc9e]}
+	    RAN<d56479-d56495>                                      {[\udc9f-\udcaf]}
+	    RAN<d56490-d56516>                                      {[\udcaa-\udcc4]}
+	    RAN<d56496-d56498>                                      {[\udcb0-\udcb2]}
+	    RAN<d56499-d56531>                                      {[\udcb3-\udcd3]}
+	    RAN<d56517-d56553>                                      {[\udcc5-\udce9]}
+	    RAN<d56532-d56570>                                      {[\udcd4-\udcfa]}
+	    RAN<d56538-d56552>                                      {[\udcda-\udce8]}
+	    RAN<d56554-d56562>                                      {[\udcea-\udcf2]}
+	    RAN<d56563-d56581>                                      {[\udcf3-\udd05]}
+	    RAN<d56571-d56643>                                      {[\udcfb-\udd43]}
+	    RAN<d56582-d56861>                                      {[\udd06-\ude1d]}
+	    RAN<d56605-d56615>                                      {[\udd1d-\udd27]}
+	    RAN<d56616-d56643>                                      {[\udd28-\udd43]}
+	    RAN<d56666-d56690>                                      {[\udd5a-\udd72]}
+	    RAN<d56751-d56759>                                      {[\uddaf-\uddb7]}
+	    RAN<d56836-d56849>                                      {[\ude04-\ude11]}
+	    RAN<d56850-d56879>                                      {[\ude12-\ude2f]}
+	    RAN<d56862-d56888>                                      {[\ude1e-\ude38]}
+	    RAN<d56880-d57142>                                      {[\ude30-\udf36]}
+	    RAN<d56889-d56902>                                      {[\ude39-\ude46]}
+	    RAN<d56903-d56993>                                      {[\ude47-\udea1]}
+	    RAN<d56938-d56956>                                      {[\ude6a-\ude7c]}
+	    RAN<d56967-d56969>                                      {[\ude87-\ude89]}
+	    RAN<d56974-d56988>                                      {[\ude8e-\ude9c]}
+	    RAN<d56989-d57002>                                      {[\ude9d-\udeaa]}
+	    RAN<d56994-d57046>                                      {[\udea2-\uded6]}
+	    RAN<d57032-d57033>                                      {[\udec8\udec9]}
+	    RAN<d57034-d57080>                                      {[\udeca-\udef8]}
+	    RAN<d57047-d57074>                                      {[\uded7-\udef2]}
+	    RAN<d57075-d57140>                                      {[\udef3-\udf34]}
+	    RAN<d57114-d57119>                                      {[\udf1a-\udf1f]}
+	    RAN<d57120-d57135>                                      {[\udf20-\udf2f]}
+	    RAN<d57136-d57141>                                      {[\udf30-\udf35]}
+	    RAN<d57142-d57145>                                      {[\udf36-\udf39]}
+	    RAN<d57146-d57152>                                      {[\udf3a-\udf40]}
+	    RAN<d57153-d57156>                                      {[\udf41-\udf44]}
+	    RAN<d57156-d57173>                                      {[\udf44-\udf55]}
+	    RAN<d57157-d57166>                                      {[\udf45-\udf4e]}
+	    RAN<d57167-d57241>                                      {[\udf4f-\udf99]}
+	    RAN<d57174-d57343>                                      {[\udf56-\udfff]}
+	    RAN<d57178-d57198>                                      {[\udf5a-\udf6e]}
+	    RAN<d57192-d57202>                                      {[\udf68-\udf72]}
+	    RAN<d57199-d57205>                                      {[\udf6f-\udf75]}
+	    RAN<d57234-d57245>                                      {[\udf92-\udf9d]}
+	    RAN<d57242-d57324>                                      {[\udf9a-\udfec]}
+	    RAN<d57325-d57343>                                      {[\udfed-\udfff]}
+	    {@^CLS:<\7-\10\n-\r'0-7\134\u2028-\u2029>.BMP}          {[^\007\10\n-\r'0-7\134\u2028\u2029]}
+	    {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029>.BMP}             {[^\007\10\n-\r'\134\u2028\u2029]}
+	    {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]>.BMP}   {[^\007\10\n-\r'\134\u2028\u2029[:xdigit:]]}
+	    {@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>.BMP}           {[^\007-\r\0550-7\134\135\u2028\u2029]}
+	    {@^CLS:<\7-\r-\134-\135\u2028-\u2029>.BMP}              {[^\007-\r\055\134\135\u2028\u2029]}
+	    {@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>.BMP}    {[^\007-\r\055\134\135\u2028\u2029[:xdigit:]]}
+	    {@^CLS:<\n-\r\u2028-\u2029>.BMP}                        {[^\n-\r\u2028\u2029]}
+	    {@CLS:<\134a-bfnrtv>}                                   {[\134abfnrtv]}
+	    {@CLS:<\n-\r\u2028-\u2029>}                             {[\n-\r\u2028\u2029]}
+	    {@CLS:<_[:alnum:]>.BMP}                                 {[_[:alnum:]]}
+	    {@CLS:<_[:alnum:][:space:]>.BMP}                        {[_[:alnum:][:space:]]}
+	    {@NCC:<[:alnum:]>.BMP}                                  {[[:alnum:]]}
+	    {@NCC:<[:digit:]>.BMP}                                  {[[:digit:]]}
+	    {@NCC:<[:space:]>}                                      {[[:space:]]}
+	    {@NCC:<[:xdigit:]>}                                     {[[:xdigit:]]}
+	    {@RAN:<\ud81c\ud820>}                                   {[\ud81c-\ud820]}
+	    {@RAN:<\ud86a\ud86c>}                                   {[\ud86a-\ud86c]}
+	    {@RAN:<\ud86f\ud872>}                                   {[\ud86f-\ud872]}
+	    {@RAN:<\ud800\udbff>}                                   {[\ud800-\udbff]}
+	    {@RAN:<\ud840\ud868>}                                   {[\ud840-\ud868]}
+	    {@RAN:<\udc00\udc01>}                                   {[\udc00\udc01]}
+	    {@RAN:<\udc0a\udc2e>}                                   {[\udc0a-\udc2e]}
+	    {@RAN:<\udc0d\udc26>}                                   {[\udc0d-\udc26]}
+	    {@RAN:<\udc03\udc37>}                                   {[\udc03-\udc37]}
+	    {@RAN:<\udc3c\udc3d>}                                   {[\udc3c\udc3d]}
+	    {@RAN:<\udc3f\udc4d>}                                   {[\udc3f-\udc4d]}
+	    {@RAN:<\udc9e\udc9f>}                                   {[\udc9e\udc9f]}
+	    {@RAN:<\udc20\udfff>}                                   {[\udc20-\udfff]}
+	    {@RAN:<\udc28\udc3a>}                                   {[\udc28-\udc3a]}
+	    {@RAN:<\udc37\udc38>}                                   {[\udc37\udc38]}
+	    {@RAN:<\udc47\udc4a>}                                   {[\udc47-\udc4a]}
+	    {@RAN:<\udc50\udc59>}                                   {[\udc50-\udc59]}
+	    {@RAN:<\udc56\udc9c>}                                   {[\udc56-\udc9c]}
+	    {@RAN:<\udc60\udc76>}                                   {[\udc60-\udc76]}
+	    {@RAN:<\udc66\udc6f>}                                   {[\udc66-\udc6f]}
+	    {@RAN:<\udc70\udc7c>}                                   {[\udc70-\udc7c]}
+	    {@RAN:<\udc72\udc8f>}                                   {[\udc72-\udc8f]}
+	    {@RAN:<\udc80\udc88>}                                   {[\udc80-\udc88]}
+	    {@RAN:<\udc83\udcaf>}                                   {[\udc83-\udcaf]}
+	    {@RAN:<\udc90\udc99>}                                   {[\udc90-\udc99]}
+	    {@RAN:<\udca0\udca9>}                                   {[\udca0-\udca9]}
+	    {@RAN:<\udca5\udca6>}                                   {[\udca5\udca6]}
+	    {@RAN:<\udca9\udcac>}                                   {[\udca9-\udcac]}
+	    {@RAN:<\udcae\udcb9>}                                   {[\udcae-\udcb9]}
+	    {@RAN:<\udcbd\udcc3>}                                   {[\udcbd-\udcc3]}
+	    {@RAN:<\udcc0\udcf2>}                                   {[\udcc0-\udcf2]}
+	    {@RAN:<\udcc4\udcc5>}                                   {[\udcc4\udcc5]}
+	    {@RAN:<\udcd0\udcd9>}                                   {[\udcd0-\udcd9]}
+	    {@RAN:<\udcd8\udcfb>}                                   {[\udcd8-\udcfb]}
+	    {@RAN:<\udce0\udce9>}                                   {[\udce0-\udce9]}
+	    {@RAN:<\udcf0\udcf9>}                                   {[\udcf0-\udcf9]}
+	    {@RAN:<\udcf4\udcf5>}                                   {[\udcf4\udcf5]}
+	    {@RAN:<\udd00\udd15>}                                   {[\udd00-\udd15]}
+	    {@RAN:<\udd0d\udd14>}                                   {[\udd0d-\udd14]}
+	    {@RAN:<\udd1e\udd39>}                                   {[\udd1e-\udd39]}
+	    {@RAN:<\udd03\udd26>}                                   {[\udd03-\udd26]}
+	    {@RAN:<\udd3b\udd3e>}                                   {[\udd3b-\udd3e]}
+	    {@RAN:<\udd4a\udd50>}                                   {[\udd4a-\udd50]}
+	    {@RAN:<\udd07\udd0a>}                                   {[\udd07-\udd0a]}
+	    {@RAN:<\udd16\udd1c>}                                   {[\udd16-\udd1c]}
+	    {@RAN:<\udd20\udd39>}                                   {[\udd20-\udd39]}
+	    {@RAN:<\udd30\udd63>}                                   {[\udd30-\udd63]}
+	    {@RAN:<\udd36\udd3f>}                                   {[\udd36-\udd3f]}
+	    {@RAN:<\udd40\udd44>}                                   {[\udd40-\udd44]}
+	    {@RAN:<\udd50\udd59>}                                   {[\udd50-\udd59]}
+	    {@RAN:<\udd52\udea5>}                                   {[\udd52-\udea5]}
+	    {@RAN:<\udd80\uddae>}                                   {[\udd80-\uddae]}
+	    {@RAN:<\udd83\uddb2>}                                   {[\udd83-\uddb2]}
+	    {@RAN:<\uddbe\uddbf>}                                   {[\uddbe\uddbf]}
+	    {@RAN:<\uddc1\uddc4>}                                   {[\uddc1-\uddc4]}
+	    {@RAN:<\uddd0\uddd9>}                                   {[\uddd0-\uddd9]}
+	    {@RAN:<\uddd8\udddb>}                                   {[\uddd8-\udddb]}
+	    {@RAN:<\ude00\ude03>}                                   {[\ude00-\ude03]}
+	    {@RAN:<\ude4d\ude4f>}                                   {[\ude4d-\ude4f]}
+	    {@RAN:<\ude05\ude1f>}                                   {[\ude05-\ude1f]}
+	    {@RAN:<\ude6c\ude72>}                                   {[\ude6c-\ude72]}
+	    {@RAN:<\ude8a\ude8d>}                                   {[\ude8a-\ude8d]}
+	    {@RAN:<\ude8b\ude9b>}                                   {[\ude8b-\ude9b]}
+	    {@RAN:<\ude8f\ude9d>}                                   {[\ude8f-\ude9d]}
+	    {@RAN:<\ude9f\udea8>}                                   {[\ude9f-\udea8]}
+	    {@RAN:<\ude10\ude13>}                                   {[\ude10-\ude13]}
+	    {@RAN:<\ude13\ude2b>}                                   {[\ude13-\ude2b]}
+	    {@RAN:<\ude15\ude17>}                                   {[\ude15-\ude17]}
+	    {@RAN:<\ude19\ude33>}                                   {[\ude19-\ude33]}
+	    {@RAN:<\ude21\ude22>}                                   {[\ude21\ude22]}
+	    {@RAN:<\ude29\ude32>}                                   {[\ude29-\ude32]}
+	    {@RAN:<\ude34\ude37>}                                   {[\ude34-\ude37]}
+	    {@RAN:<\ude40\ude5e>}                                   {[\ude40-\ude5e]}
+	    {@RAN:<\ude50\ude59>}                                   {[\ude50-\ude59]}
+	    {@RAN:<\ude51\ude52>}                                   {[\ude51\ude52]}
+	    {@RAN:<\ude60\ude69>}                                   {[\ude60-\ude69]}
+	    {@RAN:<\ude61\ude62>}                                   {[\ude61\ude62]}
+	    {@RAN:<\ude67\ude6a>}                                   {[\ude67-\ude6a]}
+	    {@RAN:<\ude74\ude77>}                                   {[\ude74-\ude77]}
+	    {@RAN:<\ude79\ude7c>}                                   {[\ude79-\ude7c]}
+	    {@RAN:<\ude80\ude86>}                                   {[\ude80-\ude86]}
+	    {@RAN:<\udea0\uded0>}                                   {[\udea0-\uded0]}
+	    {@RAN:<\udea1\udea3>}                                   {[\udea1-\udea3]}
+	    {@RAN:<\udea5\udea9>}                                   {[\udea5-\udea9]}
+	    {@RAN:<\udea8\udec0>}                                   {[\udea8-\udec0]}
+	    {@RAN:<\udeab\udebb>}                                   {[\udeab-\udebb]}
+	    {@RAN:<\udeb0\udede>}                                   {[\udeb0-\udede]}
+	    {@RAN:<\udec0\udec7>}                                   {[\udec0-\udec7]}
+	    {@RAN:<\udec2\udeda>}                                   {[\udec2-\udeda]}
+	    {@RAN:<\udec9\udee4>}                                   {[\udec9-\udee4]}
+	    {@RAN:<\uded0\udeed>}                                   {[\uded0-\udeed]}
+	    {@RAN:<\udedc\udefa>}                                   {[\udedc-\udefa]}
+	    {@RAN:<\udef0\udef9>}                                   {[\udef0-\udef9]}
+	    {@RAN:<\udefc\udf14>}                                   {[\udefc-\udf14]}
+	    {@RAN:<\udf00\udf19>}                                   {[\udf00-\udf19]}
+	    {@RAN:<\udf0f\udf10>}                                   {[\udf0f\udf10]}
+	    {@RAN:<\udf2a\udf30>}                                   {[\udf2a-\udf30]}
+	    {@RAN:<\udf05\udf0c>}                                   {[\udf05-\udf0c]}
+	    {@RAN:<\udf5d\udf61>}                                   {[\udf5d-\udf61]}
+	    {@RAN:<\udf7d\udf8f>}                                   {[\udf7d-\udf8f]}
+	    {@RAN:<\udf8a\udfa8>}                                   {[\udf8a-\udfa8]}
+	    {@RAN:<\udf13\udf28>}                                   {[\udf13-\udf28]}
+	    {@RAN:<\udf16\udf34>}                                   {[\udf16-\udf34]}
+	    {@RAN:<\udf32\udf33>}                                   {[\udf32\udf33]}
+	    {@RAN:<\udf35\udf39>}                                   {[\udf35-\udf39]}
+	    {@RAN:<\udf40\udf43>}                                   {[\udf40-\udf43]}
+	    {@RAN:<\udf42\udf49>}                                   {[\udf42-\udf49]}
+	    {@RAN:<\udf50\udf59>}                                   {[\udf50-\udf59]}
+	    {@RAN:<\udf60\udf67>}                                   {[\udf60-\udf67]}
+	    {@RAN:<\udf63\udf77>}                                   {[\udf63-\udf77]}
+	    {@RAN:<\udf70\udf88>}                                   {[\udf70-\udf88]}
+	    {@RAN:<\udf80\udf91>}                                   {[\udf80-\udf91]}
+	    {@RAN:<\udf93\udf9f>}                                   {[\udf93-\udf9f]}
+	    {@RAN:<\udfa0\udfc3>}                                   {[\udfa0-\udfc3]}
+	    {@RAN:<\udfaa\udfc2>}                                   {[\udfaa-\udfc2]}
+	    {@RAN:<\udfc4\udfcb>}                                   {[\udfc4-\udfcb]}
+	    {@RAN:<\udfc8\udfcf>}                                   {[\udfc8-\udfcf]}
+	    {@RAN:<\udfce\udfff>}                                   {[\udfce-\udfff]}
 	}
     }
     
@@ -208,6 +447,84 @@ oo::class create <Name> {
 	# Non-lexeme, non-literal symbols
 	debug.<Name>
 	return {
+	    {@^CLS:<\7-\10\n-\r'0-7\134\u2028-\u2029>}
+	    {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029>}
+	    {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]>}
+	    {@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>}
+	    {@^CLS:<\7-\r-\134-\135\u2028-\u2029>}
+	    {@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>}
+	    {@^CLS:<\n-\r\u2028-\u2029>}
+	    {@CLS:<[:alnum:smp:]>.SMP}
+	    {@CLS:<[:digit:smp:]>.SMP}
+	    {@CLS:<\u10000-\u10ffff>.SMP}
+	    {@CLS:<_[:alnum:]>}
+	    {@CLS:<_[:alnum:][:space:]>}
+	    {@NCC:<[:alnum:]>}
+	    {@NCC:<[:digit:]>}
+	    @RAN:<03>
+	    @RAN:<07>
+	    {@RAN:<\udc00\udc0b>}
+	    {@RAN:<\udc00\udc1d>}
+	    {@RAN:<\udc00\udc2e>}
+	    {@RAN:<\udc00\udc05>}
+	    {@RAN:<\udc00\udc6a>}
+	    {@RAN:<\udc00\udc08>}
+	    {@RAN:<\udc00\udc9d>}
+	    {@RAN:<\udc00\udc34>}
+	    {@RAN:<\udc00\udc48>}
+	    {@RAN:<\udc00\udc54>}
+	    {@RAN:<\udc00\udcc4>}
+	    {@RAN:<\udc00\ude1d>}
+	    {@RAN:<\udc00\ude38>}
+	    {@RAN:<\udc00\ude46>}
+	    {@RAN:<\udc00\udea1>}
+	    {@RAN:<\udc00\uded6>}
+	    {@RAN:<\udc00\udef2>}
+	    {@RAN:<\udc00\udf34>}
+	    {@RAN:<\udc00\udf99>}
+	    {@RAN:<\udc00\udfec>}
+	    {@RAN:<\udc00\udfff>}
+	    {@RAN:<\udc0a\udc35>}
+	    {@RAN:<\udc3f\udc55>}
+	    {@RAN:<\udc50\udc5d>}
+	    {@RAN:<\udc80\udc9e>}
+	    {@RAN:<\udc80\udcaf>}
+	    {@RAN:<\udc80\udcb2>}
+	    {@RAN:<\udc80\udcfa>}
+	    {@RAN:<\udc80\udd43>}
+	    {@RAN:<\udca0\udce9>}
+	    {@RAN:<\udcb0\udcd3>}
+	    {@RAN:<\udcc5\udd05>}
+	    {@RAN:<\udcd0\udce8>}
+	    {@RAN:<\udce0\udcf2>}
+	    {@RAN:<\udd00\udd27>}
+	    {@RAN:<\udd00\udd43>}
+	    {@RAN:<\udd50\udd72>}
+	    {@RAN:<\udd80\uddb7>}
+	    {@RAN:<\uddd0\uddda>}
+	    {@RAN:<\ude00\ude2f>}
+	    {@RAN:<\ude00\ude11>}
+	    {@RAN:<\ude00\udf36>}
+	    {@RAN:<\ude60\ude7c>}
+	    {@RAN:<\ude80\ude9c>}
+	    {@RAN:<\ude80\ude89>}
+	    {@RAN:<\ude80\udeaa>}
+	    {@RAN:<\udec0\udec9>}
+	    {@RAN:<\udec0\udef8>}
+	    {@RAN:<\udf00\udf1f>}
+	    {@RAN:<\udf00\udf2f>}
+	    {@RAN:<\udf00\udf35>}
+	    {@RAN:<\udf00\udf44>}
+	    {@RAN:<\udf00\udfff>}
+	    {@RAN:<\udf30\udf39>}
+	    {@RAN:<\udf30\udf40>}
+	    {@RAN:<\udf36\udf4e>}
+	    {@RAN:<\udf40\udf55>}
+	    {@RAN:<\udf40\udfff>}
+	    {@RAN:<\udf50\udf6e>}
+	    {@RAN:<\udf50\udf75>}
+	    {@RAN:<\udf60\udf72>}
+	    {@RAN:<\udf80\udf9d>}
 	    @STR:<::=>
 	    @STR:<::>
 	    {@STR:<:\135>}
@@ -316,6 +633,21 @@ oo::class create <Name> {
 	    {plain string char without octal}
 	    {posix char class}
 	    {posix char class name}
+	    RAN<d56367-d56373>
+	    RAN<d56478-d56516>
+	    RAN<d56480-d56516>
+	    RAN<d56499-d56570>
+	    RAN<d56517-d56861>
+	    RAN<d56554-d56581>
+	    RAN<d56598-d56615>
+	    RAN<d56970-d56988>
+	    RAN<d57141-d57241>
+	    RAN<d57142-d57156>
+	    RAN<d57146-d57156>
+	    RAN<d57146-d57241>
+	    RAN<d57157-d57241>
+	    RAN<d57157-d57343>
+	    RAN<d57242-d57343>
 	    {result item descriptor}
 	    {result item descriptor list}
 	    {result item descriptor separator}
@@ -379,6 +711,10 @@ oo::class create <Name> {
 	    {@LEX:@STR:<start> := @STR:<start>}
 	    {@LEX:@STR:<symbol> := @STR:<symbol>}
 	    {@LEX:@STR:<warn> := @STR:<warn>}
+	    {@RAN:<03> := @RAN:<01>}
+	    {@RAN:<03> := RAN<d50-d51>}
+	    {@RAN:<07> := @RAN:<03>}
+	    {@RAN:<07> := RAN<d52-d55>}
 	    {@STR:<::=> := @CHR:<:> @CHR:<:> @CHR:<=>}
 	    {@STR:<::> := @CHR:<:> @CHR:<:>}
 	    {@STR:<:default> := @CHR:<:> @CHR:<d> @CHR:<e> @CHR:<f> @CHR:<a> @CHR:<u> @CHR:<l> @CHR:<t>}
@@ -441,13 +777,420 @@ oo::class create <Name> {
 	    {hex := {@NCC:<[:xdigit:]>}}
 	    {integer + {@NCC:<[:digit:]>}}
 	    {octal := @RAN:<07>}
+	    {RAN<d56367-d56373> := CHR<d56373>}
+	    {RAN<d56367-d56373> := RAN<d56367-d56372>}
+	    {RAN<d56478-d56516> := RAN<d56480-d56516>}
+	    {RAN<d56478-d56516> := {@RAN:<\udc9e\udc9f>}}
+	    {RAN<d56480-d56516> := RAN<d56490-d56516>}
+	    {RAN<d56480-d56516> := {@RAN:<\udca0\udca9>}}
+	    {RAN<d56499-d56570> := RAN<d56499-d56531>}
+	    {RAN<d56499-d56570> := RAN<d56532-d56570>}
+	    {RAN<d56517-d56861> := RAN<d56582-d56861>}
+	    {RAN<d56517-d56861> := {@RAN:<\udcc5\udd05>}}
+	    {RAN<d56554-d56581> := RAN<d56554-d56562>}
+	    {RAN<d56554-d56581> := RAN<d56563-d56581>}
+	    {RAN<d56598-d56615> := RAN<d56605-d56615>}
+	    {RAN<d56598-d56615> := {@RAN:<\udd16\udd1c>}}
+	    {RAN<d56970-d56988> := RAN<d56974-d56988>}
+	    {RAN<d56970-d56988> := {@RAN:<\ude8a\ude8d>}}
+	    {RAN<d57141-d57241> := RAN<d57146-d57241>}
+	    {RAN<d57141-d57241> := {@RAN:<\udf35\udf39>}}
+	    {RAN<d57142-d57156> := RAN<d57142-d57145>}
+	    {RAN<d57142-d57156> := RAN<d57146-d57156>}
+	    {RAN<d57146-d57156> := RAN<d57146-d57152>}
+	    {RAN<d57146-d57156> := RAN<d57153-d57156>}
+	    {RAN<d57146-d57241> := RAN<d57146-d57156>}
+	    {RAN<d57146-d57241> := RAN<d57157-d57241>}
+	    {RAN<d57157-d57241> := RAN<d57157-d57166>}
+	    {RAN<d57157-d57241> := RAN<d57167-d57241>}
+	    {RAN<d57157-d57343> := RAN<d57157-d57241>}
+	    {RAN<d57157-d57343> := RAN<d57242-d57343>}
+	    {RAN<d57242-d57343> := RAN<d57242-d57324>}
+	    {RAN<d57242-d57343> := RAN<d57325-d57343>}
 	    {sign := @CLS:<+->}
 	    {whitespace + {@NCC:<[:space:]>}}
+	    {{@^CLS:<\7-\10\n-\r'0-7\134\u2028-\u2029>} := {@^CLS:<\7-\10\n-\r'0-7\134\u2028-\u2029>.BMP}}
+	    {{@^CLS:<\7-\10\n-\r'0-7\134\u2028-\u2029>} := {@CLS:<\u10000-\u10ffff>.SMP}}
+	    {{@^CLS:<\7-\10\n-\r'\134\u2028-\u2029>} := {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029>.BMP}}
+	    {{@^CLS:<\7-\10\n-\r'\134\u2028-\u2029>} := {@CLS:<\u10000-\u10ffff>.SMP}}
+	    {{@^CLS:<\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]>} := {@^CLS:<\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]>.BMP}}
+	    {{@^CLS:<\7-\10\n-\r'\134\u2028-\u2029[:xdigit:]>} := {@CLS:<\u10000-\u10ffff>.SMP}}
+	    {{@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>} := {@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>.BMP}}
+	    {{@^CLS:<\7-\r-0-7\134-\135\u2028-\u2029>} := {@CLS:<\u10000-\u10ffff>.SMP}}
+	    {{@^CLS:<\7-\r-\134-\135\u2028-\u2029>} := {@^CLS:<\7-\r-\134-\135\u2028-\u2029>.BMP}}
+	    {{@^CLS:<\7-\r-\134-\135\u2028-\u2029>} := {@CLS:<\u10000-\u10ffff>.SMP}}
+	    {{@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>} := {@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>.BMP}}
+	    {{@^CLS:<\7-\r-\134-\135\u2028-\u2029[:xdigit:]>} := {@CLS:<\u10000-\u10ffff>.SMP}}
+	    {{@^CLS:<\n-\r\u2028-\u2029>} := {@^CLS:<\n-\r\u2028-\u2029>.BMP}}
+	    {{@^CLS:<\n-\r\u2028-\u2029>} := {@CLS:<\u10000-\u10ffff>.SMP}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud80c>} {@RAN:<\udc00\udfff>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud80d>} {@RAN:<\udc00\udc2e>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud81a>} {@RAN:<\udc00\ude38>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud81a>} {@RAN:<\ude40\ude5e>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud81a>} {@RAN:<\ude60\ude69>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud81a>} {@RAN:<\uded0\udeed>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud81a>} {@RAN:<\udf00\udf2f>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud81a>} {@RAN:<\udf7d\udf8f>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud81a>} {@RAN:<\udf40\udf43>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud81a>} {@RAN:<\udf50\udf59>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud81a>} {@RAN:<\udf63\udf77>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud81b>} {@CHR:<\udf50>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud81b>} {@CHR:<\udfe0>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud81b>} {@RAN:<\udf00\udf44>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud81b>} {@RAN:<\udf93\udf9f>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud82c>} {@RAN:<\udc00\udc01>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud82f>} {@RAN:<\udc00\udc6a>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud82f>} {@RAN:<\udc70\udc7c>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud82f>} {@RAN:<\udc80\udc88>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud82f>} {@RAN:<\udc90\udc99>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83a>} {@RAN:<\udc00\udcc4>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83a>} {@RAN:<\udd00\udd43>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83a>} {@RAN:<\udd50\udd59>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude3b>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude4b>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude5b>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude5d>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude5f>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude7e>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude24>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude27>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude39>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude42>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude47>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude49>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude54>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude57>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude59>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@CHR:<\ude64>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\ude00\ude03>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\ude4d\ude4f>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\ude05\ude1f>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\ude6c\ude72>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\ude8b\ude9b>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\ude21\ude22>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\ude29\ude32>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\ude34\ude37>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\ude51\ude52>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\ude61\ude62>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\ude67\ude6a>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\ude74\ude77>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\ude79\ude7c>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\ude80\ude89>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\udea1\udea3>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\udea5\udea9>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud83b>} {@RAN:<\udeab\udebb>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud86d>} {@RAN:<\udc00\udf34>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud86d>} {@RAN:<\udf40\udfff>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud86e>} {@RAN:<\udc00\udc1d>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud86e>} {@RAN:<\udc20\udfff>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud87e>} {@RAN:<\udc00\ude1d>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udc00\udc0b>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udc0d\udc26>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udc3c\udc3d>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udc3f\udc4d>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udc28\udc3a>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udc50\udc5d>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udc80\udcfa>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\ude80\ude9c>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udea0\uded0>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udf00\udf1f>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udf30\udf40>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udf42\udf49>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udf50\udf75>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udf80\udf9d>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udfa0\udfc3>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud800>} {@RAN:<\udfc8\udfcf>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud801>} {@RAN:<\udc00\udc9d>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud801>} {@RAN:<\udca0\udca9>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud801>} {@RAN:<\udcb0\udcd3>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud801>} {@RAN:<\udcd8\udcfb>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud801>} {@RAN:<\udd00\udd27>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud801>} {@RAN:<\udd30\udd63>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud801>} {@RAN:<\ude00\udf36>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud801>} {@RAN:<\udf40\udf55>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud801>} {@RAN:<\udf60\udf67>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@CHR:<\udc3c>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@CHR:<\udc08>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@CHR:<\ude00>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udc00\udc05>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udc0a\udc35>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udc3f\udc55>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udc37\udc38>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udc60\udc76>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udc80\udc9e>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udce0\udcf2>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udcf4\udcf5>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udd00\udd15>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udd20\udd39>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udd80\uddb7>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\uddbe\uddbf>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\ude10\ude13>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\ude15\ude17>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\ude19\ude33>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\ude60\ude7c>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\ude80\ude9c>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udec0\udec7>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udec9\udee4>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udf00\udf35>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udf40\udf55>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udf60\udf72>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud802>} {@RAN:<\udf80\udf91>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud803>} {@RAN:<\udc00\udc48>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud803>} {@RAN:<\udc80\udcb2>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud803>} {@RAN:<\udcc0\udcf2>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@CHR:<\udd76>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@CHR:<\udddc>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@CHR:<\ude88>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@CHR:<\udf3d>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@CHR:<\udf50>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udc03\udc37>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udc66\udc6f>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udc83\udcaf>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udcd0\udce8>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udcf0\udcf9>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udd03\udd26>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udd36\udd3f>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udd50\udd72>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udd83\uddb2>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\uddc1\uddc4>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\uddd0\uddda>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\ude00\ude11>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\ude8a\ude8d>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\ude8f\ude9d>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\ude9f\udea8>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\ude13\ude2b>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\ude80\ude86>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udeb0\udede>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udef0\udef9>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udf0f\udf10>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udf2a\udf30>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udf05\udf0c>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udf5d\udf61>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udf13\udf28>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udf32\udf33>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udf35\udf39>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@CHR:<\udcc7>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@CHR:<\ude44>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\udc00\udc34>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\udc47\udc4a>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\udc50\udc59>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\udc80\udcaf>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\udcc4\udcc5>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\udcd0\udcd9>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\udd80\uddae>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\uddd8\udddb>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\ude00\ude2f>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\ude50\ude59>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\ude80\udeaa>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\udec0\udec9>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\udf00\udf19>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\udf30\udf39>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud806>} {@CHR:<\udcff>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud806>} {@RAN:<\udca0\udce9>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud806>} {@RAN:<\udec0\udef8>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud807>} {@CHR:<\udc40>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud807>} {@RAN:<\udc00\udc08>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud807>} {@RAN:<\udc0a\udc2e>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud807>} {@RAN:<\udc50\udc59>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud807>} {@RAN:<\udc72\udc8f>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud808>} {@RAN:<\udc00\udf99>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud809>} {@RAN:<\udc80\udd43>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud811>} {@RAN:<\udc00\ude46>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud821>} {@RAN:<\udc00\udfec>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud822>} {@RAN:<\udc00\udef2>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@CHR:<\udca2>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@CHR:<\udcbb>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@CHR:<\udd46>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udc00\udc54>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udc9e\udc9f>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udc56\udc9c>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udca5\udca6>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udca9\udcac>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udcae\udcb9>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udcbd\udcc3>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udcc5\udd05>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udd0d\udd14>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udd1e\udd39>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udd3b\udd3e>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udd4a\udd50>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udd07\udd0a>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udd16\udd1c>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udd40\udd44>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udd52\udea5>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udea8\udec0>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udec2\udeda>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udedc\udefa>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udefc\udf14>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udf8a\udfa8>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udf16\udf34>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udf36\udf4e>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udf50\udf6e>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udf70\udf88>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udfaa\udfc2>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udfc4\udfcb>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udfce\udfff>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud869>} {@RAN:<\udc00\uded6>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud869>} {@RAN:<\udf00\udfff>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@CHR:<\ud873>} {@RAN:<\udc00\udea1>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@RAN:<\ud81c\ud820>} {@RAN:<\udc00\udfff>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@RAN:<\ud86a\ud86c>} {@RAN:<\udc00\udfff>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@RAN:<\ud86f\ud872>} {@RAN:<\udc00\udfff>}}
+	    {{@CLS:<[:alnum:smp:]>.SMP} := {@RAN:<\ud840\ud868>} {@RAN:<\udc00\udfff>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud81a>} {@RAN:<\ude60\ude69>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud81a>} {@RAN:<\udf50\udf59>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud83a>} {@RAN:<\udd50\udd59>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud801>} {@RAN:<\udca0\udca9>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udc66\udc6f>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udcf0\udcf9>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udd36\udd3f>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\uddd0\uddd9>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud804>} {@RAN:<\udef0\udef9>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\udc50\udc59>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\udcd0\udcd9>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\ude50\ude59>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\udec0\udec9>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud805>} {@RAN:<\udf30\udf39>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud806>} {@RAN:<\udce0\udce9>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud807>} {@RAN:<\udc50\udc59>}}
+	    {{@CLS:<[:digit:smp:]>.SMP} := {@CHR:<\ud835>} {@RAN:<\udfce\udfff>}}
+	    {{@CLS:<\u10000-\u10ffff>.SMP} := {@RAN:<\ud800\udbff>} {@RAN:<\udc00\udfff>}}
+	    {{@CLS:<_[:alnum:]>} := {@CLS:<[:alnum:smp:]>.SMP}}
+	    {{@CLS:<_[:alnum:]>} := {@CLS:<_[:alnum:]>.BMP}}
+	    {{@CLS:<_[:alnum:][:space:]>} := {@CLS:<[:alnum:smp:]>.SMP}}
+	    {{@CLS:<_[:alnum:][:space:]>} := {@CLS:<_[:alnum:][:space:]>.BMP}}
 	    {{@LEX:@CHR:<\50>} := {@CHR:<\50>}}
 	    {{@LEX:@CHR:<\51>} := {@CHR:<\51>}}
 	    {{@LEX:@CHR:<\73>} := {@CHR:<\73>}}
 	    {{@LEX:@CHR:<\173>} := {@CHR:<\173>}}
 	    {{@LEX:@CHR:<\175>} := {@CHR:<\175>}}
+	    {{@NCC:<[:alnum:]>} := {@CLS:<[:alnum:smp:]>.SMP}}
+	    {{@NCC:<[:alnum:]>} := {@NCC:<[:alnum:]>.BMP}}
+	    {{@NCC:<[:digit:]>} := {@CLS:<[:digit:smp:]>.SMP}}
+	    {{@NCC:<[:digit:]>} := {@NCC:<[:digit:]>.BMP}}
+	    {{@RAN:<\udc00\udc0b>} := RAN<d56329-d56331>}
+	    {{@RAN:<\udc00\udc0b>} := {@RAN:<\udc00\udc08>}}
+	    {{@RAN:<\udc00\udc1d>} := RAN<d56332-d56349>}
+	    {{@RAN:<\udc00\udc1d>} := {@RAN:<\udc00\udc0b>}}
+	    {{@RAN:<\udc00\udc2e>} := RAN<d56350-d56366>}
+	    {{@RAN:<\udc00\udc2e>} := {@RAN:<\udc00\udc1d>}}
+	    {{@RAN:<\udc00\udc05>} := RAN<d56322-d56325>}
+	    {{@RAN:<\udc00\udc05>} := {@RAN:<\udc00\udc01>}}
+	    {{@RAN:<\udc00\udc6a>} := RAN<d56405-d56426>}
+	    {{@RAN:<\udc00\udc6a>} := {@RAN:<\udc00\udc54>}}
+	    {{@RAN:<\udc00\udc08>} := RAN<d56326-d56328>}
+	    {{@RAN:<\udc00\udc08>} := {@RAN:<\udc00\udc05>}}
+	    {{@RAN:<\udc00\udc9d>} := RAN<d56427-d56477>}
+	    {{@RAN:<\udc00\udc9d>} := {@RAN:<\udc00\udc6a>}}
+	    {{@RAN:<\udc00\udc34>} := RAN<d56367-d56372>}
+	    {{@RAN:<\udc00\udc34>} := {@RAN:<\udc00\udc2e>}}
+	    {{@RAN:<\udc00\udc48>} := RAN<d56373-d56392>}
+	    {{@RAN:<\udc00\udc48>} := {@RAN:<\udc00\udc34>}}
+	    {{@RAN:<\udc00\udc54>} := RAN<d56393-d56404>}
+	    {{@RAN:<\udc00\udc54>} := {@RAN:<\udc00\udc48>}}
+	    {{@RAN:<\udc00\udcc4>} := RAN<d56478-d56516>}
+	    {{@RAN:<\udc00\udcc4>} := {@RAN:<\udc00\udc9d>}}
+	    {{@RAN:<\udc00\ude1d>} := RAN<d56517-d56861>}
+	    {{@RAN:<\udc00\ude1d>} := {@RAN:<\udc00\udcc4>}}
+	    {{@RAN:<\udc00\ude38>} := RAN<d56862-d56888>}
+	    {{@RAN:<\udc00\ude38>} := {@RAN:<\udc00\ude1d>}}
+	    {{@RAN:<\udc00\ude46>} := RAN<d56889-d56902>}
+	    {{@RAN:<\udc00\ude46>} := {@RAN:<\udc00\ude38>}}
+	    {{@RAN:<\udc00\udea1>} := RAN<d56903-d56993>}
+	    {{@RAN:<\udc00\udea1>} := {@RAN:<\udc00\ude46>}}
+	    {{@RAN:<\udc00\uded6>} := RAN<d56994-d57046>}
+	    {{@RAN:<\udc00\uded6>} := {@RAN:<\udc00\udea1>}}
+	    {{@RAN:<\udc00\udef2>} := RAN<d57047-d57074>}
+	    {{@RAN:<\udc00\udef2>} := {@RAN:<\udc00\uded6>}}
+	    {{@RAN:<\udc00\udf34>} := RAN<d57075-d57140>}
+	    {{@RAN:<\udc00\udf34>} := {@RAN:<\udc00\udef2>}}
+	    {{@RAN:<\udc00\udf99>} := RAN<d57141-d57241>}
+	    {{@RAN:<\udc00\udf99>} := {@RAN:<\udc00\udf34>}}
+	    {{@RAN:<\udc00\udfec>} := RAN<d57242-d57324>}
+	    {{@RAN:<\udc00\udfec>} := {@RAN:<\udc00\udf99>}}
+	    {{@RAN:<\udc00\udfff>} := RAN<d57325-d57343>}
+	    {{@RAN:<\udc00\udfff>} := {@RAN:<\udc00\udfec>}}
+	    {{@RAN:<\udc0a\udc35>} := RAN<d56367-d56373>}
+	    {{@RAN:<\udc0a\udc35>} := {@RAN:<\udc0a\udc2e>}}
+	    {{@RAN:<\udc3f\udc55>} := RAN<d56398-d56405>}
+	    {{@RAN:<\udc3f\udc55>} := {@RAN:<\udc3f\udc4d>}}
+	    {{@RAN:<\udc50\udc5d>} := RAN<d56410-d56413>}
+	    {{@RAN:<\udc50\udc5d>} := {@RAN:<\udc50\udc59>}}
+	    {{@RAN:<\udc80\udc9e>} := RAN<d56457-d56478>}
+	    {{@RAN:<\udc80\udc9e>} := {@RAN:<\udc80\udc88>}}
+	    {{@RAN:<\udc80\udcaf>} := RAN<d56479-d56495>}
+	    {{@RAN:<\udc80\udcaf>} := {@RAN:<\udc80\udc9e>}}
+	    {{@RAN:<\udc80\udcb2>} := RAN<d56496-d56498>}
+	    {{@RAN:<\udc80\udcb2>} := {@RAN:<\udc80\udcaf>}}
+	    {{@RAN:<\udc80\udcfa>} := RAN<d56499-d56570>}
+	    {{@RAN:<\udc80\udcfa>} := {@RAN:<\udc80\udcb2>}}
+	    {{@RAN:<\udc80\udd43>} := RAN<d56571-d56643>}
+	    {{@RAN:<\udc80\udd43>} := {@RAN:<\udc80\udcfa>}}
+	    {{@RAN:<\udca0\udce9>} := RAN<d56480-d56516>}
+	    {{@RAN:<\udca0\udce9>} := RAN<d56517-d56553>}
+	    {{@RAN:<\udcb0\udcd3>} := RAN<d56496-d56498>}
+	    {{@RAN:<\udcb0\udcd3>} := RAN<d56499-d56531>}
+	    {{@RAN:<\udcc5\udd05>} := RAN<d56517-d56553>}
+	    {{@RAN:<\udcc5\udd05>} := RAN<d56554-d56581>}
+	    {{@RAN:<\udcd0\udce8>} := RAN<d56538-d56552>}
+	    {{@RAN:<\udcd0\udce8>} := {@RAN:<\udcd0\udcd9>}}
+	    {{@RAN:<\udce0\udcf2>} := RAN<d56554-d56562>}
+	    {{@RAN:<\udce0\udcf2>} := {@RAN:<\udce0\udce9>}}
+	    {{@RAN:<\udd00\udd27>} := RAN<d56598-d56615>}
+	    {{@RAN:<\udd00\udd27>} := {@RAN:<\udd00\udd15>}}
+	    {{@RAN:<\udd00\udd43>} := RAN<d56616-d56643>}
+	    {{@RAN:<\udd00\udd43>} := {@RAN:<\udd00\udd27>}}
+	    {{@RAN:<\udd50\udd72>} := RAN<d56666-d56690>}
+	    {{@RAN:<\udd50\udd72>} := {@RAN:<\udd50\udd59>}}
+	    {{@RAN:<\udd80\uddb7>} := RAN<d56751-d56759>}
+	    {{@RAN:<\udd80\uddb7>} := {@RAN:<\udd80\uddae>}}
+	    {{@RAN:<\uddd0\uddda>} := CHR<d56794>}
+	    {{@RAN:<\uddd0\uddda>} := {@RAN:<\uddd0\uddd9>}}
+	    {{@RAN:<\ude00\ude2f>} := RAN<d56850-d56879>}
+	    {{@RAN:<\ude00\ude2f>} := {@RAN:<\ude00\ude11>}}
+	    {{@RAN:<\ude00\ude11>} := RAN<d56836-d56849>}
+	    {{@RAN:<\ude00\ude11>} := {@RAN:<\ude00\ude03>}}
+	    {{@RAN:<\ude00\udf36>} := RAN<d56880-d57142>}
+	    {{@RAN:<\ude00\udf36>} := {@RAN:<\ude00\ude2f>}}
+	    {{@RAN:<\ude60\ude7c>} := RAN<d56938-d56956>}
+	    {{@RAN:<\ude60\ude7c>} := {@RAN:<\ude60\ude69>}}
+	    {{@RAN:<\ude80\ude9c>} := RAN<d56970-d56988>}
+	    {{@RAN:<\ude80\ude9c>} := {@RAN:<\ude80\ude89>}}
+	    {{@RAN:<\ude80\ude89>} := RAN<d56967-d56969>}
+	    {{@RAN:<\ude80\ude89>} := {@RAN:<\ude80\ude86>}}
+	    {{@RAN:<\ude80\udeaa>} := RAN<d56989-d57002>}
+	    {{@RAN:<\ude80\udeaa>} := {@RAN:<\ude80\ude9c>}}
+	    {{@RAN:<\udec0\udec9>} := RAN<d57032-d57033>}
+	    {{@RAN:<\udec0\udec9>} := {@RAN:<\udec0\udec7>}}
+	    {{@RAN:<\udec0\udef8>} := RAN<d57034-d57080>}
+	    {{@RAN:<\udec0\udef8>} := {@RAN:<\udec0\udec9>}}
+	    {{@RAN:<\udf00\udf1f>} := RAN<d57114-d57119>}
+	    {{@RAN:<\udf00\udf1f>} := {@RAN:<\udf00\udf19>}}
+	    {{@RAN:<\udf00\udf2f>} := RAN<d57120-d57135>}
+	    {{@RAN:<\udf00\udf2f>} := {@RAN:<\udf00\udf1f>}}
+	    {{@RAN:<\udf00\udf35>} := RAN<d57136-d57141>}
+	    {{@RAN:<\udf00\udf35>} := {@RAN:<\udf00\udf2f>}}
+	    {{@RAN:<\udf00\udf44>} := RAN<d57142-d57156>}
+	    {{@RAN:<\udf00\udf44>} := {@RAN:<\udf00\udf35>}}
+	    {{@RAN:<\udf00\udfff>} := RAN<d57157-d57343>}
+	    {{@RAN:<\udf00\udfff>} := {@RAN:<\udf00\udf44>}}
+	    {{@RAN:<\udf30\udf39>} := RAN<d57136-d57141>}
+	    {{@RAN:<\udf30\udf39>} := RAN<d57142-d57145>}
+	    {{@RAN:<\udf30\udf40>} := RAN<d57146-d57152>}
+	    {{@RAN:<\udf30\udf40>} := {@RAN:<\udf30\udf39>}}
+	    {{@RAN:<\udf36\udf4e>} := RAN<d57142-d57156>}
+	    {{@RAN:<\udf36\udf4e>} := RAN<d57157-d57166>}
+	    {{@RAN:<\udf40\udf55>} := RAN<d57156-d57173>}
+	    {{@RAN:<\udf40\udf55>} := {@RAN:<\udf40\udf43>}}
+	    {{@RAN:<\udf40\udfff>} := RAN<d57174-d57343>}
+	    {{@RAN:<\udf40\udfff>} := {@RAN:<\udf40\udf55>}}
+	    {{@RAN:<\udf50\udf6e>} := RAN<d57178-d57198>}
+	    {{@RAN:<\udf50\udf6e>} := {@RAN:<\udf50\udf59>}}
+	    {{@RAN:<\udf50\udf75>} := RAN<d57199-d57205>}
+	    {{@RAN:<\udf50\udf75>} := {@RAN:<\udf50\udf6e>}}
+	    {{@RAN:<\udf60\udf72>} := RAN<d57192-d57202>}
+	    {{@RAN:<\udf60\udf72>} := {@RAN:<\udf60\udf67>}}
+	    {{@RAN:<\udf80\udf9d>} := RAN<d57234-d57245>}
+	    {{@RAN:<\udf80\udf9d>} := {@RAN:<\udf80\udf91>}}
 	    {{@STR:<:\135>} := @CHR:<:> {@CHR:<\135>}}
 	    {{@STR:<\133:>} := {@CHR:<\133>} @CHR:<:>}
 	    {{@STR:<\133^>} := {@CHR:<\133>} @CHR:<^>}
@@ -496,7 +1239,10 @@ oo::class create <Name> {
 	    {{escaped cc char details} := octal {nullable cc post short octal escape}}
 	    {{escaped cc char details} := {leading octal} octal octal {nullable cc}}
 	    {{escaped cc char} := escape {escaped cc char details}}
-	    {{escaped cc element details} := @CHR:<u> hex hex hex hex {cc range completion}}
+	    {{escaped cc element details} := @CHR:<U> hex hex hex hex hex hex hex hex {cc range completion}}
+	    {{escaped cc element details} := @CHR:<u> hex hex hex hex hex hex {cc range completion}}
+	    {{escaped cc element details} := @CHR:<u> hex hex hex hex hex {cc range completion post short unicode escape}}
+	    {{escaped cc element details} := @CHR:<u> hex hex hex hex {cc range completion post short unicode escape}}
 	    {{escaped cc element details} := @CHR:<u> hex hex hex {cc range completion post short unicode escape}}
 	    {{escaped cc element details} := @CHR:<u> hex hex {cc range completion post short unicode escape}}
 	    {{escaped cc element details} := @CHR:<u> hex {cc range completion post short unicode escape}}
@@ -506,7 +1252,10 @@ oo::class create <Name> {
 	    {{escaped cc element details} := octal {cc range completion post short octal escape}}
 	    {{escaped cc element details} := {leading octal} octal octal {cc range completion}}
 	    {{escaped cc element} := escape {escaped cc element details}}
-	    {{escaped string char details} := @CHR:<u> hex hex hex hex {nullable string}}
+	    {{escaped string char details} := @CHR:<U> hex hex hex hex hex hex hex hex {nullable string}}
+	    {{escaped string char details} := @CHR:<u> hex hex hex hex hex hex {nullable string}}
+	    {{escaped string char details} := @CHR:<u> hex hex hex hex hex {nullable string post short unicode escape}}
+	    {{escaped string char details} := @CHR:<u> hex hex hex hex {nullable string post short unicode escape}}
 	    {{escaped string char details} := @CHR:<u> hex hex hex {nullable string post short unicode escape}}
 	    {{escaped string char details} := @CHR:<u> hex hex {nullable string post short unicode escape}}
 	    {{escaped string char details} := @CHR:<u> hex {nullable string post short unicode escape}}

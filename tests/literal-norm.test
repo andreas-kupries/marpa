@@ -1,0 +1,75 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2017-2018 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::slif::literal
+## Normalization (Simplifications without breaking a literal into many)
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support fileutil
+kt require support TclOO
+
+kt local   testing marpa::slif::literal::util
+kt local   testing marpa::slif::literal::norm
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/dirs.tcl
+kt source support/common.tcl
+
+# # ## ### ##### ######## ############# #####################
+## norm - Normalize literal without deconstructing it into multiple pieces.
+##        Keeps named classes, ranges
+
+test marpa-slif-literal-norm-1.0 {norm, wrong args, not enough} -body {
+    marpa::slif::literal norm
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal norm literal"}
+
+test marpa-slif-literal-norm-1.2 {norm, wrong args, too many} -body {
+    marpa::slif::literal norm LITERAL X
+} -returnCodes error -result {wrong # args: should be "marpa::slif::literal norm literal"}
+
+# # ## ### ##### ######## ############# #####################
+#proc SA {x} { set c [open 2N a] ; puts $c $x ; close $c ; return }
+
+foreach literal [cases literals] norm [cases normalized] {
+    lassign $literal lline literal
+    lassign $norm    nline norm
+    incr k
+
+    if {$lline != $nline} {
+	error "Line mismatch: literals $lline vs normalized $nline"
+    }
+
+    # run only
+    #if {![string match *named-class* $literal]} continue
+    #if {![string match *range*       $literal]} continue
+    #if {![string match *charclass*   $literal]} continue
+    #if {![string match *character*   $literal]} continue
+    #if {![string match *string*      $literal]} continue
+    #if {![string match cc/*          $literal]} continue
+
+    # exclude
+    #if {[string match *named-class* $literal]} continue
+    #if {[string match *range*       $literal]} continue
+    #if {[string match *charclass*   $literal]} continue
+    #if {[string match *character*   $literal]} continue
+    #if {[string match *string*      $literal]} continue
+    
+    test marpa-slif-literal-norm-2.$k.@$nline "norm, $literal (@$lline) -> @$nline" -body {
+	catch {
+	    marpa::slif::literal norm $literal
+	} r
+	#SA "$nline\t$r"
+	set r
+    } -result $norm
+}
+unset k r literal norm
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests
+return

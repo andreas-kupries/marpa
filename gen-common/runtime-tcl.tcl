@@ -26,10 +26,13 @@
 # Meta require     debug
 # Meta require     debug::caller
 # Meta require     marpa::slif::container
-# Meta require     marpa::slif::literal
+# Meta require     marpa::slif::literal::util
+# Meta require     marpa::slif::literal::redux
+# Meta require     marpa::slif::literal::reduce::2tcl
 # Meta require     marpa::slif::precedence
 # Meta require     marpa::gen
 # Meta require     marpa::gen::remask
+# Meta require     marpa::unicode
 # Meta subject     marpa {generator tcl}
 # @@ Meta End
 
@@ -40,10 +43,13 @@ package require Tcl 8.5
 package require debug
 package require debug::caller
 package require marpa::slif::container
-package require marpa::slif::literal
+package require marpa::slif::literal::util
+package require marpa::slif::literal::redux
+package require marpa::slif::literal::reduce::2tcl
 package require marpa::slif::precedence
 package require marpa::gen
 package require marpa::gen::remask
+package require marpa::unicode
 
 debug define marpa/gen/runtime/tcl
 debug prefix marpa/gen/runtime/tcl {[debug caller] | }
@@ -79,7 +85,7 @@ debug prefix marpa/gen/runtime/tcl {[debug caller] | }
 
 namespace eval ::marpa::gen::runtime {}
 namespace eval ::marpa::gen::runtime::tcl {
-    namespace import ::marpa::gen::config
+    namespace import ::marpa::gen::config ::marpa::unicode::bmp
     rename config core-config
     namespace export config gc
     namespace ensemble create
@@ -95,7 +101,159 @@ proc ::marpa::gen::runtime::tcl::gc {serial} {
     EncodePrecedences $gc
     LowerLiterals     $gc
 
+    RefactorRanges $gc
     return $gc
+}
+
+proc ::marpa::gen::runtime::tcl::RefactorRanges {gc} {
+    debug.marpa/gen/runtime/tcl {}
+    # Global refactoring of codepoint ranges.  This is the local
+    # equivalent of ::marpa::gen::runtime::c::RefactorRanges (**) for
+    # byte ranges.  This here operates on the ranges coming out of the
+    # grammar and due to ASSR generation for SMP charclasses.
+    #
+    # For the big explanation of benefits see (**).
+
+    # NOTE: The puts statements with AAA and ZZZ prefixes can be used
+    # print the set of ranges as pseudo bitmaps, showing the
+    # distribution before and after the refactoring. Extract them with
+    # grep, then sort by start and end bytes.
+    #
+    # - Lets see, a bit difficult, the overall range is so much larger
+    # - for the codepoints (65536...1114111 vs 0...255).
+
+    set ranges {}   ; # ranges :: (start -> (stop -> symbol))
+    set cover  {}   ; # cover  :: ((start,stop) -> sym)
+
+    foreach sym [$gc l0 symbols-of literal] {
+	set details [lassign [lindex [$gc l0 get $sym] 0] type]
+	if {$type eq "range"} {
+	    lassign $details start stop
+	    debug.marpa/gen/runtime/tcl {Range: $sym ($start - $stop)}
+	    # Print range as bitmap.
+	    #puts AAA_[format %3d $start]-[format %3d $stop]|[string repeat { } [expr {$start-1}]][string repeat * [expr {$stop-$start+1}]]
+
+	    # Collect ranges with the same start together.
+	    dict set ranges $start $stop $sym
+
+	    # Collect range to symbol mapping for re-use of existing
+	    # definition where possible.
+	    dict set cover [list $start $stop] $sym
+	} elseif {$type eq "character"} {
+	    # type is a "character". We put this into the symbol
+	    # mapping for reuse, but not in the table for refactoring.
+	    lassign $details byte
+	    debug.marpa/gen/runtime/tcl {Byte: $sym ($byte)}
+	    dict set cover [list $byte $byte] $sym
+	}
+    }
+
+    #debug.marpa/gen/runtime/tcl {[debug::pdict $cover]}
+
+    while {[dict size $ranges]} {
+	# ranges is the table/queue of things to refactor.
+	set start [lindex [lsort -integer [dict keys $ranges]] 0]
+	# We iterate over the collected ranges by ascending start.
+	# This way any new ranges we may create below for suffixes is
+	# added in places we will look at and process later. There is
+	# no need to go backward for reprocessing of added things.
+
+	# Take definition, drop it from queue, we will be done with it.
+	set defs [dict get $ranges $start]
+	dict unset ranges $start
+
+	debug.marpa/gen/runtime/tcl {Processing [format %3d $start] :: [dictsort $defs]}
+
+	# For each set of ranges starting at the same point, sort them
+	# by ascending endpoint. The first definition stands as is. If
+	# it is the sole definition we drop the entire set from
+	# processing.
+
+	if {[llength [dict keys $defs]] == 1} {
+	    debug.marpa/gen/runtime/tcl {...Single range, skip}
+	    continue
+	}
+
+	# All definitions after the first become an alternation of
+	# prefix and suffix range, the latter is the subtraction of
+	# the prefix from the full range, making it smaller. That part
+	# may re-use an existing range definition. Note that the
+	# suffix may be refactored too. As the start of any suffix
+	# range is greater than the current start they are processed
+	# in upcoming iterations.
+
+	set remainder [lassign [lsort -integer [dict keys $defs]] prefixstop]
+	set prefixsym [dict get $defs $prefixstop]
+
+	debug.marpa/gen/runtime/tcl {...Multiple ranges, refactor 2+}
+
+	foreach stop $remainder {
+	    debug.marpa/gen/runtime/tcl {...Prefix  ([format %3d $start]-[format %3d $prefixstop]) $prefixsym}
+
+	    set currentsym [dict get $defs $stop]
+	    debug.marpa/gen/runtime/tcl {...Current ([format %3d $start]-[format %3d $stop]) $currentsym}
+
+	    # suffix = prefixstop+1 ... stop
+	    set suffixstart $prefixstop
+	    incr suffixstart
+
+	    set key [list $suffixstart $stop]
+	    if {![dict exists $cover $key]} {
+		# The suffix range has no symbol yet. Create it as
+		# either a character or a range literal, depending on
+		# the size of the covered range. Always add it to the
+		# coverage map for future reuse.  Add it to the queue
+		# for refactoring only if it is a range.  We use names
+		# which avoid conflict with the standard symbols
+		# coming out of the reducer.
+
+		if {$suffixstart == $stop} {
+		    set suffixsym CHR<d$suffixstart>
+		    dict set cover [list $suffixstart $suffixstart] $suffixsym
+		    $gc l0 literal $suffixsym character $suffixstart
+
+		    debug.marpa/gen/runtime/tcl {...Suffix  ([format %3d $suffixstart]) $suffixsym (CHAR)}
+		} else {
+		    set suffixsym RAN<d${suffixstart}-d${stop}>
+		    dict set cover $key $suffixsym
+		    dict set ranges $suffixstart $stop $suffixsym
+		    $gc l0 literal $suffixsym range $suffixstart $stop
+		    debug.marpa/gen/runtime/tcl {...Suffix  ([format %3d $suffixstart]-[format %3d $stop]) $suffixsym (NEW)}
+		}
+	    } else {
+		# We have a symbol for the suffix. Reuse it. No new
+		# entries are needed.
+		set suffixsym [dict get $cover $key]
+		debug.marpa/gen/runtime/tcl {...Suffix  ([format %3d $suffixstart]-[format %3d $stop]) $suffixsym (reused)}
+	    }
+
+	    # create priority alternation of prefix and suffix ranges
+	    $gc l0 remove        $currentsym
+	    $gc l0 priority-rule $currentsym [list $prefixsym] 0
+	    $gc l0 priority-rule $currentsym [list $suffixsym] 0
+
+	    debug.marpa/gen/runtime/tcl {...Replace $currentsym ::= $prefixsym | $suffixsym}
+
+	    # The processed definition becomes the prefix for the next.
+	    set prefixstop $stop
+	    set prefixsym  $currentsym
+	}
+    }
+
+    if 0 {
+	# post refactoring, print new ranges as bitmaps
+	foreach sym [$gc l0 symbols-of literal] {
+	    set details [lassign [lindex [$gc l0 get $sym] 0] type]
+	    if {$type eq "range"} {
+		lassign $details start stop
+		# Print range as bitmap.
+		puts ZZZ_[format %3d $start]-[format %3d $stop]|[string repeat { } [expr {$start-1}]][string repeat {*} [expr {$stop-$start+1}]]
+	    }
+	}
+    }
+
+    #exit 1
+    return
 }
 
 proc ::marpa::gen::runtime::tcl::config {serial} {
@@ -107,7 +265,11 @@ proc ::marpa::gen::runtime::tcl::config {serial} {
     # - charclass,   ^charclass
     # - named-class, ^named-class
     # - range,       ^range
-    # This is important for `ConvertLiterals` below
+    # This is important for `ConvertLiterals` below.
+    # Another important result: All literals with these types are
+    # limited to codepoints within the BMP. Codepoints in the SMP have
+    # been deconstructed into pairs of surrogate (ranges), each within
+    # the BMP.
 
     set semantics [L0Semantics $gc]      ; # map ('array -> list(semantic-code))
     set latm      [$gc l0 latm]          ; # map (sym -> bool) (sym == lexemes)
@@ -186,15 +348,8 @@ proc ::marpa::gen::runtime::tcl::LowerLiterals {gc} {
 
     # Rewrite the literals into forms supported by the runtime (Tcl engine).
 
-    marpa::slif::literal r2container \
-	[marpa::slif::literal reduce [concat {*}[lmap {sym rhs} [dict get [$gc l0 serialize] literal] {
-	    list $sym [lindex $rhs 0]
-	}]] {
-	    D-STR1 D-%STR  D-CLS3  D-^CLS2
-	    D-NCC3 D-%NCC1 D-^NCC2 D-^%NCC1
-	    K-RAN  D-%RAN  K-^RAN  K-CHR
-	    K-^CHR
-	}] $gc
+    marpa::slif::literal::redux $gc \
+	marpa::slif::literal::reduce::2tcl
     return
 }
 
@@ -362,7 +517,7 @@ proc ::marpa::gen::runtime::tcl::+CL {spec} {
 
 proc ::marpa::gen::runtime::tcl::CC {ccelts} {
     join [lmap elt $ccelts {
-	switch -exact -- [::marpa::slif::literal::eltype $elt] {
+	switch -exact -- [::marpa::slif::literal::util::eltype $elt] {
 	    character   { CX $elt    }
 	    range       { RA {*}$elt }
 	    named-class { NC $elt    }
@@ -375,6 +530,11 @@ proc ::marpa::gen::runtime::tcl::RA {s e} {
     if {$s == $e} {
 	# Equal. Not truly a range
 	return [CX $s]
+    }
+    if {($s == 0) && ($e == [bmp])} {
+	# Range covers the entire BMP.
+	# This is special to Tcl: dot.
+	return "dot"
     }
     set sx [CX $s]
     set ex [CX $e]
@@ -392,6 +552,7 @@ proc ::marpa::gen::runtime::tcl::NC {name} {
 
 proc ::marpa::gen::runtime::tcl::Class {spec} {
     debug.marpa/gen/runtime/tcl {}
+    if {$spec eq "dot"} { return "." }
     return "\[${spec}\]"
 }
 

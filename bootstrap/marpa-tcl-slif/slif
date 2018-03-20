@@ -33,7 +33,7 @@
 #
 #   As an example, look at the octal escape '\377'. With a naive
 #   definition we get 3 possible readings, namely '\3'+'77',
-#   '\37'+'7', and '\377'. In a similar manner the uncode escapes
+#   '\37'+'7', and '\377'. In a similar manner the unicode escapes
 #   ('\u...') will can have up to 4 readings.
 #
 #  To avoid the problem the grammar is more complex, with the rules
@@ -416,10 +416,10 @@ boolean ~ [01]
 # For an explanation please look at the beginning of the file.
 # The escapes handled here are (as a list of representative examples):
 #
-## \a   \r      \0      \uF
-## \b   \t      \10     \uFF
+## \a   \r      \0      \uF    \uFFFFF
+## \b   \t      \10     \uFF   \uFFFFFF
 ## \f   \v      \100    \uFFF
-## \n   \\      \xFF    \uFFFF
+## \n   \\      \xFF    \uFFFF \UFFFFFFFF
 #
 ## In strings single-quotes (['], \134) may not appear directly.  In
 ## char-classes dash ('-', \55) and closing bracket (']', \135) may
@@ -442,15 +442,18 @@ boolean ~ [01]
         | <non empty string>
 
 <escaped string char details>
-        ~ control                     <nullable string>
-        | 'x' hex hex                 <nullable string>
-        | 'u' hex hex hex hex         <nullable string>
-        | 'u' hex hex hex             <nullable string post short unicode escape>
-        | 'u' hex hex                 <nullable string post short unicode escape>
-        | 'u' hex                     <nullable string post short unicode escape>
-        | <leading octal> octal octal <nullable string>
-        | octal octal                 <nullable string post short octal escape>
-        | octal                       <nullable string post short octal escape>
+        ~ control                             <nullable string>
+        | 'x' hex hex                         <nullable string>
+        | 'U' hex hex hex hex hex hex hex hex <nullable string>
+        | 'u' hex hex hex hex hex hex         <nullable string>
+        | 'u' hex hex hex hex hex             <nullable string post short unicode escape>
+        | 'u' hex hex hex hex                 <nullable string post short unicode escape>
+        | 'u' hex hex hex                     <nullable string post short unicode escape>
+        | 'u' hex hex                         <nullable string post short unicode escape>
+        | 'u' hex                             <nullable string post short unicode escape>
+        | <leading octal> octal octal         <nullable string>
+        | octal octal                         <nullable string post short octal escape>
+        | octal                               <nullable string post short octal escape>
 
 <nullable string post short unicode escape>
         ~ <escaped string char>
@@ -521,15 +524,18 @@ escape          ~ '\\'
 <escaped cc char> ~ escape <escaped cc char details>
 
 <escaped cc element details>
-        ~ control                     <cc range completion>
-        | 'x' hex hex                 <cc range completion>
-        | 'u' hex hex hex hex         <cc range completion>
-        | 'u' hex hex hex             <cc range completion post short unicode escape>
-        | 'u' hex hex                 <cc range completion post short unicode escape>
-        | 'u' hex                     <cc range completion post short unicode escape>
-        | <leading octal> octal octal <cc range completion>
-        | octal octal                 <cc range completion post short octal escape>
-        | octal                       <cc range completion post short octal escape>
+        ~ control                             <cc range completion>
+        | 'x' hex hex                         <cc range completion>
+        | 'U' hex hex hex hex hex hex hex hex <cc range completion>
+        | 'u' hex hex hex hex hex hex         <cc range completion>
+        | 'u' hex hex hex hex hex             <cc range completion post short unicode escape>
+        | 'u' hex hex hex hex                 <cc range completion post short unicode escape>
+        | 'u' hex hex hex                     <cc range completion post short unicode escape>
+        | 'u' hex hex                         <cc range completion post short unicode escape>
+        | 'u' hex                             <cc range completion post short unicode escape>
+        | <leading octal> octal octal         <cc range completion>
+        | octal octal                         <cc range completion post short octal escape>
+        | octal                               <cc range completion post short octal escape>
 
 <cc range completion post short unicode escape>
         ~ '-' <plain cc char> <nullable cc>

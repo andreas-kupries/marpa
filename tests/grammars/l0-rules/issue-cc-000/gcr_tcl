@@ -18,6 +18,62 @@ grammar {
         action {array values}
     }
     l0 {
+        {} {
+            {@^CLS:<\42\134[:control:]>} {
+                {priority {{@^CLS:<\0-\37\42\134\177-\237\255\3000-\3005\3034\3335\3417\4342\14016\20013-\20017\20052-\20056\20140-\20144\20146-\20157\160000-\174377\177377\177771-\177773>.BMP}} 0}
+                {priority {{@CLS:<\u10000-\u110bc\u110be-\u1bc9f\u1bca4-\u1d172\u1d17b-\ue0000\ue0002-\ue001f\ue0080-\ueffff\uffffe-\ufffff\u10fffe-\u10ffff>.SMP}} 0}
+            }
+            {@CLS:<\u10000-\u110bc\u110be-\u1bc9f\u1bca4-\u1d172\u1d17b-\ue0000\ue0002-\ue001f\ue0080-\ueffff\uffffe-\ufffff\u10fffe-\u10ffff>.SMP} {
+                {priority {
+                        {@RAN:<\ud800\ud803>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udc00\udcbc>}} 0}
+                {priority {
+                        {@CHR:<\ud804>}
+                        {@RAN:<\udcbe\udfff>}} 0}
+                {priority {
+                        {@RAN:<\ud805\ud82e>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud82f>}
+                        {@RAN:<\udc00\udc9f>}} 0}
+                {priority {
+                        {@CHR:<\ud82f>}
+                        {@RAN:<\udca4\udfff>}} 0}
+                {priority {
+                        {@RAN:<\ud830\ud833>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\ud834>}
+                        {@RAN:<\udc00\udd72>}} 0}
+                {priority {
+                        {@CHR:<\ud834>}
+                        {@RAN:<\udd7b\udfff>}} 0}
+                {priority {
+                        {@RAN:<\ud835\udb3f>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\udb40>}
+                        {@CHR:<\udc00>}} 0}
+                {priority {
+                        {@CHR:<\udb40>}
+                        {@RAN:<\udc02\udc1f>}} 0}
+                {priority {
+                        {@CHR:<\udb40>}
+                        {@RAN:<\udc80\udfff>}} 0}
+                {priority {
+                        {@RAN:<\udb41\udb7f>}
+                        {@RAN:<\udc00\udfff>}} 0}
+                {priority {
+                        {@CHR:<\udbbf>}
+                        {@RAN:<\udffe\udfff>}} 0}
+                {priority {
+                        {@CHR:<\udbff>}
+                        {@RAN:<\udffe\udfff>}} 0}
+            }
+        }
         latm {
             plain 1
         }
@@ -25,7 +81,29 @@ grammar {
             plain { {priority {{@^CLS:<\42\134[:control:]>}} 0} }
         }
         literal {
-            {@^CLS:<\42\134[:control:]>} { {^charclass {0 31} 34 92 {127 159} 173 {1536 1541} 1564 1757 1807 2274 6158 {8203 8207} {8234 8238} {8288 8292} {8294 8303} {57344 63743} 65279 {65529 65531}} }
+            {@^CLS:<\0-\37\42\134\177-\237\255\3000-\3005\3034\3335\3417\4342\14016\20013-\20017\20052-\20056\20140-\20144\20146-\20157\160000-\174377\177377\177771-\177773>.BMP} { {^charclass {0 31} 34 92 {127 159} 173 {1536 1541} 1564 1757 1807 2274 6158 {8203 8207} {8234 8238} {8288 8292} {8294 8303} {57344 63743} 65279 {65529 65531}} }
+            {@CHR:<\ud82f>} { {character 55343} }
+            {@CHR:<\ud804>} { {character 55300} }
+            {@CHR:<\ud834>} { {character 55348} }
+            {@CHR:<\udb40>} { {character 56128} }
+            {@CHR:<\udbbf>} { {character 56255} }
+            {@CHR:<\udbff>} { {character 56319} }
+            {@CHR:<\udc00>} { {character 56320} }
+            {@RAN:<\ud800\ud803>} { {range 55296 55299} }
+            {@RAN:<\ud805\ud82e>} { {range 55301 55342} }
+            {@RAN:<\ud830\ud833>} { {range 55344 55347} }
+            {@RAN:<\ud835\udb3f>} { {range 55349 56127} }
+            {@RAN:<\udb41\udb7f>} { {range 56129 56191} }
+            {@RAN:<\udc00\udc9f>} { {range 56320 56479} }
+            {@RAN:<\udc00\udcbc>} { {range 56320 56508} }
+            {@RAN:<\udc00\udd72>} { {range 56320 56690} }
+            {@RAN:<\udc00\udfff>} { {range 56320 57343} }
+            {@RAN:<\udc02\udc1f>} { {range 56322 56351} }
+            {@RAN:<\udc80\udfff>} { {range 56448 57343} }
+            {@RAN:<\udca4\udfff>} { {range 56484 57343} }
+            {@RAN:<\udcbe\udfff>} { {range 56510 57343} }
+            {@RAN:<\udd7b\udfff>} { {range 56699 57343} }
+            {@RAN:<\udffe\udfff>} { {range 57342 57343} }
         }
     }
 }

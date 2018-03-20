@@ -1,0 +1,736 @@
+# characters:    bmp, high, fold-cases and not, borders
+# named classes: braille (bmp) adlam (high) arabic (bmp+high), lu, punct
+# strings:       See characters, mixed
+
+custom ...
+
+byte 0
+byte 255
+byte 128
+
+brange 0 255
+brange 1 254
+brange 3 7
+
+character
+character 0
+character 1111567
+character 1114110
+character 1114111
+character 127
+character 128
+character 300
+character 45
+character 65
+character 65535
+character 65536
+character 97
+
+^character
+^character 0
+^character 1111567
+^character 1114110
+^character 1114111
+^character 127
+^character 128
+^character 300
+^character 45
+^character 65
+^character 65535
+^character 65536
+^character 97
+
+%character
+%character 0
+%character 1111567
+%character 1114110
+%character 1114111
+%character 127
+%character 128
+%character 300
+%character 45
+%character 65
+%character 65535
+%character 65536
+%character 97
+
+^%character
+^%character 0
+^%character 1111567
+^%character 1114110
+^%character 1114111
+^%character 127
+^%character 128
+^%character 300
+^%character 45
+^%character 65
+^%character 65535
+^%character 65536
+^%character 97
+
+string
+string 0
+string 0 127 128 300 45 65 97 65535
+string 0 65536 128 1111567
+string 1111567
+string 1114110
+string 1114110 300 127 97 45
+string 1114111
+string 127
+string 128
+string 300
+string 45
+string 65
+string 65535
+string 65536
+string 65536 1114111 1111567 1114110
+string 97
+
+%string
+%string 0
+%string 0 127 128 300 45 65 97 65535
+%string 0 65536 128 1111567
+%string 1111567
+%string 1114110
+%string 1114110 300 127 97 45
+%string 1114111
+%string 127
+%string 128
+%string 300
+%string 45
+%string 65
+%string 65535
+%string 65536
+%string 65536 1114111 1111567 1114110
+%string 97
+
+named-class
+named-class adlam
+named-class arabic
+named-class braille
+named-class lu
+named-class punct
+
+named-class ^adlam
+named-class ^arabic
+named-class ^braille
+named-class ^lu
+named-class ^punct
+
+named-class %adlam
+named-class %arabic
+named-class %braille
+named-class %lu
+named-class %punct
+
+named-class ^%adlam
+named-class ^%arabic
+named-class ^%braille
+named-class ^%lu
+named-class ^%punct
+
+%named-class
+%named-class adlam
+%named-class arabic
+%named-class braille
+%named-class lu
+%named-class punct
+
+%named-class ^adlam
+%named-class ^arabic
+%named-class ^braille
+%named-class ^lu
+%named-class ^punct
+
+%named-class %adlam
+%named-class %arabic
+%named-class %braille
+%named-class %lu
+%named-class %punct
+
+%named-class ^%adlam
+%named-class ^%arabic
+%named-class ^%braille
+%named-class ^%lu
+%named-class ^%punct
+
+^named-class
+^named-class adlam
+^named-class arabic
+^named-class braille
+^named-class lu
+^named-class punct
+
+^named-class ^adlam
+^named-class ^arabic
+^named-class ^braille
+^named-class ^lu
+^named-class ^punct
+
+^named-class %adlam
+^named-class %arabic
+^named-class %braille
+^named-class %lu
+^named-class %punct
+
+^named-class ^%adlam
+^named-class ^%arabic
+^named-class ^%braille
+^named-class ^%lu
+^named-class ^%punct
+
+^%named-class
+^%named-class adlam
+^%named-class arabic
+^%named-class braille
+^%named-class lu
+^%named-class punct
+
+^%named-class ^adlam
+^%named-class ^arabic
+^%named-class ^braille
+^%named-class ^lu
+^%named-class ^punct
+
+^%named-class %adlam
+^%named-class %arabic
+^%named-class %braille
+^%named-class %lu
+^%named-class %punct
+
+^%named-class ^%adlam
+^%named-class ^%arabic
+^%named-class ^%braille
+^%named-class ^%lu
+^%named-class ^%punct
+
+range
+range 1 20
+range 0 10
+range 0 1114111
+range 127 65535
+range 128 65535
+range 97 65536
+range 65535 1111567
+range 65536 1111567
+range 65535 1114111
+range 65536 1114111
+range 1111567 1114110
+
+^range
+^range 1 20
+^range 0 10
+^range 0 1114111
+^range 127 65535
+^range 128 65535
+^range 97 65536
+^range 65535 1111567
+^range 65536 1111567
+^range 65535 1114111
+^range 65536 1114111
+^range 1111567 1114110
+
+%range
+%range 1 20
+%range 0 10
+%range 0 1114111
+%range 127 65535
+%range 128 65535
+%range 97 65536
+%range 65535 1111567
+%range 65536 1111567
+%range 65535 1114111
+%range 65536 1114111
+%range 1111567 1114110
+
+^%range
+^%range 1 20
+^%range 0 10
+^%range 0 1114111
+^%range 127 65535
+^%range 128 65535
+^%range 97 65536
+^%range 65535 1111567
+^%range 65536 1111567
+^%range 65535 1114111
+^%range 65536 1114111
+^%range 1111567 1114110
+
+# - char classes from characters, ranges, named-classes
+
+charclass
+charclass 0
+charclass 1111567
+charclass 1114110
+charclass 1114111
+charclass 127
+charclass 128
+charclass 300
+charclass 45
+charclass 65
+charclass 65535
+charclass 65536
+charclass 97
+
+^charclass
+^charclass 0
+^charclass 1111567
+^charclass 1114110
+^charclass 1114111
+^charclass 127
+^charclass 128
+^charclass 300
+^charclass 45
+^charclass 65
+^charclass 65535
+^charclass 65536
+^charclass 97
+
+%charclass
+%charclass 0
+%charclass 1111567
+%charclass 1114110
+%charclass 1114111
+%charclass 127
+%charclass 128
+%charclass 300
+%charclass 45
+%charclass 65
+%charclass 65535
+%charclass 65536
+%charclass 97
+
+^%charclass
+^%charclass 0
+^%charclass 1111567
+^%charclass 1114110
+^%charclass 1114111
+^%charclass 127
+^%charclass 128
+^%charclass 300
+^%charclass 45
+^%charclass 65
+^%charclass 65535
+^%charclass 65536
+^%charclass 97
+
+charclass adlam
+charclass arabic
+charclass braille
+charclass lu
+charclass punct
+
+charclass ^adlam
+charclass ^arabic
+charclass ^braille
+charclass ^lu
+charclass ^punct
+
+charclass %adlam
+charclass %arabic
+charclass %braille
+charclass %lu
+charclass %punct
+
+charclass ^%adlam
+charclass ^%arabic
+charclass ^%braille
+charclass ^%lu
+charclass ^%punct
+
+%charclass adlam
+%charclass arabic
+%charclass braille
+%charclass lu
+%charclass punct
+
+%charclass ^adlam
+%charclass ^arabic
+%charclass ^braille
+%charclass ^lu
+%charclass ^punct
+
+%charclass %adlam
+%charclass %arabic
+%charclass %braille
+%charclass %lu
+%charclass %punct
+
+%charclass ^%adlam
+%charclass ^%arabic
+%charclass ^%braille
+%charclass ^%lu
+%charclass ^%punct
+
+^charclass adlam
+^charclass arabic
+^charclass braille
+^charclass lu
+^charclass punct
+
+^charclass ^adlam
+^charclass ^arabic
+^charclass ^braille
+^charclass ^lu
+^charclass ^punct
+
+^charclass %adlam
+^charclass %arabic
+^charclass %braille
+^charclass %lu
+^charclass %punct
+
+^charclass ^%adlam
+^charclass ^%arabic
+^charclass ^%braille
+^charclass ^%lu
+^charclass ^%punct
+
+^%charclass adlam
+^%charclass arabic
+^%charclass braille
+^%charclass lu
+^%charclass punct
+
+^%charclass ^adlam
+^%charclass ^arabic
+^%charclass ^braille
+^%charclass ^lu
+^%charclass ^punct
+
+^%charclass %adlam
+^%charclass %arabic
+^%charclass %braille
+^%charclass %lu
+^%charclass %punct
+
+^%charclass ^%adlam
+^%charclass ^%arabic
+^%charclass ^%braille
+^%charclass ^%lu
+^%charclass ^%punct
+
+charclass {1 20}
+charclass {0 10}
+charclass {0 1114111}
+charclass {127 65535}
+charclass {128 65535}
+charclass {97 65536}
+charclass {65535 1111567}
+charclass {65536 1111567}
+charclass {65535 1114111}
+charclass {65536 1114111}
+charclass {1111567 1114110}
+
+^charclass {1 20}
+^charclass {0 10}
+^charclass {0 1114111}
+^charclass {127 65535}
+^charclass {128 65535}
+^charclass {97 65536}
+^charclass {65535 1111567}
+^charclass {65536 1111567}
+^charclass {65535 1114111}
+^charclass {65536 1114111}
+^charclass {1111567 1114110}
+
+%charclass {1 20}
+%charclass {0 10}
+%charclass {0 1114111}
+%charclass {127 65535}
+%charclass {128 65535}
+%charclass {97 65536}
+%charclass {65535 1111567}
+%charclass {65536 1111567}
+%charclass {65535 1114111}
+%charclass {65536 1114111}
+%charclass {1111567 1114110}
+
+^%charclass {1 20}
+^%charclass {0 10}
+^%charclass {0 1114111}
+^%charclass {127 65535}
+^%charclass {128 65535}
+^%charclass {97 65536}
+^%charclass {65535 1111567}
+^%charclass {65536 1111567}
+^%charclass {65535 1114111}
+^%charclass {65536 1114111}
+^%charclass {1111567 1114110}
+
+# char classes with multiple elements (same and different kinds)
+
+charclass 0 127 128 300 45 65 97 65535
+charclass 0 65536 128 1111567
+charclass 1114110 300 127 97 45
+charclass 65536 1114111 1111567 1114110
+
+charclass {1 20} {65536 1111567}
+charclass {97 65536} {127 65535}
+charclass {128 65535} {97 65536}
+charclass {65535 1111567} {0 10}
+charclass {1 20} {0 10}
+
+charclass adlam arabic
+charclass arabic braille
+charclass braille lu
+charclass lu punct
+
+charclass 127 128 300 45 {1 20} {65536 1111567}
+charclass 65536 128 1111567 {97 65536} {127 65535}
+charclass 1114110 300 127 97 45 {0 10}
+charclass 65536 1114111 1111567 1114110 {1 20}
+
+charclass 0 127 128 300 45 65 97 65535 adlam
+charclass 0 65536 128 1111567 arabic
+charclass 1114110 300 127 97 45 braille
+charclass 65536 1114111 1111567 1114110 lu
+
+charclass 127 128 300 45 {1 20} {65536 1111567} punct
+charclass 65536 128 1111567 {97 65536} {127 65535} adlam
+charclass 1114110 300 127 97 45 {0 10} arabic
+charclass 65536 1114111 1111567 1114110 {1 20} braille
+
+^charclass 0 127 128 300 45 65 97 65535
+^charclass 0 65536 128 1111567
+^charclass 1114110 300 127 97 45
+^charclass 65536 1114111 1111567 1114110
+
+^charclass {1 20} {65536 1111567}
+^charclass {97 65536} {127 65535}
+^charclass {128 65535} {97 65536}
+^charclass {65535 1111567} {0 10}
+^charclass {1 20} {0 10}
+
+^charclass adlam arabic
+^charclass arabic braille
+^charclass braille lu
+^charclass lu punct
+
+^charclass 127 128 300 45 {1 20} {65536 1111567}
+^charclass 65536 128 1111567 {97 65536} {127 65535}
+^charclass 1114110 300 127 97 45 {0 10}
+^charclass 65536 1114111 1111567 1114110 {1 20}
+
+^charclass 0 127 128 300 45 65 97 65535 adlam
+^charclass 0 65536 128 1111567 arabic
+^charclass 1114110 300 127 97 45 braille
+^charclass 65536 1114111 1111567 1114110 lu
+
+^charclass 127 128 300 45 {1 20} {65536 1111567} punct
+^charclass 65536 128 1111567 {97 65536} {127 65535} adlam
+^charclass 1114110 300 127 97 45 {0 10} arabic
+^charclass 65536 1114111 1111567 1114110 {1 20} braille
+
+%charclass 0 127 128 300 45 65 97 65535
+%charclass 0 65536 128 1111567
+%charclass 1114110 300 127 97 45
+%charclass 65536 1114111 1111567 1114110
+
+%charclass {1 20} {65536 1111567}
+%charclass {97 65536} {127 65535}
+%charclass {128 65535} {97 65536}
+%charclass {65535 1111567} {0 10}
+%charclass {1 20} {0 10}
+
+%charclass adlam arabic
+%charclass arabic braille
+%charclass braille lu
+%charclass lu punct
+
+%charclass 127 128 300 45 {1 20} {65536 1111567}
+%charclass 65536 128 1111567 {97 65536} {127 65535}
+%charclass 1114110 300 127 97 45 {0 10}
+%charclass 65536 1114111 1111567 1114110 {1 20}
+
+%charclass 0 127 128 300 45 65 97 65535 adlam
+%charclass 0 65536 128 1111567 arabic
+%charclass 1114110 300 127 97 45 braille
+%charclass 65536 1114111 1111567 1114110 lu
+
+%charclass 127 128 300 45 {1 20} {65536 1111567} punct
+%charclass 65536 128 1111567 {97 65536} {127 65535} adlam
+%charclass 1114110 300 127 97 45 {0 10} arabic
+%charclass 65536 1114111 1111567 1114110 {1 20} braille
+
+^%charclass 0 127 128 300 45 65 97 65535
+^%charclass 0 65536 128 1111567
+^%charclass 1114110 300 127 97 45
+^%charclass 65536 1114111 1111567 1114110
+
+^%charclass {1 20} {65536 1111567}
+^%charclass {97 65536} {127 65535}
+^%charclass {128 65535} {97 65536}
+^%charclass {65535 1111567} {0 10}
+^%charclass {1 20} {0 10}
+
+^%charclass adlam arabic
+^%charclass arabic braille
+^%charclass braille lu
+^%charclass lu punct
+
+^%charclass 127 128 300 45 {1 20} {65536 1111567}
+^%charclass 65536 128 1111567 {97 65536} {127 65535}
+^%charclass 1114110 300 127 97 45 {0 10}
+^%charclass 65536 1114111 1111567 1114110 {1 20}
+
+^%charclass 0 127 128 300 45 65 97 65535 adlam
+^%charclass 0 65536 128 1111567 arabic
+^%charclass 1114110 300 127 97 45 braille
+^%charclass 65536 1114111 1111567 1114110 lu
+
+^%charclass 127 128 300 45 {1 20} {65536 1111567} punct
+^%charclass 65536 128 1111567 {97 65536} {127 65535} adlam
+^%charclass 1114110 300 127 97 45 {0 10} arabic
+^%charclass 65536 1114111 1111567 1114110 {1 20} braille
+
+# custom tags from the 2tcl and 2c4tcl reducers. passed unchanged through normalizer
+
+cc/c %adlam
+cc/c %adlam %arabic
+cc/c %arabic
+cc/c %arabic %braille
+cc/c %braille
+cc/c %braille %lu
+cc/c %lu
+cc/c %lu %punct
+cc/c %punct
+cc/c 0 128 65536 1111567
+cc/c 0 128 65536 1111567 %arabic
+cc/c 0 128 65536 1111567 arabic
+cc/c 0 45 65 97 {127 128} 300 65535
+cc/c 0 45 65 97 {127 128} 300 65535 adlam
+cc/c 0 45 65 97 {127 128} {300 301} 65535
+cc/c 0 45 65 97 {127 128} {300 301} 65535 %adlam
+cc/c 0 {21 10239} {10496 65535} {65537 1111566} {1111568 1114109}
+cc/c 0 {21 1114111}
+cc/c 0 {21 44} {46 126} {129 299} {302 65535} {1111568 1114111}
+cc/c 0 {21 65535} {1111568 1114111}
+cc/c 0 {21 65535} {65537 1111566} {1111568 1114109}
+cc/c 45 65 97 127 {300 301} 1114110
+cc/c 45 65 97 127 {300 301} 1114110 %braille
+cc/c 45 97 127 300 1114110
+cc/c 45 97 127 300 1114110 braille
+cc/c 65 97
+cc/c 65536 1111567 {1114110 1114111}
+cc/c 65536 1111567 {1114110 1114111} %lu
+cc/c 65536 1111567 {1114110 1114111} lu
+cc/c adlam
+cc/c adlam arabic
+cc/c arabic
+cc/c arabic braille
+cc/c braille
+cc/c braille lu
+cc/c lu
+cc/c lu punct
+cc/c punct
+cc/c {0 10239} {10496 1114111}
+cc/c {0 10}
+cc/c {0 10} 45 65 97 127 {300 301} 1114110
+cc/c {0 10} 45 65 97 127 {300 301} 1114110 %arabic
+cc/c {0 10} 45 97 127 300 1114110
+cc/c {0 10} 45 97 127 300 1114110 arabic
+cc/c {0 10} {65535 1111567}
+cc/c {0 1111566} 1114111
+cc/c {0 1111566} {1111568 1114111}
+cc/c {0 1114109} 1114111
+cc/c {0 1114110}
+cc/c {0 1114111}
+cc/c {0 125183} {125259 125263} {125274 125277} {125280 1114111}
+cc/c {0 126} {128 1114111}
+cc/c {0 126} {65536 1114111}
+cc/c {0 127} {129 1114111}
+cc/c {0 127} {65536 1114111}
+cc/c {0 20}
+cc/c {0 299} {301 1114111}
+cc/c {0 299} {302 1114111}
+cc/c {0 44} {46 1114111}
+cc/c {0 44} {46 64} {66 96} {98 126} {128 299} {302 10239} {10496 1114109} 1114111
+cc/c {0 44} {46 64} {66 96} {98 126} {128 299} {302 1114109} 1114111
+cc/c {0 44} {46 96} {98 126} {128 299} {301 10239} {10496 1114109} 1114111
+cc/c {0 44} {46 96} {98 126} {128 299} {301 1114109} 1114111
+cc/c {0 64} {66 1114111}
+cc/c {0 64} {66 96} {98 1114111}
+cc/c {0 64} {91 96} {65537 1111566} {1111568 1114111}
+cc/c {0 64} {91 96} {65537 1114111}
+cc/c {0 65534}
+cc/c {0 65534} {1111568 1114111}
+cc/c {0 65534} {65536 1114111}
+cc/c {0 65535}
+cc/c {0 65535} {1111568 1114111}
+cc/c {0 65535} {65537 1111566} {1111568 1114109}
+cc/c {0 65535} {65537 1114111}
+cc/c {0 96} {65537 1111566} {1111568 1114111}
+cc/c {0 96} {65537 1114111}
+cc/c {0 96} {98 1114111}
+cc/c {1 1114111}
+cc/c {1 127} {129 65535} {65537 1111566} {1111568 1114111}
+cc/c {1 20}
+cc/c {1 20} 45 {127 128} 300 {65536 1111567}
+cc/c {1 20} 45 {127 128} 300 {65536 1111567} punct
+cc/c {1 20} 45 {127 128} {300 301} {65536 1111567}
+cc/c {1 20} 45 {127 128} {300 301} {65536 1111567} %punct
+cc/c {1 20} 65536 1111567 {1114110 1114111}
+cc/c {1 20} 65536 1111567 {1114110 1114111} %braille
+cc/c {1 20} 65536 1111567 {1114110 1114111} braille
+cc/c {1 20} {65536 1111567}
+cc/c {1 44} {46 64} {66 96} {98 126} {129 299} {302 65534} {65536 1114111}
+cc/c {1 44} {46 64} {66 96} {98 126} {129 299} {302 65534} {65536 125183} {125259 125263} {125274 125277} {125280 1114111}
+cc/c {11 1114111}
+cc/c {11 44} {46 64} {66 96} {98 126} {128 299} {302 1114109} 1114111
+cc/c {11 44} {46 96} {98 126} {128 299} {301 1114109} 1114111
+cc/c {11 65534} {1111568 1114111}
+cc/c {1111567 1114110}
+cc/c {127 65535}
+cc/c {128 65535}
+cc/c {21 1114111}
+cc/c {300 301}
+cc/c {65 90} {97 65536}
+cc/c {65 90} {97 65536} 1111567
+cc/c {65 90} {97 65536} 1111567 %adlam
+cc/c {65535 1111567}
+cc/c {65535 1114111}
+cc/c {65536 1111567}
+cc/c {65536 1114111}
+cc/c {97 65536}
+cc/c {97 65536} 1111567
+cc/c {97 65536} 1111567 adlam
+
+cc/smp %adlam
+cc/smp %adlam %arabic:smp
+cc/smp %arabic:smp
+cc/smp %lu:smp
+cc/smp %lu:smp %punct:smp
+cc/smp 1114110
+cc/smp 1114110 %arabic:smp
+cc/smp 1114110 arabic:smp
+cc/smp 65536
+cc/smp 65536 1111567
+cc/smp 65536 1111567 %adlam
+cc/smp 65536 1111567 %arabic:smp
+cc/smp 65536 1111567 adlam
+cc/smp 65536 1111567 arabic:smp
+cc/smp 65536 1111567 {1114110 1114111}
+cc/smp 65536 1111567 {1114110 1114111} %lu:smp
+cc/smp 65536 1111567 {1114110 1114111} lu:smp
+cc/smp adlam
+cc/smp adlam arabic:smp
+cc/smp arabic:smp
+cc/smp lu:smp
+cc/smp lu:smp punct:smp
+cc/smp punct:smp
+cc/smp {1111567 1114110}
+cc/smp {1111568 1114111}
+cc/smp {65536 1111566} 1114111
+cc/smp {65536 1111566} {1111568 1114111}
+cc/smp {65536 1111567}
+cc/smp {65536 1111567} %punct:smp
+cc/smp {65536 1111567} punct:smp
+cc/smp {65536 1114109} 1114111
+cc/smp {65536 1114110}
+cc/smp {65536 1114111}
+cc/smp {65536 125183} {125259 125263} {125274 125277} {125280 1114111}
+cc/smp {65537 1111566} {1111568 1114109}
+cc/smp {65537 1111566} {1111568 1114111}
+cc/smp {65537 1114111}
+cc/smp {65537 125183} {125259 125263} {125274 125277} {125280 1111566} {1111568 1114111}

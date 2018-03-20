@@ -298,7 +298,6 @@ literals of that type as they are. These are not listed explicitly.
 | named-class   | D-NCC1   | Alternation of `range` (one!, or more)                |
 | named-class   | D-NCC2   | ASBR                                                  |
 | named-class   | D-NCC3   | Tcl supported KEEP, else charclass of ranges          |
-| named-class   | D-NCC4   | GRAMMAR                                               |
 | %named-class  | D-%NCC1  | `charclass` (definition expanded)                     |
 | %named-class  | D-%NCC2  | ASBR (definition expanded)                            |
 | ^named-class  | D-^NCC1  | `charclass` (negated definition)                      |
@@ -324,7 +323,7 @@ Footnote 1: Does it make sense to precompute these ? (p_unidata is
 |  2 | K-%STR  | D-%STR	  |	     |	       |	 |
 |  3 | K-CLS   | D-CLS1	  | D-CLS2   | D-CLS3  |	 |
 |  4 | K-^CLS  | D-^CLS1  | D-^CLS2  |	       |	 |
-|  5 | K-NCC   | D-NCC1	  | D-NCC2   | D-NCC3  | D-NCC4  |
+|  5 | K-NCC   | D-NCC1	  | D-NCC2   | D-NCC3  |         |
 |  6 | K-%NCC  | D-%NCC1  | D-%NCC2  |	       |	 |
 |  7 | K-^NCC  | D-^NCC1  | D-^NCC2  |	       |	 |
 |  8 | K-^%NCC | D-^%NCC1 | D-^%NCC2 | 	       |	 |

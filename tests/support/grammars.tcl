@@ -74,7 +74,7 @@ proc test-grammar-result {base key} {
     # files. Prefer mode-specific over plain.
 
     set rfile  [file join $base $key]
-    set mode   [marpa unicode mode]
+    set mode   full ;#XXX [marpa unicode mode]
     set rmfile ${rfile}-$mode
 
     if {[file exists $rmfile]} {

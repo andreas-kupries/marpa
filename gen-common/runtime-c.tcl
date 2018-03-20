@@ -26,7 +26,9 @@
 # Meta require     debug
 # Meta require     debug::caller
 # Meta require     marpa::slif::container
-# Meta require     marpa::slif::literal
+# Meta require     marpa::slif::literal::util
+# Meta require     marpa::slif::literal::redux
+# Meta require     marpa::slif::literal::reduce::2c4tcl
 # Meta require     marpa::slif::precedence
 # Meta require     marpa::gen
 # Meta require     marpa::gen::remask
@@ -41,7 +43,9 @@ package require TclOO
 package require debug
 package require debug::caller
 package require marpa::slif::container
-package require marpa::slif::literal
+package require marpa::slif::literal::util
+package require marpa::slif::literal::redux
+package require marpa::slif::literal::reduce::2c4tcl
 package require marpa::slif::precedence
 package require marpa::gen
 package require marpa::gen::remask
@@ -251,7 +255,7 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 	    incr codepoint
 	} {
 	    if {[L has-id $codepoint]} continue
-	    set bsym [::marpa::slif::literal::symbol [list byte $codepoint]]
+	    set bsym [::marpa::slif::literal::util::symbol [list byte $codepoint]]
 	    P add* 1 $bsym
 	    L force  $bsym $codepoint
 	}
@@ -460,20 +464,13 @@ proc ::marpa::gen::runtime::c::EncodePrecedences {gc} {
 proc ::marpa::gen::runtime::c::LowerLiterals {gc} {
     debug.marpa/gen/runtime/c {}
 
-    # Rewrite the literals into forms supported by the runtime
-    # (C engine). These are bytes and byte ranges. The latter are
-    # expanded during setup at runtime, into alternations of bytes,
-    # with a subsequent explosion of rules.
+    # Rewrite the literals into forms supported by the runtime (C
+    # engine, with Tcl associated). These are bytes and byte
+    # ranges. The latter are expanded during setup at runtime, into
+    # alternations of bytes, with a subsequent explosion of rules.
 
-    marpa::slif::literal r2container \
-	[marpa::slif::literal reduce [concat {*}[lmap {sym rhs} [dict get [$gc l0 serialize] literal] {
-	    list $sym [lindex $rhs 0]
-	}]] {
-	    D-STR2 D-%STR  D-CLS2  D-^CLS1
-	    D-NCC2 D-%NCC2 D-^NCC1 D-^%NCC2
-	    D-RAN2 D-%RAN  D-^RAN2 D-CHR
-	    D-^CHR
-	}] $gc
+    marpa::slif::literal::redux $gc \
+	marpa::slif::literal::reduce::2c4tcl
 
     RefactorRanges $gc
     return

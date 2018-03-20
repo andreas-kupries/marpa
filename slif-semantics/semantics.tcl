@@ -931,8 +931,8 @@ oo::class create marpa::slif::semantics {
 	upvar 1 children children
 	lassign [lindex $children 0] start length litstring
 
-	set literal   [marpa::slif::literal parse  $litstring]
-	set litsymbol [marpa::slif::literal symbol $literal]
+	set literal   [marpa::slif::literal parse        $litstring]
+	set litsymbol [marpa::slif::literal::util symbol $literal]
 
 	usage      add $start $length  $litsymbol
 	definition add $start $length  $litsymbol

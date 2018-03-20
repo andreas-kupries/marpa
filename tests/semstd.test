@@ -1,5 +1,5 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2017 Andreas Kupries
+## (c) 2017-2018 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## marpa::semstd
 
@@ -16,6 +16,7 @@ kt local   testing marpa::runtime::tcl
 
 # # ## ### ##### ######## ############# #####################\
 
+kt source support/common.tcl
 kt source support/tcl-core.tcl
 
 # # ## ### ##### ######## ############# #####################
@@ -118,7 +119,7 @@ test marpa-semstd-builtin-1.2 {builtin, bad part} -body {
 # - lhs      ID
 # - ord      INT
 
-foreach {part expected} {
+testcases k {part expected} {
     g1start    {}
     g1length   1
     start      0
@@ -132,7 +133,6 @@ foreach {part expected} {
     {lhs L}    L
     {ord 3}    3
 } {
-    incr k
     test marpa-semstd-builtin-2.${k}-$part "builtin, part: $part" -body {
 	marpa semstd builtin [list $part] ID {0 1 AB}
     } -result $expected

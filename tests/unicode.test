@@ -1,5 +1,5 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2017 Andreas Kupries
+## (c) 2017-2018 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## marpa::unicode
 
@@ -13,9 +13,14 @@ kt require support TclOO
 
 kt local   testing marpa::unicode
 
-proc UM {str} { string map [list @@@ [marpa unicode max]] $str }
+# # ## ### ##### ######## ############# #####################
+
+kt source support/common.tcl
 
 # # ## ### ##### ######## ############# #####################
+## [ok] max
+## [ok] bmp
+## [ok] smp
 ## [ok] norm-class
 ## [ok] negate-class
 ## [ok] point
@@ -24,7 +29,43 @@ proc UM {str} { string map [list @@@ [marpa unicode max]] $str }
 ## [ok] 2utf
 ## [ok] 2asbr
 ## [ok] asbr-format
+## [ok] 2char
+## [ok] 2assr
+## [ok] assr-format
 ##
+
+# # ## ### ##### ######## ############# #####################
+## max
+
+test marpa-unicode-max-1.0 {max, wrong args, too many} -body {
+    marpa unicode max X
+} -returnCodes error -result {wrong # args: should be "marpa unicode max"}
+
+test marpa-unicode-max-2.0 {max value} -body {
+    marpa unicode max
+} -result 1114111
+
+# # ## ### ##### ######## ############# #####################
+## bmp
+
+test marpa-unicode-bmp-1.0 {bmp, wrong args, too many} -body {
+    marpa unicode bmp X
+} -returnCodes error -result {wrong # args: should be "marpa unicode bmp"}
+
+test marpa-unicode-bmp-2.0 {bmp value} -body {
+    marpa unicode bmp
+} -result 65535
+
+# # ## ### ##### ######## ############# #####################
+## smp
+
+test marpa-unicode-smp-1.0 {smp, wrong args, too many} -body {
+    marpa unicode smp X
+} -returnCodes error -result {wrong # args: should be "marpa unicode smp"}
+
+test marpa-unicode-smp-2.0 {smp value} -body {
+    marpa unicode smp
+} -result 65536
 
 # # ## ### ##### ######## ############# #####################
 ## unfold - Expand a charclass to include all case-equivalencet characters.
@@ -49,6 +90,14 @@ test marpa-unicode-unfold-2.0 {unfold, apply} -body {
 # Via http://www.codetable.net/decimal/<NUMBER>
 # See also (xx)
 
+if 0 {test marpa-unicode-unfold-2.1 {unfold, large range, bmp} -body {
+    marpa unicode unfold [list [list 0 [marpa unicode bmp]]]
+} -result [list [list 0 [marpa unicode bmp]]]}
+
+test marpa-unicode-unfold-2.2 {unfold, large range, full} -body {
+    marpa unicode unfold [list [list 0 [marpa unicode max]]]
+} -result [list [list 0 [marpa unicode max]]]
+
 # # ## ### ##### ######## ############# #####################
 ## fold/c - Map uni(code)points to their primary uni(code)points in
 ##          their case-equivalence class.
@@ -66,6 +115,18 @@ test marpa-unicode-fold/c-2.0 {fold/c, apply} -body {
     #        vv <---------- ^^a --> A (65) Everything else is self-equivalent
 } -result {0 65 13 9 8706 67}
 
+test marpa-unicode-fold/c-2.1 {fold/c, long sequence} -body {
+    marpa unicode fold/c [iota 10]
+} -result [iota 10]
+
+test marpa-unicode-fold/c-2.2 {fold/c, long sequence} -body {
+    marpa unicode fold/c [iota 100]
+} -result {0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 65 66 67}
+
+test marpa-unicode-fold/c-2.3 {fold/c, long sequence} -body {
+    marpa unicode fold/c [iota 1000]
+} -result {0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 192 193 194 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 213 214 247 216 217 218 219 220 221 222 255 256 256 258 258 260 260 262 262 264 264 266 266 268 268 270 270 272 272 274 274 276 276 278 278 280 280 282 282 284 284 286 286 288 288 290 290 292 292 294 294 296 296 298 298 300 300 302 302 304 305 306 306 308 308 310 310 312 313 313 315 315 317 317 319 319 321 321 323 323 325 325 327 327 329 330 330 332 332 334 334 336 336 338 338 340 340 342 342 344 344 346 346 348 348 350 350 352 352 354 354 356 356 358 358 360 360 362 362 364 364 366 366 368 368 370 370 372 372 374 374 255 377 377 379 379 381 381 383 384 385 386 386 388 388 390 391 391 393 394 395 395 397 398 399 400 401 401 403 404 405 406 407 408 408 410 411 412 413 414 415 416 416 418 418 420 420 422 423 423 425 426 427 428 428 430 431 431 433 434 435 435 437 437 439 440 440 442 443 444 444 446 447 448 449 450 451 452 453 452 455 456 455 458 459 458 461 461 463 463 465 465 467 467 469 469 471 471 473 473 475 475 398 478 478 480 480 482 482 484 484 486 486 488 488 490 490 492 492 494 494 496 497 498 497 500 500 405 447 504 504 506 506 508 508 510 510 512 512 514 514 516 516 518 518 520 520 522 522 524 524 526 526 528 528 530 530 532 532 534 534 536 536 538 538 540 540 542 542 414 545 546 546 548 548 550 550 552 552 554 554 556 556 558 558 560 560 562 562 564 565 566 567 568 569 570 571 571 410 574 575 576 577 577 384 580 581 582 582 584 584 586 586 588 588 590 590 592 593 594 385 390 597 393 394 600 399 602 400 604 605 606 607 403 609 610 404 612 613 614 615 407 406 618 619 620 621 622 412 624 625 413 627 628 415 630 631 632 633 634 635 636 637 638 639 422 641 642 425 644 645 646 647 430 580 433 434 581 653 654 655 656 657 439 659 660 661 662 663 664 665 666 667 668 669 670 671 672 673 674 675 676 677 678 679 680 681 682 683 684 685 686 687 688 689 690 691 692 693 694 695 696 697 698 699 700 701 702 703 704 705 706 707 708 709 710 711 712 713 714 715 716 717 718 719 720 721 722 723 724 725 726 727 728 729 730 731 732 733 734 735 736 737 738 739 740 741 742 743 744 745 746 747 748 749 750 751 752 753 754 755 756 757 758 759 760 761 762 763 764 765 766 767 768 769 770 771 772 773 774 775 776 777 778 779 780 781 782 783 784 785 786 787 788 789 790 791 792 793 794 795 796 797 798 799 800 801 802 803 804 805 806 807 808 809 810 811 812 813 814 815 816 817 818 819 820 821 822 823 824 825 826 827 828 829 830 831 832 833 834 835 836 837 838 839 840 841 842 843 844 845 846 847 848 849 850 851 852 853 854 855 856 857 858 859 860 861 862 863 864 865 866 867 868 869 870 871 872 873 874 875 876 877 878 879 880 880 882 882 884 885 886 886 888 889 890 891 892 893 894 895 896 897 898 899 900 901 902 903 904 905 906 907 908 909 910 911 912 913 914 915 916 917 918 919 920 837 922 923 181 925 926 927 928 929 930 931 932 933 934 935 936 937 938 939 902 904 905 906 944 913 914 915 916 917 918 919 920 953 922 923 956 925 926 927 928 929 962 931 932 933 934 935 936 937 938 939 908 910 911 975 976 977 978 979 980 981 982 975 984 984 986 986 988 988 990 990 992 992 994 994 996 996 998 998}
+
 # # ## ### ##### ######## ############# #####################
 ## point - character to uni(code)point
 
@@ -77,8 +138,7 @@ test marpa-unicode-point-1.1 {point, wrong args, too many} -body {
     marpa unicode point CHARACTER X
 } -returnCodes error -result {wrong # args: should be "marpa unicode point character"}
 
-set k 0
-foreach {char code} {
+testcases k {char code} {
     \0     0
     A      65
     \r     13
@@ -86,7 +146,6 @@ foreach {char code} {
     \u2202 8706
     CHAR   67
 } {
-    incr k
     test marpa-unicode-point-2.$k "point, $code" -body {
 	marpa unicode point $char
     } -result $code
@@ -97,28 +156,99 @@ foreach {char code} {
 
 test marpa-unicode-2utf-1.0 {2utf, wrong args, not enough} -body {
     marpa unicode 2utf
-} -returnCodes error -result {wrong # args: should be "marpa unicode 2utf code"}
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2utf code ?flags?"}
 
 test marpa-unicode-2utf-1.1 {2utf, wrong args, too many} -body {
-    marpa unicode 2utf CODE X
-} -returnCodes error -result {wrong # args: should be "marpa unicode 2utf code"}
+    marpa unicode 2utf CODE FLAGS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2utf code ?flags?"}
 
-set k 0
-foreach {code utf} {
-    0        {0}
-    127      {127}
-    128      {194 128}
-    2047     {223 191}
-    2048     {224 160 128}
-    65535    {239 191 191}
-    65536    {240 144 128 128}
-    0x10FFFE {244 143 191 190}
-    0x10FFFF {244 143 191 191}
+test marpa-unicode-2utf-1.2 {2utf, ok num args, bad codepoint, type} -body {
+    marpa unicode 2utf CODE
+} -returnCodes error -result {Expected integer for codepoint in [0...1114111], got "CODE"}
+
+test marpa-unicode-2utf-1.3 {2utf, ok num args, bad codepoint, out of range} -body {
+    marpa unicode 2utf -1
+} -returnCodes error -result {Expected integer for codepoint in [0...1114111], got "-1"}
+
+test marpa-unicode-2utf-1.4 {2utf, ok num args, bad codepoint, out of range} -body {
+    marpa unicode 2utf 1114112
+} -returnCodes error -result {Expected integer for codepoint in [0...1114111], got "1114112"}
+
+test marpa-unicode-2utf-1.5 {2utf, ok num args, ok codepoint, bad flags, type} -body {
+    marpa unicode 2utf 0 0
+} -returnCodes error -result {bad marpatcl_uflags "0": must be all, cesu, mutf, or tcl}
+
+test marpa-unicode-2utf-1.6 {2utf, ok num args, ok codepoint, bad flags value} -body {
+    marpa unicode 2utf 32 foo
+} -returnCodes error -result {bad marpatcl_uflags "foo": must be all, cesu, mutf, or tcl}
+
+test marpa-unicode-2utf-1.7 {2utf, ok num args, ok codepoint, ok flags} -body {
+    marpa unicode 2utf 32 tcl
+} -result 32
+
+testcases k {code full tcl} {
+    0         {0}                {192 128}		  
+    127       {127}		 {127}		  
+    128       {194 128}	         {194 128}	  
+    2047      {223 191}	         {223 191}	  
+    2048      {224 160 128}	 {224 160 128}	  
+    65535     {239 191 191}	 {239 191 191}	  
+    65536     {240 144 128 128}  {237 160 128 237 176 128}
+    0x10FFFE  {244 143 191 190}  {237 175 191 237 191 190}
+    0x10FFFF  {244 143 191 191}  {237 175 191 237 191 191}
+    0x10F60F  {244 143 152 143}  {237 175 189 237 184 143}
 } {
-    incr k
-    test marpa-unicode-2utf-2.$k "2utf, $code" -body {
+    test marpa-unicode-2utf-2.$k.0 "2utf, $code, full" -body {
 	marpa unicode 2utf $code
-    } -result $utf
+    } -result $full
+
+    test marpa-unicode-2utf-2.$k.1 "2utf, $code, tcl" -body {
+	marpa unicode 2utf $code tcl
+    } -result $tcl
+}
+
+# # ## ### ##### ######## ############# #####################
+## 2char - uni(code)point to bmp encoding (list of chars (as decimal integers))
+
+test marpa-unicode-2char-1.0 {2char, wrong args, not enough} -body {
+    marpa unicode 2char
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2char code"}
+
+test marpa-unicode-2char-1.1 {2char, wrong args, too many} -body {
+    marpa unicode 2char CODE X
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2char code"}
+
+test marpa-unicode-2char-1.2 {2char, ok num args, bad codepoint, type} -body {
+    marpa unicode 2char CODE
+} -returnCodes error -result {Expected integer for codepoint in [0...1114111], got "CODE"}
+
+test marpa-unicode-2char-1.3 {2char, ok num args, bad codepoint, out of range} -body {
+    marpa unicode 2char -1
+} -returnCodes error -result {Expected integer for codepoint in [0...1114111], got "-1"}
+
+test marpa-unicode-2char-1.4 {2char, ok num args, bad codepoint, out of range} -body {
+    marpa unicode 2char 1114112
+} -returnCodes error -result {Expected integer for codepoint in [0...1114111], got "1114112"}
+
+test marpa-unicode-2char-1.5 {2char, ok num args, ok codepoint} -body {
+    marpa unicode 2char 32
+} -result 32
+
+testcases k {code chars} {
+    0         {0}                
+    127       {127}		 
+    128       {128}	         
+    2047      {2047}	         
+    2048      {2048}	 
+    65535     {65535}	 
+    65536     {55296 56320}  
+    0x10FFFE  {56319 57342}
+    0x10FFFF  {56319 57343}
+    0x10F60F  {56317 56847}
+} {
+    test marpa-unicode-2char-2.$k "2char, $code" -body {
+	marpa unicode 2char $code
+    } -result $chars
 }
 
 # # ## ### ##### ######## ############# #####################
@@ -132,8 +262,7 @@ test marpa-unicode-norm-class-1.1 {norm-class, wrong args, too many} -body {
     marpa unicode norm-class ITEMS X
 } -returnCodes error -result {wrong # args: should be "marpa unicode norm-class charclass"}
 
-set k 0
-foreach {charclass normalized notes} {
+testcases k {charclass normalized notes} {
     {6 3}         {3 6}    {sort ascending}
     {4 3}         {{3 4}}  {merge adjacent}
     {{1 5} {6 8}} {{1 8}}  {ditto}
@@ -142,31 +271,27 @@ foreach {charclass normalized notes} {
     {3}           {3}      {single item}
     {{4 7}}       {{4 7}}  {ditto}
 } {
-    incr k
     test marpa-unicode-norm-class-2.$k "norm-class, $charclass" -body {
 	marpa unicode norm-class $charclass
     } -result $normalized
 }
 
-
-set k 0
-foreach {charclass message notes} {
-    {-1}          {Point out of range (0...*): -1} {out of range, under}
-    {500000000}   {Point out of range (0...*): 500000000} {out of range, over, regardless of mode}
+testcases k {charclass message notes} {
+    {-1}          {Expected integer for codepoint in [0...1114111], got "-1"} {out of range, under}
+    {500000000}   {Expected integer for codepoint in [0...1114111], got "500000000"} {out of range, over, regardless of mode}
     {2 {3 3 4} 4} {Expected 2-element list for range} {too many elements for interval/range}
     {2 {} 4}      {Expected 2-element list for range} {not enough element for interval/range}
-    {2 {-1 3} 4}  {Range (start) out of range (0...*): -1} {out of range, under}
-    {2 {3 500000000} 4} {Range (end) out of range (0...*): 500000000} {out of range, over, regardless of mode}
-    {2 {5 2} 4} {Range empty (end (5) before start (2))} {Range validation, start vs end}
-    {2 {{} 3} 4} {expected integer but got ""} {Range validation, start}
-    {2 {3 {}} 4} {expected integer but got ""} {Range validation, end}
+    {2 {-1 3} 4}  {Expected integer for range start in [0...1114111], got "-1"} {out of range, under}
+    {2 {3 500000000} 4} {Expected integer for range end in [0...1114111], got "500000000"} {out of range, over, regardless of mode}
+    {2 {5 2} 4} {Unexpected empty range (5 > 2)} {Range validation, start vs end}
+    {2 {{} 3} 4} {Expected integer for range start in [0...1114111], got ""} {Range validation, start}
+    {2 {3 {}} 4} {Expected integer for range end in [0...1114111], got ""} {Range validation, end}
     {bogus} {Expected 2-element list for range} {Most bogus is convertible to list => range validation}
     {\{} {Expected codepoint or range, got neither} {Not even a list}
 } {
-    incr k
     test marpa-unicode-norm-class-3.$k "norm-class, bad $charclass" -body {
 	marpa unicode norm-class $charclass
-    } -returnCodes error -result $message -match glob
+    } -returnCodes error -result $message
 }
 
 # # ## ### ##### ######## ############# #####################
@@ -174,35 +299,39 @@ foreach {charclass message notes} {
 
 test marpa-unicode-negate-class-1.0 {negate-class, wrong args, not enough} -body {
     marpa unicode negate-class
-} -returnCodes error -result {wrong # args: should be "marpa unicode negate-class charclass"}
+} -returnCodes error -result {wrong # args: should be "marpa unicode negate-class charclass ?smp?"}
 
 test marpa-unicode-negate-class-1.1 {negate-class, wrong args, too many} -body {
-    marpa unicode negate-class ITEMS X
-} -returnCodes error -result {wrong # args: should be "marpa unicode negate-class charclass"}
+    marpa unicode negate-class ITEMS F X
+} -returnCodes error -result {wrong # args: should be "marpa unicode negate-class charclass ?smp?"}
+
+test marpa-unicode-negate-class-1.1 {negate-class, bad flag type} -body {
+    marpa unicode negate-class {} X
+} -returnCodes error -result {expected boolean value but got "X"}
 
 test marpa-unicode-negate-class-2.0 {negate-class} -body {
     marpa unicode negate-class {{65 67} {97 99} 104}
-} -result [UM {{0 64} {68 96} {100 103} {105 @@@}}]
+} -result {{0 64} {68 96} {100 103} {105 1114111}}
 
 test marpa-unicode-negate-class-2.1 {negate-class, lower limit} -body {
     marpa unicode negate-class {0 {65 67} {97 99} 104}
-} -result [UM {{1 64} {68 96} {100 103} {105 @@@}}]
+} -result {{1 64} {68 96} {100 103} {105 1114111}}
 
 test marpa-unicode-negate-class-2.2 {negate-class, upper limit} -body {
-    marpa unicode negate-class [UM {{65 67} {97 99} {104 @@@}}]
+    marpa unicode negate-class {{65 67} {97 99} {104 1114111}}
 } -result {{0 64} {68 96} {100 103}}
 
 test marpa-unicode-negate-class-2.3 {negate-class, none} -body {
     marpa unicode negate-class {}
-} -result [UM {{0 @@@}}]
+} -result {{0 1114111}}
 
 test marpa-unicode-negate-class-2.4 {negate-class, all} -body {
-    marpa unicode negate-class [UM {{0 @@@}}]
+    marpa unicode negate-class {{0 1114111}}
 } -result {}
 
 test marpa-unicode-negate-class-2.5 {negate-class, final element} -body {
-    marpa unicode negate-class {45 97 127 300 65534}
-} -result {{0 44} {46 96} {98 126} {128 299} {301 65533} 65535}
+    marpa unicode negate-class {45 97 127 300 1114110}
+} -result {{0 44} {46 96} {98 126} {128 299} {301 1114109} 1114111}
 
 # # ## ### ##### ######## ############# #####################
 ## 2asbr - Convert char class (uni(code)points and ranges)
@@ -210,43 +339,80 @@ test marpa-unicode-negate-class-2.5 {negate-class, final element} -body {
 
 test marpa-unicode-2asbr-1.0 {2asbr, wrong args, not enough} -body {
     marpa unicode 2asbr
-} -returnCodes error -result {wrong # args: should be "marpa unicode 2asbr charclass"}
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2asbr charclass ?flags?"}
 
 test marpa-unicode-2asbr-1.1 {2asbr, wrong args, too many} -body {
-    marpa unicode 2asbr CHARCLASS X
-} -returnCodes error -result {wrong # args: should be "marpa unicode 2asbr charclass"}
+    marpa unicode 2asbr CHARCLASS FLAGS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2asbr charclass ?flags?"}
 
-set k 0
-foreach {charclass asbr pretty} {
+testcases k {cclass theerror} {
+    CLASS         {Expected 2-element list for range}
+    -1            {Expected integer for codepoint in [0...1114111], got "-1"}
+    1114112       {Expected integer for codepoint in [0...1114111], got "1114112"}
+    {{a b c}}     {Expected 2-element list for range}
+    {{a b}}       {Expected integer for range start in [0...1114111], got "a"}
+    {{-1 0}}      {Expected integer for range start in [0...1114111], got "-1"}
+    {{0 -1}}      {Expected integer for range end in [0...1114111], got "-1"}
+    {{1114112 0}} {Expected integer for range start in [0...1114111], got "1114112"}
+    {{0 1114112}} {Expected integer for range end in [0...1114111], got "1114112"}
+} {
+    test marpa-unicode-2asbr-1.2.$k {2asbr, bad args} -body {
+	marpa unicode 2asbr $cclass ;# flags irrelevant
+    } -returnCodes error -result $theerror
+}
+
+testcases k {charclass fasbr fpretty tasbr tpretty} {
     {{0 16}}
     {{{0 16}}}
     " [00-10]\n"
+    {{{192 192} {128 128}} {{1 16}}}
+    " [c0]   [80]   \n|[01-10]\n"
+    
     {{0 16} {33 45}}
     {{{0 16}} {{33 45}}}
     " [00-10]\n|[21-2d]\n"
+    {{{192 192} {128 128}} {{1 16}} {{33 45}}}
+    " [c0]   [80]   \n|[01-10]\n|[21-2d]\n"
+    
     {{0 127}}
     {{{0 127}}}
     " [00-7f]\n"
+    {{{192 192} {128 128}} {{1 127}}}
+    " [c0]   [80]   \n|[01-7f]\n"
+    
     {{0 2047}}
     {{{0 127}} {{194 223} {128 191}}}
     " [00-7f]\n|[c2-df][80-bf]\n"
+    {{{192 192} {128 128}} {{1 127}} {{194 223} {128 191}}}
+    " [c0]   [80]   \n|[01-7f]\n|[c2-df][80-bf]\n"
+    
     {{0 65535}}
     {{{0 127}} {{194 223} {128 191}} {{224 224} {160 191} {128 191}} {{225 236} {128 191} {128 191}} {{237 237} {128 159} {128 191}} {{238 239} {128 191} {128 191}}}
     " [00-7f]\n|[c2-df][80-bf]\n|[e0]   [a0-bf][80-bf]\n|[e1-ec][80-bf][80-bf]\n|[ed]   [80-9f][80-bf]\n|[ee-ef][80-bf][80-bf]\n"
+    {{{192 192} {128 128}} {{1 127}} {{194 223} {128 191}} {{224 224} {160 191} {128 191}} {{225 236} {128 191} {128 191}} {{237 237} {128 159} {128 191}} {{238 239} {128 191} {128 191}}}
+    " [c0]   [80]   \n|[01-7f]\n|[c2-df][80-bf]\n|[e0]   [a0-bf][80-bf]\n|[e1-ec][80-bf][80-bf]\n|[ed]   [80-9f][80-bf]\n|[ee-ef][80-bf][80-bf]\n"
+    
     {{0 0x10ffff}}
     {{{0 127}} {{194 223} {128 191}} {{224 224} {160 191} {128 191}} {{225 236} {128 191} {128 191}} {{237 237} {128 159} {128 191}} {{238 239} {128 191} {128 191}} {{240 240} {144 191} {128 191} {128 191}} {{241 243} {128 191} {128 191} {128 191}} {{244 244} {128 143} {128 191} {128 191}}}
     " [00-7f]\n|[c2-df][80-bf]\n|[e0]   [a0-bf][80-bf]\n|[e1-ec][80-bf][80-bf]\n|[ed]   [80-9f][80-bf]\n|[ee-ef][80-bf][80-bf]\n|[f0]   [90-bf][80-bf][80-bf]\n|[f1-f3][80-bf][80-bf][80-bf]\n|[f4]   [80-8f][80-bf][80-bf]\n"
+    {{{192 192} {128 128}} {{1 127}} {{194 223} {128 191}} {{224 224} {160 191} {128 191}} {{225 236} {128 191} {128 191}} {{237 237} {128 159} {128 191}} {{238 239} {128 191} {128 191}} {{237 237} {160 175} {128 191} {237 237} {176 191} {128 191}}}
+    " [c0]   [80]   \n|[01-7f]\n|[c2-df][80-bf]\n|[e0]   [a0-bf][80-bf]\n|[e1-ec][80-bf][80-bf]\n|[ed]   [80-9f][80-bf]\n|[ee-ef][80-bf][80-bf]\n|[ed]   [a0-af][80-bf][ed]   [b0-bf][80-bf]\n"
 } {
-    if {[lindex $charclass end end] > [marpa unicode max]} continue
-    
-    incr k
-    test marpa-unicode-2asbr-2.$k "2asbr, $charclass" -body {
+    test marpa-unicode-2asbr-2.$k.0 "2asbr, $charclass, full" -body {
 	marpa unicode 2asbr $charclass
-    } -result $asbr
+    } -result $fasbr
 
-    test marpa-unicode-asbr-format-2.$k "asbr-format, $charclass" -body {
-	marpa unicode asbr-format $asbr
-    } -result $pretty
+    test marpa-unicode-asbr-format-2.$k.0 "asbr-format, $charclass, full" -body {
+	marpa unicode asbr-format $fasbr
+    } -result $fpretty
+
+    test marpa-unicode-2asbr-2.$k.1 "2asbr, $charclass, tcl" -body {
+	marpa unicode 2asbr $charclass tcl
+    } -result $tasbr
+
+    test marpa-unicode-asbr-format-2.$k.1 "asbr-format, $charclass, tcl" -body {
+	marpa unicode asbr-format $tasbr
+    } -result $tpretty
 }
 
 # # ## ### ##### ######## ############# #####################
@@ -261,5 +427,68 @@ test marpa-unicode-asbr-format-1.1 {asbr-format, wrong args, too many} -body {
 } -returnCodes error -result {wrong # args: should be "marpa unicode asbr-format asbr ?compact?"}
 
 # # ## ### ##### ######## ############# #####################
-rename UM {}
+## 2assr - Convert char class (uni(code)points and ranges)
+##         into ASSR form (Alternate Squences of Byte Ranges)
+
+test marpa-unicode-2assr-1.0 {2assr, wrong args, not enough} -body {
+    marpa unicode 2assr
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2assr charclass"}
+
+test marpa-unicode-2assr-1.1 {2assr, wrong args, too many} -body {
+    marpa unicode 2assr CHARCLASS X
+} -returnCodes error -result {wrong # args: should be "marpa unicode 2assr charclass"}
+
+testcases k {cclass theerror} {
+    CLASS         {Expected 2-element list for range}
+    -1            {Expected integer for codepoint in [0...1114111], got "-1"}
+    1114112       {Expected integer for codepoint in [0...1114111], got "1114112"}
+    {{a b c}}     {Expected 2-element list for range}
+    {{a b}}       {Expected integer for range start in [0...1114111], got "a"}
+    {{-1 0}}      {Expected integer for range start in [0...1114111], got "-1"}
+    {{0 -1}}      {Expected integer for range end in [0...1114111], got "-1"}
+    {{1114112 0}} {Expected integer for range start in [0...1114111], got "1114112"}
+    {{0 1114112}} {Expected integer for range end in [0...1114111], got "1114112"}
+} {
+    test marpa-unicode-2assr-1.2.$k {2assr, bad args} -body {
+	marpa unicode 2assr $cclass
+    } -returnCodes error -result $theerror
+}
+
+testcases k {charclass assr pretty} {
+    {{0 16}}            {{{0 16}}}              " [0000-0010]\n"
+    {{0 16} {33 45}}    {{{0 16}} {{33 45}}}    " [0000-0010]\n|[0021-002d]\n"
+    {{0 127}}           {{{0 127}}}             " [0000-007f]\n"
+    {{0 2047}}          {{{0 2047}}}            " [0000-07ff]\n"
+    {{0 65535}}         {{{0 65535}}}           " [0000-ffff]\n"
+
+    {{65530 65600}}  {{{65530 65535}} {{55296 55296} {56320 56384}}}
+    " [fffa-ffff]\n|[d800]     [dc00-dc40]\n"
+
+    {{65600 65700}}  {{{55296 55296} {56384 56484}}}
+    " [d800]     [dc40-dca4]\n"
+
+    {{0 0x10ffff}}   {{{0 65535}} {{55296 56319} {56320 57343}}}
+    " [0000-ffff]\n|[d800-dbff][dc00-dfff]\n"
+} {
+    test marpa-unicode-2assr-2.$k.0 "2assr, $charclass" -body {
+	marpa unicode 2assr $charclass
+    } -result $assr
+
+    test marpa-unicode-assr-format-2.$k.0 "assr-format, $charclass" -body {
+	marpa unicode assr-format $assr
+    } -result $pretty
+}
+
+# # ## ### ##### ######## ############# #####################
+## assr-format - Convert ASSR into a human-readable form.
+
+test marpa-unicode-assr-format-1.0 {assr-format, wrong args, not enough} -body {
+    marpa unicode assr-format
+} -returnCodes error -result {wrong # args: should be "marpa unicode assr-format assr ?compact?"}
+
+test marpa-unicode-assr-format-1.1 {assr-format, wrong args, too many} -body {
+    marpa unicode assr-format CLASS COMPACT X
+} -returnCodes error -result {wrong # args: should be "marpa unicode assr-format assr ?compact?"}
+
+# # ## ### ##### ######## ############# #####################
 cleanupTests

@@ -4,12 +4,12 @@
 ## A variant of `marpa-gen` built into the test suite.
 ## Enables dynamic creation of parsers and lexers to test.
 
-kt local support marpa::slif::container
-kt local support marpa::slif::semantics
-kt local support marpa::runtime::tcl
-kt local support marpa::runtime::c
-kt local support marpa::slif::parser
-kt local support marpa::gen
+kt local* support marpa::runtime::tcl
+kt local* support marpa::runtime::c
+kt local* support marpa::slif::container
+kt local* support marpa::slif::semantics
+kt local* support marpa::slif::parser
+kt local* support marpa::gen
 
 namespace eval ::gen {
     namespace export {[a-z]*}

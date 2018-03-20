@@ -9,7 +9,7 @@
 #   them
 #
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -20,10 +20,7 @@
 package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
 critcl::buildrequirement {
-    #package require critcl::util 1
-    #package require critcl::class 1
-    #package require critcl::emap     1.1 ; # mode C support
-    #package require critcl::literals 1.2 ; # mode C support
+    package require critcl::bitmap
     package require critcl::iassoc
     package require critcl::cutil
 }
@@ -37,11 +34,10 @@ critcl::cutil::alloc
 
 # # ## ### ##### ######## #############
 ## Build configuration
-# (1) Choose the unicode range to support.
-# (2) Assertions, and tracing
-# (3) Debugging symbols, memory tracking
+# (1) Assertions, and tracing
+# (2) Debugging symbols, memory tracking
 
-generate-tables ;# 'bmp' (default), or 'full'
+generate-tables
 
 critcl::cutil::assertions on
 critcl::cutil::tracer     off
@@ -68,7 +64,7 @@ critcl::description {
     character classes, and operations on them.
 }
 
-critcl::subject marpa unicode {character class} charclass case-folding
+critcl::subject marpa unicode {character class} charclass case-folding codepoint
 
 # # ## ### ##### ######## #############
 ## Implementation.
@@ -82,10 +78,20 @@ critcl::ccode {
 # # ## ### ##### ######## #############
 ## Declare the Tcl layer
 
+critcl::cheaders c/*.h
+critcl::csources c/*.c
+
 critcl::tsources tcl.tcl          ; # Tcl-level operations
-critcl::source   unicode.tcl      ; # C-level support functions.
+
+critcl::source   types.tcl        ; # context and charclass
+critcl::source   unflags.tcl      ; # 2utf, 2asbr flag support
+critcl::source   points.tcl       ; # Codepoint argument type.
+critcl::source   unicode.tcl      ; # C-level support functions: ASBR
+critcl::source   unichar.tcl      ; # C-level support functions: ASSR
+critcl::source   unifold.tcl      ; # C-level support functions: Case-folding
 critcl::source   cc_objtype.tcl   ; # ObjType for uni-char classes (SCR).
 critcl::source   asbr_objtype.tcl ; # ObjType for ASBR char class format.
+critcl::source   assr_objtype.tcl ; # ObjType for ASSR char class format.
 
 # # ## ### ##### ######## #############
 ## Make the C pieces ready. Immediate build of the binaries, no deferal.

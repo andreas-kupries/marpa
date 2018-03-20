@@ -1,6 +1,6 @@
 # This test grammar demonstrates how the semantics transform strings
 # and charclasses into simpler constructs, i.e. characters, ranges,
-# and named classes, and glue them back together with priority rules.
+# and named classes, and glues them back together with priority rules
 
 # Note: The grammar does not allow empty strings, nor empty
 #       charclasses.
@@ -8,6 +8,7 @@
 A ::= B C          D E
       F G H I      J K L M
       N O P Q      R S T U
+      V
 
 # Strings
 B ::= 'a'
@@ -37,3 +38,7 @@ R ::= [^a]:i
 S ::= [^a-z]:i
 T ::= [^[:alnum:]]:i
 U ::= [^a0-9[:braille:]]:i
+
+# Non-BMP, still input side.
+
+V ::= '\uFFFF\u10000\u1FFFF\u10FFFF\u10FFFE\u10F60F'
