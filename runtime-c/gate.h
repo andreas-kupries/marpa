@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Engine: Lexer gating)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_GATE_H
@@ -22,7 +22,8 @@
 
 typedef struct marpatcl_rtc_gate {
     int                  lastchar;   /* last character entered into the gate */
-    int                  lastloc;    /* Location of the `lastchar` */
+    int                  lastloc;    /* Location of the `lastchar` (byte offset) */
+    int                  lastcloc;   /* Same, as char offset */
     int                  flushed;    /* Flushing state */
     marpatcl_rtc_stack_p history;    /* History of the current match attempt */
     marpatcl_rtc_stack_p pending;    /* Scratch stack for history replay */
@@ -43,7 +44,7 @@ typedef struct marpatcl_rtc_gate {
 
 void marpatcl_rtc_gate_init       (marpatcl_rtc_p p);
 void marpatcl_rtc_gate_free       (marpatcl_rtc_p p);
-void marpatcl_rtc_gate_enter      (marpatcl_rtc_p p, char ch); /* location implied */
+void marpatcl_rtc_gate_enter      (marpatcl_rtc_p p, unsigned char ch); /* location implied */
 void marpatcl_rtc_gate_eof        (marpatcl_rtc_p p);
 void marpatcl_rtc_gate_acceptable (marpatcl_rtc_p p);
 void marpatcl_rtc_gate_redo       (marpatcl_rtc_p p, int n);

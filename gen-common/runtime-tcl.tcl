@@ -456,11 +456,21 @@ proc ::marpa::gen::runtime::tcl::Action {} {
     # declared.
     lassign $action atype adetails
     switch -exact -- $atype {
+	special {
+	    switch -exact -- $adetails {
+		first {
+		    lappend rules [list __ :A Afirst]
+		}
+		default {
+		    error BAD-SPECIAL:$adetails
+		}
+	    }
+	}
 	array {
 	    lappend rules [list __ :A $adetails]
 	}
 	default {
-	    error XXX|$action| ;# non-array not supported yet.
+	    error BAD-SEMANTICS:$action| ;# non-array not supported yet.
 	}
     }
 

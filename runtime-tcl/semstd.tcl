@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -61,6 +61,7 @@ proc marpa::semstd::locmerge {id args} {
 
 proc marpa::semstd::builtin {parts id args} {
     debug.marpa/semstd {}
+    
     set result {}
     foreach item $parts {
 	lassign $item part detail
@@ -79,6 +80,7 @@ proc marpa::semstd::builtin {parts id args} {
 
 	# Assemble parts ...
 	switch -exact -- $part {
+	    Afirst   { lappend result [lindex $args 0] }
 	    g1start  {}
 	    g1length { lappend result 1 }
 	    values   { lappend result $args }

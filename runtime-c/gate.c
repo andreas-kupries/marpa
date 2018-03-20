@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: Lexer gating)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  *
  * Requirements - Note, assertions and tracing via an external environment header.
  */
@@ -26,7 +26,7 @@ TRACE_TAG_OFF (stream);
 static void
 print_accept (marpatcl_rtc_p p, Marpa_Symbol_ID* v, int c)
 {
-    int k, n = marpatcl_rtc_byteset_size (ACCEPT);
+    int k, n = c;
     for (k=0; k < n; k++) {
 	TRACE_TAG (accept, "ACCEPT [%d]: %d = %s", k, v[k],
 		   marpatcl_rtc_spec_symname (SPEC->l0, v[k], 0));
@@ -50,6 +50,7 @@ marpatcl_rtc_gate_init (marpatcl_rtc_p p)
     GATE.pending = marpatcl_rtc_stack_cons (10);
     GATE.lastchar = -1;
     GATE.lastloc  = -1;
+    GATE.lastcloc = -1;
     GATE.flushed  = 0;
 
     TRACE_RETURN_VOID;
@@ -68,7 +69,7 @@ marpatcl_rtc_gate_free (marpatcl_rtc_p p)
 }
 
 void
-marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
+marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const unsigned char ch)
 {
 #define NAME(sym) marpatcl_rtc_spec_symname (SPEC->l0, sym, 0)
 
@@ -78,6 +79,7 @@ marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
     GATE.flushed = 0;
     GATE.lastchar = ch;
     GATE.lastloc  = IN.location;
+    GATE.lastcloc = IN.clocation;
 
     while (!FAIL.fail) {
 	if (marpatcl_rtc_byteset_contains (ACCEPT, ch)) {
@@ -98,6 +100,7 @@ marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const char ch)
 	if (GATE.flushed) {
 	    GATE.lastchar = ch;
 	    GATE.lastloc  = IN.location;
+	    GATE.lastcloc = IN.clocation;
 
 	    TRACE_ADD (" - flush failed", 0);
 	    TRACE_CLOSER;
@@ -145,9 +148,9 @@ marpatcl_rtc_gate_acceptable (marpatcl_rtc_p p)
     v = marpatcl_rtc_byteset_dense (ACCEPT);
     c = marpa_r_terminals_expected (LEX_R, v);
     marpatcl_rtc_fail_syscheck (p, LEX.g, c, "l0 terminals_expected");
-    marpatcl_rtc_byteset_link (ACCEPT, c);
-
     TRACE_TAG_DO (accept, print_accept (p, v, c));
+
+    marpatcl_rtc_byteset_link (ACCEPT, c);
     TRACE_RETURN_VOID;
 }
 

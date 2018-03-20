@@ -860,7 +860,11 @@ oo::class create marpa::slif::semantics {
     }
     method {action name/1} {children} {
 	# reserved name ::....
-	list special [string range [LITERAL] 2 end]
+	set action [string range [LITERAL] 2 end]
+	switch -exact -- $action {
+	    array   { list array values }
+	    default { list special $action }
+	}
     }
     method {action name/2} {children} {
 	# array descriptor [xxx, ...]

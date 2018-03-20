@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Engine: API types)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  *
  * Header for the public types, i.e the types exposed through the stub
  * functions.
@@ -217,20 +217,14 @@ typedef struct marpatcl_rtc_spec {
 #define MARPATCL_SV_VALUE     ((marpatcl_rtc_sym) (10)) /* Value of the lexeme, vector of the children */
 #define MARPATCL_SV_CMD       ((marpatcl_rtc_sym) (11)) /* User-specified semantic action */
 
+#define MARPATCL_SV_A_FIRST   ((marpatcl_rtc_sym) (50)) /* Special action ::first */
+
 /*
  * Tags for G1 semantic coding formats
  */
 
 #define MARPATCL_S_SINGLE (0) /* Single semantic, mask, rule-independent */
 #define MARPATCL_S_PER    (1) /* Per-rule semantic, mask information */
-
-
-
-
-
-
-
-
 
 #endif
 /*
