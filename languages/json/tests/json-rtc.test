@@ -16,6 +16,11 @@ kt require support critcl   ;# compile & run
 proc rt          {} { return c }
 proc coding      {} { return utf-8 }
 proc constraints {id} {
+    if {[dict exists {
+	i_string_UTF8_surrogate_U+D800 %%
+    } $id]} {
+	return knownBug
+    }
     return {}
 }
 

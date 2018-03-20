@@ -1,0 +1,7 @@
+value
+  array
+    elements
+      element
+        value
+          number
+            @1 8 '-1e+9999'

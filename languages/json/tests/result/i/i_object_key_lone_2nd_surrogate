@@ -1,0 +1,9 @@
+value
+  object
+    pairs
+      pair
+        string
+          @2 6 {'\\uDFAA'}
+        value
+          number
+            @10 1 '0'

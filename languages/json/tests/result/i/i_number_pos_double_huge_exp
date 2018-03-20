@@ -1,0 +1,7 @@
+value
+  array
+    elements
+      element
+        value
+          number
+            @1 9 '1.5e+9999'

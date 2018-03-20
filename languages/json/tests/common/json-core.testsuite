@@ -101,11 +101,57 @@ test [tnp]-process-file-1.1 "[cl] :: process-file, wrong args, too many" -body {
 # # ## ### ##### ######## ############# #####################
 ## process, process-file - Actual processing - Id formatting prep
 
+proc i_y {} {
+    lappend r  i_number_double_huge_neg_exp
+    lappend r  i_number_huge_exp
+    lappend r  i_number_neg_int_huge_exp
+    lappend r  i_number_pos_double_huge_exp
+    lappend r  i_number_real_neg_overflow
+    lappend r  i_number_real_pos_overflow
+    lappend r  i_number_real_underflow
+    lappend r  i_number_too_big_neg_int
+    lappend r  i_number_too_big_pos_int
+    lappend r  i_number_very_big_negative_int
+    lappend r  i_object_key_lone_2nd_surrogate
+    lappend r  i_string_1st_surrogate_but_2nd_missing
+    lappend r  i_string_1st_valid_surrogate_2nd_invalid
+    lappend r  i_string_UTF-8_invalid_sequence
+    lappend r  i_string_UTF8_surrogate_U+D800
+    lappend r  i_string_incomplete_surrogate_and_escape_valid
+    lappend r  i_string_incomplete_surrogate_pair
+    lappend r  i_string_incomplete_surrogates_escape_valid
+    lappend r  i_string_invalid_lonely_surrogate
+    lappend r  i_string_invalid_surrogate
+    lappend r  i_string_invalid_utf-8
+    lappend r  i_string_inverted_surrogates_U+1D11E
+    lappend r  i_string_iso_latin_1
+    lappend r  i_string_lone_second_surrogate
+    lappend r  i_string_lone_utf8_continuation_byte
+    lappend r  i_string_not_in_unicode_range
+    lappend r  i_string_overlong_sequence_2_bytes
+    lappend r  i_string_overlong_sequence_6_bytes
+    lappend r  i_string_overlong_sequence_6_bytes_null
+    lappend r  i_string_truncated-utf-8
+    lappend r  i_structure_500_nested_arrays
+    return $r
+}
+
+proc i_n {} {
+    lappend r  i_string_UTF-16LE_with_BOM
+    lappend r  i_string_utf16BE_no_BOM
+    lappend r  i_string_utf16LE_no_BOM
+    lappend r  i_structure_UTF-8_BOM_empty_object
+    return $r
+}
+
 # # ## ### ##### ######## ############# #####################
 ## Will-accept inputs
-## - must-accept
+## - must accept
+## - may accept
 
 lappend will_accept {*}[lsort -uniq [glob -nocomplain -directory [td]/input/y y_*.json]]
+lappend will_accept {*}[lmap p [i_y] { set _ [td]/input/i/${p}.json }]
+
 set max [llength $will_accept]
 set fmt %0[string length $max]d
 
@@ -116,8 +162,9 @@ foreach infile $will_accept {
     # - --   -----        -------------
     set kd       [format $fmt $k]
     set id       [file rootname [file tail $infile]]
-    set exfile   [td]/result/y/$id
+    set cat      [string index $id 0]
     set input    [fgetc $infile [coding]]
+    set exfile   [td]/result/$cat/$id
     set expected {}
     catch { set expected [string trim [fget $exfile]] }
 
@@ -151,8 +198,11 @@ foreach infile $will_accept {
 # # ## ### ##### ######## ############# #####################
 ## Will reject inputs.
 ## - must reject
+## - may reject
 
 lappend will_reject {*}[lsort -uniq [glob -nocomplain -directory [td]/input/n n_*.json]]
+lappend will_reject {*}[lmap p [i_n] { set _ [td]/input/i/${p}.json }]
+
 set max [llength $will_reject]
 set fmt %0[string length $max]d
 
@@ -163,10 +213,11 @@ foreach infile $will_reject {
     # - --   -----        -------------
     set kd       [format $fmt $k]
     set id       [file rootname [file tail $infile]]
+    set cat      [string index $id 0]
     set input    [fgetc $infile [coding]]
     set expected {}
     catch {
-	set exfile [locate [td]/result/n [rt]/$id $id]
+	set exfile [locate [td]/result/$cat [rt]/$id $id]
 	set expected [fget $exfile]
     }
 
@@ -175,7 +226,7 @@ foreach infile $will_reject {
     
     # - --   -----        -------------
     
-    test [tnp]-process-2.${kd}---${id} "[cl] :: process $id ([coding])" -body {
+    test [tnp]-process-4.${kd}---${id} "[cl] :: process $id ([coding])" -body {
 	PARSE process $input
     } -setup setup -cleanup {
 	cleanup
@@ -183,7 +234,7 @@ foreach infile $will_reject {
 
     #continue
     
-    test [tnp]-process-file-3.${kd}---${id} "[cl] :: process-file $id" -body {
+    test [tnp]-process-file-5.${kd}---${id} "[cl] :: process-file $id" -body {
 	    PARSE process-file $infile
     } -setup setup -cleanup {
 	cleanup
