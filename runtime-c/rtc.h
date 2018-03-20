@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Engine: All together)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  *
  * Notes:
  * - This engine is byte-based, not character-based. It is the responsibility
@@ -49,7 +49,7 @@ marpatcl_rtc_p    marpatcl_rtc_cons    (marpatcl_rtc_spec* g,
 					marpatcl_rtc_result r,
 					void* rcd);
 void              marpatcl_rtc_destroy (marpatcl_rtc_p p);
-void              marpatcl_rtc_enter   (marpatcl_rtc_p p, const char* bytes, int n);
+void              marpatcl_rtc_enter   (marpatcl_rtc_p p, const unsigned char* bytes, int n);
 void              marpatcl_rtc_eof     (marpatcl_rtc_p p);
 marpatcl_rtc_sv_p marpatcl_rtc_get_sv  (marpatcl_rtc_p p);
 /* marpatcl_rtc_failed - see fail.h */
