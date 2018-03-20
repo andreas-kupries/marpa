@@ -105,7 +105,7 @@ test [tnp]-process-file-1.1 "[cl] :: process-file, wrong args, too many" -body {
 ## Will-accept inputs
 ## - must-accept
 
-lappend will_accept {*}[lsort -uniq [glob -nocomplain -directory [td]/input/y y_*]]
+lappend will_accept {*}[lsort -uniq [glob -nocomplain -directory [td]/input/y y_*.json]]
 set max [llength $will_accept]
 set fmt %0[string length $max]d
 
@@ -121,7 +121,7 @@ foreach infile $will_accept {
     set expected {}
     catch { set expected [string trim [fget $exfile]] }
 
-    #utf-show [split $input {}]
+    # catch {utf-show [split $input {}]}
     
     # - --   -----        -------------
     
@@ -152,14 +152,14 @@ foreach infile $will_accept {
 ## Will reject inputs.
 ## - must reject
 
-lappend will_reject {*}[lsort -uniq [glob -nocomplain -directory [td]/input/n n_*]]
+lappend will_reject {*}[lsort -uniq [glob -nocomplain -directory [td]/input/n n_*.json]]
 set max [llength $will_reject]
 set fmt %0[string length $max]d
 
 set k -1
 foreach infile $will_reject {
+    #continue
     incr k
-    #if {$k != 29} continue
     # - --   -----        -------------
     set kd       [format $fmt $k]
     set id       [file rootname [file tail $infile]]
@@ -170,7 +170,7 @@ foreach infile $will_reject {
 	set expected [fget $exfile]
     }
 
-    # utf-show [split $input {}] ; # rt-tcl
+    # catch {utf-show [split $input {}]} ; # rt-tcl
     # For rt-c activate `TRACE` tag `enter` in `inbound.c` and use the rebuilt runtime.
     
     # - --   -----        -------------
