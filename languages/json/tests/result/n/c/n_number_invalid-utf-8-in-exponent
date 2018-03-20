@@ -1,4 +1,4 @@
-Parsing failed in gate. Stopped at offset 4. Expected any character in [\t\n\r\40,\135] while looking for any of (comma, rbracket, whitespace).
+Parsing failed in gate. Stopped at offset 3 (+1 byte)  after reading '\303'. Expected any character in [\t\n\r\40,\135] while looking for any of (comma, rbracket, whitespace).
 L0 Report:
 ______ P1     @1-1 <comma>        -->  . <,>
 ______ P14    @1-1 <rbracket>     -->  . <\135>
@@ -11,3 +11,12 @@ ______ P204   @1-1 <[\t-\n]>      -->  . <\n>
 ______ R303:1 @0-1 <@L0:START>    -->  <comma> . <comma>
 ______ R313:1 @0-1 <@L0:START>    -->  <rbracket> . <rbracket>
 ______ R314:1 @0-1 <@L0:START>    -->  <whitespace> . <whitespace>
+
+Mismatch:
+'\303' => (195) ni
+    9: '\t'
+   10: '\n'
+   13: '\r'
+   32: '\40'
+   44: ','
+   93: '\135'

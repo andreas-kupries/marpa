@@ -1,4 +1,4 @@
-Parsing failed in gate. Stopped at offset 3. Expected any character in [\t\n\r\40] while looking for any of (whitespace).
+Parsing failed in gate. Stopped at offset 2 (+1 byte)  after reading '\300'. Expected any character in [\t\n\r\40] while looking for any of (whitespace).
 L0 Report:
 ______ P15    @1-1 <whitespace>   -->  . <[\t-\n\r\40]>
 ______ P37    @1-1 <[\t-\n\r\40]> -->  . <[\t-\n]>
@@ -7,3 +7,10 @@ ______ P39    @1-1 <[\t-\n\r\40]> -->  . <\40>
 ______ P203   @1-1 <[\t-\n]>      -->  . <\t>
 ______ P204   @1-1 <[\t-\n]>      -->  . <\n>
 ______ R314:1 @0-1 <@L0:START>    -->  <whitespace> . <whitespace>
+
+Mismatch:
+'\300' => (192) ni
+    9: '\t'
+   10: '\n'
+   13: '\r'
+   32: '\40'
