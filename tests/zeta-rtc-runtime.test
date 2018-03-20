@@ -1,5 +1,5 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2017 Andreas Kupries
+## (c) 2017-2018 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## marpa::slif::runtime + (marpa::engine::tcl::tparse + z-marpa-tcl)
 ##
@@ -18,7 +18,7 @@ kt source support/gen.tcl
 gen configure ex cparse
 
 proc input  {base} { locate $base example }
-proc result {base} { locate $base ast_rtc ast }
+proc result {base} { locate $base r_ast_rtc r_ast ast_rtc ast }
 proc label      {} { return "engine_rtc" }
 proc initialize {} { }
 proc finalize   {} { }

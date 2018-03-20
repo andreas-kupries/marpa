@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: Parsing)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
@@ -396,6 +396,12 @@ get_sv (marpatcl_rtc_p      p,
 	case MARPATCL_SV_RULE_ID:	DO (ruleid, marpatcl_rtc_sv_cons_int (rule));			break;
 	case MARPATCL_SV_LHS_ID:	DO (lhsid, marpatcl_rtc_sv_cons_int (TOKEN));			break;
 	case MARPATCL_SV_VALUE:		DO (value, marpatcl_rtc_sv_cons_vec_cp (rhs));			break;
+
+	case  MARPATCL_SV_A_FIRST:
+	    /* Special action ::first */
+	    marpatcl_rtc_sv_destroy (sv);
+	    return marpatcl_rtc_sva_get (rhs, 0);
+	    
 	default: ASSERT (0, "Invalid array descriptor key");
 	}
     }

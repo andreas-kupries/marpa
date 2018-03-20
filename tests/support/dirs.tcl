@@ -1,13 +1,17 @@
 # -*- tcl -*-
 ##
-# (c) 2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
 # Test suite support.
 # # ## ### ##### ######## #############
 ## Quick access to common directories of the testsuite.
+
+proc top {} {
+    return [file dirname [td]]
+}
 
 proc td {} {
     return [file normalize $::tcltest::testsDirectory]

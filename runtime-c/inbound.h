@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Engine: Input processing)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_INBOUND_H
@@ -19,7 +19,10 @@
  */
 
 typedef struct marpatcl_rtc_inbound {
-    int location; /* Location of the current byte in the input. */
+    int location;  /* Location of the current byte in the input (byte offset). */
+    int clocation; /* Same, as character offset */
+    int trailer;   /* Number of bytes in the expected trailer */
+    int header;    /* Number of bytes in a header so far */
 } marpatcl_rtc_inbound;
 
 /*
@@ -37,7 +40,7 @@ typedef struct marpatcl_rtc_inbound {
 void marpatcl_rtc_inbound_init     (marpatcl_rtc_p p);
 void marpatcl_rtc_inbound_free     (marpatcl_rtc_p p);
 int  marpatcl_rtc_inbound_location (marpatcl_rtc_p p);
-void marpatcl_rtc_inbound_enter    (marpatcl_rtc_p p, const char* bytes, int n);
+void marpatcl_rtc_inbound_enter    (marpatcl_rtc_p p, const unsigned char* bytes, int n);
 void marpatcl_rtc_inbound_eof      (marpatcl_rtc_p p);
 
 #endif

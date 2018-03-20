@@ -156,9 +156,20 @@ error_location (Tcl_DString *ds, marpatcl_rtc_p p)
 	Tcl_DStringAppend (ds, " No input", -1);
     } else {
 	char buf [30];
-	sprintf (buf, "%d", GATE.lastloc);
+	if (GATE.lastcloc < 0) {
+	    sprintf (buf, "%d", GATE.lastloc);
+	} else {
+	    sprintf (buf, "%d", GATE.lastcloc);
+	}
 	Tcl_DStringAppend (ds, " Stopped at offset ", -1);
 	Tcl_DStringAppend (ds, buf, -1);
+
+	if (IN.header) {
+	    sprintf (buf, "%d", IN.header);
+	    Tcl_DStringAppend (ds, " (+", -1);
+	    Tcl_DStringAppend (ds, buf, -1);
+	    Tcl_DStringAppend (ds, " byte) ", -1);
+	}
     }
 }
 
@@ -166,7 +177,8 @@ static void
 error_match_candidate (Tcl_DString *ds, marpatcl_rtc_p p)
 {
     // TODO: Properly handle a partially read UTF character at the end
-    // IOW instead 'after reading' use 'while x bytes in reading'
+    //       IOW instead of 'after reading' use 'while x bytes in reading'
+    // Maybe not, see IN.header us in `error_location` above. Might be enough.
 
     TRACE ("GATE LC %d|%d", GATE.lastchar, MARPATCL_RTC_BSMAX);
     TRACE ("LEXE # %d", marpatcl_rtc_stack_size (LEX.lexeme));
@@ -235,7 +247,7 @@ error_parse_accept (Tcl_DString *ds, marpatcl_rtc_p p)
 	}
 	// Second conversion from string ids to strings, after sorting the
 	// ids. Based on the fact that the strings are stored sorted by the
-	// generator (export/rtc-critcl.tcl), causing the sort order of the
+	// generator (gen-common/runtime-c.tcl), causing the sort order of the
 	// ids to match the lexicographic order.
 	qsort (d, n, sizeof (Marpa_Symbol_ID), compare);
 	for (k=0; k < n; k++) {
@@ -313,12 +325,14 @@ make_err (Tcl_Interp* ip, marpatcl_rtc_p p)
 {
     // *** ATTENTION ***
     //
-    // While the Tcl engine uses chars and char offsets RTC uses bytes and
-    // byte offsets.  For testing this does not matter, operating solely in
-    // the ASCII domain, where these things are identical.
+    // While the Tcl engine uses chars and char offsets RTC primarily uses
+    // bytes and byte offsets.  For testing this does not matter, operating
+    // solely in the ASCII domain, where these things are identical.
     //
-    // TODO: Extend GATE to mark and count char offsets (track char starts through the bit patterns of the utf bytes)
-    // TODO: Extend GATE to remember the bytes of a (partially) read character.
+    // IN, GATE, and LEX additionally track chars and char offsets.
+    // See `error_location` for the (GATE.lastcloc, IN.header).
+    //
+    // TODO: Maybe extend GATE to remember the bytes of a (partially) read character?
 
     Tcl_DString ds;
 

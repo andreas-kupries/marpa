@@ -1,0 +1,2 @@
+A ::= B action => ::array
+B ~ 'b'

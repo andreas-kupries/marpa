@@ -1,5 +1,5 @@
 # -*- tcl -*-
-## (c) 2017 Andreas Kupries
+## (c) 2017-2018 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 
 ## Execution core for testing the marpa runtime engines with various
@@ -39,6 +39,23 @@ kt require support fileutil ;# cat
 proc setup   {} { [gen cget cl] create PARSE }
 proc cleanup {} { PARSE destroy }
 
+proc stash {k} {
+    global rtdebug
+    if {![info exists rtdebug] || !$rtdebug} return
+    set dst [top]/[label]_${k}-stash
+    file delete -force $dst
+    file mkdir $dst
+    set cl [gen cget cl]
+
+    file copy [td]/${cl}.tcl     $dst/
+    # RTC specific. Not for Tcl.
+    catch {
+	file copy [td]/OUT_${cl}_LOG $dst/
+	file copy [td]/OUT_${cl}     $dst/
+    }
+    return
+}
+
 # # ## ### ##### ######## ############# #####################
 ## No method sequence checking for the parser.
 ## Methods can be called in any order.
@@ -74,11 +91,15 @@ incr k
 test-grammar-map rt_example --> id rte base {
     gen configure gr $rte
     gen setup cl rte$k
+
+    # Debugging - Keep the generated parser and related files for
+    # post-mortem review.
+    stash $k
  
     set input  [fget [input  $base]]
     set result [string trimright [fget [result $base]]]
     set kd     [format $format $k]
-    
+
     test marpa-[label]-runtime-process-2.${kd}---${id} "[label] :: process $id" -body {
 	catch {
 	    ast-format [PARSE process $input]
@@ -92,7 +113,7 @@ test-grammar-map rt_example --> id rte base {
     gen cleanup
     incr k
 
-    #break
+    break
 }
 
 # # ## ### ##### ######## ############# #####################
