@@ -5,28 +5,28 @@ ______ P58     @1-1 <op declare match>                -->  . <~>
 ______ P69     @1-1 <hash comment>                    -->  . <terminated hash comment>
 ______ P70     @1-1 <hash comment>                    -->  . <unterminated final hash comment>
 ______ P71     @1-1 <whitespace>                      -->  . <[:space:]>
-______ P3029   @1-1 <[:space:]>                       -->  . <[\t-\r]>
-______ P3030   @1-1 <[:space:]>                       -->  . <\40>
-______ P3031   @1-1 <[:space:]>                       -->  . <\302> <\240>
-______ P3032   @1-1 <[:space:]>                       -->  . <\341> <\232> <\200>
-______ P3033   @1-1 <[:space:]>                       -->  . <\341> <\240> <\216>
-______ P3034   @1-1 <[:space:]>                       -->  . <\342> <\200> <[\200-\212]>
-______ P3035   @1-1 <[:space:]>                       -->  . <\342> <\200> <[\250-\251]>
-______ P3036   @1-1 <[:space:]>                       -->  . <\342> <\200> <\257>
-______ P3037   @1-1 <[:space:]>                       -->  . <\342> <\201> <\237>
-______ P3038   @1-1 <[:space:]>                       -->  . <\343> <\200> <\200>
-______ P3046   @1-1 <::=>                             -->  . <:> <:> <=>
-______ P3405   @1-1 <terminated hash comment>         -->  . <#> <hash comment body> <vertical space char>
-______ P3406   @1-1 <unterminated final hash comment> -->  . <#> <hash comment body>
-______ P3540   @1-1 <[\t-\r]>                         -->  . <\t>
-______ P3541   @1-1 <[\t-\r]>                         -->  . <\n>
-______ P3542   @1-1 <[\t-\r]>                         -->  . <\13>
-______ P3543   @1-1 <[\t-\r]>                         -->  . <\14>
-______ P3544   @1-1 <[\t-\r]>                         -->  . <\r>
-______ R3912:1 @0-1 <@L0:START>                       -->  <op declare bnf> . <op declare bnf>
-______ R3913:1 @0-1 <@L0:START>                       -->  <op declare match> . <op declare match>
-______ R3923:1 @0-1 <@L0:START>                       -->  <hash comment> . <hash comment>
-______ R3924:1 @0-1 <@L0:START>                       -->  <whitespace> . <whitespace>
+______ P3015   @1-1 <[:space:]>                       -->  . <[\t-\r]>
+______ P3016   @1-1 <[:space:]>                       -->  . <\40>
+______ P3017   @1-1 <[:space:]>                       -->  . <\302> <\240>
+______ P3018   @1-1 <[:space:]>                       -->  . <\341> <\232> <\200>
+______ P3019   @1-1 <[:space:]>                       -->  . <\341> <\240> <\216>
+______ P3020   @1-1 <[:space:]>                       -->  . <\342> <\200> <[\200-\212]>
+______ P3021   @1-1 <[:space:]>                       -->  . <\342> <\200> <[\250-\251]>
+______ P3022   @1-1 <[:space:]>                       -->  . <\342> <\200> <\257>
+______ P3023   @1-1 <[:space:]>                       -->  . <\342> <\201> <\237>
+______ P3024   @1-1 <[:space:]>                       -->  . <\343> <\200> <\200>
+______ P3032   @1-1 <::=>                             -->  . <:> <:> <=>
+______ P3391   @1-1 <terminated hash comment>         -->  . <#> <hash comment body> <vertical space char>
+______ P3392   @1-1 <unterminated final hash comment> -->  . <#> <hash comment body>
+______ P3526   @1-1 <[\t-\r]>                         -->  . <\t>
+______ P3527   @1-1 <[\t-\r]>                         -->  . <\n>
+______ P3528   @1-1 <[\t-\r]>                         -->  . <\13>
+______ P3529   @1-1 <[\t-\r]>                         -->  . <\14>
+______ P3530   @1-1 <[\t-\r]>                         -->  . <\r>
+______ R3899:1 @0-1 <@L0:START>                       -->  <op declare bnf> . <op declare bnf>
+______ R3900:1 @0-1 <@L0:START>                       -->  <op declare match> . <op declare match>
+______ R3910:1 @0-1 <@L0:START>                       -->  <hash comment> . <hash comment>
+______ R3911:1 @0-1 <@L0:START>                       -->  <whitespace> . <whitespace>
 
 Mismatch:
 '=' => (61) ni

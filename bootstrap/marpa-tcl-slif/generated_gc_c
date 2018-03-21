@@ -1087,15 +1087,7 @@ oo::class create <Name> {
 	                        {@BRAN:<\201\u00bf>}
 	                        {@BRAN:<\200\u00bf>}} 0}
 	                {priority {
-	                        {@BRAN:<\u00e3\u00ec>}
-	                        {@BRAN:<\200\u00bf>}
-	                        {@BRAN:<\200\u00bf>}} 0}
-	                {priority {
-	                        {@BYTE:<\u00ed>}
-	                        {@BRAN:<\200\237>}
-	                        {@BRAN:<\200\u00bf>}} 0}
-	                {priority {
-	                        {@BRAN:<\u00ee\u00ef>}
+	                        {@BRAN:<\u00e3\u00ef>}
 	                        {@BRAN:<\200\u00bf>}
 	                        {@BRAN:<\200\u00bf>}} 0}
 	                {priority {
@@ -1139,15 +1131,7 @@ oo::class create <Name> {
 	                        {@BRAN:<\201\u00bf>}
 	                        {@BRAN:<\200\u00bf>}} 0}
 	                {priority {
-	                        {@BRAN:<\u00e3\u00ec>}
-	                        {@BRAN:<\200\u00bf>}
-	                        {@BRAN:<\200\u00bf>}} 0}
-	                {priority {
-	                        {@BYTE:<\u00ed>}
-	                        {@BRAN:<\200\237>}
-	                        {@BRAN:<\200\u00bf>}} 0}
-	                {priority {
-	                        {@BRAN:<\u00ee\u00ef>}
+	                        {@BRAN:<\u00e3\u00ef>}
 	                        {@BRAN:<\200\u00bf>}
 	                        {@BRAN:<\200\u00bf>}} 0}
 	                {priority {
@@ -1194,15 +1178,7 @@ oo::class create <Name> {
 	                        {@BRAN:<\201\u00bf>}
 	                        {@BRAN:<\200\u00bf>}} 0}
 	                {priority {
-	                        {@BRAN:<\u00e3\u00ec>}
-	                        {@BRAN:<\200\u00bf>}
-	                        {@BRAN:<\200\u00bf>}} 0}
-	                {priority {
-	                        {@BYTE:<\u00ed>}
-	                        {@BRAN:<\200\237>}
-	                        {@BRAN:<\200\u00bf>}} 0}
-	                {priority {
-	                        {@BRAN:<\u00ee\u00ef>}
+	                        {@BRAN:<\u00e3\u00ef>}
 	                        {@BRAN:<\200\u00bf>}
 	                        {@BRAN:<\200\u00bf>}} 0}
 	                {priority {
@@ -1246,15 +1222,7 @@ oo::class create <Name> {
 	                        {@BRAN:<\201\u00bf>}
 	                        {@BRAN:<\200\u00bf>}} 0}
 	                {priority {
-	                        {@BRAN:<\u00e3\u00ec>}
-	                        {@BRAN:<\200\u00bf>}
-	                        {@BRAN:<\200\u00bf>}} 0}
-	                {priority {
-	                        {@BYTE:<\u00ed>}
-	                        {@BRAN:<\200\237>}
-	                        {@BRAN:<\200\u00bf>}} 0}
-	                {priority {
-	                        {@BRAN:<\u00ee\u00ef>}
+	                        {@BRAN:<\u00e3\u00ef>}
 	                        {@BRAN:<\200\u00bf>}
 	                        {@BRAN:<\200\u00bf>}} 0}
 	                {priority {
@@ -1297,15 +1265,7 @@ oo::class create <Name> {
 	                        {@BRAN:<\201\u00bf>}
 	                        {@BRAN:<\200\u00bf>}} 0}
 	                {priority {
-	                        {@BRAN:<\u00e3\u00ec>}
-	                        {@BRAN:<\200\u00bf>}
-	                        {@BRAN:<\200\u00bf>}} 0}
-	                {priority {
-	                        {@BYTE:<\u00ed>}
-	                        {@BRAN:<\200\237>}
-	                        {@BRAN:<\200\u00bf>}} 0}
-	                {priority {
-	                        {@BRAN:<\u00ee\u00ef>}
+	                        {@BRAN:<\u00e3\u00ef>}
 	                        {@BRAN:<\200\u00bf>}
 	                        {@BRAN:<\200\u00bf>}} 0}
 	                {priority {
@@ -1351,15 +1311,7 @@ oo::class create <Name> {
 	                        {@BRAN:<\201\u00bf>}
 	                        {@BRAN:<\200\u00bf>}} 0}
 	                {priority {
-	                        {@BRAN:<\u00e3\u00ec>}
-	                        {@BRAN:<\200\u00bf>}
-	                        {@BRAN:<\200\u00bf>}} 0}
-	                {priority {
-	                        {@BYTE:<\u00ed>}
-	                        {@BRAN:<\200\237>}
-	                        {@BRAN:<\200\u00bf>}} 0}
-	                {priority {
-	                        {@BRAN:<\u00ee\u00ef>}
+	                        {@BRAN:<\u00e3\u00ef>}
 	                        {@BRAN:<\200\u00bf>}
 	                        {@BRAN:<\200\u00bf>}} 0}
 	                {priority {
@@ -1400,15 +1352,7 @@ oo::class create <Name> {
 	                        {@BRAN:<\201\u00bf>}
 	                        {@BRAN:<\200\u00bf>}} 0}
 	                {priority {
-	                        {@BRAN:<\u00e3\u00ec>}
-	                        {@BRAN:<\200\u00bf>}
-	                        {@BRAN:<\200\u00bf>}} 0}
-	                {priority {
-	                        {@BYTE:<\u00ed>}
-	                        {@BRAN:<\200\237>}
-	                        {@BRAN:<\200\u00bf>}} 0}
-	                {priority {
-	                        {@BRAN:<\u00ee\u00ef>}
+	                        {@BRAN:<\u00e3\u00ef>}
 	                        {@BRAN:<\200\u00bf>}
 	                        {@BRAN:<\200\u00bf>}} 0}
 	                {priority {
@@ -15114,10 +15058,9 @@ oo::class create <Name> {
 	            {@BRAN:<\u00c2\u00df>} { {brange 194 223} }
 	            {@BRAN:<\u00c4\u00ca>} { {brange 196 202} }
 	            {@BRAN:<\u00d0\u00d1>} { {brange 208 209} }
-	            {@BRAN:<\u00e3\u00ec>} { {brange 227 236} }
+	            {@BRAN:<\u00e3\u00ef>} { {brange 227 239} }
 	            {@BRAN:<\u00e5\u00e8>} { {brange 229 232} }
 	            {@BRAN:<\u00eb\u00ec>} { {brange 235 236} }
-	            {@BRAN:<\u00ee\u00ef>} { {brange 238 239} }
 	            @BRAN:<^`> { {brange 94 96} }
 	            @BRAN:<ab> { {brange 97 98} }
 	            @BRAN:<AF> { {brange 65 70} }

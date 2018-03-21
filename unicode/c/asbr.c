@@ -103,8 +103,6 @@ marpatcl_asbr_new (SCR* scr, int flags) {
 	for (codepoint = cr->start;
 	     codepoint <= cr->end;
 	     codepoint ++) {
-	    /* Reject the codepoints for surrogates */
-	    if ((0xD7FF < codepoint) && (codepoint < 0xE000)) continue;
 	    if (codepoint > (lastcode+1)) {
 		/* Gap between codes, prevent merging */
 		finalize(&state);

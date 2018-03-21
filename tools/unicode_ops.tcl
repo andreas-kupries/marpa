@@ -96,7 +96,7 @@ proc negate-class {charclass} {
 	set cmin [incr max]
     }
 
-    if {$cmin < $cmax} {
+    if {$cmin <= $cmax} {
 	NA [list $cmin $cmax]
     }
 
