@@ -2,13 +2,13 @@ Parsing failed in gate. Stopped at offset 6 after reading 'l'. Expected any char
 L0 Report:
 ______ P12    @1-1 <quote>        -->  . <\42>
 ______ P15    @1-1 <whitespace>   -->  . <[\t-\n\r\40]>
-______ P37    @1-1 <[\t-\n\r\40]> -->  . <[\t-\n]>
-______ P38    @1-1 <[\t-\n\r\40]> -->  . <\r>
-______ P39    @1-1 <[\t-\n\r\40]> -->  . <\40>
-______ P203   @1-1 <[\t-\n]>      -->  . <\t>
-______ P204   @1-1 <[\t-\n]>      -->  . <\n>
-______ R311:1 @0-1 <@L0:START>    -->  <quote> . <quote>
-______ R314:1 @0-1 <@L0:START>    -->  <whitespace> . <whitespace>
+______ P33    @1-1 <[\t-\n\r\40]> -->  . <[\t-\n]>
+______ P34    @1-1 <[\t-\n\r\40]> -->  . <\r>
+______ P35    @1-1 <[\t-\n\r\40]> -->  . <\40>
+______ P231   @1-1 <[\t-\n]>      -->  . <\t>
+______ P232   @1-1 <[\t-\n]>      -->  . <\n>
+______ R340:1 @0-1 <@L0:START>    -->  <quote> . <quote>
+______ R343:1 @0-1 <@L0:START>    -->  <whitespace> . <whitespace>
 
 Mismatch:
 'l' => (108) ni

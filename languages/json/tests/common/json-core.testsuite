@@ -19,6 +19,23 @@
 kt source support/utf.tcl
 
 # # ## ### ##### ######## ############# #####################
+## Local configuration (restrictions for debug)
+
+set skipfiles 0
+if 0 {
+    rename constraints constraints.rt
+    proc constraints {id} {
+	if {![dict exists {
+	    i_string_UTF8_surrogate_U+D800 %%
+	} $id]} {
+	    return knownBug
+	}
+	return {}
+	#constraints.rt $id
+    }
+}
+
+# # ## ### ##### ######## ############# #####################
 
 kt check Tcl     8.5
 kt check tcltest 2
@@ -168,11 +185,12 @@ foreach infile $will_accept {
     set expected {}
     catch { set expected [string trim [fget $exfile]] }
 
-    # catch {utf-show [split $input {}]}
-    
     # - --   -----        -------------
     
     test [tnp]-process-2.${kd}---${id} "[cl] :: process $id" -body {
+	# catch {utf-show [split $input {}]}
+	# For rt-c activate `TRACE` tag `enter` in `inbound.c` and use the rebuilt runtime.
+
 	catch {
 	    ast-format [PARSE process $input]
 	} msg
@@ -182,7 +200,7 @@ foreach infile $will_accept {
 	unset msg
     } -result $expected -constraints [constraints $id]
 
-    #continue
+    if {$skipfiles} continue
     
     test [tnp]-process-file-3.${kd}---${id} "[cl] :: process-file $id" -body {
 	catch {
@@ -221,18 +239,18 @@ foreach infile $will_reject {
 	set expected [fget $exfile]
     }
 
-    # catch {utf-show [split $input {}]} ; # rt-tcl
-    # For rt-c activate `TRACE` tag `enter` in `inbound.c` and use the rebuilt runtime.
-    
     # - --   -----        -------------
     
     test [tnp]-process-4.${kd}---${id} "[cl] :: process $id ([coding])" -body {
+	# catch {utf-show [split $input {}]} ; # rt-tcl
+	# For rt-c activate `TRACE` tag `enter` in `inbound.c` and use the rebuilt runtime.
+    
 	PARSE process $input
     } -setup setup -cleanup {
 	cleanup
     } -returnCodes error -result $expected -constraints [constraints $id]
 
-    #continue
+    if {$skipfiles} continue
     
     test [tnp]-process-file-5.${kd}---${id} "[cl] :: process-file $id" -body {
 	    PARSE process-file $infile
