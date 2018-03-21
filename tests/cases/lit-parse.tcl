@@ -86,6 +86,8 @@ proc lit-parse {} {
     ++ N01 {'\u00000F'}         {character 15}
     ++ N01 {'\uFFFE'}           {character 65534}
     ++ N01 {'\u10F60F'}         {character 1111567}
+    ++ N01 {'\uD800'}           {character 55296}
+    ++ N01 {'\uDB00'}           {character 56064}
     
     # ++ N01 {'\'} {string }
     # ++ N01 {'\'} {string }

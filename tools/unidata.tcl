@@ -107,7 +107,7 @@ proc main {selfdir} {
     process-unidata [file join [file dirname $selfdir] unidata/UnicodeData.txt]
     process-scripts [file join [file dirname $selfdir] unidata/Scripts.txt]
 
-    undef-class Cs ;# No interest in the surrogate block
+    #undef-class Cs ;# No interest in the surrogate block
 
     make-derived-tcl-classes
     make-direct-tcl-classes

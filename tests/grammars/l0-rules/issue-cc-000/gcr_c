@@ -117,12 +117,8 @@ grammar {
                         {@BRAN:<\202\u00bf>}
                         {@BRAN:<\200\u00bf>}} 0}
                 {priority {
-                        {@BRAN:<\u00e3\u00ec>}
+                        {@BRAN:<\u00e3\u00ed>}
                         {@BRAN:<\200\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
-                {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\200\237>}
                         {@BRAN:<\200\u00bf>}} 0}
                 {priority {
                         {@BYTE:<\u00ef>}
@@ -363,7 +359,7 @@ grammar {
             {@BRAN:<\u00c3\u00d7>} { {brange 195 215} }
             {@BRAN:<\u00d9\u00da>} { {brange 217 218} }
             {@BRAN:<\u00dd\u00df>} { {brange 221 223} }
-            {@BRAN:<\u00e3\u00ec>} { {brange 227 236} }
+            {@BRAN:<\u00e3\u00ed>} { {brange 227 237} }
             {@BYTE:<\200>} { {byte 128} }
             {@BYTE:<\201>} { {byte 129} }
             {@BYTE:<\204>} { {byte 132} }
@@ -391,3 +387,4 @@ grammar {
         }
     }
 }
+
