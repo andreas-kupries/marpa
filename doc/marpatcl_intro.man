@@ -1,0 +1,88 @@
+[comment {-*- tcl -*- doctools manpage}]
+[manpage_begin marpatcl_introduction n 1]
+[include include/module.inc]
+[titledesc {Marpa/Tcl - Introduction to Marpa/Tcl}]
+[description]
+
+Welcome to Marpa/Tcl, a Tcl binding to the [file libmarpa] parsing
+engine.
+
+[comment {
+[para]
+What are your goals which drove you here ?
+
+[list_begin enumerated]
+[enum]
+[list_end]
+}]
+
+[section {Related Documents}]
+
+[list_begin enum]
+[enum] [term {Marpa/Tcl - How To Get The Sources}].
+[enum] [term {Marpa/Tcl - The Installer's Guide}].
+[enum] [term {Marpa/Tcl - The Developer's Guide}].
+[list_end]
+
+[section {System Architecture}]
+
+The system can be split into roughly six sections, as seen in the
+figure below. The seventh is [package libmarpa] itself, which is
+technically outside of the system.
+
+[para][image architecture][para]
+
+The sections in more detail are:
+
+[list_begin definitions]
+[def Applications]
+
+At the top the [cmd marpa-gen] application, integrating and using all
+of the packages, providing a parser generator reading grammars
+specified using SLIF and producing a variety of formats.
+
+[def SLIF]
+
+A series of packages supporting the SLIF language for grammar
+specifications.  This is a very close sibling to the SLIF language for
+[package Marpa::R2], the current stable perl binding.
+
+[para] The section contains packages for parsing SLIF, semantics for
+translating a parse into a container, processing of literals, and a
+container for SLIF grammars.
+
+[def Generators]
+
+A series of packages for producing a variety of formats from a SLIF
+grammar container.
+
+[def rt-Tcl]
+
+The package [package runtime::tcl] implementing a parse engine in Tcl,
+on top of [package libmarpa], through the marpa wrapper packages.
+
+[def rt-C]
+
+The package [package runtime::c] implementing a parse engine in C, on
+top of [package libmarpa], with no wrappers needed.
+
+[def {Unicode data and utilities}]
+
+The [package unicode] accessor package (named character classes, case
+folding, de- and encoding codepoints to various representations,
+character class operations).
+
+[def libmarpa]
+
+Jeffrey Kegler's base library implementing an Earley parser with fixes
+by John Aycock, Nigel Horspool and Joop Leo. The foundation for the
+rest of the system.
+
+[list_end]
+
+The package dependencies are shown in the next image.
+
+[comment { XXX --- [para][image pkg_dependencies][para] --- }]
+
+[manpage_end]
+

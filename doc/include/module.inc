@@ -1,0 +1,8 @@
+[comment {--- Standard header for all manpages in this module --}]
+[copyright {2015-2018 Andreas Kupries}]
+[copyright {2018 Documentation, Andreas Kupries}]
+[moddesc   {Marpa/Tcl, a binding to libmarpa}]
+[keywords {document processing}]
+[keywords libmarpa parsing lexing earley aycock horspool]
+[keywords {joop leo} {nigel horspool} {table parsing}]
+[keywords regex {character classes}]
