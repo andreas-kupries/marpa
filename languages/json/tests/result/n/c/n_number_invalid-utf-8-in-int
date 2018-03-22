@@ -1,0 +1,22 @@
+Parsing failed in gate. Stopped at offset 1 (+1 byte)  after reading '\303'. Expected any character in [\t\n\r\40,\135] while looking for any of (comma, rbracket, whitespace).
+L0 Report:
+______ P1     @1-1 <comma>        -->  . <,>
+______ P14    @1-1 <rbracket>     -->  . <\135>
+______ P15    @1-1 <whitespace>   -->  . <[\t-\n\r\40]>
+______ P33    @1-1 <[\t-\n\r\40]> -->  . <[\t-\n]>
+______ P34    @1-1 <[\t-\n\r\40]> -->  . <\r>
+______ P35    @1-1 <[\t-\n\r\40]> -->  . <\40>
+______ P231   @1-1 <[\t-\n]>      -->  . <\t>
+______ P232   @1-1 <[\t-\n]>      -->  . <\n>
+______ R332:1 @0-1 <@L0:START>    -->  <comma> . <comma>
+______ R342:1 @0-1 <@L0:START>    -->  <rbracket> . <rbracket>
+______ R343:1 @0-1 <@L0:START>    -->  <whitespace> . <whitespace>
+
+Mismatch:
+'\303' => (195) ni
+    9: '\t'
+   10: '\n'
+   13: '\r'
+   32: '\40'
+   44: ','
+   93: '\135'

@@ -1,0 +1,8 @@
+value
+  array
+    elements
+      element
+        value
+          string
+            @2 13 'a/*b*/c/*d//e'
+

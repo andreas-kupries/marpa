@@ -1,0 +1,9 @@
+Parsing failed in lexer. Stopped at offset 1 after reading '1'. Expected any character in [\t\n\r\40\42\175] while looking for any of (quote, rbrace, whitespace).
+Mismatch:
+'1' => (49) ni
+    9: '\t'
+   10: '\n'
+   13: '\r'
+   32: '\40'
+   34: '\42'
+  125: '\175'

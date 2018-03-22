@@ -1,0 +1,17 @@
+value
+  object
+    pairs
+      pair
+        string
+          @3 3 'min'
+        value
+          number
+            @9 8 '-1.0e+28'
+      @17 1 ','
+      pair
+        string
+          @20 3 'max'
+        value
+          number
+            @26 7 '1.0e+28'
+

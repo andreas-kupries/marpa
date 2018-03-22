@@ -1,0 +1,9 @@
+Parsing failed in parser. Stopped at offset 11 after reading '\42'. Expected any character in [\t\n\r\40,\175] while looking for any of (comma, rbrace, whitespace).
+Mismatch:
+'\42' => (34) ni
+    9: '\t'
+   10: '\n'
+   13: '\r'
+   32: '\40'
+   44: ','
+  125: '\175'

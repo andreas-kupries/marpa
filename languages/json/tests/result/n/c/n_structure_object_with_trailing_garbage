@@ -1,0 +1,16 @@
+Parsing failed in gate. Stopped at offset 12 after reading '\42'. Expected any character in [\t\n\r\40] while looking for any of (whitespace).
+L0 Report:
+______ P15    @1-1 <whitespace>   -->  . <[\t-\n\r\40]>
+______ P33    @1-1 <[\t-\n\r\40]> -->  . <[\t-\n]>
+______ P34    @1-1 <[\t-\n\r\40]> -->  . <\r>
+______ P35    @1-1 <[\t-\n\r\40]> -->  . <\40>
+______ P231   @1-1 <[\t-\n]>      -->  . <\t>
+______ P232   @1-1 <[\t-\n]>      -->  . <\n>
+______ R343:1 @0-1 <@L0:START>    -->  <whitespace> . <whitespace>
+
+Mismatch:
+'\42' => (34) ni
+    9: '\t'
+   10: '\n'
+   13: '\r'
+   32: '\40'

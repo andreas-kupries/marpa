@@ -1,0 +1,8 @@
+value
+  array
+    elements
+      element
+        value
+          string
+            @3 3 'asd'
+

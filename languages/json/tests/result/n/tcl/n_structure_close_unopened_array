@@ -1,0 +1,7 @@
+Parsing failed in gate. Stopped at offset 1 after reading ']'. Expected any character in [[\\t\\n\\r\\40]] while looking for any of (whitespace).
+L0 Report:
+______ P34   @1-1 <whitespace> --> . <@CLS:<\t-\n\r\40>>
+______ R53:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
+Mismatch:
+']' => (18 24) ni
+   26: [\t\n\r\40]

@@ -1,0 +1,10 @@
+value
+  object
+    pairs
+      pair
+        string
+          @2 3 'asd'
+        value
+          string
+            @8 3 'sdf'
+

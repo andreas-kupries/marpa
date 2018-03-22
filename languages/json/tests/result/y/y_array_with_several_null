@@ -1,0 +1,28 @@
+value
+  array
+    elements
+      element
+        value
+          number
+            @1 1 '1'
+      @2 1 ','
+      element
+        value
+          null
+            @3 4 'null'
+      @7 1 ','
+      element
+        value
+          null
+            @8 4 'null'
+      @12 1 ','
+      element
+        value
+          null
+            @13 4 'null'
+      @17 1 ','
+      element
+        value
+          number
+            @18 1 '2'
+

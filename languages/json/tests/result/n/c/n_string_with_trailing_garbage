@@ -1,0 +1,7 @@
+Parsing failed in lexer. Stopped at offset 2 after reading 'x'. Expected any character in [\t\n\r\40] while looking for any of (whitespace).
+Mismatch:
+'x' => (120) ni
+    9: '\t'
+   10: '\n'
+   13: '\r'
+   32: '\40'

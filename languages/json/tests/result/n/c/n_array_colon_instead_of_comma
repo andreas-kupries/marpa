@@ -1,0 +1,9 @@
+Parsing failed in lexer. Stopped at offset 3 after reading ':'. Expected any character in [\t\n\r\40,\135] while looking for any of (comma, rbracket, whitespace).
+Mismatch:
+':' => (58) ni
+    9: '\t'
+   10: '\n'
+   13: '\r'
+   32: '\40'
+   44: ','
+   93: '\135'
