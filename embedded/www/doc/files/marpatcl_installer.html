@@ -1,0 +1,355 @@
+
+<!DOCTYPE html><html><head>
+<title>marpatcl_install_guide - Marpa/Tcl, a binding to libmarpa</title>
+<style type="text/css"><!--
+    HTML {
+	background: 	#FFFFFF;
+	color: 		black;
+    }
+    BODY {
+	background: 	#FFFFFF;
+	color:	 	black;
+    }
+    DIV.doctools {
+	margin-left:	10%;
+	margin-right:	10%;
+    }
+    DIV.doctools H1,DIV.doctools H2 {
+	margin-left:	-5%;
+    }
+    H1, H2, H3, H4 {
+	margin-top: 	1em;
+	font-family:	sans-serif;
+	font-size:	large;
+	color:		#005A9C;
+	background: 	transparent;
+	text-align:		left;
+    }
+    H1.doctools_title {
+	text-align: center;
+    }
+    UL,OL {
+	margin-right: 0em;
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+    }
+    UL LI {
+	list-style: disc;
+    }
+    OL LI {
+	list-style: decimal;
+    }
+    DT {
+	padding-top: 	1ex;
+    }
+    UL.doctools_toc,UL.doctools_toc UL, UL.doctools_toc UL UL {
+	font:		normal 12pt/14pt sans-serif;
+	list-style:	none;
+    }
+    LI.doctools_section, LI.doctools_subsection {
+	list-style: 	none;
+	margin-left: 	0em;
+	text-indent:	0em;
+	padding: 	0em;
+    }
+    PRE {
+	display: 	block;
+	font-family:	monospace;
+	white-space:	pre;
+	margin:		0%;
+	padding-top:	0.5ex;
+	padding-bottom:	0.5ex;
+	padding-left:	1ex;
+	padding-right:	1ex;
+	width:		100%;
+    }
+    PRE.doctools_example {
+	color: 		black;
+	background: 	#f5dcb3;
+	border:		1px solid black;
+    }
+    UL.doctools_requirements LI, UL.doctools_syntax LI {
+	list-style: 	none;
+	margin-left: 	0em;
+	text-indent:	0em;
+	padding:	0em;
+    }
+    DIV.doctools_synopsis {
+	color: 		black;
+	background: 	#80ffff;
+	border:		1px solid black;
+	font-family:	serif;
+	margin-top: 	1em;
+	margin-bottom: 	1em;
+    }
+    UL.doctools_syntax {
+	margin-top: 	1em;
+	border-top:	1px solid black;
+    }
+    UL.doctools_requirements {
+	margin-bottom: 	1em;
+	border-bottom:	1px solid black;
+    }
+--></style>
+</head>
+<!-- Generated from file 'marpatcl_installer.man' by tcllib/doctools with format 'html'
+   -->
+<!-- Copyright &amp;copy; 2015-2018 Andreas Kupries   -- Copyright &amp;copy; 2018 Documentation, Andreas Kupries
+   -->
+<!-- marpatcl_install_guide.n
+   -->
+<body><hr> [
+   <a href="../../../../../../home">Home</a>
+| <a href="../../toc.html">Main Table Of Contents</a>
+| <a href="../toc.html">Table Of Contents</a>
+| <a href="../../index.html">Keyword Index</a>
+ ] <hr>
+<div class="doctools">
+<h1 class="doctools_title">marpatcl_install_guide(n) 1 doc &quot;Marpa/Tcl, a binding to libmarpa&quot;</h1>
+<div id="name" class="doctools_section"><h2><a name="name">Name</a></h2>
+<p>marpatcl_install_guide - Marpa/Tcl - The Installer's Guide</p>
+</div>
+<div id="toc" class="doctools_section"><h2><a name="toc">Table Of Contents</a></h2>
+<ul class="doctools_toc">
+<li class="doctools_section"><a href="#toc">Table Of Contents</a></li>
+<li class="doctools_section"><a href="#section1">Description</a></li>
+<li class="doctools_section"><a href="#section2">Requisites</a>
+<ul>
+<li class="doctools_subsection"><a href="#subsection1">Tcl</a></li>
+<li class="doctools_subsection"><a href="#subsection2">CriTcl</a></li>
+<li class="doctools_subsection"><a href="#subsection3">Tcllib</a></li>
+<li class="doctools_subsection"><a href="#subsection4">Kettle</a></li>
+</ul>
+</li>
+<li class="doctools_section"><a href="#section3">Build &amp; Installation Instructions</a>
+<ul>
+<li class="doctools_subsection"><a href="#subsection5">Build &amp; Installation (Unix)</a></li>
+<li class="doctools_subsection"><a href="#subsection6">Build &amp; Installation (Windows)</a></li>
+</ul>
+</li>
+<li class="doctools_section"><a href="#keywords">Keywords</a></li>
+<li class="doctools_section"><a href="#copyright">Copyright</a></li>
+</ul>
+</div>
+<div id="section1" class="doctools_section"><h2><a name="section1">Description</a></h2>
+<p>Welcome to Marpa/Tcl, a Tcl binding to the &quot;<b class="file">libmarpa</b>&quot; parsing
+engine.</p>
+<p>The audience of this document is anyone wishing to build the packages,
+for either themselves, or others.</p>
+<p>For a developer intending to extend or modify the packages we
+additionally provide</p>
+<ol class="doctools_enumerated">
+<li><p><i class="term"><a href="marpatcl_devguide.html">Marpa/Tcl - The Developer's Guide</a></i>.</p></li>
+</ol>
+<p>Please read <i class="term"><a href="marpatcl_sources.html">Marpa/Tcl - How To Get The Sources</a></i> first, if that was
+not done already. Here we assume that the sources are already
+available in a directory of your choice.</p>
+</div>
+<div id="section2" class="doctools_section"><h2><a name="section2">Requisites</a></h2>
+<p>Before Marpa/Tcl can be build and used a number of requisites must be installed.
+These are:</p>
+<ol class="doctools_enumerated">
+<li><p>The scripting language Tcl.
+       For details see <span class="sectref"><a href="#subsection1">Tcl</a></span>.</p></li>
+<li><p>The <b class="package">critcl</b> package (C embedding) for <b class="syscmd">Tcl</b>.
+       For details see <span class="sectref"><a href="#subsection2">CriTcl</a></span>.</p></li>
+<li><p>Various packages from the Tcllib bundles for <b class="syscmd">Tcl</b>.
+       For details see <span class="sectref"><a href="#subsection3">Tcllib</a></span>.</p></li>
+<li><p>The <b class="package">kettle</b> application (Build tool) for <b class="syscmd">Tcl</b>.
+       For details see <span class="sectref"><a href="#subsection4">Kettle</a></span>.</p></li>
+</ol>
+<p>This list assumes that the machine where Marpa/Tcl is to be installed
+is essentially clean. Of course, if parts of the dependencies listed
+below are already installed the associated steps can be skipped. It is
+still recommended to read their sections though, to validate that the
+dependencies they talk about are indeed installed.</p>
+<div id="subsection1" class="doctools_subsection"><h3><a name="subsection1">Tcl</a></h3>
+<p>As we are building a set of Tcl packages it should be pretty much
+obvious that a working Tcl installation is needed, and I will not
+belabor the point.</p>
+<p>Out of the many use whatever you are comfortable with, as long
+as it provides Tcl 8.5, or higher.</p>
+<p>This may be a Tcl installation provided by your operating
+system distribution, from a distribution-independent vendor, or built
+by yourself.</p>
+<p>Myself, I used <a href="http://www.activestate.com">ActiveState's</a>
+ActiveTcl 8.5 distribution during development of the binding, as I am
+most familiar with it.</p>
+<p><em>(Disclosure: I, Andreas Kupries, worked for ActiveState, and maintained ActiveTcl and TclDevKit for them).</em></p>
+<p>This distribution can be found at
+<a href="http://www.activestate.com/activetcl">http://www.activestate.com/activetcl</a>. Retrieve the archive of
+ActiveTcl 8.5 for your platform and install it as directed by
+ActiveState.</p>
+<p>Assuming that ActiveTcl got installed I usually run the command</p>
+<pre class="doctools_example">
+    teacup update
+</pre>
+<p>to install all packages ActiveState provides, and the kitchensink, as
+the distribution itself usually contains only the most important set
+of packages. This ensures that the dependencies for <span class="sectref"><a href="#subsection2">CriTcl</a></span>,
+and Marpa/Tcl are all present, and more.</p>
+<p>If that is not your liking you have to read the sections for
+<span class="sectref"><a href="#subsection2">CriTcl</a></span>, and Marpa/Tcl to determine the exact set of packages
+required, and install only these using</p>
+<pre class="doctools_example">
+    teacup install $packagename
+</pre>
+<p>Both <b class="syscmd">teacup</b> commands above assume that ActiveState's
+TEApot repository at <a href="http://teapot.activestate.com">http://teapot.activestate.com</a> is in the
+list of repositories accessible to <b class="syscmd">teacup</b>. This is automatically
+ensured for the ActiveTcl distribution. Others may have to run</p>
+<pre class="doctools_example">
+    teacup archive add http://teapot.activestate.com
+</pre>
+<p>to make this happen.</p>
+<p>For those wishing to build Tcl on their own, their sources can
+be found at</p>
+<dl class="doctools_definitions">
+<dt>Tcl</dt>
+<dd><p><a href="http://core.tcl.tk/tcl/">http://core.tcl.tk/tcl/</a></p></dd>
+</dl>
+</div>
+<div id="subsection2" class="doctools_subsection"><h3><a name="subsection2">CriTcl</a></h3>
+<p>To build Marpa/Tcl the tool <b class="syscmd">critcl</b> is required.</p>
+<p>Marpa/Tcl's build system (based on <span class="sectref"><a href="#subsection4">Kettle</a></span>) accepts it
+either as an application found in the PATH (be it starkit or
+starpack), or as a Tcl package available to the <b class="syscmd">tclsh</b> used to
+run their build &amp; installation processes.</p>
+<p>Marpa/Tcl requires version 3 or higher.</p>
+<p>The github repository providing releases of version 3 and
+higher, and the associated sources, can be found at
+<a href="http://andreas-kupries.github.com/critcl">http://andreas-kupries.github.com/critcl</a>.</p>
+<p>Any branch of the repository can be used (if not using the
+prebuild starkit or starpack), although the use of the stable branch
+<em>master</em> is recommended.</p>
+<p>At the above url is also an explanation on how to build and
+install CriTcl, including a list of its dependencies.</p>
+<p>Its instructions will not be repeated here. If there are
+problems with their directions please file a bug against the critcl
+project, and not Marpa/Tcl.</p>
+</div>
+<div id="subsection3" class="doctools_subsection"><h3><a name="subsection3">Tcllib</a></h3>
+<p>To use Marpa/Tcl a few packages found in the bundle Tcllib are
+required. These packages are:</p>
+<ol class="doctools_enumerated">
+<li><p>debug</p></li>
+<li><p>debug::caller</p></li>
+<li><p>oo::util</p></li>
+<li><p>lambda</p></li>
+<li><p>try</p></li>
+<li><p>fileutil</p></li>
+</ol>
+<p>Assuming that ActiveTcl is installed, or some other Tcl
+installation with <b class="syscmd">teacup</b> available, these packages can
+be installed via</p>
+<pre class="doctools_example">
+    teacup install $packagename
+</pre>
+<p>The <b class="syscmd">teacup</b> command above assumes that ActiveState's
+TEApot repository at <a href="http://teapot.activestate.com">http://teapot.activestate.com</a> is in the
+list of repositories accessible to <b class="syscmd">teacup</b>. This is automatically
+ensured for the ActiveTcl distribution. Others may have to run</p>
+<pre class="doctools_example">
+    teacup archive add http://teapot.activestate.com
+</pre>
+<p>to make this happen.</p>
+<p>Now, for those wishing to install the packages from source, the
+fossil repository for the bundle can be found at
+<a href="https://core.tcl.tk/tcllib">https://core.tcl.tk/tcllib</a>.</p>
+<p>Releases of Tcllib can be found there as well, or
+<b class="syscmd">fossil</b> can be used to check out specific revisions.</p>
+<p>Tcllib comes with its own installation instructions.  These
+will not be repeated here. If there are problems with its directions
+please file a bug against the Tcllib project at the above url, and not
+Marpa/Tcl.</p>
+</div>
+<div id="subsection4" class="doctools_subsection"><h3><a name="subsection4">Kettle</a></h3>
+<p>To build Marpa/Tcl the tool <b class="syscmd">kettle</b> is required.</p>
+<p>Marpa/Tcl's build system requires it as an application found in
+the PATH.</p>
+<p>Marpa/Tcl requires version 1 or higher.</p>
+<p>The fossil repository providing releases of this tool (and its
+associated package) can be found at
+<a href="http://core.tcl.tk/akupries/kettle">http://core.tcl.tk/akupries/kettle</a>.</p>
+<p>A mirror of the repository can be found at
+<a href="https://chiselapp.com/user/andreas_kupries/repository/Kettle">https://chiselapp.com/user/andreas_kupries/repository/Kettle</a>.</p>
+<p>Use of either releases or of the head of the main branch is
+recommended. Usage of branches is strongly discouraged as these are
+used to work on experimental features and bugfixes of the tool. As
+such their stability is not guaranteed.</p>
+<p>At the above url is also an explanation on how to build and
+install Kettle, including a list of its dependencies.</p>
+<p>Its instructions will not be repeated here. If there are
+problems with their directions please file a bug against the Kettle
+project, and not Marpa/Tcl.</p>
+</div>
+</div>
+<div id="section3" class="doctools_section"><h2><a name="section3">Build &amp; Installation Instructions</a></h2>
+<div id="subsection5" class="doctools_subsection"><h3><a name="subsection5">Build &amp; Installation (Unix)</a></h3>
+<p>This section describes the actions required to install Marpa/Tcl on
+Unix systems (Linux, BSD, and related, including OS X).
+If you have to install Marpa/Tcl on a Windows machine see section
+<span class="sectref"><a href="#subsection6">Build &amp; Installation (Windows)</a></span> instead.</p>
+<p>To install Marpa/Tcl simply run</p>
+<pre class="doctools_example">
+    /path/to/tclsh8.5 /path/to/marpatcl/build.tcl install
+</pre>
+<p>where &quot;<b class="file">/path/to/tclsh8.5</b>&quot; is the tclsh of your Tcl installation,
+and &quot;<b class="file">/path/to/marpatcl</b>&quot; the location of the Marpa/Tcl sources on
+your system.</p>
+<p>This builds all packages and then places them in a directory where the
+<b class="cmd">tclsh8.5</b> will find them.</p>
+<p>The build system provides a small GUI for those not comfortable with
+the command line.
+This GUI is accessible by invoking &quot;<b class="file">build.tcl</b>&quot; without any
+arguments.</p>
+<p>To get help about the methods of &quot;<b class="file">build.tcl</b>&quot;, and their complete
+syntax, invoke &quot;<b class="file">build.tcl</b>&quot; with the argument <b class="method">help</b>, i.e.,
+like</p>
+<pre class="doctools_example">
+    /path/to/tclsh8.5 /path/to/marpa/tcl/build.tcl help
+</pre>
+</div>
+<div id="subsection6" class="doctools_subsection"><h3><a name="subsection6">Build &amp; Installation (Windows)</a></h3>
+<p>This section describes the actions required to install Marpa/Tcl on
+Windows(tm) systems.
+If you have to install Marpa/Tcl on a Unix machine (Linux, BSD, and
+related, including OS X) see section
+<span class="sectref"><a href="#subsection5">Build &amp; Installation (Unix)</a></span> instead.</p>
+<p>To install Marpa/Tcl simply run</p>
+<pre class="doctools_example">
+    /path/to/tclsh8.5 /path/to/kettle -f /path/to/marpatcl/build.tcl install
+</pre>
+<p>where &quot;<b class="file">/path/to/tclsh8.5</b>&quot; is the tclsh of your Tcl installation,
+&quot;<b class="file">/path/to/kettle</b>&quot; is the installed <b class="syscmd">kettle</b> application,
+and &quot;<b class="file">/path/to/marpatcl</b>&quot; the location of the Marpa/Tcl sources on
+your system.</p>
+<p>This builds all packages and then places them in a directory where the
+<b class="cmd">tclsh8.5</b> will find them.</p>
+<p>The above is written without assuming any associations from
+extensions (like &quot;<b class="file">.tcl</b>&quot;) to executables responsible for the files
+with that extension.
+Actually, given that &quot;<b class="file">build.tcl</b>&quot; is technically a
+&quot;<b class="file">kettle</b>&quot;-script, which in turn is a &quot;<b class="file">.tcl</b>&quot;-script I am not
+sure if Windows is able to handle such a chain of interpreters.
+The command given above simply spells out the entire chain.</p>
+<p>The build system provides a small GUI for those not comfortable with
+the command line.
+This GUI is accessible by invoking &quot;<b class="file">build.tcl</b>&quot; without any
+arguments from the command line.</p>
+<p>To get help about the methods of &quot;<b class="file">build.tcl</b>&quot;, and their complete
+syntax, invoke &quot;<b class="file">build.tcl</b>&quot; with the argument <b class="method">help</b>, i.e.,
+like</p>
+<pre class="doctools_example">
+    /path/to/tclsh8.5 /path/to/kettle -f /path/to/marpatcl/build.tcl help
+</pre>
+</div>
+</div>
+<div id="keywords" class="doctools_section"><h2><a name="keywords">Keywords</a></h2>
+<p><a href="../../index.html#key2">aycock</a>, <a href="../../index.html#key9">character classes</a>, <a href="../../index.html#key10">document processing</a>, <a href="../../index.html#key1">earley</a>, <a href="../../index.html#key11">horspool</a>, <a href="../../index.html#key7">joop leo</a>, <a href="../../index.html#key6">lexing</a>, <a href="../../index.html#key0">libmarpa</a>, <a href="../../index.html#key5">nigel horspool</a>, <a href="../../index.html#key3">parsing</a>, <a href="../../index.html#key8">regex</a>, <a href="../../index.html#key4">table parsing</a></p>
+</div>
+<div id="copyright" class="doctools_section"><h2><a name="copyright">Copyright</a></h2>
+<p>Copyright &copy; 2015-2018 Andreas Kupries<br>
+Copyright &copy; 2018 Documentation, Andreas Kupries</p>
+</div>
+</div></body></html>

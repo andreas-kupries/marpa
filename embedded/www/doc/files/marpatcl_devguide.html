@@ -1,0 +1,326 @@
+
+<!DOCTYPE html><html><head>
+<title>marpatcl_devguide - Marpa/Tcl, a binding to libmarpa</title>
+<style type="text/css"><!--
+    HTML {
+	background: 	#FFFFFF;
+	color: 		black;
+    }
+    BODY {
+	background: 	#FFFFFF;
+	color:	 	black;
+    }
+    DIV.doctools {
+	margin-left:	10%;
+	margin-right:	10%;
+    }
+    DIV.doctools H1,DIV.doctools H2 {
+	margin-left:	-5%;
+    }
+    H1, H2, H3, H4 {
+	margin-top: 	1em;
+	font-family:	sans-serif;
+	font-size:	large;
+	color:		#005A9C;
+	background: 	transparent;
+	text-align:		left;
+    }
+    H1.doctools_title {
+	text-align: center;
+    }
+    UL,OL {
+	margin-right: 0em;
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+    }
+    UL LI {
+	list-style: disc;
+    }
+    OL LI {
+	list-style: decimal;
+    }
+    DT {
+	padding-top: 	1ex;
+    }
+    UL.doctools_toc,UL.doctools_toc UL, UL.doctools_toc UL UL {
+	font:		normal 12pt/14pt sans-serif;
+	list-style:	none;
+    }
+    LI.doctools_section, LI.doctools_subsection {
+	list-style: 	none;
+	margin-left: 	0em;
+	text-indent:	0em;
+	padding: 	0em;
+    }
+    PRE {
+	display: 	block;
+	font-family:	monospace;
+	white-space:	pre;
+	margin:		0%;
+	padding-top:	0.5ex;
+	padding-bottom:	0.5ex;
+	padding-left:	1ex;
+	padding-right:	1ex;
+	width:		100%;
+    }
+    PRE.doctools_example {
+	color: 		black;
+	background: 	#f5dcb3;
+	border:		1px solid black;
+    }
+    UL.doctools_requirements LI, UL.doctools_syntax LI {
+	list-style: 	none;
+	margin-left: 	0em;
+	text-indent:	0em;
+	padding:	0em;
+    }
+    DIV.doctools_synopsis {
+	color: 		black;
+	background: 	#80ffff;
+	border:		1px solid black;
+	font-family:	serif;
+	margin-top: 	1em;
+	margin-bottom: 	1em;
+    }
+    UL.doctools_syntax {
+	margin-top: 	1em;
+	border-top:	1px solid black;
+    }
+    UL.doctools_requirements {
+	margin-bottom: 	1em;
+	border-bottom:	1px solid black;
+    }
+--></style>
+</head>
+<!-- Generated from file 'marpatcl_devguide.man' by tcllib/doctools with format 'html'
+   -->
+<!-- Copyright &amp;copy; 2015-2018 Andreas Kupries   -- Copyright &amp;copy; 2018 Documentation, Andreas Kupries
+   -->
+<!-- marpatcl_devguide.n
+   -->
+<body><hr> [
+   <a href="../../../../../../home">Home</a>
+| <a href="../../toc.html">Main Table Of Contents</a>
+| <a href="../toc.html">Table Of Contents</a>
+| <a href="../../index.html">Keyword Index</a>
+ ] <hr>
+<div class="doctools">
+<h1 class="doctools_title">marpatcl_devguide(n) 1 doc &quot;Marpa/Tcl, a binding to libmarpa&quot;</h1>
+<div id="name" class="doctools_section"><h2><a name="name">Name</a></h2>
+<p>marpatcl_devguide - Marpa/Tcl - The Developer's Guide</p>
+</div>
+<div id="toc" class="doctools_section"><h2><a name="toc">Table Of Contents</a></h2>
+<ul class="doctools_toc">
+<li class="doctools_section"><a href="#toc">Table Of Contents</a></li>
+<li class="doctools_section"><a href="#section1">Description</a></li>
+<li class="doctools_section"><a href="#section2">Developing for Marpa/Tcl</a>
+<ul>
+<li class="doctools_subsection"><a href="#subsection1">Architecture &amp; Concepts</a></li>
+<li class="doctools_subsection"><a href="#subsection2">Directory structure</a></li>
+</ul>
+</li>
+<li class="doctools_section"><a href="#keywords">Keywords</a></li>
+<li class="doctools_section"><a href="#copyright">Copyright</a></li>
+</ul>
+</div>
+<div id="section1" class="doctools_section"><h2><a name="section1">Description</a></h2>
+<p>Welcome to Marpa/Tcl, a Tcl binding to the &quot;<b class="file">libmarpa</b>&quot; parsing
+engine.</p>
+<p>This document is a guide for developers working on Marpa/Tcl,
+i.e. maintainers fixing bugs, extending the package's functionality,
+etc.</p>
+<p>Please read</p>
+<ol class="doctools_enumerated">
+<li><p><i class="term"><a href="marpatcl_sources.html">Marpa/Tcl - How To Get The Sources</a></i> and</p></li>
+<li><p><i class="term"><a href="marpatcl_installer.html">Marpa/Tcl - The Installer's Guide</a></i></p></li>
+</ol>
+<p>first, if that was not done already.
+Here we assume that the sources are already available in a directory
+of your choice, and that you not only know how to build and install
+them, but also have all the necessary requisites to actually do
+so. The guide to the sources in particular also explains which source
+code management system is used, where to find it, how to set it up,
+etc.</p>
+</div>
+<div id="section2" class="doctools_section"><h2><a name="section2">Developing for Marpa/Tcl</a></h2>
+<div id="subsection1" class="doctools_subsection"><h3><a name="subsection1">Architecture &amp; Concepts</a></h3>
+<p>Most of the overall architecture and design is all introduced in the
+user documentation, namely</p>
+<ol class="doctools_enumerated">
+<li><p><i class="term"><a href="marpatcl_intro.html">Marpa/Tcl - Introduction to Marpa/Tcl</a></i>, and</p></li>
+</ol>
+<p>Here we concentrate on some details of the internals.</p>
+</div>
+<div id="subsection2" class="doctools_subsection"><h3><a name="subsection2">Directory structure</a></h3>
+<dl class="doctools_definitions">
+<dt>Helpers</dt>
+<dd><dl class="doctools_definitions">
+<dt>&quot;<b class="file">tools/</b>&quot;</dt>
+<dd><p>This directory contains helper scripts.</p></dd>
+<dt>&quot;<b class="file">tools/utf-viewer.tcl</b>&quot;</dt>
+<dd><p>This helper reads a file containing UTF-8 encoded unicode text
+	and prints the contents in decoded form, especially showing
+	the construction of multi-byte characters.</p></dd>
+<dt>&quot;<b class="file">tools/unidata.tcl</b>&quot;</dt>
+<dd><p>This helper reads the unicode tables stored in directory
+	&quot;<b class="file">unidata/</b>&quot; and generates a mix of Tcl and C data
+	structures for use within Marpa/Tcl. The integration point is
+	package <b class="package">marpa::unicode</b> (directory &quot;<b class="file">unicode/</b>&quot;).</p></dd>
+<dt>&quot;<b class="file">generated/</b>&quot;</dt>
+<dd><p>The directory where &quot;<b class="file">tools/unidata.tcl</b>&quot; places the
+	generated files.</p></dd>
+<dt>&quot;<b class="file">unidata/</b>&quot;</dt>
+<dd><p>The directory where &quot;<b class="file">tools/unidata.tcl</b>&quot; reads the
+	unicode tables from.</p></dd>
+<dt>&quot;<b class="file">bootstrap/</b>&quot;</dt>
+<dd><p>This directory contains the specifications for SLIF and
+	literal grammars, and the helpers needed to regenerate their
+	parsers.</p></dd>
+<dt>&quot;<b class="file">bootstrap/marpa-tcl-slif/slif</b>&quot;</dt>
+<dd><p>SLIF specification of the SLIF grammar.</p></dd>
+<dt>&quot;<b class="file">bootstrap/marpa-tcl-slif/literal</b>&quot;</dt>
+<dd><p>SLIF specification of the Literal grammar.</p></dd>
+<dt>&quot;<b class="file">bootstrap/remeta</b>&quot;</dt>
+<dd></dd>
+<dt>&quot;<b class="file">bootstrap/remeta-tcl</b>&quot;</dt>
+<dd><p>Regenerate the SLIF and literal parsers from their grammars.
+	The first variant generates C-based parsers, the other
+	Tcl-based parsers.</p></dd>
+</dl></dd>
+<dt>Documentation</dt>
+<dd><dl class="doctools_definitions">
+<dt>&quot;<b class="file">doc/</b>&quot;</dt>
+<dd><p>This directory contains the documentation sources. The texts
+	are written in <i class="term">doctools</i> format, whereas the figures are
+	written in tklib's <b class="package">dia</b>(gram) package and
+	application.</p></dd>
+<dt>&quot;<b class="file">embedded/</b>&quot;</dt>
+<dd><p>This directory contains the documentation converted to regular
+	manpages (nroff) and HTML.</p>
+<p>It is called <i class="term">embedded</i> because these files, while derived, are
+	part of the fossil repository, i.e. embedded into it. This
+	enables fossil to access and display these files when serving
+	the repositories' web interface.  The &quot;Command Reference&quot; link
+	at
+		<a href="http://core.tcl-lang.org/akupries/marpa">http://core.tcl-lang.org/akupries/marpa</a>
+	is, for example, accessing the generated HTML.</p></dd>
+</dl></dd>
+<dt>Package Code, General structure</dt>
+<dd><dl class="doctools_definitions">
+<dt>&quot;<b class="file">c/</b>&quot;</dt>
+<dd><p>Files for the <b class="package">marpa::c</b> package.
+	It provides a very thin class-based wrapper around the data
+	structures of <b class="package"><a href="../../index.html#key0">libmarpa</a></b>.
+	The entrypoint is &quot;<b class="file">marpa_c.tcl</b>&quot;.</p></dd>
+<dt>&quot;<b class="file">gen-common/</b>&quot;</dt>
+<dd><p>The implementations of</p>
+<ol class="doctools_enumerated">
+	
+<li><p><b class="package">marpa::gen::runtime::c</b>,</p></li>
+<li><p><b class="package">marpa::gen::runtime::tcl</b>,</p></li>
+<li><p><b class="package">marpa::gen::remask</b>, and</p></li>
+<li><p><b class="package">marpa::gen::reformat</b></p></li>
+</ol>
+<p>The first two provide the shared code for the main generator
+	packages handling creation of parsers and lexers for Tcl and C
+	runtimes. The other two are also shared code, at a lower
+	level.</p></dd>
+<dt>&quot;<b class="file">gen-format/</b>&quot;</dt>
+<dd><p>The main generator package, all placed under the namespace
+	<b class="const">marpa::gen::format</b>.</p>
+<dl class="doctools_definitions">
+	
+<dt><b class="package">clex-critcl</b></dt>
+<dd><p>Lexer using the C runtime, embedded into Tcl via <b class="package">critcl</b>.</p></dd>
+<dt><b class="package">cparse-critcl</b></dt>
+<dd><p>Parser using the C runtime, embedded into Tcl via <b class="package">critcl</b>.</p></dd>
+<dt><b class="package">cparse-raw</b></dt>
+<dd><p>Parser using the C runtime, raw C, no embedding.</p></dd>
+<dt><b class="package">gc-compact</b></dt>
+<dd><p>See <b class="package">gc</b>, minimal whitespace.</p></dd>
+<dt><b class="package">gc-c</b></dt>
+<dd><p>See <b class="package">gc</b>, reduced as if targeted at the C runtime.</p></dd>
+<dt><b class="package">gc-tcl</b></dt>
+<dd><p>See <b class="package">gc</b>, reduced as if targeted at the Tcl runtime.</p></dd>
+<dt><b class="package">gc</b></dt>
+<dd><p>Container serialization as nested Tcl dictionary.</p></dd>
+<dt><b class="package">slif</b></dt>
+<dd><p>Reconstructed SLIF.</p></dd>
+<dt><b class="package">tlex</b></dt>
+<dd><p>Lexer using the Tcl runtime.</p></dd>
+<dt><b class="package">tparse</b></dt>
+<dd><p>Parser using the Tcl runtime.</p></dd>
+</dl></dd>
+<dt>&quot;<b class="file">runtime-c/</b>&quot;</dt>
+<dd><p>Files for the <b class="package">marpa::runtime::c</b> package.
+	The entrypoint is &quot;<b class="file">marpa_runtime_c.tcl</b>&quot;.</p>
+<p>Note that the two runtimes have very similar internal
+	architecture.</p></dd>
+<dt>&quot;<b class="file">runtime-tcl/</b>&quot;</dt>
+<dd><p>Files for the <b class="package">marpa::runtime::tcl</b> package.
+	The entrypoint is &quot;<b class="file">pkg_entry.tcl</b>&quot;.</p>
+<p>Note that the two runtimes have very similar internal
+	architecture.</p></dd>
+<dt>&quot;<b class="file">slif-container/</b>&quot;</dt>
+<dd><p>SLIF grammar support.
+	Provides the package <b class="package">marpa::slif::container</b>, to hold
+	parsed grammars.
+	The entrypoint is &quot;<b class="file">pkg_entry.tcl</b>&quot;.</p></dd>
+<dt>&quot;<b class="file">slif-literal/</b>&quot;</dt>
+<dd><p>SLIF grammar support.
+	Provides the packages</p>
+<ol class="doctools_enumerated">
+	
+<li><p><b class="package">marpa::slif::literal::parser</b></p></li>
+<li><p><b class="package">marpa::slif::literal::norm</b></p></li>
+<li><p><b class="package">marpa::slif::literal::parse</b></p></li>
+<li><p><b class="package">marpa::slif::literal::reduce::2c4tcl</b></p></li>
+<li><p><b class="package">marpa::slif::literal::reduce::2tcl</b></p></li>
+<li><p><b class="package">marpa::slif::literal::redux</b></p></li>
+<li><p><b class="package">marpa::slif::literal::util</b></p></li>
+</ol>
+<p>These are helper packages dealing with literals, from parsing
+	over normalization to backend-specific reduction.
+	The parser core is generated from a SLIF specification.</p></dd>
+<dt>&quot;<b class="file">slif-parser/</b>&quot;</dt>
+<dd><p>SLIF grammar support.
+	Provides the package <b class="package">marpa::slif::parser</b>, to
+	translate SLIF text into an abstract syntax tree (AST).
+	The entrypoint is &quot;<b class="file">pkg_entry.tcl</b>&quot;.</p>
+<p><em>Note:</em> This parser is generated from a SLIF text itself,
+	and can be used to bootstrap further changes to the SLIF
+	specification.</p></dd>
+<dt>&quot;<b class="file">slif-precedence.tcl</b>&quot;</dt>
+<dd><p>SLIF grammar support.
+	Provides the package <b class="package">marpa::slif::precedence</b>.
+	This is a helper package containing the algorithm used to
+	rewrite a set of grammar rules with precedence into an
+	equivalent set of rules without.</p></dd>
+<dt>&quot;<b class="file">slif-semantics/</b>&quot;</dt>
+<dd><p>SLIF grammar support.
+	Provides the package <b class="package">marpa::slif::semantics</b>, to
+	translate grammars represented by an AST (parse result) into a
+	container.
+	The entrypoint is &quot;<b class="file">pkg_entry.tcl</b>&quot;.</p></dd>
+<dt>&quot;<b class="file">unicode/</b>&quot;</dt>
+<dd><p>The files for package <b class="package">marpa::unicode</b>.
+	This package also includes the files under &quot;<b class="file">generated/</b>&quot;.
+	If such files do not exist at build time the
+	&quot;<b class="file">tools/unidata.tcl</b>&quot; helper is automatically invoked to
+	generate them.</p></dd>
+<dt>&quot;<b class="file">util/</b>&quot;</dt>
+<dd><p>Files for the <b class="package">marpa::util</b> package, a set of general
+	utilities.
+	The entrypoint is &quot;<b class="file">pkg_entry.tcl</b>&quot;.</p></dd>
+</dl></dd>
+</dl>
+</div>
+</div>
+<div id="keywords" class="doctools_section"><h2><a name="keywords">Keywords</a></h2>
+<p><a href="../../index.html#key2">aycock</a>, <a href="../../index.html#key9">character classes</a>, <a href="../../index.html#key10">document processing</a>, <a href="../../index.html#key1">earley</a>, <a href="../../index.html#key11">horspool</a>, <a href="../../index.html#key7">joop leo</a>, <a href="../../index.html#key6">lexing</a>, <a href="../../index.html#key0">libmarpa</a>, <a href="../../index.html#key5">nigel horspool</a>, <a href="../../index.html#key3">parsing</a>, <a href="../../index.html#key8">regex</a>, <a href="../../index.html#key4">table parsing</a></p>
+</div>
+<div id="copyright" class="doctools_section"><h2><a name="copyright">Copyright</a></h2>
+<p>Copyright &copy; 2015-2018 Andreas Kupries<br>
+Copyright &copy; 2018 Documentation, Andreas Kupries</p>
+</div>
+</div></body></html>

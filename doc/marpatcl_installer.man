@@ -1,0 +1,68 @@
+[comment {-*- tcl -*- doctools manpage}]
+[manpage_begin marpatcl_install_guide n 1]
+[include include/module.inc]
+[titledesc {Marpa/Tcl - The Installer's Guide}]
+[description]
+
+Welcome to Marpa/Tcl, a Tcl binding to the [file libmarpa] parsing
+engine.
+
+[para]
+
+The audience of this document is anyone wishing to build the packages,
+for either themselves, or others.
+
+[para]
+
+For a developer intending to extend or modify the packages we
+additionally provide
+
+[list_begin enum]
+[enum] [term {Marpa/Tcl - The Developer's Guide}].
+[list_end]
+
+[para]
+
+Please read [term {Marpa/Tcl - How To Get The Sources}] first, if that was
+not done already. Here we assume that the sources are already
+available in a directory of your choice.
+
+[para]
+
+[comment {===================================================================}]
+[section Requisites]
+
+Before Marpa/Tcl can be build and used a number of requisites must be installed.
+
+These are:
+
+[list_begin enumerated]
+[enum] The scripting language Tcl.
+       For details see [sectref Tcl].
+[enum] The [package critcl] package (C embedding) for [syscmd Tcl].
+       For details see [sectref CriTcl].
+[enum] Various packages from the Tcllib bundles for [syscmd Tcl].
+       For details see [sectref Tcllib].
+[enum] The [package kettle] application (Build tool) for [syscmd Tcl].
+       For details see [sectref Kettle].
+[list_end]
+
+This list assumes that the machine where Marpa/Tcl is to be installed
+is essentially clean. Of course, if parts of the dependencies listed
+below are already installed the associated steps can be skipped. It is
+still recommended to read their sections though, to validate that the
+dependencies they talk about are indeed installed.
+
+[include include/rq_tcl.inc]
+[include include/rq_critcl.inc]
+[include include/rq_tcllib.inc]
+[include include/rq_kettle.inc]
+
+[comment {= build instructions ==============================================}]
+[section {Build & Installation Instructions}]
+
+[include include/b_unix.inc]
+[include include/b_windows.inc]
+
+[manpage_end]
+

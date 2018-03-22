@@ -1,0 +1,18 @@
+[comment {-*- tcl -*- doctools manpage}]
+[manpage_begin marpatcl n 0.2]
+[include include/module.inc]
+[titledesc {Marpa/Tcl - }]
+[require Tcl 8.5]
+[require Tk 8.5]
+[require marpa [opt 0.2]]
+[description]
+
+[para] For a basic introduction of the whole Marpa/Tcl eco-system
+please read the [term {Marpa/Tcl - Introduction to Marpa/Tcl}] (sic!).
+
+The basic concepts used here, like ... are described in the reference
+manpage for the [term {Marpa/Tcl - Foundation}].  We will not repeat
+them here, but assume that the reader knows them already.
+
+[manpage_end]
+

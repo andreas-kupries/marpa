@@ -22,7 +22,7 @@ Currently 5 groups:
 
 * Tcl runtime and support
 * C runtime
-* SLIF container, sermantics, builtin parser
+* SLIF container, semantics, builtin parser
 * Exporter core
 * Exporter packages
 
