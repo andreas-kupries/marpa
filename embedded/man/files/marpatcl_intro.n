@@ -287,68 +287,90 @@ engine\&.
 .PP
 .SH "SYSTEM ARCHITECTURE"
 The system can be split into roughly six sections, as seen in the
-figure below\&. The seventh is \fBlibmarpa\fR itself, which is
-technically outside of the system\&.
+figure below\&. The seventh, highlighted in green, is \fBlibmarpa\fR
+itself, which is technically outside of the system\&.
 .PP
 .PS
 .nf
 +-------------------------------------------------------------------------+
-| Applications:                 marpa-gen                                 |
+| Applications:              marpa-gen                                    |
 +-------------------------------------------------------------------------+
 +---------------------------+ +-------------------------------------------+
 | SLIF: semantics container | | Generators: gc(c,tcl,compact) tparse/tlex |
 |       parser    literals  | |             slif              cparse/clex |
+|                 precedence| |                                           |
+|                 utils     | |                                           |
 +---------------------------+ +-------------------------------------------+
 +---------------------------+ +-------------------------------------------+
-| rt-Tcl: runtime::tcl      | | rt-C: runtime::c                          |
-|         marpa-wrapper     | |                                           |
+| rt-C:                     | | rt-Tcl: runtime::tcl                      |
+|       runtime::c          | |         marpa::c                          |
 +---------------------------+ +-------------------------------------------+
 +---------------------------+ +-------------------------------------------+
 |     (( libmarpa ))        | | unicode data & utils: unicode             |
+|                           | |                       util                |
 +---------------------------+ +-------------------------------------------+
 
 .fi
 .PE
 .PP
-The sections in more detail are:
+In more detail:
 .TP
 Applications
-At the top the \fBmarpa-gen\fR application, integrating and using all
-of the packages, providing a parser generator reading grammars
-specified using SLIF and producing a variety of formats\&.
+At the top we have the \fBmarpa-gen\fR application\&. It integrates and
+uses all of the packages to provide a parser generator reading
+grammars specified using SLIF and producing results in a variety of
+formats\&.
 .TP
 SLIF
-A series of packages supporting the SLIF language for grammar
-specifications\&.  This is a very close sibling to the SLIF language for
-\fBMarpa::R2\fR, the current stable perl binding\&.
+The packages supporting the SLIF language for grammar specifications\&.
+This is a very close sibling to the SLIF language used by
+\fBMarpa::R2\fR, the current stable version of the perl binding\&.
 .sp
-The section contains packages for parsing SLIF, semantics for
-translating a parse into a container, processing of literals, and a
-container for SLIF grammars\&.
+It can be further divided into groups for parsing SLIF, the
+semantics for translating a parse into a container, a container for
+SLIF grammars, and the processing of literals (strings and character
+classes)\&.
 .TP
 Generators
-A series of packages for producing a variety of formats from a SLIF
-grammar container\&.
+The packages for producing a variety of formats from a SLIF grammar
+container\&. Further divided into serialization of containers as Tcl
+code, parsers and lexers based on the Tcl and C runtimes, and
+reconstruction of SLIF from a container\&.
 .TP
 rt-Tcl
-The package \fBruntime::tcl\fR implementing a parse engine in Tcl,
-on top of \fBlibmarpa\fR, through the marpa wrapper packages\&.
+The package \fBmarpa::runtime::tcl\fR\&. It implements a parse
+engine in Tcl\&. This uses \fBmarpa::c\fR, which is a thin wrapper
+around \fBlibmarpa\fR\&.
 .TP
 rt-C
-The package \fBruntime::c\fR implementing a parse engine in C, on
-top of \fBlibmarpa\fR, with no wrappers needed\&.
+The package \fBmarpa::runtime::c\fR\&. It implements a parse engine
+in C, directly on top of \fBlibmarpa\fR, without wrappers\&.
 .TP
 Unicode data and utilities
-The \fBunicode\fR accessor package (named character classes, case
-folding, de- and encoding codepoints to various representations,
-character class operations)\&.
+The \fBmarpa::unicode\fR package\&. It provides access to named
+character classes, case folding, de- and encoding codepoints to
+various representations, character class operations, etc\&.
 .TP
 libmarpa
-Jeffrey Kegler's base library implementing an Earley parser with fixes
-by John Aycock, Nigel Horspool and Joop Leo\&. The foundation for the
-rest of the system\&.
+Jeffrey Kegler's base library implementing an Earley parser which has
+the fixes by John Aycock, Nigel Horspool and Joop Leo\&. This is the
+foundation for the rest of the system\&.
 .PP
-The package dependencies are shown in the next image\&.
+The package dependencies are a bit large, and will be shown
+per-section, in the documentation of each section\&.
+.IP [1]
+\fIMarpa/Tcl - Application\fR\&.
+.IP [2]
+\fIMarpa/Tcl - SLIF\fR\&.
+.IP [3]
+\fIMarpa/Tcl - Generation\fR\&.
+.IP [4]
+\fIMarpa/Tcl - Runtime/Tcl\fR\&.
+.IP [5]
+\fIMarpa/Tcl - Runtime/C\fR\&.
+.IP [6]
+\fIMarpa/Tcl - Unicode Data & Utilities\fR\&.
+.PP
 .SH KEYWORDS
 aycock, character classes, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
 .SH COPYRIGHT

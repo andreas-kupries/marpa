@@ -295,19 +295,14 @@ them, but also have all the necessary requisites to actually do
 so\&. The guide to the sources in particular also explains which source
 code management system is used, where to find it, how to set it up,
 etc\&.
-.SH "PLAYING WITH MARPA/TCL"
-For a demonstration of Marpa/Tcl's current abilities see \&.\&.\&. XXX\&.
 .SH "DEVELOPING FOR MARPA/TCL"
 .SS "ARCHITECTURE & CONCEPTS"
-Most of the overall architecture and concepts like \&.\&.\&. XXX and the
-general design, are all introduced in the user documentation, namely
+Most of the overall architecture and design is all introduced in the
+user documentation, namely
 .IP [1]
 \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR, and
-.IP [2]
-\fIMarpa/Tcl - Foundation\fR
 .PP
-Here we concentrate on some details of the internals\&. First, the main
-data structures and their relationships:
+Here we concentrate on some details of the internals\&.
 .SS "DIRECTORY STRUCTURE"
 .TP
 Helpers
@@ -316,32 +311,62 @@ Helpers
 "\fItools/\fR"
 This directory contains helper scripts\&.
 .TP
-"\fItools/unidata\&.tcl\fR"
-This helper reads the unicode tables found in "\fIunidata/\fR" and
-generates a mix of Tcl and C data structures for use within Marpa/Tcl\&.
-.TP
 "\fItools/utf-viewer\&.tcl\fR"
-This helper reads a file containing UTF-8 encoded unicode and prints
-the contents in decoded form, especially showing the construction of
-multi-byte characters\&.
+This helper reads a file containing UTF-8 encoded unicode text
+and prints the contents in decoded form, especially showing
+the construction of multi-byte characters\&.
+.TP
+"\fItools/unidata\&.tcl\fR"
+This helper reads the unicode tables stored in directory
+"\fIunidata/\fR" and generates a mix of Tcl and C data
+structures for use within Marpa/Tcl\&. The integration point is
+package \fBmarpa::unicode\fR (directory "\fIunicode/\fR")\&.
+.TP
+"\fIgenerated/\fR"
+The directory where "\fItools/unidata\&.tcl\fR" places the
+generated files\&.
+.TP
+"\fIunidata/\fR"
+The directory where "\fItools/unidata\&.tcl\fR" reads the
+unicode tables from\&.
+.TP
+"\fIbootstrap/\fR"
+This directory contains the specifications for SLIF and
+literal grammars, and the helpers needed to regenerate their
+parsers\&.
+.TP
+"\fIbootstrap/marpa-tcl-slif/slif\fR"
+SLIF specification of the SLIF grammar\&.
+.TP
+"\fIbootstrap/marpa-tcl-slif/literal\fR"
+SLIF specification of the Literal grammar\&.
+.TP
+"\fIbootstrap/remeta\fR"
+.TP
+"\fIbootstrap/remeta-tcl\fR"
+Regenerate the SLIF and literal parsers from their grammars\&.
+The first variant generates C-based parsers, the other
+Tcl-based parsers\&.
 .RE
 .TP
 Documentation
 .RS
 .TP
 "\fIdoc/\fR"
-This directory contains the documentation sources\&. The texts are
-written in \fIdoctools\fR format, whereas the figures are a mixture
-of TeX (math formulas), and tklib's \fBdia\fR(gram) package and
+This directory contains the documentation sources\&. The texts
+are written in \fIdoctools\fR format, whereas the figures are
+written in tklib's \fBdia\fR(gram) package and
 application\&.
 .TP
 "\fIembedded/\fR"
 This directory contains the documentation converted to regular
 manpages (nroff) and HTML\&.
-It is called embedded because these files, while derived, are part of
-the fossil repository, i\&.e\&. embedded into it\&. This enables fossil to
-access and display these files when serving the repositories' web
-interface\&.  The "Command Reference" link at
+.sp
+It is called \fIembedded\fR because these files, while derived, are
+part of the fossil repository, i\&.e\&. embedded into it\&. This
+enables fossil to access and display these files when serving
+the repositories' web interface\&.  The "Command Reference" link
+at
 \fIhttp://core\&.tcl-lang\&.org/akupries/marpa\fR
 is, for example, accessing the generated HTML\&.
 .RE
@@ -349,13 +374,145 @@ is, for example, accessing the generated HTML\&.
 Package Code, General structure
 .RS
 .TP
-"\fIXXX\fR"
-.RE
+"\fIc/\fR"
+Files for the \fBmarpa::c\fR package\&.
+It provides a very thin class-based wrapper around the data
+structures of \fBlibmarpa\fR\&.
+The entrypoint is "\fImarpa_c\&.tcl\fR"\&.
 .TP
-Package Code, Per Package
+"\fIgen-common/\fR"
+The implementations of
+.RS
+.IP [1]
+\fBmarpa::gen::runtime::c\fR,
+.IP [2]
+\fBmarpa::gen::runtime::tcl\fR,
+.IP [3]
+\fBmarpa::gen::remask\fR, and
+.IP [4]
+\fBmarpa::gen::reformat\fR
+.RE
+.IP
+The first two provide the shared code for the main generator
+packages handling creation of parsers and lexers for Tcl and C
+runtimes\&. The other two are also shared code, at a lower
+level\&.
+.TP
+"\fIgen-format/\fR"
+The main generator package, all placed under the namespace
+\fBmarpa::gen::format\fR\&.
 .RS
 .TP
-\fBXXX\fR
+\fBclex-critcl\fR
+Lexer using the C runtime, embedded into Tcl via \fBcritcl\fR\&.
+.TP
+\fBcparse-critcl\fR
+Parser using the C runtime, embedded into Tcl via \fBcritcl\fR\&.
+.TP
+\fBcparse-raw\fR
+Parser using the C runtime, raw C, no embedding\&.
+.TP
+\fBgc-compact\fR
+See \fBgc\fR, minimal whitespace\&.
+.TP
+\fBgc-c\fR
+See \fBgc\fR, reduced as if targeted at the C runtime\&.
+.TP
+\fBgc-tcl\fR
+See \fBgc\fR, reduced as if targeted at the Tcl runtime\&.
+.TP
+\fBgc\fR
+Container serialization as nested Tcl dictionary\&.
+.TP
+\fBslif\fR
+Reconstructed SLIF\&.
+.TP
+\fBtlex\fR
+Lexer using the Tcl runtime\&.
+.TP
+\fBtparse\fR
+Parser using the Tcl runtime\&.
+.RE
+.TP
+"\fIruntime-c/\fR"
+Files for the \fBmarpa::runtime::c\fR package\&.
+The entrypoint is "\fImarpa_runtime_c\&.tcl\fR"\&.
+.sp
+Note that the two runtimes have very similar internal
+architecture\&.
+.TP
+"\fIruntime-tcl/\fR"
+Files for the \fBmarpa::runtime::tcl\fR package\&.
+The entrypoint is "\fIpkg_entry\&.tcl\fR"\&.
+.sp
+Note that the two runtimes have very similar internal
+architecture\&.
+.TP
+"\fIslif-container/\fR"
+SLIF grammar support\&.
+Provides the package \fBmarpa::slif::container\fR, to hold
+parsed grammars\&.
+The entrypoint is "\fIpkg_entry\&.tcl\fR"\&.
+.TP
+"\fIslif-literal/\fR"
+SLIF grammar support\&.
+Provides the packages
+.RS
+.IP [1]
+\fBmarpa::slif::literal::parser\fR
+.IP [2]
+\fBmarpa::slif::literal::norm\fR
+.IP [3]
+\fBmarpa::slif::literal::parse\fR
+.IP [4]
+\fBmarpa::slif::literal::reduce::2c4tcl\fR
+.IP [5]
+\fBmarpa::slif::literal::reduce::2tcl\fR
+.IP [6]
+\fBmarpa::slif::literal::redux\fR
+.IP [7]
+\fBmarpa::slif::literal::util\fR
+.RE
+.IP
+These are helper packages dealing with literals, from parsing
+over normalization to backend-specific reduction\&.
+The parser core is generated from a SLIF specification\&.
+.TP
+"\fIslif-parser/\fR"
+SLIF grammar support\&.
+Provides the package \fBmarpa::slif::parser\fR, to
+translate SLIF text into an abstract syntax tree (AST)\&.
+The entrypoint is "\fIpkg_entry\&.tcl\fR"\&.
+.sp
+\fINote:\fR This parser is generated from a SLIF text itself,
+and can be used to bootstrap further changes to the SLIF
+specification\&.
+.TP
+"\fIslif-precedence\&.tcl\fR"
+SLIF grammar support\&.
+Provides the package \fBmarpa::slif::precedence\fR\&.
+This is a helper package containing the algorithm used to
+rewrite a set of grammar rules with precedence into an
+equivalent set of rules without\&.
+.TP
+"\fIslif-semantics/\fR"
+SLIF grammar support\&.
+Provides the package \fBmarpa::slif::semantics\fR, to
+translate grammars represented by an AST (parse result) into a
+container\&.
+The entrypoint is "\fIpkg_entry\&.tcl\fR"\&.
+.TP
+"\fIunicode/\fR"
+The files for package \fBmarpa::unicode\fR\&.
+This package also includes the files under "\fIgenerated/\fR"\&.
+If such files do not exist at build time the
+"\fItools/unidata\&.tcl\fR" helper is automatically invoked to
+generate them\&.
+.TP
+"\fIutil/\fR"
+Files for the \fBmarpa::util\fR package, a set of general
+utilities\&.
+The entrypoint is "\fIpkg_entry\&.tcl\fR"\&.
 .RE
 .PP
 .SH KEYWORDS

@@ -27,62 +27,75 @@ What are your goals which drove you here ?
 [section {System Architecture}]
 
 The system can be split into roughly six sections, as seen in the
-figure below. The seventh is [package libmarpa] itself, which is
-technically outside of the system.
+figure below. The seventh, highlighted in green, is [package libmarpa]
+itself, which is technically outside of the system.
 
 [para][image architecture][para]
 
-The sections in more detail are:
+In more detail:
 
 [list_begin definitions]
 [def Applications]
 
-At the top the [cmd marpa-gen] application, integrating and using all
-of the packages, providing a parser generator reading grammars
-specified using SLIF and producing a variety of formats.
+At the top we have the [cmd marpa-gen] application. It integrates and
+uses all of the packages to provide a parser generator reading
+grammars specified using SLIF and producing results in a variety of
+formats.
 
 [def SLIF]
 
-A series of packages supporting the SLIF language for grammar
-specifications.  This is a very close sibling to the SLIF language for
-[package Marpa::R2], the current stable perl binding.
+The packages supporting the SLIF language for grammar specifications.
+This is a very close sibling to the SLIF language used by
+[package Marpa::R2], the current stable version of the perl binding.
 
-[para] The section contains packages for parsing SLIF, semantics for
-translating a parse into a container, processing of literals, and a
-container for SLIF grammars.
+[para] It can be further divided into groups for parsing SLIF, the
+semantics for translating a parse into a container, a container for
+SLIF grammars, and the processing of literals (strings and character
+classes).
 
 [def Generators]
 
-A series of packages for producing a variety of formats from a SLIF
-grammar container.
+The packages for producing a variety of formats from a SLIF grammar
+container. Further divided into serialization of containers as Tcl
+code, parsers and lexers based on the Tcl and C runtimes, and
+reconstruction of SLIF from a container.
 
 [def rt-Tcl]
 
-The package [package runtime::tcl] implementing a parse engine in Tcl,
-on top of [package libmarpa], through the marpa wrapper packages.
+The package [package marpa::runtime::tcl]. It implements a parse
+engine in Tcl. This uses [package marpa::c], which is a thin wrapper
+around [package libmarpa].
 
 [def rt-C]
 
-The package [package runtime::c] implementing a parse engine in C, on
-top of [package libmarpa], with no wrappers needed.
+The package [package marpa::runtime::c]. It implements a parse engine
+in C, directly on top of [package libmarpa], without wrappers.
 
 [def {Unicode data and utilities}]
 
-The [package unicode] accessor package (named character classes, case
-folding, de- and encoding codepoints to various representations,
-character class operations).
+The [package marpa::unicode] package. It provides access to named
+character classes, case folding, de- and encoding codepoints to
+various representations, character class operations, etc.
 
 [def libmarpa]
 
-Jeffrey Kegler's base library implementing an Earley parser with fixes
-by John Aycock, Nigel Horspool and Joop Leo. The foundation for the
-rest of the system.
+Jeffrey Kegler's base library implementing an Earley parser which has
+the fixes by John Aycock, Nigel Horspool and Joop Leo. This is the
+foundation for the rest of the system.
 
 [list_end]
 
-The package dependencies are shown in the next image.
+The package dependencies are a bit large, and will be shown
+per-section, in the documentation of each section.
 
-[comment { XXX --- [para][image pkg_dependencies][para] --- }]
+[list_begin enum]
+[enum] [term {Marpa/Tcl - Application}].
+[enum] [term {Marpa/Tcl - SLIF}].
+[enum] [term {Marpa/Tcl - Generation}].
+[enum] [term {Marpa/Tcl - Runtime/Tcl}].
+[enum] [term {Marpa/Tcl - Runtime/C}].
+[enum] [term {Marpa/Tcl - Unicode Data & Utilities}].
+[list_end]
 
 [manpage_end]
 

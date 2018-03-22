@@ -34,7 +34,7 @@ set movelength  [5 mm]
 
 block {
     set hx [60 mm]
-    set hb [30 mm]
+    set hb [35 mm]
 
     set SLIF [area " SLIF" height $hx]
     group {
@@ -42,12 +42,12 @@ block {
 	set GEN [area " Generators" height $hx]
     }
     down ; move
-    set RTT [area " rt-Tcl" height $hb]
+    set RTC [area " rt-C" height $hb]
     group {
 	east ; move
-	set RTC [area " rt-C" height $hb]
+	set RTT [area " rt-Tcl" height $hb]
 	south ; move
-	set U [area " unicode data\n & utilities" height $hb]
+	set U [area " unicode data & utilities" height $hb]
     }
     move
     e-area " libmarpa" height $hb
@@ -59,22 +59,23 @@ block {
 	east ; xbox semantics
 	group { move ; xbox container }
 	south ;	move ; xbox parser
-	east  ;	move ; xbox literals
+	east  ;	move ; xbox literals precedence utils
     } at $SLIF
 
     block {
 	set fillcolor white
 	set boxwidth  [25 mm]
-	east  ;        xbox gc gc_c/tcl gc_compact
-	move  ;        xbox tparse tlex
-	south ; move ; xbox cparse clex
-	west  ; move ; xbox slif
+	east  ;        xbox gc {gc_c, gc_tcl} gc_compact
+	move  ;        xbox slif
+	south ; move ; xbox tparse tlex
+	west  ; move ; xbox cparse-critcl cparse-raw clex
     } at $GEN
 
     block {
 	set fillcolor white
 	set boxwidth  [25 mm]
 	east ; xbox unicode
+	move ; xbox util
     } at $U
 
     block {
@@ -86,8 +87,8 @@ block {
     block {
 	set fillcolor white
 	set boxwidth  [25 mm]
-	east ; xbox runtime::tcl
-	move ; xbox marpa-\nwrapper
+	east ; xbox marpa::c
+	move ; xbox runtime::tcl
     } at $RTT
 
 }
