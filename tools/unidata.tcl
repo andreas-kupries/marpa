@@ -119,6 +119,7 @@ proc main {selfdir} {
     # (All combinations: 2^2 = 4 forms, 3 to derive)
 
     normalize-classes
+    compress-classes
     clean-folds
 
     ## compile-folds -- not sensible
@@ -292,14 +293,14 @@ proc do-script {first last script} {
 proc cat-aliases {} {
     global catlabel
     dict for {cat label} $catlabel {
-	def-alias [string tolower $label] [string tolower $cat]
+	def-alias $label $cat
     }
     return
 }
 
 proc def-alias {cc base} {
     global ccalias
-    dict set ccalias $cc $base
+    dict set ccalias [string tolower $cc] [string tolower $base]
     return
 }
 
@@ -336,6 +337,11 @@ proc get-class {cclass} {
 proc is-class {cclass} {
     global cc
     return [dict exists $cc $cclass]
+}
+
+proc is-equal-class {a b} {
+    # assumes normalized classes -> canonical form, ordered, compressed
+    string equal [get-class $a] [get-class $b]
 }
 
 proc classes {} {
@@ -375,6 +381,25 @@ proc normalize-classes {} {
     foreach cc [classes] {
 	pong "Normalizing $cc"
 	set-class $cc [norm-class [get-class $cc]]
+    }
+    return
+}
+
+proc compress-classes {} {
+    foreach cc [classes] {
+	pong "Aliasing $cc"
+
+	if {[string match *:bmp $cc]} continue
+	if {[string match *:smp $cc]} continue
+
+	if {[is-class ${cc}:bmp] && [is-equal-class $cc ${cc}:bmp]} {
+	    undef-class ${cc}:bmp
+	    def-alias ${cc}:bmp $cc
+	}
+	if {[is-class ${cc}:smp] && [is-equal-class $cc ${cc}:smp]} {
+	    undef-class ${cc}:smp
+	    def-alias ${cc}:smp $cc
+	}
     }
     return
 }
