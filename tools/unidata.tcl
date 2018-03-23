@@ -97,12 +97,15 @@ set catlabel {
 }
 
 proc main {selfdir} {
+    global ccalias ; set ccalias {} ;# char class alias mapped to base class
     global cc      ; set cc      {} ;# char classes as ranges of unicode points
     global foldid  ; set foldid  0  ;# fold class id counter
     global foldmap ; set foldmap {} ;# map codepoint -> fold class
     global foldset ; set foldset {} ;# fold class id -> list(codepoint...)
 
     cmdline
+
+    cat-aliases
 
     process-unidata [file join [file dirname $selfdir] unidata/UnicodeData.txt]
     process-scripts [file join [file dirname $selfdir] unidata/Scripts.txt]
@@ -159,6 +162,7 @@ proc usage {} {
     puts stderr "Usage: $argv0 output-for-tcl output-for-c-hdr output-for-c ?pong?"
     exit 1
 }
+
 
 proc process-unidata {file} {
     pong "Processing $file"
@@ -282,6 +286,20 @@ proc do-script {first last script} {
 
     #pong "Script $first .. $last = $script"
     add-to-class-plus $script $first $last
+    return
+}
+
+proc cat-aliases {} {
+    global catlabel
+    dict for {cat label} $catlabel {
+	def-alias [string tolower $label] [string tolower $cat]
+    }
+    return
+}
+
+proc def-alias {cc base} {
+    global ccalias
+    dict set ccalias $cc $base
     return
 }
 
@@ -504,9 +522,8 @@ proc write-header {} {
     write-sep {unicode information}
     lappend map {    } {} \t {    }
     wr [string map $map {namespace eval marpa::unicode {
+	variable ccalias ;# Map cc alias names to the base cc
 	variable cc      ;# character classes as a set of unicode points and ranges
-	variable foldmap ;# character mapped to equivalence class under folding
-	variable foldset ;# id -> equivalence class under folding
 	variable max     ;# Maximal supported codepoint
 	variable bmp     ;# Maximal supported codepoint, BMP
     }}]
@@ -541,6 +558,14 @@ proc write-h-limits {} {
 }
 
 proc write-classes {} {
+    global ccalias
+    write-sep {character class aliases}
+    wr ""
+    wr "dict set marpa::unicode::ccalias \{"
+    write-items 2 \t $ccalias
+    wr "\}"
+    wr ""
+
     write-sep {character classes -- named, represented as ranges)}
     foreach cc [lsort -dict [classes]] {
 	pong "Writing $cc"
