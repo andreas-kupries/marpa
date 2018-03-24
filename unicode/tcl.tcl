@@ -13,9 +13,9 @@
 # start- and end-value, inclusive. Hence ASBR, for "Alternatives of
 # Sequences of Byte-Ranges".
 
-# NOTE: Core functions (norm-class, negate-class, and 2asbr) are
-# implemented on the C side for performance (See c/unicode.tcl,
-# c/asbr_objtype.tcl, and c/cc_objtype.tcl)
+# NOTE: Core functions (norm-class, negate-class, 2assr, and 2asbr)
+# are implemented on the C side for performance (See unicode.tcl,
+# unichar.tcl, asbr_objtype.tcl, assr_objtype.tcl, and cc_objtype.tcl)
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -148,11 +148,9 @@ proc marpa::unicode::assr-format {assr {compact 0}} {
 ## - data cc tcl-names
 ## - data cc names
 ## - data cc ranges
-## - data cc asbr
-## - data cc grammar
 ## - data range
-## - data fold
-## - data fold/c
+## - data fold   \ see unifold.tcl (Critcl glue)
+## - data fold/c /
 
 namespace eval marpa::unicode::data {
     namespace export cc fold fold/c
@@ -161,7 +159,7 @@ namespace eval marpa::unicode::data {
     namespace import ::marpa::unicode::norm-class
 }
 namespace eval marpa::unicode::data::cc {
-    namespace export ranges asbr grammar names tcl-names have have-tcl
+    namespace export ranges names tcl-names have have-tcl
     namespace ensemble create
     namespace import ::marpa::X
 }
@@ -184,23 +182,34 @@ proc marpa::unicode::data::cc::tcl-names {} {
 
 proc marpa::unicode::data::cc::have {cclass} {
     variable ::marpa::unicode::cc
-    if {[string match %* $cclass]} { set cclass [string range $cclass 1 end] }
-    return [dict exists $cc $cclass]
+    variable ::marpa::unicode::ccalias
+    if {[string match %* $cclass]} {
+	set cclass [string range $cclass 1 end]
+    }
+    return [expr {[dict exists $cc      $cclass]
+	       || [dict exists $ccalias $cclass]}]
 }
 
 proc marpa::unicode::data::cc::names {} {
     variable ::marpa::unicode::cc
-    return [dict keys $cc]
+    variable ::marpa::unicode::ccalias
+    lappend r {*}[dict keys $cc]
+    lappend r {*}[dict keys $ccalias]
+    return [lsort -dict $r]
 }
 
 proc marpa::unicode::data::cc::ranges {cclass} {
     variable ::marpa::unicode::cc
+    variable ::marpa::unicode::ccalias
 
     if {[string match %* $cclass]} {
 	set cclass [string range $cclass 1 end]
 	return [marpa::unicode::unfold [ranges $cclass]]
     }
     
+    if {[dict exists $ccalias $cclass]} {
+	return [dict get $cc [dict get $ccalias $cclass]]
+    }
     if {![dict exists $cc $cclass]} {
 	X "Bad character class $cclass" UNICODE BAD CLASS
     }

@@ -95,8 +95,10 @@ set catlabel {
     Sk Modifier_symbol
     So Other_symbol
 }
+set cat_aliases $catlabel
 
 proc main {selfdir} {
+    global ccname  ; set ccname  {} ;# char class id mapped to name
     global ccalias ; set ccalias {} ;# char class alias mapped to base class
     global cc      ; set cc      {} ;# char classes as ranges of unicode points
     global foldid  ; set foldid  0  ;# fold class id counter
@@ -104,8 +106,6 @@ proc main {selfdir} {
     global foldset ; set foldset {} ;# fold class id -> list(codepoint...)
 
     cmdline
-
-    cat-aliases
 
     process-unidata [file join [file dirname $selfdir] unidata/UnicodeData.txt]
     process-scripts [file join [file dirname $selfdir] unidata/Scripts.txt]
@@ -120,6 +120,7 @@ proc main {selfdir} {
 
     normalize-classes
     compress-classes
+    cat-aliases
     clean-folds
 
     ## compile-folds -- not sensible
@@ -212,14 +213,18 @@ proc add-to-class-plus {class first last} {
 
 
 proc add-to-class {class args} {
-    global cc
-    dict lappend cc $class {*}$args
+    global cc ccname
+    set id [string tolower $class]
+    dict set     ccname $id $class
+    dict lappend cc     $id {*}$args
     return
 }
 
 proc set-class {class ranges} {
-    global cc
-    dict set cc $class $ranges
+    global cc ccname
+    set id [string tolower $class]
+    dict set ccname $id $class
+    dict set cc     $id $ranges
     return
 }
 
@@ -291,17 +296,34 @@ proc do-script {first last script} {
 }
 
 proc cat-aliases {} {
-    global catlabel
-    dict for {cat label} $catlabel {
+    global cat_aliases
+    dict for {cat label} $cat_aliases {
 	def-alias $label $cat
+	foreach suffix { :bmp :smp } {
+	    if {![is-class $cat$suffix] &&
+		![is-alias $cat$suffix]
+	    } continue
+	    def-alias $label$suffix $cat$suffix
+	}	
     }
     return
 }
 
 proc def-alias {cc base} {
     global ccalias
-    dict set ccalias [string tolower $cc] [string tolower $base]
+    set cc   [string tolower $cc]
+    set base [string tolower $base]
+    # Prevent alias-chaining.
+    while {[dict exists $ccalias $base]} {
+	set base [dict get $ccalias $base]
+    }
+    dict set ccalias $cc $base
     return
+}
+
+proc is-alias {cclass} {
+    global ccalias
+    return [dict exists $ccalias [string tolower $cclass]]
 }
 
 proc make-derived-tcl-classes {} {
@@ -331,12 +353,17 @@ proc make-derived-tcl-classes {} {
 
 proc get-class {cclass} {
     global cc
-    return [dict get $cc $cclass]
+    return [dict get $cc [string tolower $cclass]]
+}
+
+proc get-class-name {cclass} {
+    global ccname
+    return [dict get $ccname [string tolower $cclass]]
 }
 
 proc is-class {cclass} {
     global cc
-    return [dict exists $cc $cclass]
+    return [dict exists $cc [string tolower $cclass]]
 }
 
 proc is-equal-class {a b} {
@@ -584,27 +611,30 @@ proc write-h-limits {} {
 
 proc write-classes {} {
     global ccalias
+    foreach cc [lsort -dict [dict keys $ccalias]] {
+	lappend cadef $cc [dict get $ccalias $cc]
+    }
     write-sep {character class aliases}
     wr ""
-    wr "dict set marpa::unicode::ccalias \{"
-    write-items 2 \t $ccalias
+    wr "set marpa::unicode::ccalias \{"
+    write-items 8 \t $cadef
     wr "\}"
     wr ""
 
-    write-sep {character classes -- named, represented as ranges)}
+    write-sep {character classes -- named, represented as ranges}
     foreach cc [lsort -dict [classes]] {
-	pong "Writing $cc"
-	set lcc    [string tolower $cc]
+	set name [get-class-name $cc]
+	pong "Writing $name"
 	set ranges [get-class   $cc]
 	set sz     [class-size $ranges]
-	set label "$cc ($sz)[get-label $cc]"
+	set label "name ($sz)[get-label $cc]"
 
-	set bl [string repeat { } [string length $cc]]
+	#set bl [string repeat { } [string length $cc]]
 
 	write-sep $label
-	write-comment "I Class $cc: Unicode ranges:  [llength $ranges]"
+	write-comment "I Class $name: Unicode ranges:  [llength $ranges]"
 	wr ""
-	wr "dict set marpa::unicode::cc $lcc \{"
+	wr "dict set marpa::unicode::cc $cc \{"
 	write-items 5 \t $ranges
 	wr "\}"
 	wr ""
