@@ -195,7 +195,7 @@ proc marpa::unicode::data::cc::names {} {
     variable ::marpa::unicode::ccalias
     lappend r {*}[dict keys $cc]
     lappend r {*}[dict keys $ccalias]
-    return [lsort -dict $r]
+    return [lsort -dict -unique $r]
 }
 
 proc marpa::unicode::data::cc::ranges {cclass} {
