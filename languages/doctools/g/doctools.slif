@@ -1,0 +1,313 @@
+
+## DocTools grammar for TclMarpa.
+## References:
+## - Base: https://core.tcl.tk/tcllib/doc/trunk/embedded/www/tcllib/files/
+##   - modules/doctools/doctools_lang_cmdref.html
+##   - modules/doctools/doctools_lang_faq.html
+##   - modules/doctools/doctools_lang_intro.html
+##   - modules/doctools/doctools_lang_syntax.html
+#
+## (c) 2017-2018 Andreas Kupries
+
+# Notes on symbol names
+# - all lower case  -- G1 symbol
+# - ALL UPPER CASE  -- L0 symbol, may not appear in G1 rules
+# - CamelCase       -- L0 lexeme, use in G1 rules, not in L0 rules
+
+# # ## ### ##### ######## ############# #####################
+## Standard configuration
+
+:default ::= action => [name,values]
+:start	 ::= manpage
+
+# # ## ### ##### ######## ############# #####################
+## Structure I - Document structure
+
+manpage		::= definitions
+		    c_manpage_begin
+		    headers ( c_description )
+		    body
+		    ( c_manpage_end )
+
+definitions	::= definition *
+definition	::= c_include
+		|   c_vset
+
+headers		::= header +
+header		::= c_titledesc
+		|   c_moddesc
+		|   c_copyright
+		|   c_require
+		|   definition
+		|   xref
+
+xref		::= c_keywords
+		|   c_see_also
+		|   c_category
+
+body		::= section
+		|   section c_section body
+
+section		::= subsection
+		|   subsection c_subsection section
+
+subsection	::= paragraphs
+paragraphs	::= paragraph
+		|   paragraph ( c_para ) paragraphs
+paragraph	::= words
+paragraph	::=
+
+words		::= word +
+word		::= definition
+		|   c_vget
+		|   markup
+		|   xref
+		|   example
+		|   list
+		|   general_text
+
+markup		::= c_arg
+		|   c_class
+		|   c_cmd
+		|   c_const
+		|   c_emph
+		|   c_file
+		|   c_fun
+		|   c_lb
+		|   c_method
+		|   c_namespace
+		|   c_opt
+		|   c_option
+		|   c_package
+		|   c_rb
+		|   c_sectref
+		|   c_strong
+		|   c_syscmd
+		|   c_term
+		|   c_type
+		|   c_uri
+		|   c_usage
+		|   c_var
+		|   c_widget
+		|   c_image
+		|   c_sectref_ext
+
+example		::= c_example
+		|   ( c_example_begin ) example_block ( c_example_end )
+example_block	::= example_text +
+example_text	::= definition
+		|   markup
+		|   general_text
+
+list		::= ( c_list_begin_arg  ) argument_list   ( c_list_end )
+		|   ( c_list_begin_cmd  ) command_list    ( c_list_end )
+		|   ( c_list_begin_def  ) definition_list ( c_list_end )
+		|   ( c_list_begin_enum ) enum_list       ( c_list_end )
+		|   ( c_list_begin_item ) item_list       ( c_list_end )
+		|   ( c_list_begin_opt  ) option_list     ( c_list_end )
+		|   ( c_list_begin_tko  ) tkoption_list   ( c_list_end )
+
+argument_list   ::= arg_list_elem +
+command_list   	::= cmd_list_elem +
+definition_list ::= def_list_elem +
+enum_list   	::= enum_list_elem +
+item_list   	::= item_list_elem +
+option_list   	::= opt_list_elem +
+tkoption_list 	::= tko_list_elem +
+
+arg_list_elem   ::= c_arg_def paragraphs
+cmd_list_elem   ::= c_cmd_def paragraphs
+def_list_elem   ::= c_def paragraphs
+		|   c_call paragraphs
+enum_list_elem  ::= ( c_enum ) paragraphs
+item_list_elem  ::= ( c_item ) paragraphs
+opt_list_elem   ::= c_opt_def paragraphs
+tko_list_elem   ::= c_tkoption_def paragraphs
+
+general_text	::= GeneralText
+
+# # ## ### ##### ######## ############# #####################
+## Structure II - Command definitions
+
+c_arg     	::= ( '[arg' )			cx_arg		  	( C_closer )
+c_arg_def	::= ( '[arg_def' )		cx_arg cx_arg       	( C_closer )
+		  | ( '[arg_def' )		cx_arg cx_arg cx_arg 	( C_closer )
+c_call		::= ( '[call' )			cx_args	    	  	( C_closer )
+c_category	::= ( '[category' )		cx_arg 		  	( C_closer )
+c_class 	::= ( '[class' )		cx_arg 		  	( C_closer )
+c_cmd     	::= ( '[cmd' )			cx_arg			( C_closer )
+c_cmd_def	::= ( '[cmd_def' )		cx_arg			( C_closer )
+c_const     	::= ( '[const' )		cx_arg			( C_closer )
+c_copyright	::= ( '[copyright' )		cx_arg			( C_closer )
+c_def		::= ( '[def' )			cx_arg			( C_closer )
+c_description	::= ( '[description]' )
+c_emph   	::= ( '[emph' )			cx_arg			( C_closer )
+c_enum		::= ( '[enum]' )
+c_example	::= ( '[example' )		cx_arg			( C_closer )
+c_example_begin	::= ( '[example_begin]' )
+c_example_end	::= ( '[example_end]' )
+c_file		::= ( '[file' )			cx_arg			( C_closer )
+c_fun     	::= ( '[fun' )			cx_arg			( C_closer )
+c_image		::= ( '[image' )		cx_arg      		( C_closer )
+		  | ( '[image' )		cx_arg cx_arg		( C_closer )
+c_include	::= ( '[include' )		cx_arg 	   		( C_closer )
+c_item		::= ( '[item]' )
+c_keywords	::= ( '[keywords' )		cx_args	   		( C_closer )
+c_lb    	::= ( '[lb]' )
+
+c_list_begin_arg	::= ( '[list_begin' SpacePlus 'arguments]' )
+c_list_begin_cmd	::= ( '[list_begin' SpacePlus 'commands]' )
+c_list_begin_def	::= ( '[list_begin' SpacePlus 'definitions]' )
+c_list_begin_enum	::= ( '[list_begin' SpacePlus 'enumerated]' )
+c_list_begin_item	::= ( '[list_begin' SpacePlus 'itemized]' )
+c_list_begin_opt	::= ( '[list_begin' SpacePlus 'options]' )
+c_list_begin_tko	::= ( '[list_begin' SpacePlus 'tkoptions]' )
+
+c_list_end	::= ( '[list_end]' )
+c_manpage_begin	::= ( '[manpage_begin' )	cx_arg cx_arg cx_arg	( C_closer )
+c_manpage_end	::= ( '[manpage_end]' )
+c_method  	::= ( '[method' )		cx_arg 	    		( C_closer )
+c_moddesc	::= ( '[moddesc' )		cx_arg			( C_closer )
+c_namespace 	::= ( '[namespace' )		cx_arg			( C_closer )
+c_opt   	::= ( '[opt' )			cx_arg			( C_closer )
+c_option	::= ( '[option' )		cx_arg			( C_closer )
+c_opt_def	::= ( '[opt_def' )		cx_arg			( C_closer )
+		  | ( '[opt_def' )		cx_arg cx_arg		( C_closer )
+c_package 	::= ( '[package' )		cx_arg 			( C_closer )
+c_para		::= ( '[nl]' )
+		|   ( '[para]' )
+c_rb   		::= ( '[rb]' )
+c_require	::= ( '[require' )		cx_arg			( C_closer )
+		  | ( '[require' )		cx_arg cx_arg		( C_closer )
+c_section	::= ( '[section' )		cx_arg 			( C_closer )
+c_sectref 	::= ( '[sectref' )		cx_arg 			( C_closer )
+		  | ( '[sectref' )		cx_arg cx_arg 		( C_closer )
+c_sectref_ext 	::= ( '[sectref-external' )	cx_arg 			( C_closer )
+c_see_also	::= ( '[see_also' )		cx_args			( C_closer )
+c_strong    	::= ( '[strong' )		cx_arg			( C_closer )
+c_subsection	::= ( '[subsection' )		cx_arg			( C_closer )
+c_syscmd	::= ( '[syscmd' )		cx_arg			( C_closer )
+c_term	  	::= ( '[term' )			cx_arg			( C_closer )
+c_titledesc	::= ( '[titledesc' )		cx_arg			( C_closer )
+c_tkoption_def	::= ( '[tkoption_def' )		cx_arg cx_arg cx_arg	( C_closer )
+c_type    	::= ( '[type' )			cx_arg			( C_closer )
+c_uri   	::= ( '[uri' )			cx_arg			( C_closer )
+		  | ( '[uri' )			cx_arg cx_arg		( C_closer )
+c_usage   	::= ( '[usage' )		cx_args			( C_closer )
+c_var       	::= ( '[var' )			cx_arg 			( C_closer )
+c_vget		::= ( '[vset' )			cx_arg 			( C_closer )
+c_vset		::= ( '[vset' )			cx_arg cx_arg		( C_closer )
+c_widget	::= ( '[widget' )		cx_arg			( C_closer )
+
+# # ## ### ##### ######## ############# #####################
+# Structure III - Command argument structure
+
+# The arguments to the commands above come in the following forms
+#
+# 1. Plain words, possible quoted or braced, no embedded commands.
+# 2. Combination of general text with markup (quoted)
+# 3. As 2, limited markup. (vget)
+
+# For the initial grammar we go with 2 for all possible arguments, to
+# make parsing easier on the existing corpus. After we know how to
+# handle the macros and inclusions we can go the restricted forms.
+
+cx_args		::= cx_arg +
+cx_arg	        ::= markup
+		|   c_vget
+	 	|   SimpleWord
+		|   BracedWord
+		|   quoted_word
+
+# A quoted word has substructure we have to be aware of at G1 level,
+# for the possible embedded markup.
+
+quoted_word	::= ( '"' ) quoted_elements ( '"' )
+quoted_elements ::= quoted_element *
+quoted_element	::= SimpleWordPlusSpace
+		|   markup
+		|   Escaped
+
+# # ## ### ##### ######## ############# #####################
+## Lexemes
+
+lexeme default =
+	action => [start,length,value]
+       	latm   => 1
+
+:discard   ~ Whitespace
+Whitespace ~ SPACE_PLUS
+	   | COMMENT
+	   | CONTINUATION
+
+SpacePlus ~ SPACE_PLUS
+
+GeneralText ~ GT_LIMITER
+	    | GT_LIMITER           GT_LIMITER
+	    | GT_LIMITER GT_MIDDLE GT_LIMITER
+
+C_closer    ~ C_CLOSER
+Escaped     ~ '\\{'
+	    | '\\}'
+	    | '\\['
+	    | '\\]'
+	    | '\\"'
+
+SimpleWord		~ SIMPLE_WORD
+SimpleWordPlusSpace	~ SIMPLE_ELEMENT_PLUS_SPACE +
+
+BracedWord	  	~ BRACED_WORD
+
+# # ## ### ##### ######## ############# #####################
+## Lexical sub-structure
+
+SPACE_PLUS	~ [[:space:]] +
+SPACE_NULL	~ [[:space:]] *
+
+CONTINUATION	~ SPACE_NULL '\134' NEWLINE SPACE_NULL
+
+NEWLINE		~ [\r\n]
+		| '\r\n'
+
+COMMENT		~ '[comment' SPACE_PLUS CX_ARG SPACE_NULL C_CLOSER
+
+# Variant of cx_arg for use in COMMENT. Markup not allowed/ignored
+CX_ARG	        ~ SIMPLE_WORD
+		| BRACED_WORD
+		| QUOTED_WORD
+
+# \133, \133 are the brackets, i.e. `[` and `]`.
+GT_LIMITER	~ [^\133\135[:space:]]
+GT_MIDDLE	~ [^\133\135\n\r\t\f\v] +
+
+C_CLOSER 	~ ']'
+
+SIMPLE_WORD			~ SIMPLE_ELEMENT +
+SIMPLE_ELEMENT  		~ [^\133\135[:space:]{}"]
+SIMPLE_ELEMENT_PLUS_SPACE	~ [^\133\135{}"]
+
+BRACED_WORD	~ '{' BRACED_ELEMENTS '}'
+BRACED_ELEMENTS	~ BRACED_ELEMENT *
+BRACED_ELEMENT	~ ANY_UNBRACED
+		| BRACED_WORD
+		| BRACE_ESCAPED
+
+BRACE_ESCAPED	~ '\\{'
+		| '\\}'
+
+ANY_UNBRACED	~ [^{}]
+
+QUOTED_WORD	~ ( '"' ) QUOTED_ELEMENTS ( '"' )
+QUOTED_ELEMENTS ~ QUOTED_ELEMENT *
+QUOTED_ELEMENT	~ SIMPLE_WORD
+		| SPACE_PLUS
+		| ESCAPED
+
+# This is not the same as Escape above, note the unquoted brackets.
+ESCAPED     ~ '\\{'
+	    | '\\}'
+	    | '['
+	    | ']'
+	    | '\\"'
+
+# # ## ### ##### ######## ############# #####################
