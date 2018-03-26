@@ -1,15 +1,15 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
 ## (c) 2018 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
-## rt-tcl + json.slif
+## rt-tcl + doctools.slif
 ##
 
 ##
-## Test json parser on top of RT-Tcl.
+## Test doctools parser on top of RT-Tcl.
 ## 
 
 # # ## ### ##### ######## ############# #####################
-## API to the json-core
+## API to the doctools-core
 
 proc rt          {} { return tcl }
 proc coding      {} { return utf-8 }
@@ -20,7 +20,7 @@ proc constraints {id} {
 # # ## ### ##### ######## ############# #####################
 ##
 
-kt source common/json-core.testsuite
+kt source common/doctools-core.testsuite
 
 # # ## ### ##### ######## ############# #####################
 cleanupTests

@@ -1,4 +1,5 @@
 BUILD-*
+languages/*/BUILD*
 core*
 generated
 tests/core*
