@@ -9,31 +9,25 @@ manpage
       @22 11 '3.14.15.926'
   @{} {} ''
   body
-    section
-      subsection
-        paragraphs
-          paragraph
-            words
-              general_text
-                @49 12 {'BEGINNE HIER'}
-              c_example
-                braced_word
-                  @71 34 {'\173\n\t Example Block \\\n\t More Lines\n\175'}
-          paragraphs
-            @{} {} ''
-            paragraphs
-              paragraph
-                words
-                  example_text
-                    breaker
-                      @136 2 {'\n\t'}
-                    general_text
-                      @138 17 {'Inlined Example \\'}
-                    breaker
-                      @155 2 {'\n\t'}
-                    general_text
-                      @157 9 {'Next Line'}
-                    breaker
-                      @166 1 {'\n'}
-                  general_text
-                    @181 6 'FERTIG'
+    paragraphs
+      paragraph
+        general_text
+          @49 12 {'BEGINNE HIER'}
+        c_example
+          braced_word
+            @71 34 {'\173\n\t Example Block \\\n\t More Lines\n\175'}
+      p_separator
+      paragraph
+        example_text
+          breaker
+            @136 2 {'\n\t'}
+          general_text
+            @138 17 {'Inlined Example \\'}
+          breaker
+            @155 2 {'\n\t'}
+          general_text
+            @157 9 {'Next Line'}
+          breaker
+            @166 1 {'\n'}
+        general_text
+          @181 6 'FERTIG'

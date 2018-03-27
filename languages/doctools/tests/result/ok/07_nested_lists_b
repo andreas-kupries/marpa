@@ -9,78 +9,66 @@ manpage
       @22 11 '3.14.15.926'
   @{} {} ''
   body
-    section
-      subsection
-        paragraphs
-          paragraph
-            words
-              item_list
-                item_list_elem
-                  paragraphs
-                    paragraph
-                      words
+    paragraphs
+      paragraph
+        item_list
+          item_list_elem
+            paragraphs
+              paragraph
+                general_text
+                  @156 1 '1'
+          item_list_elem
+            paragraphs
+              paragraph
+                general_text
+                  @165 1 '2'
+                enum_list
+                  enum_list_elem
+                    paragraphs
+                      paragraph
                         general_text
-                          @156 1 '1'
-                item_list_elem
-                  paragraphs
-                    paragraph
-                      words
+                          @198 1 'a'
+                  enum_list_elem
+                    paragraphs
+                      paragraph
                         general_text
-                          @165 1 '2'
-                        enum_list
-                          enum_list_elem
+                          @207 1 'b'
+                        definition_list
+                          def_list_elem
+                            c_def
+                              simple_word
+                                @239 3 'foo'
                             paragraphs
                               paragraph
-                                words
-                                  general_text
-                                    @198 1 'a'
-                          enum_list_elem
+                                general_text
+                                  @244 5 'snafu'
+                          def_list_elem
+                            c_def
+                              simple_word
+                                @255 3 'bar'
                             paragraphs
                               paragraph
-                                words
-                                  general_text
-                                    @207 1 'b'
-                                  definition_list
-                                    def_list_elem
-                                      c_def
-                                        simple_word
-                                          @239 3 'foo'
-                                      paragraphs
-                                        paragraph
-                                          words
-                                            general_text
-                                              @244 5 'snafu'
-                                    def_list_elem
-                                      c_def
-                                        simple_word
-                                          @255 3 'bar'
-                                      paragraphs
-                                        paragraph
-                                          words
-                                            general_text
-                                              @260 4 'barf'
-                                    def_list_elem
-                                      c_def
-                                        simple_word
-                                          @270 3 'roo'
-                                      paragraphs
-                                        paragraph
-                                          words
-                                            general_text
-                                              @275 4 'gork'
-                                  general_text
-                                    @291 2 'bb'
-                          enum_list_elem
+                                general_text
+                                  @260 4 'barf'
+                          def_list_elem
+                            c_def
+                              simple_word
+                                @270 3 'roo'
                             paragraphs
                               paragraph
-                                words
-                                  general_text
-                                    @301 1 'a'
+                                general_text
+                                  @275 4 'gork'
                         general_text
-                          @314 2 '22'
-                item_list_elem
-                  paragraphs
-                    paragraph
-                      words
+                          @291 2 'bb'
+                  enum_list_elem
+                    paragraphs
+                      paragraph
                         general_text
-                          @324 1 '3'
+                          @301 1 'a'
+                general_text
+                  @314 2 '22'
+          item_list_elem
+            paragraphs
+              paragraph
+                general_text
+                  @324 1 '3'

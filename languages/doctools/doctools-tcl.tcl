@@ -7,7 +7,7 @@
 # (c) 2018 Grammar doctools::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "doctools::parser::tcl".
-##	Generated On Mon Mar 26 23:29:09 PDT 2018
+##	Generated On Tue Mar 27 12:44:25 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 
@@ -309,62 +309,62 @@ oo::class create doctools::parser::tcl {
 	    {BRACED_WORD := {@CHR:<\173>} BRACED_ELEMENTS {@CHR:<\175>}}
 	    {BracedWord := BRACED_WORD}
 	    {Breaker := NEWLINE SPACE_NULL}
-	    {C_arg := {@STR:<\133arg>}}
-	    {C_arg_def := {@STR:<\133arg_def>}}
-	    {C_call := {@STR:<\133call>}}
-	    {C_category := {@STR:<\133category>}}
-	    {C_class := {@STR:<\133class>}}
+	    {C_arg := {@STR:<\133arg>} SPACE_PLUS}
+	    {C_arg_def := {@STR:<\133arg_def>} SPACE_PLUS}
+	    {C_call := {@STR:<\133call>} SPACE_PLUS}
+	    {C_category := {@STR:<\133category>} SPACE_PLUS}
+	    {C_class := {@STR:<\133class>} SPACE_PLUS}
 	    {C_closer := C_CLOSER}
 	    {C_CLOSER := {@CHR:<\135>}}
-	    {C_cmd := {@STR:<\133cmd>}}
-	    {C_cmd_def := {@STR:<\133cmd_def>}}
-	    {C_const := {@STR:<\133const>}}
-	    {C_copyright := {@STR:<\133copyright>}}
-	    {C_def := {@STR:<\133def>}}
-	    {C_description := {@STR:<\133description>}}
-	    {C_emph := {@STR:<\133emph>}}
-	    {C_enum := {@STR:<\133enum>}}
-	    {C_example := {@STR:<\133example>}}
-	    {C_example_begin := {@STR:<\133example_begin>}}
-	    {C_example_end := {@STR:<\133example_end>}}
-	    {C_file := {@STR:<\133file>}}
-	    {C_fun := {@STR:<\133fun>}}
-	    {C_image := {@STR:<\133image>}}
-	    {C_include := {@STR:<\133include>}}
-	    {C_item := {@STR:<\133item>}}
-	    {C_keywords := {@STR:<\133keywords>}}
-	    {C_lb := {@STR:<\133lb>}}
-	    {C_list_begin := {@STR:<\133list_begin>}}
-	    {C_list_end := {@STR:<\133list_end>}}
-	    {C_manpage_begin := {@STR:<\133manpage_begin>}}
-	    {C_manpage_end := {@STR:<\133manpage_end>}}
-	    {C_method := {@STR:<\133method>}}
-	    {C_moddesc := {@STR:<\133moddesc>}}
-	    {C_namespace := {@STR:<\133namespace>}}
-	    {C_nl := {@STR:<\133nl>}}
-	    {C_opt := {@STR:<\133opt>}}
-	    {C_opt_def := {@STR:<\133opt_def>}}
-	    {C_option := {@STR:<\133option>}}
-	    {C_package := {@STR:<\133package>}}
-	    {C_para := {@STR:<\133para>}}
-	    {C_rb := {@STR:<\133rb>}}
-	    {C_require := {@STR:<\133require>}}
-	    {C_section := {@STR:<\133section>}}
-	    {C_sectref := {@STR:<\133sectref>}}
-	    {C_sectref_ext := {@STR:<\133sectref-external>}}
-	    {C_see_also := {@STR:<\133see_also>}}
-	    {C_strong := {@STR:<\133strong>}}
-	    {C_subsection := {@STR:<\133subsection>}}
-	    {C_syscmd := {@STR:<\133syscmd>}}
-	    {C_term := {@STR:<\133term>}}
-	    {C_titledesc := {@STR:<\133titledesc>}}
-	    {C_tkoption_def := {@STR:<\133tkoption_def>}}
-	    {C_type := {@STR:<\133type>}}
-	    {C_uri := {@STR:<\133uri>}}
-	    {C_usage := {@STR:<\133usage>}}
-	    {C_var := {@STR:<\133var>}}
-	    {C_vset := {@STR:<\133vset>}}
-	    {C_widget := {@STR:<\133widget>}}
+	    {C_cmd := {@STR:<\133cmd>} SPACE_PLUS}
+	    {C_cmd_def := {@STR:<\133cmd_def>} SPACE_PLUS}
+	    {C_const := {@STR:<\133const>} SPACE_PLUS}
+	    {C_copyright := {@STR:<\133copyright>} SPACE_PLUS}
+	    {C_def := {@STR:<\133def>} SPACE_PLUS}
+	    {C_description := {@STR:<\133description>} SPACE_NULL C_CLOSER}
+	    {C_emph := {@STR:<\133emph>} SPACE_PLUS}
+	    {C_enum := {@STR:<\133enum>} SPACE_NULL C_CLOSER}
+	    {C_example := {@STR:<\133example>} SPACE_PLUS}
+	    {C_example_begin := {@STR:<\133example_begin>} SPACE_NULL C_CLOSER}
+	    {C_example_end := {@STR:<\133example_end>} SPACE_NULL C_CLOSER}
+	    {C_file := {@STR:<\133file>} SPACE_PLUS}
+	    {C_fun := {@STR:<\133fun>} SPACE_PLUS}
+	    {C_image := {@STR:<\133image>} SPACE_PLUS}
+	    {C_include := {@STR:<\133include>} SPACE_PLUS}
+	    {C_item := {@STR:<\133item>} SPACE_NULL C_CLOSER}
+	    {C_keywords := {@STR:<\133keywords>} SPACE_PLUS}
+	    {C_lb := {@STR:<\133lb>} SPACE_NULL C_CLOSER}
+	    {C_list_begin := {@STR:<\133list_begin>} SPACE_PLUS}
+	    {C_list_end := {@STR:<\133list_end>} SPACE_NULL C_CLOSER}
+	    {C_manpage_begin := {@STR:<\133manpage_begin>} SPACE_PLUS}
+	    {C_manpage_end := {@STR:<\133manpage_end>} SPACE_NULL C_CLOSER}
+	    {C_method := {@STR:<\133method>} SPACE_PLUS}
+	    {C_moddesc := {@STR:<\133moddesc>} SPACE_PLUS}
+	    {C_namespace := {@STR:<\133namespace>} SPACE_PLUS}
+	    {C_nl := {@STR:<\133nl>} SPACE_NULL C_CLOSER}
+	    {C_opt := {@STR:<\133opt>} SPACE_PLUS}
+	    {C_opt_def := {@STR:<\133opt_def>} SPACE_PLUS}
+	    {C_option := {@STR:<\133option>} SPACE_PLUS}
+	    {C_package := {@STR:<\133package>} SPACE_PLUS}
+	    {C_para := {@STR:<\133para>} SPACE_NULL C_CLOSER}
+	    {C_rb := {@STR:<\133rb>} SPACE_NULL C_CLOSER}
+	    {C_require := {@STR:<\133require>} SPACE_PLUS}
+	    {C_section := {@STR:<\133section>} SPACE_PLUS}
+	    {C_sectref := {@STR:<\133sectref>} SPACE_PLUS}
+	    {C_sectref_ext := {@STR:<\133sectref-external>} SPACE_PLUS}
+	    {C_see_also := {@STR:<\133see_also>} SPACE_PLUS}
+	    {C_strong := {@STR:<\133strong>} SPACE_PLUS}
+	    {C_subsection := {@STR:<\133subsection>} SPACE_PLUS}
+	    {C_syscmd := {@STR:<\133syscmd>} SPACE_PLUS}
+	    {C_term := {@STR:<\133term>} SPACE_PLUS}
+	    {C_titledesc := {@STR:<\133titledesc>} SPACE_PLUS}
+	    {C_tkoption_def := {@STR:<\133tkoption_def>} SPACE_PLUS}
+	    {C_type := {@STR:<\133type>} SPACE_PLUS}
+	    {C_uri := {@STR:<\133uri>} SPACE_PLUS}
+	    {C_usage := {@STR:<\133usage>} SPACE_PLUS}
+	    {C_var := {@STR:<\133var>} SPACE_PLUS}
+	    {C_vset := {@STR:<\133vset>} SPACE_PLUS}
+	    {C_widget := {@STR:<\133widget>} SPACE_PLUS}
 	    {COMMENT := {@STR:<\133comment>} SPACE_PLUS CX_ARG SPACE_NULL C_CLOSER}
 	    {CONTINUATION := SPACE_NULL {@CHR:<\134>} NEWLINE SPACE_NULL}
 	    {CX_ARG := BRACED_WORD}
@@ -585,18 +585,20 @@ oo::class create doctools::parser::tcl {
 	    markup
 	    opt_list_elem
 	    option_list
+	    p_separator
 	    paragraph
 	    paragraphs
 	    quoted_element
 	    quoted_elements
 	    quoted_word
 	    section
+	    sections
 	    simple_word
 	    subsection
+	    subsections
 	    tko_list_elem
 	    tkoption_list
 	    word
-	    words
 	    xref
 	}
     }
@@ -608,8 +610,10 @@ oo::class create doctools::parser::tcl {
 	    {__ :A {name values}}
 	    {arg_list_elem := c_arg_def paragraphs}
 	    {argument_list + arg_list_elem}
-	    {body := section}
-	    {body := section c_section body}
+	    {body := paragraphs}
+	    {body := sections}
+	    {body := paragraphs sections}
+	    {body :=}
 	    {braced_word := BracedWord}
 	    {breaker := Breaker}
 	    {c_arg :M {0 2} C_arg cx_arg C_closer}
@@ -623,20 +627,20 @@ oo::class create doctools::parser::tcl {
 	    {c_const :M {0 2} C_const cx_arg C_closer}
 	    {c_copyright :M {0 2} C_copyright cx_arg C_closer}
 	    {c_def :M {0 2} C_def cx_arg C_closer}
-	    {c_description :M {0 1} C_description C_closer}
+	    {c_description :M 0 C_description}
 	    {c_emph :M {0 2} C_emph cx_arg C_closer}
-	    {c_enum :M {0 1} C_enum C_closer}
+	    {c_enum :M 0 C_enum}
 	    {c_example :M {0 2} C_example cx_arg C_closer}
-	    {c_example_begin :M {0 1} C_example_begin C_closer}
-	    {c_example_end :M {0 1} C_example_end C_closer}
+	    {c_example_begin :M 0 C_example_begin}
+	    {c_example_end :M 0 C_example_end}
 	    {c_file :M {0 2} C_file cx_arg C_closer}
 	    {c_fun :M {0 2} C_fun cx_arg C_closer}
 	    {c_image :M {0 2} C_image cx_arg C_closer}
 	    {c_image :M {0 3} C_image cx_arg cx_arg C_closer}
 	    {c_include :M {0 2} C_include cx_arg C_closer}
-	    {c_item :M {0 1} C_item C_closer}
+	    {c_item :M 0 C_item}
 	    {c_keywords :M {0 2} C_keywords cx_args C_closer}
-	    {c_lb :M {0 1} C_lb C_closer}
+	    {c_lb :M 0 C_lb}
 	    {c_list_begin_arg :M {0 1 2} C_list_begin L_arguments C_closer}
 	    {c_list_begin_cmd :M {0 1 2} C_list_begin L_commands C_closer}
 	    {c_list_begin_def :M {0 1 2} C_list_begin L_definitions C_closer}
@@ -644,9 +648,9 @@ oo::class create doctools::parser::tcl {
 	    {c_list_begin_item :M {0 1 2} C_list_begin L_itemized C_closer}
 	    {c_list_begin_opt :M {0 1 2} C_list_begin L_options C_closer}
 	    {c_list_begin_tko :M {0 1 2} C_list_begin L_tkoptions C_closer}
-	    {c_list_end :M {0 1} C_list_end C_closer}
+	    {c_list_end :M 0 C_list_end}
 	    {c_manpage_begin :M {0 4} C_manpage_begin cx_arg cx_arg cx_arg C_closer}
-	    {c_manpage_end :M {0 1} C_manpage_end C_closer}
+	    {c_manpage_end :M 0 C_manpage_end}
 	    {c_method :M {0 2} C_method cx_arg C_closer}
 	    {c_moddesc :M {0 2} C_moddesc cx_arg C_closer}
 	    {c_namespace :M {0 2} C_namespace cx_arg C_closer}
@@ -655,9 +659,9 @@ oo::class create doctools::parser::tcl {
 	    {c_opt_def :M {0 3} C_opt_def cx_arg cx_arg C_closer}
 	    {c_option :M {0 2} C_option cx_arg C_closer}
 	    {c_package :M {0 2} C_package cx_arg C_closer}
-	    {c_para :M {0 1} C_nl C_closer}
-	    {c_para :M {0 1} C_para C_closer}
-	    {c_rb :M {0 1} C_rb C_closer}
+	    {c_para :M 0 C_nl}
+	    {c_para :M 0 C_para}
+	    {c_rb :M 0 C_rb}
 	    {c_require :M {0 2} C_require cx_arg C_closer}
 	    {c_require :M {0 3} C_require cx_arg cx_arg C_closer}
 	    {c_section :M {0 2} C_section cx_arg C_closer}
@@ -757,19 +761,24 @@ oo::class create doctools::parser::tcl {
 	    {__ :A {name values}}
 	    {opt_list_elem := c_opt_def paragraphs}
 	    {option_list + opt_list_elem}
-	    {paragraph := words}
-	    {paragraph :=}
-	    {paragraphs := paragraph}
-	    {paragraphs :M 1 paragraph c_para paragraphs}
+	    {p_separator :M 0 c_para}
+	    {p_separator :M {0 1} c_para p_separator}
+	    {paragraph + word}
+	    {paragraphs + paragraph p_separator 1}
 	    {quoted_element := Escaped}
 	    {quoted_element := markup}
 	    {quoted_element := SimpleWordPlusSpace}
 	    {quoted_elements * quoted_element}
 	    {quoted_word :M {0 2} Quote quoted_elements Quote}
-	    {section := subsection}
-	    {section := subsection c_subsection section}
+	    {section := c_section}
+	    {section := c_section paragraphs subsections}
+	    {section := c_section paragraphs}
+	    {section := c_section subsections}
+	    {sections + section}
 	    {simple_word := SimpleWord}
-	    {subsection := paragraphs}
+	    {subsection := c_subsection}
+	    {subsection := c_subsection paragraphs}
+	    {subsections + subsection}
 	    {tko_list_elem := c_tkoption_def paragraphs}
 	    {tkoption_list + tko_list_elem}
 	    {__ :A Afirst}
@@ -780,9 +789,6 @@ oo::class create doctools::parser::tcl {
 	    {word := list}
 	    {word := markup}
 	    {word := xref}
-	    {__ :A {name values}}
-	    {words + word}
-	    {__ :A Afirst}
 	    {xref := c_category}
 	    {xref := c_keywords}
 	    {xref := c_see_also}

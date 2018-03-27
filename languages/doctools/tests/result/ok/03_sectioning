@@ -9,77 +9,63 @@ manpage
       @22 11 '3.14.15.926'
   @{} {} ''
   body
-    @{} {} ''
-    c_section
-      simple_word
-        @58 1 '1'
-    body
+    sections
       section
-        subsection
-          paragraphs
-            paragraph
-              words
-                general_text
-                  @61 1 'A'
-      c_section
-        simple_word
-          @72 1 '2'
-      body
-        section
+        c_section
+          simple_word
+            @58 1 '1'
+        paragraphs
+          paragraph
+            general_text
+              @61 1 'A'
+      section
+        c_section
+          simple_word
+            @72 1 '2'
+        paragraphs
+          paragraph
+            general_text
+              @75 1 'B'
+        subsections
           subsection
+            c_subsection
+              simple_word
+                @89 3 '2.1'
             paragraphs
               paragraph
-                words
-                  general_text
-                    @75 1 'B'
-          c_subsection
-            simple_word
-              @89 3 '2.1'
-          section
-            subsection
-              paragraphs
-                paragraph
-                  words
-                    general_text
-                      @94 3 'B-a'
+                general_text
+                  @94 3 'B-a'
+          subsection
             c_subsection
               simple_word
                 @110 3 '2.2'
-            section
-              subsection
-                paragraphs
-                  paragraph
-                    words
-                      general_text
-                        @115 3 'B-b'
+            paragraphs
+              paragraph
+                general_text
+                  @115 3 'B-b'
+      section
         c_section
           simple_word
             @128 1 '3'
-        body
-          section
-            subsection
-              paragraphs
-                paragraph
-                  words
-                    general_text
-                      @131 1 'C'
-                paragraphs
-                  paragraph
-                    words
-                      general_text
-                        @141 2 'At'
-                      c_sectref
-                        simple_word
-                          @153 1 '1'
-                      general_text
-                        @155 1 '.'
-                  paragraphs
-                    paragraph
-                      words
-                        general_text
-                          @164 2 'At'
-                        c_sectref
-                          simple_word
-                            @176 13 '__undefined__'
-                        general_text
-                          @190 1 '.'
+        paragraphs
+          paragraph
+            general_text
+              @131 1 'C'
+          p_separator
+          paragraph
+            general_text
+              @141 2 'At'
+            c_sectref
+              simple_word
+                @153 1 '1'
+            general_text
+              @155 1 '.'
+          p_separator
+          paragraph
+            general_text
+              @164 2 'At'
+            c_sectref
+              simple_word
+                @176 13 '__undefined__'
+            general_text
+              @190 1 '.'

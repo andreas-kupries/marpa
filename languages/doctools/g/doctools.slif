@@ -63,27 +63,36 @@ xref		::= c_keywords		action => ::first
 # are able to handle this, but not the builtin quantified/sequence
 # rules.
 
-body		::= section
-		|   section c_section body
+body		::=
+body		::=	paragraphs
+		|	paragraphs sections
+		|		   sections
 
-section		::= subsection
-		|   subsection c_subsection section
+sections	::= section +
+section		::= c_section paragraphs
+		|   c_section paragraphs subsections
+		|   c_section 		 subsections
+		|   c_section
 
-subsection	::= paragraphs
+subsections	::= subsection +
+subsection	::= c_subsection paragraphs
+		|   c_subsection
 
-paragraphs	::= paragraph
-		|   paragraph ( c_para ) paragraphs
+paragraphs	::= paragraph +
+		    separator => p_separator
+		    proper => 1
 
-paragraph	::= words
-paragraph	::=
+p_separator	::= ( c_para )
+		|   ( c_para p_separator )
 
-words		::= word +
+paragraph	::= word +
+
 word		::= definition		action => ::first
+		|   list		action => ::first
+		|   example		action => ::first
 		|   c_vget		action => ::first
 		|   markup		action => ::first
 		|   xref		action => ::first
-		|   example		action => ::first
-		|   list		action => ::first
 		|   general_text	action => ::first
 
 markup		::= c_arg		action => ::first
@@ -155,7 +164,7 @@ general_text	::= GeneralText
 
 c_arg     		::= ( C_arg )			cx_arg		  	( C_closer )
 c_arg_def		::= ( C_arg_def )		cx_arg cx_arg       	( C_closer )
-			  | ( C_arg_def )		cx_arg cx_arg cx_arg 	( C_closer )
+			|   ( C_arg_def )		cx_arg cx_arg cx_arg 	( C_closer )
 c_call			::= ( C_call )			cx_args	    	  	( C_closer )
 c_category		::= ( C_category )		cx_arg 		  	( C_closer )
 c_class 		::= ( C_class )			cx_arg 		  	( C_closer )
@@ -173,7 +182,7 @@ c_example_end		::= ( C_example_end )
 c_file			::= ( C_file )			cx_arg			( C_closer )
 c_fun     		::= ( C_fun )			cx_arg			( C_closer )
 c_image			::= ( C_image )			cx_arg      		( C_closer )
-			  | ( C_image )			cx_arg cx_arg		( C_closer )
+			|   ( C_image )			cx_arg cx_arg		( C_closer )
 c_include		::= ( C_include )		cx_arg 	   		( C_closer )
 c_item			::= ( C_item )
 c_keywords		::= ( C_keywords )		cx_args	   		( C_closer )
@@ -185,7 +194,7 @@ c_list_begin_enum	::= ( C_list_begin	L_enumerated			  C_closer )
 c_list_begin_item	::= ( C_list_begin	L_itemized			  C_closer )
 c_list_begin_opt	::= ( C_list_begin	L_options			  C_closer )
 c_list_begin_tko	::= ( C_list_begin	L_tkoptions			  C_closer )
-c_list_end		::= ( C_list_end					  C_closer )
+c_list_end		::= ( C_list_end )
 c_manpage_begin		::= ( C_manpage_begin )		cx_arg cx_arg cx_arg	( C_closer )
 c_manpage_end		::= ( C_manpage_end )
 c_method  		::= ( C_method )		cx_arg 	    		( C_closer )
@@ -194,16 +203,16 @@ c_namespace 		::= ( C_namespace )		cx_arg			( C_closer )
 c_opt   		::= ( C_opt )			cx_arg			( C_closer )
 c_option		::= ( C_option )		cx_arg			( C_closer )
 c_opt_def		::= ( C_opt_def )		cx_arg			( C_closer )
-			  | ( C_opt_def )		cx_arg cx_arg		( C_closer )
+			|   ( C_opt_def )		cx_arg cx_arg		( C_closer )
 c_package 		::= ( C_package )		cx_arg 			( C_closer )
 c_para			::= ( C_nl )
-			  | ( C_para )
+			|   ( C_para )
 c_rb   			::= ( C_rb )
 c_require		::= ( C_require )		cx_arg			( C_closer )
-			  | ( C_require )		cx_arg cx_arg		( C_closer )
+			|   ( C_require )		cx_arg cx_arg		( C_closer )
 c_section		::= ( C_section )		cx_arg 			( C_closer )
 c_sectref 		::= ( C_sectref )		cx_arg 			( C_closer )
-			  | ( C_sectref )		cx_arg cx_arg 		( C_closer )
+			|   ( C_sectref )		cx_arg cx_arg 		( C_closer )
 c_sectref_ext 		::= ( C_sectref_ext )		cx_arg 			( C_closer )
 c_see_also		::= ( C_see_also )		cx_args			( C_closer )
 c_strong    		::= ( C_strong )		cx_arg			( C_closer )
@@ -214,7 +223,7 @@ c_titledesc		::= ( C_titledesc )		cx_arg			( C_closer )
 c_tkoption_def		::= ( C_tkoption_def )		cx_arg cx_arg cx_arg	( C_closer )
 c_type    		::= ( C_type )			cx_arg			( C_closer )
 c_uri   		::= ( C_uri )			cx_arg			( C_closer )
-			  | ( C_uri )			cx_arg cx_arg		( C_closer )
+			|   ( C_uri )			cx_arg cx_arg		( C_closer )
 c_usage   		::= ( C_usage )			cx_args			( C_closer )
 c_var       		::= ( C_var )			cx_arg 			( C_closer )
 c_vget			::= ( C_vset )			cx_arg 			( C_closer )
