@@ -1,0 +1,249 @@
+manpage
+  @{} {} ''
+  c_manpage_begin
+    simple_word
+      @15 4 'TEST'
+    simple_word
+      @20 1 'z'
+    simple_word
+      @22 11 '3.14.15.926'
+  headers
+    c_copyright
+      simple_word
+        @46 9 'Copyright'
+  body
+    section
+      subsection
+        paragraphs
+          paragraph
+            words
+              general_text
+                @71 8 'Argument'
+              general_text
+                @80 2 '::'
+              c_arg
+                simple_word
+                  @87 8 'Argument'
+              general_text
+                @96 2 '::'
+              general_text
+                @99 5 'Class'
+              general_text
+                @106 2 '::'
+              c_class
+                simple_word
+                  @115 5 'Class'
+              general_text
+                @121 2 '::'
+              general_text
+                @124 7 'Command'
+              general_text
+                @133 2 '::'
+              c_cmd
+                simple_word
+                  @140 7 'Command'
+              general_text
+                @148 2 '::'
+              general_text
+                @151 7 'Comment'
+              general_text
+                @160 2 '::'
+              general_text
+                @179 2 '::'
+              general_text
+                @182 5 'Const'
+              general_text
+                @189 2 '::'
+              c_const
+                simple_word
+                  @198 8 'Constant'
+              general_text
+                @207 2 '::'
+              general_text
+                @210 8 'Emphasis'
+              general_text
+                @219 2 '::'
+              c_emph
+                simple_word
+                  @227 8 'Emphasis'
+              general_text
+                @236 2 '::'
+              general_text
+                @239 4 'File'
+              general_text
+                @245 2 '::'
+              c_file
+                simple_word
+                  @253 9 'File/Path'
+              general_text
+                @263 2 '::'
+              general_text
+                @266 8 'Function'
+              general_text
+                @275 2 '::'
+              c_fun
+                simple_word
+                  @282 8 'Function'
+              general_text
+                @291 2 '::'
+          paragraphs
+            paragraph
+              words
+                c_lb
+                general_text
+                  @306 6 'Method'
+                general_text
+                  @314 2 '::'
+                c_method
+                  simple_word
+                    @324 6 'Method'
+                general_text
+                  @331 2 '::'
+                general_text
+                  @334 9 'Namespace'
+                general_text
+                  @344 2 '::'
+                c_namespace
+                  simple_word
+                    @357 9 'Namespace'
+                general_text
+                  @367 2 '::'
+                general_text
+                  @370 8 'Optional'
+                general_text
+                  @379 2 '::'
+                c_opt
+                  simple_word
+                    @386 8 'Optional'
+                general_text
+                  @395 2 '::'
+                general_text
+                  @398 6 'Option'
+                general_text
+                  @406 2 '::'
+                c_option
+                  simple_word
+                    @416 6 'Option'
+                general_text
+                  @423 2 '::'
+                general_text
+                  @426 7 'Package'
+                general_text
+                  @435 2 '::'
+                c_package
+                  simple_word
+                    @446 7 'Package'
+                general_text
+                  @454 2 '::'
+                c_rb
+            paragraphs
+              paragraph
+                words
+                  general_text
+                    @469 11 {'Section ref'}
+                  general_text
+                    @481 2 '::'
+                  c_sectref
+                    braced_word
+                      @492 11 {'\173A section\175'}
+                  general_text
+                    @504 2 '::'
+                  general_text
+                    @507 13 {'Sect External'}
+                  general_text
+                    @521 2 '::'
+                  c_sectref_ext
+                    braced_word
+                      @541 17 {'\173Outside section\175'}
+                  general_text
+                    @559 2 '::'
+                  general_text
+                    @562 6 'Strong'
+                  general_text
+                    @570 2 '::'
+                  c_strong
+                    simple_word
+                      @580 6 'Strong'
+                  general_text
+                    @587 2 '::'
+                  general_text
+                    @590 6 'Syscmd'
+                  general_text
+                    @598 2 '::'
+                  c_syscmd
+                    simple_word
+                      @608 13 'SystemCommand'
+                  general_text
+                    @622 2 '::'
+                  general_text
+                    @625 4 'Term'
+                  general_text
+                    @631 2 '::'
+                  c_term
+                    simple_word
+                      @639 4 'Term'
+                  general_text
+                    @644 2 '::'
+                  general_text
+                    @647 4 'Type'
+                  general_text
+                    @653 2 '::'
+                  c_type
+                    simple_word
+                      @661 4 'Type'
+                  general_text
+                    @666 2 '::'
+                  general_text
+                    @669 3 'Uri'
+                  general_text
+                    @674 2 '::'
+                  c_uri
+                    simple_word
+                      @681 3 'Uri'
+                  general_text
+                    @685 2 '::'
+                  general_text
+                    @688 5 'Usage'
+                  general_text
+                    @695 2 '::'
+                  c_usage
+                    cx_args
+                      simple_word
+                        @704 1 '1'
+                      simple_word
+                        @706 1 '2'
+                      simple_word
+                        @708 1 '3'
+                      simple_word
+                        @710 1 '4'
+                      simple_word
+                        @712 3 '...'
+                  general_text
+                    @716 2 '::'
+                  general_text
+                    @719 8 'Variable'
+                  general_text
+                    @728 2 '::'
+                  c_var
+                    simple_word
+                      @735 8 'Variable'
+                  general_text
+                    @744 2 '::'
+                  general_text
+                    @747 6 'Widget'
+                  general_text
+                    @755 2 '::'
+                  c_widget
+                    simple_word
+                      @765 6 'Widget'
+                  general_text
+                    @772 2 '::'
+                  general_text
+                    @775 5 'Image'
+                  general_text
+                    @782 2 '::'
+                  c_image
+                    simple_word
+                      @791 5 'Image'
+                  general_text
+                    @797 2 '::'

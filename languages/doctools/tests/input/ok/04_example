@@ -8,8 +8,8 @@ BEGINNE HIER
 [para]
 [para]
 [example_begin]
-Inlined Example \
-Next Line
+	Inlined Example \
+	Next Line
 [example_end]
 FERTIG
 [manpage_end]

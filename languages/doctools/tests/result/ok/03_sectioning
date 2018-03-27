@@ -1,0 +1,85 @@
+manpage
+  @{} {} ''
+  c_manpage_begin
+    simple_word
+      @15 4 'TEST'
+    simple_word
+      @20 1 'z'
+    simple_word
+      @22 11 '3.14.15.926'
+  @{} {} ''
+  body
+    @{} {} ''
+    c_section
+      simple_word
+        @58 1 '1'
+    body
+      section
+        subsection
+          paragraphs
+            paragraph
+              words
+                general_text
+                  @61 1 'A'
+      c_section
+        simple_word
+          @72 1 '2'
+      body
+        section
+          subsection
+            paragraphs
+              paragraph
+                words
+                  general_text
+                    @75 1 'B'
+          c_subsection
+            simple_word
+              @89 3 '2.1'
+          section
+            subsection
+              paragraphs
+                paragraph
+                  words
+                    general_text
+                      @94 3 'B-a'
+            c_subsection
+              simple_word
+                @110 3 '2.2'
+            section
+              subsection
+                paragraphs
+                  paragraph
+                    words
+                      general_text
+                        @115 3 'B-b'
+        c_section
+          simple_word
+            @128 1 '3'
+        body
+          section
+            subsection
+              paragraphs
+                paragraph
+                  words
+                    general_text
+                      @131 1 'C'
+                paragraphs
+                  paragraph
+                    words
+                      general_text
+                        @141 2 'At'
+                      c_sectref
+                        simple_word
+                          @153 1 '1'
+                      general_text
+                        @155 1 '.'
+                  paragraphs
+                    paragraph
+                      words
+                        general_text
+                          @164 2 'At'
+                        c_sectref
+                          simple_word
+                            @176 13 '__undefined__'
+                        general_text
+                          @190 1 '.'

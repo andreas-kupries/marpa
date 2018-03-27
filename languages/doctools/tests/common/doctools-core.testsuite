@@ -118,7 +118,7 @@ test [tnp]-process-file-1.1 "[cl] :: process-file, wrong args, too many" -body {
 # # ## ### ##### ######## ############# #####################
 ## Will-accept inputs
 
-lappend will_accept {*}[lsort -uniq [glob -nocomplain -directory [td]/input/ok */*]]
+lappend will_accept {*}[lsort -uniq [glob -nocomplain -directory [td]/input/ok *]]
 
 set max [llength $will_accept]
 set fmt %0[string length $max]d
@@ -130,7 +130,7 @@ foreach infile $will_accept {
     # - --   -----        -------------
     set kd       [format $fmt $k]
     set id       [file rootname [file tail $infile]]
-    set cat      [file join {*}[lrange [file split $infile] end-2 end-1]]
+    set cat      [file tail [file dirname $infile]]
     set input    [fgetc $infile [coding]]
     set exfile   [td]/result/$cat/$id
     set expected {}
@@ -138,7 +138,7 @@ foreach infile $will_accept {
 
     # - --   -----        -------------
     
-    test [tnp]-process-2.${kd}---${id} "[cl] :: process $id" -body {
+    test [tnp]-process-2.${kd}---ok-${id} "[cl] :: ok process $id" -body {
 	# For rt-c activate `TRACE` tag `enter` in `inbound.c` and use
 	# the rebuilt runtime.
 
@@ -153,7 +153,7 @@ foreach infile $will_accept {
 
     if {$skipfiles} continue
     
-    test [tnp]-process-file-3.${kd}---${id} "[cl] :: process-file $id" -body {
+    test [tnp]-process-file-3.${kd}---ok-${id} "[cl] :: ok process-file $id" -body {
 	catch {
 	    ast-format [PARSE process-file $infile]
 	} msg
@@ -169,7 +169,7 @@ foreach infile $will_accept {
 ## - must reject
 ## - may reject
 
-lappend will_reject {*}[lsort -uniq [glob -nocomplain -directory [td]/input/fail */*]]
+lappend will_reject {*}[lsort -uniq [glob -nocomplain -directory [td]/input/fail *]]
 
 set max [llength $will_reject]
 set fmt %0[string length $max]d
@@ -181,7 +181,7 @@ foreach infile $will_reject {
     # - --   -----        -------------
     set kd       [format $fmt $k]
     set id       [file rootname [file tail $infile]]
-    set cat      [file join {*}[lrange [file split $infile] end-2 end-1]]
+    set cat      [file tail [file dirname $infile]]
     set input    [fgetc $infile [coding]]
     set expected {}
     catch {
@@ -191,7 +191,7 @@ foreach infile $will_reject {
 
     # - --   -----        -------------
     
-    test [tnp]-process-4.${kd}---${id} "[cl] :: process $id ([coding])" -body {
+    test [tnp]-process-4.${kd}---fail-${id} "[cl] :: process fail $id ([coding])" -body {
 	# For rt-c activate `TRACE` tag `enter` in `inbound.c` and use
 	# the rebuilt runtime.
     
@@ -202,7 +202,7 @@ foreach infile $will_reject {
 
     if {$skipfiles} continue
     
-    test [tnp]-process-file-5.${kd}---${id} "[cl] :: process-file $id" -body {
+    test [tnp]-process-file-5.${kd}---fail-${id} "[cl] :: fail process-file $id" -body {
 	    PARSE process-file $infile
     } -setup setup -cleanup {
 	cleanup

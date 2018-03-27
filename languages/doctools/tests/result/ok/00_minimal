@@ -1,0 +1,11 @@
+manpage
+  @{} {} ''
+  c_manpage_begin
+    simple_word
+      @15 4 'TEST'
+    simple_word
+      @20 1 'z'
+    simple_word
+      @22 11 '3.14.15.926'
+  @{} {} ''
+  @{} {} ''

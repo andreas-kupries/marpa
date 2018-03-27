@@ -14,6 +14,11 @@
 # - ALL UPPER CASE  -- L0 symbol, may not appear in G1 rules
 # - CamelCase       -- L0 lexeme, use in G1 rules, not in L0 rules
 
+# c_...    G1 markup commands
+# C_...    L0 lexeme, markup command lead-in, except
+# C_closer L0 lexeme, markup command end
+# L_...    L0 lexeme, list types
+
 # # ## ### ##### ######## ############# #####################
 ## Standard configuration
 
@@ -25,7 +30,8 @@
 
 manpage		::= definitions
 		    c_manpage_begin
-		    headers ( c_description )
+		    headers
+		    ( c_description )
 		    body
 		    ( c_manpage_end )
 
@@ -33,17 +39,29 @@ definitions	::= definition *
 definition	::= c_include
 		|   c_vset
 
-headers		::= header +
-header		::= c_titledesc
-		|   c_moddesc
-		|   c_copyright
-		|   c_require
-		|   definition
-		|   xref
+headers		::= header *
+header		::= c_titledesc		action => ::first
+		|   c_moddesc		action => ::first
+		|   c_copyright		action => ::first
+		|   c_require		action => ::first
+		|   definition		action => ::first
+		|   xref		action => ::first
 
-xref		::= c_keywords
-		|   c_see_also
-		|   c_category
+xref		::= c_keywords		action => ::first
+		|   c_see_also		action => ::first
+		|   c_category		action => ::first
+
+# Note: Using a rule like
+#
+#	body ::= section +  proper => 1 separator => c_section
+#
+# causes the error
+# 	Nullable symbol on RHS of a sequence rule
+#
+# on freezing. The cause is our rule `paragraph ::=`.  I.e. paragraph
+# is nullable, and this cascades up.  Our explicit right-recursions
+# are able to handle this, but not the builtin quantified/sequence
+# rules.
 
 body		::= section
 		|   section c_section body
@@ -52,60 +70,66 @@ section		::= subsection
 		|   subsection c_subsection section
 
 subsection	::= paragraphs
+
 paragraphs	::= paragraph
 		|   paragraph ( c_para ) paragraphs
+
 paragraph	::= words
 paragraph	::=
 
 words		::= word +
-word		::= definition
-		|   c_vget
-		|   markup
-		|   xref
-		|   example
-		|   list
-		|   general_text
+word		::= definition		action => ::first
+		|   c_vget		action => ::first
+		|   markup		action => ::first
+		|   xref		action => ::first
+		|   example		action => ::first
+		|   list		action => ::first
+		|   general_text	action => ::first
 
-markup		::= c_arg
-		|   c_class
-		|   c_cmd
-		|   c_const
-		|   c_emph
-		|   c_file
-		|   c_fun
-		|   c_lb
-		|   c_method
-		|   c_namespace
-		|   c_opt
-		|   c_option
-		|   c_package
-		|   c_rb
-		|   c_sectref
-		|   c_strong
-		|   c_syscmd
-		|   c_term
-		|   c_type
-		|   c_uri
-		|   c_usage
-		|   c_var
-		|   c_widget
-		|   c_image
-		|   c_sectref_ext
+markup		::= c_arg		action => ::first
+		|   c_class		action => ::first
+		|   c_cmd		action => ::first
+		|   c_const		action => ::first
+		|   c_emph		action => ::first
+		|   c_file		action => ::first
+		|   c_fun		action => ::first
+		|   c_lb		action => ::first
+		|   c_method		action => ::first
+		|   c_namespace		action => ::first
+		|   c_opt		action => ::first
+		|   c_option		action => ::first
+		|   c_package		action => ::first
+		|   c_rb		action => ::first
+		|   c_sectref		action => ::first
+		|   c_strong		action => ::first
+		|   c_syscmd		action => ::first
+		|   c_term		action => ::first
+		|   c_type		action => ::first
+		|   c_uri		action => ::first
+		|   c_usage		action => ::first
+		|   c_var		action => ::first
+		|   c_widget		action => ::first
+		|   c_image		action => ::first
+		|   c_sectref_ext	action => ::first
 
-example		::= c_example
-		|   ( c_example_begin ) example_block ( c_example_end )
-example_block	::= example_text +
-example_text	::= definition
-		|   markup
-		|   general_text
+example		::= c_example						action => ::first
+		|   ( c_example_begin ) example_text ( c_example_end )	action => ::first
 
-list		::= ( c_list_begin_arg  ) argument_list   ( c_list_end )
-		|   ( c_list_begin_cmd  ) command_list    ( c_list_end )
-		|   ( c_list_begin_def  ) definition_list ( c_list_end )
-		|   ( c_list_begin_enum ) enum_list       ( c_list_end )
-		|   ( c_list_begin_item ) item_list       ( c_list_end )
-		|   ( c_list_begin_opt  ) option_list     ( c_list_end )
-		|   ( c_list_begin_tko  ) tkoption_list   ( c_list_end )
+example_text	::= example_element +
+example_element	::= definition		action => ::first
+		|   markup		action => ::first
+		|   general_text	action => ::first
+		|   breaker		action => ::first
+
+breaker		::= Breaker
+
+list		::= ( c_list_begin_arg  ) argument_list   ( c_list_end )	action => ::first
+		|   ( c_list_begin_cmd  ) command_list    ( c_list_end )	action => ::first
+		|   ( c_list_begin_def  ) definition_list ( c_list_end )	action => ::first
+		|   ( c_list_begin_enum ) enum_list       ( c_list_end )	action => ::first
+		|   ( c_list_begin_item ) item_list       ( c_list_end )	action => ::first
+		|   ( c_list_begin_opt  ) option_list     ( c_list_end )	action => ::first
+		|   ( c_list_begin_tko  ) tkoption_list   ( c_list_end )	action => ::first
 
 argument_list   ::= arg_list_elem +
 command_list   	::= cmd_list_elem +
@@ -129,75 +153,73 @@ general_text	::= GeneralText
 # # ## ### ##### ######## ############# #####################
 ## Structure II - Command definitions
 
-c_arg     	::= ( '[arg' )			cx_arg		  	( C_closer )
-c_arg_def	::= ( '[arg_def' )		cx_arg cx_arg       	( C_closer )
-		  | ( '[arg_def' )		cx_arg cx_arg cx_arg 	( C_closer )
-c_call		::= ( '[call' )			cx_args	    	  	( C_closer )
-c_category	::= ( '[category' )		cx_arg 		  	( C_closer )
-c_class 	::= ( '[class' )		cx_arg 		  	( C_closer )
-c_cmd     	::= ( '[cmd' )			cx_arg			( C_closer )
-c_cmd_def	::= ( '[cmd_def' )		cx_arg			( C_closer )
-c_const     	::= ( '[const' )		cx_arg			( C_closer )
-c_copyright	::= ( '[copyright' )		cx_arg			( C_closer )
-c_def		::= ( '[def' )			cx_arg			( C_closer )
-c_description	::= ( '[description]' )
-c_emph   	::= ( '[emph' )			cx_arg			( C_closer )
-c_enum		::= ( '[enum]' )
-c_example	::= ( '[example' )		cx_arg			( C_closer )
-c_example_begin	::= ( '[example_begin]' )
-c_example_end	::= ( '[example_end]' )
-c_file		::= ( '[file' )			cx_arg			( C_closer )
-c_fun     	::= ( '[fun' )			cx_arg			( C_closer )
-c_image		::= ( '[image' )		cx_arg      		( C_closer )
-		  | ( '[image' )		cx_arg cx_arg		( C_closer )
-c_include	::= ( '[include' )		cx_arg 	   		( C_closer )
-c_item		::= ( '[item]' )
-c_keywords	::= ( '[keywords' )		cx_args	   		( C_closer )
-c_lb    	::= ( '[lb]' )
-
-c_list_begin_arg	::= ( '[list_begin' SpacePlus 'arguments]' )
-c_list_begin_cmd	::= ( '[list_begin' SpacePlus 'commands]' )
-c_list_begin_def	::= ( '[list_begin' SpacePlus 'definitions]' )
-c_list_begin_enum	::= ( '[list_begin' SpacePlus 'enumerated]' )
-c_list_begin_item	::= ( '[list_begin' SpacePlus 'itemized]' )
-c_list_begin_opt	::= ( '[list_begin' SpacePlus 'options]' )
-c_list_begin_tko	::= ( '[list_begin' SpacePlus 'tkoptions]' )
-
-c_list_end	::= ( '[list_end]' )
-c_manpage_begin	::= ( '[manpage_begin' )	cx_arg cx_arg cx_arg	( C_closer )
-c_manpage_end	::= ( '[manpage_end]' )
-c_method  	::= ( '[method' )		cx_arg 	    		( C_closer )
-c_moddesc	::= ( '[moddesc' )		cx_arg			( C_closer )
-c_namespace 	::= ( '[namespace' )		cx_arg			( C_closer )
-c_opt   	::= ( '[opt' )			cx_arg			( C_closer )
-c_option	::= ( '[option' )		cx_arg			( C_closer )
-c_opt_def	::= ( '[opt_def' )		cx_arg			( C_closer )
-		  | ( '[opt_def' )		cx_arg cx_arg		( C_closer )
-c_package 	::= ( '[package' )		cx_arg 			( C_closer )
-c_para		::= ( '[nl]' )
-		|   ( '[para]' )
-c_rb   		::= ( '[rb]' )
-c_require	::= ( '[require' )		cx_arg			( C_closer )
-		  | ( '[require' )		cx_arg cx_arg		( C_closer )
-c_section	::= ( '[section' )		cx_arg 			( C_closer )
-c_sectref 	::= ( '[sectref' )		cx_arg 			( C_closer )
-		  | ( '[sectref' )		cx_arg cx_arg 		( C_closer )
-c_sectref_ext 	::= ( '[sectref-external' )	cx_arg 			( C_closer )
-c_see_also	::= ( '[see_also' )		cx_args			( C_closer )
-c_strong    	::= ( '[strong' )		cx_arg			( C_closer )
-c_subsection	::= ( '[subsection' )		cx_arg			( C_closer )
-c_syscmd	::= ( '[syscmd' )		cx_arg			( C_closer )
-c_term	  	::= ( '[term' )			cx_arg			( C_closer )
-c_titledesc	::= ( '[titledesc' )		cx_arg			( C_closer )
-c_tkoption_def	::= ( '[tkoption_def' )		cx_arg cx_arg cx_arg	( C_closer )
-c_type    	::= ( '[type' )			cx_arg			( C_closer )
-c_uri   	::= ( '[uri' )			cx_arg			( C_closer )
-		  | ( '[uri' )			cx_arg cx_arg		( C_closer )
-c_usage   	::= ( '[usage' )		cx_args			( C_closer )
-c_var       	::= ( '[var' )			cx_arg 			( C_closer )
-c_vget		::= ( '[vset' )			cx_arg 			( C_closer )
-c_vset		::= ( '[vset' )			cx_arg cx_arg		( C_closer )
-c_widget	::= ( '[widget' )		cx_arg			( C_closer )
+c_arg     		::= ( C_arg )			cx_arg		  	( C_closer )
+c_arg_def		::= ( C_arg_def )		cx_arg cx_arg       	( C_closer )
+			  | ( C_arg_def )		cx_arg cx_arg cx_arg 	( C_closer )
+c_call			::= ( C_call )			cx_args	    	  	( C_closer )
+c_category		::= ( C_category )		cx_arg 		  	( C_closer )
+c_class 		::= ( C_class )			cx_arg 		  	( C_closer )
+c_cmd     		::= ( C_cmd )			cx_arg			( C_closer )
+c_cmd_def		::= ( C_cmd_def )		cx_arg			( C_closer )
+c_const     		::= ( C_const )			cx_arg			( C_closer )
+c_copyright		::= ( C_copyright )		cx_arg			( C_closer )
+c_def			::= ( C_def )			cx_arg			( C_closer )
+c_description		::= ( C_description )
+c_emph   		::= ( C_emph )			cx_arg			( C_closer )
+c_enum			::= ( C_enum )
+c_example		::= ( C_example )		cx_arg			( C_closer )
+c_example_begin		::= ( C_example_begin )
+c_example_end		::= ( C_example_end )
+c_file			::= ( C_file )			cx_arg			( C_closer )
+c_fun     		::= ( C_fun )			cx_arg			( C_closer )
+c_image			::= ( C_image )			cx_arg      		( C_closer )
+			  | ( C_image )			cx_arg cx_arg		( C_closer )
+c_include		::= ( C_include )		cx_arg 	   		( C_closer )
+c_item			::= ( C_item )
+c_keywords		::= ( C_keywords )		cx_args	   		( C_closer )
+c_lb    		::= ( C_lb )
+c_list_begin_arg	::= ( C_list_begin	L_arguments			  C_closer )
+c_list_begin_cmd	::= ( C_list_begin	L_commands			  C_closer )
+c_list_begin_def	::= ( C_list_begin	L_definitions			  C_closer )
+c_list_begin_enum	::= ( C_list_begin	L_enumerated			  C_closer )
+c_list_begin_item	::= ( C_list_begin	L_itemized			  C_closer )
+c_list_begin_opt	::= ( C_list_begin	L_options			  C_closer )
+c_list_begin_tko	::= ( C_list_begin	L_tkoptions			  C_closer )
+c_list_end		::= ( C_list_end					  C_closer )
+c_manpage_begin		::= ( C_manpage_begin )		cx_arg cx_arg cx_arg	( C_closer )
+c_manpage_end		::= ( C_manpage_end )
+c_method  		::= ( C_method )		cx_arg 	    		( C_closer )
+c_moddesc		::= ( C_moddesc )		cx_arg			( C_closer )
+c_namespace 		::= ( C_namespace )		cx_arg			( C_closer )
+c_opt   		::= ( C_opt )			cx_arg			( C_closer )
+c_option		::= ( C_option )		cx_arg			( C_closer )
+c_opt_def		::= ( C_opt_def )		cx_arg			( C_closer )
+			  | ( C_opt_def )		cx_arg cx_arg		( C_closer )
+c_package 		::= ( C_package )		cx_arg 			( C_closer )
+c_para			::= ( C_nl )
+			  | ( C_para )
+c_rb   			::= ( C_rb )
+c_require		::= ( C_require )		cx_arg			( C_closer )
+			  | ( C_require )		cx_arg cx_arg		( C_closer )
+c_section		::= ( C_section )		cx_arg 			( C_closer )
+c_sectref 		::= ( C_sectref )		cx_arg 			( C_closer )
+			  | ( C_sectref )		cx_arg cx_arg 		( C_closer )
+c_sectref_ext 		::= ( C_sectref_ext )		cx_arg 			( C_closer )
+c_see_also		::= ( C_see_also )		cx_args			( C_closer )
+c_strong    		::= ( C_strong )		cx_arg			( C_closer )
+c_subsection		::= ( C_subsection )		cx_arg			( C_closer )
+c_syscmd		::= ( C_syscmd )		cx_arg			( C_closer )
+c_term	  		::= ( C_term )			cx_arg			( C_closer )
+c_titledesc		::= ( C_titledesc )		cx_arg			( C_closer )
+c_tkoption_def		::= ( C_tkoption_def )		cx_arg cx_arg cx_arg	( C_closer )
+c_type    		::= ( C_type )			cx_arg			( C_closer )
+c_uri   		::= ( C_uri )			cx_arg			( C_closer )
+			  | ( C_uri )			cx_arg cx_arg		( C_closer )
+c_usage   		::= ( C_usage )			cx_args			( C_closer )
+c_var       		::= ( C_var )			cx_arg 			( C_closer )
+c_vget			::= ( C_vset )			cx_arg 			( C_closer )
+c_vset			::= ( C_vset )			cx_arg cx_arg		( C_closer )
+c_widget		::= ( C_widget )		cx_arg			( C_closer )
 
 # # ## ### ##### ######## ############# #####################
 # Structure III - Command argument structure
@@ -213,16 +235,24 @@ c_widget	::= ( '[widget' )		cx_arg			( C_closer )
 # handle the macros and inclusions we can go the restricted forms.
 
 cx_args		::= cx_arg +
-cx_arg	        ::= markup
-		|   c_vget
-	 	|   SimpleWord
-		|   BracedWord
-		|   quoted_word
+cx_arg	        ::= markup	action => ::first
+		|   c_vget	action => ::first
+	 	|   simple_word	action => ::first
+		|   braced_word	action => ::first
+		|   quoted_word	action => ::first
+
+# For simple and braced word the sub-structure is mostly
+# irrelevant. We have to know the type, so that we can strip boundary
+# markers (braced word, braces) during semantic processing.
+
+simple_word	::= SimpleWord
+braced_word	::= BracedWord
 
 # A quoted word has substructure we have to be aware of at G1 level,
-# for the possible embedded markup.
+# for the possible embedded markup. Note that whitespace and comments
+# now can occur here and will not be visible in the AST.
 
-quoted_word	::= ( '"' ) quoted_elements ( '"' )
+quoted_word	::= ( Quote ) quoted_elements ( Quote )
 quoted_elements ::= quoted_element *
 quoted_element	::= SimpleWordPlusSpace
 		|   markup
@@ -240,11 +270,76 @@ Whitespace ~ SPACE_PLUS
 	   | COMMENT
 	   | CONTINUATION
 
-SpacePlus ~ SPACE_PLUS
-
 GeneralText ~ GT_LIMITER
 	    | GT_LIMITER           GT_LIMITER
 	    | GT_LIMITER GT_MIDDLE GT_LIMITER
+
+Breaker	    ~ NEWLINE SPACE_NULL
+
+Quote	    ~ QUOTE
+
+C_arg     	~ '[arg' SPACE_PLUS
+C_arg_def	~ '[arg_def' SPACE_PLUS
+C_call		~ '[call' SPACE_PLUS
+C_category	~ '[category' SPACE_PLUS
+C_class 	~ '[class' SPACE_PLUS
+C_cmd     	~ '[cmd' SPACE_PLUS
+C_cmd_def	~ '[cmd_def' SPACE_PLUS
+C_const     	~ '[const' SPACE_PLUS
+C_copyright	~ '[copyright' SPACE_PLUS
+C_def		~ '[def' SPACE_PLUS
+C_description	~ '[description' SPACE_NULL C_CLOSER
+C_emph   	~ '[emph' SPACE_PLUS
+C_enum		~ '[enum' SPACE_NULL C_CLOSER
+C_example	~ '[example' SPACE_PLUS
+C_example_begin	~ '[example_begin' SPACE_NULL C_CLOSER
+C_example_end	~ '[example_end' SPACE_NULL C_CLOSER
+C_file		~ '[file' SPACE_PLUS
+C_fun     	~ '[fun' SPACE_PLUS
+C_image		~ '[image' SPACE_PLUS
+C_include	~ '[include' SPACE_PLUS
+C_item		~ '[item' SPACE_NULL C_CLOSER
+C_keywords	~ '[keywords' SPACE_PLUS
+C_lb    	~ '[lb' SPACE_NULL C_CLOSER
+C_list_begin	~ '[list_begin' SPACE_PLUS
+C_list_end	~ '[list_end' SPACE_NULL C_CLOSER
+C_manpage_begin	~ '[manpage_begin' SPACE_PLUS
+C_manpage_end	~ '[manpage_end' SPACE_NULL C_CLOSER
+C_method  	~ '[method' SPACE_PLUS
+C_moddesc	~ '[moddesc' SPACE_PLUS
+C_namespace 	~ '[namespace' SPACE_PLUS
+C_nl		~ '[nl' SPACE_NULL C_CLOSER
+C_opt   	~ '[opt' SPACE_PLUS
+C_opt_def	~ '[opt_def' SPACE_PLUS
+C_option	~ '[option' SPACE_PLUS
+C_package 	~ '[package' SPACE_PLUS
+C_para		~ '[para' SPACE_NULL C_CLOSER
+C_rb   		~ '[rb' SPACE_NULL C_CLOSER
+C_require	~ '[require' SPACE_PLUS
+C_section	~ '[section' SPACE_PLUS
+C_sectref 	~ '[sectref' SPACE_PLUS
+C_sectref_ext 	~ '[sectref-external' SPACE_PLUS
+C_see_also	~ '[see_also' SPACE_PLUS
+C_strong    	~ '[strong' SPACE_PLUS
+C_subsection	~ '[subsection' SPACE_PLUS
+C_syscmd	~ '[syscmd' SPACE_PLUS
+C_term	  	~ '[term' SPACE_PLUS
+C_titledesc	~ '[titledesc' SPACE_PLUS
+C_tkoption_def	~ '[tkoption_def' SPACE_PLUS
+C_type    	~ '[type' SPACE_PLUS
+C_uri   	~ '[uri' SPACE_PLUS
+C_usage   	~ '[usage' SPACE_PLUS
+C_var       	~ '[var' SPACE_PLUS
+C_vset		~ '[vset' SPACE_PLUS
+C_widget	~ '[widget' SPACE_PLUS
+
+L_arguments	~ 'arguments'
+L_commands	~ 'commands'
+L_definitions	~ 'definitions'
+L_enumerated	~ 'enumerated'
+L_itemized	~ 'itemized'
+L_options	~ 'options'
+L_tkoptions	~ 'tkoptions'
 
 C_closer    ~ C_CLOSER
 Escaped     ~ '\\{'
@@ -297,7 +392,8 @@ BRACE_ESCAPED	~ '\\{'
 
 ANY_UNBRACED	~ [^{}]
 
-QUOTED_WORD	~ ( '"' ) QUOTED_ELEMENTS ( '"' )
+QUOTED_WORD	~ ( QUOTE ) QUOTED_ELEMENTS ( QUOTE )
+QUOTE	    	~ '"'
 QUOTED_ELEMENTS ~ QUOTED_ELEMENT *
 QUOTED_ELEMENT	~ SIMPLE_WORD
 		| SPACE_PLUS

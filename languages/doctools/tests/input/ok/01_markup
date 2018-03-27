@@ -1,5 +1,5 @@
 [manpage_begin TEST z 3.14.15.926]
-[copyright **Copyright**]
+[copyright Copyright]
 [description]
 Argument	::[arg Argument]::
 Class		::[class Class]::
@@ -9,15 +9,24 @@ Const		::[const Constant]::
 Emphasis	::[emph Emphasis]::
 File		::[file File/Path]::
 Function	::[fun Function]::
+[para]
+[lb]
 Method		::[method Method]::
 Namespace	::[namespace Namespace]::
-Option		::[option Option]::
 Optional	::[opt Optional]::
+Option		::[option Option]::
 Package		::[package Package]::
+[rb]
+[para]
+Section ref	::[sectref {A section}]::
+Sect External	::[sectref-external {Outside section}]::
+Strong		::[strong Strong]::
 Syscmd		::[syscmd SystemCommand]::
 Term		::[term Term]::
 Type		::[type Type]::
 Uri		::[uri Uri]::
+Usage		::[usage 1 2 3 4 ...]::
 Variable	::[var Variable]::
 Widget		::[widget Widget]::
+Image		::[image Image]::
 [manpage_end]
