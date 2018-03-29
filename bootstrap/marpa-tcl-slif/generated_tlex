@@ -1,8 +1,8 @@
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
-# (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                     http://core.tcl.tk/akupries/
+# (c) 2017-2018 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                          http://core.tcl.tk/akupries/
 ##
 # (c) <Year> Grammar <Name> By <Writer>
 ##
@@ -41,7 +41,7 @@ oo::class create <Name> {
     # requested information. Their base-class implementations simply
     # throw errors, thus preventing the construction of an incomplete
     # lexer.
-    
+
     method Characters {} {
 	debug.<Name>
 	# Literals: The directly referenced (allowed) characters.
@@ -155,7 +155,7 @@ oo::class create <Name> {
 	    {@CHR:<\udfe0>}   \udfe0
 	}
     }
-    
+
     method Classes {} {
 	debug.<Name>
 	# Literals: The character classes in use
@@ -359,7 +359,7 @@ oo::class create <Name> {
 	    {@RAN:<\udfce\udfff>}                                   {[\udfce-\udfff]}
 	}
     }
-    
+
     method Lexemes {} {
 	debug.<Name>
 	# Lexer API: Lexeme symbols (Cannot be terminal).
@@ -433,7 +433,7 @@ oo::class create <Name> {
 	    {standard name}            1
 	}
     }
-    
+
     method Discards {} {
 	debug.<Name>
 	# Discarded symbols (whitespace)
@@ -442,7 +442,7 @@ oo::class create <Name> {
 	    whitespace
 	}
     }
-    
+
     method Symbols {} {
 	# Non-lexeme, non-literal symbols
 	debug.<Name>
@@ -1344,6 +1344,15 @@ oo::class create <Name> {
 	# NOTE. This is currently limited to array semantics.
 	# NOTE. No support for command semantics in the lexer yet.
 	return {start length value}
+    }
+
+    method Events {} {
+	debug.<Name>
+	# L0 parse event definitions (pre-, post-lexeme, discard)
+	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Due to the nature of SLIF syntax we can only associate one
+	# event per type with each symbol, for a maximum of three.
+	return {}
     }
 }
 

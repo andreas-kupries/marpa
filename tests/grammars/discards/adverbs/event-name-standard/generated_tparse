@@ -6,7 +6,7 @@
 ##
 # (c) <Year> Grammar <Name> By <Writer>
 ##
-##	`marpa::runtime::tcl`-derived Lexer for grammar "<Name>".
+##	`marpa::runtime::tcl`-derived Parser for grammar "<Name>".
 ##	Generated On <GenerationTime>
 ##		  By <Operator>
 ##		 Via <Tool>
@@ -30,7 +30,7 @@ debug prefix <Name> {[debug caller] | }
 # # ## ### ##### ######## #############
 
 oo::class create <Name> {
-    superclass marpa::engine::tcl::lex
+    superclass marpa::engine::tcl::parse
 
     # Lifecycle: No constructor needed. No state.
     # All data is embedded as literals into methods
@@ -40,13 +40,14 @@ oo::class create <Name> {
     # these methods in the proper order. The methods simply return the
     # requested information. Their base-class implementations simply
     # throw errors, thus preventing the construction of an incomplete
-    # lexer.
+    # parser.
 
     method Characters {} {
 	debug.<Name>
 	# Literals: The directly referenced (allowed) characters.
 	return {
-	    @CHR:<0>   0
+	    @CHR:<a>   a
+	    @CHR:<c>   c
 	}
     }
 
@@ -60,9 +61,9 @@ oo::class create <Name> {
 
     method Lexemes {} {
 	debug.<Name>
-	# Lexer API: Lexeme symbols (Cannot be terminal).
+	# Lexer API: Lexeme symbols (Cannot be terminal). G1 terminals
 	return {
-	    @LEX:@CHR:<0>   1
+	    C   1
 	}
     }
 
@@ -70,40 +71,76 @@ oo::class create <Name> {
 	debug.<Name>
 	# Discarded symbols (whitespace)
 	return {
-	    
+	    A
 	}
     }
 
-    method Symbols {} {
+    method L0.Symbols {} {
 	# Non-lexeme, non-literal symbols
 	debug.<Name>
 	return {
-	    
+	    A
 	}
     }
 
-    method Rules {} {
+    method L0.Rules {} {
 	# Rules for all symbols but the literals
 	debug.<Name>
 	return {
-	    {@LEX:@CHR:<0> := @CHR:<0>}
+	    {A := @CHR:<a>}
+	    {C := @CHR:<c>}
 	}
     }
 
-    method Semantics {} {
+    method L0.Semantics {} {
 	debug.<Name>
 	# NOTE. This is currently limited to array semantics.
 	# NOTE. No support for command semantics in the lexer yet.
 	return {values}
     }
 
-    method Events {} {
+    method L0.Events {} {
 	debug.<Name>
 	# L0 parse event definitions (pre-, post-lexeme, discard)
 	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
 	# Due to the nature of SLIF syntax we can only associate one
 	# event per type with each symbol, for a maximum of three.
+	return {
+	    A {
+	        discard {snafu on}
+	    }
+	}
+    }
+
+    method G1.Symbols {} {
+	# Structural symbols
+	debug.<Name>
+	return {
+	    B
+	}
+    }
+
+    method G1.Rules {} {
+	# Structural rules, including actions, masks, and names
+	debug.<Name>
+	return {
+	    {__ :A values}
+	    {B := C}
+	}
+    }
+
+    method G1.Events {} {
+	debug.<Name>
+	# G1 parse event definitions (predicted, nulled, completed)
+	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Each symbol can have more than one event per type.
 	return {}
+    }
+
+    method Start {} {
+	debug.<Name>
+	# G1 start symbol
+	return {B}
     }
 }
 

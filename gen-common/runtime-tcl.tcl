@@ -77,8 +77,10 @@ debug prefix marpa/gen/runtime/tcl {[debug caller] | }
 ## @l0-symbols@    -- (l0)  list (symbol name)
 ## @l0-rules@      -- (l0)  list (rule-specification)
 ## @l0-semantics@  -- (l0)  list (array-descriptor-code)
+## @l0-events@     -- (l0)  dict (symbol name -> (type -> (event name -> boolean)))
 ## @g1-symbols@    -- (g1)  list (symbol name)
 ## @g1-rules@      -- (g1)  list (rule-specification) [%%]
+## @g1-events@     -- (g1)  dict (symbol name -> (type -> (event name -> boolean)))
 ## @start@         -- (g1)  symbol name
 ##
 ## [Ad %%] special forms declare the g1 rule semantics and names
@@ -273,11 +275,13 @@ proc ::marpa::gen::runtime::tcl::config {serial} {
 
     set semantics [L0Semantics $gc]      ; # map ('array -> list(semantic-code))
     set latm      [$gc l0 latm]          ; # map (sym -> bool) (sym == lexemes)
+    set l0events  [$gc l0 events]        ; # map (sym -> (type -> (event -> bool)))
     set lit	  [GetL0 $gc literal]    ; # list (sym)
     set l0symbols [GetL0 $gc {}]         ; # list (sym) - as is
     set discards  [GetL0 $gc discard]    ; # list (sym) - as is
     set lex       [GetL0 $gc lexeme]     ; # list (sym)
     set g1symbols [$gc g1 symbols-of {}] ; # list (sym)
+    set g1events  [$gc g1 events]        ; # map (sym -> (type -> (event -> bool)))
     set start     [$gc start?]
 
     # We ignore g1 class 'terminal'. That is the same as the l0
@@ -302,16 +306,18 @@ proc ::marpa::gen::runtime::tcl::config {serial} {
     # Generate the configuration for the templating engine.
 
     set     map [core-config]
-    lappend map @characters@    [FormatDict $characters 0] ; # literal: map sym -> char
-    lappend map @classes@       [FormatDict $classes]      ; # literal: map sym -> spec
-    lappend map @discards@      [FormatList $discards]     ; # list (sym)
-    lappend map @lexemes@       [FormatDict $latm 0]       ; # map (sym -> latm)
-    lappend map @l0-symbols@    [FormatList $l0symbols]    ; # list (sym)
-    lappend map @l0-rules@      [FormatList $l0rules]      ; # list (rule)
-    lappend map @l0-semantics@  $semantics                 ; # list (array-descriptor-code)
-    lappend map @g1-symbols@    [FormatList $g1symbols]    ; # list (sym)
-    lappend map @g1-rules@      [FormatList $g1rules 1 0]  ; # list (rule) [%%]
-    lappend map @start@         $start                     ; # sym
+    lappend map @characters@    [FormatDict   $characters 0] ; # literal: map sym -> char
+    lappend map @classes@       [FormatDict   $classes]      ; # literal: map sym -> spec
+    lappend map @discards@      [FormatList   $discards]     ; # list (sym)
+    lappend map @lexemes@       [FormatDict   $latm 0]       ; # map (sym -> latm)
+    lappend map @l0-symbols@    [FormatList   $l0symbols]    ; # list (sym)
+    lappend map @l0-rules@      [FormatList   $l0rules]      ; # list (rule)
+    lappend map @l0-semantics@  $semantics                   ; # list (array-descriptor-code)
+    lappend map @l0-events@     [FormatEvents $l0events 0]
+    lappend map @g1-symbols@    [FormatList   $g1symbols]    ; # list (sym)
+    lappend map @g1-rules@      [FormatList   $g1rules 1 0]  ; # list (rule) [%%]
+    lappend map @g1-events@     [FormatEvents $g1events 1]
+    lappend map @start@         $start                       ; # sym
 
     return $map
 }
@@ -642,6 +648,34 @@ proc ::marpa::gen::runtime::tcl::FormatDict {dict {listify 1} {sort 1}} {
     }
 
     return [FormatList $lines 0 $sort]
+}
+
+proc ::marpa::gen::runtime::tcl::FormatEvents {dict multi} {
+    # dict = (symbol -> (type -> (event -> bool)))
+    if {![dict size $dict]} {
+	return $dict
+    }
+    foreach sym [lsort -dict [dict keys $dict]] {
+	set spec [dict get $dict $sym]
+	lappend lines "[list $sym] \{"
+	foreach type [lsort -dict [dict keys $spec]] {
+	    set events [dict get $spec $type]
+	    if {$multi} {
+		# multiple events per type, show each event on its own line
+		lappend lines "    [list $type] \{"
+		foreach e [lsort -dict [dict keys $events]] {
+		    set state [dict get $events $e]
+		    lappend lines "        [list $e] $state"
+		}
+		lappend lines "    \}"
+	    } else {
+		# more compact, useful when we have only one event per type
+		lappend lines "    [list $type] \{[lrange $events 0 end]\}"
+	    }
+	}
+	lappend lines "\}"
+    }
+    return "\n\t    [join $lines "\n\t    "]\n\t"
 }
 
 # # ## ### ##### ######## #############

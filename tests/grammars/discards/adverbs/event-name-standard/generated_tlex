@@ -46,7 +46,8 @@ oo::class create <Name> {
 	debug.<Name>
 	# Literals: The directly referenced (allowed) characters.
 	return {
-	    @CHR:<0>   0
+	    @CHR:<a>   a
+	    @CHR:<c>   c
 	}
     }
 
@@ -62,7 +63,7 @@ oo::class create <Name> {
 	debug.<Name>
 	# Lexer API: Lexeme symbols (Cannot be terminal).
 	return {
-	    @LEX:@CHR:<0>   1
+	    C   1
 	}
     }
 
@@ -70,7 +71,7 @@ oo::class create <Name> {
 	debug.<Name>
 	# Discarded symbols (whitespace)
 	return {
-	    
+	    A
 	}
     }
 
@@ -78,7 +79,7 @@ oo::class create <Name> {
 	# Non-lexeme, non-literal symbols
 	debug.<Name>
 	return {
-	    
+	    A
 	}
     }
 
@@ -86,7 +87,8 @@ oo::class create <Name> {
 	# Rules for all symbols but the literals
 	debug.<Name>
 	return {
-	    {@LEX:@CHR:<0> := @CHR:<0>}
+	    {A := @CHR:<a>}
+	    {C := @CHR:<c>}
 	}
     }
 
@@ -103,7 +105,11 @@ oo::class create <Name> {
 	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
 	# Due to the nature of SLIF syntax we can only associate one
 	# event per type with each symbol, for a maximum of three.
-	return {}
+	return {
+	    A {
+	        discard {snafu on}
+	    }
+	}
     }
 }
 

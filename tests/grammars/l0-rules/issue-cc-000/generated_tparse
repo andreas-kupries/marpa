@@ -1,8 +1,8 @@
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
-# (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                     http://core.tcl.tk/akupries/
+# (c) 2017-2018 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                          http://core.tcl.tk/akupries/
 ##
 # (c) <Year> Grammar <Name> By <Writer>
 ##
@@ -41,7 +41,7 @@ oo::class create <Name> {
     # requested information. Their base-class implementations simply
     # throw errors, thus preventing the construction of an incomplete
     # parser.
-    
+
     method Characters {} {
 	debug.<Name>
 	# Literals: The directly referenced (allowed) characters.
@@ -55,7 +55,7 @@ oo::class create <Name> {
 	    {@CHR:<\udc00>}   \udc00
 	}
     }
-    
+
     method Classes {} {
 	debug.<Name>
 	# Literals: The character classes in use
@@ -78,7 +78,7 @@ oo::class create <Name> {
 	    {@RAN:<\udffe\udfff>}                                                                                                                                                    {[\udffe\udfff]}
 	}
     }
-    
+
     method Lexemes {} {
 	debug.<Name>
 	# Lexer API: Lexeme symbols (Cannot be terminal). G1 terminals
@@ -86,7 +86,7 @@ oo::class create <Name> {
 	    plain   1
 	}
     }
-    
+
     method Discards {} {
 	debug.<Name>
 	# Discarded symbols (whitespace)
@@ -94,7 +94,7 @@ oo::class create <Name> {
 	    
 	}
     }
-    
+
     method L0.Symbols {} {
 	# Non-lexeme, non-literal symbols
 	debug.<Name>
@@ -146,6 +146,15 @@ oo::class create <Name> {
 	return {values}
     }
 
+    method L0.Events {} {
+	debug.<Name>
+	# L0 parse event definitions (pre-, post-lexeme, discard)
+	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Due to the nature of SLIF syntax we can only associate one
+	# event per type with each symbol, for a maximum of three.
+	return {}
+    }
+
     method G1.Symbols {} {
 	# Structural symbols
 	debug.<Name>
@@ -161,6 +170,14 @@ oo::class create <Name> {
 	    {__ :A values}
 	    {lang := plain}
 	}
+    }
+
+    method G1.Events {} {
+	debug.<Name>
+	# G1 parse event definitions (predicted, nulled, completed)
+	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Each symbol can have more than one event per type.
+	return {}
     }
 
     method Start {} {

@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -45,22 +45,22 @@ oo::class create marpa::slif::container::grammar::g1 {
 
     # - -- --- ----- -------- -------------
     # Public API - Inherited, override
-    # - TODO: Move to superclass, shared g1/l0 - different events however
+    # - TODO: Move to superclass, shared g1/g1 - different events however
 
     method serialize {} {
-	debug.marpa/slif/container/grammar/l0 {}
+	debug.marpa/slif/container/grammar/g1 {}
 	set serial [next]
 
 	if {[dict size $myevent]} {
 	    dict set serial events $myevent
 	}
 
-	debug.marpa/slif/container/grammar/l0 {==> $serial}
+	debug.marpa/slif/container/grammar/g1 {==> $serial}
 	return $serial
     }
 
     method deserialize {blob} {
-	debug.marpa/slif/container/grammar/l0 {}
+	debug.marpa/slif/container/grammar/g1 {}
 
 	if {[dict exists $blob events]} {
 	    set myevent [dict get $blob events]
@@ -69,6 +69,13 @@ oo::class create marpa::slif::container::grammar::g1 {
 
 	next $blob
 	return
+    }
+
+    method events {} {
+	debug.marpa/slif/container/grammar/g1 {}
+	if {![dict size $myevent]} { return {} }
+	return [lrange $myevent 0 end]
+	# See the note in alter.tcl for explanation of the lrange.
     }
 
     # - -- --- ----- -------- -------------
