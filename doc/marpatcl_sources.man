@@ -3,9 +3,7 @@
 [include include/module.inc]
 [titledesc {Marpa/Tcl - How To Get The Sources}]
 [description]
-
-Welcome to Marpa/Tcl, a Tcl binding to the [file libmarpa] parsing
-engine.
+[include include/welcome.inc]
 
 [para]
 

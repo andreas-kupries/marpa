@@ -278,6 +278,9 @@ aycock
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_changes\&.n\fR
+marpatcl_changes
+.TP
 \fBfiles/marpatcl_devguide\&.n\fR
 marpatcl_devguide
 .TP
@@ -286,6 +289,9 @@ marpatcl_install_guide
 .TP
 \fBfiles/marpatcl_intro\&.n\fR
 marpatcl_introduction
+.TP
+\fBfiles/marpatcl_license\&.n\fR
+marpatcl_license
 .TP
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
@@ -296,6 +302,9 @@ character classes
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_changes\&.n\fR
+marpatcl_changes
+.TP
 \fBfiles/marpatcl_devguide\&.n\fR
 marpatcl_devguide
 .TP
@@ -304,6 +313,9 @@ marpatcl_install_guide
 .TP
 \fBfiles/marpatcl_intro\&.n\fR
 marpatcl_introduction
+.TP
+\fBfiles/marpatcl_license\&.n\fR
+marpatcl_license
 .TP
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
@@ -314,6 +326,9 @@ document processing
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_changes\&.n\fR
+marpatcl_changes
+.TP
 \fBfiles/marpatcl_devguide\&.n\fR
 marpatcl_devguide
 .TP
@@ -322,6 +337,9 @@ marpatcl_install_guide
 .TP
 \fBfiles/marpatcl_intro\&.n\fR
 marpatcl_introduction
+.TP
+\fBfiles/marpatcl_license\&.n\fR
+marpatcl_license
 .TP
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
@@ -332,6 +350,9 @@ earley
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_changes\&.n\fR
+marpatcl_changes
+.TP
 \fBfiles/marpatcl_devguide\&.n\fR
 marpatcl_devguide
 .TP
@@ -340,6 +361,9 @@ marpatcl_install_guide
 .TP
 \fBfiles/marpatcl_intro\&.n\fR
 marpatcl_introduction
+.TP
+\fBfiles/marpatcl_license\&.n\fR
+marpatcl_license
 .TP
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
@@ -350,6 +374,9 @@ horspool
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_changes\&.n\fR
+marpatcl_changes
+.TP
 \fBfiles/marpatcl_devguide\&.n\fR
 marpatcl_devguide
 .TP
@@ -358,6 +385,9 @@ marpatcl_install_guide
 .TP
 \fBfiles/marpatcl_intro\&.n\fR
 marpatcl_introduction
+.TP
+\fBfiles/marpatcl_license\&.n\fR
+marpatcl_license
 .TP
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
@@ -368,6 +398,9 @@ joop leo
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_changes\&.n\fR
+marpatcl_changes
+.TP
 \fBfiles/marpatcl_devguide\&.n\fR
 marpatcl_devguide
 .TP
@@ -376,6 +409,9 @@ marpatcl_install_guide
 .TP
 \fBfiles/marpatcl_intro\&.n\fR
 marpatcl_introduction
+.TP
+\fBfiles/marpatcl_license\&.n\fR
+marpatcl_license
 .TP
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
@@ -386,6 +422,9 @@ lexing
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_changes\&.n\fR
+marpatcl_changes
+.TP
 \fBfiles/marpatcl_devguide\&.n\fR
 marpatcl_devguide
 .TP
@@ -394,6 +433,9 @@ marpatcl_install_guide
 .TP
 \fBfiles/marpatcl_intro\&.n\fR
 marpatcl_introduction
+.TP
+\fBfiles/marpatcl_license\&.n\fR
+marpatcl_license
 .TP
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
@@ -404,6 +446,9 @@ libmarpa
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_changes\&.n\fR
+marpatcl_changes
+.TP
 \fBfiles/marpatcl_devguide\&.n\fR
 marpatcl_devguide
 .TP
@@ -412,6 +457,9 @@ marpatcl_install_guide
 .TP
 \fBfiles/marpatcl_intro\&.n\fR
 marpatcl_introduction
+.TP
+\fBfiles/marpatcl_license\&.n\fR
+marpatcl_license
 .TP
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
@@ -422,6 +470,9 @@ nigel horspool
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_changes\&.n\fR
+marpatcl_changes
+.TP
 \fBfiles/marpatcl_devguide\&.n\fR
 marpatcl_devguide
 .TP
@@ -430,6 +481,9 @@ marpatcl_install_guide
 .TP
 \fBfiles/marpatcl_intro\&.n\fR
 marpatcl_introduction
+.TP
+\fBfiles/marpatcl_license\&.n\fR
+marpatcl_license
 .TP
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
@@ -440,6 +494,9 @@ parsing
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_changes\&.n\fR
+marpatcl_changes
+.TP
 \fBfiles/marpatcl_devguide\&.n\fR
 marpatcl_devguide
 .TP
@@ -448,6 +505,9 @@ marpatcl_install_guide
 .TP
 \fBfiles/marpatcl_intro\&.n\fR
 marpatcl_introduction
+.TP
+\fBfiles/marpatcl_license\&.n\fR
+marpatcl_license
 .TP
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
@@ -458,6 +518,9 @@ regex
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_changes\&.n\fR
+marpatcl_changes
+.TP
 \fBfiles/marpatcl_devguide\&.n\fR
 marpatcl_devguide
 .TP
@@ -466,6 +529,9 @@ marpatcl_install_guide
 .TP
 \fBfiles/marpatcl_intro\&.n\fR
 marpatcl_introduction
+.TP
+\fBfiles/marpatcl_license\&.n\fR
+marpatcl_license
 .TP
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
@@ -476,6 +542,9 @@ table parsing
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_changes\&.n\fR
+marpatcl_changes
+.TP
 \fBfiles/marpatcl_devguide\&.n\fR
 marpatcl_devguide
 .TP
@@ -484,6 +553,9 @@ marpatcl_install_guide
 .TP
 \fBfiles/marpatcl_intro\&.n\fR
 marpatcl_introduction
+.TP
+\fBfiles/marpatcl_license\&.n\fR
+marpatcl_license
 .TP
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
