@@ -5,7 +5,12 @@
 [description]
 [para]
 [include include/welcome.inc]
-[para]
+
+[section Audience]
+
+This document is targeted at all users of Marpa/Tcl.
+
+[section Overview]
 
 This document provides an overview of the changes [package marpatcl]
 underwent from version to version.

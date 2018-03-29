@@ -281,10 +281,10 @@ engine\&.
 .PP
 Please read the document \fIMarpa/Tcl - Introduction to Kettle\fR,
 if you have not done so already, to get an overview of the whole system\&.
-.PP
-This document is a guide for developers working on Marpa/Tcl,
-i\&.e\&. maintainers fixing bugs, extending the package's functionality,
-etc\&.
+.SH AUDIENCE
+This document is a guide targeted at all developers working on the
+internals of Marpa/Tcl, i\&.e\&. maintainers fixing bugs, developers
+adding functionality, etc\&.
 .PP
 Please read
 .IP [1]
@@ -519,6 +519,13 @@ utilities\&.
 The entrypoint is "\fIpkg_entry\&.tcl\fR"\&.
 .RE
 .PP
+.SH "BUGS, IDEAS, FEEDBACK"
+This document, and the package it describes, will undoubtedly contain
+bugs and other problems\&.
+Please report such at the
+\fIMarpa/Tcl Tracker\fR [https://core\&.tcl\&.tk/akupries/marpatcl]\&.
+Please also report any ideas for enhancements you may have for either
+package and/or documentation\&.
 .SH KEYWORDS
 aycock, character classes, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
 .SH COPYRIGHT

@@ -281,8 +281,12 @@ engine\&.
 .PP
 Please read the document \fIMarpa/Tcl - Introduction to Kettle\fR,
 if you have not done so already, to get an overview of the whole system\&.
-.PP
-The package is under the BSD license\&.
+.SH AUDIENCE
+This document is targeted at all users of Marpa/Tcl, so that they may
+know their rights and duties/responsibilities\&.
+.SH "THE SHORT OF IT"
+All the packages and applications provided by Marpa/Tcl are under the
+BSD license\&.
 .SH LICENSE
 .PP
 This software is copyrighted by Andreas Kupries and other

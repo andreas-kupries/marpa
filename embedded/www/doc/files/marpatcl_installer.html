@@ -113,7 +113,8 @@
 <ul class="doctools_toc">
 <li class="doctools_section"><a href="#toc">Table Of Contents</a></li>
 <li class="doctools_section"><a href="#section1">Description</a></li>
-<li class="doctools_section"><a href="#section2">Requisites</a>
+<li class="doctools_section"><a href="#section2">Audience</a></li>
+<li class="doctools_section"><a href="#section3">Requisites</a>
 <ul>
 <li class="doctools_subsection"><a href="#subsection1">Libmarpa</a></li>
 <li class="doctools_subsection"><a href="#subsection2">Tcl</a></li>
@@ -122,12 +123,13 @@
 <li class="doctools_subsection"><a href="#subsection5">Kettle</a></li>
 </ul>
 </li>
-<li class="doctools_section"><a href="#section3">Build &amp; Installation Instructions</a>
+<li class="doctools_section"><a href="#section4">Build &amp; Installation Instructions</a>
 <ul>
 <li class="doctools_subsection"><a href="#subsection6">Build &amp; Installation (Unix)</a></li>
 <li class="doctools_subsection"><a href="#subsection7">Build &amp; Installation (Windows)</a></li>
 </ul>
 </li>
+<li class="doctools_section"><a href="#section5">Bugs, Ideas, Feedback</a></li>
 <li class="doctools_section"><a href="#keywords">Keywords</a></li>
 <li class="doctools_section"><a href="#copyright">Copyright</a></li>
 </ul>
@@ -137,18 +139,20 @@
 engine.</p>
 <p>Please read the document <i class="term">Marpa/Tcl - Introduction to Kettle</i>,
 if you have not done so already, to get an overview of the whole system.</p>
-<p>The audience of this document is anyone wishing to build the packages,
-for either themselves, or others.</p>
-<p>For a developer intending to extend or modify the packages we
-additionally provide</p>
+</div>
+<div id="section2" class="doctools_section"><h2><a name="section2">Audience</a></h2>
+<p>This documented is targeted at anyone wishing to build MarpaTcl's
+packages and application, for either themselves, or others.</p>
+<p>Please read <i class="term"><a href="marpatcl_sources.html">Marpa/Tcl - How To Get The Sources</a></i> first, if that
+was not done already. Here we assume that the sources are already
+available in a directory of your choice.</p>
+<p>For developers building Marpa/Tcl with the intent to extend or modify
+the packages and application we additionally provide</p>
 <ol class="doctools_enumerated">
 <li><p><i class="term"><a href="marpatcl_devguide.html">Marpa/Tcl - The Developer's Guide</a></i>.</p></li>
 </ol>
-<p>Please read <i class="term"><a href="marpatcl_sources.html">Marpa/Tcl - How To Get The Sources</a></i> first, if that was
-not done already. Here we assume that the sources are already
-available in a directory of your choice.</p>
 </div>
-<div id="section2" class="doctools_section"><h2><a name="section2">Requisites</a></h2>
+<div id="section3" class="doctools_section"><h2><a name="section3">Requisites</a></h2>
 <p>Before Marpa/Tcl can be build and used a number of requisites must be installed.
 These are:</p>
 <ol class="doctools_enumerated">
@@ -308,7 +312,7 @@ problems with their directions please file a bug against the Kettle
 project, and not Marpa/Tcl.</p>
 </div>
 </div>
-<div id="section3" class="doctools_section"><h2><a name="section3">Build &amp; Installation Instructions</a></h2>
+<div id="section4" class="doctools_section"><h2><a name="section4">Build &amp; Installation Instructions</a></h2>
 <div id="subsection6" class="doctools_subsection"><h3><a name="subsection6">Build &amp; Installation (Unix)</a></h3>
 <p>This section describes the actions required to install Marpa/Tcl on
 Unix systems (Linux, BSD, and related, including OS X).
@@ -368,6 +372,14 @@ like</p>
     /path/to/tclsh8.5 /path/to/kettle -f /path/to/marpatcl/build.tcl help
 </pre>
 </div>
+</div>
+<div id="section5" class="doctools_section"><h2><a name="section5">Bugs, Ideas, Feedback</a></h2>
+<p>This document, and the package it describes, will undoubtedly contain
+bugs and other problems.
+Please report such at the
+<a href="https://core.tcl.tk/akupries/marpatcl">Marpa/Tcl Tracker</a>.
+Please also report any ideas for enhancements you may have for either
+package and/or documentation.</p>
 </div>
 <div id="keywords" class="doctools_section"><h2><a name="keywords">Keywords</a></h2>
 <p><a href="../../index.html#key2">aycock</a>, <a href="../../index.html#key9">character classes</a>, <a href="../../index.html#key10">document processing</a>, <a href="../../index.html#key1">earley</a>, <a href="../../index.html#key11">horspool</a>, <a href="../../index.html#key7">joop leo</a>, <a href="../../index.html#key6">lexing</a>, <a href="../../index.html#key0">libmarpa</a>, <a href="../../index.html#key5">nigel horspool</a>, <a href="../../index.html#key3">parsing</a>, <a href="../../index.html#key8">regex</a>, <a href="../../index.html#key4">table parsing</a></p>

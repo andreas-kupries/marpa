@@ -5,6 +5,15 @@
 [description]
 [include include/welcome.inc]
 
+[section Audience]
+
+This documented is targeted at all users of Marpa/Tcl.
+
+Depending on the specifc goals references to additional documents
+containing more information to help with these goals are provided.
+
+
+
 [comment {
 [para]
 What are your goals which drove you here ?
@@ -95,5 +104,5 @@ per-section, in the documentation of each section.
 [enum] [term {Marpa/Tcl - Unicode Data & Utilities}].
 [list_end]
 
+[include include/feedback.inc]
 [manpage_end]
-

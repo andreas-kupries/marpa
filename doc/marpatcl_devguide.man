@@ -5,11 +5,11 @@
 [description]
 [include include/welcome.inc]
 
-[para]
+[section Audience]
 
-This document is a guide for developers working on Marpa/Tcl,
-i.e. maintainers fixing bugs, extending the package's functionality,
-etc.
+This document is a guide targeted at all developers working on the
+internals of Marpa/Tcl, i.e. maintainers fixing bugs, developers
+adding functionality, etc.
 
 [para]
 
@@ -29,8 +29,7 @@ so. The guide to the sources in particular also explains which source
 code management system is used, where to find it, how to set it up,
 etc.
 
-[include include/demos.inc]
-
+[comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
 [section {Developing for Marpa/Tcl}]
 
 [comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
@@ -284,5 +283,6 @@ Here we concentrate on some details of the internals.
 [list_end]
 
 [list_end]
-[manpage_end]
 
+[include include/feedback.inc]
+[manpage_end]

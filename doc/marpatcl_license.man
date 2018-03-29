@@ -5,7 +5,15 @@
 [description]
 [include include/welcome.inc]
 
-[para] The package is under the BSD license.
+[section Audience]
+
+This document is targeted at all users of Marpa/Tcl, so that they may
+know their rights and duties/responsibilities.
+
+[section {The Short Of It}]
+
+All the packages and applications provided by Marpa/Tcl are under the
+BSD license.
 
 [section License]
 
@@ -50,4 +58,3 @@ with the terms specified in this license.
 
 [include include/feedback.inc]
 [manpage_end]
-
