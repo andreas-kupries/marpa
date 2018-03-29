@@ -1,0 +1,10 @@
+Parsing failed in lexer. Stopped at offset 2 after reading '-]'. Expected any character in [0[1-9]] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, rbracket, whitespace).
+L0 Report:
+______ P30   @2-2 <positive> --> . <@RAN:<19>> <digitz>
+______ P35   @2-2 <whole>    --> . <@CHR:<0>>
+______ P36   @2-2 <whole>    --> . <positive>
+______ R17:1 @1-2 <int>      --> <@CHR:<->> . <whole>
+Mismatch:
+']' => (18 24) ni
+    4: '0'
+   23: [1-9]

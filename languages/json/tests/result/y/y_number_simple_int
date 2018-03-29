@@ -1,0 +1,8 @@
+value
+  array
+    elements
+      element
+        value
+          number
+            @1 3 '123'
+

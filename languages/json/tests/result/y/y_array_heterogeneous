@@ -1,0 +1,23 @@
+value
+  array
+    elements
+      element
+        value
+          null
+            @1 4 'null'
+      @5 1 ','
+      element
+        value
+          number
+            @7 1 '1'
+      @8 1 ','
+      element
+        value
+          string
+            @11 1 '1'
+      @13 1 ','
+      element
+        value
+          object
+            @{} {} ''
+

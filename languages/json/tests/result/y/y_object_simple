@@ -1,0 +1,10 @@
+value
+  object
+    pairs
+      pair
+        string
+          @2 1 'a'
+        value
+          array
+            @{} {} ''
+

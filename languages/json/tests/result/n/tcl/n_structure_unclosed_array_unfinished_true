@@ -1,0 +1,6 @@
+Parsing failed in lexer. Stopped at offset 11 after reading 'truu'. Expected any character in [e] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, whitespace).
+L0 Report:
+______ R2:3 @1-4 <@STR:<true>> --> <@CHR:<t>> <@CHR:<r>> <@CHR:<u>> . <@CHR:<e>>
+Mismatch:
+'u' => (14 24) ni
+    7: 'e'

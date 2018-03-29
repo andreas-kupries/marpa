@@ -37,6 +37,8 @@ Before Marpa/Tcl can be build and used a number of requisites must be installed.
 These are:
 
 [list_begin enumerated]
+[enum] Jeffrey Kegler's [package libmarpa] library.
+       For details see [sectref Libmarpa].
 [enum] The scripting language Tcl.
        For details see [sectref Tcl].
 [enum] The [package critcl] package (C embedding) for [syscmd Tcl].
@@ -53,6 +55,7 @@ below are already installed the associated steps can be skipped. It is
 still recommended to read their sections though, to validate that the
 dependencies they talk about are indeed installed.
 
+[include include/rq_libmarpa.inc]
 [include include/rq_tcl.inc]
 [include include/rq_critcl.inc]
 [include include/rq_tcllib.inc]

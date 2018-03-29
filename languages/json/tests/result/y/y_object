@@ -1,0 +1,17 @@
+value
+  object
+    pairs
+      pair
+        string
+          @2 3 'asd'
+        value
+          string
+            @8 3 'sdf'
+      @12 1 ','
+      pair
+        string
+          @15 3 'dfg'
+        value
+          string
+            @21 3 'fgh'
+

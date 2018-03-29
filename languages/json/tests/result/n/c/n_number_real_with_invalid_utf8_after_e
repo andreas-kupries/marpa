@@ -1,0 +1,9 @@
+Parsing failed in lexer. Stopped at offset 2 (+1 byte)  after reading 'e'. Expected any character in [\t\n\r\40,\135] while looking for any of (comma, rbracket, whitespace).
+Mismatch:
+'e' => (101) ni
+    9: '\t'
+   10: '\n'
+   13: '\r'
+   32: '\40'
+   44: ','
+   93: '\135'

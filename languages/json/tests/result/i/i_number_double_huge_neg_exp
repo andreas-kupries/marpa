@@ -1,0 +1,7 @@
+value
+  array
+    elements
+      element
+        value
+          number
+            @1 12 '123.456e-789'

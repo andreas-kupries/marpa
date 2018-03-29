@@ -1,0 +1,13 @@
+Parsing failed in lexer. Stopped at offset 2 after reading '\135'. Expected any character in [0123456789] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, rbracket, whitespace).
+Mismatch:
+'\135' => (93) ni
+   48: '0'
+   49: '1'
+   50: '2'
+   51: '3'
+   52: '4'
+   53: '5'
+   54: '6'
+   55: '7'
+   56: '8'
+   57: '9'

@@ -1,0 +1,27 @@
+value
+  object
+    pairs
+      pair
+        string
+          @2 1 'x'
+        value
+          array
+            elements
+              element
+                value
+                  object
+                    pairs
+                      pair
+                        string
+                          @8 2 'id'
+                        value
+                          string
+                            @14 40 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+      @57 1 ','
+      pair
+        string
+          @60 2 'id'
+        value
+          string
+            @66 40 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+

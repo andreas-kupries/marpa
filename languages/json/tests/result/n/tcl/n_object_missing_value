@@ -1,0 +1,13 @@
+Parsing failed in parser. Stopped at offset 4 after reading ':'. Expected any character in [\"-0[[1-9][\\t\\n\\r\\40]fnt\173] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, whitespace).
+Mismatch:
+':' => (5 24) ni
+    2: '-'
+    4: '0'
+    8: 'f'
+   10: 'n'
+   13: 't'
+   15: '\"'
+   16: '['
+   19: '\173'
+   23: [1-9]
+   26: [\t\n\r\40]

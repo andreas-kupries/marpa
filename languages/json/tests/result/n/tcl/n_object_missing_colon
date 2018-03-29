@@ -1,0 +1,10 @@
+Parsing failed in gate. Stopped at offset 5 after reading 'b'. Expected any character in [:[\\t\\n\\r\\40]] while looking for any of (colon, whitespace).
+L0 Report:
+______ P6    @1-1 <colon>      --> . <@CHR:<:>>
+______ P34   @1-1 <whitespace> --> . <@CLS:<\t-\n\r\40>>
+______ R41:1 @0-1 <@START>     --> <ACS:colon> . <colon>
+______ R53:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
+Mismatch:
+'b' => (24 25 27) ni
+    5: ':'
+   26: [\t\n\r\40]

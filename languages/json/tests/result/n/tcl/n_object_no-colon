@@ -1,0 +1,5 @@
+Parsing failed in parser. Stopped at offset 3 after reading '\"'. Expected any character in [:[\\t\\n\\r\\40]] while looking for any of (colon, whitespace).
+Mismatch:
+'\"' => (15 25) ni
+    5: ':'
+   26: [\t\n\r\40]

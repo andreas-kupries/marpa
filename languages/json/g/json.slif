@@ -1,0 +1,113 @@
+# # ## ### ##### ######## ############# #####################
+## JSON specification -- SLIF grammar for use by TclMarpa.
+## (c) 2017-2018 Andreas Kupries
+#
+# References:
+# - https://core.tcl.tk/akupries/marpa/		Tcl+Marpa
+# - http://json.org/				Base spec
+# - https://tools.ietf.org/html/rfc7159		IETF spec
+# - http://seriot.ch/parsing_json.php		Article on JSON spec minefield.
+#                                               Origin of the test suite inputs.
+
+# # ## ### ##### ######## ############# #####################
+
+:default ::=
+	action => [name,values]
+
+lexeme default =
+	action => [start,length,value]
+       	latm   => 1
+
+:discard ~ whitespace
+
+:start ::= value
+
+# # ## ### ##### ######## ############# #####################
+
+value ::= object
+      |	  array
+      |	  string
+      |	  number
+      |	  true
+      |	  false
+      |	  null
+
+object ::= (lbrace) pairs (rbrace)
+pairs  ::= pair*
+	separator => comma
+	proper    => 1
+pair   ::= string (colon) value
+
+array    ::= (lbracket) elements (rbracket)
+elements ::= element *
+	separator => comma
+	proper    => 1
+element  ::= value
+
+string	 ::= (quote) lstring (quote)
+number	 ::= lnumber
+true	 ::= ltrue
+false	 ::= lfalse
+null	 ::= lnull
+
+# # ## ### ##### ######## ############# #####################
+
+ltrue	 ~ 'true'
+lfalse	 ~ 'false'
+lnull	 ~ 'null'
+
+lstring ~ char *
+
+lnumber  ~ int fraction exponent
+	 | int          exponent
+	 | int fraction
+	 | int
+
+int 	 ~ whole
+	 | '-' whole
+
+whole    ~ '0'
+	 | positive
+
+positive ~ [1-9] digitz
+digitz   ~ decimal *
+fraction ~ '.' digits
+exponent ~ e digits
+
+e	 ~ [eE]
+   	 | [eE] '-'
+   	 | [eE] '+'
+
+digits   ~ decimal +
+decimal  ~ [0-9]
+
+lbrace   ~ '{'
+rbrace   ~ '}'
+lbracket ~ '['
+rbracket ~ ']'
+comma    ~ ','
+colon    ~ ':'
+quote    ~ '"'
+
+char     ~ plain
+	 | '\\' [bfnrt"/\134]
+	 | '\\u' hex hex hex hex
+hex      ~ [[:xdigit:]]
+plain    ~ [^"\\\0-\37]
+# NOTE:
+#   In json `control` characters are defined as ASCII(0)-ASCII(31).
+#   Nothing more. Definitely not the unicode [:control:] class.
+#   Also, DEL (ASCII(127)) is not a control character to JSON
+#
+# ref: https://tools.ietf.org/html/rfc7159#section-7
+# ref: http://seriot.ch/parsing_json.php#25
+
+whitespace ~ [\t\n\r ] +
+# Note:
+#   JSON whitespace is limited to SPACE, TAB, CR, and LF.
+#   Do not use the unicode [:space:] class.
+#
+# ref: https://tools.ietf.org/html/rfc7159#section-2
+# ref: http://seriot.ch/parsing_json.php#21
+
+# # ## ### ##### ######## ############# #####################

@@ -1,0 +1,17 @@
+value
+  object
+    pairs
+      pair
+        string
+          @2 1 'a'
+        value
+          string
+            @6 1 'b'
+      @8 1 ','
+      pair
+        string
+          @10 1 'a'
+        value
+          string
+            @14 1 'b'
+

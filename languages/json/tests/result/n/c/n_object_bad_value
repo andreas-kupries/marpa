@@ -1,0 +1,4 @@
+Parsing failed in lexer. Stopped at offset 9 after reading 't'. Expected any character in [e] while looking for any of (lbrace, lbracket, lfalse, lnull, lnumber, ltrue, quote, whitespace).
+Mismatch:
+'t' => (116) ni
+  101: 'e'

@@ -1,0 +1,27 @@
+#!/bin/bash
+
+test="tests/input/i_structure_500_nested_arrays.json"
+test="tests/input/y_object_simple.json"
+self="$0"
+bindir="$(dirname "${self}")"
+
+# cleanup
+find . -name "*~" -print
+find . -name "*~" -exec rm "{}" \;
+clear
+echo
+
+# regenerate packages from grammar
+(
+    $bindir/make-parser
+) 2>&1 | tee LOG-GENERATE
+
+# install local
+rm -rf OUT
+
+./build.tcl install \
+    --prefix OUT \
+    --include-dir ~/opt/ActiveTcl/include
+
+# run on test input
+./OUT/bin/jq $test 2>&1 | tee LOG-JQ

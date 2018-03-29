@@ -1,0 +1,6 @@
+Parsing failed in parser. Stopped at offset 0 after reading '\173'. Expected any character in [\"[\\t\\n\\r\\40]\175] while looking for any of (quote, rbrace, whitespace).
+Mismatch:
+'\173' => (19 24) ni
+   15: '\"'
+   20: '\175'
+   26: [\t\n\r\40]

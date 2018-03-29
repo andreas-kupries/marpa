@@ -1,0 +1,13 @@
+Parsing failed in lexer. Stopped at offset 1 after reading 'n'. Expected any character in [\"[\\t\\n\\r\\40]\175] while looking for any of (quote, rbrace, whitespace).
+L0 Report:
+______ P31   @1-1 <quote>      --> . <@CHR:<\42>>
+______ P32   @1-1 <rbrace>     --> . <@CHR:<\175>>
+______ P34   @1-1 <whitespace> --> . <@CLS:<\t-\n\r\40>>
+______ R50:1 @0-1 <@START>     --> <ACS:quote> . <quote>
+______ R51:1 @0-1 <@START>     --> <ACS:rbrace> . <rbrace>
+______ R53:1 @0-1 <@START>     --> <ACS:whitespace> . <whitespace>
+Mismatch:
+'n' => (10 24 25) ni
+   15: '\"'
+   20: '\175'
+   26: [\t\n\r\40]
