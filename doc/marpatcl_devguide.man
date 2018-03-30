@@ -23,11 +23,11 @@ Please read
 first, if that was not done already.
 
 Here we assume that the sources are already available in a directory
-of your choice, and that you not only know how to build and install
-them, but also have all the necessary requisites to actually do
-so. The guide to the sources in particular also explains which source
-code management system is used, where to find it, how to set it up,
-etc.
+of the reader's choice, and that the reader not only knows how to
+build and install them, but also has all the necessary requisites to
+actually do so. The guide to the sources in particular also explains
+which source code management system is used, where to find it, how to
+set it up, etc.
 
 [comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
 [section {Developing for Marpa/Tcl}]

@@ -9,6 +9,8 @@
 
 This documented is targeted at all users of Marpa/Tcl.
 
+[para]
+
 Depending on the specific goals of the reader references to additional
 documents containing more information to help with these goals are
 provided.
@@ -31,7 +33,7 @@ With the installation available the relevant documents are
 [comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
 [section {Builder and distributor}]
 
-As user intending to build Marpa/Tcl from its sources the relevant
+As a user intending to build Marpa/Tcl from its sources the relevant
 documents are
 
 [list_begin enum]
@@ -42,7 +44,7 @@ documents are
 [comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
 [section {Maintainer, Developer}]
 
-As user intending to maintain Marpa/Tcl, or add functionality to it
+As a user intending to maintain Marpa/Tcl, or add functionality to it
 the relevant documents are
 
 [list_begin enum]

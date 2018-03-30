@@ -16,8 +16,8 @@ specification with SLIF.
 The name [term SLIF] stands for [term {Scanner-Less InterFace}].
 
 Both name and the majority of its specification are taken from
-[uri https://jeffreykegler.github.io/Marpa-web-site/ Marpa::R2], the
-Perl binding to [package libmarpa] this work inspired by.
+[include include/upstream.inc], the Perl binding to [package libmarpa]
+this work is inspired by.
 
 [para]
 

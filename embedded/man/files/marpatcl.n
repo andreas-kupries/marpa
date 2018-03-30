@@ -289,7 +289,7 @@ if you have not done so already, to get an overview of the whole system\&.
 This document is targeted at users intending to create parser packages
 with Marpa/Tcl\&.
 .SH MARPA-GEN
-\fBmarpagen\fR is the generator application used to read a SLIF
+\fBmarpa-gen\fR is the generator application used to read a SLIF
 grammar definition and create various forms of output, including
 packages implementing parsers and lexers for the grammar\&.
 .PP

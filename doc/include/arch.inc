@@ -19,7 +19,8 @@ formats.
 
 The packages supporting the SLIF language for grammar specifications.
 This is a very close sibling to the SLIF language used by
-[package Marpa::R2], the current stable version of the perl binding.
+[include include/upstream.inc], the current stable version of the Perl
+binding.
 
 [para] It can be further divided into groups for parsing SLIF, the
 semantics for translating a parse into a container, a container for

@@ -294,11 +294,11 @@ Please read
 .PP
 first, if that was not done already\&.
 Here we assume that the sources are already available in a directory
-of your choice, and that you not only know how to build and install
-them, but also have all the necessary requisites to actually do
-so\&. The guide to the sources in particular also explains which source
-code management system is used, where to find it, how to set it up,
-etc\&.
+of the reader's choice, and that the reader not only knows how to
+build and install them, but also has all the necessary requisites to
+actually do so\&. The guide to the sources in particular also explains
+which source code management system is used, where to find it, how to
+set it up, etc\&.
 .SH "DEVELOPING FOR MARPA/TCL"
 .SS "SYSTEM ARCHITECTURE"
 The system can be split into roughly six sections, as seen in the
@@ -339,7 +339,8 @@ formats\&.
 SLIF
 The packages supporting the SLIF language for grammar specifications\&.
 This is a very close sibling to the SLIF language used by
-\fBMarpa::R2\fR, the current stable version of the perl binding\&.
+\fIMarpa::R2\fR [https://jeffreykegler\&.github\&.io/Marpa-web-site/], the current stable version of the Perl
+binding\&.
 .sp
 It can be further divided into groups for parsing SLIF, the
 semantics for translating a parse into a container, a container for

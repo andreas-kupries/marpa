@@ -13,7 +13,7 @@ with Marpa/Tcl.
 
 [section marpa-gen]
 
-[syscmd marpagen] is the generator application used to read a SLIF
+[syscmd marpa-gen] is the generator application used to read a SLIF
 grammar definition and create various forms of output, including
 packages implementing parsers and lexers for the grammar.
 
