@@ -1,0 +1,20 @@
+[comment {-*- tcl -*- --- doctools ---}]
+[manpage_begin marpatcl_changes n 1]
+[include include/module.inc]
+[titledesc {Marpa/Tcl Changes}]
+[description]
+[para]
+[include include/welcome.inc]
+
+[section Audience]
+
+This document is targeted at all users of Marpa/Tcl.
+
+[section Overview]
+
+This document provides an overview of the changes [package marpatcl]
+underwent from version to version.
+
+[include include/changes.inc]
+[include include/feedback.inc]
+[manpage_end]

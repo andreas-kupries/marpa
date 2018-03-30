@@ -3,20 +3,47 @@
 [include include/module.inc]
 [titledesc {Marpa/Tcl - Introduction to Marpa/Tcl}]
 [description]
+[include include/welcome.inc]
 
-Welcome to Marpa/Tcl, a Tcl binding to the [file libmarpa] parsing
-engine.
+[section Audience]
 
-[comment {
+This documented is targeted at all users of Marpa/Tcl.
+
+Depending on the specific goals of the reader references to additional
+documents containing more information to help with these goals are
+provided.
+
+[comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
+[section {User, creating parser packages}]
+
+As a user intending to create one or more parsers with Marpa/Tcl an
+installation is needed.  If a pre-made set of binary packages is not
+available then section [sectref {Builder and distributor}] applies.
+
 [para]
-What are your goals which drove you here ?
+With the installation available the relevant documents are
 
-[list_begin enumerated]
-[enum]
+[list_begin enum]
+[enum] [term {Marpa/Tcl - The Generator Application}].
+[enum] [term {Marpa/Tcl - The SLIF grammar specification language}].
 [list_end]
-}]
 
-[section {Related Documents}]
+[comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
+[section {Builder and distributor}]
+
+As user intending to build Marpa/Tcl from its sources the relevant
+documents are
+
+[list_begin enum]
+[enum] [term {Marpa/Tcl - How To Get The Sources}].
+[enum] [term {Marpa/Tcl - The Installer's Guide}].
+[list_end]
+
+[comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
+[section {Maintainer, Developer}]
+
+As user intending to maintain Marpa/Tcl, or add functionality to it
+the relevant documents are
 
 [list_begin enum]
 [enum] [term {Marpa/Tcl - How To Get The Sources}].
@@ -24,78 +51,6 @@ What are your goals which drove you here ?
 [enum] [term {Marpa/Tcl - The Developer's Guide}].
 [list_end]
 
-[section {System Architecture}]
-
-The system can be split into roughly six sections, as seen in the
-figure below. The seventh, highlighted in green, is [package libmarpa]
-itself, which is technically outside of the system.
-
-[para][image architecture][para]
-
-In more detail:
-
-[list_begin definitions]
-[def Applications]
-
-At the top we have the [cmd marpa-gen] application. It integrates and
-uses all of the packages to provide a parser generator reading
-grammars specified using SLIF and producing results in a variety of
-formats.
-
-[def SLIF]
-
-The packages supporting the SLIF language for grammar specifications.
-This is a very close sibling to the SLIF language used by
-[package Marpa::R2], the current stable version of the perl binding.
-
-[para] It can be further divided into groups for parsing SLIF, the
-semantics for translating a parse into a container, a container for
-SLIF grammars, and the processing of literals (strings and character
-classes).
-
-[def Generators]
-
-The packages for producing a variety of formats from a SLIF grammar
-container. Further divided into serialization of containers as Tcl
-code, parsers and lexers based on the Tcl and C runtimes, and
-reconstruction of SLIF from a container.
-
-[def rt-Tcl]
-
-The package [package marpa::runtime::tcl]. It implements a parse
-engine in Tcl. This uses [package marpa::c], which is a thin wrapper
-around [package libmarpa].
-
-[def rt-C]
-
-The package [package marpa::runtime::c]. It implements a parse engine
-in C, directly on top of [package libmarpa], without wrappers.
-
-[def {Unicode data and utilities}]
-
-The [package marpa::unicode] package. It provides access to named
-character classes, case folding, de- and encoding codepoints to
-various representations, character class operations, etc.
-
-[def libmarpa]
-
-Jeffrey Kegler's base library implementing an Earley parser which has
-the fixes by John Aycock, Nigel Horspool and Joop Leo. This is the
-foundation for the rest of the system.
-
-[list_end]
-
-The package dependencies are a bit large, and will be shown
-per-section, in the documentation of each section.
-
-[list_begin enum]
-[enum] [term {Marpa/Tcl - Application}].
-[enum] [term {Marpa/Tcl - SLIF}].
-[enum] [term {Marpa/Tcl - Generation}].
-[enum] [term {Marpa/Tcl - Runtime/Tcl}].
-[enum] [term {Marpa/Tcl - Runtime/C}].
-[enum] [term {Marpa/Tcl - Unicode Data & Utilities}].
-[list_end]
-
+[comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
+[include include/feedback.inc]
 [manpage_end]
-

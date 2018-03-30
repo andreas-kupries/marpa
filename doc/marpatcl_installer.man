@@ -3,29 +3,27 @@
 [include include/module.inc]
 [titledesc {Marpa/Tcl - The Installer's Guide}]
 [description]
+[include include/welcome.inc]
 
-Welcome to Marpa/Tcl, a Tcl binding to the [file libmarpa] parsing
-engine.
+[section Audience]
 
-[para]
-
-The audience of this document is anyone wishing to build the packages,
-for either themselves, or others.
+This documented is targeted at anyone wishing to build MarpaTcl's
+packages and application, for either themselves, or others.
 
 [para]
 
-For a developer intending to extend or modify the packages we
-additionally provide
+Please read [term {Marpa/Tcl - How To Get The Sources}] first, if that
+was not done already. Here we assume that the sources are already
+available in a directory of your choice.
+
+[para]
+
+For developers building Marpa/Tcl with the intent to extend or modify
+the packages and application we additionally provide
 
 [list_begin enum]
 [enum] [term {Marpa/Tcl - The Developer's Guide}].
 [list_end]
-
-[para]
-
-Please read [term {Marpa/Tcl - How To Get The Sources}] first, if that was
-not done already. Here we assume that the sources are already
-available in a directory of your choice.
 
 [para]
 
@@ -67,5 +65,6 @@ dependencies they talk about are indeed installed.
 [include include/b_unix.inc]
 [include include/b_windows.inc]
 
+[include include/feedback.inc]
 [manpage_end]
 
