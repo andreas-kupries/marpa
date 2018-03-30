@@ -273,7 +273,7 @@ Database Class:	\\fB\\$3\\fR
 ..
 .BS
 .SH NAME
-marpatcl_changes \- Marpa/Tcl Changes
+marpatcl_changes \- Marpa/Tcl - Changes
 .SH DESCRIPTION
 .PP
 .PP

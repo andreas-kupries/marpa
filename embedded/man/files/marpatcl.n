@@ -3,7 +3,7 @@
 '\" Copyright (c) 2015-2018 Andreas Kupries
 '\" Copyright (c) 2018 Documentation, Andreas Kupries
 '\"
-.TH "marpatcl" n 0\&.2 doc "Marpa/Tcl, a binding to libmarpa"
+.TH "marpatcl_marpagen" n 0\&.2 doc "Marpa/Tcl, a binding to libmarpa"
 .\" The -*- nroff -*- definitions below are for supplemental macros used
 .\" in Tcl/Tk manual entries.
 .\"
@@ -273,7 +273,7 @@ Database Class:	\\fB\\$3\\fR
 ..
 .BS
 .SH NAME
-marpatcl \- Marpa/Tcl - The Generator Application
+marpatcl_marpagen \- Marpa/Tcl - The Generator Application
 .SH SYNOPSIS
 \fBmarpa-gen\fR ?options\&.\&.\&.? ?--? \fIgrammar-file\fR ?\fIoutput\fR?
 .sp

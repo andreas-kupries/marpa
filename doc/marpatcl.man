@@ -1,5 +1,5 @@
 [comment {-*- tcl -*- doctools manpage}]
-[manpage_begin marpatcl n 0.2]
+[manpage_begin marpatcl_marpagen n 0.2]
 [include include/module.inc]
 [titledesc {Marpa/Tcl - The Generator Application}]
 [description]

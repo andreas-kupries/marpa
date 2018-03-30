@@ -273,14 +273,8 @@ Database Class:	\\fB\\$3\\fR
 doc
 .RS
 .TP
-\fBmarpatcl\fR
-\fIfiles/marpatcl\&.n\fR: Marpa/Tcl - The Generator Application
-.TP
-\fBmarpatcl\fR
-\fIfiles/marpatcl_slif\&.n\fR: Marpa/Tcl - The SLIF grammar specification language
-.TP
 \fBmarpatcl_changes\fR
-\fIfiles/marpatcl_changes\&.n\fR: Marpa/Tcl Changes
+\fIfiles/marpatcl_changes\&.n\fR: Marpa/Tcl - Changes
 .TP
 \fBmarpatcl_devguide\fR
 \fIfiles/marpatcl_devguide\&.n\fR: Marpa/Tcl - The Developer's Guide
@@ -293,6 +287,12 @@ doc
 .TP
 \fBmarpatcl_license\fR
 \fIfiles/marpatcl_license\&.n\fR: Marpa/Tcl - License
+.TP
+\fBmarpatcl_marpagen\fR
+\fIfiles/marpatcl\&.n\fR: Marpa/Tcl - The Generator Application
+.TP
+\fBmarpatcl_slif\fR
+\fIfiles/marpatcl_slif\&.n\fR: Marpa/Tcl - The SLIF grammar specification language
 .TP
 \fBmarpatcl_sources\fR
 \fIfiles/marpatcl_sources\&.n\fR: Marpa/Tcl - How To Get The Sources
