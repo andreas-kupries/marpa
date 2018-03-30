@@ -283,6 +283,7 @@ Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR,
 if you have not done so already, to get an overview of the whole system\&.
 .SH AUDIENCE
 This documented is targeted at all users of Marpa/Tcl\&.
+.PP
 Depending on the specific goals of the reader references to additional
 documents containing more information to help with these goals are
 provided\&.
@@ -298,7 +299,7 @@ With the installation available the relevant documents are
 \fIMarpa/Tcl - The SLIF grammar specification language\fR\&.
 .PP
 .SH "BUILDER AND DISTRIBUTOR"
-As user intending to build Marpa/Tcl from its sources the relevant
+As a user intending to build Marpa/Tcl from its sources the relevant
 documents are
 .IP [1]
 \fIMarpa/Tcl - How To Get The Sources\fR\&.
@@ -306,7 +307,7 @@ documents are
 \fIMarpa/Tcl - The Installer's Guide\fR\&.
 .PP
 .SH "MAINTAINER, DEVELOPER"
-As user intending to maintain Marpa/Tcl, or add functionality to it
+As a user intending to maintain Marpa/Tcl, or add functionality to it
 the relevant documents are
 .IP [1]
 \fIMarpa/Tcl - How To Get The Sources\fR\&.

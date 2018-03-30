@@ -287,8 +287,8 @@ specification with SLIF\&.
 .SH SPECIFICATION
 The name \fISLIF\fR stands for \fIScanner-Less InterFace\fR\&.
 Both name and the majority of its specification are taken from
-\fIMarpa::R2\fR [https://jeffreykegler\&.github\&.io/Marpa-web-site/], the
-Perl binding to \fBlibmarpa\fR this work inspired by\&.
+\fIMarpa::R2\fR [https://jeffreykegler\&.github\&.io/Marpa-web-site/], the Perl binding to \fBlibmarpa\fR
+this work is inspired by\&.
 .PP
 Please see the
 \fIupstream documentation\fR [https://metacpan\&.org/pod/distribution/Marpa-R2/pod/Marpa_R2\&.pod]
