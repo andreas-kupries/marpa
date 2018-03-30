@@ -279,7 +279,7 @@ marpatcl_sources \- Marpa/Tcl - How To Get The Sources
 Welcome to Marpa/Tcl, a Tcl binding to the "\fIlibmarpa\fR" parsing
 engine\&.
 .PP
-Please read the document \fIMarpa/Tcl - Introduction to Kettle\fR,
+Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR,
 if you have not done so already, to get an overview of the whole system\&.
 .SH AUDIENCE
 This document is targeted at anyone wishing to either have just a

@@ -278,6 +278,9 @@ aycock
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_slif\&.n\fR
+marpatcl
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -300,6 +303,9 @@ character classes
 .RS
 .TP
 \fBfiles/marpatcl\&.n\fR
+marpatcl
+.TP
+\fBfiles/marpatcl_slif\&.n\fR
 marpatcl
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
@@ -326,6 +332,9 @@ document processing
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_slif\&.n\fR
+marpatcl
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -348,6 +357,9 @@ earley
 .RS
 .TP
 \fBfiles/marpatcl\&.n\fR
+marpatcl
+.TP
+\fBfiles/marpatcl_slif\&.n\fR
 marpatcl
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
@@ -374,6 +386,9 @@ horspool
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_slif\&.n\fR
+marpatcl
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -396,6 +411,9 @@ joop leo
 .RS
 .TP
 \fBfiles/marpatcl\&.n\fR
+marpatcl
+.TP
+\fBfiles/marpatcl_slif\&.n\fR
 marpatcl
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
@@ -422,6 +440,9 @@ lexing
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_slif\&.n\fR
+marpatcl
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -444,6 +465,9 @@ libmarpa
 .RS
 .TP
 \fBfiles/marpatcl\&.n\fR
+marpatcl
+.TP
+\fBfiles/marpatcl_slif\&.n\fR
 marpatcl
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
@@ -470,6 +494,9 @@ nigel horspool
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_slif\&.n\fR
+marpatcl
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -492,6 +519,9 @@ parsing
 .RS
 .TP
 \fBfiles/marpatcl\&.n\fR
+marpatcl
+.TP
+\fBfiles/marpatcl_slif\&.n\fR
 marpatcl
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
@@ -518,6 +548,9 @@ regex
 \fBfiles/marpatcl\&.n\fR
 marpatcl
 .TP
+\fBfiles/marpatcl_slif\&.n\fR
+marpatcl
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -540,6 +573,9 @@ table parsing
 .RS
 .TP
 \fBfiles/marpatcl\&.n\fR
+marpatcl
+.TP
+\fBfiles/marpatcl_slif\&.n\fR
 marpatcl
 .TP
 \fBfiles/marpatcl_changes\&.n\fR

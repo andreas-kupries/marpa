@@ -274,7 +274,10 @@ doc
 .RS
 .TP
 \fBmarpatcl\fR
-\fIfiles/marpatcl\&.n\fR: Marpa/Tcl -
+\fIfiles/marpatcl\&.n\fR: Marpa/Tcl - The Generator Application
+.TP
+\fBmarpatcl\fR
+\fIfiles/marpatcl_slif\&.n\fR: Marpa/Tcl - The SLIF grammar specification language
 .TP
 \fBmarpatcl_changes\fR
 \fIfiles/marpatcl_changes\&.n\fR: Marpa/Tcl Changes
