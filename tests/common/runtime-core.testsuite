@@ -112,8 +112,6 @@ test-grammar-map rt_example --> id rte base {
 
     gen cleanup
     incr k
-
-    break
 }
 
 # # ## ### ##### ######## ############# #####################
