@@ -514,6 +514,9 @@ oo::class create marpa::slif::semantics {
 	if {![dict size $adverbs]} return
 
 	Container l0 configure $symbol {*}$adverbs
+
+	if {![dict exists $adverbs latm]} return
+	
 	LATM exclude $symbol
 	return
     }
