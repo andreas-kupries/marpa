@@ -7,3 +7,4 @@ B ::= A
 :lexeme ~ A
           pause => before
 A ~ 'a'
+    latm => 1

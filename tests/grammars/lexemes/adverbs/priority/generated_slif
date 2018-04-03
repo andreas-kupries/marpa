@@ -7,3 +7,4 @@ B ::= A
 :lexeme ~ A
           priority => 1
 A ~ 'a'
+    latm => 1

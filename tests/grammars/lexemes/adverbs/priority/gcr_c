@@ -18,6 +18,9 @@ grammar {
         action {array values}
     }
     l0 {
+        latm {
+            A 1
+        }
         lexeme {
             A { {priority @CHR:<a> 0} }
         }
