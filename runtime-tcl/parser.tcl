@@ -119,9 +119,14 @@ oo::class create marpa::parser {
 	catch { RECCE destroy }
 	return
     }
-    
+
     # # -- --- ----- -------- -------------
     ## Public API
+
+    method post {args} {
+	debug.marpa/parser {}
+	Forward post {*}$args
+    }
 
     method gate: {lexer} {
 	debug.marpa/parser {}
@@ -258,13 +263,13 @@ oo::class create marpa::parser {
 	set myname $name
 	return
     }
-    
+
     method :A {lhs __ parts} {
 	debug.marpa/parser {}
 	set myparts $parts
 	return
     }
-    
+
     method :M {lhs __ mask args} {
 	debug.marpa/parser {}
 	# TODO: validate |mask| <= |args| |mask|
@@ -321,7 +326,7 @@ oo::class create marpa::parser {
     # # -- --- ----- -------- -------------
     ## Rule runtime support - builtin construction of semantic value
     ## TODO: support for general command prefix.
-    
+
     method CompleteParts {parts id rid} {
 	debug.marpa/parser {}
 	# 'start'	offset where lexeme starts
@@ -408,7 +413,7 @@ oo::class create marpa::parser {
 		dict set context origin parser
 
 		set mydone 1 ; # Now exhausted
-		
+
 		Forward fail context
 		return
 	    }

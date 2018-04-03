@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -26,26 +26,27 @@ oo::class create marpa::engine::tcl::lex {
 
     constructor {} {
 	debug.marpa/engine/tcl/lex {}
-	set myid {}
-	
+	set myid          {}
+	set myeventprefix {}
+
 	# Build the processing pipeline, then configure the various
 	# pieces.  Object creation is in backward direction, i.e. from
 	# the end of the pipeline to the beginning.  Loading the
 	# grammar specification then proceeds in forward direction.
-	# The following initialization then foes backward again.
+	# The following initialization then goes backward again.
 
 	# Parts
 	# - IN    : Basic character processing (location for token, file handling)
 	# - GATE  : Character to symbol mapping, incl. char classes, gating
 	# - LEX   : Marpa core engine specialized for lexing (semantics, lexemes)
 	# - STORE : Store for token values (lexer semantic information)
-	
+
 	marpa::semstore create STORE
 	marpa::lexer    create LEX   STORE [self]
 	marpa::gate     create GATE  LEX
 	marpa::inbound  create IN    GATE
 
-	#           v-----+  v-----+
+	#           v-----\ v------\
 	# IN --> GATE --> LEX ---> Self --> output
 	#                 \        \               .
 	#                  \------> \--> STORE
@@ -57,6 +58,7 @@ oo::class create marpa::engine::tcl::lex {
 	LEX symbols [my Symbols]
 	LEX rules   [my Rules]
 	LEX discard [my Discards]
+	LEX events  [my Events]
 
 	# Initial acceptability
 	LEX acceptable $mylex
@@ -78,17 +80,26 @@ oo::class create marpa::engine::tcl::lex {
 	my E "Missing implementation of virtual method \"$m\"" \
 	    API VIRTUAL [string toupper $m]
     }
-    
+
     # # ## ### ##### ######## #############
     ## State
 
-    variable myid mylex
-    # myid  :: map (id -> string) - Lexemes
-    # mylex :: list(id) - dict keys of myid
+    variable myid mylex myeventprefix
+    # myid          :: map (id -> string) - Lexemes
+    # mylex         :: list (id) - dict keys of myid
+    # myeventprefix :: list (word...)
 
+    # myeventprefix - Callback command to handle parse events
+        
     # # ## ### ##### ######## #############
     ## Public API
-    
+
+    method on-event {args} {
+	debug.marpa/engine/tcl/lex {}
+	set myeventprefix $args
+	return
+    }
+
     method process-file {path out} {
 	debug.marpa/engine/tcl/lex {}
 	marpa::import $out Forward
@@ -113,11 +124,23 @@ oo::class create marpa::engine::tcl::lex {
     ## methods below handle the lexer/parser communication, and
     ## talking to the configured output driver.
 
+    method post {args} {
+	debug.marpa/engine/tcl/lex {}
+	if {![llength $myeventprefix]} {
+	    debug.marpa/engine/tcl/lex { Ignored }
+	    return
+	}
+	# XXX try ? ignore errors ?
+	debug.marpa/engine/tcl/lex { Invoke }
+	uplevel #0 [linsert $args 0 {*}$myeventprefix [self]]
+	return
+    }
+    
     method gate: {lexcore} {
 	debug.marpa/engine/tcl/lex {}
 	return
     }
-    
+
     method symbols {lexemes} {
 	debug.marpa/engine/tcl/lex {}
 	return [set mylex [lmap w $lexemes {
@@ -126,7 +149,7 @@ oo::class create marpa::engine::tcl::lex {
 	    set id
 	}]]
     }
-    
+
     method enter {symbols values} {
 	debug.marpa/engine/tcl/lex {}
 	Forward enter \

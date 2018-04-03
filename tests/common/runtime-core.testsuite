@@ -95,25 +95,49 @@ test-grammar-map rt_example --> id rte base {
     # Debugging - Keep the generated parser and related files for
     # post-mortem review.
     stash $k
- 
+
     set input  [fget [input  $base]]
-    set result [string trimright [fget [result $base]]]
     set kd     [format $format $k]
 
-    test marpa-[label]-runtime-process-2.${kd}---${id} "[label] :: process $id" -body {
-	catch {
-	    ast-format [PARSE process $input]
-	} msg
-	set msg ;# set ::errorInfo
-    } -setup setup -cleanup {
-	cleanup
-	unset msg
-    } -result $result
+    if {[file exists $base/events]} {
+	# runtime example for events
+	set result [string trimright [fget $base/events]]
+
+	test marpa-[label]-runtime-process-2.${kd}---${id} "[label] :: process $id" -body {
+	    catch {
+		PARSE process $input
+		join $recording \n
+	    } msg
+	    set msg ;# set ::errorInfo
+	} -setup {
+	    setup
+	    set recording {}
+	    proc record {args} { lappend ::recording $args ; return }
+	    PARSE on-event record
+	} -cleanup {
+	    cleanup
+	    rename record {}
+	    unset msg recording
+	} -result $result
+
+    } else {
+	# runtime example for AST
+	set result [string trimright [fget [result $base]]]
+
+	test marpa-[label]-runtime-process-2.${kd}---${id} "[label] :: process $id" -body {
+	    catch {
+		ast-format [PARSE process $input]
+	    } msg
+	    set msg ;# set ::errorInfo
+	} -setup setup -cleanup {
+	    cleanup
+	    unset msg
+	} -result $result
+    }
 
     gen cleanup
     incr k
-
-    break
+    #break
 }
 
 # # ## ### ##### ######## ############# #####################

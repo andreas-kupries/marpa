@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -52,6 +52,8 @@ oo::class create marpa::engine {
     variable myrmap   ;# sym id:local -> name
     variable myrule   ;# rule id      -> list (lhs sym id, list (rhs sym id))
 
+    variable myevents ;# symbol -> (type -> (name -> active))
+
     ##
     # API self:
     #   cons    (postprocessor) - Create, link, attach to postprocessor.
@@ -90,6 +92,12 @@ oo::class create marpa::engine {
     # # ## ### ##### ######## #############
     ## Hidden methods for API methods. Subclasses integrate these into
     ## their state management
+
+    method events {spec} {
+	debug.marpa/engine {[debug caller] | }
+	set myevents $spec
+	return
+    }
 
     method symbols {names} {
 	debug.marpa/engine {[debug caller] | }
@@ -175,11 +183,24 @@ oo::class create marpa::engine {
 	return $rid
     }
 
+    method events? {sym type} {
+	debug.marpa/engine {[debug caller] | }
+	if {![dict exists $myevents $sym $type]} {
+	    return {}
+	}
+	set events {}
+	dict for {name active} [dict get $myevents $sym $type] {
+	    if {!$active} continue
+	    lappend events $name
+	}
+	return $events
+    }
+
     # # ## ### ##### ######## #############
     ## Convert between symbol names and ids (local)
     ## NOTE: Current use mixes debugging and generation of data for semantics.
     ## Consider disentangling the two uses.
-    
+
     method 2ID* {args}  { my 2ID $args }
     method 2ID  {names} { lmap name $names { my 2ID1 $name } }
     method 2ID1 {name} {
@@ -204,10 +225,10 @@ oo::class create marpa::engine {
     method DIds      {ids}   { my DNames [my 2Name $ids] }
     method DLocation {sv}    { return [marpa location show [Store get $sv]] }
     # DLocation is predicated on a semantic action of (start length value).
-    
+
     # # ## ### ##### ######## #############
     ## Internal support - Data access
-    
+
     method RuleData {rid} {
 	debug.marpa/engine {[debug caller] | }
 	return [dict get $myrule $rid]
@@ -220,7 +241,7 @@ oo::class create marpa::engine {
     }
 
     # # ## ### ##### ######## #############
-    
+
     method Freeze {} {
 	debug.marpa/engine {[debug caller] | }
 	# Freeze grammar, prevent further editing

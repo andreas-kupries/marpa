@@ -1,0 +1,5 @@
+# This grammar demonstrates operation of discard events
+A ::= a +
+a ~ 'a'
+:discard ~ space  event => whitespace
+space ~ [[:space:]] +
