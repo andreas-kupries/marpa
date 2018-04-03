@@ -1,18 +1,84 @@
 [comment {-*- tcl -*- doctools manpage}]
-[manpage_begin marpatcl n 0.2]
+[manpage_begin marpatcl_marpagen n 0.2]
 [include include/module.inc]
-[titledesc {Marpa/Tcl - }]
-[require Tcl 8.5]
-[require Tk 8.5]
-[require marpa [opt 0.2]]
+[titledesc {Marpa/Tcl - The Generator Application}]
 [description]
 
-[para] For a basic introduction of the whole Marpa/Tcl eco-system
-please read the [term {Marpa/Tcl - Introduction to Marpa/Tcl}] (sic!).
+[include include/welcome.inc]
 
-The basic concepts used here, like ... are described in the reference
-manpage for the [term {Marpa/Tcl - Foundation}].  We will not repeat
-them here, but assume that the reader knows them already.
+[section Audience]
 
+This document is targeted at users intending to create parser packages
+with Marpa/Tcl.
+
+[section marpa-gen]
+
+[syscmd marpa-gen] is the generator application used to read a SLIF
+grammar definition and create various forms of output, including
+packages implementing parsers and lexers for the grammar.
+
+[para]
+
+To make effective use of it is recommended to also read
+[term {Marpa/Tcl - The SLIF grammar specification language}]
+
+[list_begin definitions][comment {-- syntax --}]
+
+[call [syscmd marpa-gen] [opt options...] [opt --] \
+     [arg grammar-file] \
+     [opt [arg output]]]
+
+In its most basic form the generator command is invoked with the path
+to a [arg grammar-file], printing the result to [const stdout].
+
+If a second path to [arg output] is specified the result is saved into
+that file, possibly creating it.
+
+[para] Invoking the command with no arguments, while technically
+invalid, causes it to print basic help information, i.e. syntax,
+available options, and available output types.
+
+[para] The available options are:
+
+[list_begin options][comment {-- options --}]
+
+[opt_def -author string]
+[opt_def -A string]
+
+Specifies the name of the author to embed in the output, provided that
+is supported by the chosen type. Defaults to the name of the user
+invoking the generator.
+
+[opt_def -name string]
+[opt_def -N string]
+
+Specifies the name of the result to embed in the output, provided that
+is supported by the chosen type. Defaults to the empty string.
+
+[opt_def -type string]
+[opt_def -T string]
+
+Specifies the type of output to generate.
+If not specified defaults to [const tparse].
+
+[include include/gen_types.inc]
+
+[opt_def -version string]
+[opt_def -V string]
+
+Specifies the version to number embed in the output, provided that is
+supported by the chosen type. Defaults to [const 1].
+
+[opt_def --]
+
+This option ends option processing, even if arguments coming after it
+start with dash ([const -]).
+
+
+[list_end][comment {-- options --}]
+[list_end][comment {-- syntax --}]
+
+[comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
+[include include/feedback.inc]
 [manpage_end]
 

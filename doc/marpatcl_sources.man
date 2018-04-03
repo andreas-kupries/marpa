@@ -3,17 +3,15 @@
 [include include/module.inc]
 [titledesc {Marpa/Tcl - How To Get The Sources}]
 [description]
+[include include/welcome.inc]
 
-Welcome to Marpa/Tcl, a Tcl binding to the [file libmarpa] parsing
-engine.
+[section Audience]
 
-[para]
-
-The audience of this document is anyone wishing to either have just a
+This document is targeted at anyone wishing to either have just a
 look at Marpa/Tcl's source code, or build the packages, or to extend
 and modify them.
 
-[para] For builders and developers we additionally provide
+[para] For these builders and developers we additionally provide
 
 [list_begin enum]
 [enum] [term {Marpa/Tcl - The Installer's Guide}].
@@ -73,5 +71,5 @@ followed by
 
 to get a checkout of the head of the trunk.
 
+[include include/feedback.inc]
 [manpage_end]
-

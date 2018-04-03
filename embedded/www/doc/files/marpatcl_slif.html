@@ -1,6 +1,6 @@
 
 <!DOCTYPE html><html><head>
-<title>marpatcl_sources - Marpa/Tcl, a binding to libmarpa</title>
+<title>marpatcl_slif - Marpa/Tcl, a binding to libmarpa</title>
 <style type="text/css"><!--
     HTML {
 	background: 	#FFFFFF;
@@ -92,11 +92,11 @@
     }
 --></style>
 </head>
-<!-- Generated from file 'marpatcl_sources.man' by tcllib/doctools with format 'html'
+<!-- Generated from file 'marpatcl_slif.man' by tcllib/doctools with format 'html'
    -->
 <!-- Copyright &amp;copy; 2015-2018 Andreas Kupries   -- Copyright &amp;copy; 2018 Documentation, Andreas Kupries
    -->
-<!-- marpatcl_sources.n
+<!-- marpatcl_slif.n
    -->
 <body><hr> [
    <a href="../../../../../../home">Home</a>
@@ -105,19 +105,17 @@
 | <a href="../../index.html">Keyword Index</a>
  ] <hr>
 <div class="doctools">
-<h1 class="doctools_title">marpatcl_sources(n) 1 doc &quot;Marpa/Tcl, a binding to libmarpa&quot;</h1>
+<h1 class="doctools_title">marpatcl_slif(n) 0.2 doc &quot;Marpa/Tcl, a binding to libmarpa&quot;</h1>
 <div id="name" class="doctools_section"><h2><a name="name">Name</a></h2>
-<p>marpatcl_sources - Marpa/Tcl - How To Get The Sources</p>
+<p>marpatcl_slif - Marpa/Tcl - The SLIF grammar specification language</p>
 </div>
 <div id="toc" class="doctools_section"><h2><a name="toc">Table Of Contents</a></h2>
 <ul class="doctools_toc">
 <li class="doctools_section"><a href="#toc">Table Of Contents</a></li>
 <li class="doctools_section"><a href="#section1">Description</a></li>
 <li class="doctools_section"><a href="#section2">Audience</a></li>
-<li class="doctools_section"><a href="#section3">Source Location</a></li>
-<li class="doctools_section"><a href="#section4">Retrieval</a></li>
-<li class="doctools_section"><a href="#section5">Source Code Management</a></li>
-<li class="doctools_section"><a href="#section6">Bugs, Ideas, Feedback</a></li>
+<li class="doctools_section"><a href="#section3">Specification</a></li>
+<li class="doctools_section"><a href="#section4">Bugs, Ideas, Feedback</a></li>
 <li class="doctools_section"><a href="#keywords">Keywords</a></li>
 <li class="doctools_section"><a href="#copyright">Copyright</a></li>
 </ul>
@@ -129,53 +127,28 @@ engine.</p>
 if you have not done so already, to get an overview of the whole system.</p>
 </div>
 <div id="section2" class="doctools_section"><h2><a name="section2">Audience</a></h2>
-<p>This document is targeted at anyone wishing to either have just a
-look at Marpa/Tcl's source code, or build the packages, or to extend
-and modify them.</p>
-<p>For these builders and developers we additionally provide</p>
-<ol class="doctools_enumerated">
-<li><p><i class="term"><a href="marpatcl_installer.html">Marpa/Tcl - The Installer's Guide</a></i>.</p></li>
-<li><p><i class="term"><a href="marpatcl_devguide.html">Marpa/Tcl - The Developer's Guide</a></i>.</p></li>
-</ol>
-<p>respectively.</p>
+<p>This document is targeted at users intending to write grammar
+specification with SLIF.</p>
 </div>
-<div id="section3" class="doctools_section"><h2><a name="section3">Source Location</a></h2>
-<p>The official repository for Marpa/Tcl can be found at
-<a href="https://core.tcl-lang.org/akupries/marpa">https://core.tcl-lang.org/akupries/marpa</a>, also known as
-<a href="https://core.tcl.tk/akupries/marpa">https://core.tcl.tk/akupries/marpa</a>.
-A mirror is
-<a href="https://chiselapp.com/user/andreas_kupries/repository/marpa">https://chiselapp.com/user/andreas_kupries/repository/marpa</a></p>
-</div>
-<div id="section4" class="doctools_section"><h2><a name="section4">Retrieval</a></h2>
-<p>Assuming that you simply wish to look at the sources, or build a
-specific revision, the easiest way of retrieving it is to:</p>
+<div id="section3" class="doctools_section"><h2><a name="section3">Specification</a></h2>
+<p>The name <i class="term">SLIF</i> stands for <i class="term">Scanner-Less InterFace</i>.
+Both name and the majority of its specification are taken from
+<a href="https://jeffreykegler.github.io/Marpa-web-site/">Marpa::R2</a>, the Perl binding to <b class="package"><a href="../../index.html#key0">libmarpa</a></b>
+this work is inspired by.</p>
+<p>Please see the
+<a href="https://metacpan.org/pod/distribution/Marpa-R2/pod/Marpa_R2.pod">upstream documentation</a>
+while we are writing our own.</p>
+<p>The main differences to the upstream language currently known are</p>
 <ol class="doctools_enumerated">
-<li><p>Log into this site, as &quot;anonymous&quot;, using the semi-random password in the captcha.</p></li>
-<li><p>Go to the &quot;Timeline&quot;.</p></li>
-<li><p>Choose the revision you wish to have and</p></li>
-<li><p>follow its link to its detailed information page.</p></li>
-<li><p>On that page, choose either the &quot;ZIP&quot; or &quot;Tarball&quot; link to get
-a copy of this revision in the format of your choice.</p></li>
+<li><p>The removal of the <b class="const">bless</b> adverb.</p></li>
+<li><p>The details of the character class syntax have been aligned
+       	with <i class="term">Tcl</i>.
+	For example negative named posix classes have been
+	removed. The same can be achived by using a regular negation
+	outside of the posix class reference.</p></li>
 </ol>
 </div>
-<div id="section5" class="doctools_section"><h2><a name="section5">Source Code Management</a></h2>
-<p>For the curious (or a developer-to-be), the sources are managed by the
-<a href="http://www.fossil-scm.org">Fossil SCM</a>.
-Binaries for popular platforms can be found directly at its
-<a href="http://www.fossil-scm.org/download.html">download page</a>.</p>
-<p>With that tool available the full history can be retrieved via:</p>
-<pre class="doctools_example">
-    fossil clone  https://core.tcl-lang.org/akupries/marpa  source.fossil
-</pre>
-<p>followed by</p>
-<pre class="doctools_example">
-    mkdir dev
-    cd    dev
-    fossil open ../source.fossil
-</pre>
-<p>to get a checkout of the head of the trunk.</p>
-</div>
-<div id="section6" class="doctools_section"><h2><a name="section6">Bugs, Ideas, Feedback</a></h2>
+<div id="section4" class="doctools_section"><h2><a name="section4">Bugs, Ideas, Feedback</a></h2>
 <p>This document, and the package it describes, will undoubtedly contain
 bugs and other problems.
 Please report such at the

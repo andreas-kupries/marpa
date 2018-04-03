@@ -275,12 +275,16 @@ Database Class:	\\fB\\$3\\fR
 .SH NAME
 marpatcl_devguide \- Marpa/Tcl - The Developer's Guide
 .SH DESCRIPTION
+.PP
 Welcome to Marpa/Tcl, a Tcl binding to the "\fIlibmarpa\fR" parsing
 engine\&.
 .PP
-This document is a guide for developers working on Marpa/Tcl,
-i\&.e\&. maintainers fixing bugs, extending the package's functionality,
-etc\&.
+Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR,
+if you have not done so already, to get an overview of the whole system\&.
+.SH AUDIENCE
+This document is a guide targeted at all developers working on the
+internals of Marpa/Tcl, i\&.e\&. maintainers fixing bugs, developers
+adding functionality, etc\&.
 .PP
 Please read
 .IP [1]
@@ -290,19 +294,99 @@ Please read
 .PP
 first, if that was not done already\&.
 Here we assume that the sources are already available in a directory
-of your choice, and that you not only know how to build and install
-them, but also have all the necessary requisites to actually do
-so\&. The guide to the sources in particular also explains which source
-code management system is used, where to find it, how to set it up,
-etc\&.
+of the reader's choice, and that the reader not only knows how to
+build and install them, but also has all the necessary requisites to
+actually do so\&. The guide to the sources in particular also explains
+which source code management system is used, where to find it, how to
+set it up, etc\&.
 .SH "DEVELOPING FOR MARPA/TCL"
-.SS "ARCHITECTURE & CONCEPTS"
-Most of the overall architecture and design is all introduced in the
-user documentation, namely
-.IP [1]
-\fIMarpa/Tcl - Introduction to Marpa/Tcl\fR, and
+.SS "SYSTEM ARCHITECTURE"
+The system can be split into roughly six sections, as seen in the
+figure below\&. The seventh, highlighted in green, is \fBlibmarpa\fR
+itself, which is technically outside of the system\&.
 .PP
-Here we concentrate on some details of the internals\&.
+.PS
+.nf
++-------------------------------------------------------------------------+
+| Applications:              marpa-gen                                    |
++-------------------------------------------------------------------------+
++---------------------------+ +-------------------------------------------+
+| SLIF: semantics container | | Generators: gc(c,tcl,compact) tparse/tlex |
+|       parser    literals  | |             slif              cparse/clex |
+|                 precedence| |                                           |
+|                 utils     | |                                           |
++---------------------------+ +-------------------------------------------+
++---------------------------+ +-------------------------------------------+
+| rt-C:                     | | rt-Tcl: runtime::tcl                      |
+|       runtime::c          | |         marpa::c                          |
++---------------------------+ +-------------------------------------------+
++---------------------------+ +-------------------------------------------+
+|     (( libmarpa ))        | | unicode data & utils: unicode             |
+|                           | |                       util                |
++---------------------------+ +-------------------------------------------+
+
+.fi
+.PE
+.PP
+In more detail:
+.TP
+Applications
+At the top we have the \fBmarpa-gen\fR application\&. It integrates and
+uses all of the packages to provide a parser generator reading
+grammars specified using SLIF and producing results in a variety of
+formats\&.
+.TP
+SLIF
+The packages supporting the SLIF language for grammar specifications\&.
+This is a very close sibling to the SLIF language used by
+\fIMarpa::R2\fR [https://jeffreykegler\&.github\&.io/Marpa-web-site/], the current stable version of the Perl
+binding\&.
+.sp
+It can be further divided into groups for parsing SLIF, the
+semantics for translating a parse into a container, a container for
+SLIF grammars, and the processing of literals (strings and character
+classes)\&.
+.TP
+Generators
+The packages for producing a variety of formats from a SLIF grammar
+container\&. Further divided into serialization of containers as Tcl
+code, parsers and lexers based on the Tcl and C runtimes, and
+reconstruction of SLIF from a container\&.
+.TP
+rt-Tcl
+The package \fBmarpa::runtime::tcl\fR\&. It implements a parse
+engine in Tcl\&. This uses \fBmarpa::c\fR, which is a thin wrapper
+around \fBlibmarpa\fR\&.
+.TP
+rt-C
+The package \fBmarpa::runtime::c\fR\&. It implements a parse engine
+in C, directly on top of \fBlibmarpa\fR, without wrappers\&.
+.TP
+Unicode data and utilities
+The \fBmarpa::unicode\fR package\&. It provides access to named
+character classes, case folding, de- and encoding codepoints to
+various representations, character class operations, etc\&.
+.TP
+libmarpa
+Jeffrey Kegler's base library implementing an Earley parser which has
+the fixes by John Aycock, Nigel Horspool and Joop Leo\&. This is the
+foundation for the rest of the system\&.
+.PP
+The package dependencies are a bit large, and will be shown
+per-section, in the documentation of each section\&.
+.IP [1]
+\fIMarpa/Tcl - Application\fR\&.
+.IP [2]
+\fIMarpa/Tcl - SLIF\fR\&.
+.IP [3]
+\fIMarpa/Tcl - Generation\fR\&.
+.IP [4]
+\fIMarpa/Tcl - Runtime/Tcl\fR\&.
+.IP [5]
+\fIMarpa/Tcl - Runtime/C\fR\&.
+.IP [6]
+\fIMarpa/Tcl - Unicode Data & Utilities\fR\&.
+.PP
 .SS "DIRECTORY STRUCTURE"
 .TP
 Helpers
@@ -515,6 +599,13 @@ utilities\&.
 The entrypoint is "\fIpkg_entry\&.tcl\fR"\&.
 .RE
 .PP
+.SH "BUGS, IDEAS, FEEDBACK"
+This document, and the package it describes, will undoubtedly contain
+bugs and other problems\&.
+Please report such at the
+\fIMarpa/Tcl Tracker\fR [https://core\&.tcl\&.tk/akupries/marpatcl]\&.
+Please also report any ideas for enhancements you may have for either
+package and/or documentation\&.
 .SH KEYWORDS
 aycock, character classes, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
 .SH COPYRIGHT

@@ -1,0 +1,58 @@
+[comment {-*- tcl -*- doctools manpage}]
+[manpage_begin marpatcl_slif n 0.2]
+[include include/module.inc]
+[titledesc {Marpa/Tcl - The SLIF grammar specification language}]
+[description]
+
+[include include/welcome.inc]
+
+[section Audience]
+
+This document is targeted at users intending to write grammar
+specification with SLIF.
+
+[section Specification]
+
+The name [term SLIF] stands for [term {Scanner-Less InterFace}].
+
+Both name and the majority of its specification are taken from
+[include include/upstream.inc], the Perl binding to [package libmarpa]
+this work is inspired by.
+
+[para]
+
+Please see the
+[uri https://metacpan.org/pod/distribution/Marpa-R2/pod/Marpa_R2.pod \
+     {upstream documentation}]
+while we are writing our own.
+
+[para] The main differences to the upstream language currently known are
+
+[list_begin enumerated]
+
+[enum]	The removal of the [const bless] adverb.
+
+[enum]	The details of the character class syntax have been aligned
+       	with [term Tcl].
+
+	For example negative named posix classes have been
+	removed. The same can be achived by using a regular negation
+	outside of the posix class reference.
+
+[list_end]
+
+[comment {------------------------------------------------------------
+[section {SLIF meta grammar}]
+
+The exact syntax of SLIF, specified in SLIF is in the example below.
+
+[example_begin]
+[include ../bootstrap/marpa-tcl-slif/slif]
+[example_end]
+
+------------------------------------------------------------}]
+
+[comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
+[include include/feedback.inc]
+[manpage_end]
+
