@@ -81,6 +81,8 @@ oo::class create marpa::inbound {
     ## State
 
     variable mylocation ; # Input location
+    variable mytext     ; # Physical input stream
+    			  # (list! of characters)
 
     # API:
     # 1 cons  (postprocessor) - Create, link
@@ -100,6 +102,7 @@ oo::class create marpa::inbound {
 
 	marpa::import $postprocessor Forward
 
+	set mytext     "" ; # Input is empty
 	set mylocation -1 ; # location (of current character) in
 			    # input, currently before the first
 			    # character
@@ -116,32 +119,41 @@ oo::class create marpa::inbound {
 	return $mylocation
     }
 
+    method moveto {pos} {
+	debug.marpa/inbound {[debug caller] | }
+	set  mylocation $pos
+	incr mylocation -1
+	return
+    }
+
+    method rewind {delta} {
+	debug.marpa/inbound {[debug caller] | }
+	incr mylocation -$delta
+	incr mylocation -1
+	return
+    }
+
+    method moveby {delta} {
+	debug.marpa/inbound {[debug caller] | }
+	incr mylocation $delta
+	incr mylocation -1
+	return
+    }
+    
     method enter {string} {
 	debug.marpa/inbound {[debug caller] | }
-
-	if {$string eq {}} return
-	foreach ch [split $string {}] {
-	    # Count character location (offset in input)
-	    incr mylocation
-
-	    # Semantic value is character location (s.a.)
-	    # And push into the pipeline
-	    debug.marpa/inbound {[debug caller 1] | DO '[char quote cstring $ch]' ($mylocation) ______}
-	    debug.marpa/inbound {[debug caller 1] | DO _______________________________________}
-	    Forward enter $ch $mylocation
-	}
+	my Def $string
+	my Process
+	# XXX eof here
 	return
     }
 
     method read {chan} {
 	debug.marpa/inbound {[debug caller] | }
-
-	# Process channel in blocks
-	while {![eof $chan]} {
-	    my enter [read $chan 1024]
-	}
-	# **Attention**: We cannot signal eof here! Because we might
-	# get more input to process, from other channels or strings.
+	# Read entire channel into memory for processing
+	my Def [read $chan]
+	my Process
+	# XXX eof here
 	return
     }
 
@@ -151,6 +163,39 @@ oo::class create marpa::inbound {
 	return
     }
 
+    # # ## ### ##### ######## #############
+    ## Internal support functionality
+
+    method Def {string} {
+	debug.marpa/inbound {[debug caller] | }
+	set mytext     [split $string {}]
+	set mylocation -1
+	return
+    }
+    
+    method Process {} {
+	debug.marpa/inbound {[debug caller] | }
+
+	set  max [llength $mytext]
+	incr max -1
+	while {$mylocation < $max} {
+	    # Count character location (offset in input)
+	    incr mylocation
+	    set ch [lindex $mytext $mylocation]
+
+	    # Semantic value is character location (s.a.)
+	    # And push into the pipeline
+	    debug.marpa/inbound {[debug caller 1] | DO '[char quote cstring $ch]' ($mylocation) ______}
+	    debug.marpa/inbound {[debug caller 1] | DO _______________________________________}
+	    Forward enter $ch $mylocation
+	    # Note: The higher layers have access to the location, and are allowed to change it
+	    # Examples:
+	    # - Rewind after reading behind the current lexeme
+	    # - Rewind for parse events.
+	}
+	return
+    }
+    
     ##
     # # ## ### ##### ######## #############
 }
