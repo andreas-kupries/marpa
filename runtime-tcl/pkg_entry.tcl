@@ -8,11 +8,11 @@
 # - Runtime support for Tcl-based lexers and parsers
 #
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
-    
+
 # # ## ### ##### ######## #############
 ## Administrivia
 
@@ -48,17 +48,18 @@ if {![llength [info commands try]]} {
 }
 
 ## Find a way to have this list only once.
-# @owns: semstd.tcl
-# @owns: semstore.tcl
-# @owns: semcore.tcl
-# @owns: inbound.tcl
-# @owns: gate.tcl
 # @owns: engine.tcl
 # @owns: engine_debug.tcl
+# @owns: gate.tcl
+# @owns: inbound.tcl
 # @owns: lexer.tcl
+# @owns: match.tcl
 # @owns: parser.tcl
 # @owns: rt_lex.tcl
 # @owns: rt_parse.tcl
+# @owns: semcore.tcl
+# @owns: semstd.tcl
+# @owns: semstore.tcl
 
 apply {{selfdir} {
     source $selfdir/semstd.tcl       ; # Standard behaviours for SV handling
@@ -68,6 +69,7 @@ apply {{selfdir} {
     source $selfdir/gate.tcl         ; # Character translation, class handling, symbol gating
     source $selfdir/engine.tcl       ; # Base class for lexer, parser
     source $selfdir/engine_debug.tcl ; # - Debugging support, active on request
+    source $selfdir/match.tcl        ; # Lexer helper, store match information.
     source $selfdir/lexer.tcl        ; # Lexer, aggregate characters to lexemes
     source $selfdir/parser.tcl       ; # Parser, structure lexemes into ASTs
     source $selfdir/rt_lex.tcl       ; # Engine assembly / Runtime: Lexer

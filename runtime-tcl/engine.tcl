@@ -183,17 +183,17 @@ oo::class create marpa::engine {
 	return $rid
     }
 
-    method events? {sym type} {
+    method events? {type syms} {
 	debug.marpa/engine {[debug caller] | }
-	if {![dict exists $myevents $sym $type]} {
-	    return {}
-	}
 	set events {}
-	dict for {name active} [dict get $myevents $sym $type] {
-	    if {!$active} continue
-	    lappend events $name
+	foreach sym $syms {
+	    if {![dict exists $myevents $sym $type]} continue
+	    dict for {name active} [dict get $myevents $sym $type] {
+		if {!$active} continue
+		lappend events $name
+	    }
 	}
-	return $events
+	return [lsort -unique $events]
     }
 
     # # ## ### ##### ######## #############

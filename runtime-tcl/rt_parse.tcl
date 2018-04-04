@@ -93,6 +93,8 @@ oo::class create marpa::engine::tcl::parse {
 	    API VIRTUAL [string toupper $m]
     }
 
+    forward match  LEX match
+
     # # ## ### ##### ######## #############
     ## State
 
@@ -108,7 +110,7 @@ oo::class create marpa::engine::tcl::parse {
 	set myeventprefix $args
 	return
     }
-    
+
     method process-file {path} {
 	debug.marpa/engine/tcl/parse {}
 	set myresult {}

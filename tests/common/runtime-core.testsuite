@@ -112,7 +112,11 @@ test-grammar-map rt_example --> id rte base {
 	} -setup {
 	    setup
 	    set recording {}
-	    proc record {args} { lappend ::recording $args ; return }
+	    proc record {p type enames args} {
+		lappend ::recording (([info level 0]))
+		lappend ::recording {*}[$p match view]
+		return
+	    }
 	    PARSE on-event record
 	} -cleanup {
 	    cleanup

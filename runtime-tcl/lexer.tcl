@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -89,8 +89,10 @@ oo::class create marpa::lexer {
 			   # Required for the regeneration of our
 			   # recognizer after a discarded lexeme was
 			   # found in the input.
-    variable mystart      ;# start offset for the current lexeme
     variable mylexeme     ;# characters in the current lexeme.
+
+    # M - Subordinate match information storage object.
+    #     Exposed as parse event descriptor to parse event handlers.
 
     # Constant
     variable mynull       ;# Semantic value for ACS, empty string,
@@ -162,18 +164,25 @@ oo::class create marpa::lexer {
 	set myparts   value ;# Default: lexeme literal semantics
 	set myalways  {}
 	set mynull    [Store put [marpa location null]]
-	set mystart   {}
 	set mylexeme  ""
+
+	# Match information storage, and public facade
+	marpa::lexer::match create M
+	marpa::lexer::ped   create PED M
+	M g1start: {} ; # XXX pull information from parser.
+	M g1length: 1
 
 	# Attach ourselves to parser, as gate.
 	Forward gate: [self]
 
-	debug.marpa/gate {/ok}
+	debug.marpa/lexer {/ok}
 	return
     }
 
     # # -- --- ----- -------- -------------
     ## Public API
+
+    forward match PED
 
     method events {spec} {
 	debug.marpa/lexer {[debug caller] | }
@@ -305,8 +314,8 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer/report {[my progress-report-current]}
 	debug.marpa/lexer/stream {([my DIds $syms]) '[char quote cstring $thechar]' @ $thelocation}
 
-	if {$mystart eq {}} {
-	    set mystart $thelocation
+	if {[M start] eq {}} {
+	    M start: $thelocation
 	}
 
 	if {![llength $syms]} {
@@ -388,7 +397,7 @@ oo::class create marpa::lexer {
 	# Flush everything pending in the local recognizer to the
 	# parser before signaling eof to the parser. Do this if and
 	# only if we actually saw something.
-	if {$mystart ne {}} {
+	if {[M start] ne {}} {
 	    my Complete
 	}
 
@@ -416,7 +425,7 @@ oo::class create marpa::lexer {
 
 	set myrecce [GRAMMAR recognizer create RECCE [mymethod Events]]
 	debug.marpa/lexer {[debug caller 1] | RECCE ::=  [namespace which -command RECCE]}
-	set mystart  {}
+	M start: {}
 	set mylexeme {}
 
 	RECCE start-input
@@ -506,9 +515,13 @@ oo::class create marpa::lexer {
 		my Mismatch
 	    }
 	}
-	debug.marpa/lexer {[debug caller] | Lexeme start:  $mystart}
-	debug.marpa/lexer {[debug caller] | Lexeme length: $latest}
-	debug.marpa/lexer {[debug caller] | Lexeme:        (([char quote cstring [string range $mylexeme 0 end-$redo]]))}
+
+	M length: [expr {$latest-1}]
+	M value:  [string range $mylexeme 0 end-$redo]
+
+	debug.marpa/lexer {[debug caller] | Lexeme start:  [M start]}
+	debug.marpa/lexer {[debug caller] | Lexeme length: [M length]}
+	debug.marpa/lexer {[debug caller] | Lexeme:        (([char quote cstring [M value]]))}
 	debug.marpa/lexer {[debug caller] | Redo:          $redo}
 
 	# II. Pull all the valid parses at this location
@@ -553,6 +566,10 @@ oo::class create marpa::lexer {
 	    } elseif {[dict exists $fset $symbol]} {
 		# Ignore, already handled
 	    } else {
+		M symbol: [my 2Name1 [dict get $mylex $symbol]]
+		M lhs:    $symbol
+		M rule:   [dict get [lindex $tree end-2] id]
+
 		# Note that we reduce the symbols to the unique
 		# subset. Lexing ambiguities may cause us see a single
 		# lexeme multiple times, one per possible parse-tree
@@ -564,6 +581,7 @@ oo::class create marpa::lexer {
 		# latest, tree, symbol, redo - upvar'd in GSV these as needed.
 		# __sv_*                     - Reserved by GSV for caching.
 		lappend sv [my KnownValue [my GetSemanticValue]]
+		# XXX see if we can defer semstore access until actual need.
 	    }
 	}
 
@@ -598,26 +616,33 @@ oo::class create marpa::lexer {
 
 	if {![llength $found] && [llength $discarded]} {
 	    # We found discarded symbols, and no lexemes
-	    # Restart lexing without informing the parser, keeping
-	    # to the current set of acceptable symbols.
-	    #
-	    # Before the restart inform the environment of any associated discard events.
 	    debug.marpa/lexer        {[debug caller] | Discard ...}
 	    debug.marpa/lexer/stream {FIN, discard}
 	    debug.marpa/lexer/events {Discarded: $discarded ([my DIds $discarded])}
 
-	    # Inlined GetSemanticValue 'start,length,value'
-	    set espan  [list $mystart $latest]
-	    set evalue [string range $mylexeme 0 end-$redo]
-	    foreach dsym $discarded {
-		set events [my events? D.$dsym discard]
-		if {![llength $events]} continue
-		set dsname [string map {ACS: {}} [my 2Name1 $dsym]]
-		debug.marpa/lexer/events {Events: $dsym ($espan) "$evalue" = $events}
-		foreach ename $events {
-		    Forward post discard $ename $dsname $espan $evalue
-		}
+	    # First inform the environment of any discard events we
+	    # may have associated with one or more of the matched
+	    # symbols.
+
+	    set events [my events? discard [lmap d $discarded {set _ D.$d}]]
+	    if {[llength $events]} {
+		debug.marpa/lexer/events {E Discard: $events}
+		debug.marpa/lexer/events {E Discard: $discarded}
+
+		M sv~
+		M symbols: [lmap d $discarded {string map {ACS: {}} [my 2Name1 $d]}]
+		M fresh: 1
+		debug.marpa/lexer/events {E Discard Match: [join [M view] "\nE         Match:"]}
+
+		# Note, M is passed implicitly, made accessible
+		# through the `match` method of the main
+		# object. Further, any changes made to M by the event
+		# handler are ignored.
+		Forward post discard $events
 	    }
+
+	    # Second, restart lexing without informing the parser,
+	    # keeping to the current set of acceptable symbols.
 
 	    my acceptable $myacceptable
 
@@ -680,7 +705,7 @@ oo::class create marpa::lexer {
 	    lappend forest [FOREST get-parse]
 	    debug.marpa/lexer/forest {__________________________________________ Tree [incr fcounter] ([llength [lindex $forest end]])}
 	    debug.marpa/lexer/forest {[my parse-tree [lindex $forest end]]}
-	    debug.marpa/lexer/forest/save {[upvar 1 latest latest][my dump-parse-tree "TL.@${mystart}+${latest}.$fcounter" [lindex $forest end]]}
+	    debug.marpa/lexer/forest/save {[upvar 1 latest latest][my dump-parse-tree "TL.@[M start]+${latest}.$fcounter" [lindex $forest end]]}
 	}]} {}
 	FOREST destroy
 	return $forest
@@ -731,33 +756,7 @@ oo::class create marpa::lexer {
 
     method GetSemanticValue {} {
 	debug.marpa/lexer {[debug caller] | }
-	# 'start'	(^mystart) offset where lexeme starts
-	# 'length'	(^latest) length of the lexeme
-	# 'g1start'	G1 offset of the lexeme (Get from parser (Forward ...))
-	# 'g1length'	G1 length of the lexeme (fixed: 1)
-	# 'name'	Symbol name of the lexeme, i.e. rule LHS /Pre-computable
-	# 'lhs'		LHS symbol id of the rule. Lexeme symbol (parser symbol)
-	# 'symbol'	Alias of 'name'
-	# 'rule'	(^tree) Rule id of the matched lexeme
-	# 'value'	Token value of the lexeme, i.e. the matched string.
-	# 'values'	Alias of 'value'
-	#
-	# Special actions
-	# ::array <=> [value]
-	set result [lmap part $myparts {
-	    switch -exact -- $part {
-		start    { set mystart }
-		length   { upvar 1 latest latest ; expr {$latest-1} }
-		g1start  { expr {{}} }
-		g1length { expr {1} }
-		name     -
-		symbol   { upvar 1 symbol symbol ; my 2Name1 [dict get $mylex $symbol] }
-		lhs      { upvar 1 symbol symbol ; set symbol }
-		rule     { upvar 1 tree   tree   ; dict get [lindex $tree end-2] id }
-		value    -
-		values   { upvar 1 redo redo ; string range $mylexeme 0 end-$redo }
-	    }
-	}]
+	set result [lmap part $myparts { M $part }]
 	if {[llength $result] == 1} {
 	    set result [lindex $result 0]
 	}

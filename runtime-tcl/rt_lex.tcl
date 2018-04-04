@@ -81,6 +81,8 @@ oo::class create marpa::engine::tcl::lex {
 	    API VIRTUAL [string toupper $m]
     }
 
+    forward match  LEX match
+
     # # ## ### ##### ######## #############
     ## State
 
@@ -90,7 +92,7 @@ oo::class create marpa::engine::tcl::lex {
     # myeventprefix :: list (word...)
 
     # myeventprefix - Callback command to handle parse events
-        
+
     # # ## ### ##### ######## #############
     ## Public API
 
@@ -135,7 +137,7 @@ oo::class create marpa::engine::tcl::lex {
 	uplevel #0 [linsert $args 0 {*}$myeventprefix [self]]
 	return
     }
-    
+
     method gate: {lexcore} {
 	debug.marpa/engine/tcl/lex {}
 	return

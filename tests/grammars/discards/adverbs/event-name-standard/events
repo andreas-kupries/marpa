@@ -1,5 +1,13 @@
-::PARSE discard whitespace space {5 2} {
-}
-::PARSE discard whitespace space {11 8} {
+((record ::PARSE discard whitespace))
+length = ((1))
+start = ((5))
+symbols = ((space))
+value = ((
+))
+((record ::PARSE discard whitespace))
+length = ((7))
+start = ((11))
+symbols = ((space))
+value = ((
      
-}
+))
