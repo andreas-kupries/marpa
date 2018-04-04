@@ -62,7 +62,10 @@ proc ::marpa::gen::format::tparse::container {gc} {
     debug.marpa/gen/format/tparse {}
     variable self
     marpa fqn gc
-    set config   [marpa::gen::runtime::tcl config [$gc serialize]]
+
+    set config [marpa::gen::runtime::tcl config [$gc serialize]]
+    debug.marpa/gen/format/tparse {[set _ ""][join [lmap {k v} $config {set _ "$k = $v"}] \n][unset _]}
+
     set template [string trim [marpa asset $self]]
     return [string map $config $template]
 }

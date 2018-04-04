@@ -68,7 +68,7 @@ oo::class create marpa::lexer {
     ## Configuration
 
     # Static
-    variable mypublic     ;# sym id:local  -> (id:parser, parts)
+    variable mypublic     ;# sym id:local  -> id:parser
     variable myacs        ;# sym id:parser -> id:acs:local
     variable mylex        ;# sym id:parser -> id:local (lexeme, not acs)
     variable myalways     ;# Set (list) of ACS for discarded symbols
@@ -197,11 +197,11 @@ oo::class create marpa::lexer {
 		if {![dict exists $def $type]} continue
 		switch -exact -- $type {
 		    discard {
-			# Discarded symbol. Get relevant ACS
+			# Discard symbol name. Get relevant ACS id
 			set id D.[my 2ID1 [my ToACS1 $symbol]]
 		    }
 		    before - after {
-			# Lexeme symbol. Get its parser symbol.
+			# Lexeme symbol name. Get its parser symbol id.
 			set id L.[dict get $mypublic [my 2ID1 $symbol]]
 		    }
 		}
@@ -463,6 +463,16 @@ oo::class create marpa::lexer {
 	return
     }
 
+    method PEFill {found sv} {
+	debug.marpa/lexer {[debug caller] | }
+	set prehandler [lmap f $found {
+	    my 2Name1 [dict get $mylex $f]
+	}]
+	M symbols: $prehandler
+	M sv:      $sv
+	return $prehandler
+    }
+    
     method redo {n} {
 	debug.marpa/lexer {[debug caller] | }
 	# Lexer method, called by parser.
@@ -552,13 +562,14 @@ oo::class create marpa::lexer {
 	set discarded {}
 	set fset      {}
 	set sv        {}
-	set svset     {} ;# Map from SV to their id, to prevent duplication
+	set svset     {} ;# Map from SV to their id, to prevent
+			  # duplication. See KnownValue for user.
 
 	foreach tree $forest {
 	    # First instruction = lrange 0 1, 0 == type (assert: token), 1 == details
 	    set details [lindex $tree 1]
-	    set acs     [dict get $details id]
-	    set symbol  [dict get $mypublic $acs]
+	    set acs     [dict get $details id]    ;# id:acs:local
+	    set symbol  [dict get $mypublic $acs] ;# id:parser
 
 	    # Discarded symbols are signaled by marker -1, see (:D:)
 	    if {$symbol < 0} {
@@ -580,8 +591,7 @@ oo::class create marpa::lexer {
 		lappend found $symbol
 		# latest, tree, symbol, redo - upvar'd in GSV these as needed.
 		# __sv_*                     - Reserved by GSV for caching.
-		lappend sv [my KnownValue [my GetSemanticValue]]
-		# XXX see if we can defer semstore access until actual need.
+		lappend sv [my GetSemanticValue]
 	    }
 	}
 
@@ -664,11 +674,73 @@ oo::class create marpa::lexer {
 
 	    debug.marpa/lexer        {[debug caller] | Push ...}
 	    debug.marpa/lexer/stream {FIN, push: (([my DIds [my FromParser $found]]))}
-	    # ASSERT (llength (sv) == llength (found))
-	    Forward enter $found $sv
+
+	    set ef [lmap f $found {set _ L.$f}]
+
+	    set events [my events? before $ef]
+	    if {[llength $events]} {
+		# XXX move input location to start of lexeme
+		set prehandler [my PEFill $found $sv]
+		Forward post before $events
+	    } else {
+		set events [my events? after $ef]
+		if {[llength $events]} {
+		    set prehandler [my PEFill $found $sv]
+		    Forward post after $events
+		}
+	    }
+
+	    if {![llength $events]} {
+		# Quick regular execution when no events were triggered.
+		Forward enter $found [my KnownValue $sv]
+	    } else {
+		# Events were triggered. Analyze the symbols the
+		# handler left in M. Might be same, modified, or none
+		# left.
+
+		set posthandler [M symbols]
+		if {![llength $posthandler]} {
+		    # No symbols left to push. This is a signal to discard
+		    # the input.  Restart lexing without informing the
+		    # parser, keeping to the current set of acceptable
+		    # symbols. Note, discard events cannot trigger anymore.
+
+		    my acceptable $myacceptable
+
+		} elseif {$prehandler ne $posthandler} {
+		    # The matched symbols were changed (Added, removed)
+		    # Time to map the user's choices back to symbol ids
+
+		    set found [lmap s $posthandler {
+			dict get $mypublic [my 2ID1 $s]
+		    }]
+		    Forward enter $found [my KnownValue [M sv]]
+		} else {
+		    # The matched symbols did not change. Reuse `found`,
+		    # no need to remap names to ids, we still have them.
+
+		    Forward enter $found [my KnownValue [M sv]]
+		}
+	    }
 
 	    debug.marpa/lexer {[debug caller] | ... Ok}
 	}
+
+	# XXX Check how this interacts with the event handling
+	# XXX Check if we can move this before the event handling!
+	# XXX The problem is that `redo` currently operates by
+	# XXX fully re-`enter`ing the pending characters. Doing
+	# XXX before advancing the parser is bad, as it can recursively
+	# XXX came back here again, generating symbols out of order.
+	#
+	# XXX HOWEVER ...
+	# XXX This problem should solve itself when inbound and gate
+	# XXX are changed to use a pointer into the input and can
+	# XXX properly rewind, using a `while` instead of `foreach`
+	# XXX steadily marching forward. At that point `redo` can be
+	# XXX handled by just moving the cursor, and with that it can
+	# XXX move to before the event handling, which can perform its
+	# XXX own cursor movement as well (pre-lexeme).
 
 	# Last, but not least, have our gate re-enter any characters
 	# we were not able to process (see redo counter above).
@@ -743,15 +815,17 @@ oo::class create marpa::lexer {
     # # ## ### ##### ######## #############
     ## Lexer semantics
 
-    method KnownValue {v} {
+    method KnownValue {vs} {
 	upvar 1 svset svset
-	if {[dict exists $svset $v]} {
-	    set vid [dict get $svset $v]
-	} else {
-	    set vid [Store put $v]
-	    dict set svset $v $vid
-	}
-	return $vid
+	return [lmap v $vs {
+	    if {[dict exists $svset $v]} {
+		set vid [dict get $svset $v]
+	    } else {
+		set vid [Store put $v]
+		dict set svset $v $vid
+		set vid
+	    }
+	}]
     }
 
     method GetSemanticValue {} {

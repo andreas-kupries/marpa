@@ -84,6 +84,7 @@ oo::class create marpa::engine {
 	set mymap    {}
 	set myrmap   {}
 	set myrule   {}
+	set myevents {}
 
 	debug.marpa/engine {[debug caller] | /ok}
 	return

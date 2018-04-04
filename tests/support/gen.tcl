@@ -44,6 +44,12 @@ proc ::gen::cleanup {} {
     return
 }
 
+proc ::gen::I {gc args} {
+    puts XX_S\t$args
+    flush stdout
+    #GC {*}$args
+}
+
 proc ::gen::setup {args} {
     variable export
     variable load
@@ -63,6 +69,7 @@ proc ::gen::setup {args} {
     # I. Create the processor
     marpa::slif::container create GC
     #puts %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    #marpa::slif::semantics create SEMX ::gen::I
     marpa::slif::semantics create SEMX GC
     marpa::slif::parser    create BOOT
 
@@ -73,6 +80,9 @@ proc ::gen::setup {args} {
     BOOT destroy
     # Note: SEMX auto-destroys itself at the end of 'process'.
 
+    #package require marpa::gen::reformat
+    #puts XXX\t[join [split [marpa::gen::reformat [GC serialize]] \n] \nXXX\t]
+    
     # _ __ ___ _____ ________ _____________ _____________________
     # III. Generate a tcl-based parser class
     marpa::gen config! version  1
