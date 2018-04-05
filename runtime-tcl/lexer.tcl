@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -66,7 +66,7 @@ oo::class create marpa::lexer {
     ## Configuration
 
     # Static
-    variable mypublic     ;# sym id:local  -> (id:parser, parts)
+    variable mypublic     ;# sym id:local  -> (id:parser)
     variable myacs        ;# sym id:parser -> id:acs:local
     variable mylex        ;# sym id:parser -> id:local (lexeme, not acs)
     variable myalways     ;# Set (list) of ACS for discarded symbols
@@ -166,7 +166,7 @@ oo::class create marpa::lexer {
 	# Attach ourselves to parser, as gate.
 	Forward gate: [self]
 
-	debug.marpa/gate {/ok}
+	debug.marpa/lexer {/ok}
 	return
     }
 
@@ -184,7 +184,7 @@ oo::class create marpa::lexer {
 	set myparts $names
 	return
     }
-    
+
     method export {names} {
 	# names :: map (sym -> latm)
 	debug.marpa/lexer {[debug caller] | }
@@ -211,7 +211,7 @@ oo::class create marpa::lexer {
 	    # points where the difference between the LATM and LTM
 	    # match disciplines is injected into the runtime. We do
 	    # this by always activating the ACS for LTM symbols.
-	    
+
 	    debug.marpa/lexer {[debug caller 1] | PUBLIC ($n) = local:$s --> up:$p}
 	    debug.marpa/lexer {[debug caller 1] | ACS    ($n) = up:$p --> local:$a}
 	}
@@ -267,7 +267,7 @@ oo::class create marpa::lexer {
 
     method enter {syms thechar thelocation} {
 	# sub-lexer sv = list(char location)
-	debug.marpa/lexer        {[debug caller] | ([my DIds $syms]) @($thelocation)}
+	debug.marpa/lexer        {[debug caller 2] | ([my DIds $syms]) @($thelocation) '[char quote cstring $thechar]'}
 	debug.marpa/lexer/report {[my progress-report-current]}
 	debug.marpa/lexer/stream {([my DIds $syms]) '[char quote cstring $thechar]' @ $thelocation}
 
@@ -276,7 +276,7 @@ oo::class create marpa::lexer {
 	}
 
 	if {![llength $syms]} {
-	    debug.marpa/lexer {[debug caller] | no acceptable symbols, close current lexeme}
+	    debug.marpa/lexer {[debug caller 2] | no acceptable symbols, close current lexeme}
 	    # Input has no acceptable character waiting. Complete the
 	    # current lexeme and then let the input try again.
 
@@ -284,17 +284,17 @@ oo::class create marpa::lexer {
 	    ## If yes we have a more serious problem and should stop.
 	    my Complete
 
-	    debug.marpa/lexer {[debug caller] | /ok:close}
+	    debug.marpa/lexer {[debug caller 2] | /ok:close}
 	    return
 	}
 
 	# Extend the possible match and drive the low-level recognizer
 	append mylexeme $thechar
-	debug.marpa/lexer {[debug caller] | step recce engine}
+	debug.marpa/lexer {[debug caller 2] | step recce engine}
 	foreach sym $syms {
 	    RECCE alternative $sym 1 1 ;# FAKE sv for the chars in the lexeme.
 	}
-	
+
 	try {
 	    RECCE earleme-complete
 	} trap {MARPA PARSE_EXHAUSTED} {e o} {
@@ -304,20 +304,20 @@ oo::class create marpa::lexer {
 	}
 
 	if {[RECCE exhausted?]} {
-	    debug.marpa/lexer {[debug caller] | exhausted}
+	    debug.marpa/lexer {[debug caller 2] | exhausted}
 	    my Complete
 
-	    debug.marpa/lexer {[debug caller] | /ok:exhausted}
+	    debug.marpa/lexer {[debug caller 2] | /ok:exhausted}
 	    return
 	}
 
 	# Not exhausted. Generate feedback for our gate on the now
 	# acceptable symbols, i.e. characters and classes.
 
-	debug.marpa/lexer {[debug caller] | Feedback to gate, chars and classes}
+	debug.marpa/lexer {[debug caller 2] | Feedback to gate, chars and classes}
 	Gate acceptable [RECCE expected-terminals]
 
-	debug.marpa/lexer {[debug caller] | /ok}
+	debug.marpa/lexer {[debug caller 2] | /ok}
 	return
     }
 
@@ -375,7 +375,7 @@ oo::class create marpa::lexer {
     method acceptable {syms} {
 	debug.marpa/lexer {[debug caller] | }
 	# This lexer method is called by the parser.
-	
+
 	# `syms` is a list of parser symbol ids for the lexemes it can
 	# accept. Transform this into a list of ACS ids, and insert
 	# them into the recognizer.
@@ -432,7 +432,7 @@ oo::class create marpa::lexer {
 
     # # ## ### ##### ######## #############
     ## Helper for debug narrative, and `ExtendedContext`.
-    
+
     method FromParser {ids} {
 	# For lexemes map the parser symbol ids back to their lexer
 	# ACS symbols.
@@ -447,7 +447,7 @@ oo::class create marpa::lexer {
     }
 
     # # ## ### ##### ######## #############
-    
+
     method Complete {} {
 	debug.marpa/lexer {[debug caller] | }
 
@@ -492,12 +492,12 @@ oo::class create marpa::lexer {
 	# rule `START ~ ACS:foo foo` has a few implications on the
 	# list of instructions, i.e. the parse trees we get from the
 	# forest. These are:
-	
+
 	# 1. The first instruction is for the token of the ACS
 	#    symbol of the lexeme or discard we matched.
 	# 2. The last instruction is a rule, the reduction to @START.
 	# 3. The 2nd-to-last instruction is a rule, the reduction to foo.
-	
+
 	# That last item tells us where we get the rule id from,
 	# should we need it for the semantics.
 
@@ -505,13 +505,14 @@ oo::class create marpa::lexer {
 	set discarded 0
 	set fset      {}
 	set sv        {}
-	set svset     {} ;# Map from SV to their id, to prevent duplication
+	set svset     {} ;# Map from SV to their id, to prevent
+			  # duplication.
 
 	foreach tree $forest {
 	    # First instruction = lrange 0 1, 0 == type (assert: token), 1 == details
 	    set details [lindex $tree 1]
-	    set acs     [dict get $details id]
-	    set symbol  [dict get $mypublic $acs]
+	    set acs     [dict get $details id]    ;# id:acs:local
+	    set symbol  [dict get $mypublic $acs] ;# id:parser
 
 	    # Discarded symbols are signaled by marker -1, see (:D:)
 	    if {$symbol < 0} {
@@ -543,7 +544,7 @@ oo::class create marpa::lexer {
 		if {$n > $fmax} { set fmax $n }
 	    }
 	}][join [lmap s $fs v $sv {
-	    set __ "Semantic:   [format %${fmax}s $s] : $v = ([char quote cstring [Store get $v]])"
+	    set __ "Semantic:   [format %${fmax}s $s] : ([char quote cstring [Store get $v]])"
 	}] \n]}
 
 	# NOTE. Of the found lexemes only those with mode LTM may be
@@ -647,7 +648,7 @@ oo::class create marpa::lexer {
 	# Further extend the context with a report of the active rules
 	# during the current match attempt, and the precending
 	# characters.
-	
+
 	oo::objdefine [self] mixin marpa::engine::debug
 	set max [RECCE latest-earley-set]
 	set rep {}
@@ -673,7 +674,7 @@ oo::class create marpa::lexer {
 	}
 	return $vid
     }
-    
+
     method GetSemanticValue {} {
 	debug.marpa/lexer {[debug caller] | }
 	# 'start'	(^mystart) offset where lexeme starts
