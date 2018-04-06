@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -107,6 +107,9 @@ oo::class create marpa::inbound {
 			    # input, currently before the first
 			    # character
 
+	# Attach ourselves to the postprocessor, as its input
+	Forward input: [self]
+
 	debug.marpa/inbound {[debug caller] | /ok}
 	return
     }
@@ -129,17 +132,15 @@ oo::class create marpa::inbound {
     method rewind {delta} {
 	debug.marpa/inbound {[debug caller] | }
 	incr mylocation -$delta
-	incr mylocation -1
 	return
     }
 
     method moveby {delta} {
 	debug.marpa/inbound {[debug caller] | }
 	incr mylocation $delta
-	incr mylocation -1
 	return
     }
-    
+
     method enter {string} {
 	debug.marpa/inbound {[debug caller] | }
 	my Def $string
@@ -172,33 +173,53 @@ oo::class create marpa::inbound {
 	set mylocation -1
 	return
     }
-    
+
     method Process {} {
 	debug.marpa/inbound {[debug caller] | }
 
 	set  max [llength $mytext]
 	incr max -1
+
+	debug.marpa/inbound {[debug caller] | DO _______________________________________ /START}
+
 	while {$mylocation < $max} {
-	    # Count character location (offset in input)
-	    incr mylocation
-	    set ch [lindex $mytext $mylocation]
+	    # The outer loop catches when gate, lexer, etc. bounce us
+	    # back after reaching EOF. Because this means that the
+	    # last characters need re-processing.
 
-	    # Semantic value is character location (s.a.)
-	    # And push into the pipeline
-	    debug.marpa/inbound {[debug caller 1] | DO '[char quote cstring $ch]' ($mylocation) ______}
-	    debug.marpa/inbound {[debug caller 1] | DO _______________________________________}
+	    while {$mylocation < $max} {
+		# On loop entry the location points to the previously processed character
+		# We now move to the current character, then extract and process it.
+		incr mylocation
+		set ch [lindex $mytext $mylocation]
 
-	    Forward enter $ch $mylocation
+		# Semantic value is character location (s.a.)
+		# And push into the pipeline
+		debug.marpa/inbound {[debug caller] | DO '[char quote cstring $ch]' ($mylocation) ______}
+		debug.marpa/inbound {[debug caller] | DO _______________________________________}
 
-	    debug.marpa/inbound {[debug caller] | DO _______________________________________ /NEXT}
-	    # Note: The higher layers have access to the location, and are allowed to change it
-	    # Examples:
-	    # - Rewind after reading behind the current lexeme
-	    # - Rewind for parse events.
+		Forward enter $ch $mylocation
+		# Note, the post-processor (gate, lexer) have access to the location, via methods
+		# moveto, moveby, and rewind. Examples of use:
+		# - Rewind after reading behind the current lexeme
+		# - Rewind for parse events.
+
+		debug.marpa/inbound {[debug caller] | DO _______________________________________ /NEXT}
+	    }
+
+	    # Trigger end of data processing in the post-porcessors.
+	    # Note that this may rewind the input to an earlier place,
+	    # forcing re-processing of some of the last characters.
+	    debug.marpa/inbound {[debug caller] | DO _______________________________________ /EOF}
+	    Forward eof
+
+	    debug.marpa/inbound {[debug caller] | DO _______________________________________ /NEXT.EOF}
 	}
+
+	debug.marpa/inbound {[debug caller] | DO _______________________________________ /DONE}
 	return
     }
-    
+
     ##
     # # ## ### ##### ######## #############
 }

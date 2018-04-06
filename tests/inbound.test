@@ -66,7 +66,10 @@ test marpa-inbound-1.1 {constructor, initial state} -setup {
     list [IN location?] [logged]
 } -cleanup {
     IN destroy
-} -result {-1 {}}
+} -result {-1 {
+  GATE C {input: ::IN}
+  GATE R {input: ::IN} = {}
+}}
 
 # # ## ### ##### ######## ############# #####################
 ## eof - wrong args, state (reject enter/read/eof after 1st call)
@@ -88,6 +91,8 @@ test marpa-inbound-3.1 {eof, results, external calls} -setup {
 } -cleanup {
     IN destroy
 } -result {{} {
+  GATE C {input: ::IN}
+  GATE R {input: ::IN} = {}
   GATE C eof
   GATE R eof = {}
 }}
@@ -160,12 +165,16 @@ test marpa-inbound-4.1.0 {enter, results, state changes, external calls} -setup 
 } -cleanup {
     IN destroy
 } -result {{} 2 {
+  GATE C {input: ::IN}
+  GATE R {input: ::IN} = {}
   GATE C {enter F 0}
   GATE R {enter F 0} = {}
   GATE C {enter O 1}
   GATE R {enter O 1} = {}
   GATE C {enter O 2}
   GATE R {enter O 2} = {}
+  GATE C eof
+  GATE R eof = {}
 }}
 
 test marpa-inbound-4.1.1 {enter nothing, results, state changes, external calls} -setup {
@@ -174,7 +183,10 @@ test marpa-inbound-4.1.1 {enter nothing, results, state changes, external calls}
     list [IN enter {}] [IN location?] [logged]
 } -cleanup {
     IN destroy
-} -result {{} -1 {}}
+} -result {{} -1 {
+  GATE C {input: ::IN}
+  GATE R {input: ::IN} = {}
+}}
 
 test marpa-inbound-4.2.0 {enter, post-allows enter} -setup {
     marpa::inbound create IN [log GATE]
@@ -248,12 +260,16 @@ test marpa-inbound-5.1.0 {read, results, state changes, external calls} -setup {
     IN destroy
     close $chan
 } -result {{} 2 {
+  GATE C {input: ::IN}
+  GATE R {input: ::IN} = {}
   GATE C {enter F 0}
   GATE R {enter F 0} = {}
   GATE C {enter O 1}
   GATE R {enter O 1} = {}
   GATE C {enter O 2}
   GATE R {enter O 2} = {}
+  GATE C eof
+  GATE R eof = {}
 }}
 
 test marpa-inbound-5.1.1 {read nothing, results, state changes, external calls} -setup {
@@ -264,7 +280,10 @@ test marpa-inbound-5.1.1 {read nothing, results, state changes, external calls} 
 } -cleanup {
     IN destroy
     close $chan
-} -result {{} -1 {}}
+} -result {{} -1 {
+  GATE C {input: ::IN}
+  GATE R {input: ::IN} = {}
+}}
 
 test marpa-inbound-5.2.0 {read, post-allows enter} -setup {
     set chan [tcl::chan::string {}]

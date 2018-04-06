@@ -398,7 +398,16 @@ oo::class create marpa::lexer {
 	# parser before signaling eof to the parser. Do this if and
 	# only if we actually saw something.
 	if {[M start] ne {}} {
-	    my Complete
+	    if {[my Complete]} {
+		debug.marpa/lexer {[debug caller] | eof bounce, retry}
+		return
+	    }
+
+	    # At this point the input may have been bounced away from
+	    # the EOF.  This is signaled by a `true` return. If that
+	    # is so we must not report to the parser yet. We will come
+	    # to this method again, after the characters were
+	    # re-processed.
 	}
 
 	debug.marpa/lexer/stream {EOF}
@@ -406,7 +415,7 @@ oo::class create marpa::lexer {
 	#  Note that the flush leaves us with a just-started
 	# recognizer, which we have to remove again.
 	if {$myrecce ne {}} {
-	    debug.marpa/lexer {[debug caller] | RECCE kill [namespace which -command RECCE]}
+	    debug.marpa/lexer {[debug caller] | RECCE kill 1 [namespace which -command RECCE]}
 	    RECCE destroy
 	    set myrecce {}
 	}
@@ -472,7 +481,7 @@ oo::class create marpa::lexer {
 	M sv:      $sv
 	return $prehandler
     }
-    
+
     method redo {n} {
 	debug.marpa/lexer {[debug caller] | }
 	# Lexer method, called by parser.
@@ -506,7 +515,7 @@ oo::class create marpa::lexer {
 
 	if {$myrecce eq {}} {
 	    debug.marpa/lexer {[debug caller] | Bail out. No recce available}
-	    return
+	    return 0
 	}
 
 	# I. Extract the location of longest lexeme from the
@@ -605,7 +614,7 @@ oo::class create marpa::lexer {
 		if {$n > $fmax} { set fmax $n }
 	    }
 	}][join [lmap s $fs v $sv {
-	    set __ "Semantic:   [format %${fmax}s $s] : ([char quote cstring [Store get $v]])"
+	    set __ "Semantic:   [format %${fmax}s $s] : ([char quote cstring $v])"
 	}] \n]}
 
 	# NOTE. Of the found lexemes only those with mode LTM may be
@@ -616,7 +625,7 @@ oo::class create marpa::lexer {
 	# default mode.
 
 	# The current recognizer is done.
-	debug.marpa/lexer {[debug caller] | RECCE kill [namespace which -command RECCE]}
+	debug.marpa/lexer {[debug caller] | RECCE kill 2 [namespace which -command RECCE]}
 	RECCE destroy
 	set myrecce {}
 
@@ -748,7 +757,8 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | Re-process $redo ...}
 	Gate redo $redo
 	debug.marpa/lexer {[debug caller] | ... Reprocessed}
-	return
+
+	return [expr {$redo > 0}]
     }
 
     method Mismatch {} {
@@ -756,9 +766,11 @@ oo::class create marpa::lexer {
 	my get-context context
 
 	# The current recognizer is done.
-	debug.marpa/lexer {[debug caller] | RECCE kill [namespace which -command RECCE]}
-	RECCE destroy
-	set myrecce {}
+	if {$myrecce ne {}} {
+	    debug.marpa/lexer {[debug caller] | RECCE kill 3 [namespace which -command RECCE]}
+	    RECCE destroy
+	    set myrecce {}
+	}
 
 	Forward fail context
 
@@ -782,7 +794,6 @@ oo::class create marpa::lexer {
 	FOREST destroy
 	return $forest
     }
-
 
     method ExtendContext {cv} {
 	debug.marpa/lexer {[debug caller] | }

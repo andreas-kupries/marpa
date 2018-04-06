@@ -24,6 +24,7 @@ oo::define marpa::gate mixin marpa::gate::sequencer
 
 kt source support/common.tcl
 kt source support/fake-lex.tcl
+kt source support/fake-in.tcl
 
 # # ## ### ##### ######## ############# #####################
 ## 1 constructor/1 (postprocessor)
@@ -552,13 +553,15 @@ test marpa-gate-3.3.5 {enter, intra, data, post-forbidden: redo} -setup {
 
 test marpa-gate-3.4.0 {enter, unable to handle symbol} -setup {
     marpa::gate create GATE [log2 LEX [fake-lex-not]]
+    GATE input: [log2 IN [fake-in]]
     GATE def {sC C sX X} {}
     GATE acceptable {0}
 } -body {
-    GATE enter X V
+    GATE enter X V ;# prime - flush
+    GATE enter X V ;# trigger
 } -cleanup {
     GATE destroy
-    logged ; lexed
+    logged ; lexed ; inok
 } -returnCodes error -result {FAIL (origin gate l0 {at V char X csym 1 acceptable C acceptsym 0 acceptmap {0 'C'}})}
 # TODO ^ might have to sort the dict and sub-dict for canonical form and comparison.
 
