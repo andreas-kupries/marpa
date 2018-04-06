@@ -310,7 +310,7 @@ oo::class create marpa::lexer {
 
     method enter {syms thechar thelocation} {
 	# sub-lexer sv = list(char location)
-	debug.marpa/lexer        {[debug caller] | ([my DIds $syms]) @($thelocation)}
+	debug.marpa/lexer        {[debug caller 2] | ([my DIds $syms]) @($thelocation) '[char quote cstring $thechar]'}
 	debug.marpa/lexer/report {[my progress-report-current]}
 	debug.marpa/lexer/stream {([my DIds $syms]) '[char quote cstring $thechar]' @ $thelocation}
 
@@ -319,7 +319,7 @@ oo::class create marpa::lexer {
 	}
 
 	if {![llength $syms]} {
-	    debug.marpa/lexer {[debug caller] | no acceptable symbols, close current lexeme}
+	    debug.marpa/lexer {[debug caller 2] | no acceptable symbols, close current lexeme}
 	    # Input has no acceptable character waiting. Complete the
 	    # current lexeme and then let the input try again.
 
@@ -327,13 +327,13 @@ oo::class create marpa::lexer {
 	    ## If yes we have a more serious problem and should stop.
 	    my Complete
 
-	    debug.marpa/lexer {[debug caller] | /ok:close}
+	    debug.marpa/lexer {[debug caller 2] | /ok:close}
 	    return
 	}
 
 	# Extend the possible match and drive the low-level recognizer
 	append mylexeme $thechar
-	debug.marpa/lexer {[debug caller] | step recce engine}
+	debug.marpa/lexer {[debug caller 2] | step recce engine}
 	foreach sym $syms {
 	    RECCE alternative $sym 1 1 ;# FAKE sv for the chars in the lexeme.
 	}
@@ -347,20 +347,20 @@ oo::class create marpa::lexer {
 	}
 
 	if {[RECCE exhausted?]} {
-	    debug.marpa/lexer {[debug caller] | exhausted}
+	    debug.marpa/lexer {[debug caller 2] | exhausted}
 	    my Complete
 
-	    debug.marpa/lexer {[debug caller] | /ok:exhausted}
+	    debug.marpa/lexer {[debug caller 2] | /ok:exhausted}
 	    return
 	}
 
 	# Not exhausted. Generate feedback for our gate on the now
 	# acceptable symbols, i.e. characters and classes.
 
-	debug.marpa/lexer {[debug caller] | Feedback to gate, chars and classes}
+	debug.marpa/lexer {[debug caller 2] | Feedback to gate, chars and classes}
 	Gate acceptable [RECCE expected-terminals]
 
-	debug.marpa/lexer {[debug caller] | /ok}
+	debug.marpa/lexer {[debug caller 2] | /ok}
 	return
     }
 
@@ -605,7 +605,7 @@ oo::class create marpa::lexer {
 		if {$n > $fmax} { set fmax $n }
 	    }
 	}][join [lmap s $fs v $sv {
-	    set __ "Semantic:   [format %${fmax}s $s] : $v = ([char quote cstring [Store get $v]])"
+	    set __ "Semantic:   [format %${fmax}s $s] : ([char quote cstring [Store get $v]])"
 	}] \n]}
 
 	# NOTE. Of the found lexemes only those with mode LTM may be

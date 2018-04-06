@@ -187,7 +187,10 @@ oo::class create marpa::inbound {
 	    # And push into the pipeline
 	    debug.marpa/inbound {[debug caller 1] | DO '[char quote cstring $ch]' ($mylocation) ______}
 	    debug.marpa/inbound {[debug caller 1] | DO _______________________________________}
+
 	    Forward enter $ch $mylocation
+
+	    debug.marpa/inbound {[debug caller] | DO _______________________________________ /NEXT}
 	    # Note: The higher layers have access to the location, and are allowed to change it
 	    # Examples:
 	    # - Rewind after reading behind the current lexeme
