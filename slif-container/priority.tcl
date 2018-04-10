@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -46,6 +46,14 @@ oo::class create marpa::slif::container::priority {
 	my extend $rhs $precedence {*}$args
 
 	debug.marpa/slif/container/priority {/ok}
+	return
+    }
+
+    destructor {
+	debug.marpa/slif/container/priority {}
+	foreach alter $myalternatives {
+	    $alter destroy
+	}
 	return
     }
 

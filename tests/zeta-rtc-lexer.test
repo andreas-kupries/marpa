@@ -3,6 +3,7 @@
 # # ## ### ##### ######## ############# #####################
 ## marpa::tcl::lex - Aggregated lexer pipeline.
 
+kt source  support/memdiag.tcl
 kt source  support/gen.tcl
 
 # # ## ### ##### ######## ############# #####################
