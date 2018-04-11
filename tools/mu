@@ -3,8 +3,8 @@
 
 proc F {x} {
     #set x [expr {double($x) / (1024*1024)}];#M
-    set x [expr {double($x) / 1024}];#K
-    #set x [expr {double($x)}];#B
+    #set x [expr {double($x) / 1024}];#K
+    set x [expr {double($x)}];#B
     format %5.2f $x
 }
 
