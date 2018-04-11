@@ -37,7 +37,7 @@ marpatcl_rtc_parser_init (marpatcl_rtc_p p)
 {
     int res;
     TRACE_FUNC ("((rtc*) %p)", p);
-    
+
     PAR.g = marpa_g_new (CONF);
     (void) marpa_g_force_valued (PAR.g);
     PRD   = marpatcl_rtc_spec_setup (PAR.g, SPEC->g1, TRACE_TAG_VAR (parser_progress));
@@ -72,7 +72,7 @@ marpatcl_rtc_parser_enter (marpatcl_rtc_p p, int found)
 {
     int res;
     TRACE_FUNC ("(rtc %p, found %d)", p, found);
-    
+
     if (!found) {
 	complete (p);
 	TRACE_RETURN_VOID;
@@ -139,8 +139,8 @@ marpatcl_rtc_parser_eof (marpatcl_rtc_p p)
 void
 complete (marpatcl_rtc_p p)
 {
-    Marpa_Tree   t;    marpatcl_rtc_sv_p sv;			     
-    Marpa_Order  o;    marpatcl_rtc_sva  es;  /* evaluation stack */    
+    Marpa_Tree   t;    marpatcl_rtc_sv_p sv;
+    Marpa_Order  o;    marpatcl_rtc_sva  es;  /* evaluation stack */
     Marpa_Bocage b;    marpatcl_rtc_sva  rhs; /* rule rhs scratch pad */
     Marpa_Value  v;
     marpatcl_rtc_sym* mv;
@@ -153,7 +153,7 @@ complete (marpatcl_rtc_p p)
     }
 
     PAR_P (p);
-    
+
     /* Find location with parse, work backwards from the end of the token-sequence */
     latest = marpa_r_latest_earley_set (PAR.recce);
     while (1) {
@@ -179,7 +179,7 @@ complete (marpatcl_rtc_p p)
 
     TRACE_ADD (" ok", 0);
     TRACE_CLOSER;
-    
+
     /* Get all the valid parses at the location and evaluate them.
      */
 
@@ -191,7 +191,7 @@ complete (marpatcl_rtc_p p)
 
     marpatcl_rtc_sva_init (&es,  10, 0);
     marpatcl_rtc_sva_init (&rhs, 10, 0);
-    
+
     while (1) {
 	/* Per parse tree */
 	int rid, stop, status = marpa_t_next (t);
@@ -251,7 +251,7 @@ complete (marpatcl_rtc_p p)
 			   marpa_v_result(v),
 			   marpa_v_arg_0(v),
 			   marpa_v_arg_n(v));
-		
+
 		marpatcl_rtc_sva_copy (&rhs, &es,
 				       marpa_v_arg_0(v), marpa_v_arg_n(v));
 		rid = marpa_v_rule(v);
@@ -281,7 +281,7 @@ complete (marpatcl_rtc_p p)
 			   marpatcl_rtc_spec_symname (SPEC->g1, marpa_v_token(v), 0),
 			   marpa_v_result(v),
 			   marpa_v_token_value(v));
-		
+
 		sv = marpatcl_rtc_store_get(p, marpa_v_token_value(v));
 		SHOW_SV (sv);
 		marpatcl_rtc_sva_set_fill (&es, marpa_v_result(v), sv);
@@ -382,7 +382,7 @@ get_sv (marpatcl_rtc_p      p,
 #define G1_LEN          (G1_END - G1_START + 1)
 
     int LEX_LEN = -1; // TODO remove fake
-    
+
     for (k = 0; k < klen; k++) {
 	switch (kv [k]) {
 	case MARPATCL_SV_START:		DO (start, marpatcl_rtc_sv_cons_int (LEX.start));		break;//TODO lex location for parse element?
@@ -399,9 +399,9 @@ get_sv (marpatcl_rtc_p      p,
 
 	case  MARPATCL_SV_A_FIRST:
 	    /* Special action ::first */
-	    marpatcl_rtc_sv_destroy (sv);
+	    marpatcl_rtc_sv_destroy_i (sv);
 	    return marpatcl_rtc_sva_get (rhs, 0);
-	    
+
 	default: ASSERT (0, "Invalid array descriptor key");
 	}
     }

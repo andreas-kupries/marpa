@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Semantic values, and ASTs)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
@@ -20,8 +20,11 @@ TRACE_TAG_OFF (show);
     TRACE ("sv %p (%d/%s)", sv, T_GET, sv_type (sv));			\
     ASSERT (T_GET == (tag), "Bad " msg " access to non-" msg " sem.value")
 
-#ifdef CRITCL_TRACER
-static const char*
+#if defined(CRITCL_TRACER) || defined(SEM_REF_DEBUG)
+#ifndef SEM_REF_DEBUG
+static
+#endif
+const char*
 sv_type (marpatcl_rtc_sv_p sv)
 {
     static const char* typename[] = {
@@ -45,86 +48,99 @@ sv_type (marpatcl_rtc_sv_p sv)
  */
 
 marpatcl_rtc_sv_p
-marpatcl_rtc_sv_cons_int (int x)
+API (marpatcl_rtc_sv_cons_int, int x)
 {
     marpatcl_rtc_sv_p sv;
     TRACE_FUNC ("(x %d)", x);
 
     sv = ALLOC (marpatcl_rtc_sv);
     marpatcl_rtc_sv_init_int (sv, x);
-
+    SEM_LINK(sv);
     TRACE_RETURN ("(sv*) %p", sv);
 }
 
 marpatcl_rtc_sv_p
-marpatcl_rtc_sv_cons_double (double x)
+API (marpatcl_rtc_sv_cons_double, double x)
 {
     marpatcl_rtc_sv_p sv;
     TRACE_FUNC ("(x %f)", x);
 
     sv = ALLOC (marpatcl_rtc_sv);
     marpatcl_rtc_sv_init_double (sv, x);
-
+    SEM_LINK(sv);
     TRACE_RETURN ("(sv*) %p", sv);
 }
 
 marpatcl_rtc_sv_p
-marpatcl_rtc_sv_cons_string (const char* s, int own)
+API (marpatcl_rtc_sv_cons_string, const char* s, int own)
 {
     marpatcl_rtc_sv_p sv;
     TRACE_FUNC ("(s %p = '%s', own %d)", s, s, own);
 
     sv = ALLOC (marpatcl_rtc_sv);
     marpatcl_rtc_sv_init_string (sv, s, own);
-
+    SEM_LINK(sv);
     TRACE_RETURN ("(sv*) %p", sv);
 }
 
 marpatcl_rtc_sv_p
-marpatcl_rtc_sv_cons_user (int tag, void* data)
+API (marpatcl_rtc_sv_cons_user, int tag, void* data)
 {
     marpatcl_rtc_sv_p sv;
     TRACE_FUNC ("(tag %d, data %p)", tag, data);
 
     sv = ALLOC (marpatcl_rtc_sv);
     marpatcl_rtc_sv_init_user (sv, tag, data);
-
+    SEM_LINK(sv);
     TRACE_RETURN ("(sv*) %p", sv);
 }
 
 marpatcl_rtc_sv_p
-marpatcl_rtc_sv_cons_vec (int capacity)
+API (marpatcl_rtc_sv_cons_vec, int capacity)
 {
     marpatcl_rtc_sv_p sv;
     TRACE_FUNC ("(capacity %d)", capacity);
 
     sv = ALLOC (marpatcl_rtc_sv);
     marpatcl_rtc_sv_init_vec (sv, capacity);
-
+    SEM_LINK(sv);
     TRACE_RETURN ("(sv*) %p", sv);
 }
 
 marpatcl_rtc_sv_p
-marpatcl_rtc_sv_cons_vec_cp (marpatcl_rtc_sv_vec v)
+API (marpatcl_rtc_sv_cons_vec_cp, marpatcl_rtc_sv_vec v)
 {
     marpatcl_rtc_sv_p sv;
     TRACE_FUNC ("(v %p (n %d))", v, v->size);
 
     sv = ALLOC (marpatcl_rtc_sv);
     marpatcl_rtc_sv_init_vec_cp (sv, v);
-
+    SEM_LINK(sv);
     TRACE_RETURN ("(sv*) %p", sv);
 }
 
+#ifdef SEM_REF_DEBUG
 marpatcl_rtc_sv_p
 marpatcl_rtc_sv_cons_evec (int capacity)
 {
     marpatcl_rtc_sv_p sv;
-    TRACE_FUNC ("(capacity %d)", capacity);
+    TRACE_FUNC ("P (capacity %d)", capacity);
+
+    sv = __marpatcl_rtc_sv_cons_evec ("((PARSER))", 0, capacity);
+
+    TRACE_RETURN ("(sv*) %p", sv);
+}
+#endif
+
+marpatcl_rtc_sv_p
+API (marpatcl_rtc_sv_cons_evec, int capacity)
+{
+    marpatcl_rtc_sv_p sv;
+    TRACE_FUNC ("I (capacity %d)", capacity);
 
     sv = ALLOC (marpatcl_rtc_sv);
     marpatcl_rtc_sv_init_evec (sv, capacity);
-
+    SEM_LINK(sv);
     TRACE_RETURN ("(sv*) %p", sv);
 }
 
@@ -213,11 +229,22 @@ marpatcl_rtc_sv_init_vec_cp (marpatcl_rtc_sv_p sv, marpatcl_rtc_sv_vec v)
     TRACE_RETURN_VOID;
 }
 
+#ifdef SEM_REF_DEBUG
 void
 marpatcl_rtc_sv_destroy (marpatcl_rtc_sv_p sv)
 {
-    TRACE_FUNC ("((sv*) %p)", sv);
+    TRACE_FUNC ("P ((sv*) %p)", sv);
+    __marpatcl_rtc_sv_destroy ("((PARSER))", 0, sv);
+    TRACE_RETURN_VOID;
+}
+#endif
 
+void
+API (marpatcl_rtc_sv_destroy, marpatcl_rtc_sv_p sv)
+{
+    TRACE_FUNC ("I ((sv*) %p)", sv);
+
+    SEM_UNLINK(sv);
     marpatcl_rtc_sv_free (sv);
     FREE (sv);
 
@@ -242,16 +269,17 @@ marpatcl_rtc_sv_free (marpatcl_rtc_sv_p sv)
 	/* nothing for scalar types */
 	break;
     }
-    
+
     TRACE_RETURN_VOID;
 }
 
+#ifdef SEM_REF_DEBUG
 marpatcl_rtc_sv_p
 marpatcl_rtc_sv_ref (marpatcl_rtc_sv_p sv)
 {
-    TRACE_FUNC ("((sv*) %p (up rc %d))", sv, REF+1);
+    TRACE_FUNC ("P ((sv*) %p (up rc %d))", sv, REF+1);
 
-    REF ++;
+    sv = __marpatcl_rtc_sv_ref ("((PARSER))", 0, sv);
 
     TRACE_RETURN ("(sv*) %p", sv);
 }
@@ -259,10 +287,34 @@ marpatcl_rtc_sv_ref (marpatcl_rtc_sv_p sv)
 void
 marpatcl_rtc_sv_unref (marpatcl_rtc_sv_p sv)
 {
-    TRACE_FUNC ("((sv*) %p (down rc %d))", sv, REF);
+    TRACE_FUNC ("P ((sv*) %p (down rc %d))", sv, REF);
 
-    if (REF < 1) {
-	marpatcl_rtc_sv_destroy (sv);
+    __marpatcl_rtc_sv_unref ("((PARSER))", 0, sv);
+
+    TRACE_RETURN_VOID;
+}
+#endif
+
+marpatcl_rtc_sv_p
+API (marpatcl_rtc_sv_ref, marpatcl_rtc_sv_p sv)
+{
+    TRACE_FUNC ("I ((sv*) %p (up rc %d))", sv, REF+1);
+
+    SEM_TAKE (sv);
+    REF ++;
+
+    TRACE_RETURN ("(sv*) %p", sv);
+}
+
+void
+API (marpatcl_rtc_sv_unref, marpatcl_rtc_sv_p sv)
+{
+    TRACE_FUNC ("I ((sv*) %p (down rc %d))", sv, REF);
+
+    SEM_RELE (sv);
+    if (REF <= 1) {
+	TRACE ("%s", "no more references");
+	marpatcl_rtc_sv_destroy_i (sv);
 	TRACE_RETURN_VOID;
     }
     REF --;
@@ -270,7 +322,7 @@ marpatcl_rtc_sv_unref (marpatcl_rtc_sv_p sv)
     TRACE_RETURN_VOID;
 }
 
-int 
+int
 marpatcl_rtc_sv_get_int (marpatcl_rtc_sv_p sv)
 {
     TRACE_FUNC ("((sv*) %p [int])", sv);
@@ -278,7 +330,7 @@ marpatcl_rtc_sv_get_int (marpatcl_rtc_sv_p sv)
     TRACE_RETURN ("%d", INT);
 }
 
-double 
+double
 marpatcl_rtc_sv_get_double (marpatcl_rtc_sv_p sv)
 {
     TRACE_FUNC ("((sv*) %p [double])", sv);
@@ -294,7 +346,7 @@ marpatcl_rtc_sv_get_string (marpatcl_rtc_sv_p sv)
     TRACE_RETURN ("'%s'", STR);
 }
 
-void 
+void
 marpatcl_rtc_sv_get_user (marpatcl_rtc_sv_p sv, int* tag, void** data)
 {
     TRACE_FUNC ("((sv*) %p [user], (int*) tag %p, (void**) data %p)", sv, tag, data);
@@ -302,13 +354,13 @@ marpatcl_rtc_sv_get_user (marpatcl_rtc_sv_p sv, int* tag, void** data)
 
     *tag  = TAG;
     *data = USR;
-    
+
     TRACE ("tag  (int*)   %p := %d", tag, *tag);
     TRACE ("data (void**) %p := %p", data, *data);
     TRACE_RETURN_VOID;
 }
 
-int 
+int
 marpatcl_rtc_sv_get_vec (marpatcl_rtc_sv_p sv, marpatcl_rtc_sv_p** data)
 {
     TRACE_FUNC ("((sv*) %p [vec], (sv_p**) %p)", sv, data);
@@ -320,7 +372,7 @@ marpatcl_rtc_sv_get_vec (marpatcl_rtc_sv_p sv, marpatcl_rtc_sv_p** data)
     TRACE_RETURN ("%d", VEC->size);
 }
 
-void 
+void
 marpatcl_rtc_sv_vec_set (marpatcl_rtc_sv_p sv, int at, marpatcl_rtc_sv_p x)
 {
     TRACE_FUNC ("((sv*) %p [vec], at %d, (sv*) x %p)", sv, at, x);
@@ -343,7 +395,7 @@ marpatcl_rtc_sv_vec_get (marpatcl_rtc_sv_p sv, int at)
     TRACE_RETURN ("(sv*) %p", x);
 }
 
-void 
+void
 marpatcl_rtc_sv_vec_push (marpatcl_rtc_sv_p sv, marpatcl_rtc_sv_p x)
 {
     TRACE_FUNC ("((sv*) %p [vec], (sv*) x %p)", sv, x);
@@ -366,7 +418,7 @@ marpatcl_rtc_sv_vec_pop (marpatcl_rtc_sv_p sv)
     TRACE_RETURN ("(sv*) %p", x);
 }
 
-void 
+void
 marpatcl_rtc_sv_vec_clear (marpatcl_rtc_sv_p sv)
 {
     TRACE_FUNC ("((sv*) %p [vec])", sv);
@@ -377,7 +429,7 @@ marpatcl_rtc_sv_vec_clear (marpatcl_rtc_sv_p sv)
     TRACE_RETURN_VOID;
 }
 
-int 
+int
 marpatcl_rtc_sv_vec_size (marpatcl_rtc_sv_p sv)
 {
     int sz;
@@ -388,10 +440,11 @@ marpatcl_rtc_sv_vec_size (marpatcl_rtc_sv_p sv)
 
     TRACE_RETURN ("%d", sz);
 }
-#ifdef CRITCL_TRACER
+#if defined (CRITCL_TRACER) || defined(SEM_REF_DEBUG)
 /*
  * Generate string representation of an SV. Tracing support
- * No tracing inside due that.
+ * No tracing inside due that. Also used for the SV reference
+ * tracing.
  */
 char*
 marpatcl_rtc_sv_show (marpatcl_rtc_sv_p sv, int* slen)
@@ -460,13 +513,13 @@ marpatcl_rtc_sv_vec_show (marpatcl_rtc_sv_vec v, int* slen)
 	svs = NALLOC (char, 5);
 	len = snprintf (svs, 5, "%s", "[");
 	TRACE ("svs/b %p [%d] = %d:'%s'", svs, len, strlen(svs), svs);
-	   
+
 	for (k = 0; k < v->size; k++) {
 	    TRACE_TAG (show, "child[%3d]", k);
 	    child = marpatcl_rtc_sv_show (v->data [k], &clen);
 	    nlen = len + clen + 2 + 1;
 	    TRACE_TAG (show, "child[%3d] = %p [%d] ==> %d", k, child, clen, nlen);
-	
+
 	    svs = REALLOC (svs, char, nlen);
 	    ASSERT (svs, "out of memory during SV stringification");
 
@@ -489,7 +542,7 @@ marpatcl_rtc_sv_vec_show (marpatcl_rtc_sv_vec v, int* slen)
 
     TRACE_TAG (show, "svs/d %p [%d] = %d:'%s'", svs, len, strlen(svs), svs);
     ASSERT (len == strlen(svs), "string length mismatch");
-	
+
     if (slen) {
 	*slen = len;
 	TRACE_TAG (show, "(int*) %p len = %d", slen, *slen);

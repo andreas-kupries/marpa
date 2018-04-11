@@ -55,7 +55,7 @@ marpatcl_rtc_sva_cons (int capacity, int strict)
 {
     marpatcl_rtc_sv_vec v;
     TRACE_FUNC ("(capacity %d, strict %d)", capacity, strict);
- 
+
     v = ALLOC (marpatcl_rtc_sva);
     marpatcl_rtc_sva_init (v, capacity, strict);
 
@@ -101,7 +101,7 @@ marpatcl_rtc_sva_free (marpatcl_rtc_sv_vec v)
     if (VAL) {
 	for (k=0; k < SZ; k++) {
 	    x = VAL [k];
-	    if (x) marpatcl_rtc_sv_unref (x);
+	    if (x) marpatcl_rtc_sv_unref_i (x);
 	}
 	FREE (VAL);
     }
@@ -109,7 +109,7 @@ marpatcl_rtc_sva_free (marpatcl_rtc_sv_vec v)
     TRACE_RETURN_VOID;
 }
 
-void 
+void
 marpatcl_rtc_sva_push (marpatcl_rtc_sv_vec v, marpatcl_rtc_sv_p x)
 {
     TRACE_FUNC ("((sv_vec) %p, (sv*) %p)", v, x);
@@ -120,7 +120,7 @@ marpatcl_rtc_sva_push (marpatcl_rtc_sv_vec v, marpatcl_rtc_sv_p x)
 	expand (v, CAP ? (CAP+CAP) : 1);
     }
     if (x) {
-	(void) marpatcl_rtc_sv_ref (x);
+	(void) marpatcl_rtc_sv_ref_i (x);
     }
     VAL [SZ] = x;
     SZ ++;
@@ -138,7 +138,7 @@ marpatcl_rtc_sva_pop (marpatcl_rtc_sv_vec v)
     SZ --;
     x = VAL [SZ];
     VAL [SZ] = 0;
-    if (x) marpatcl_rtc_sv_unref (x);
+    if (x) marpatcl_rtc_sv_unref_i (x);
 
     TRACE_RETURN ("(sv*) %p", x);
 }
@@ -154,14 +154,14 @@ marpatcl_rtc_sva_clear (marpatcl_rtc_sv_vec v)
 	SZ --;
 	x = VAL [SZ];
 	VAL [SZ] = 0;
-	if (x) marpatcl_rtc_sv_unref (x);
+	if (x) marpatcl_rtc_sv_unref_i (x);
     }
     ASSERT (SZ == 0, "vector clear left data behind");
 
     TRACE_RETURN_VOID;
 }
 
-int 
+int
 marpatcl_rtc_sva_size (marpatcl_rtc_sv_vec v)
 {
     TRACE_FUNC ("((sv_vec) %p)", v);
@@ -191,13 +191,13 @@ marpatcl_rtc_sva_set (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x)
     old = VAL [at];
     VAL [at] = x;
     if (x) {
-	(void) marpatcl_rtc_sv_ref (x);
+	(void) marpatcl_rtc_sv_ref_i (x);
     }
     if (old) {
-	marpatcl_rtc_sv_unref (old);
+	marpatcl_rtc_sv_unref_i (old);
     }
 
-    TRACE_RETURN_VOID;    
+    TRACE_RETURN_VOID;
 }
 
 void
@@ -238,13 +238,13 @@ marpatcl_rtc_sva_set_fill (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x)
     old = VAL [at];
     VAL [at] = x;
     if (x) {
-	(void) marpatcl_rtc_sv_ref (x);
+	(void) marpatcl_rtc_sv_ref_i (x);
     }
     if (old) {
-	marpatcl_rtc_sv_unref (old);
+	marpatcl_rtc_sv_unref_i (old);
     }
 
-    TRACE_RETURN_VOID;    
+    TRACE_RETURN_VOID;
 }
 
 void
@@ -261,10 +261,10 @@ marpatcl_rtc_sva_set_trunc (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x)
     old = VAL [at];
     VAL [at] = x;
     if (x) {
-	(void) marpatcl_rtc_sv_ref (x);
+	(void) marpatcl_rtc_sv_ref_i (x);
     }
     if (old) {
-	marpatcl_rtc_sv_unref (old);
+	marpatcl_rtc_sv_unref_i (old);
     }
 
     while (SZ > (at+1)) {
@@ -272,7 +272,7 @@ marpatcl_rtc_sva_set_trunc (marpatcl_rtc_sv_vec v, int at, marpatcl_rtc_sv_p x)
 	SZ --;
 	x = VAL [SZ];
 	VAL [SZ] = 0;
-	if (x) marpatcl_rtc_sv_unref (x);
+	if (x) marpatcl_rtc_sv_unref_i (x);
     }
 
     TRACE_RETURN_VOID;
@@ -285,7 +285,7 @@ marpatcl_rtc_sva_filter (marpatcl_rtc_sv_vec v, int c, marpatcl_rtc_sym* x)
     int k, t, j; /* from, to, filter from */
     TRACE_FUNC ("((sv_vec) %p, #sym %d, (sym*) %p)", v, c, x);
     VECDUMP (filter, "vI", v);
-    
+
     for (k=0, t=0, j=0; k < SZ; k++) {
 	TRACE_TAG_HEADER (filter, 1);
 	TRACE_TAG_ADD (filter, "[%3d <- %3d [%3d: %3d]]", t, k, j, ((j<c)?x[j]:-1));
@@ -295,7 +295,7 @@ marpatcl_rtc_sva_filter (marpatcl_rtc_sv_vec v, int c, marpatcl_rtc_sym* x)
 	     * any. Replace with null, and release. The null will be moved
 	     * towards the end by (2).
 	     */
-	    if (VAL [k]) marpatcl_rtc_sv_unref (VAL [k]);
+	    if (VAL [k]) marpatcl_rtc_sv_unref_i (VAL [k]);
 	    VAL [k] = NULL;
 	    j ++;
 	    /* From now on t < k */
@@ -356,11 +356,11 @@ marpatcl_rtc_sva_copy (marpatcl_rtc_sv_vec dst,
 	dst->data = REALLOC (dst->data, marpatcl_rtc_sv_p, dst->capacity);
     }
     ASSERT_BOUNDS (newsize-1, dst->capacity);
-    
+
     for (k = from; k <= to; k++) {
 	marpatcl_rtc_sv_p x = src->data[k];
         if (x) {
-	    (void) marpatcl_rtc_sv_ref (x);
+	    (void) marpatcl_rtc_sv_ref_i (x);
 	}
 	dst->data [dst->size] = x;
 	dst->size ++;

@@ -627,7 +627,7 @@ get_sv (marpatcl_rtc_p   p,
 #define LEX_START_C      (LEX.cstart)
 #define LEX_LEN_C        (lex_length >= 0 ? lex_length : (lex_length = num_utf_chars (LEX_STR), lex_length))
 #define LEX_END_C        (LEX_START_C + LEX_LEN_C - 1)
-    
+
     for (k = 0; k < SPEC->l0semantic.size; k++) {
 	switch (SPEC->l0semantic.data[k]) {
 	case MARPATCL_SV_START:		DO (start, marpatcl_rtc_sv_cons_int (LEX_START));		break;
@@ -653,9 +653,9 @@ get_sv (marpatcl_rtc_p   p,
 
     if (marpatcl_rtc_sv_vec_size (sv) == 1) {
 	marpatcl_rtc_sv_p el = marpatcl_rtc_sv_vec_get (sv, 0);
-	marpatcl_rtc_sv_ref (el);
-	marpatcl_rtc_sv_unref (sv);
-	marpatcl_rtc_sv_unref (el);
+	marpatcl_rtc_sv_ref_i (el);
+	marpatcl_rtc_sv_unref_i (sv);
+	marpatcl_rtc_sv_unref_i (el);
 	sv = el;
     }
 
