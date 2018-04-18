@@ -13,6 +13,7 @@
 #include <events.h>
 #include <rtc_int.h>
 #include <progress.h>
+#include <strdup.h>
 #include <marpatcl_steptype.h>
 
 TRACE_OFF;
@@ -40,6 +41,8 @@ static int num_utf_chars (const char *src);
  * - - -- --- ----- -------- ------------- ---------------------
  * Shorthands
  */
+
+#define STRDUP(s) marpatcl_rtc_strdup (s)
 
 #define ACCEPT (&LEX.acceptable)
 #define FOUND  (&LEX.found)
@@ -449,7 +452,7 @@ complete (marpatcl_rtc_p p)
 	} else {
 	    // Lexing-only mode. Post token/value through "enter"
 	    const char*       s  = marpatcl_rtc_spec_symname (SPEC->l0, TO_ACS (token), 0);
-	    marpatcl_rtc_sv_p tv = marpatcl_rtc_sv_cons_string (strdup (s), 1);
+	    marpatcl_rtc_sv_p tv = marpatcl_rtc_sv_cons_string (STRDUP (s), 1);
 
 	    p->result (p->rcdata, tv);
 	    p->result (p->rcdata, sv);

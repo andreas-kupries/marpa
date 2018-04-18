@@ -8,6 +8,7 @@
 #include <environment.h>
 #include <progress.h>
 #include <rtc_int.h>
+#include <strdup.h>
 
 TRACE_ON; // Always - See progress.h for the actual controlling flags.
 
@@ -171,11 +172,12 @@ marpatcl_rtc_progress (marpatcl_rtc_progress_append acmd,
 {
     // TODO: FIX to use dyn strings and definitely have no overflow.
 
+#define STRDUP(s) marpatcl_rtc_strdup (s)
 #define NAME(sym) marpatcl_rtc_spec_symname (spec, sym, 0)
 #define PRINT(s) acmd (adata, s)
 
 #define P(r,x)  marpatcl_rtc_sv_vec_push (r, x);
-#define PS(r,s) P (r, marpatcl_rtc_sv_cons_string (strdup (s), 1))
+#define PS(r,s) P (r, marpatcl_rtc_sv_cons_string (STRDUP (s), 1))
 #define MF(field) if (len > field) { field = len ; }
 #define PADR(n) while (len < n) { PRINT (" "); len ++; }
 #define PFIELD(max,x)							\
