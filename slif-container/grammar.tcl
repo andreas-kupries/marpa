@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -31,7 +31,7 @@ oo::class create marpa::slif::container::grammar {
     variable mysclass ; # :: dict (symbol-name -> class-name)
     variable mytype   ; # :: dict (type-name -> factory-instance)
     variable mycsym   ; # :: dict (class-name -> (symbol-name -> .))
-    
+
     # - -- --- ----- -------- -------------
     ## lifecycle
 
@@ -50,6 +50,14 @@ oo::class create marpa::slif::container::grammar {
 	dict set mytype quantified $q
 
 	debug.marpa/slif/container/grammar {/ok}
+	return
+    }
+
+    destructor {
+	debug.marpa/slif/container/grammar {}
+	dict for {symbol obj} $mysymbol {
+	    $obj destroy
+	}
 	return
     }
 

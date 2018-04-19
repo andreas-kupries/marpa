@@ -41,6 +41,14 @@ typedef struct marpatcl_rtc_sv {
 	void*               user;   /* value is user-specific anything */
 	marpatcl_rtc_sv_vec vec;    /* value is vector of values */
     } value;
+#ifdef SEM_REF_DEBUG
+    /* When debugging SV usage we track all allocated in a global list, with
+     * origin nformation. These are are the fields for that */
+    marpatcl_rtc_sv_p prev;
+    marpatcl_rtc_sv_p next;
+    const char*       ofile;
+    int               oline;
+#endif
 } marpatcl_rtc_sv;
 
 /*
@@ -72,13 +80,44 @@ typedef struct marpatcl_rtc_sv {
  * API -- SV -- lifecycle
  */
 
+/* Stubs functions. Unchanging. The internal symbol has suffix `_i`.
+ */
+
+marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_evec  (int capacity);
+void              marpatcl_rtc_sv_destroy    (marpatcl_rtc_sv_p sv);
+
+#ifdef SEM_REF_DEBUG
+marpatcl_rtc_sv_p __marpatcl_rtc_sv_cons_int    (const char* ofile, int oline, int x);
+marpatcl_rtc_sv_p __marpatcl_rtc_sv_cons_double (const char* ofile, int oline, double x);
+marpatcl_rtc_sv_p __marpatcl_rtc_sv_cons_string (const char* ofile, int oline, const char* s, int own);
+marpatcl_rtc_sv_p __marpatcl_rtc_sv_cons_user   (const char* ofile, int oline, int tag, void* data);
+marpatcl_rtc_sv_p __marpatcl_rtc_sv_cons_vec    (const char* ofile, int oline, int capacity);
+marpatcl_rtc_sv_p __marpatcl_rtc_sv_cons_vec_cp (const char* ofile, int oline, marpatcl_rtc_sv_vec v);
+
+marpatcl_rtc_sv_p __marpatcl_rtc_sv_cons_evec   (const char* ofile, int oline, int capacity);
+void              __marpatcl_rtc_sv_destroy     (const char* ofile, int oline, marpatcl_rtc_sv_p sv);
+
+#define marpatcl_rtc_sv_cons_int(x)		__marpatcl_rtc_sv_cons_int    (__FILE__,__LINE__, x)
+#define marpatcl_rtc_sv_cons_double(x)		__marpatcl_rtc_sv_cons_double (__FILE__,__LINE__, x)
+#define marpatcl_rtc_sv_cons_string(s, own)	__marpatcl_rtc_sv_cons_string (__FILE__,__LINE__, s, own)
+#define marpatcl_rtc_sv_cons_user(tag, data)	__marpatcl_rtc_sv_cons_user   (__FILE__,__LINE__, tag, data)
+#define marpatcl_rtc_sv_cons_vec(capacity)	__marpatcl_rtc_sv_cons_vec    (__FILE__,__LINE__, capacity)
+#define marpatcl_rtc_sv_cons_vec_cp(v)		__marpatcl_rtc_sv_cons_vec_cp (__FILE__,__LINE__, v)
+
+#define marpatcl_rtc_sv_cons_evec_i(capacity)	__marpatcl_rtc_sv_cons_evec   (__FILE__,__LINE__, capacity)
+#define marpatcl_rtc_sv_destroy_i(sv)		__marpatcl_rtc_sv_destroy     (__FILE__,__LINE__, sv)
+
+#else
 marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_int    (int x);
 marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_double (double x);
 marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_string (const char* s, int own);
 marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_user   (int tag, void* data);
 marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_vec    (int capacity);
 marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_vec_cp (marpatcl_rtc_sv_vec v);
-marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_evec   (int capacity);
+
+#define marpatcl_rtc_sv_cons_evec_i(capacity)	marpatcl_rtc_sv_cons_evec (capacity)
+#define marpatcl_rtc_sv_destroy_i(sv)		marpatcl_rtc_sv_destroy (sv)
+#endif
 
 void marpatcl_rtc_sv_init_int    (marpatcl_rtc_sv_p sv, int x);
 void marpatcl_rtc_sv_init_double (marpatcl_rtc_sv_p sv, double x);
@@ -87,7 +126,7 @@ void marpatcl_rtc_sv_init_user   (marpatcl_rtc_sv_p sv, int tag, void* data);
 void marpatcl_rtc_sv_init_vec    (marpatcl_rtc_sv_p sv, int capacity);
 void marpatcl_rtc_sv_init_vec_cp (marpatcl_rtc_sv_p sv, marpatcl_rtc_sv_vec v);
 void marpatcl_rtc_sv_init_evec   (marpatcl_rtc_sv_p sv, int capacity);
-void marpatcl_rtc_sv_destroy     (marpatcl_rtc_sv_p sv);
+
 void marpatcl_rtc_sv_free        (marpatcl_rtc_sv_p sv);
 
 /*
@@ -97,7 +136,21 @@ void marpatcl_rtc_sv_free        (marpatcl_rtc_sv_p sv);
 
 marpatcl_rtc_sv_p marpatcl_rtc_sv_ref   (marpatcl_rtc_sv_p v);
 void              marpatcl_rtc_sv_unref (marpatcl_rtc_sv_p v);
-;
+
+#ifdef SEM_REF_DEBUG
+
+marpatcl_rtc_sv_p __marpatcl_rtc_sv_ref   (const char* ofile, int oline, marpatcl_rtc_sv_p v);
+void              __marpatcl_rtc_sv_unref (const char* ofile, int oline, marpatcl_rtc_sv_p v);
+
+#define marpatcl_rtc_sv_ref_i(v)	__marpatcl_rtc_sv_ref (__FILE__,__LINE__, v)
+#define marpatcl_rtc_sv_unref_i(v)	__marpatcl_rtc_sv_unref (__FILE__,__LINE__, v)
+
+#else
+
+#define marpatcl_rtc_sv_ref_i(v)	marpatcl_rtc_sv_ref   (v)
+#define marpatcl_rtc_sv_unref_i(v)	marpatcl_rtc_sv_unref (v)
+#endif
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API -- SV -- accessors and mutators

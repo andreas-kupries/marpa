@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                          http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -77,8 +77,8 @@ return
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
-# (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                     http://core.tcl.tk/akupries/
+# (c) 2017-2018 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                          http://core.tcl.tk/akupries/
 ##
 # (c) @slif-year@ Grammar @slif-name@ @slif-version@ By @slif-writer@
 ##
@@ -132,6 +132,8 @@ critcl::api import marpa::runtime::c 0
 
 critcl::include string.h ;# memcpy
 critcl::ccode {
+    TRACE_OFF;
+
     /*
     ** Shared string pool (@string-length-sz@ bytes lengths over @string-c@ entries)
     **                    (@string-offset-sz@ bytes offsets -----^)
@@ -214,7 +216,9 @@ critcl::class def @slif-name@ {
 	tokens before they get passed to the Tcl level.
     } {
 	instance->tokens = marpatcl_rtc_sv_cons_evec (1); // Expandable
+	TRACE ("cons (i %p).(tokens %p)", instance, instance->tokens);
     } {
+	TRACE ("dest (i %p).(tokens %p)", instance, instance->tokens);
 	if (instance->tokens) marpatcl_rtc_sv_unref (instance->tokens);
     }
 
@@ -223,7 +227,9 @@ critcl::class def @slif-name@ {
 	values before they get passed to the Tcl level.
     } {
 	instance->values = marpatcl_rtc_sv_cons_evec (1); // Expandable
+	TRACE ("cons (i %p).(values %p)", instance, instance->values);
     } {
+	TRACE ("dest (i %p).(values %p)", instance, instance->values);
 	if (instance->values) marpatcl_rtc_sv_unref (instance->values);
     }
 
@@ -349,6 +355,8 @@ critcl::class def @slif-name@ {
 	static int
 	@stem@_callout_eof (@instancetype@ instance)
 	{
+	    TRACE_FUNC ("(i %p)", instance);
+
 	    int c = instance->outcmd_c + 1;
 	    int res;
 	    Tcl_Obj** v = NALLOC (Tcl_Obj*, c);
@@ -360,12 +368,16 @@ critcl::class def @slif-name@ {
 	    incr_v (c, v);
 	    res = Tcl_EvalObjv (instance->ip, c, v, 0);
 	    decr_v (c, v);
-	    return res;
+
+	    TRACE_RETURN ("code %d", res);
 	}
 
 	static int
 	@stem@_callout_enter (@instancetype@ instance, Tcl_Obj* ts, Tcl_Obj* vs)
 	{
+	    TRACE_FUNC ("(i %p), ((Tcl_Obj* ts) %p), ((Tcl_Obj* vs) %p)",
+			instance, ts, vs);
+
 	    int c = instance->outcmd_c + 3;
 	    int res;
 	    Tcl_Obj** v = NALLOC (Tcl_Obj*, c);
@@ -379,13 +391,16 @@ critcl::class def @slif-name@ {
 	    incr_v (c, v);
 	    res = Tcl_EvalObjv (instance->ip, c, v, 0);
 	    decr_v (c, v);
-	    return res;
+
+	    TRACE_RETURN ("code %d", res);
 	}
 
 	static void
 	@stem@_token (void* cdata, marpatcl_rtc_sv_p sv)
 	{
 	    @instancetype@ instance = (@instancetype@) cdata;
+	    TRACE_FUNC ("(i %p), ((sv*) %p)", instance, sv);
+
 	    // See rtc/lexer.c 'complete' (!SPEC->g1) for the caller.
 	    //
 	    // Call sequence:
@@ -397,35 +412,55 @@ critcl::class def @slif-name@ {
 
 	    if (sv == 0) {
 		// Begin "enter"
+		TRACE ("%s", "enter /begin");
+
+		TRACE ("- clear (i %p).(tokens %p)", instance, instance->tokens);
 		marpatcl_rtc_sv_vec_clear (instance->tokens);
+
+		TRACE ("- clear (i %p).(values %p)", instance, instance->values);
 		marpatcl_rtc_sv_vec_clear (instance->values);
-		return;
+
+		TRACE ("%s", "enter /begin done");
+		TRACE_RETURN_VOID;
 	    }
 
 	    if (sv == ((marpatcl_rtc_sv_p) 1)) {
 		// Complete "enter", call into Tcl
+		TRACE ("%s", "enter close /begin");
 
 		Tcl_Obj* ts = marpatcl_rtc_sv_astcl (instance->ip, instance->tokens);
 		Tcl_Obj* vs = marpatcl_rtc_sv_astcl (instance->ip, instance->values);
 
+		Tcl_IncrRefCount (ts);
+		Tcl_IncrRefCount (vs);
+
+		TRACE ("%s", "enter close - callback");
 		(void) @stem@_callout_enter (instance, ts, vs);
+		TRACE ("%s", "enter close - callback return");
 
 		Tcl_DecrRefCount (ts);
 		Tcl_DecrRefCount (vs);
-		return;
+
+		TRACE ("%s", "enter close /done");
+		TRACE_RETURN_VOID;
 	    };
 
 	    if (marpatcl_rtc_sv_vec_size (instance->tokens) ==
 		marpatcl_rtc_sv_vec_size (instance->values)) {
 		// Even call, both pads are empty or filled with matching t/v pairs.
 		// This call is a new token.
+
+		TRACE ("push token ((sv*) %p)", sv);
 		marpatcl_rtc_sv_vec_push (instance->tokens, sv);
 	    } else {
 		// Odd call, we have one more token than values.
 		// This call is a new value, match them again.
+
+		TRACE ("push value ((sv*) %p)", sv);
 		marpatcl_rtc_sv_vec_push (instance->values, sv);
 	    }
-	    return;
+
+	    TRACE_RETURN_VOID;
 	}
     }
 }

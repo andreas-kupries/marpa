@@ -53,6 +53,9 @@ proc lex-setup {lexaction} {
 
 proc lex-cleanup {lexaction} {
     global clsave
+    # Destroy class in memory
+    rename [gen cget cl] {}
+    # and its disk files    
     gen cleanup
     gen configure cl $clsave
     return
