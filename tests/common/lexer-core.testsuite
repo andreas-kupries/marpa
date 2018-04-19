@@ -28,51 +28,6 @@ kt require support TclOO
 kt require support fileutil ;# writeFile
 
 # # ## ### ##### ######## ############# #####################
-## Local shorthands
-
-proc setup {} {
-    global TRACE
-    [gen cget cl] create LEX
-    set TRACE {}
-}
-proc cleanup {} {
-    global TRACE
-    LEX destroy
-    unset TRACE
-}
-
-proc lex-setup {lexaction} {
-    global clsave
-    set clsave [gen cget cl]
-    set grsave [gen cget gr]
-    
-    set gr [td]/g_$lexaction
-    set cl ${clsave}-$lexaction
-
-    # Override the lexer semantics specified by the origin grammar
-    # with what we wish to test.
-    lappend map "lexeme default =\n  action => \[start,length,value\]"
-    lappend map "lexeme default = action => \[$lexaction\]"
-    fileutil::writeFile $gr [string map $map [fget $grsave]]
-
-    gen setup cl $cl gr $gr
-
-    # Cleanup
-    gen configure gr $grsave
-    file delete $gr
-    return    
-}
-
-proc lex-cleanup {lexaction} {
-    global clsave
-    file delete        [td]/[gen cget cl].tcl
-    file delete -force [td]/OUT_[gen cget cl]
-    file delete        [td]/OUT_[gen cget cl]_LOG
-    gen configure cl $clsave
-    return
-}
-
-# # ## ### ##### ######## ############# #####################
 
 kt source support/dirs.tcl
 kt source support/grammars.tcl
@@ -85,21 +40,6 @@ kt source support/textutils.tcl
 exec [td]/grammars/setup.sh
 
 # # ## ### ##### ######## ############# #####################
-## Helper
-
-proc capture {m args} {
-    if {$m ne "enter"} return
-    # args = list (list(symbol), list(value))
-    lassign $args symbols svalues
-    set svalues [lsort -uniq $svalues]
-    if {[llength $svalues] == 1} {
-	set svalues [lindex $svalues 0]
-    }
-    lappend ::TRACE $svalues
-    return
-}
-
-# # ## ### ##### ######## ############# #####################
 
 initialize
 
@@ -108,7 +48,7 @@ initialize
 
 incr max
 test-grammar-files slif --> __ __ { incr max }
-set format %0[string length $max]d
+set kformat %0[string length $max]d
 unset max
 
 foreach {lexaction joiner} {
@@ -123,29 +63,42 @@ foreach {lexaction joiner} {
     value    \n
     values   \n
 } {
-    lex-setup $lexaction
-    set k 0
+    kt::sub sub-lc-[label]-$lexaction {
+	kt source support/dirs.tcl
+	kt source support/grammars.tcl
+	kt source support/textutils.tcl
+	kt source support/gen.tcl
+	kt source support/lc-ops.tcl
 
-    test-grammar-map slif --> id slif base {
-	incr k
-	set result $base/lexaction_${lexaction}_[suffix]
-	if {![file exists $result]} continue
-	set input [fget $slif]
-	set kd    [format $format $k]
+	gen configure cl $cl ex $ex
+	lex-setup $lexaction
 
-	test marpa-lexer-[label]-1.0.${kd}-${lexaction} "[label], action (($lexaction))" -body {
-	    LEX process-file $slif capture
-	    join $TRACE $joiner
-	}   -setup   setup \
-	    -cleanup cleanup \
-	    -result [viewFile $result]
-    }
+	set k 0
+	test-grammar-map slif --> id slif base {
+	    incr k
+	    set result $base/lexaction_${lexaction}_${suffix}
+	    if {![file exists $result]} continue
+	    set input [fget $slif]
+	    set kd    [format $kformat $k]
 
-    lex-cleanup $lexaction
+	    test marpa-lexer-${label}-1.0.${kd}-${lexaction} "$label, action (($lexaction))" -body {
+		LEX process-file $slif capture
+		join $TRACE $joiner
+	    }   -setup   setup \
+		-cleanup cleanup \
+		-result [viewFile $result]
+	}
+
+	lex-cleanup $lexaction
+
+    } kformat joiner lexaction \
+	label=[label] \
+	suffix=[suffix] \
+	cl=[gen cget cl] \
+	ex=[gen cget ex]
 }
 
 # # ## ### ##### ######## ############# #####################
-unset k lexaction joiner
-rename capture {}
+unset kformat lexaction joiner
 finalize
 return

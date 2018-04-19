@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Progress reports)
  * - - -- --- ----- -------- ------------- ----------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  *
  * Requirements - Note, assertions and allocations via an external environment header.
  */
@@ -8,6 +8,7 @@
 #include <environment.h>
 #include <progress.h>
 #include <rtc_int.h>
+#include <strdup.h>
 
 TRACE_ON; // Always - See progress.h for the actual controlling flags.
 
@@ -33,12 +34,12 @@ decode_rule (marpatcl_rtc_rules*  g,
     int pc   = marpatcl_rtc_stack_get (rd, 2*rule);
     int rarg = marpatcl_rtc_stack_get (rd, 2*rule + 1);
     int k;
-    
+
     ins = g->rcode + pc;
     MARPATCL_RCMD_UNBOX (ins[0], cmd, detail);
     *insname = iname[cmd];
     switch (cmd) {
-    case MARPATCL_RC_SETUP: 
+    case MARPATCL_RC_SETUP:
     case MARPATCL_RC_DONE:
 	ASSERT (0, "Bad rule data, no rule instruction");
 	break;
@@ -46,7 +47,7 @@ decode_rule (marpatcl_rtc_rules*  g,
 	marpatcl_rtc_stack_clear (rhs);
 	for (k=0; k < detail; k++) { marpatcl_rtc_stack_push (rhs, ins[2+k]); }
 	return ins[1];
-	
+
     case MARPATCL_RC_PRIS:
 	marpatcl_rtc_stack_clear (rhs);
 	for (k=0; k < detail; k++) { marpatcl_rtc_stack_push (rhs, ins[1+k]); }
@@ -102,7 +103,7 @@ progress (const char*          label,   // string
     sprintf (tmp, "______ X'%d:%d", spec->rules.size, detail+1);
     sprintf (fmt, " %%-%ds", (int) strlen (tmp));
     //TRACE ("col format `%s` for `%s`", fmt, tmp);
-    
+
     count = marpa_r_progress_report_start  (r, location);
     marpatcl_rtc_fail_syscheck (p, g, count, "progress_report_start");
 
@@ -132,7 +133,7 @@ progress (const char*          label,   // string
 	    prefix = 'R';
 	    sprintf (suffix, ":%d", dot);
 	}
-	
+
 	TRACE_HEADER (1);
 	TRACE_ADD ("%s[%5d/%5d]", label, k, count);
 	//TRACE_ADD (" R'%d, %d-%d, .%d", rule, origin, location, dot);
@@ -146,11 +147,11 @@ progress (const char*          label,   // string
 	//TRACE_ADD ("", ... );
 	TRACE_CLOSER;
     }
-    
+
     res = marpa_r_progress_report_finish (r);
     marpatcl_rtc_fail_syscheck (p, g, res, "progress_report_finish");
     marpatcl_rtc_stack_destroy (rhs);
-    
+
     TRACE_RETURN_VOID;
 }
 
@@ -171,11 +172,12 @@ marpatcl_rtc_progress (marpatcl_rtc_progress_append acmd,
 {
     // TODO: FIX to use dyn strings and definitely have no overflow.
 
+#define STRDUP(s) marpatcl_rtc_strdup (s)
 #define NAME(sym) marpatcl_rtc_spec_symname (spec, sym, 0)
 #define PRINT(s) acmd (adata, s)
 
 #define P(r,x)  marpatcl_rtc_sv_vec_push (r, x);
-#define PS(r,s) P (r, marpatcl_rtc_sv_cons_string (strdup (s), 1))
+#define PS(r,s) P (r, marpatcl_rtc_sv_cons_string (STRDUP (s), 1))
 #define MF(field) if (len > field) { field = len ; }
 #define PADR(n) while (len < n) { PRINT (" "); len ++; }
 #define PFIELD(max,x)							\
@@ -201,11 +203,11 @@ marpatcl_rtc_progress (marpatcl_rtc_progress_append acmd,
     // I. Get the progress report, partially format the elements, use SV data
     // structures to save these pieces, track field widths across the set.
 
-    report = marpatcl_rtc_sv_cons_evec (1); // Expandable
+    report = marpatcl_rtc_sv_cons_evec_i (1); // Expandable
     // Each element of the report will be 4-element vec containing
     // 3 strings and a vector: intro/S, span/S, lhs/S, rhs/V(S).
     // We track the max size of the first three columns.
-    
+
     count = marpa_r_progress_report_start  (r, location);
     marpatcl_rtc_fail_syscheck (p, g, count, "progress_report_start");
 
@@ -235,7 +237,7 @@ marpatcl_rtc_progress (marpatcl_rtc_progress_append acmd,
 	    prefix = 'R';
 	    snprintf (suffix, 40, ":%d", dot);
 	}
-	
+
 	entry = marpatcl_rtc_sv_cons_vec (4);	P (report, entry);
 
 	len = snprintf (buf, 200, "%c%d%s", prefix, rule, suffix);	PS (entry, buf); MF (maxintro);
@@ -276,7 +278,7 @@ marpatcl_rtc_progress (marpatcl_rtc_progress_append acmd,
 	PRINT ("\n");
     }
 
-    marpatcl_rtc_sv_destroy (report);
+    marpatcl_rtc_sv_destroy_i (report);
 }
 
 void
@@ -284,11 +286,11 @@ marpatcl_rtc_lexer_progress (marpatcl_rtc_p p)
 {
     int loc;
     TRACE_FUNC ("((rtc*) %p)", p);
-    
+
     loc = marpa_r_latest_earley_set (LEX.recce);
     marpatcl_rtc_fail_syscheck (p, LEX.g, loc, "l0 latest-earley-set");
     progress ("lexer", p, SPEC->l0, LRD, LEX.recce, LEX.g, loc);
-    
+
     TRACE_RETURN_VOID;
 }
 
@@ -297,11 +299,11 @@ marpatcl_rtc_parser_progress (marpatcl_rtc_p p)
 {
     int loc;
     TRACE_FUNC ("((rtc*) %p)", p);
-    
+
     loc = marpa_r_latest_earley_set (PAR.recce);
     marpatcl_rtc_fail_syscheck (p, PAR.g, loc, "g1 latest-earley-set");
     progress ("parser", p, SPEC->g1, PRD, PAR.recce, PAR.g, loc);
-    
+
     TRACE_RETURN_VOID;
 }
 
