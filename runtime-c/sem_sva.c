@@ -147,7 +147,7 @@ void
 marpatcl_rtc_sva_clear (marpatcl_rtc_sv_vec v)
 {
     marpatcl_rtc_sv_p x;
-    TRACE_FUNC ("((sv_vec) %p)", v);
+    TRACE_FUNC ("((sv_vec) %p, (int) %d [sz])", v, SZ);
 
     while (SZ) {
 	// inlined _pop

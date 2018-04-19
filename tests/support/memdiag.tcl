@@ -18,9 +18,15 @@ proc memusage {label} { #return
 
     set cba [lindex $cba end]
     set mba [lindex $mba end]
-    
+
     puts "memuse\t$label\t$cba\t$mba"
     return
+}
+
+proc memuse {} { #return
+    lassign [split [memory info] \n] tm tf cpa cba mpa mba
+    set cba [lindex $cba end]
+    return $cba
 }
 
 # # ## ### ##### ######## #############

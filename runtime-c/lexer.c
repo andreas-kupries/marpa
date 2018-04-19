@@ -18,6 +18,7 @@
 
 TRACE_OFF;
 TRACE_TAG_OFF (accept);
+TRACE_TAG_OFF (lexonly);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -88,6 +89,8 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
 	Marpa_Symbol_ID* buf = marpatcl_rtc_symset_dense (ACCEPT);
 	for (k=0; k < n; k++) buf [k] = k;
 	marpatcl_rtc_symset_link (ACCEPT, n);
+
+	TRACE_TAG (lexonly, "%s", "lexer only");
     }
 
     LEX.lexeme = marpatcl_rtc_stack_cons (80);
@@ -422,6 +425,7 @@ complete (marpatcl_rtc_p p)
 		PAR_P (p);
 	    } else {
 		// Lexing-only mode. Start "enter"
+		TRACE_TAG (lexonly, "((void*) %p) enter", p->rcdata);
 		p->result (p->rcdata, NULL);
 	    }
 	}
@@ -436,11 +440,13 @@ complete (marpatcl_rtc_p p)
 
 	if (!LEX.single_sv || !sv) {
 	    sv = get_sv (p, token, rule);
+	    // sv RC 1
 	    SHOW_SV (sv);
 	    if (SPEC->g1) {
 		// Parsing. Convert semantic values to identifiers we can
 		// carry within the marpa engine.
 		svid = marpatcl_rtc_store_add (p, sv);
+		marpatcl_rtc_sv_unref_i (sv); // Store now owns it.
 		TRACE_ADD (" [%d] :=", svid);
 	    }
 	}
@@ -454,8 +460,13 @@ complete (marpatcl_rtc_p p)
 	    const char*       s  = marpatcl_rtc_spec_symname (SPEC->l0, TO_ACS (token), 0);
 	    marpatcl_rtc_sv_p tv = marpatcl_rtc_sv_cons_string (STRDUP (s), 1);
 
+	    TRACE_TAG (lexonly, "((void*) %p) token (sv*) %p = '%s'", p->rcdata, tv, s);
 	    p->result (p->rcdata, tv);
+	    // Callback now owns it. No unref because we started at RC 0.
+
+	    TRACE_TAG (lexonly, "((void*) %p) value (sv*) %p", p->rcdata, sv);
 	    p->result (p->rcdata, sv);
+	    marpatcl_rtc_sv_unref_i (sv); // Callback now owns it.
 	}
     }
 
@@ -478,6 +489,7 @@ complete (marpatcl_rtc_p p)
     } else {
 	// Lexing-only mode. Complete "enter", and restart the lower parts
 	// (normally done by the parser)
+	TRACE_TAG (lexonly, "((void*) %p) enter /complete", p->rcdata);
 	p->result (p->rcdata, ((marpatcl_rtc_sv_p) 1));
 
 	marpatcl_rtc_lexer_acceptable (p, 0);
@@ -615,6 +627,7 @@ get_sv (marpatcl_rtc_p   p,
 
     //TRACE_FUNC ("((rtc*) %p, token %d, rule %d)", p, token, rule);
     sv = marpatcl_rtc_sv_cons_vec (SPEC->l0semantic.size);
+    marpatcl_rtc_sv_ref_i (sv); // RC 1
 
 #define DO(cache,cmd)				\
     if (!(cache)) {				\
@@ -656,13 +669,15 @@ get_sv (marpatcl_rtc_p   p,
 
     if (marpatcl_rtc_sv_vec_size (sv) == 1) {
 	marpatcl_rtc_sv_p el = marpatcl_rtc_sv_vec_get (sv, 0);
-	marpatcl_rtc_sv_ref_i (el);
-	marpatcl_rtc_sv_unref_i (sv);
-	marpatcl_rtc_sv_unref_i (el);
+	// el RC 1!
+	marpatcl_rtc_sv_ref_i (el); // RC 2
+	marpatcl_rtc_sv_unref_i (sv); // destroyed, el RC 1
+	// no unref on el, would destroy
 	sv = el;
     }
 
     return sv ;//TRACE_RETURN ("%p", sv);
+    // RC 1
 }
 
 static char*

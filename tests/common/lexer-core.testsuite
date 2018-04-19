@@ -45,7 +45,7 @@ proc lex-setup {lexaction} {
     global clsave
     set clsave [gen cget cl]
     set grsave [gen cget gr]
-    
+
     set gr [td]/g_$lexaction
     set cl ${clsave}-$lexaction
 
@@ -60,14 +60,14 @@ proc lex-setup {lexaction} {
     # Cleanup
     gen configure gr $grsave
     file delete $gr
-    return    
+    return
 }
 
 proc lex-cleanup {lexaction} {
     global clsave
     # Destroy class in memory
     rename [gen cget cl] {}
-    # and its disk files    
+    # and its disk files
     file delete        [td]/[gen cget cl].tcl
     file delete -force [td]/OUT_[gen cget cl]
     file delete        [td]/OUT_[gen cget cl]_LOG
@@ -126,10 +126,6 @@ foreach {lexaction joiner} {
     value    \n
     values   \n
 } {
-    #odump O_$lexaction
-    memusage [string range $lexaction 0 2]
-    memory active A_${lexaction}_0
-
     lex-setup $lexaction
     set k 0
 
@@ -140,7 +136,7 @@ foreach {lexaction joiner} {
 	set input [fget $slif]
 	set kd    [format $format $k]
 
-	test marpa-lexer-[label]-1.0.${kd}-${lexaction} "[label], action (($lexaction))" -body {
+        test marpa-lexer-[label]-1.0.${kd}-${lexaction} "[label], action (($lexaction))" -body {
 	    LEX process-file $slif capture
 	    join $TRACE $joiner
 	}   -setup   setup \
@@ -149,9 +145,8 @@ foreach {lexaction joiner} {
     }
 
     lex-cleanup $lexaction
-    memory active A_${lexaction}_1
 
-    if {$lexaction eq "name"} break
+    if {$lexaction eq "rule"} break
 }
 
 # # ## ### ##### ######## ############# #####################

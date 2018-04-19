@@ -1,5 +1,5 @@
 # -*- tcl -*-
-## (c) 2017 Andreas Kupries
+## (c) 2017-2018 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## Execution core for testing all kinds of marpa-based parser engines.
 ## Configured by the caller with methods for
@@ -54,6 +54,41 @@ exec [td]/grammars/setup.sh
 # # ## ### ##### ######## ############# #####################
 
 initialize
+
+# # ## ### ##### ######## ############# #####################
+# Memory checking
+
+tcltest::testConstraint memdebug [llength [info commands ::memory]]
+
+test marpa-[label]-parser-memory-1.0 "[label] :: memory" -constraints memory -setup {
+    setup
+    proc iter {} {
+	set ast [PARSE process {
+	    E ::= N	    |  PO E PC assoc => group
+	    || E POW E assoc => right
+	    || E MUL E	    |  E DIV E
+	    || E ADD E	    |  E SUB E
+	    PO  ~ '(' PC  ~ ')'
+	    POW ~ '**'
+	    MUL ~ '*'
+	    DIV ~ '/'
+	    ADD ~ '+'
+	    SUB ~ '-'
+	    N   ~ [0-9]+
+	}]
+	PARSE destroy
+	return
+    }
+    iter ; iter ; iter
+    set start [memuse]
+} -body {
+    iter ; iter ; iter
+    expr {[memuse] - $s}
+} -cleanup {
+    unset start
+    rename iter {}
+    cleanup
+} -result 0
 
 # # ## ### ##### ######## ############# #####################
 ##  1 constructor/0

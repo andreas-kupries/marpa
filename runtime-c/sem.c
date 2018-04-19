@@ -387,7 +387,7 @@ marpatcl_rtc_sv_p
 marpatcl_rtc_sv_vec_get (marpatcl_rtc_sv_p sv, int at)
 {
     marpatcl_rtc_sv_p x;
-    TRACE_FUNC ("((sv*) %p [vec], int at)", sv, at);
+    TRACE_FUNC ("((sv*) %p [vec], int %d [at])", sv, at);
     ASSERT_SV_TYPE (marpatcl_rtc_sv_type_vec, "vector");
 
     x = marpatcl_rtc_sva_get (VEC, at);
