@@ -112,8 +112,22 @@ test-grammar-map rt_example --> id rte base {
 	} -setup {
 	    set recording {}
 	    proc record {p type enames args} {
-		lappend ::recording (([info level 0]))
+		# For testing we just record the information about the
+		# event for matching against expectations.
+		lappend ::recording ___________________________(([info level 0]))
 		lappend ::recording {*}[$p match view]
+
+		# Move input so that lexer resumes reading with the
+		# character after the lexeme.  Written as is with
+		# absolutes so that it works for all events (discard,
+		# pre-, post-lexeme) we are testing without requiring
+		# conditionals
+		$p match moveto [$p match start] -1
+		$p match moveby [$p match length]
+		lappend ::recording "@resume = [$p match location?]"
+		# The input now points to the last character of the
+		# lexeme, and on resume the lexer advances to the next
+		# character to start processing from.
 		return
 	    }
 	    setup

@@ -1,13 +1,17 @@
-((record ::PARSE discard whitespace))
+___________________________((record ::PARSE discard whitespace))
 length = ((1))
 start = ((5))
 symbols = ((space))
 value = ((
 ))
-((record ::PARSE discard whitespace))
+@location = 5
+@resume = 5
+___________________________((record ::PARSE discard whitespace))
 length = ((7))
 start = ((11))
 symbols = ((space))
 value = ((
      
 ))
+@location = 17
+@resume = 17

@@ -28,24 +28,35 @@ oo::class create marpa::lexer::ped {
     marpa::E marpa/lexer/match LEXER MATCH
 
     # parse event descriptor facade to match store
-    constructor {m} {
+    constructor {m g} {
 	marpa::import $m Store
+	marpa::import $g Gate
     }
 
+    foreach m {location? moveto rewind moveby} {
+	# Access to input location: accessor & modifiers
+	forward $m  Gate $m
+    } ; unset m
+
     # API
-    foreach {part key} {
+    foreach part {
 	symbols  sv
 	start    length
 	value    values
     } {
+	# Access to match information: modifier/accessor
 	forward ${part}:  Store ${part}:
 	forward ${part}   Store ${part}
+    } ; unset part
+
+    # Debug helper method, also testsuite
+    method view {} {
+	set     r [Store view {symbols sv start length value values}]
+	lappend r "@location = [Gate location?]"
     }
-    unset part key
 
-    forward view  \
-	Store view {symbols sv start length value values}
-
+    # Incremental rebuild of the symbol/sv set
+    # First call clears and appends, further only appends
     method alternate {symbol sv} {
 	if {[Store fresh]} {
 	    Store symbols: {}

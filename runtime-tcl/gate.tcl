@@ -159,6 +159,11 @@ oo::class create marpa::gate {
 	return
     }
 
+    foreach m {location? moveto rewind moveby} {
+	# Access to input location, accessor & modifiers
+	forward $m  Input $m
+    } ; unset m
+
     # # -- --- ----- -------- -------------
     ## Public API
 

@@ -122,10 +122,10 @@ oo::class create marpa::inbound {
 	return $mylocation
     }
 
-    method moveto {pos} {
+    method moveto {pos args} {
 	debug.marpa/inbound {[debug caller] | }
-	set  mylocation $pos
-	incr mylocation -1
+	set mylocation $pos
+	foreach delta $args { incr mylocation $delta }
 	return
     }
 

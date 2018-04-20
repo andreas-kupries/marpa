@@ -166,9 +166,9 @@ oo::class create marpa::lexer {
 	set mynull    [Store put [marpa location null]]
 	set mylexeme  ""
 
-	# Match information storage, and public facade
+	# Match information storage, and public facade.
+	# The latter is created and configured in `gate:`.
 	marpa::lexer::match create M
-	marpa::lexer::ped   create PED M
 	M g1start: {} ; # XXX pull information from parser.
 	M g1length: 1
 
@@ -219,6 +219,7 @@ oo::class create marpa::lexer {
     method gate: {gate} {
 	debug.marpa/lexer {[debug caller] | }
 	marpa::import $gate Gate
+	marpa::lexer::ped   create PED M $gate
 	return
     }
 
@@ -479,6 +480,7 @@ oo::class create marpa::lexer {
 	}]
 	M symbols: $prehandler
 	M sv:      $sv
+	M fresh:   1
 	return $prehandler
     }
 
@@ -629,6 +631,17 @@ oo::class create marpa::lexer {
 	RECCE destroy
 	set myrecce {}
 
+	# Reposition the gate/input so that the next lexeme match
+	# starts just after the end of this one. We must do this here
+	# because the handler for parse events may choose to
+	# reposition again, and then our rewind would mess up their
+	# choice. And we can do this here, because it is just a
+	# repositioning, and not a synchronous re-enter.
+
+	debug.marpa/lexer {[debug caller] | Rewind $redo ...}
+	Gate redo $redo
+	debug.marpa/lexer {[debug caller] | ... Rewound}
+
 	# Talk to parser iff we have found lexemes, or if we have no
 	# discarded. Conversely skip the parser iff no lexemes found
 	# but discarded symbols.
@@ -676,11 +689,6 @@ oo::class create marpa::lexer {
 	    #     found. At that point the lexer is stuck and has to
 	    #     report the issue to the parser.
 
-	    # XXX - collect before/after events (separate) ...
-	    # XXX - invoke events if present. before events suppress after
-	    # XXX - the event handler is responsible for symbols, semantic
-	    # XXX   value, and input recovery.
-
 	    debug.marpa/lexer        {[debug caller] | Push ...}
 	    debug.marpa/lexer/stream {FIN, push: (([my DIds [my FromParser $found]]))}
 
@@ -688,8 +696,9 @@ oo::class create marpa::lexer {
 
 	    set events [my events? before $ef]
 	    if {[llength $events]} {
-		# XXX move input location to start of lexeme
 		set prehandler [my PEFill $found $sv]
+		# Move input location to just before start of lexeme
+		Gate moveto [M start] -1
 		Forward post before $events
 	    } else {
 		set events [my events? after $ef]
@@ -734,29 +743,6 @@ oo::class create marpa::lexer {
 
 	    debug.marpa/lexer {[debug caller] | ... Ok}
 	}
-
-	# XXX Check how this interacts with the event handling
-	# XXX Check if we can move this before the event handling!
-	# XXX The problem is that `redo` currently operates by
-	# XXX fully re-`enter`ing the pending characters. Doing
-	# XXX before advancing the parser is bad, as it can recursively
-	# XXX came back here again, generating symbols out of order.
-	#
-	# XXX HOWEVER ...
-	# XXX This problem should solve itself when inbound and gate
-	# XXX are changed to use a pointer into the input and can
-	# XXX properly rewind, using a `while` instead of `foreach`
-	# XXX steadily marching forward. At that point `redo` can be
-	# XXX handled by just moving the cursor, and with that it can
-	# XXX move to before the event handling, which can perform its
-	# XXX own cursor movement as well (pre-lexeme).
-
-	# Last, but not least, have our gate re-enter any characters
-	# we were not able to process (see redo counter above).
-
-	debug.marpa/lexer {[debug caller] | Re-process $redo ...}
-	Gate redo $redo
-	debug.marpa/lexer {[debug caller] | ... Reprocessed}
 
 	return [expr {$redo > 0}]
     }

@@ -1068,12 +1068,12 @@ test marpa-lexer-10.1.2 {enter, start lexeme, externals} -setup {
     LEXER destroy
     parsed ; stored
 } -result {
+  GATE C {redo 0}
+  GATE R {redo 0} = {}
   STO C {put C}
   STO R {put C} = 2
   PAR C {enter 0 2}
   PAR R {enter 0 2} = {}
-  GATE C {redo 0}
-  GATE R {redo 0} = {}
 }
 
 test marpa-lexer-10.2.0 {enter, intra lexeme, result} -setup {
@@ -1118,12 +1118,12 @@ test marpa-lexer-10.2.2 {enter, intra lexeme, externals} -setup {
     LEXER destroy
     parsed ; stored
 } -result {
+  GATE C {redo 0}
+  GATE R {redo 0} = {}
   STO C {put AB}
   STO R {put AB} = 2
   PAR C {enter 1 2}
   PAR R {enter 1 2} = {}
-  GATE C {redo 0}
-  GATE R {redo 0} = {}
 }
 
 test marpa-lexer-10.3.0 {enter, intra lexeme, post-forbidden: gate:} -setup {

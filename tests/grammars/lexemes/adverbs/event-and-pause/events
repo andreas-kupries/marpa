@@ -1,24 +1,32 @@
-((record ::PARSE after afterB))
+___________________________((record ::PARSE after afterB))
 length = ((3))
 start = ((1))
 sv = ((bbb))
 symbols = ((bs))
 value = ((bbb))
-((record ::PARSE before beforeA))
+@location = 3
+@resume = 3
+___________________________((record ::PARSE before beforeA))
 length = ((3))
 start = ((6))
 sv = ((aaa))
 symbols = ((as))
 value = ((aaa))
-((record ::PARSE before beforeA))
+@location = 5
+@resume = 8
+___________________________((record ::PARSE before beforeA))
 length = ((1))
 start = ((11))
 sv = ((a))
 symbols = ((as))
 value = ((a))
-((record ::PARSE after afterB))
+@location = 10
+@resume = 11
+___________________________((record ::PARSE after afterB))
 length = ((1))
 start = ((12))
 sv = ((b))
 symbols = ((bs))
 value = ((b))
+@location = 12
+@resume = 12
