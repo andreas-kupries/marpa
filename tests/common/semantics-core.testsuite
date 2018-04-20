@@ -29,7 +29,7 @@ kt require support oo::util
 kt require support TclOO
 kt require support fileutil ;# cat
 
-# marpa::slif::semantics - See gen.tcl in calling files.
+kt local* support marpa::slif::semantics
 
 # # ## ### ##### ######## ############# #####################
 
@@ -139,7 +139,7 @@ test-grammar-map slif --> id slif base {
 	# of the semantics.
 	set expected [norm-trace $output]
     }
-    
+
     test marpa-slif-semantics-process-[label]-2.${kd}---${id} "[label] :: semantics $id /trace" -body {
 	if {[catch {
 	    SEMA process [PARSE process $input]

@@ -56,7 +56,7 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p 
 	TRACE ("SV-AS-TCL (sv*) %p", sv);
 	r = marpatcl_rtc_sv_astcl (ip, *sv);
 	if (r) {
-	    TRACE ("SV OK (Tcl_Obj*) %p", r);
+	    TRACE ("SV OK (Tcl_Obj*) %p (rc %d)", r, r->refCount);
 	    Tcl_SetObjResult (ip, r);
 	    TRACE_RETURN ("OK", TCL_OK);
 	}
@@ -77,9 +77,9 @@ marpatcl_rtc_sv_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_p sv)
     null = Tcl_NewListObj (0,0);
     TAKE (null);
     svres = astcl_do (ip, sv, null);
-    if (svres) TAKE (svres);
     RELE (null);
 
+    TRACE ("R ((Tcl_Obj*) %p) (rc %d))", svres, svres ? svres->refCount : -1);
     TRACE_RETURN ("(Tcl_Obj*) %p", svres);
 }
 
@@ -91,26 +91,39 @@ marpatcl_rtc_sv_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_p sv)
 static Tcl_Obj*
 astcl_do (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, Tcl_Obj* null)
 {
+    Tcl_Obj* r;
+    TRACE_FUNC ("(Interp*) %p, (sv*) %p, (Tcl_Obj*) %p <null>",
+		ip, sv, null);
     if (!sv) {
-	return null;
+	TRACE ("Rn ((Tcl_Obj*) %p) (rc %d))", null, null->refCount);
+	TRACE_RETURN ("(Tcl_Obj*) %p", null);
     }
 
     switch (T_GET) {
     case marpatcl_rtc_sv_type_string:
-	return Tcl_NewStringObj (STR,-1);
+	r = Tcl_NewStringObj (STR,-1);
+	TRACE ("Rs ((Tcl_Obj*) %p) (rc %d))", r, r->refCount);
+	TRACE_RETURN ("(Tcl_Obj*) %p", r);
 	/**/
     case marpatcl_rtc_sv_type_int:
-	return Tcl_NewIntObj (INT);
+	r = Tcl_NewIntObj (INT);
+	TRACE ("Ri ((Tcl_Obj*) %p) (rc %d))", r, r->refCount);
+	TRACE_RETURN ("(Tcl_Obj*) %p", r);
 	/**/
     case marpatcl_rtc_sv_type_double:
-	return Tcl_NewDoubleObj (FLT);
+	r = Tcl_NewDoubleObj (FLT);
+	TRACE ("Rd ((Tcl_Obj*) %p) (rc %d))", r, r->refCount);
+	TRACE_RETURN ("(Tcl_Obj*) %p", r);
 	/**/
     case marpatcl_rtc_sv_type_vec:
-	return vec_astcl (ip, VEC, null);
+	r = vec_astcl (ip, VEC, null);
+	TRACE ("Rv ((Tcl_Obj*) %p) (rc %d))", r, r ? r->refCount : -1);
+	TRACE_RETURN ("(Tcl_Obj*) %p", r);
 	/**/
     default:
 	/* TODO -- custom data -- quick HACK - null it - work out a better rep later */
-	return null;
+	TRACE ("R* ((Tcl_Obj*) %p) (rc %d))", null, null->refCount);
+	TRACE_RETURN ("(Tcl_Obj*) %p", null);
     }
     ASSERT (0, "Should not happen");
 }
@@ -121,16 +134,21 @@ vec_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_vec v, Tcl_Obj* null)
     int k;
     Tcl_Obj* svres = Tcl_NewListObj (0 /*n*/,0);
     // TODO CHECK: Will using n > 0 pre-alloc an internal array (I suspect not) */
+    TRACE_FUNC ("(Interp*) %p, (sv_vec) %p, (Tcl_Obj*) %p <null>",
+		ip, v, null);
 
     for (k = 0; k < v->size; k++) {
 	Tcl_Obj* el = astcl_do (ip, v->data[k], null);
+	TRACE ("[%3d] ((Tcl_Obj*) %p) (rc %d))", k, el, el ? el->refCount : -1);
 	if (!el || (Tcl_ListObjAppendElement(ip, svres, el) != TCL_OK)) {
+	    TRACE ("[%3d] fail ((Tcl_Obj*) %p) (rc %d))", k, svres, svres ? svres->refCount : -1);
 	    RELE (svres);
-	    return 0;
+	    TRACE_RETURN ("(Tcl_Obj*) %p", 0);
 	}
     }
 
-    return svres;
+    TRACE ("R ((Tcl_Obj*) %p) (rc %d))", svres, svres ? svres->refCount : -1);
+    TRACE_RETURN ("(Tcl_Obj*) %p", svres);
 }
 
 static int
@@ -237,7 +255,7 @@ error_parse_accept (Tcl_DString *ds, marpatcl_rtc_p p)
 	} else {
 	    Tcl_DStringAppend (ds, " Looking for any of (", -1);
 	}
-	
+
 	// ATTENTION: We are destructive on the symset
 	// //
 	// First conversion from G1 syms to L0 ACS to String ids.

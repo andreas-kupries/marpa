@@ -1,0 +1,72 @@
+#!/usr/bin/env tclsh
+# -*- tcl -*-
+# annotate SV dump from sem_debug
+
+proc SV {tag ptr args} {
+    global tsz map
+
+    if {"vsz" in $args} {
+	set pos [lsearch -exact $args vsz]
+	incr pos 1
+	set args [lrange $args 0 $pos]
+    }
+    
+    incr tsz [dict get $args sz]
+
+    set f [file tail [dict get $args f]]
+    set l [dict get $args @]
+
+    dict set args f $f
+    
+    set a ?_______________
+    catch { set a [dict get $map $f/$l] }
+    puts [list SV $tag $a $ptr {*}$args]
+}
+
+proc SVX {} {
+    global tsz
+    puts [list SVX $tsz]
+}
+
+set tsz 0
+set map {
+    sem_sva.c/298 SVAfilter_______
+    sem_sva.c/104 SVAfreechild____
+    sem_sva.c/123 SVApush_________
+    sem_sva.c/157 SVAclear________
+    sem_sva.c/264 SVAtrunc1_______
+    sem_sva.c/267 SVAtrunc2_______
+    sem_sva.c/275 SVAtrunc3_______
+    sem_sva.c/241 SVAfill1________
+    sem_sva.c/244 SVAfill2________
+    sem_sva.c/363 SVAcopy_________
+    
+    lexer.c/614   Lsv/main________
+    lexer.c/633   Lsv/start_______
+    lexer.c/634   Lsv/end_________
+    lexer.c/635   Lsv/length______
+    lexer.c/636   Lsv/g1start_____
+    lexer.c/637   Lsv/g1end_______
+    lexer.c/638   Lsv/g1length____
+    lexer.c/639   Lsv/rulename____
+    lexer.c/642   Lsv/lhsname1____
+    lexer.c/644   Lsv/lhsname2____
+    lexer.c/647   Lsv/ruleid______
+    lexer.c/648   Lsv/lhsid_______
+    lexer.c/649   Lsv/value_______
+    
+    parser.c/356  Psv/main________
+    parser.c/388  Psv/start_______
+    parser.c/389  Psv/end_________
+    parser.c/390  Psv/length______
+    parser.c/391  Psv/g1start_____
+    parser.c/392  Psv/g1end_______
+    parser.c/393  Psv/g1length____
+    parser.c/394  Psv/rulename____
+    parser.c/395  Psv/lhsname_____
+    parser.c/396  Psv/ruleid______
+    parser.c/397  Psv/lhsid_______
+    parser.c/398  Psv/values______
+}
+
+eval [read stdin]

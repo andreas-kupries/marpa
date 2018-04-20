@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Tcl Environment)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  */ 
 #ifndef MARPATCL_RTC_ENVTCL_H
 #define MARPATCL_RTC_ENVTCL_H
@@ -25,7 +25,18 @@
 
 #include <critcl_trace.h>
 #include <critcl_assert.h>
+/* API
+ * - ASSERT        (bool, message)
+ * - ASSERT_BOUNDS (index, size)
+ * - STOPAFTER     (count)
+ */
 #include <critcl_alloc.h>
+/* API
+ * - ALLOC   (type)         -> ptr
+ * - NALLOC  (type, n)      -> ptr
+ * - REALLOC (ptr, type, n) -> ptr
+ * - FREE    (ptr)          -> void
+ */
 
 #endif
 

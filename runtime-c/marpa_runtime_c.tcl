@@ -4,10 +4,13 @@
 #
 #          Roughly equivalent to the Marpa::R2 perl binding (I hope).
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
+
+# Flag to toggle integration of SV diagnostic code.
+set refdebug 0
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -38,7 +41,7 @@ critcl::debug symbols
 
 critcl::config lines 1
 critcl::config trace 0
-    
+
 # # ## ### ##### ######## #############
 ## Administrivia
 
@@ -64,6 +67,10 @@ critcl::cutil::alloc
 
 # # ## ### ##### ######## #############
 ## Declarations and linkage of the libmarpa library we are binding to.
+
+if {$refdebug} {
+    critcl::cflags -DSEM_REF_DEBUG
+}
 
 critcl::clibraries -L/usr/local/lib -lmarpa ; # XXX TODO automatic search/configuration
 critcl::cheaders   -I/usr/local/include     ; # XXX TODO automatic search/configuration
@@ -143,6 +150,13 @@ critcl::ccode {
 critcl::source ../c/events.tcl
 critcl::source ../c/steps.tcl
 critcl::source ../c/errors.tcl
+
+if {$refdebug} {
+    critcl::cproc marpa::slif::runtime::dump {} void {
+	extern void marpatcl_rtc_sv_dump (void);
+	marpatcl_rtc_sv_dump();
+    }
+}
 
 # # ## ### ##### ######## #############
 ## Make the C pieces ready. Immediate build of the binaries, no deferal.
