@@ -131,7 +131,7 @@ oo::class create marpa::inbound {
 
     method rewind {delta} {
 	debug.marpa/inbound {[debug caller] | }
-	incr mylocation -$delta
+	incr mylocation [expr {-1 * $delta}]
 	return
     }
 

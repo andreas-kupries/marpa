@@ -122,8 +122,7 @@ test-grammar-map rt_example --> id rte base {
 		# absolutes so that it works for all events (discard,
 		# pre-, post-lexeme) we are testing without requiring
 		# conditionals
-		$p match moveto [$p match start] -1
-		$p match moveby [$p match length]
+		$p match moveto [$p match start] [$p match length] -1
 		lappend ::recording "@resume = [$p match location?]"
 		# The input now points to the last character of the
 		# lexeme, and on resume the lexer advances to the next
