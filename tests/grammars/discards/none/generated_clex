@@ -496,25 +496,19 @@ critcl::class def <Name> {
 	marpatcl_rtc_destroy (instance->state);
     }
 
-    # Future: Wrap callback handling into a C utility class to handle
-    # everything for the user.
-    insvariable int outcmd_c {
-	Command prefix to handle the tokens delivered by the lexer, count
-    } {
-	instance->outcmd_c = 0;
-    } { /* Nothing to release */ }
-
-    insvariable Tcl_Obj** outcmd_v {
-	Command prefix to handle the tokens delivered by the lexer, elements
-    } {
-	instance->outcmd_v = 0;
-    } { /* Nothing to release */ }
-
     insvariable Tcl_Interp* ip {
-	Interpreter back reference for instance internal callbacks from the C engine.
+	Interpreter back reference for SV/Tcl conversion glue code
     } {
 	instance->ip = 0;
     } { /* Nothing to release */ }
+
+    insvariable critcl_callback_p matched {
+	Tcl callback to report the matching of a token, with token information.
+    } {
+	instance->matched = 0;
+    } {
+	if (instance->matched) critcl_callback_destroy (instance->matched);
+    }
 
     constructor {
         /*
@@ -545,8 +539,11 @@ critcl::class def <Name> {
 	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
 	// TODO: abort on failed set-channel-option
 
-	instance->outcmd_c = outcmd.c;
-	instance->outcmd_v = outcmd.v;
+	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
+	critcl_callback_extend (on_eof, Tcl_NewStringObj ("eof", -1));
+
+	instance->matched = critcl_callback_new (ip, outcmd.c, outcmd.v, 3);
+	critcl_callback_extend (instance->matched, Tcl_NewStringObj ("enter", -1));
 
 	while (!Tcl_Eof(in)) {
 	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
@@ -562,11 +559,10 @@ critcl::class def <Name> {
 
 	(void) Tcl_Close (ip, in);
 
-	res = @stem@_callout_eof (instance);
+	res = critcl_callback_invoke (on_eof, 0, 0);
 
-    	// Clear outcmd
-	instance->outcmd_c = 0;
-	instance->outcmd_v = 0;
+	critcl_callback_destroy (on_eof);
+	critcl_callback_destroy (instance->matched);
 
 	return res;
     }
@@ -574,16 +570,18 @@ critcl::class def <Name> {
     method process proc {Tcl_Interp* ip pstring string list outcmd} ok {
 	int res;
 
-	instance->outcmd_c = outcmd.c;
-	instance->outcmd_v = outcmd.v;
+	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
+	critcl_callback_extend (on_eof, Tcl_NewStringObj ("eof", -1));
+
+	instance->matched = critcl_callback_new (ip, outcmd.c, outcmd.v, 3);
+	critcl_callback_extend (instance->matched, Tcl_NewStringObj ("enter", -1));
 
 	marpatcl_rtc_enter (instance->state, string.s, string.len);
 
-	res = @stem@_callout_eof (instance);
+	res = critcl_callback_invoke (on_eof, 0, 0);
 
-    	// Clear outcmd
-	instance->outcmd_c = 0;
-	instance->outcmd_v = 0;
+	critcl_callback_destroy (on_eof);
+	critcl_callback_destroy (instance->matched);
 
 	return res;
     }
@@ -596,57 +594,6 @@ critcl::class def <Name> {
 	** IType: @instancetype@
 	** CType: @classtype@
 	*/
-
-	static void incr_v (int c, Tcl_Obj** v) {
-	    int i; for (i=0; i < c; i++) { Tcl_IncrRefCount (v[i]); }
-	}
-
-	static void decr_v (int c, Tcl_Obj** v) {
-	    int i; for (i=0; i < c; i++) { Tcl_DecrRefCount (v[i]); }
-	}
-
-	static int
-	@stem@_callout_eof (@instancetype@ instance)
-	{
-	    TRACE_FUNC ("(i %p)", instance);
-
-	    int c = instance->outcmd_c + 1;
-	    int res;
-	    Tcl_Obj** v = NALLOC (Tcl_Obj*, c);
-	    memcpy (v, instance->outcmd_v, instance->outcmd_c * sizeof (Tcl_Obj*));
-
-	    // TODO: literal pool for the method names
-	    v [c-1] = Tcl_NewStringObj ("eof", -1);
-
-	    incr_v (c, v);
-	    res = Tcl_EvalObjv (instance->ip, c, v, 0);
-	    decr_v (c, v);
-
-	    TRACE_RETURN ("code %d", res);
-	}
-
-	static int
-	@stem@_callout_enter (@instancetype@ instance, Tcl_Obj* ts, Tcl_Obj* vs)
-	{
-	    TRACE_FUNC ("(i %p), ((Tcl_Obj* ts) %p), ((Tcl_Obj* vs) %p)",
-			instance, ts, vs);
-
-	    int c = instance->outcmd_c + 3;
-	    int res;
-	    Tcl_Obj** v = NALLOC (Tcl_Obj*, c);
-	    memcpy (v, instance->outcmd_v, instance->outcmd_c * sizeof (Tcl_Obj*));
-
-	    // TODO: literal pool for the method names
-	    v [c-3] = Tcl_NewStringObj ("enter", -1);
-	    v [c-2] = ts;
-	    v [c-1] = vs;
-
-	    incr_v (c, v);
-	    res = Tcl_EvalObjv (instance->ip, c, v, 0);
-	    decr_v (c, v);
-
-	    TRACE_RETURN ("code %d", res);
-	}
 
 	static void
 	@stem@_token (void* cdata, marpatcl_rtc_sv_p sv)
@@ -681,18 +628,13 @@ critcl::class def <Name> {
 		// Complete "enter", call into Tcl
 		TRACE ("%s", "enter close /begin");
 
-		Tcl_Obj* ts = marpatcl_rtc_sv_astcl (instance->ip, instance->tokens);
-		Tcl_Obj* vs = marpatcl_rtc_sv_astcl (instance->ip, instance->values);
-
-		Tcl_IncrRefCount (ts);
-		Tcl_IncrRefCount (vs);
+		Tcl_Obj* v[2];
+		v[0] = marpatcl_rtc_sv_astcl (instance->ip, instance->tokens);
+		v[1] = marpatcl_rtc_sv_astcl (instance->ip, instance->values);
 
 		TRACE ("%s", "enter close - callback");
-		(void) @stem@_callout_enter (instance, ts, vs);
+		(void) critcl_callback_invoke (instance->matched, 2, v);
 		TRACE ("%s", "enter close - callback return");
-
-		Tcl_DecrRefCount (ts);
-		Tcl_DecrRefCount (vs);
 
 		TRACE ("%s", "enter close /done");
 		TRACE_RETURN_VOID;
