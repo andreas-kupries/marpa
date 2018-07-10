@@ -11,7 +11,7 @@
 ##		  By <Operator>
 ##		 Via <Tool>
 ##
-#* Space taken: 53368 bytes
+#* Space taken: 53372 bytes
 ##
 #* Statistics
 #* L0
@@ -50,6 +50,7 @@ critcl::debug symbols
 ## Requirements
 
 critcl::api import marpa::runtime::c 0
+critcl::api import critcl::callback  1
 
 # # ## ### ##### ######## ############# #####################
 ## Static data structures declaring the grammar
@@ -4988,7 +4989,8 @@ critcl::ccode {
 	/* .symbols */  { 999, <Name>_l0_sym_name },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
-	/* .rcode   */  <Name>_l0_rule_definitions
+	/* .rcode   */  <Name>_l0_rule_definitions,
+	/* .events  */  0
     };
 
     static marpatcl_rtc_sym <Name>_l0semantics [3] = { /* 6 bytes */
@@ -5050,11 +5052,17 @@ critcl::class def <Name> {
 	if (instance->values) marpatcl_rtc_sv_unref (instance->values);
     }
 
+    # Setup without events
+
+    method on-event proc {Tcl_Interp* ip object args} void {}
+
     insvariable marpatcl_rtc_p state {
 	C-level engine, RTC structures.
     } {
 	instance->state = marpatcl_rtc_cons (&<Name>_spec,
-					     NULL, @stem@_token,
+					     NULL, /* No actions */
+					     @stem@_token,
+					     0,
 					     (void*) instance );
     } {
 	marpatcl_rtc_destroy (instance->state);

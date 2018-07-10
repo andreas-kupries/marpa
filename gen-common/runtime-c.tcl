@@ -70,47 +70,54 @@ debug prefix marpa/gen/runtime/c {[debug caller] | }
 #
 ## Engine-specific placeholders
 #
-## @always-c@		-- #always active L0 symbols (discards + LTM-mode lexemes)
-## @always-sz@		-- Informational: #bytes for always active L0 symbols
-## @always-v@           -- ACS symbol ids of the always active L0 symbols
-## @cname@		-- C identifier, derived from @name@
-## @discards-c@		-- #discarded symbols in the L0 level (i.e. whitespace)
-## @g1-insn-c@          -- #instructions encoding the structural (G1) rules
-## @g1-code-c@          -- #entries to encode the structural (G1) rules
-## @g1-code-sz@         -- Informational: #bytes for
-## @g1-code@	   	-- VM instructions encoding the structural (G1) rules
-## @g1-lhs-v@		-- Per G1 rule indices into the symbol map = lhs of rule
-## @g1-masking-c@       -- #entries encoding the G1 masks (See spec.h for details)
-## @g1-masking-sz@      -- Informational: #bytes for encoding the G1 masks
-## @g1-masking-v@       -- Data encoding the G1 masks
-## @g1-rules-c@		-- #structural (G1) rules
-## @g1-rules-sz@	-- Informational: #bytes for
-## @g1-rules-v@		-- Per G1 rule indices into the string pool = rule name
-## @g1-semantics-c@     -- #entries encoding the G1 semantics
-## @g1-semantics-sz@    -- Informational: #bytes for encoding of the G1 semantics
-## @g1-semantics-v@     -- Data encoding the G1 semantics (See spec.h for details)
-## @g1-symbols-c@   	-- #symbols in the structural (G1) level of the engine
-## @g1-symbols-indices@	-- Per G1 symbol indices into the string pool = symbol name
-## @g1-symbols-sz@	-- Informational: #bytes for
-## @l0-insn-c@          -- #instructions encoding the lexical (L0) rules
-## @l0-code-c@          -- #entries to encode the lexical (L0) rules
-## @l0-code-sz@         -- Informational: #bytes for
-## @l0-code@		-- VM instructions encoding the lexical (L0) rules
-## @l0-semantics-c@     -- #array descriptor codes of the L0 semantics
-## @l0-semantics-sz@    -- Informational: #bytes for the lexical semantics
-## @l0-semantics-v@     -- The array descriptor codes of the L0 semantics
-## @l0-symbols-c@	-- #symbols in the lexical (L0) level of the engine
-## @l0-symbols-indices@	-- Per L0 symbol indices into the string pool = symbol name
-## @l0-symbols-sz@	-- Informational: #bytes for the symbol name map
-## @lexemes-c@		-- #lexemes = #terminals in the grammar
-## @space@              -- Informational: #bytes taken by all structures
-## @string-c@      	-- #strings in the pool
-## @string-data-sz@ 	-- Informational: #bytes for the string data of the pool
-## @string-data-v@     	-- The string data of the string pool
-## @string-length-sz@ 	-- Informational: #bytes for the length data of the pool
-## @string-length-v@  	-- Length data for the strings in the pool
-## @string-offset-sz@ 	-- Informational: #bytes for the offset data of the pool
-## @string-offset-v@  	-- Offset data for the strings in the pool
+## @always-c@            -- #always active L0 symbols (discards + LTM-mode lexemes)
+## @always-sz@           -- Informational: #bytes for always active L0 symbols
+## @always-v@            -- ACS symbol ids of the always active L0 symbols
+## @cname@               -- C identifier, derived from @name@
+## @discards-c@          -- #discarded symbols in the L0 level (i.e. whitespace)
+## @event-names@         -- Literal pool for user-declared event names, or empty line
+## @event-table@         -- Array of all declared user events, L0 first, then G1, shared by the higher structures
+## @g1-code-c@           -- #entries to encode the structural (G1) rules
+## @g1-code-sz@          -- Informational: #bytes for
+## @g1-code@             -- VM instructions encoding the structural (G1) rules
+## @g1-event-struct-ref@ -- Address of the g1 event declaration structure, or 0.
+## @g1-event-struct@     -- G1 event declaration structure, or nothing
+## @g1-insn-c@           -- #instructions encoding the structural (G1) rules
+## @g1-lhs-v@            -- Per G1 rule indices into the symbol map = lhs of rule
+## @g1-masking-c@        -- #entries encoding the G1 masks (See spec.h for details)
+## @g1-masking-sz@       -- Informational: #bytes for encoding the G1 masks
+## @g1-masking-v@        -- Data encoding the G1 masks
+## @g1-rules-c@          -- #structural (G1) rules
+## @g1-rules-sz@         -- Informational: #bytes for
+## @g1-rules-v@          -- Per G1 rule indices into the string pool = rule name
+## @g1-semantics-c@      -- #entries encoding the G1 semantics
+## @g1-semantics-sz@     -- Informational: #bytes for encoding of the G1 semantics
+## @g1-semantics-v@      -- Data encoding the G1 semantics (See spec.h for details)
+## @g1-symbols-c@        -- #symbols in the structural (G1) level of the engine
+## @g1-symbols-indices@  -- Per G1 symbol indices into the string pool = symbol name
+## @g1-symbols-sz@       -- Informational: #bytes for
+## @have-events@         -- number of user-declared events (L0 and G1 together)
+## @l0-code-c@           -- #entries to encode the lexical (L0) rules
+## @l0-code-sz@          -- Informational: #bytes for
+## @l0-code@             -- VM instructions encoding the lexical (L0) rules
+## @l0-event-struct-ref@ -- Address of the l0 event declaration structure, or 0.
+## @l0-event-struct@     -- L0 event declaration structure, or nothing
+## @l0-insn-c@           -- #instructions encoding the lexical (L0) rules
+## @l0-semantics-c@      -- #array descriptor codes of the L0 semantics
+## @l0-semantics-sz@     -- Informational: #bytes for the lexical semantics
+## @l0-semantics-v@      -- The array descriptor codes of the L0 semantics
+## @l0-symbols-c@        -- #symbols in the lexical (L0) level of the engine
+## @l0-symbols-indices@  -- Per L0 symbol indices into the string pool = symbol name
+## @l0-symbols-sz@       -- Informational: #bytes for the symbol name map
+## @lexemes-c@           -- #lexemes = #terminals in the grammar
+## @space@               -- Informational: #bytes taken by all structures
+## @string-c@            -- #strings in the pool
+## @string-data-sz@      -- Informational: #bytes for the string data of the pool
+## @string-data-v@       -- The string data of the string pool
+## @string-length-sz@    -- Informational: #bytes for the length data of the pool
+## @string-length-v@     -- Length data for the strings in the pool
+## @string-offset-sz@    -- Informational: #bytes for the offset data of the pool
+## @string-offset-v@     -- Offset data for the strings in the pool
 
 namespace eval ::marpa::gen::runtime {}
 namespace eval ::marpa::gen::runtime::c {
@@ -151,7 +158,10 @@ proc ::marpa::gen::runtime::c::gc {serial} {
 
 proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     debug.marpa/gen/runtime/c {}
-    set defaults {prefix {    }}
+    set defaults {
+	prefix {    }
+	events both
+    }
     set config [dict merge $defaults $config]
     # Carry the prefix into all *Array commands, i.e. Flow, Tabular, and Chunked.
     # Remove unexposed internal CVs to prevent override.
@@ -159,6 +169,9 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     dict unset config from
     dict unset config to
     dict unset config n
+    # Pull chosen event generation mode
+    set emode [dict get $config events]
+    dict unset config events
 
     set gc [gc $serial]
     # Types we can get out of the reduction:
@@ -168,10 +181,12 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 
     set lit       [GetL0 $gc literal]
     set l0symbols [GetL0 $gc {}]
+    set l0events  [$gc l0 events]
     set discards  [GetL0 $gc discard]
     set lex       [GetL0 $gc lexeme]
     set g1symbols [$gc g1 symbols-of {}]
-
+    set g1events  [$gc g1 events]
+    
     # Ignoring class 'terminal'. That is the same as the l0 lexemes,
     # and the semantics made sure, as did the container validation.
 
@@ -340,7 +355,7 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 
     incr dsz 24 ;# sizeof(marpatcl_rtc_string)
 
-    # L0 grammar: symbols, rules, semantics
+    # L0 grammar: symbols, rules, semantics, events
     Limit12 "\#l0 symbols" [L size]
 
     incr dsz [* 2 [L size]]       ; # sizeof(marpatcl_rtc_sym) = 2
@@ -361,8 +376,8 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     lappend map @l0-semantics-sz@       [* 2 [llength $sem]]
     lappend map @l0-semantics-c@        [llength $sem]
     lappend map @l0-semantics-v@        [TabularArray $sem $config]
-
-    incr dsz 48                   ; # sizeof(marpatcl_rtc_rules) = 48
+    
+    incr dsz 52                   ; # sizeof(marpatcl_rtc_rules) = 52
 
     # G1 grammar: symbols, rules
     Limit12 "\#g1 symbols" [L size]
@@ -419,6 +434,50 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 
     incr dsz 72 ; # sizeof(marpatcl_rtc_spec) = 72
 
+    # Event handling. 2 possible modes:
+    # (l0) L0 events only
+    # (both) L0 and G1 events combined (main table)
+
+    switch -exact -- $emode {
+	l0 {
+	    set l0events [Events2Table $l0events L]
+	    set name     [CName]_events
+	    set l0name   [CName]_l0events
+
+	    lappend map @have-events@         [llength $l0events]
+	    lappend map @event-table@         [EventTable  $name $l0events]
+	    lappend map @event-names@         [EventNames  $l0events]
+	    lappend map @l0-event-struct-ref@ [EventRef    $l0name $l0events]
+	    lappend map @l0-event-struct@     [EventStruct $l0name $l0events $name]
+
+	    incr dsz 0 ;# TODO XXX size of the event structures
+	}
+	both {
+	    set l0events [Events2Table $l0events L]
+	    set g1events [Events2Table $g1events G]
+	    set events   [concat $l0events $g1events]
+	    set nl       [llength $l0events]
+
+	    set name     [CName]_events
+	    set l0name   [CName]_l0events
+	    set g1name   [CName]_g1events
+
+	    lappend map @have-events@         [llength $events]
+	    lappend map @event-table@         [EventTable  $name $events]
+	    lappend map @event-names@         [EventNames  $events]
+	    lappend map @l0-event-struct-ref@ [EventRef    $l0name $l0events]
+	    lappend map @l0-event-struct@     [EventStruct $l0name $l0events $name]
+	    lappend map @g1-event-struct-ref@ [EventRef    $g1name $g1events]
+	    lappend map @g1-event-struct@     [EventStruct $g1name $g1events $name $nl]
+
+	    incr dsz 0 ;# TODO XXX size of the event structures
+	}
+	default {
+	    return -code error \
+		"Bad event mode $emode, expected one of l0, or both."
+	}
+    }
+   
     lappend map @space@ $dsz
 
     # todo - actions, masking
@@ -963,6 +1022,89 @@ proc ::marpa::gen::runtime::c::dictsort {dict} {
 	lappend r $k [dict get $dict $k]
     }
     return $r
+}
+
+proc ::marpa::gen::runtime::c::Events2Table {dict sym} {
+    if {![dict size $dict]} { return {} }
+    # Flatten
+    dict for {symbol spec} $dict {
+	dict for {type decl} $spec {
+	    dict for {event active} $decl {
+		# Attention: Type converter has to match
+		# marpa_runtime_c.h:marpatcl_rtc_event_code
+		set type [dict get {
+		    after     marpatcl_rtc_event_after
+		    before    marpatcl_rtc_event_before
+		    completed marpatcl_rtc_event_completed
+		    discard   marpatcl_rtc_event_discard
+		    nulled    marpatcl_rtc_event_nulled
+		    predicted marpatcl_rtc_event_predicted
+		} $type]
+		set active [dict get {
+		    on  1  true  1  1 1
+		    off 0  false 0  0 0
+		} $active]
+		set sid [$sym 2id $symbol]
+		lappend table [list $event $symbol $sid $type $active]
+	    }
+	}
+    }
+    # Sort (Event names, then symbol names)
+    return [lsort -dict -index 0 [lsort -dict -index 1 $table]]
+}
+
+proc ::marpa::gen::runtime::c::EventRef {name table} {
+    if {[llength $table]} {
+	return &${name}
+    }
+    return 0
+}
+
+proc ::marpa::gen::runtime::c::EventNames {table} {
+    if {![llength $table]} { return "" }
+
+    lappend names "\ncritcl::literals::def [core-config? name]_event \{"
+    set k 0
+    foreach item $table {
+	lassign $item event _ _ _ _
+	lappend names "    u$k \"$event\""
+	incr k
+    }
+    lappend names "\} +list\n"
+    
+    return [join $names \n]
+}
+
+proc ::marpa::gen::runtime::c::EventTable {name table} {
+    set n [llength $table]
+    if {!$n} { return "" }
+
+    lappend decl "\n    static marpatcl_rtc_event $name \[$n\] \{"
+    foreach item $table {
+	lassign $item event sym sid type active
+	# TODO: left-pad / right-align the columns
+	lappend decl "\t\{ $sid, $type, $active \}, // ${sym}: $event"
+    }
+    lappend decl "    \};\n"
+    # dsz + len(table)*(4+4+4)
+
+    return [join $decl \n]
+}
+
+proc ::marpa::gen::runtime::c::EventStruct {name table dname {offset 0}} {
+    set n [llength $table]
+    if {!$n} { return "" }
+
+    lappend decl "\n    static marpatcl_rtc_events $name \{"
+    if {$offset} {
+	lappend decl "\t$n, ${dname} + $offset"
+    } else {
+	lappend decl "\t$n, ${dname}"
+    }
+    lappend decl "    \};\n"
+    # dsz + 8 (2+4+pad:2)
+
+    return [join $decl \n]
 }
 
 # # ## ### ##### ######## #############

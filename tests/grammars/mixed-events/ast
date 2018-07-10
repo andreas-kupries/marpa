@@ -1,0 +1,63 @@
+statements/0
+  statement/11
+    completion event declaration/0
+      event initialization/0
+        event name/0
+          @6 3 'fox'
+        event initializer/0
+          on or off/0
+            @12 2 'on'
+      symbol name/0
+        @27 1 'A'
+  statement/4
+    priority rule/0
+      lhs/0
+        symbol name/0
+          @29 1 'A'
+      priorities bnf/0
+        alternatives bnf/0
+          alternative bnf/0
+            rhs/0
+              rhs primary/0
+                single symbol/0
+                  symbol/0
+                    symbol name/0
+                      @35 1 'B'
+            @{} {} ''
+  statement/6
+    discard rule/0
+      symbol/0
+        symbol name/0
+          @49 1 'C'
+      adverb list discard/0
+        adverb list items discard/0
+          adverb item discard/0
+            event specification/0
+              event initialization/0
+                event name/0
+                  @60 5 'snafu'
+                @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @66 1 'B'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @70 3 ''a''
+            @{} {} ''
+  statement/4
+    priority rule/1
+      lhs/0
+        symbol name/0
+          @74 1 'C'
+      priorities match/0
+        alternatives match/0
+          alternative match/0
+            rhs/0
+              rhs primary/1
+                @78 3 ''c''
+            @{} {} ''

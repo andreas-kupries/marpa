@@ -65,7 +65,21 @@ proc ::marpa::gen::format::cparse-critcl::container {gc} {
     set config [marpa::gen::runtime::c::config [$gc serialize] {
 	prefix {	}
     }]
-    set template [string trim [marpa asset $self]]
+
+    lassign [lmap segment [marpa asset* $self] {
+	string trim $segment
+    }] template setup_events setup_no_events setup_post
+
+    if {[dict get $config @have-events@]} {
+	dict set config @__event_setup__@ [string map $config $setup_events]
+	dict set config @__event_pkg__@   "\n    package require critcl::literals"
+	dict set config @__event_post__@  " $setup_post"
+    } else {
+	dict set config @__event_setup__@ [string map $config $setup_no_events]
+	dict set config @__event_pkg__@   ""
+	dict set config @__event_post__@  " \{\}"
+    }
+
     return [string map $config $template]
 }
 
@@ -73,12 +87,12 @@ proc ::marpa::gen::format::cparse-critcl::container {gc} {
 package provide marpa::gen::format::cparse-critcl 0
 return
 ##
-## Template following (`source` will not process it)
+## Template and parts following (`source` will not process it)
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
-# (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                     http://core.tcl.tk/akupries/
+# (c) 2017-2018 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                          http://core.tcl.tk/akupries/
 ##
 # (c) @slif-year@ Grammar @slif-name@ @slif-version@ By @slif-writer@
 ##
@@ -109,9 +123,10 @@ package provide @slif-name@ @slif-version@
 
 package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
+
 critcl::buildrequirement {
     package require critcl::class
-    package require critcl::cutil
+    package require critcl::cutil@__event_pkg__@
 }
 
 if {![critcl::compiling]} {
@@ -130,6 +145,7 @@ critcl::debug symbols
 ## Requirements
 
 critcl::api import marpa::runtime::c 0
+critcl::api import critcl::callback  1
 
 # # ## ### ##### ######## ############# #####################
 ## Static data structures declaring the grammar
@@ -154,7 +170,7 @@ critcl::ccode {
 	@cname@_pool_offset,
 @string-data-v@
     };
-
+@event-table@
     /*
     ** L0 structures
     */
@@ -166,13 +182,14 @@ critcl::ccode {
     static marpatcl_rtc_sym @cname@_l0_rule_definitions [@l0-code-c@] = { /* @l0-code-sz@ bytes */
 @l0-code@
     };
-
+@l0-event-struct@
     static marpatcl_rtc_rules @cname@_l0 = { /* 48 */
 	/* .sname   */  &@cname@_pool,
 	/* .symbols */  { @l0-symbols-c@, @cname@_l0_sym_name },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
-	/* .rcode   */  @cname@_l0_rule_definitions
+	/* .rcode   */  @cname@_l0_rule_definitions,
+	/* .events  */  @l0-event-struct-ref@
     };
 
     static marpatcl_rtc_sym @cname@_l0semantics [@l0-semantics-c@] = { /* @l0-semantics-sz@ bytes */
@@ -198,13 +215,14 @@ critcl::ccode {
     static marpatcl_rtc_sym @cname@_g1_rule_definitions [@g1-code-c@] = { /* @g1-code-sz@ bytes */
 @g1-code@
     };
-
+@g1-event-struct@
     static marpatcl_rtc_rules @cname@_g1 = { /* 48 */
 	/* .sname   */  &@cname@_pool,
 	/* .symbols */  { @g1-symbols-c@, @cname@_g1_sym_name },
 	/* .rules   */  { @g1-rules-c@, @cname@_g1_rule_name },
 	/* .lhs     */  { @g1-rules-c@, @cname@_g1_rule_lhs },
-	/* .rcode   */  @cname@_g1_rule_definitions
+	/* .rcode   */  @cname@_g1_rule_definitions,
+	/* .events  */  @g1-event-struct-ref@
     };
 
     static marpatcl_rtc_sym @cname@_g1semantics [@g1-semantics-c@] = { /* @g1-semantics-sz@ bytes */
@@ -240,7 +258,7 @@ critcl::ccode {
 
 # # ## ### ##### ######## ############# #####################
 ## Class exposing the grammar engine.
-
+@event-names@
 critcl::class def @slif-name@ {
     insvariable marpatcl_rtc_sv_p result {
 	Parse result
@@ -249,18 +267,9 @@ critcl::class def @slif-name@ {
     } {
 	if (instance->result) marpatcl_rtc_sv_unref (instance->result);
     }
-    
-    insvariable marpatcl_rtc_p state {
-	C-level engine, RTC structures.
-    } {
-	instance->state = marpatcl_rtc_cons (&@cname@_spec,
-					     NULL /* actions - TODO FUTURE */,
-					     @stem@_result,
-					     (void*) instance );
-    } {
-	marpatcl_rtc_destroy (instance->state);
-    }
-    
+
+    @__event_setup__@
+
     constructor {
         /*
 	 * Syntax:                          ... []
@@ -272,7 +281,7 @@ critcl::class def @slif-name@ {
 	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
 	    goto error;
 	}
-    } {}
+    }@__event_post__@
 
     method process-file proc {Tcl_Interp* ip Tcl_Obj* path} ok {
 	int res, got;
@@ -302,19 +311,23 @@ critcl::class def @slif-name@ {
 	(void) Tcl_Close (ip, in);
 	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
-    
+
     method process proc {Tcl_Interp* ip pstring string} ok {
 	marpatcl_rtc_enter (instance->state, string.s, string.len);
 	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
 
     support {
-	/* Helper function capturing parse results (semantic values of the parser)
+	/*
 	** Stem:  @stem@
 	** Pkg:   @package@
 	** Class: @class@
 	** IType: @instancetype@
 	** CType: @classtype@
+	*/
+
+	/*
+	** Helper function capturing parse results (semantic values of the parser)
 	*/
 
 	static void
@@ -331,3 +344,79 @@ critcl::class def @slif-name@ {
 
 # # ## ### ##### ######## ############# #####################
 return
+
+    # Setup for events
+
+    method on-event proc {Tcl_Interp* ip object args} void {
+	marpatcl_rtc_eh_setup (&instance->h, ip, args.c, args.v, instance->self);
+    }
+
+    insvariable Tcl_Obj* self {
+	Self reference of the instance command.
+    } {
+	/* Initialized by the constructor post-body */
+    } {
+	Tcl_DecrRefCount (instance->self);
+	instance->self = 0;
+    }
+   
+    insvariable marpatcl_ehandlers h {
+	Handler for parse events
+    } {
+	marpatcl_rtc_eh_init (&instance->h);
+	/* See on-event for full setup */
+    } {
+	marpatcl_rtc_eh_clear (&instance->h);
+    }
+
+    insvariable marpatcl_rtc_p state {
+	C-level engine, RTC structures.
+    } {
+	instance->state = marpatcl_rtc_cons (&@cname@_spec,
+					     NULL, /* No actions */
+					     @stem@_result,
+					     @stem@_event,
+					     (void*) instance );
+    } {
+	marpatcl_rtc_destroy (instance->state);
+    }
+
+    support {
+	/*
+	** Helper function to handle parse events. Invoked by the runtime.
+	** In turn delegates to the approciate critcl::callback to reach Tcl.
+	*/
+
+	static void
+	@stem@_event (void* cdata, marpatcl_rtc_event_code code, int n, Marpa_Symbol_ID* ids)
+	{
+	    @instancetype@ instance = (@instancetype@) cdata;
+	    if (!instance->h[0]) return;
+	    Tcl_Obj* events = @slif-name@_event_list (n, ids);
+	    Tcl_IncrRefcount (events);
+	    critcl_callback_invoke (instance->h [code], 1, events);
+	    Tcl_DecrRefcount (events);
+	    return;
+	}
+    }
+
+    # Setup without events
+
+    method on-event proc {Tcl_Interp* ip object args} void {}
+
+    insvariable marpatcl_rtc_p state {
+	C-level engine, RTC structures.
+    } {
+	instance->state = marpatcl_rtc_cons (&@cname@_spec,
+					     NULL, /* No actions */
+					     @stem@_result,
+					     0,
+					     (void*) instance );
+    } {
+	marpatcl_rtc_destroy (instance->state);
+    }
+
+{
+	/* Post body. Save the FQN for use in the callbacks */
+	instance->self = fqn;
+    }
