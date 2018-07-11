@@ -307,6 +307,7 @@ complete (marpatcl_rtc_p p)
     marpatcl_rtc_sym token;
     marpatcl_rtc_sym rule;
     marpatcl_rtc_sv_p sv = 0;
+    marpatcl_rtc_sv_p lastsv = 0;
     TRACE_RUN (int trees = -1);
     TRACE_FUNC ("((rtc*) %p (lex.recce %p))", p, LEX.recce);
 
@@ -460,13 +461,23 @@ complete (marpatcl_rtc_p p)
 	    const char*       s  = marpatcl_rtc_spec_symname (SPEC->l0, TO_ACS (token), 0);
 	    marpatcl_rtc_sv_p tv = marpatcl_rtc_sv_cons_string (STRDUP (s), 1);
 
-	    TRACE_TAG (lexonly, "((void*) %p) token (sv*) %p = '%s'", p->cdata, tv, s);
+	    TRACE_TAG (lexonly, "((void*) %p) token (sv*) %p rc %d = '%s'", p->cdata, tv, tv->refCount, s);
 	    p->result (p->cdata, tv);
 	    // Callback now owns it. No unref because we started at RC 0.
 
-	    TRACE_TAG (lexonly, "((void*) %p) value (sv*) %p", p->cdata, sv);
+	    TRACE_TAG (lexonly, "((void*) %p) value (sv*) %p rc %d", p->cdata, sv, sv->refCount);
 	    p->result (p->cdata, sv);
-	    marpatcl_rtc_sv_unref_i (sv); // Callback now owns it.
+	    // sv != lastsv => sv is new, callback bumped RC, undo ours
+	    // sv == lastsv => sv already pushed, our RC undone already,
+	    //                 don't release, would wrongly remove the
+	    //                 callback's bump
+	    // This happens when we find multiple tokens at the same
+	    // location, sharing the SV.
+	    if (sv != lastsv) {
+		marpatcl_rtc_sv_unref_i (sv); // Callback now owns it.
+		// RC = 1
+	    }
+	    lastsv = sv;
 	}
     }
 
