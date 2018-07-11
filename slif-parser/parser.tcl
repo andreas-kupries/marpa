@@ -5,6 +5,7 @@
 #                                     http://core.tcl.tk/akupries/
 ##
 # (c) 2018 Grammar marpa::slif::parser 0 By Jeffrey Kegler + Andreas Kupries
+### --- manually modified to runtime-c changes for parse events ---
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "marpa::slif::parser".
 ##	Generated On Sat Mar 24 00:43:53 PDT 2018
@@ -4989,7 +4990,8 @@ critcl::ccode {
 	/* .symbols */  { 999, marpa_slif_parser_l0_sym_name },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
-	/* .rcode   */  marpa_slif_parser_l0_rule_definitions
+	/* .rcode   */  marpa_slif_parser_l0_rule_definitions,
+	0 // .events
     };
 
     static marpatcl_rtc_sym marpa_slif_parser_l0semantics [3] = { /* 6 bytes */
@@ -5209,7 +5211,8 @@ critcl::ccode {
 	/* .symbols */  { 156, marpa_slif_parser_g1_sym_name },
 	/* .rules   */  { 154, marpa_slif_parser_g1_rule_name },
 	/* .lhs     */  { 154, marpa_slif_parser_g1_rule_lhs },
-	/* .rcode   */  marpa_slif_parser_g1_rule_definitions
+	/* .rcode   */  marpa_slif_parser_g1_rule_definitions,
+	0 // .events
     };
 
     static marpatcl_rtc_sym marpa_slif_parser_g1semantics [4] = { /* 8 bytes */
@@ -5292,6 +5295,7 @@ critcl::class def marpa::slif::parser {
 	instance->state = marpatcl_rtc_cons (&marpa_slif_parser_spec,
 					     NULL /* actions - TODO FUTURE */,
 					     @stem@_result,
+					     0, // no event callback
 					     (void*) instance );
     } {
 	marpatcl_rtc_destroy (instance->state);

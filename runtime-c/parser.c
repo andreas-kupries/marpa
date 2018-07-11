@@ -322,7 +322,7 @@ complete (marpatcl_rtc_p p)
 	TRACE_CLOSER;
 
 	// Invoke user-supplied callback for handling the SVs
-	p->result (p->rcdata, sv);
+	p->result (p->cdata, sv);
 
 	marpatcl_rtc_sva_clear (&es);
     }

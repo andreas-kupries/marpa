@@ -575,7 +575,8 @@ critcl::ccode {
 	/* .symbols */  { 318, json_parser_c_l0_sym_name },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
-	/* .rcode   */  json_parser_c_l0_rule_definitions
+	/* .rcode   */  json_parser_c_l0_rule_definitions,
+	0
     };
 
     static marpatcl_rtc_sym json_parser_c_l0semantics [3] = { /* 6 bytes */
@@ -634,7 +635,8 @@ critcl::ccode {
 	/* .symbols */  { 24, json_parser_c_g1_sym_name },
 	/* .rules   */  { 18, json_parser_c_g1_rule_name },
 	/* .lhs     */  { 18, json_parser_c_g1_rule_lhs },
-	/* .rcode   */  json_parser_c_g1_rule_definitions
+	/* .rcode   */  json_parser_c_g1_rule_definitions,
+	0
     };
 
     static marpatcl_rtc_sym json_parser_c_g1semantics [4] = { /* 8 bytes */
@@ -704,6 +706,7 @@ critcl::class def json::parser::c {
 	instance->state = marpatcl_rtc_cons (&json_parser_c_spec,
 					     NULL /* actions - TODO FUTURE */,
 					     @stem@_result,
+					     0,
 					     (void*) instance );
     } {
 	marpatcl_rtc_destroy (instance->state);

@@ -82,10 +82,11 @@ critcl::include    marpa.h
 critcl::api header marpa_runtime_c.h
 
 critcl::api function marpatcl_rtc_p marpatcl_rtc_cons {
-    marpatcl_rtc_spec_p g
-    marpatcl_rtc_sv_cmd a
-    marpatcl_rtc_result r
-    void*               rcd
+    marpatcl_rtc_spec_p     g
+    marpatcl_rtc_sv_cmd     a
+    marpatcl_rtc_result_cmd r
+    marpatcl_rtc_event_cmd  e
+    void*                   cdata
 }
 critcl::api function void marpatcl_rtc_destroy {
     marpatcl_rtc_p p

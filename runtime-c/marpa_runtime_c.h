@@ -15,6 +15,23 @@
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
+ * Enumeration of parse event types. See also pevents.tcl for the
+ * mapping between this and Tcl strings.
+ */
+
+typedef enum {
+    marpatcl_rtc_event_before,
+    marpatcl_rtc_event_after,
+    marpatcl_rtc_event_discard,
+    marpatcl_rtc_event_predicted,
+    marpatcl_rtc_event_completed,
+    marpatcl_rtc_event_nulled,
+    //
+    marpatcl_rtc_eventtype_LAST
+} marpatcl_rtc_eventtype;
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
  * Opaque structure types, pointer/public.
  * Other types seen in the interface.
  */
@@ -28,8 +45,8 @@ typedef struct marpatcl_rtc_sv*   marpatcl_rtc_sv_p;
  * Type of the callback invoked to return the results (semantic values).
  */
 
-typedef void (*marpatcl_rtc_result) (void*             clientdata,
-				     marpatcl_rtc_sv_p x);
+typedef void (*marpatcl_rtc_result_cmd) (void*             clientdata,
+					 marpatcl_rtc_sv_p x);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -41,6 +58,20 @@ typedef void (*marpatcl_rtc_result) (void*             clientdata,
 typedef marpatcl_rtc_sv_p (*marpatcl_rtc_sv_cmd) (int               action,
 						  const char*       aname,
 						  marpatcl_rtc_sv_p children);
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Type of the callback invoked to signal parse events. Takes an event code
+ * and an array for the event ids, with size. The event codes are fixed
+ * (See enum marpatcl_rtc_eventtype above) The identifiers OTOH originate in
+ * the grammar. This makes the hook responsible for handling them
+ * (conversions, etc).
+ */
+
+typedef void (*marpatcl_rtc_event_cmd) (void*                  clientdata,
+                                        marpatcl_rtc_eventtype type,
+                                        int                    nevents,
+                                        int*                   eventids);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -86,7 +117,7 @@ typedef struct marpatcl_rtc_string {
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
- * -- static vectors of symbol references
+ * -- Static vectors of symbol references
  */
 
 typedef struct marpatcl_rtc_symvec {
@@ -96,7 +127,36 @@ typedef struct marpatcl_rtc_symvec {
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
- * -- grammar definition -- symbols used, rules (as a form of bytecode)
+ * -- Static table of declared parse events
+ *
+ * Notes --
+ *
+ * (1) The ability to change state at parse runtime requires a separate array
+ *     in the `marpatcl_rtc` structure to hold the actual state.
+ *
+ * (2) The event names are found in the Tcl/C glue code, in a parallel array.
+ *     It might be sensible to store them here for parsers not tied to Tcl.
+ *
+ * (3) The C/Tcl glue uses a single marpatcl_rtc_event array to store both L0
+ *     and the G1 events. The marpatcl_rtc_events.data field of the structures
+ *     for L0 and G1 is made to point to the appropriate segments of the
+ *     shared array.
+ */
+
+typedef struct marpatcl_rtc_event {
+    marpatcl_rtc_sym       sym;    /* Symbol the event is for */
+    marpatcl_rtc_eventtype type;   /* Type of event */
+    int                    active; /* State of event, per grammar declaration */
+} marpatcl_rtc_event;
+
+typedef struct marpatcl_rtc_events {
+    marpatcl_rtc_size   size; /* Number of declared events */
+    marpatcl_rtc_event* data; /* Event specifications */
+} marpatcl_rtc_events;
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * -- Grammar definition -- symbols used, rules (as a form of bytecode)
  */
 
 typedef struct marpatcl_rtc_rules {
@@ -105,6 +165,7 @@ typedef struct marpatcl_rtc_rules {
     marpatcl_rtc_symvec  rules;   /* Table of rule(name)s. References SP */
     marpatcl_rtc_symvec  lhs;     /* Table of rule lhs identifiers */
     marpatcl_rtc_sym*    rcode;   /* Bytecode specifying the rules */
+    marpatcl_rtc_events* events;  /* Table of parse events, if any */
 } marpatcl_rtc_rules;
 
 /*
@@ -142,7 +203,7 @@ typedef struct marpatcl_rtc_rules {
 
 #define MARPATCL_SYSZ  (sizeof(marpatcl_rtc_sym)*8)
 #define MARPATCL_SYTOP ((~0) << (MARPATCL_SYSZ-4))
-#define MARPATCL_SYLOW (~MARPATCL_SYTOP) 
+#define MARPATCL_SYLOW (~MARPATCL_SYTOP)
 
 #define MARPATCL_CMD(t,v) (((t & 15) << (MARPATCL_SYSZ-4)) | ((v) & MARPATCL_SYLOW))
 

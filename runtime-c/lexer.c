@@ -425,8 +425,8 @@ complete (marpatcl_rtc_p p)
 		PAR_P (p);
 	    } else {
 		// Lexing-only mode. Start "enter"
-		TRACE_TAG (lexonly, "((void*) %p) enter", p->rcdata);
-		p->result (p->rcdata, NULL);
+		TRACE_TAG (lexonly, "((void*) %p) enter", p->cdata);
+		p->result (p->cdata, NULL);
 	    }
 	}
 
@@ -460,12 +460,12 @@ complete (marpatcl_rtc_p p)
 	    const char*       s  = marpatcl_rtc_spec_symname (SPEC->l0, TO_ACS (token), 0);
 	    marpatcl_rtc_sv_p tv = marpatcl_rtc_sv_cons_string (STRDUP (s), 1);
 
-	    TRACE_TAG (lexonly, "((void*) %p) token (sv*) %p = '%s'", p->rcdata, tv, s);
-	    p->result (p->rcdata, tv);
+	    TRACE_TAG (lexonly, "((void*) %p) token (sv*) %p = '%s'", p->cdata, tv, s);
+	    p->result (p->cdata, tv);
 	    // Callback now owns it. No unref because we started at RC 0.
 
-	    TRACE_TAG (lexonly, "((void*) %p) value (sv*) %p", p->rcdata, sv);
-	    p->result (p->rcdata, sv);
+	    TRACE_TAG (lexonly, "((void*) %p) value (sv*) %p", p->cdata, sv);
+	    p->result (p->cdata, sv);
 	    marpatcl_rtc_sv_unref_i (sv); // Callback now owns it.
 	}
     }
@@ -489,8 +489,8 @@ complete (marpatcl_rtc_p p)
     } else {
 	// Lexing-only mode. Complete "enter", and restart the lower parts
 	// (normally done by the parser)
-	TRACE_TAG (lexonly, "((void*) %p) enter /complete", p->rcdata);
-	p->result (p->rcdata, ((marpatcl_rtc_sv_p) 1));
+	TRACE_TAG (lexonly, "((void*) %p) enter /complete", p->cdata);
+	p->result (p->cdata, ((marpatcl_rtc_sv_p) 1));
 
 	marpatcl_rtc_lexer_acceptable (p, 0);
     }

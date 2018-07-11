@@ -10,6 +10,9 @@ if {[llength $argv] != 6} {
     exit 1
 }
 
+# Report back how we are called.
+puts [linsert $argv 0 [info nameofexecutable]]
+
 # Syntax:  <top> <prefix> <format> <name> <grammar> <result>
 lassign $argv top prefix format name grammar result
 
@@ -69,6 +72,8 @@ proc post {} {
 	-I ${prefix}/include \
 	-I $maintclinc \
 	$result
+
+    puts \n$cmd\n
     
     if {[catch {
 	fileutil::writeFile ${out}_LOG $cmd\n\n
