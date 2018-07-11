@@ -12,6 +12,8 @@
 
 // stdint.h, cinttypes.h, inttypes.h, types.h -- uint16_t
 #include <stdint.h>
+#include <critcl_callback/callback.h>
+#include <tcl.h>
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -39,6 +41,14 @@ typedef enum {
 typedef struct marpatcl_rtc_spec* marpatcl_rtc_spec_p;
 typedef struct marpatcl_rtc*      marpatcl_rtc_p;
 typedef struct marpatcl_rtc_sv*   marpatcl_rtc_sv_p;
+typedef struct marpatcl_rtc_lex*  marpatcl_rtc_lex_p;
+
+typedef struct marpatcl_rtc_lex {
+    marpatcl_rtc_sv_p tokens;
+    marpatcl_rtc_sv_p values;
+    Tcl_Interp*       ip;
+    critcl_callback_p matched;
+} marpatcl_rtc_lex;
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

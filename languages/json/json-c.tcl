@@ -705,9 +705,8 @@ critcl::class def json::parser::c {
     } {
 	instance->state = marpatcl_rtc_cons (&json_parser_c_spec,
 					     NULL /* actions - TODO FUTURE */,
-					     @stem@_result,
-					     0,
-					     (void*) instance );
+					     @stem@_result, (void*) instance,
+					     0, 0 );
     } {
 	marpatcl_rtc_destroy (instance->state);
     }

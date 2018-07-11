@@ -41,6 +41,7 @@ critcl::debug symbols
 
 critcl::config lines 1
 critcl::config trace 0
+#critcl::config keepsrc 1
 
 # # ## ### ##### ######## #############
 ## Administrivia
@@ -76,6 +77,8 @@ critcl::clibraries -L/usr/local/lib -lmarpa ; # XXX TODO automatic search/config
 critcl::cheaders   -I/usr/local/include     ; # XXX TODO automatic search/configuration
 critcl::include    marpa.h
 
+critcl::api import critcl_callback 1
+
 # # ## ### ##### ######## #############
 ## Public API for use by generated lexers and parsers.
 
@@ -85,8 +88,9 @@ critcl::api function marpatcl_rtc_p marpatcl_rtc_cons {
     marpatcl_rtc_spec_p     g
     marpatcl_rtc_sv_cmd     a
     marpatcl_rtc_result_cmd r
+    void*                   rcdata
     marpatcl_rtc_event_cmd  e
-    void*                   cdata
+    void*                   ecdata
 }
 critcl::api function void marpatcl_rtc_destroy {
     marpatcl_rtc_p p
@@ -126,6 +130,19 @@ critcl::api function void marpatcl_rtc_sv_vec_push {
 }
 critcl::api function int marpatcl_rtc_sv_vec_size {
     marpatcl_rtc_sv_p v
+}
+
+# pure lexer support
+
+critcl::api function void marpatcl_rtc_lex_init {
+    marpatcl_rtc_lex_p state
+}
+critcl::api function void marpatcl_rtc_lex_release {
+    marpatcl_rtc_lex_p state
+}
+critcl::api function void marpatcl_rtc_lex_token {
+    void*             cdata
+    marpatcl_rtc_sv_p sv
 }
 
 # # ## ### ##### ######## #############

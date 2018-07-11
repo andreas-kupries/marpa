@@ -228,43 +228,16 @@ critcl::ccode {
 @event-names@
 critcl::class def @slif-name@ {
 
-    insvariable marpatcl_rtc_sv_p tokens {
-	Scratchpad for the @stem@_token callback to store the incoming
-	tokens before they get passed to the Tcl level.
-    } {
-	instance->tokens = marpatcl_rtc_sv_cons_evec (1); // Expandable
-	TRACE ("cons (i %p).(tokens %p)", instance, instance->tokens);
-    } {
-	TRACE ("dest (i %p).(tokens %p)", instance, instance->tokens);
-	if (instance->tokens) marpatcl_rtc_sv_unref (instance->tokens);
-    }
-
-    insvariable marpatcl_rtc_sv_p values {
-	Scratchpad for the @stem@_token callback to store the incoming
+    insvariable marpatcl_rtc_lex lstate {
+	State for the token callback to store the incoming tokens and
 	values before they get passed to the Tcl level.
     } {
-	instance->values = marpatcl_rtc_sv_cons_evec (1); // Expandable
-	TRACE ("cons (i %p).(values %p)", instance, instance->values);
+	marpatcl_rtc_lex_init (&instance->lstate);
     } {
-	TRACE ("dest (i %p).(values %p)", instance, instance->values);
-	if (instance->values) marpatcl_rtc_sv_unref (instance->values);
+	marpatcl_rtc_lex_release (&instance->lstate);
     }
 
     @__event_setup__@
-
-    insvariable Tcl_Interp* ip {
-	Interpreter back reference for SV/Tcl conversion glue code
-    } {
-	instance->ip = 0;
-    } { /* Nothing to release */ }
-
-    insvariable critcl_callback_p matched {
-	Tcl callback to report the matching of a token, with token information.
-    } {
-	instance->matched = 0;
-    } {
-	if (instance->matched) critcl_callback_destroy (instance->matched);
-    }
 
     constructor {
         /*
@@ -278,7 +251,7 @@ critcl::class def @slif-name@ {
 	    goto error;
 	}
 
-	instance->ip = interp;
+	instance->lstate.ip = interp;
     }@__event_post__@
 
     method process-file proc {Tcl_Interp* ip Tcl_Obj* path list outcmd} ok {
@@ -295,11 +268,8 @@ critcl::class def @slif-name@ {
 	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
 	// TODO: abort on failed set-channel-option
 
-	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
-	critcl_callback_extend (on_eof, Tcl_NewStringObj ("eof", -1));
-
-	instance->matched = critcl_callback_new (ip, outcmd.c, outcmd.v, 3);
-	critcl_callback_extend (instance->matched, Tcl_NewStringObj ("enter", -1));
+	instance->lstate.matched = critcl_callback_new (ip, outcmd.c, outcmd.v, 3);
+	critcl_callback_extend (instance->lstate.matched, Tcl_NewStringObj ("enter", -1));
 
 	while (!Tcl_Eof(in)) {
 	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
@@ -315,11 +285,14 @@ critcl::class def @slif-name@ {
 
 	(void) Tcl_Close (ip, in);
 
+	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
+	critcl_callback_extend (on_eof, Tcl_NewStringObj ("eof", -1));
+
 	res = critcl_callback_invoke (on_eof, 0, 0);
 
 	critcl_callback_destroy (on_eof);
-	critcl_callback_destroy (instance->matched);
-	instance->matched = 0;
+	critcl_callback_destroy (instance->lstate.matched);
+	instance->lstate.matched = 0;
 
 	return res;
     }
@@ -327,94 +300,21 @@ critcl::class def @slif-name@ {
     method process proc {Tcl_Interp* ip pstring string list outcmd} ok {
 	int res;
 
-	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
-	critcl_callback_extend (on_eof, Tcl_NewStringObj ("eof", -1));
-
-	instance->matched = critcl_callback_new (ip, outcmd.c, outcmd.v, 3);
-	critcl_callback_extend (instance->matched, Tcl_NewStringObj ("enter", -1));
+	instance->lstate.matched = critcl_callback_new (ip, outcmd.c, outcmd.v, 3);
+	critcl_callback_extend (instance->lstate.matched, Tcl_NewStringObj ("enter", -1));
 
 	marpatcl_rtc_enter (instance->state, string.s, string.len);
+
+	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
+	critcl_callback_extend (on_eof, Tcl_NewStringObj ("eof", -1));
 
 	res = critcl_callback_invoke (on_eof, 0, 0);
 
 	critcl_callback_destroy (on_eof);
-	critcl_callback_destroy (instance->matched);
-	instance->matched = 0;
+	critcl_callback_destroy (instance->lstate.matched);
+	instance->lstate.matched = 0;
 
 	return res;
-    }
-
-    support {
-	/* Helper function capturing parse results (semantic values of the parser)
-	** Stem:  @stem@
-	** Pkg:   @package@
-	** Class: @class@
-	** IType: @instancetype@
-	** CType: @classtype@
-	*/
-
-	static void
-	@stem@_token (void* cdata, marpatcl_rtc_sv_p sv)
-	{
-	    @instancetype@ instance = (@instancetype@) cdata;
-	    TRACE_FUNC ("(i %p), ((sv*) %p)", instance, sv);
-
-	    // See rtc/lexer.c 'complete' (!SPEC->g1) for the caller.
-	    //
-	    // Call sequence:
-	    // - sv == 0 : "enter" begins
-	    // - sv == 1 : "enter" is complete, call to Tcl
-	    // - any other sv:
-	    //   - even call => sv is token [string]
-	    //   - odd  call => sv is value [any]
-
-	    if (sv == 0) {
-		// Begin "enter"
-		TRACE ("%s", "enter /begin");
-
-		TRACE ("- clear (i %p).(tokens %p)", instance, instance->tokens);
-		marpatcl_rtc_sv_vec_clear (instance->tokens);
-
-		TRACE ("- clear (i %p).(values %p)", instance, instance->values);
-		marpatcl_rtc_sv_vec_clear (instance->values);
-
-		TRACE ("%s", "enter /begin done");
-		TRACE_RETURN_VOID;
-	    }
-
-	    if (sv == ((marpatcl_rtc_sv_p) 1)) {
-		// Complete "enter", call into Tcl
-		TRACE ("%s", "enter close /begin");
-
-		Tcl_Obj* v[2];
-		v[0] = marpatcl_rtc_sv_astcl (instance->ip, instance->tokens);
-		v[1] = marpatcl_rtc_sv_astcl (instance->ip, instance->values);
-
-		TRACE ("%s", "enter close - callback");
-		(void) critcl_callback_invoke (instance->matched, 2, v);
-		TRACE ("%s", "enter close - callback return");
-
-		TRACE ("%s", "enter close /done");
-		TRACE_RETURN_VOID;
-	    };
-
-	    if (marpatcl_rtc_sv_vec_size (instance->tokens) ==
-		marpatcl_rtc_sv_vec_size (instance->values)) {
-		// Even call, both pads are empty or filled with matching t/v pairs.
-		// This call is a new token.
-
-		TRACE ("push token ((sv*) %p)", sv);
-		marpatcl_rtc_sv_vec_push (instance->tokens, sv);
-	    } else {
-		// Odd call, we have one more token than values.
-		// This call is a new value, match them again.
-
-		TRACE ("push value ((sv*) %p)", sv);
-		marpatcl_rtc_sv_vec_push (instance->values, sv);
-	    }
-
-	    TRACE_RETURN_VOID;
-	}
     }
 }
 
@@ -423,10 +323,11 @@ return
 
     # Setup for events
 
-    method on-event proc {Tcl_Interp* ip object args} void {
-	marpatcl_rtc_eh_setup (&instance->h, ip, args.c, args.v, instance->self);
+    method on-event proc {object args} void {
+	marpatcl_rtc_eh_setup (&instance->h, args.c, args.v);
     }
 
+    ## REMOVE when ..._eh_... is filled in.
     insvariable Tcl_Obj* self {
 	Self reference of the instance command.
     } {
@@ -439,7 +340,7 @@ return
     insvariable marpatcl_ehandlers h {
 	Handler for parse events
     } {
-	marpatcl_rtc_eh_init (&instance->h);
+	marpatcl_rtc_eh_init (&instance->h, ip);
 	/* See on-event for full setup */
     } {
 	marpatcl_rtc_eh_clear (&instance->h);
@@ -450,9 +351,8 @@ return
     } {
 	instance->state = marpatcl_rtc_cons (&@cname@_spec,
 					     NULL, /* No actions */
-					     @stem@_token,
-					     @stem@_event,
-					     (void*) instance );
+					     marpatcl_rtc_lex_token, (void*) &instance->lstate,
+					     @stem@_event,           (void*) instance );
     } {
 	marpatcl_rtc_destroy (instance->state);
     }
@@ -468,7 +368,7 @@ return
 	{
 	    @instancetype@ instance = (@instancetype@) cdata;
 	    if (!instance->h[0]) return;
-	    Tcl_Obj* events = @slif-name@_event_list (n, ids);
+	    Tcl_Obj* events = @slif-name@_event_list (instance->h.ip, n, ids);
 	    Tcl_IncrRefcount (events);
 	    critcl_callback_invoke (instance->h [code], 1, events);
 	    Tcl_DecrRefcount (events);
@@ -478,21 +378,20 @@ return
 
     # Setup without events
 
-    method on-event proc {Tcl_Interp* ip object args} void {}
+    method on-event proc {object args} void {}
 
     insvariable marpatcl_rtc_p state {
 	C-level engine, RTC structures.
     } {
 	instance->state = marpatcl_rtc_cons (&@cname@_spec,
 					     NULL, /* No actions */
-					     @stem@_token,
-					     0,
-					     (void*) instance );
+					     marpatcl_rtc_lex_token, (void*) &instance->lstate,
+					     0, 0 );
     } {
 	marpatcl_rtc_destroy (instance->state);
     }
 
 {
 	/* Post body. Save the FQN for use in the callbacks */
-	instance->self = fqn;
+	instance->h.self = fqn;
     }

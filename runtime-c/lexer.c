@@ -426,8 +426,8 @@ complete (marpatcl_rtc_p p)
 		PAR_P (p);
 	    } else {
 		// Lexing-only mode. Start "enter"
-		TRACE_TAG (lexonly, "((void*) %p) enter", p->cdata);
-		p->result (p->cdata, NULL);
+		TRACE_TAG (lexonly, "((void*) %p) enter", p->rcdata);
+		p->result (p->rcdata, NULL);
 	    }
 	}
 
@@ -461,12 +461,12 @@ complete (marpatcl_rtc_p p)
 	    const char*       s  = marpatcl_rtc_spec_symname (SPEC->l0, TO_ACS (token), 0);
 	    marpatcl_rtc_sv_p tv = marpatcl_rtc_sv_cons_string (STRDUP (s), 1);
 
-	    TRACE_TAG (lexonly, "((void*) %p) token (sv*) %p rc %d = '%s'", p->cdata, tv, tv->refCount, s);
-	    p->result (p->cdata, tv);
+	    TRACE_TAG (lexonly, "((void*) %p) token (sv*) %p rc %d = '%s'", p->rcdata, tv, tv->refCount, s);
+	    p->result (p->rcdata, tv);
 	    // Callback now owns it. No unref because we started at RC 0.
 
-	    TRACE_TAG (lexonly, "((void*) %p) value (sv*) %p rc %d", p->cdata, sv, sv->refCount);
-	    p->result (p->cdata, sv);
+	    TRACE_TAG (lexonly, "((void*) %p) value (sv*) %p rc %d", p->rcdata, sv, sv->refCount);
+	    p->result (p->rcdata, sv);
 	    // sv != lastsv => sv is new, callback bumped RC, undo ours
 	    // sv == lastsv => sv already pushed, our RC undone already,
 	    //                 don't release, would wrongly remove the
@@ -500,8 +500,8 @@ complete (marpatcl_rtc_p p)
     } else {
 	// Lexing-only mode. Complete "enter", and restart the lower parts
 	// (normally done by the parser)
-	TRACE_TAG (lexonly, "((void*) %p) enter /complete", p->cdata);
-	p->result (p->cdata, ((marpatcl_rtc_sv_p) 1));
+	TRACE_TAG (lexonly, "((void*) %p) enter /complete", p->rcdata);
+	p->result (p->rcdata, ((marpatcl_rtc_sv_p) 1));
 
 	marpatcl_rtc_lexer_acceptable (p, 0);
     }

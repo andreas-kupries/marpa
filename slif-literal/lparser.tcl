@@ -2812,9 +2812,8 @@ critcl::class def marpa::slif::literal::parser {
     } {
 	instance->state = marpatcl_rtc_cons (&marpa_slif_literal_parser_spec,
 					     NULL /* actions - TODO FUTURE */,
-					     @stem@_result,
-					     0, // no events
-					     (void*) instance );
+					     @stem@_result, (void*) instance,
+					     0, 0 /* no events */ );
     } {
 	marpatcl_rtc_destroy (instance->state);
     }

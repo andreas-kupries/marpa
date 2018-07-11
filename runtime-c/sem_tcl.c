@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (SV for Tcl)
  * - - -- --- ----- -------- ------------- ----------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  *
  * Requirements
  */
@@ -15,6 +15,7 @@
 #include <progress.h>
 #include <critcl_trace.h>
 #include <critcl_assert.h>
+#include <critcl_callback/critcl_callbackDecls.h>
 
 TRACE_OFF;
 
@@ -81,6 +82,104 @@ marpatcl_rtc_sv_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_p sv)
 
     TRACE ("R ((Tcl_Obj*) %p) (rc %d))", svres, svres ? svres->refCount : -1);
     TRACE_RETURN ("(Tcl_Obj*) %p", svres);
+}
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API - Lexer
+ */
+
+void
+marpatcl_rtc_lex_init (marpatcl_rtc_lex_p state)
+{
+    TRACE_FUNC ("(marpatcl_rtc_lex_p %p)", state);
+
+    state->tokens  = marpatcl_rtc_sv_cons_evec (1); // Expandable
+    state->values  = marpatcl_rtc_sv_cons_evec (1); // Expandable
+    state->ip      = 0;
+    state->matched = 0;
+
+    TRACE ("cons (marpatcl_rtc_lex_p %p).(tokens %p)", state, state->tokens);
+    TRACE ("cons (marpatcl_rtc_lex_p %p).(values %p)", state, state->values);
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_lex_release (marpatcl_rtc_lex_p state)
+{
+    TRACE_FUNC ("(marpatcl_rtc_lex_p %p)", state);
+
+    if (state->tokens) marpatcl_rtc_sv_unref (state->tokens);
+    if (state->values) marpatcl_rtc_sv_unref (state->values);
+
+    state->tokens = 0;
+    state->values = 0;
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_lex_token (void* cdata, marpatcl_rtc_sv_p sv)
+{
+    marpatcl_rtc_lex_p state = (marpatcl_rtc_lex_p) cdata;
+    TRACE_FUNC ("(marpatcl_rtc_lex_p %p), ((sv*) %p)", state, sv);
+
+    // See rtc/lexer.c 'complete' (!SPEC->g1) for the caller.
+    //
+    // Call sequence:
+    // - sv == 0 : "enter" begins
+    // - sv == 1 : "enter" is complete, call to Tcl
+    // - any other sv:
+    //   - even call => sv is token [string]
+    //   - odd  call => sv is value [any]
+
+    if (sv == 0) {
+	// Begin "enter"
+	TRACE ("%s", "enter /begin");
+
+	TRACE ("- clear (marpatcl_rtc_lex_p %p).(tokens %p)", state, state->tokens);
+	marpatcl_rtc_sv_vec_clear (state->tokens);
+
+	TRACE ("- clear (marpatcl_rtc_lex_p %p).(values %p)", state, state->values);
+	marpatcl_rtc_sv_vec_clear (state->values);
+
+	TRACE ("%s", "enter /begin done");
+	TRACE_RETURN_VOID;
+    }
+
+    if (sv == ((marpatcl_rtc_sv_p) 1)) {
+	// Complete "enter", call into Tcl
+	TRACE ("%s", "enter close /begin");
+
+	Tcl_Obj* v[2];
+	v[0] = marpatcl_rtc_sv_astcl (state->ip, state->tokens);
+	v[1] = marpatcl_rtc_sv_astcl (state->ip, state->values);
+
+	TRACE ("%s", "enter close - callback");
+	(void) critcl_callback_invoke (state->matched, 2, v);
+	TRACE ("%s", "enter close - callback return");
+
+	TRACE ("%s", "enter close /done");
+	TRACE_RETURN_VOID;
+    };
+
+    if (marpatcl_rtc_sv_vec_size (state->tokens) ==
+	marpatcl_rtc_sv_vec_size (state->values)) {
+	// Even call, both pads are empty or filled with matching t/v pairs.
+	// This call is a new token.
+
+	TRACE ("push token ((sv*) %p)", sv);
+	marpatcl_rtc_sv_vec_push (state->tokens, sv);
+    } else {
+	// Odd call, we have one more token than values.
+	// This call is a new value, match them again.
+
+	TRACE ("push value ((sv*) %p)", sv);
+	marpatcl_rtc_sv_vec_push (state->values, sv);
+    }
+
+    TRACE_RETURN_VOID;
 }
 
 /*

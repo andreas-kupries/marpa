@@ -347,8 +347,8 @@ return
 
     # Setup for events
 
-    method on-event proc {Tcl_Interp* ip object args} void {
-	marpatcl_rtc_eh_setup (&instance->h, ip, args.c, args.v, instance->self);
+    method on-event proc {object args} void {
+	marpatcl_rtc_eh_setup (&instance->h, args.c, args.v, instance->self);
     }
 
     insvariable Tcl_Obj* self {
@@ -363,7 +363,7 @@ return
     insvariable marpatcl_ehandlers h {
 	Handler for parse events
     } {
-	marpatcl_rtc_eh_init (&instance->h);
+	marpatcl_rtc_eh_init (&instance->h, ip);
 	/* See on-event for full setup */
     } {
 	marpatcl_rtc_eh_clear (&instance->h);
@@ -374,9 +374,8 @@ return
     } {
 	instance->state = marpatcl_rtc_cons (&@cname@_spec,
 					     NULL, /* No actions */
-					     @stem@_result,
-					     @stem@_event,
-					     (void*) instance );
+					     @stem@_result, (void*) instance,
+					     @stem@_event,  (void*) instance );
     } {
 	marpatcl_rtc_destroy (instance->state);
     }
@@ -392,7 +391,7 @@ return
 	{
 	    @instancetype@ instance = (@instancetype@) cdata;
 	    if (!instance->h[0]) return;
-	    Tcl_Obj* events = @slif-name@_event_list (n, ids);
+	    Tcl_Obj* events = @slif-name@_event_list (instance->h.ip, n, ids);
 	    Tcl_IncrRefcount (events);
 	    critcl_callback_invoke (instance->h [code], 1, events);
 	    Tcl_DecrRefcount (events);
@@ -409,9 +408,8 @@ return
     } {
 	instance->state = marpatcl_rtc_cons (&@cname@_spec,
 					     NULL, /* No actions */
-					     @stem@_result,
-					     0,
-					     (void*) instance );
+					     @stem@_result, (void*) instance,
+					     0, 0 );
     } {
 	marpatcl_rtc_destroy (instance->state);
     }

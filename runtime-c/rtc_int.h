@@ -35,9 +35,10 @@ typedef struct marpatcl_rtc {
     marpatcl_rtc_store      store;   /* Store for the lexer's semantic values */
     marpatcl_rtc_sv_cmd     action;  /* Dispatcher for G1 user actions */
     marpatcl_rtc_fail       fail;    /* Failure state */
-    marpatcl_rtc_result_cmd result;  /* Dispatcher for results */
-    marpatcl_rtc_event_cmd  event;   /* Dispatcher for parse events */
-    void*                   cdata;   /* And client data for the result/event dispatchers */
+    marpatcl_rtc_result_cmd result;  /* Dispatcher for results ... */
+    void*                   rcdata;  /* ... and its client data */
+    marpatcl_rtc_event_cmd  event;   /* Dispatcher for parse events ... */
+    void*                   ecdata;  /* ... and its client data */
 
     /* Rule information for progress reports. Indexed by rule, returns PC of
      * spec instruction for the rule. From this lhs and rhs symbol ids can be
