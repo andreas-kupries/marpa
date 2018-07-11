@@ -319,6 +319,7 @@ critcl::class def @slif-name@ {
 
 	critcl_callback_destroy (on_eof);
 	critcl_callback_destroy (instance->matched);
+	instance->matched = 0;
 
 	return res;
     }
@@ -338,6 +339,7 @@ critcl::class def @slif-name@ {
 
 	critcl_callback_destroy (on_eof);
 	critcl_callback_destroy (instance->matched);
+	instance->matched = 0;
 
 	return res;
     }
