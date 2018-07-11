@@ -38,10 +38,16 @@ typedef enum {
  * Other types seen in the interface.
  */
 
-typedef struct marpatcl_rtc_spec* marpatcl_rtc_spec_p;
-typedef struct marpatcl_rtc*      marpatcl_rtc_p;
-typedef struct marpatcl_rtc_sv*   marpatcl_rtc_sv_p;
-typedef struct marpatcl_rtc_lex*  marpatcl_rtc_lex_p;
+typedef struct marpatcl_rtc_spec*  marpatcl_rtc_spec_p;
+typedef struct marpatcl_rtc*       marpatcl_rtc_p;
+typedef struct marpatcl_rtc_sv*    marpatcl_rtc_sv_p;
+typedef struct marpatcl_rtc_lex*   marpatcl_rtc_lex_p;
+typedef struct marpatcl_ehandlers* marpatcl_ehandlers_p;
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Generic state structure for lex-only mode engines.
+ */
 
 typedef struct marpatcl_rtc_lex {
     marpatcl_rtc_sv_p tokens;
@@ -49,6 +55,20 @@ typedef struct marpatcl_rtc_lex {
     Tcl_Interp*       ip;
     critcl_callback_p matched;
 } marpatcl_rtc_lex;
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * Generic state structure for parse events
+ */
+
+typedef Tcl_Obj* (*marpatcl_events_to_names) (Tcl_Interp* ip, int c, int* eventids);
+
+typedef struct marpatcl_ehandlers {
+    critcl_callback_p        event [marpatcl_rtc_eventtype_LAST]; // See `marpatcl_rtc_eventtype`
+    Tcl_Interp*              ip;
+    Tcl_Obj*                 self;
+    marpatcl_events_to_names to_names;
+} marpatcl_ehandlers;
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -153,15 +173,15 @@ typedef struct marpatcl_rtc_symvec {
  *     shared array.
  */
 
-typedef struct marpatcl_rtc_event {
+typedef struct marpatcl_rtc_event_spec {
     marpatcl_rtc_sym       sym;    /* Symbol the event is for */
     marpatcl_rtc_eventtype type;   /* Type of event */
     int                    active; /* State of event, per grammar declaration */
-} marpatcl_rtc_event;
+} marpatcl_rtc_event_spec;
 
 typedef struct marpatcl_rtc_events {
-    marpatcl_rtc_size   size; /* Number of declared events */
-    marpatcl_rtc_event* data; /* Event specifications */
+    marpatcl_rtc_size        size; /* Number of declared events */
+    marpatcl_rtc_event_spec* data; /* Event specifications */
 } marpatcl_rtc_events;
 
 /*

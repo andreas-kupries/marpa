@@ -324,26 +324,20 @@ return
     # Setup for events
 
     method on-event proc {object args} void {
-	marpatcl_rtc_eh_setup (&instance->h, args.c, args.v);
+	marpatcl_rtc_eh_setup (&instance->ehstate, args.c, args.v);
     }
 
-    ## REMOVE when ..._eh_... is filled in.
-    insvariable Tcl_Obj* self {
-	Self reference of the instance command.
-    } {
-	/* Initialized by the constructor post-body */
-    } {
-	Tcl_DecrRefCount (instance->self);
-	instance->self = 0;
-    }
-   
-    insvariable marpatcl_ehandlers h {
+    insvariable marpatcl_ehandlers ehstate {
 	Handler for parse events
     } {
-	marpatcl_rtc_eh_init (&instance->h, ip);
-	/* See on-event for full setup */
+	marpatcl_rtc_eh_init (&instance->ehstate, interp,
+			      (marpatcl_events_to_names) @slif-name@_event_list);
+	// h.self initialized by the constructor post-body
+	/* See on-event above for further setup */
     } {
-	marpatcl_rtc_eh_clear (&instance->h);
+	marpatcl_rtc_eh_clear (&instance->ehstate);
+	Tcl_DecrRefCount (instance->ehstate.self);
+	instance->ehstate.self = 0;
     }
 
     insvariable marpatcl_rtc_p state {
@@ -352,28 +346,9 @@ return
 	instance->state = marpatcl_rtc_cons (&@cname@_spec,
 					     NULL, /* No actions */
 					     marpatcl_rtc_lex_token, (void*) &instance->lstate,
-					     @stem@_event,           (void*) instance );
+					     marpatcl_rtc_eh_report, (void*) &instance->ehstate );
     } {
 	marpatcl_rtc_destroy (instance->state);
-    }
-
-    support {
-	/*
-	** Helper function to handle parse events. Invoked by the runtime.
-	** In turn delegates to the approciate critcl::callback to reach Tcl.
-	*/
-
-	static void
-	@stem@_event (void* cdata, marpatcl_rtc_event_code code, int n, Marpa_Symbol_ID* ids)
-	{
-	    @instancetype@ instance = (@instancetype@) cdata;
-	    if (!instance->h[0]) return;
-	    Tcl_Obj* events = @slif-name@_event_list (instance->h.ip, n, ids);
-	    Tcl_IncrRefcount (events);
-	    critcl_callback_invoke (instance->h [code], 1, events);
-	    Tcl_DecrRefcount (events);
-	    return;
-	}
     }
 
     # Setup without events
@@ -393,5 +368,5 @@ return
 
 {
 	/* Post body. Save the FQN for use in the callbacks */
-	instance->h.self = fqn;
+	instance->ehstate.self = fqn;
     }

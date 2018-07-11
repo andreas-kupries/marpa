@@ -58,7 +58,7 @@ marpatcl_rtc_parser_events (marpatcl_rtc_p p)
     int v, i, n = marpa_g_event_count (PAR.g);
 
     for (i = 0; i < n; i++) {
-	TRACE_RUN (const char* ets);
+	TRACE_RUN (const char* ets = 0);
 
 	etype = marpa_g_event (PAR.g, &event, i);
 	ASSERT (etype >= 0, "Bad event type");

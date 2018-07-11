@@ -28,15 +28,31 @@ extern int      marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv,
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API -- Generic lexer support
- *     -- Standard state structure
- *     -- Reporting helper 
  */
 
 extern void marpatcl_rtc_lex_init    (marpatcl_rtc_lex_p state);
 extern void marpatcl_rtc_lex_release (marpatcl_rtc_lex_p state);
-extern void marpatcl_rtc_lex_token   (void* cdata,
+extern void marpatcl_rtc_lex_token   (void*             cdata,
 				      marpatcl_rtc_sv_p sv);
 // cdata = marpatcl_rtc_lex_p state
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API -- Generic event handling support
+ */
+
+extern void marpatcl_rtc_eh_init  (marpatcl_ehandlers_p     e,
+				   Tcl_Interp*              ip,
+				   marpatcl_events_to_names to_names);
+extern void marpatcl_rtc_eh_clear (marpatcl_ehandlers_p e);
+extern void marpatcl_rtc_eh_setup (marpatcl_ehandlers_p e,
+				   int                  c,
+				   Tcl_Obj* const*      v);
+extern void marpatcl_rtc_eh_report (void*                  cdata,
+				    marpatcl_rtc_eventtype type,
+				    int                    c,
+				    int*                   ids);
+// cdata = marpatcl_ehandlers_p e
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

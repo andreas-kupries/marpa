@@ -1079,7 +1079,7 @@ proc ::marpa::gen::runtime::c::EventTable {name table} {
     set n [llength $table]
     if {!$n} { return "" }
 
-    lappend decl "\n    static marpatcl_rtc_event $name \[$n\] \{"
+    lappend decl "\n    static marpatcl_rtc_event_spec $name \[$n\] = \{"
     foreach item $table {
 	lassign $item event sym sid type active
 	# TODO: left-pad / right-align the columns
@@ -1095,7 +1095,7 @@ proc ::marpa::gen::runtime::c::EventStruct {name table dname {offset 0}} {
     set n [llength $table]
     if {!$n} { return "" }
 
-    lappend decl "\n    static marpatcl_rtc_events $name \{"
+    lappend decl "\n    static marpatcl_rtc_events $name = \{"
     if {$offset} {
 	lappend decl "\t$n, ${dname} + $offset"
     } else {

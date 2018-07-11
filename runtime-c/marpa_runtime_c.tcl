@@ -19,7 +19,7 @@ package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
 critcl::buildrequirement {
     package require critcl::cutil
-    package require critcl::emap     ;# For c/steps.tcl, c/events.tcl
+    package require critcl::emap     ;# For c/steps.tcl, c/events.tcl, pevents.tcl
     package require critcl::literals ;# For c/steps.tcl
 }
 
@@ -132,7 +132,7 @@ critcl::api function int marpatcl_rtc_sv_vec_size {
     marpatcl_rtc_sv_p v
 }
 
-# pure lexer support
+# generic support for lex-only mode
 
 critcl::api function void marpatcl_rtc_lex_init {
     marpatcl_rtc_lex_p state
@@ -143,6 +143,28 @@ critcl::api function void marpatcl_rtc_lex_release {
 critcl::api function void marpatcl_rtc_lex_token {
     void*             cdata
     marpatcl_rtc_sv_p sv
+}
+
+# generic support for parse event handling
+
+critcl::api function void marpatcl_rtc_eh_init {
+    marpatcl_ehandlers_p     e
+    Tcl_Interp*              ip
+    marpatcl_events_to_names to_names
+}
+critcl::api function void marpatcl_rtc_eh_clear {
+    marpatcl_ehandlers_p e
+}
+critcl::api function void marpatcl_rtc_eh_setup {
+    marpatcl_ehandlers_p e
+    int                  c
+    Tcl_Obj*const*       v
+}
+critcl::api function void marpatcl_rtc_eh_report {
+    void*                  cdata
+    marpatcl_rtc_eventtype type
+    int                    c
+    int*                   ids
 }
 
 # # ## ### ##### ######## #############
@@ -168,6 +190,7 @@ critcl::ccode {
 critcl::source ../c/events.tcl
 critcl::source ../c/steps.tcl
 critcl::source ../c/errors.tcl
+critcl::source pevents.tcl
 
 if {$refdebug} {
     critcl::cproc marpa::slif::runtime::dump {} void {
