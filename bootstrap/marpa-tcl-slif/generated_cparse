@@ -5299,9 +5299,8 @@ critcl::class def <Name> {
     } {
 	instance->state = marpatcl_rtc_cons (&<Name>_spec,
 					     NULL, /* No actions */
-					     @stem@_result,
-					     0,
-					     (void*) instance );
+					     @stem@_result, (void*) instance,
+					     0, 0 );
     } {
 	marpatcl_rtc_destroy (instance->state);
     }
