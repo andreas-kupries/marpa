@@ -1,8 +1,12 @@
 /* Runtime for C-engine (RTC). Implementation. (Sets of marpa-symbols, dynamic)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
+ *
+ * NOTE. This structure works without memory initialization and thus may cause
+ *       memory checkers like valgrind to generate lots of false positives.
+ * Ref:  https://core.tcl.tk/akupries/marpa/wiki?name=fast+sparse+integer+sets+in+C
  */
 
 #include <environment.h>
