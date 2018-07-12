@@ -184,7 +184,13 @@ critcl::api function int marpatcl_rtc_pedesc_invoke {
     int			  objc
     Tcl_Obj*CONST*	  objv
 }
-# TODO: class var accessor for rtc provision to constructor
+critcl::api function marpatcl_rtc_p marpatcl_rtc_pedesc_rtc_get {
+    Tcl_Interp* interp
+}
+critcl::api function void marpatcl_rtc_pedesc_rtc_set {
+    Tcl_Interp*	   interp
+    marpatcl_rtc_p v
+}
 
 # # ## ### ##### ######## #############
 ## Supporting C code
