@@ -38,11 +38,12 @@ typedef enum {
  * Other types seen in the interface.
  */
 
-typedef struct marpatcl_rtc_spec*  marpatcl_rtc_spec_p;
-typedef struct marpatcl_rtc*       marpatcl_rtc_p;
-typedef struct marpatcl_rtc_sv*    marpatcl_rtc_sv_p;
-typedef struct marpatcl_rtc_lex*   marpatcl_rtc_lex_p;
-typedef struct marpatcl_ehandlers* marpatcl_ehandlers_p;
+typedef struct marpatcl_rtc_spec*   marpatcl_rtc_spec_p;
+typedef struct marpatcl_rtc*        marpatcl_rtc_p;
+typedef struct marpatcl_rtc_sv*     marpatcl_rtc_sv_p;
+typedef struct marpatcl_rtc_lex*    marpatcl_rtc_lex_p;
+typedef struct marpatcl_ehandlers*  marpatcl_ehandlers_p;
+typedef struct marpatcl_rtc_pedesc* marpatcl_rtc_pedesc_p;
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

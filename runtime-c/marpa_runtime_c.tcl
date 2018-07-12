@@ -19,8 +19,9 @@ package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
 critcl::buildrequirement {
     package require critcl::cutil
-    package require critcl::emap     ;# For c/steps.tcl, c/events.tcl, pevents.tcl
-    package require critcl::literals ;# For c/steps.tcl
+    package require critcl::emap      ;# For c/steps.tcl, c/events.tcl, pevents.tcl
+    package require critcl::literals  ;# For c/steps.tcl
+    package require critcl::class 1.1 ;# For pedesc.tcl
 }
 
 if {![critcl::compiling]} {
@@ -167,6 +168,24 @@ critcl::api function void marpatcl_rtc_eh_report {
     int*                   ids
 }
 
+# access to parse event descriptor facade
+
+critcl::api function marpatcl_rtc_pedesc_p marpatcl_rtc_pedesc_new {
+    Tcl_Interp*	   interp
+    int		   objc
+    Tcl_Obj*CONST* objv
+}
+critcl::api function void marpatcl_rtc_pedesc_destroy {
+    marpatcl_rtc_pedesc_p instance
+}
+critcl::api function int marpatcl_rtc_pedesc_invoke {
+    marpatcl_rtc_pedesc_p instance
+    Tcl_Interp*		  interp
+    int			  objc
+    Tcl_Obj*CONST*	  objv
+}
+# TODO: class var accessor for rtc provision to constructor
+
 # # ## ### ##### ######## #############
 ## Supporting C code
 
@@ -191,6 +210,7 @@ critcl::source ../c/events.tcl
 critcl::source ../c/steps.tcl
 critcl::source ../c/errors.tcl
 critcl::source pevents.tcl
+critcl::source pedesc.tcl
 
 if {$refdebug} {
     critcl::cproc marpa::slif::runtime::dump {} void {
