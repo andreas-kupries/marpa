@@ -373,7 +373,7 @@ critcl::ccode {
 	/* 259 */ "ILLEGAL_BYTE_255\0"
     };
 
-    static marpatcl_rtc_event <Name>_events [2] = {
+    static marpatcl_rtc_event_spec <Name>_events [2] = {
 	{ 259, marpatcl_rtc_event_discard, 1 }, // C: snafu
 	{ 1, marpatcl_rtc_event_completed, 1 }, // A: fox
     };
@@ -477,7 +477,7 @@ critcl::ccode {
 	MARPATCL_RCMD_DONE  (1)
     };
 
-    static marpatcl_rtc_events <Name>_g1events {
+    static marpatcl_rtc_events <Name>_g1events = {
 	1, <Name>_events + 1
     };
 
@@ -592,7 +592,8 @@ critcl::class def <Name> {
 	}
     } {
 	/* Post body. Save the FQN for use in the callbacks */
-	instance->self = fqn;
+	instance->ehstate.self = fqn;
+	Tcl_IncrRefCount (fqn);
     }
 
     method process-file proc {Tcl_Interp* ip Tcl_Obj* path} ok {

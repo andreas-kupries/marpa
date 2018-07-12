@@ -392,4 +392,5 @@ return
 {
 	/* Post body. Save the FQN for use in the callbacks */
 	instance->ehstate.self = fqn;
+	Tcl_IncrRefCount (fqn);
     }
