@@ -1,5 +1,8 @@
 /* Runtime for C-engine (RTC). Declarations. (Parse Event Descriptor)
  * - - -- --- ----- -------- ------------- ---------------------
+ * This is effectively part of the C/Tcl glue, see sem_tcl.*
+ * May move over.
+ *
  * (c) 2018 Andreas Kupries
  * Header for the public types
  */
@@ -13,6 +16,7 @@
  */
 
 #include <rtc.h>
+#include <tcl.h>
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -38,8 +42,8 @@ extern void marpatcl_rtc_ped_syms_set   (marpatcl_rtc_p p, int fake);
 extern void marpatcl_rtc_ped_value_get  (marpatcl_rtc_p p);
 extern void marpatcl_rtc_ped_value_set  (marpatcl_rtc_p p, int fake);
 
-extern void marpatcl_rtc_ped_alternate  (marpatcl_rtc_p p, int fake);
-extern void marpatcl_rtc_ped_view       (marpatcl_rtc_p p, int fake);
+extern void     marpatcl_rtc_ped_alternate  (marpatcl_rtc_p p, int fake);
+extern Tcl_Obj* marpatcl_rtc_ped_view       (marpatcl_rtc_p p);
 
 // symbols sv start length value values -- query, write
 // alternate

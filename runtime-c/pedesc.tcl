@@ -93,8 +93,11 @@ critcl::class def marpa::runtime::c::pedesc {
     method value: proc {} void { /* XXX TODO FILL XXX */ }
     method values: proc {} void { /* XXX TODO FILL XXX */ }
 
-    method view proc {} void { /* XXX TODO FILL XXX */ }
-    method alternate proc {} void { /* XXX TODO FILL XXX */ }
+    method view proc {} object0 {
+	return marpatcl_rtc_ped_view (instance->state);
+    }
+
+    method alternate proc {object symbol object sv} void { /* XXX TODO FILL XXX */ }
 }
 
 # # ## ### ##### ######## #############

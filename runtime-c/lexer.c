@@ -48,7 +48,9 @@ static int num_utf_chars (const char *src);
 
 #define POST_EVENT(type) \
     TRACE ("PE %s %d -> (%p, cd %p)", #type, EVENTS->n, p->event, p->ecdata); \
-    p->event (p->ecdata, type, EVENTS->n, EVENTS->dense)
+    p->m_event = type; \
+    p->event (p->ecdata, type, EVENTS->n, EVENTS->dense); \
+    p->m_event = -1;
 
 #define STRDUP(s) marpatcl_rtc_strdup (s)
 
