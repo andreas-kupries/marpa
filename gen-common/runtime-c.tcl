@@ -1044,7 +1044,12 @@ proc ::marpa::gen::runtime::c::Events2Table {dict sym} {
 		    on  1  true  1  1 1
 		    off 0  false 0  0 0
 		} $active]
-		set sid [$sym 2id $symbol]
+		# Note: The lex engine sees ACS symbols for lexemes
+		# and discards. Use them in the table.
+		switch -exact -- $sym {
+		    L {	set sid [$sym 2id @ACS:$symbol] }
+		    G {	set sid [$sym 2id $symbol] }
+		}
 		lappend table [list $event $symbol $sid $type $active]
 	    }
 	}

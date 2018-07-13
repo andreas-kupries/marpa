@@ -35,6 +35,9 @@ static void              mismatch  (marpatcl_rtc_p p);
 static marpatcl_rtc_sv_p get_sv    (marpatcl_rtc_p   p,
 				    marpatcl_rtc_sym token,
 				    marpatcl_rtc_sym rule);
+static int               has_events (marpatcl_rtc_p p,
+				     marpatcl_rtc_eventtype type,
+				     marpatcl_rtc_symset* symbols);
 
 static int num_utf_chars (const char *src);
 
@@ -43,10 +46,17 @@ static int num_utf_chars (const char *src);
  * Shorthands
  */
 
+#define POST_EVENT(type) \
+    TRACE ("PE %s %d -> (%p, cd %p)", #type, EVENTS->n, p->event, p->ecdata); \
+    p->event (p->ecdata, type, EVENTS->n, EVENTS->dense)
+
 #define STRDUP(s) marpatcl_rtc_strdup (s)
 
-#define ACCEPT (&LEX.acceptable)
-#define FOUND  (&LEX.found)
+#define ACCEPT   (&LEX.acceptable)
+#define FOUND    (&LEX.found)
+#define EVENTS   (&LEX.events)
+#define DISCARDS (&LEX.discards)
+
 #define PARS_R (PAR.recce)
 #define ALWAYS (SPEC->always)
 
@@ -82,6 +92,13 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
     LRD   = marpatcl_rtc_spec_setup (LEX.g, SPEC->l0, TRACE_TAG_VAR (lexer_progress));
     marpatcl_rtc_symset_init (ACCEPT, SPEC->lexemes + SPEC->discards);
     marpatcl_rtc_symset_init (FOUND,  SPEC->lexemes);
+    // XXX mem-optimize the discard set ?
+    // - currently sized to keep all possible lexer symbols, i.e
+    // - (bytes + ACS L + ACS D + L + D + internal)
+    // XXX - could shrink to count only lexemes and discards
+    // XXX - would have to transform on enter/retrieve (offset: 256+A:L+A:D)
+    marpatcl_rtc_symset_init (DISCARDS, SPEC->l_symbols);
+    marpatcl_rtc_symset_init (EVENTS,   SPEC->l0->events ? SPEC->l0->events->size : 0);
 
     if (!SPEC->g1) {
 	// Lexing only mode. Initialize ACCEPT to accept everything, always.
@@ -304,6 +321,7 @@ complete (marpatcl_rtc_p p)
     Marpa_Bocage b;
     Marpa_Order  o;
     Marpa_Tree   t;
+    marpatcl_rtc_sym terminal;
     marpatcl_rtc_sym token;
     marpatcl_rtc_sym rule;
     marpatcl_rtc_sv_p sv = 0;
@@ -370,6 +388,7 @@ complete (marpatcl_rtc_p p)
 
     discarded = 0;
     marpatcl_rtc_symset_clear (FOUND);
+    marpatcl_rtc_symset_clear (DISCARDS);
     while (1) {
 	status = get_parse (p, t, &token, &rule);
 	if (status < 0) {
@@ -389,29 +408,33 @@ complete (marpatcl_rtc_p p)
 	 * Range'G1: 0 ... L+D-1
 	 */
 
-	token = TO_TERMINAL (token);
+	terminal = TO_TERMINAL (token);
 
-	/* token = G1 terminal id (lexeme) or pseudo-terminal (discard)
+	/* terminal = G1 terminal id (lexeme) or pseudo-terminal (discard)
 	 * Range:   0 ... L+D-1
 	 * Lexeme:  0 ... L-1
 	 * Discard: L ... L+D-1
 	 */
 
-	ASSERT (token < (SPEC->lexemes+SPEC->discards), "pseudo-terminal out of bounds");
-	if (token >= SPEC->lexemes) {
+	ASSERT (terminal < (SPEC->lexemes+SPEC->discards), "pseudo-terminal out of bounds");
+	if (terminal >= SPEC->lexemes) {
 	    TRACE_ADD (" discarded", 0);
 	    TRACE_CLOSER;
 
 	    discarded ++;
+	    // Collect the discarded symbols if we have parse events to take into account.
+	    // Note that we look at the ACS symbol here, not the terminal, which is bogus.
+	    if (!SPEC->l0->events) continue;
+	    marpatcl_rtc_symset_include (DISCARDS, 1, &token);
 	    continue;
 	}
 
 	if (SPEC->g1) {
 	    TRACE_ADD (" terminal %d (%s)",
-		       token, marpatcl_rtc_spec_symname (SPEC->g1, token, 0));
+		       terminal, marpatcl_rtc_spec_symname (SPEC->g1, terminal, 0));
 	}
 
-	if (marpatcl_rtc_symset_contains (FOUND, token)) {
+	if (marpatcl_rtc_symset_contains (FOUND, terminal)) {
 	    TRACE_ADD (" duplicate, skip", 0);
 	    TRACE_CLOSER;
 
@@ -431,7 +454,7 @@ complete (marpatcl_rtc_p p)
 	    }
 	}
 
-	marpatcl_rtc_symset_include (FOUND, 1, &token);
+	marpatcl_rtc_symset_include (FOUND, 1, &terminal);
 
 	// SV deduplication: If the semantic codes are all for a value
 	// independent if token/rule ids, a single SV is generated and used in
@@ -440,7 +463,7 @@ complete (marpatcl_rtc_p p)
 	// for these only the first is captured and forwarded.
 
 	if (!LEX.single_sv || !sv) {
-	    sv = get_sv (p, token, rule);
+	    sv = get_sv (p, terminal, rule);
 	    // sv RC 1
 	    SHOW_SV (sv);
 	    if (SPEC->g1) {
@@ -454,11 +477,11 @@ complete (marpatcl_rtc_p p)
 	TRACE_CLOSER;
 	if (SPEC->g1) {
 	    // And enter the token/value combination
-	    res = marpa_r_alternative (PARS_R, token, svid, 1);
+	    res = marpa_r_alternative (PARS_R, terminal, svid, 1);
 	    marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 alternative");
 	} else {
 	    // Lexing-only mode. Post token/value through "enter"
-	    const char*       s  = marpatcl_rtc_spec_symname (SPEC->l0, TO_ACS (token), 0);
+	    const char*       s  = marpatcl_rtc_spec_symname (SPEC->l0, token, 0);
 	    marpatcl_rtc_sv_p tv = marpatcl_rtc_sv_cons_string (STRDUP (s), 1);
 
 	    TRACE_TAG (lexonly, "((void*) %p) token (sv*) %p rc %d = '%s'", p->rcdata, tv, tv->refCount, s);
@@ -487,8 +510,16 @@ complete (marpatcl_rtc_p p)
     LEX.recce = 0;
 
     if (!marpatcl_rtc_symset_size(FOUND) && discarded) {
-	// Nothing found. Do not talk to parser. Restart lexing with the
-	// current set of acceptable symbols.
+	// No lexemes found. Therefore do not talk to the parser, instead
+	// restart lexing with the current set of acceptable symbols. Check
+	// for active discard events tough, and report all found before
+	// restarting.
+	//
+	// __ATTENTION__ The event handler function may move in the input.
+	if (has_events (p, marpatcl_rtc_event_discard, DISCARDS)) {
+	    // TODO: Parse event descriptor - No syms, no sv, fresh, keep position ...
+	    POST_EVENT (marpatcl_rtc_event_discard);
+	}
 	TRACE ("(rtc*) %p restart", p);
 	marpatcl_rtc_lexer_acceptable (p, 1);
     } else if (SPEC->g1) {
@@ -509,6 +540,17 @@ complete (marpatcl_rtc_p p)
     marpatcl_rtc_gate_redo (p, redo);
 
     TRACE_RETURN_VOID;
+}
+
+static int
+has_events (marpatcl_rtc_p p, marpatcl_rtc_eventtype type, marpatcl_rtc_symset* symbols)
+{
+    TRACE_FUNC ("(marpatcl_rtc_p) %p, event %d, (symset*) %p", p, type, symbols);
+    if (!SPEC->l0->events) {
+	TRACE_RETURN ("#events = %d", 0);
+    }
+    marpatcl_rtc_gather_events (p, SPEC->l0->events, type, symbols, /* --> */ EVENTS);
+    TRACE_RETURN ("#events = %d", marpatcl_rtc_symset_size(EVENTS));
 }
 
 static int

@@ -23,6 +23,7 @@
  */
 
 #include <spec.h>
+#include <symset.h>
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -49,7 +50,12 @@ void              marpatcl_rtc_eof     (marpatcl_rtc_p p);
 marpatcl_rtc_sv_p marpatcl_rtc_get_sv  (marpatcl_rtc_p p);
 /* marpatcl_rtc_failed - see fail.h */
 
-// TODO: Callbacks (errors, events?)
+void marpatcl_rtc_gather_events (marpatcl_rtc_p         p,       // TRACE-only data
+				 marpatcl_rtc_events*   decls,   // Search this database ...
+				 marpatcl_rtc_eventtype type,    // ... for this type of events ...
+				 marpatcl_rtc_symset*   symbols, // ... associated with these symbols ...
+				 marpatcl_rtc_symset*   result); // ... and record the found here.
+
 #endif
 
 /*

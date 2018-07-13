@@ -20,11 +20,12 @@ critcl::emap::def marpatcl_rtc_eventtype {
     "predicted"	marpatcl_rtc_event_predicted
     "completed"	marpatcl_rtc_event_completed
     "nulled"	marpatcl_rtc_event_nulled
-} -mode +list
+} -mode {+list c}
 
 # API pieces
 ##
 # Tcl_Obj* marpatcl_rtc_eventtype_decode       (interp, literal)
+# char*    marpatcl_rtc_eventtype_decode_cstr  (interp, literal)
 # Tcl_Obj* marpatcl_rtc_eventtype_decode_list  (interp, n, literal[])
 # int      marpatcl_rtc_eventtype_encode       (interp, obj, &result)
 #

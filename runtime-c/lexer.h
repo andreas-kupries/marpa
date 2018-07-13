@@ -29,10 +29,10 @@ typedef struct marpatcl_rtc_lexer {
     int                  cstart;        /* Location of match start (char offset) */
     int                  start;         /* Location of match start (byte offset) */
     int                  length;        /* Length of match (in byte) */
-    marpatcl_rtc_symset  found;         /* Symbols found at current match */
+    marpatcl_rtc_symset  found;         /* Terminal  symbols  found at current match */
+    marpatcl_rtc_symset  discards;      /* Discarded symbols  found at current match */
+    marpatcl_rtc_symset  events;        /* Lexer parse events found at current match */
     int                  single_sv;     /* Bool, true if SV is identical across symbols */
-
-
 } marpatcl_rtc_lexer;
 
 /*

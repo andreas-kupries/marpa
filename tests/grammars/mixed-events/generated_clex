@@ -372,7 +372,7 @@ critcl::ccode {
     };
 
     static marpatcl_rtc_event_spec <Name>_events [1] = {
-	{ 259, marpatcl_rtc_event_discard, 1 }, // C: snafu
+	{ 257, marpatcl_rtc_event_discard, 1 }, // C: snafu
     };
 
     /*

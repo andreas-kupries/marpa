@@ -19,6 +19,7 @@
 #include <marpatcl_rtc_eventtype.h>
 
 TRACE_OFF;
+TRACE_TAG_OFF (eh);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -42,7 +43,7 @@ void
 marpatcl_rtc_eh_init (marpatcl_ehandlers* e, Tcl_Interp* ip,
 		      marpatcl_events_to_names to_names)
 {
-    TRACE_FUNC ("(marpatcl_ehandler*) %p, (Tcl_Interp*) %p", e, ip);
+    TRACE_TAG_FUNC (eh, "(marpatcl_ehandler*) %p, (Tcl_Interp*) %p", e, ip);
 
     e->ip       = ip;
     e->to_names = to_names;
@@ -52,13 +53,13 @@ marpatcl_rtc_eh_init (marpatcl_ehandlers* e, Tcl_Interp* ip,
 	e->event [i] = 0;
     }
     
-    TRACE_RETURN_VOID;
+    TRACE_TAG_RETURN_VOID (eh);
 }
 
 void
 marpatcl_rtc_eh_clear (marpatcl_ehandlers* e)
 {
-    TRACE_FUNC ("(marpatcl_ehandler*) %p", e);
+    TRACE_TAG_FUNC (eh, "(marpatcl_ehandler*) %p", e);
 	
     int i;
     for (i=0; i < marpatcl_rtc_eventtype_LAST; i++) {
@@ -66,7 +67,7 @@ marpatcl_rtc_eh_clear (marpatcl_ehandlers* e)
 	critcl_callback_destroy (e->event [i]);
     }
     
-    TRACE_RETURN_VOID;
+    TRACE_TAG_RETURN_VOID (eh);
 }
 
 void
@@ -74,14 +75,17 @@ marpatcl_rtc_eh_setup (marpatcl_ehandlers* e,
 		       int                 c,
 		       Tcl_Obj* const*     v)
 {
-    TRACE_FUNC ("(marpatcl_ehandler*) %p, c=%d, v=%p", e, c, v);
+    TRACE_TAG_FUNC (eh, "(marpatcl_ehandler*) %p, c=%d, v=%p", e, c, v);
 
     marpatcl_rtc_eh_clear (e);
     marpatcl_rtc_eh_init  (e, e->ip, e->to_names);
 
     if (!c) {
-	TRACE_RETURN_VOID;
+	TRACE_TAG (eh, "Skipping setup, no command prefix", 0);
+	TRACE_TAG_RETURN_VOID (eh);
     }
+
+    TRACE_TAG (eh, "Setting up per-event callbacks", 0);
 
     int i;
     for (i=0; i < marpatcl_rtc_eventtype_LAST; i++) {
@@ -91,8 +95,8 @@ marpatcl_rtc_eh_setup (marpatcl_ehandlers* e,
 	// Of the three argument slots we created the callback with now only
 	// one is left, to hold the list of event names.
     }
-    
-    TRACE_RETURN_VOID;
+
+    TRACE_TAG_RETURN_VOID (eh);
 }
 
 void
@@ -101,12 +105,16 @@ marpatcl_rtc_eh_report (void*                  cdata,
 			int                    c,
 			int*                   ids)
 {
-    TRACE_FUNC ("(marpatcl_ehandler*) %p, type=%d, c=%d, v=%p", cdata, type, c, ids);
+    TRACE_TAG_FUNC (eh, "(marpatcl_ehandler*) %p, type=%d, c=%d, v=%p", cdata, type, c, ids);
     marpatcl_ehandlers_p e = (marpatcl_ehandlers_p) cdata;
 
     if (!e->event[0]) {
+	TRACE_TAG (eh, "PE ignored, no Tcl callback", 0);
+	TRACE_TAG_RETURN_VOID (eh);
 	TRACE_RETURN_VOID;
     }
+
+    TRACE_TAG (eh, "PE taken, posting to Tcl", 0);
 
     Tcl_Obj* events = e->to_names (e->ip, c, ids);
     TAKE (events);
@@ -114,7 +122,7 @@ marpatcl_rtc_eh_report (void*                  cdata,
     critcl_callback_invoke (e->event [type], 1, &events);
 
     RELE (events);
-    TRACE_RETURN_VOID;
+    TRACE_TAG_RETURN_VOID (eh);
 }
 /*
  * - - -- --- ----- -------- ------------- ---------------------
