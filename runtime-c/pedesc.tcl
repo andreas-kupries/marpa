@@ -95,38 +95,6 @@ critcl::class def marpa::runtime::c::pedesc {
 
     method view proc {} void { /* XXX TODO FILL XXX */ }
     method alternate proc {} void { /* XXX TODO FILL XXX */ }
-
-
-
-
-    # TODO: C-level visible dispatcher function (instance/this/self as
-    # first argument) (something with a fixed name instead of the
-    # mangled named generated for the class.
-
-    support {
-/***
-	#define marpatcl_rtc_ped_class_cmd @stem@_ClassCommand
-	// Actually need a proper function which exports the constructor
-
-	@stem@_Constructor (interp, &<class>, c, v) -> instance
-	@stem@_PostConstructor (interp, <instance>, cmd, fqn)
-	@stem_Destructor ((void*) instance)
-
-	@stem@_CLASS__		// (CS) class structure
-	@stem@_INSTANCE__	// (IS) instance structure
-	@stem@_CLASS_mgr_	// (CM) class manager in interp (-)
-	//			//      - `user` field is CS.
-
-	// NewInstanceName (mgr) -> char* (-)
-	// (**) @stem@_NewInstance (name, <mgr>, interp, skip, c, v)
-	// skip = 2, class method       : 'new'
-	//      | 3, class method oname : 'create'
-	// C-api: 0
-
-	#define marpatcl_rtc_ped_instance_cmd @stem@_InstanceCommand
-	// Actually need proper wrapper function to export
-***/
-    }
 }
 
 # # ## ### ##### ######## #############

@@ -350,7 +350,39 @@ return
     method on-event proc {object args} void {
 	marpatcl_rtc_eh_setup (&instance->ehstate, args.c, args.v);
     }
+
+    method match proc {Tcl_Interp* ip object args} ok {
+	/* -- Delegate to the parse event descriptor facade */
+	return marpatcl_rtc_pedesc_invoke (instance->pedesc, ip, args.c, args.v);
+    }
    
+    # Note how `rtc` is declared before `pedesc`. We need it
+    # initalized to be able to feed it into the construction of the
+    # PE descriptor facade.
+    insvariable marpatcl_rtc_p state {
+	C-level engine, RTC structures.
+    } {
+	instance->state = marpatcl_rtc_cons (&@cname@_spec,
+					     NULL, /* No actions */
+					     @stem@_result, (void*) instance,
+					     marpatcl_rtc_eh_report, (void*) &instance->ehstate );
+    } {
+	marpatcl_rtc_destroy (instance->state);
+    }
+
+    insvariable marpatcl_rtc_pedesc_p pedesc {
+	Facade to the parse event descriptor structures.
+	Maintained only when we have parse events declared, i.e. possible.
+    } {
+	// Feed our RTC structure into the facade class so that its constructor has access to it.
+	marpatcl_rtc_pedesc_rtc_set (interp, instance->state);
+	instance->pedesc = marpatcl_rtc_pedesc_new (interp, 0, 0);
+	ASSERT (!marpatcl_rtc_pedesc_rtc_get (interp), "Constructor failed to take rtc structure");
+    } {
+	marpatcl_rtc_pedesc_destroy (instance->pedesc);
+    }
+
+
     insvariable marpatcl_ehandlers ehstate {
 	Handler for parse events
     } {
@@ -362,21 +394,16 @@ return
 	Tcl_DecrRefCount (instance->ehstate.self);
 	instance->ehstate.self = 0;
     }
-
-    insvariable marpatcl_rtc_p state {
-	C-level engine, RTC structures.
-    } {
-	instance->state = marpatcl_rtc_cons (&@cname@_spec,
-					     NULL, /* No actions */
-					     @stem@_result, (void*) instance,
-					     marpatcl_rtc_eh_report, (void*) &instance->ehstate );
-    } {
-	marpatcl_rtc_destroy (instance->state);
-    }
 
     # Setup without events
 
-    method on-event proc {Tcl_Interp* ip object args} void {}
+    method on-event proc {object args} void {}
+
+    method match proc {object args} ok {
+	// No events: Facade not present, no access to the runtime structures.
+	// TODO: Set error message
+	return TCL_ERROR;
+    }
 
     insvariable marpatcl_rtc_p state {
 	C-level engine, RTC structures.

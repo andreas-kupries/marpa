@@ -5292,7 +5292,13 @@ critcl::class def <Name> {
 
     # Setup without events
 
-    method on-event proc {Tcl_Interp* ip object args} void {}
+    method on-event proc {object args} void {}
+
+    method match proc {object args} ok {
+	// No events: Facade not present, no access to the runtime structures.
+	// TODO: Set error message
+	return TCL_ERROR;
+    }
 
     insvariable marpatcl_rtc_p state {
 	C-level engine, RTC structures.
