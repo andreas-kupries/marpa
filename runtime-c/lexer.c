@@ -605,6 +605,8 @@ complete (marpatcl_rtc_p p)
 	}
 	TRACE_CLOSER;
 	if (SPEC->g1) {
+	    XXX collect in m_sv ... enter cmes later, when before/after events are resolved.
+	    
 	    // And enter the token/value combination
 	    res = marpa_r_alternative (PARS_R, terminal, svid, 1);
 	    marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 alternative");
@@ -649,9 +651,33 @@ complete (marpatcl_rtc_p p)
 	    // TODO: Parse event descriptor - No syms, no sv, fresh, keep position ...
 	    POST_EVENT (marpatcl_rtc_event_discard);
 	}
+    restart_after_discard:
 	TRACE ("(rtc*) %p restart", p);
 	marpatcl_rtc_lexer_acceptable (p, 1);
     } else if (SPEC->g1) {
+	// Lexemes found, with associated SV. Check for before and after
+	// events. Note the before events suppress any after events.
+	//
+	// __ATTENTION__ The event handler function may move in the input.
+	    // The event handler may also change the lexeme, and the set of
+	    // symbols and their associated SVs. If the set of symbols is
+	    // emptied this is taken as a discard and handled as
+	    // such. Exception, no discard is posted for this case.
+
+	if (has_events (p, marpatcl_rtc_event_before, FOUND)) {
+	    XXX MOVE TO cstart-1
+	    POST_EVENT (marpatcl_rtc_event_before);
+	} else if (has_events (p, marpatcl_rtc_event_after, FOUND)) {
+	    POST_EVENT (marpatcl_rtc_event_after);
+	}
+
+	if (!marpatcl_rtc_symset_size(FOUND)) goto restart_after_discard;
+	XXX above ... clear m_sv
+
+	XXX ....
+	XXX TODO XXX rework lexer/parser interface - collect SV in m_sv, post here
+	    XXX
+	
 	// Tell parser about number of alternatives given to it (See (%%))
 	TRACE ("(rtc*) %p parse #%d (%d..%d/%d)", p, marpatcl_rtc_symset_size(FOUND),
 	       LEX_START, LEX_END, LEX_LEN);
