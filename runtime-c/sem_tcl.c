@@ -129,7 +129,7 @@ marpatcl_rtc_eh_report (void*                  cdata,
  * API -- Generic parse completion
  */
 
-extern int
+int
 marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p p)
 {
     /* This function is called with a pointer to where the SV will be
@@ -161,7 +161,43 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p 
     TRACE_RETURN ("ERROR", TCL_ERROR);
 }
 
-extern Tcl_Obj*
+Tcl_Obj*
+marpatcl_rtc_symbol_names (Tcl_Interp* ip, marpatcl_rtc_p p, marpatcl_rtc_symset* syms)
+{
+    Tcl_Obj* names = Tcl_NewListObj (0,0);
+    int n = marpatcl_rtc_symset_size (syms);
+    int k;
+
+    for (k=0; k<n; k++) {
+	int slen;
+	const char* sname = marpatcl_rtc_spec_symname (SPEC->l0, syms->dense[k], &slen);
+	if (!sname) goto error;
+	Tcl_Obj* name = Tcl_NewStringObj (sname, slen);
+	if (!name) goto error;
+	if (TCL_OK != Tcl_ListObjAppendElement (ip, names, name)) goto error;
+    }
+    return names;
+ error:
+    RELE (names);
+    return 0;
+}
+
+Tcl_Obj*
+marpatcl_rtc_vec_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_vec v)
+{
+    Tcl_Obj *svres, *null;
+    TRACE_FUNC ("(Interp*) %p, (sva*) %p", ip, v);
+
+    null = Tcl_NewListObj (0,0);
+    TAKE (null);
+    svres = vec_astcl (ip, v, null);
+    RELE (null);
+
+    TRACE ("R ((Tcl_Obj*) %p) (rc %d))", svres, svres ? svres->refCount : -1);
+    TRACE_RETURN ("(Tcl_Obj*) %p", svres);
+}
+
+Tcl_Obj*
 marpatcl_rtc_sv_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_p sv)
 {
     Tcl_Obj *svres, *null;

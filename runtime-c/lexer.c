@@ -25,6 +25,7 @@ TRACE_TAG_OFF (lexonly);
  * Local requirements
  */
 
+static void              match_begin (marpatcl_rtc_p p);
 static char*             get_lexeme (marpatcl_rtc_p p, int* len);
 static void              complete  (marpatcl_rtc_p p);
 static int               get_parse (marpatcl_rtc_p    p,
@@ -32,6 +33,7 @@ static int               get_parse (marpatcl_rtc_p    p,
 				    marpatcl_rtc_sym* token,
 				    marpatcl_rtc_sym* rule);
 static void              mismatch  (marpatcl_rtc_p p);
+static void              complete  (marpatcl_rtc_p p);
 static marpatcl_rtc_sv_p get_sv    (marpatcl_rtc_p   p,
 				    marpatcl_rtc_sym token,
 				    marpatcl_rtc_sym rule);
@@ -48,9 +50,9 @@ static int num_utf_chars (const char *src);
 
 #define POST_EVENT(type) \
     TRACE ("PE %s %d -> (%p, cd %p)", #type, EVENTS->n, p->event, p->ecdata); \
-    p->m_event = type; \
+    LEX.m_event = type; \
     p->event (p->ecdata, type, EVENTS->n, EVENTS->dense); \
-    p->m_event = -1;
+    LEX.m_event = -1
 
 #define STRDUP(s) marpatcl_rtc_strdup (s)
 
@@ -71,7 +73,108 @@ static int num_utf_chars (const char *src);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
- * API
+ * API - match state accessors and mutators
+ */
+
+int
+marpatcl_rtc_lexer_get_lexeme_start (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE_RETURN ("%d", LEX.cstart);
+}
+
+int
+marpatcl_rtc_lexer_get_lexeme_length (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+    
+    if (LEX.clength < 0) {
+	(void*) marpatcl_rtc_lexer_get_lexeme_value (p);
+    }
+    
+    TRACE_RETURN ("%d", LEX.clength);
+}
+
+const char*
+marpatcl_rtc_lexer_get_lexeme_value (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+    
+    if (!LEX.lexemestr) {
+	LEX.lexemestr = get_lexeme (p, NULL);
+	LEX.clength   = num_utf_chars (LEX.lexemestr);
+    }
+    
+    TRACE_RETURN ("'%s'", LEX.lexemestr);
+}
+
+void
+marpatcl_rtc_lexer_get_lexeme_symbols (marpatcl_rtc_p p, marpatcl_rtc_symset** syms)
+{
+    TRACE_FUNC ("((rtc*) %p, (symset*) %p)", p, syms);
+    
+    if (LEX.m_event == marpatcl_rtc_event_discard) {
+	*syms = &LEX.discards;
+    } else {
+	*syms = &LEX.found;
+    }
+    
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_lexer_get_lexeme_sv (marpatcl_rtc_p p,
+				  marpatcl_rtc_sv_vec* svv)
+{
+    TRACE_FUNC ("((rtc*) %p, (sv_vec* %p))", p, svv);
+    
+    if (LEX.m_event == marpatcl_rtc_event_discard) {
+	*svv = 0;
+    } else {
+	*svv = LEX.m_sv;
+    }
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_lexer_set_lexeme_start (marpatcl_rtc_p p, int start)
+{
+    TRACE_FUNC ("((rtc*) %p, start = %d)", p, start);
+	
+    LEX.cstart = start;
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_lexer_set_lexeme_length (marpatcl_rtc_p p, int length)
+{
+    TRACE_FUNC ("((rtc*) %p, len = %d)", p, length);
+    
+    LEX.clength = length;
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_lexer_set_lexeme_value (marpatcl_rtc_p p, const char* value)
+{
+    TRACE_FUNC ("((rtc*) %p, value = %d/%s)", p,
+		value ? num_utf_chars (value) : -1,
+		value ? value : "<null>");
+	
+    if (LEX.lexemestr) {
+	FREE (LEX.lexemestr);
+    }
+    LEX.lexemestr = STRDUP (value);
+    LEX.clength   = num_utf_chars (LEX.lexemestr);
+
+    TRACE_RETURN_VOID;
+}
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API - lifecycle, accessors, and mutators
  */
 
 void
@@ -112,10 +215,16 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
 	TRACE_TAG (lexonly, "%s", "lexer only");
     }
 
-    LEX.lexeme = marpatcl_rtc_stack_cons (80);
-    LEX.start  = -1;
-    LEX.cstart = -1;
-    LEX.recce  = 0;
+    LEX.lexeme       = marpatcl_rtc_stack_cons (80);
+    LEX.lexemestr    = 0;
+    LEX.start        = -1;
+    LEX.length       = -1;
+    LEX.cstart       = -1;
+    LEX.clength      = -1;
+    LEX.recce        = 0;
+    LEX.m_clearfirst = 1;
+    LEX.m_sv = 0;
+    LEX.m_event = marpatcl_rtc_eventtype_LAST;
 
     LEX.single_sv = 1;
     for (k = 0; k < SPEC->l0semantic.size; k++) {
@@ -147,6 +256,10 @@ marpatcl_rtc_lexer_free (marpatcl_rtc_p p)
     marpatcl_rtc_symset_free (FOUND);
     marpatcl_rtc_stack_destroy (LEX.lexeme);
 
+    if (LEX.lexemestr) {
+	FREE (LEX.lexemestr);
+    }
+    
     TRACE_RETURN_VOID;
 }
 
@@ -158,11 +271,9 @@ marpatcl_rtc_lexer_flush (marpatcl_rtc_p p)
     LEX_P (p);
 
     if (LEX.start == -1) {
-	LEX.start  = GATE.lastloc;
-	LEX.cstart = GATE.lastcloc;
-	LEX.length = 0;
+	match_begin (p);
     }
-
+	
     complete (p);
     // MAYBE FAIL.
     TRACE_RETURN_VOID;
@@ -181,9 +292,7 @@ marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
      */
 
     if (LEX.start == -1) {
-	LEX.start  = GATE.lastloc;
-	LEX.cstart = GATE.lastcloc;
-	LEX.length = 0;
+	match_begin (p);
     }
 
     marpatcl_rtc_stack_push (LEX.lexeme, ch);
@@ -316,7 +425,25 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
 #define SHOW_SV(sv)
 #endif
 
-void
+static void
+match_begin (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+	
+    LEX.start   = GATE.lastloc;
+    LEX.length  = 0;
+    LEX.cstart  = GATE.lastcloc;
+    LEX.clength = -1;
+
+    if (LEX.lexemestr) {
+	FREE (LEX.lexemestr);
+    }
+    LEX.lexemestr = 0;
+
+    TRACE_RETURN_VOID;
+}
+
+static void
 complete (marpatcl_rtc_p p)
 {
     int status, redo, latest, res, discarded, svid;
@@ -677,8 +804,6 @@ get_sv (marpatcl_rtc_p   p,
     marpatcl_rtc_sv_p lhsid    = 0;
     marpatcl_rtc_sv_p ruleid   = 0;
     marpatcl_rtc_sv_p value    = 0;
-    char* lexeme = 0;
-    int lex_length = -1;
 
     //TRACE_FUNC ("((rtc*) %p, token %d, rule %d)", p, token, rule);
     sv = marpatcl_rtc_sv_cons_vec (SPEC->l0semantic.size);
@@ -694,19 +819,22 @@ get_sv (marpatcl_rtc_p   p,
 #define L0_SNAME(token)  marpatcl_rtc_spec_symname (SPEC->l0, token, NULL)
 #define G1_SNAME(token)  marpatcl_rtc_spec_symname (SPEC->g1, token, NULL)
 
-#define LEX_STR          (lexeme ? lexeme : (lexeme = get_lexeme (p, NULL), lexeme))
+#define LEX_STR          (STRDUP (marpatcl_rtc_lexer_get_lexeme_value (p)))
 #define LEX_START_C      (LEX.cstart)
-#define LEX_LEN_C        (lex_length >= 0 ? lex_length : (lex_length = num_utf_chars (LEX_STR), lex_length))
+#define LEX_LEN_C        (marpatcl_rtc_lexer_get_lexeme_length (p))
 #define LEX_END_C        (LEX_START_C + LEX_LEN_C - 1)
 
     for (k = 0; k < SPEC->l0semantic.size; k++) {
 	switch (SPEC->l0semantic.data[k]) {
-	case MARPATCL_SV_START:		DO (start, marpatcl_rtc_sv_cons_int (LEX_START));		break;
-	case MARPATCL_SV_END:		DO (end, marpatcl_rtc_sv_cons_int (LEX_END_C));			break;
-	case MARPATCL_SV_LENGTH:	DO (length, marpatcl_rtc_sv_cons_int (LEX_LEN_C));		break;
-	case MARPATCL_SV_G1START:	DO (g1start, marpatcl_rtc_sv_cons_string ("",0));		break;//TODO
-	case MARPATCL_SV_G1END:		DO (g1end, marpatcl_rtc_sv_cons_string ("",0));			break;//TODO
-	case MARPATCL_SV_G1LENGTH:	DO (g1length, marpatcl_rtc_sv_cons_int (1));			break;
+	case MARPATCL_SV_START:		DO (start,  marpatcl_rtc_sv_cons_int (LEX_START_C));	break;
+	case MARPATCL_SV_END:		DO (end,    marpatcl_rtc_sv_cons_int (LEX_END_C));	break;
+	case MARPATCL_SV_LENGTH:	DO (length, marpatcl_rtc_sv_cons_int (LEX_LEN_C));	break;
+	case MARPATCL_SV_VALUE:		DO (value,  marpatcl_rtc_sv_cons_string (LEX_STR, 1));	break;
+	    //
+	case MARPATCL_SV_G1START:	DO (g1start,  marpatcl_rtc_sv_cons_string ("",0));	break;//TODO
+	case MARPATCL_SV_G1END:		DO (g1end,    marpatcl_rtc_sv_cons_string ("",0));	break;//TODO
+	case MARPATCL_SV_G1LENGTH:	DO (g1length, marpatcl_rtc_sv_cons_int (1));		break;
+	    //
 	case MARPATCL_SV_RULE_NAME:	/* See below, LHS_NAME -- Specific to lexer semantics */
 	case MARPATCL_SV_LHS_NAME:
 	    if (SPEC->g1) {
@@ -715,9 +843,8 @@ get_sv (marpatcl_rtc_p   p,
 		DO (lhsname, marpatcl_rtc_sv_cons_string (L0_SNAME (TO_ACS (token)), 0));
 	    }
 	    break;
-	case MARPATCL_SV_RULE_ID:	DO (ruleid, marpatcl_rtc_sv_cons_int (rule));			break;
-	case MARPATCL_SV_LHS_ID:	DO (lhsid, marpatcl_rtc_sv_cons_int (token));			break;
-	case MARPATCL_SV_VALUE:		DO (value, marpatcl_rtc_sv_cons_string (LEX_STR, 1));		break;
+	case MARPATCL_SV_RULE_ID:	DO (ruleid, marpatcl_rtc_sv_cons_int (rule));		break;
+	case MARPATCL_SV_LHS_ID:	DO (lhsid,  marpatcl_rtc_sv_cons_int (token));		break;
 	default: ASSERT (0, "Invalid array descriptor key");
 	}
     }
@@ -745,6 +872,8 @@ get_lexeme (marpatcl_rtc_p p, int* len)
     TRACE_ADD (" get_lexeme", 0);
 
     n = marpatcl_rtc_stack_size (LEX.lexeme);
+    TRACE_ADD (" len(%d)", n);
+
     v = NALLOC (char, n+1);
 
     if (len) {

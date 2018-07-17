@@ -97,9 +97,9 @@ critcl::api function void marpatcl_rtc_destroy {
     marpatcl_rtc_p p
 }
 critcl::api function void marpatcl_rtc_enter {
-    marpatcl_rtc_p p
-    {const char*}  bytes
-    int            n
+    marpatcl_rtc_p         p
+    {const unsigned char*} bytes
+    int                    n
 }
 critcl::api function int marpatcl_rtc_failed {
     marpatcl_rtc_p p

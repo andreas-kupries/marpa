@@ -67,6 +67,27 @@ marpatcl_rtc_inbound_location (marpatcl_rtc_p p)
     TRACE_RETURN ("%d", IN.location);
 }
 
+int
+marpatcl_rtc_inbound_clocation (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE_RETURN ("%d", IN.clocation);
+}
+
+int marpatcl_rtc_inbound_moveto (marpatcl_rtc_p p, int cpos)
+{
+    // APPROX: bytes, FIX!! must be chars
+    IN.location = cpos;
+    // compute delta vs clocation, and start, moveby from the smaller.
+}
+
+int
+marpatcl_rtc_inbound_moveby (marpatcl_rtc_p p, int cdelta)
+{
+    // APPROX: bytes, FIX!! must be chars
+    IN.location += cdelta;
+}
+
 void
 marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
 {

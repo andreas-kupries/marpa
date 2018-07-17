@@ -22,8 +22,10 @@
  *     --       generic parse completion
  */
 
-extern Tcl_Obj* marpatcl_rtc_sv_astcl    (Tcl_Interp* ip, marpatcl_rtc_sv_p sv);
-extern int      marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p p);
+extern Tcl_Obj* marpatcl_rtc_symbol_names (Tcl_Interp* ip, marpatcl_rtc_p p, marpatcl_rtc_symset* s);
+extern Tcl_Obj* marpatcl_rtc_sv_astcl     (Tcl_Interp* ip, marpatcl_rtc_sv_p sv);
+extern Tcl_Obj* marpatcl_rtc_vec_astcl    (Tcl_Interp* ip, marpatcl_rtc_sv_vec v);
+extern int      marpatcl_rtc_sv_complete  (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p p);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

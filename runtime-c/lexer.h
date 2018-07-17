@@ -38,7 +38,7 @@ typedef struct marpatcl_rtc_lexer {
 
     marpatcl_rtc_stack_p lexeme;        /* Collected characters (byte vector) */
     char*                lexemestr;     /* Lexeme string, or NULL */
-    // capacity ? reduce memory churn (know length, s.a)
+    // FUTURE: capacity ? reduce memory churn (know length, s.a)
 
     marpatcl_rtc_symset  found;         /* Found terminal  symbols  */
     marpatcl_rtc_symset  discards;      /* Found discarded symbols  */
@@ -71,7 +71,7 @@ void  marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
- * API -- match state accessors and mutators
+ * API - match state accessors and mutators
  */
 
 int         marpatcl_rtc_lexer_get_lexeme_start  (marpatcl_rtc_p p);
@@ -81,6 +81,12 @@ const char* marpatcl_rtc_lexer_get_lexeme_value  (marpatcl_rtc_p p);
 void        marpatcl_rtc_lexer_set_lexeme_start  (marpatcl_rtc_p p, int         start);
 void        marpatcl_rtc_lexer_set_lexeme_length (marpatcl_rtc_p p, int         length);
 void        marpatcl_rtc_lexer_set_lexeme_value  (marpatcl_rtc_p p, const char* value);
+
+void        marpatcl_rtc_lexer_get_lexeme_symbols (marpatcl_rtc_p p,
+						   marpatcl_rtc_symset** syms);
+
+void        marpatcl_rtc_lexer_get_lexeme_sv (marpatcl_rtc_p p,
+					      marpatcl_rtc_sv_vec* svv);
 
 // TODO: clearfirst,
 // TODO: sv, symbols (get only, set by direct access to the SV-vector)
