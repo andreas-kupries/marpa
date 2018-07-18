@@ -207,7 +207,7 @@ oo::class create marpa::inbound {
 		debug.marpa/inbound {[debug caller] | DO _______________________________________ /NEXT}
 	    }
 
-	    # Trigger end of data processing in the post-porcessors.
+	    # Trigger end of data processing in the post-processors.
 	    # Note that this may rewind the input to an earlier place,
 	    # forcing re-processing of some of the last characters.
 	    debug.marpa/inbound {[debug caller] | DO _______________________________________ /EOF}
