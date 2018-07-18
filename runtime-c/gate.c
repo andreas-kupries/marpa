@@ -46,8 +46,6 @@ marpatcl_rtc_gate_init (marpatcl_rtc_p p)
     TRACE_FUNC ("((rtc*) %p)", p);
 
     marpatcl_rtc_byteset_clear (ACCEPT);
-    GATE.history = marpatcl_rtc_stack_cons (80);
-    GATE.pending = marpatcl_rtc_stack_cons (10);
     GATE.lastchar = -1;
     GATE.lastloc  = -1;
     GATE.lastcloc = -1;
@@ -61,8 +59,6 @@ marpatcl_rtc_gate_free (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
 
-    marpatcl_rtc_stack_destroy (GATE.history);
-    marpatcl_rtc_stack_destroy (GATE.pending);
     /* GATE.acceptable - nothing to do */
 
     TRACE_RETURN_VOID;
@@ -73,49 +69,49 @@ marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const unsigned char ch)
 {
 #define NAME(sym) marpatcl_rtc_spec_symname (SPEC->l0, sym, 0)
 
-    TRACE_FUNC ("((rtc*) %p, byte %d (@ %d <%s>))", p, ch, IN.location, NAME (ch));
-    TRACE_TAG (stream, "gate stream :: byte %d (@ %d <%s>)", ch, IN.location, NAME (ch));
+    TRACE_FUNC ("((rtc*) %p, byte %3d (@ %d +%d c%d <%s>))", p, ch, IN.location, IN.header, IN.clocation, NAME (ch));
+    TRACE_TAG (stream, "gate stream :: byte %3d (@ %d c%d <%s>)", ch, IN.location, IN.clocation, NAME (ch));
 
-    GATE.flushed = 0;
+    //GATE.flushed = 0;
     GATE.lastchar = ch;
     GATE.lastloc  = IN.location;
     GATE.lastcloc = IN.clocation;
 
-    while (!FAIL.fail) {
-	if (marpatcl_rtc_byteset_contains (ACCEPT, ch)) {
-	    marpatcl_rtc_stack_push (GATE.history, ch);
-	    /* Note: Not pushing the locations, we know the last, and
-	     * and can use that in the `redo` to properly move back.
-	     */
-	    marpatcl_rtc_lexer_enter (p, ch);
-	    // See marpatcl_rtc_inbound_enter for test of failure and abort.
-	    TRACE_RETURN_VOID;
-	}
-
-	/* No match: Try to close current symbol, then retry. But at most once.
+    if (marpatcl_rtc_byteset_contains (ACCEPT, ch)) {
+	/* Note: Not pushing the locations, we know the last, and
+	 * and can use that in the `redo` to properly move back.
 	 */
-	TRACE_HEADER (1);
-	TRACE_ADD ("(rtc*) %p, rejected", p);
+	TRACE ("((rtc*) %p), accepted", p);
+	marpatcl_rtc_lexer_enter (p, ch);
+	// See marpatcl_rtc_inbound_enter for test of failure and abort.
+	GATE.flushed = 0;
+	TRACE_RETURN_VOID;
+    }
 
-	if (GATE.flushed) {
-	    GATE.lastchar = ch;
-	    GATE.lastloc  = IN.location;
-	    GATE.lastcloc = IN.clocation;
+    /* No match: Try to close current symbol, then retry. But at most once.
+     */
+    TRACE_HEADER (1);
+    TRACE_ADD ("((rtc*) %p), rejected", p);
 
-	    TRACE_ADD (" - flush failed", 0);
-	    TRACE_CLOSER;
+    if (GATE.flushed) {
+	GATE.lastchar = ch;
+	GATE.lastloc  = IN.location;
+	GATE.lastcloc = IN.clocation;
 
-	    marpatcl_rtc_failit (p, "gate");
-	    // See marpatcl_rtc_inbound_enter for test of failure and abort.
-	    TRACE_RETURN_VOID;
-	}
-
-	TRACE (" - flush", 0);
+	TRACE_ADD (" - flush failed", 0);
 	TRACE_CLOSER;
 
-	GATE.flushed ++;
-	marpatcl_rtc_lexer_flush (p);
+	marpatcl_rtc_failit (p, "gate");
+	// See marpatcl_rtc_inbound_enter for test of failure and abort.
+	TRACE_RETURN_VOID;
     }
+
+    TRACE_ADD (" - flush", 0);
+    TRACE_CLOSER;
+
+    marpatcl_rtc_inbound_moveby (p, -1);
+    GATE.flushed ++;
+    marpatcl_rtc_lexer_flush (p);
 
     TRACE_RETURN_VOID;
 }
@@ -157,35 +153,17 @@ marpatcl_rtc_gate_acceptable (marpatcl_rtc_p p)
 void
 marpatcl_rtc_gate_redo (marpatcl_rtc_p p, int n)
 {
-    TRACE_FUNC ("(rtc*) %p, n %d)", p, n);
+    TRACE_FUNC ("((rtc*) %p, n %d)", p, n);
     TRACE_TAG (stream, "gate stream :: /CUT", 0);
 
-    if (!n) {
-	marpatcl_rtc_stack_clear (GATE.history);
-    } else {
+    if (n) {
 	/* Reset flush state. The redo implies that the flushed token did not
 	 * cover the input till the character causing the flush. That means
 	 * that we may have another token in the redone part of the input
 	 * which the current character has to flush again.
 	 */
 	GATE.flushed = 0;
-	/* Save the part of the history to replay, and reset the location
-	 * accordingly. During replay we move forward again.
-	 */
-	marpatcl_rtc_stack_move (GATE.pending, GATE.history, n);
-	IN.location -= n;
-	/* Note: The move of the data to replay reversed it as well, placing
-	 * the earlier characters higher in the stack. Popping them off again
-	 * thus provides is them in the original time order, just as we need
-	 * it.
-	 */
-	marpatcl_rtc_stack_clear (GATE.history);
-	while (marpatcl_rtc_stack_size (GATE.pending)) {
-	    IN.location ++;
-	    marpatcl_rtc_gate_enter (p, marpatcl_rtc_stack_pop (GATE.pending));
-	}
-	ASSERT (!marpatcl_rtc_stack_size (GATE.pending),
-		"History replay left data behind");
+	marpatcl_rtc_inbound_moveby (p, -n);
     }
 
     TRACE_RETURN_VOID;

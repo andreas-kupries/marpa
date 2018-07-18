@@ -23,6 +23,10 @@ typedef struct marpatcl_rtc_inbound {
     int clocation; /* Same, as character offset */
     int trailer;   /* Number of bytes in the expected trailer */
     int header;    /* Number of bytes in a header so far */
+    //
+    // Index. Allow for fast access to anywhere in the input even in the
+    // presence multi-byte characters, i.e. beyond ASCII.
+    //
 } marpatcl_rtc_inbound;
 
 /*
@@ -31,8 +35,7 @@ typedef struct marpatcl_rtc_inbound {
  *
  * init      - initialize an input processor
  * free      - release input state
- * location  - returns the current location in the input, as offset in bytes from the start
- * clocation - as above, as offset in characters from the start
+ * location  - returns the current location in the input, as offset in characters from the start of the input
  * enter     - push a string of `n` bytes from the input.
  *            `n < 0` --> Treat as \0-terminated, and push all but the terminator.
  * eof       - signal the end of the input
@@ -41,11 +44,10 @@ typedef struct marpatcl_rtc_inbound {
 void marpatcl_rtc_inbound_init      (marpatcl_rtc_p p);
 void marpatcl_rtc_inbound_free      (marpatcl_rtc_p p);
 int  marpatcl_rtc_inbound_location  (marpatcl_rtc_p p);
-int  marpatcl_rtc_inbound_clocation (marpatcl_rtc_p p);
 void marpatcl_rtc_inbound_enter     (marpatcl_rtc_p p, const unsigned char* bytes, int n);
 void marpatcl_rtc_inbound_eof       (marpatcl_rtc_p p);
-int  marpatcl_rtc_inbound_moveto    (marpatcl_rtc_p p, int cpos);
-int  marpatcl_rtc_inbound_moveby    (marpatcl_rtc_p p, int cdelta);
+void marpatcl_rtc_inbound_moveto    (marpatcl_rtc_p p, int cpos);
+void marpatcl_rtc_inbound_moveby    (marpatcl_rtc_p p, int cdelta);
 
 #endif
 

@@ -148,7 +148,7 @@ namespace eval ::marpa::gen::runtime::c {
 
 proc ::marpa::gen::runtime::c::gc {serial} {
     debug.marpa/gen/runtime/c {}
-    
+
     set gc [Ingest $serial]
     EncodePrecedences $gc
     LowerLiterals     $gc
@@ -186,7 +186,7 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     set lex       [GetL0 $gc lexeme]
     set g1symbols [$gc g1 symbols-of {}]
     set g1events  [$gc g1 events]
-    
+
     # Ignoring class 'terminal'. That is the same as the l0 lexemes,
     # and the semantics made sure, as did the container validation.
 
@@ -376,7 +376,7 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     lappend map @l0-semantics-sz@       [* 2 [llength $sem]]
     lappend map @l0-semantics-c@        [llength $sem]
     lappend map @l0-semantics-v@        [TabularArray $sem $config]
-    
+
     incr dsz 52                   ; # sizeof(marpatcl_rtc_rules) = 52
 
     # G1 grammar: symbols, rules
@@ -440,7 +440,7 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 
     switch -exact -- $emode {
 	l0 {
-	    set l0events [Events2Table $l0events L]
+	    set l0events [Events2Table $l0events L G]
 	    set name     [CName]_events
 	    set l0name   [CName]_l0events
 
@@ -453,8 +453,8 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 	    incr dsz 0 ;# TODO XXX size of the event structures
 	}
 	both {
-	    set l0events [Events2Table $l0events L]
-	    set g1events [Events2Table $g1events G]
+	    set l0events [Events2Table $l0events L G]
+	    set g1events [Events2Table $g1events G G]
 	    set events   [concat $l0events $g1events]
 	    set nl       [llength $l0events]
 
@@ -477,7 +477,7 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 		"Bad event mode $emode, expected one of l0, or both."
 	}
     }
-   
+
     lappend map @space@ $dsz
 
     # todo - actions, masking
@@ -743,7 +743,7 @@ proc ::marpa::gen::runtime::c::L0C {lex discards} {
 		    Lexeme           $l \
 		    Internal]
     }
-    
+
     return [list \
 		Characters       256 \
 		{{ACS: Lexeme}}  $l \
@@ -1024,7 +1024,7 @@ proc ::marpa::gen::runtime::c::dictsort {dict} {
     return $r
 }
 
-proc ::marpa::gen::runtime::c::Events2Table {dict sym} {
+proc ::marpa::gen::runtime::c::Events2Table {dict lsym gsym} {
     if {![dict size $dict]} { return {} }
     # Flatten
     dict for {symbol spec} $dict {
@@ -1032,7 +1032,7 @@ proc ::marpa::gen::runtime::c::Events2Table {dict sym} {
 	    dict for {event active} $decl {
 		# Attention: Type converter has to match
 		# marpa_runtime_c.h:marpatcl_rtc_event_code
-		set type [dict get {
+		set ctype [dict get {
 		    after     marpatcl_rtc_event_after
 		    before    marpatcl_rtc_event_before
 		    completed marpatcl_rtc_event_completed
@@ -1044,13 +1044,17 @@ proc ::marpa::gen::runtime::c::Events2Table {dict sym} {
 		    on  1  true  1  1 1
 		    off 0  false 0  0 0
 		} $active]
-		# Note: The lex engine sees ACS symbols for lexemes
-		# and discards. Use them in the table.
-		switch -exact -- $sym {
-		    L {	set sid [$sym 2id @ACS:$symbol] }
-		    G {	set sid [$sym 2id $symbol] }
+		# Note: On symbol encoding.
+		# For discarded symbols the RTC match state
+		# (.discards) contains their ACS tokens. For lexemes
+		# the RTC match state (.found) contains their G1
+		# terminal symbols instead. And G1 parse events use G1
+		# symbols as well.
+		switch -exact -- $type {
+		    discard { set sid [$lsym 2id @ACS:$symbol] }
+		    default { set sid [$gsym 2id $symbol] }
 		}
-		lappend table [list $event $symbol $sid $type $active]
+		lappend table [list $event $symbol $sid $ctype $active]
 	    }
 	}
     }
@@ -1076,7 +1080,7 @@ proc ::marpa::gen::runtime::c::EventNames {table} {
 	incr k
     }
     lappend names "\} +list\n"
-    
+
     return [join $names \n]
 }
 
@@ -1084,11 +1088,15 @@ proc ::marpa::gen::runtime::c::EventTable {name table} {
     set n [llength $table]
     if {!$n} { return "" }
 
+    set tn [string length marpatcl_rtc_event_predicted]
+
     lappend decl "\n    static marpatcl_rtc_event_spec $name \[$n\] = \{"
+    lappend decl "    // sym, type, active"
     foreach item $table {
 	lassign $item event sym sid type active
 	# TODO: left-pad / right-align the columns
-	lappend decl "\t\{ $sid, $type, $active \}, // ${sym}: $event"
+	lappend decl [format "\t\{ $sid, %-${tn}s, $active \}, // ${sym}: $event" \
+			  $type]
     }
     lappend decl "    \};\n"
     # dsz + len(table)*(4+4+4)
@@ -1524,7 +1532,7 @@ oo::class create marpa::gen::runtime::c::Rules {
     }
 
     method prio {lhs args} {
-	my add* [list $lhs [list priority $args 0]] 
+	my add* [list $lhs [list priority $args 0]]
     }
 }
 
@@ -1653,7 +1661,7 @@ oo::class create marpa::gen::runtime::c::Pool {
     variable mymax     ; # length, maximum
     variable mystrsize ; # total length
     variable bmap      ;# byte mapping
-    
+
     constructor {} {
 	set mystr     {}
 	set mypool    {}
@@ -1690,7 +1698,7 @@ oo::class create marpa::gen::runtime::c::Pool {
 
 	# normalize \u00xx to octals.
 	set is [string map $bmap $is]
-	
+
 	return $is
     }
 
@@ -1709,7 +1717,7 @@ oo::class create marpa::gen::runtime::c::Pool {
 	}
 	error XXX:($s)
     }
-    
+
     method add {strip strings} {
 	if {$myfinal} {
 	    return -code error "Cannot add strings to finalized pool"
@@ -1771,7 +1779,7 @@ oo::class create marpa::gen::runtime::c::Pool {
 
 	set lf %${mymax}d
 	set if %[string length [dict size $mypool]]d
-	
+
 	set index 0
 	set offset 0
 	foreach str [lsort -dict [dict keys $mypool]] {

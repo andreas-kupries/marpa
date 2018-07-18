@@ -5316,7 +5316,6 @@ critcl::class def marpa::slif::parser {
     method process-file proc {Tcl_Interp* ip Tcl_Obj* path} ok {
 	int res, got;
 	char* buf;
-	Tcl_Obj* cbuf = Tcl_NewObj();
 	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
 	if (!in) {
 	    return TCL_ERROR;
@@ -5326,19 +5325,25 @@ critcl::class def marpa::slif::parser {
 	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
 	// TODO: abort on failed set-channel-option
 	
+	Tcl_Obj* cbuf = Tcl_NewObj();
+	Tcl_Obj* ebuf = Tcl_NewObj();
 	while (!Tcl_Eof(in)) {
 	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
 	    if (got < 0) {
+		Tcl_DecrRefCount (cbuf);
+		Tcl_DecrRefCount (ebuf);
 		return TCL_ERROR;
 	    }
 	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
-	    buf = Tcl_GetStringFromObj (cbuf, &got);
-	    marpatcl_rtc_enter (instance->state, buf, got);
-	    if (marpatcl_rtc_failed (instance->state)) break;
+	    Tcl_AppendObjToObj (ebuf, cbuf);
 	}
 	Tcl_DecrRefCount (cbuf);
-
 	(void) Tcl_Close (ip, in);
+
+	buf = Tcl_GetStringFromObj (ebuf, &got);
+	marpatcl_rtc_enter (instance->state, buf, got);
+	Tcl_DecrRefCount (ebuf);
+
 	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
     

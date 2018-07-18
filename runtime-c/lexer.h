@@ -45,7 +45,7 @@ typedef struct marpatcl_rtc_lexer {
     marpatcl_rtc_symset  events;        /* Found lexer parse events */
     int                  m_event;       /* Active parse event, or -1 */
 
-    marpatcl_rtc_sv_vec  m_sv;          /* Collected semantic values */
+    marpatcl_rtc_stack_p m_sv;          /* Id's of the collected semantic values */
     int                  m_clearfirst;  /* Flag to trigger clearing of sv/found */
 } marpatcl_rtc_lexer;
 
@@ -82,11 +82,8 @@ void        marpatcl_rtc_lexer_set_lexeme_start  (marpatcl_rtc_p p, int         
 void        marpatcl_rtc_lexer_set_lexeme_length (marpatcl_rtc_p p, int         length);
 void        marpatcl_rtc_lexer_set_lexeme_value  (marpatcl_rtc_p p, const char* value);
 
-void        marpatcl_rtc_lexer_get_lexeme_symbols (marpatcl_rtc_p p,
-						   marpatcl_rtc_symset** syms);
-
-void        marpatcl_rtc_lexer_get_lexeme_sv (marpatcl_rtc_p p,
-					      marpatcl_rtc_sv_vec* svv);
+marpatcl_rtc_symset* marpatcl_rtc_lexer_get_lexeme_symbols (marpatcl_rtc_p p);
+marpatcl_rtc_stack_p marpatcl_rtc_lexer_get_lexeme_sv      (marpatcl_rtc_p p);
 
 // TODO: clearfirst,
 // TODO: sv, symbols (get only, set by direct access to the SV-vector)

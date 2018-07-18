@@ -25,8 +25,6 @@ typedef struct marpatcl_rtc_gate {
     int                  lastloc;    /* Location of the `lastchar` (byte offset) */
     int                  lastcloc;   /* Same, as character offset */
     int                  flushed;    /* Flushing state */
-    marpatcl_rtc_stack_p history;    /* History of the current match attempt */
-    marpatcl_rtc_stack_p pending;    /* Scratch stack for history replay */
     marpatcl_rtc_byteset acceptable; /* Set of acceptable byte (symbols) */
 } marpatcl_rtc_gate;
 

@@ -52,7 +52,7 @@ critcl::class def marpa::runtime::c::pedesc {
     } {}
 
     method location? proc {} int {
-	return marpatcl_rtc_inbound_clocation (instance->state)-1;
+	return marpatcl_rtc_inbound_location (instance->state);
     }
 
     method moveto proc {int pos int args} void {
@@ -70,20 +70,11 @@ critcl::class def marpa::runtime::c::pedesc {
     }
 
     method symbols proc {Tcl_Interp* interp} object0 {
-	marpatcl_rtc_symset* syms;
-	marpatcl_rtc_lexer_get_lexeme_symbols (instance->state, &syms);
-	return marpatcl_rtc_symbol_names (interp, instance->state, syms);
+	return marpatcl_rtc_symbol_names (interp, instance->state);
     }
-    
+
     method sv proc {Tcl_Interp* interp} object0 {
-	marpatcl_rtc_sv_vec svv;
-	marpatcl_rtc_lexer_get_lexeme_sv (instance->state, &svv);
-	// Conditional, nothing for discard
-	if (svv) {
-	    return marpatcl_rtc_vec_astcl (interp, svv);
-	} else {
-	    return 0;//Tcl_NewListObj (0, 0);
-	}
+	return marpatcl_rtc_sv_list (interp, instance->state);
     }
 
     method start proc {} int {
@@ -98,7 +89,7 @@ critcl::class def marpa::runtime::c::pedesc {
 	// TODO: grammar parse events - AST ?!
 	return (char*) marpatcl_rtc_lexer_get_lexeme_value (instance->state);
     }
-    
+
     method values proc {} string {
 	// TODO: grammar parse events - AST ?!
 	return (char*) marpatcl_rtc_lexer_get_lexeme_value (instance->state);
@@ -108,7 +99,7 @@ critcl::class def marpa::runtime::c::pedesc {
 	/* XXX TODO FILL XXX */
 	ASSERT (0,"symbols: missing");
     }
-    
+
     method sv: proc {} void {
 	/* XXX TODO FILL XXX */
 	ASSERT (0,"sv: missing");
@@ -140,24 +131,19 @@ critcl::class def marpa::runtime::c::pedesc {
 	ADD ("length = ((%d))",    marpatcl_rtc_lexer_get_lexeme_length (instance->state));
 	ADD ("start = ((%d))",     marpatcl_rtc_lexer_get_lexeme_start (instance->state));
 
-	marpatcl_rtc_sv_vec svv;
-	marpatcl_rtc_lexer_get_lexeme_sv (instance->state, &svv);
-	// Conditional, nothing for discard
-	if (svv) {
-	    Tcl_Obj* sv = marpatcl_rtc_vec_astcl (interp, svv);
+	Tcl_Obj* sv = marpatcl_rtc_sv_list (interp, instance->state);
+	if (sv) {
 	    ADD ("sv = ((%s))", Tcl_GetString (sv));
 	    Tcl_DecrRefCount (sv);
 	}
 
-	marpatcl_rtc_symset* syms;
-	marpatcl_rtc_lexer_get_lexeme_symbols (instance->state, &syms);
-	Tcl_Obj* names = marpatcl_rtc_symbol_names (interp, instance->state, syms);
+	Tcl_Obj* names = marpatcl_rtc_symbol_names (interp, instance->state);
 	ADD ("symbols = ((%s))", Tcl_GetString (names));
 	Tcl_DecrRefCount (names);
 
-	ADD ("value = ((%s))",     marpatcl_rtc_lexer_get_lexeme_value (instance->state));
-	ADD ("@location = %d", marpatcl_rtc_inbound_clocation (instance->state)-1);
-	
+	ADD ("value = ((%s))", marpatcl_rtc_lexer_get_lexeme_value (instance->state));
+	ADD ("@location = %d", marpatcl_rtc_inbound_location (instance->state));
+
 	return list;
     error:
 	Tcl_DecrRefCount (list);

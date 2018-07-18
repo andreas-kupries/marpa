@@ -52,7 +52,7 @@ marpatcl_rtc_eh_init (marpatcl_ehandlers* e, Tcl_Interp* ip,
     for (i=0; i < marpatcl_rtc_eventtype_LAST; i++) {
 	e->event [i] = 0;
     }
-    
+
     TRACE_TAG_RETURN_VOID (eh);
 }
 
@@ -60,13 +60,13 @@ void
 marpatcl_rtc_eh_clear (marpatcl_ehandlers* e)
 {
     TRACE_TAG_FUNC (eh, "(marpatcl_ehandler*) %p", e);
-	
+
     int i;
     for (i=0; i < marpatcl_rtc_eventtype_LAST; i++) {
 	if (!e->event [i]) continue;
 	critcl_callback_destroy (e->event [i]);
     }
-    
+
     TRACE_TAG_RETURN_VOID (eh);
 }
 
@@ -162,39 +162,57 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p 
 }
 
 Tcl_Obj*
-marpatcl_rtc_symbol_names (Tcl_Interp* ip, marpatcl_rtc_p p, marpatcl_rtc_symset* syms)
+marpatcl_rtc_sv_list (Tcl_Interp* ip, marpatcl_rtc_p p)
 {
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p", ip, p);
+
+    marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_get_lexeme_sv (p);
+    if (!svids) {
+	TRACE_RETURN ("(Tcl_Obj*) %p", 0);
+    }
+
+    int k, len, *ids = marpatcl_rtc_stack_data (svids, &len);
+    Tcl_Obj* svlist = Tcl_NewListObj (0, 0);
+
+    for (k=0; k < len; k++) {
+	marpatcl_rtc_sv_p sv = marpatcl_rtc_store_get (p, ids[k]);
+	Tcl_Obj* svo = marpatcl_rtc_sv_astcl (ip, sv);
+	if (TCL_OK != Tcl_ListObjAppendElement (ip, svlist, svo)) goto error;
+    }
+
+    TRACE_RETURN ("(Tcl_Obj*) %p", svlist);
+
+ error:
+    RELE (svlist);
+    TRACE_RETURN ("(Tcl_Obj*) %p", 0);
+}
+
+Tcl_Obj*
+marpatcl_rtc_symbol_names (Tcl_Interp* ip, marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p)", ip, p);
+    marpatcl_rtc_symset* syms = marpatcl_rtc_lexer_get_lexeme_symbols (p);
+    marpatcl_rtc_rules* rules = LEX.m_event == marpatcl_rtc_event_discard
+	? SPEC->l0
+	: SPEC->g1
+	;
     Tcl_Obj* names = Tcl_NewListObj (0,0);
     int n = marpatcl_rtc_symset_size (syms);
     int k;
 
     for (k=0; k<n; k++) {
 	int slen;
-	const char* sname = marpatcl_rtc_spec_symname (SPEC->l0, syms->dense[k], &slen);
+	const char* sname = marpatcl_rtc_spec_symname (rules, syms->dense[k], &slen);
 	if (!sname) goto error;
 	Tcl_Obj* name = Tcl_NewStringObj (sname, slen);
 	if (!name) goto error;
 	if (TCL_OK != Tcl_ListObjAppendElement (ip, names, name)) goto error;
     }
-    return names;
+
+    TRACE_RETURN ("(Tcl_Obj*) %p", names);
  error:
     RELE (names);
-    return 0;
-}
-
-Tcl_Obj*
-marpatcl_rtc_vec_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_vec v)
-{
-    Tcl_Obj *svres, *null;
-    TRACE_FUNC ("(Interp*) %p, (sva*) %p", ip, v);
-
-    null = Tcl_NewListObj (0,0);
-    TAKE (null);
-    svres = vec_astcl (ip, v, null);
-    RELE (null);
-
-    TRACE ("R ((Tcl_Obj*) %p) (rc %d))", svres, svres ? svres->refCount : -1);
-    TRACE_RETURN ("(Tcl_Obj*) %p", svres);
+    TRACE_RETURN ("(Tcl_Obj*) %p", 0);
 }
 
 Tcl_Obj*
