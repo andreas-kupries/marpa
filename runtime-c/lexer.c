@@ -80,26 +80,26 @@ static int num_utf_chars (const char *src);
  */
 
 int
-marpatcl_rtc_lexer_get_lexeme_start (marpatcl_rtc_p p)
+marpatcl_rtc_lexer_pe_get_lexeme_start (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
     TRACE_RETURN ("%d", LEX.cstart);
 }
 
 int
-marpatcl_rtc_lexer_get_lexeme_length (marpatcl_rtc_p p)
+marpatcl_rtc_lexer_pe_get_lexeme_length (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
 
     if (LEX.clength < 0) {
-	(void*) marpatcl_rtc_lexer_get_lexeme_value (p);
+	(void*) marpatcl_rtc_lexer_pe_get_lexeme_value (p);
     }
 
     TRACE_RETURN ("%d", LEX.clength);
 }
 
 const char*
-marpatcl_rtc_lexer_get_lexeme_value (marpatcl_rtc_p p)
+marpatcl_rtc_lexer_pe_get_lexeme_value (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
 
@@ -112,7 +112,7 @@ marpatcl_rtc_lexer_get_lexeme_value (marpatcl_rtc_p p)
 }
 
 marpatcl_rtc_symset*
-marpatcl_rtc_lexer_get_lexeme_symbols (marpatcl_rtc_p p)
+marpatcl_rtc_lexer_pe_get_symbols (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
     TRACE_RETURN ("(marpatcl_rtc_symset* %p)",
@@ -122,7 +122,7 @@ marpatcl_rtc_lexer_get_lexeme_symbols (marpatcl_rtc_p p)
 }
 
 marpatcl_rtc_stack_p
-marpatcl_rtc_lexer_get_lexeme_sv (marpatcl_rtc_p p)
+marpatcl_rtc_lexer_pe_get_semvalues (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
     TRACE_RETURN ("(marpatcl_stack_p %p)",
@@ -132,7 +132,7 @@ marpatcl_rtc_lexer_get_lexeme_sv (marpatcl_rtc_p p)
 }
 
 void
-marpatcl_rtc_lexer_set_lexeme_start (marpatcl_rtc_p p, int start)
+marpatcl_rtc_lexer_pe_set_lexeme_start (marpatcl_rtc_p p, int start)
 {
     TRACE_FUNC ("((rtc*) %p, start = %d)", p, start);
 
@@ -142,7 +142,7 @@ marpatcl_rtc_lexer_set_lexeme_start (marpatcl_rtc_p p, int start)
 }
 
 void
-marpatcl_rtc_lexer_set_lexeme_length (marpatcl_rtc_p p, int length)
+marpatcl_rtc_lexer_pe_set_lexeme_length (marpatcl_rtc_p p, int length)
 {
     TRACE_FUNC ("((rtc*) %p, len = %d)", p, length);
 
@@ -152,7 +152,7 @@ marpatcl_rtc_lexer_set_lexeme_length (marpatcl_rtc_p p, int length)
 }
 
 void
-marpatcl_rtc_lexer_set_lexeme_value (marpatcl_rtc_p p, const char* value)
+marpatcl_rtc_lexer_pe_set_lexeme_value (marpatcl_rtc_p p, const char* value)
 {
     TRACE_FUNC ("((rtc*) %p, value = %d/%s)", p,
 		value ? num_utf_chars (value) : -1,
@@ -847,9 +847,9 @@ get_sv (marpatcl_rtc_p   p,
 #define L0_SNAME(token)  marpatcl_rtc_spec_symname (SPEC->l0, token, NULL)
 #define G1_SNAME(token)  marpatcl_rtc_spec_symname (SPEC->g1, token, NULL)
 
-#define LEX_STR          (STRDUP (marpatcl_rtc_lexer_get_lexeme_value (p)))
+#define LEX_STR          (STRDUP (marpatcl_rtc_lexer_pe_get_lexeme_value (p)))
 #define LEX_START_C      (LEX.cstart)
-#define LEX_LEN_C        (marpatcl_rtc_lexer_get_lexeme_length (p))
+#define LEX_LEN_C        (marpatcl_rtc_lexer_pe_get_lexeme_length (p))
 #define LEX_END_C        (LEX_START_C + LEX_LEN_C - 1)
 
     for (k = 0; k < SPEC->l0semantic.size; k++) {

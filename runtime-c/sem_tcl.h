@@ -20,12 +20,14 @@
  * - - -- --- ----- -------- ------------- ---------------------
  * API -- SV -- conversion to Tcl structures
  *     --       generic parse completion
+ *     --       parse event facade, event symbols and sem values
  */
 
-extern Tcl_Obj* marpatcl_rtc_symbol_names (Tcl_Interp* ip, marpatcl_rtc_p p);
-extern Tcl_Obj* marpatcl_rtc_sv_list      (Tcl_Interp* ip, marpatcl_rtc_p p);
 extern Tcl_Obj* marpatcl_rtc_sv_astcl     (Tcl_Interp* ip, marpatcl_rtc_sv_p sv);
 extern int      marpatcl_rtc_sv_complete  (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p p);
+
+extern Tcl_Obj* marpatcl_rtc_pe_symbols   (Tcl_Interp* ip, marpatcl_rtc_p p);
+extern Tcl_Obj* marpatcl_rtc_pe_semvalues (Tcl_Interp* ip, marpatcl_rtc_p p);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

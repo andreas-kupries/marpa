@@ -74,16 +74,16 @@ void  marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep);
  * API - match state accessors and mutators
  */
 
-int         marpatcl_rtc_lexer_get_lexeme_start  (marpatcl_rtc_p p);
-int         marpatcl_rtc_lexer_get_lexeme_length (marpatcl_rtc_p p);
-const char* marpatcl_rtc_lexer_get_lexeme_value  (marpatcl_rtc_p p);
+int         marpatcl_rtc_lexer_pe_get_lexeme_start  (marpatcl_rtc_p p);
+int         marpatcl_rtc_lexer_pe_get_lexeme_length (marpatcl_rtc_p p);
+const char* marpatcl_rtc_lexer_pe_get_lexeme_value  (marpatcl_rtc_p p);
 
-void        marpatcl_rtc_lexer_set_lexeme_start  (marpatcl_rtc_p p, int         start);
-void        marpatcl_rtc_lexer_set_lexeme_length (marpatcl_rtc_p p, int         length);
-void        marpatcl_rtc_lexer_set_lexeme_value  (marpatcl_rtc_p p, const char* value);
+void        marpatcl_rtc_lexer_pe_set_lexeme_start  (marpatcl_rtc_p p, int         start);
+void        marpatcl_rtc_lexer_pe_set_lexeme_length (marpatcl_rtc_p p, int         length);
+void        marpatcl_rtc_lexer_pe_set_lexeme_value  (marpatcl_rtc_p p, const char* value);
 
-marpatcl_rtc_symset* marpatcl_rtc_lexer_get_lexeme_symbols (marpatcl_rtc_p p);
-marpatcl_rtc_stack_p marpatcl_rtc_lexer_get_lexeme_sv      (marpatcl_rtc_p p);
+marpatcl_rtc_symset* marpatcl_rtc_lexer_pe_get_symbols   (marpatcl_rtc_p p);
+marpatcl_rtc_stack_p marpatcl_rtc_lexer_pe_get_semvalues (marpatcl_rtc_p p);
 
 // TODO: clearfirst,
 // TODO: sv, symbols (get only, set by direct access to the SV-vector)

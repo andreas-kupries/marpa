@@ -162,11 +162,11 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p 
 }
 
 Tcl_Obj*
-marpatcl_rtc_sv_list (Tcl_Interp* ip, marpatcl_rtc_p p)
+marpatcl_rtc_pe_semvalues (Tcl_Interp* ip, marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((Interp*) %p, (rtc*) %p", ip, p);
 
-    marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_get_lexeme_sv (p);
+    marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
     if (!svids) {
 	TRACE_RETURN ("(Tcl_Obj*) %p", 0);
     }
@@ -188,10 +188,10 @@ marpatcl_rtc_sv_list (Tcl_Interp* ip, marpatcl_rtc_p p)
 }
 
 Tcl_Obj*
-marpatcl_rtc_symbol_names (Tcl_Interp* ip, marpatcl_rtc_p p)
+marpatcl_rtc_pe_symbols (Tcl_Interp* ip, marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((Interp*) %p, (rtc*) %p)", ip, p);
-    marpatcl_rtc_symset* syms = marpatcl_rtc_lexer_get_lexeme_symbols (p);
+    marpatcl_rtc_symset* syms = marpatcl_rtc_lexer_pe_get_symbols (p);
     marpatcl_rtc_rules* rules = LEX.m_event == marpatcl_rtc_event_discard
 	? SPEC->l0
 	: SPEC->g1
