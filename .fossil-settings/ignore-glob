@@ -3,3 +3,7 @@ core*
 generated
 tests/core*
 tests/grammars/z-marpa-tcl
+scratch
+W
+L
+M
