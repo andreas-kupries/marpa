@@ -47,7 +47,7 @@ proc fold-write-c {} {
     set foldmax $maxn
 
     write-c-sep {case folding, equivalence sets}
-    
+
     wrc "static int fold_set\[[llength $sets]] = \{"
     write-c-items 24 \t $sets
     wrc "\};"

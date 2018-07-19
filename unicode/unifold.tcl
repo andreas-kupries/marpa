@@ -49,7 +49,7 @@ critcl::cproc marpa::unicode::fold/c {
 		Tcl_DecrRefCount (b);
 		return 0;
 	    }
-				       
+
 	    marpatcl_unfold (codepoint, &n, &fold);
 	    v [i] = Tcl_NewIntObj (n ? fold[0] : codepoint);
 	}

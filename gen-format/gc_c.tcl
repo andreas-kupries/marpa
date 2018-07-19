@@ -73,7 +73,7 @@ proc ::marpa::gen::format::gc-c::container {gc} {
     set gcr [marpa::gen::runtime::c gc [$gc serialize]]
     set serial [$gcr serialize]
     $gcr destroy
-    
+
     return [Generate $serial]
 }
 

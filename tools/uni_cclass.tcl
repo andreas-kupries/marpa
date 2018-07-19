@@ -17,11 +17,11 @@
 proc cc-parts {} {
     foreach id [CC-keys] {
 	pong "Parts of $id ..."
-	
+
 	lassign [CC-parts $id] bmp smp
 	set b [llength $bmp]
 	set s [llength $smp]
-	
+
 	if {$b && $s} {
 	    # No aliases, both parts exist and are therefore true
 	    # sub-sets. New classes.
@@ -63,7 +63,7 @@ proc cc-normalize {} {
 proc cc-extend {name args} {
     global cc ccname
     set id [string tolower $name]
-    
+
     dict set     ccname $id $name
     dict lappend cc     $id {*}$args
     return

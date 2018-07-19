@@ -23,7 +23,7 @@ proc lit-reduce-full {} {
     +C {} error RIL
 
     # % %% %%% %%%%% %%%%%%%% %%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%
-    L {string 65 66 300}    
+    L {string 65 66 300}
 
     +C {} error RT
 

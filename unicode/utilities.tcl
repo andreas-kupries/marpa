@@ -10,7 +10,7 @@
 
 proc generate-tables {} {
     set topdir [file dirname [file dirname [file normalize [info script]]]]
-    
+
     set generator  $topdir/tools/unidata.tcl
     set unitables  $topdir/unidata/UnicodeData.txt
     set uniscripts $topdir/unidata/Scripts.txt

@@ -196,7 +196,7 @@ proc lit-reduce-step-charclass {} {
 # # ## ### ##### ######## #############
 proc lit-reduce-step-named-class {} {
     L named-class
-    
+
     +C {}     error RIL
     +C K-NCC  error RIL
     +C D-NCC1 error RIL
@@ -279,7 +279,7 @@ proc lit-reduce-step-named-class {} {
 # # ## ### ##### ######## #############
 proc lit-reduce-step-range {} {
     L range
-    
+
     +C {}     error RIL
     +C K-RAN  error RIL
     +C D-RAN1 error RIL

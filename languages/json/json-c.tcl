@@ -699,7 +699,7 @@ critcl::class def json::parser::c {
     } {
 	if (instance->result) marpatcl_rtc_sv_unref (instance->result);
     }
-    
+
     insvariable marpatcl_rtc_p state {
 	C-level engine, RTC structures.
     } {
@@ -710,14 +710,14 @@ critcl::class def json::parser::c {
     } {
 	marpatcl_rtc_destroy (instance->state);
     }
-    
+
     constructor {
         /*
 	 * Syntax:                          ... []
          * skip == 2: <class> new           ...
          *      == 3: <class> create <name> ...
          */
-	
+
 	if (objc > 0) {
 	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
 	    goto error;
@@ -736,7 +736,7 @@ critcl::class def json::parser::c {
 	Tcl_SetChannelOption (ip, in, "-translation", "binary");
 	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
 	// TODO: abort on failed set-channel-option
-	
+
 	while (!Tcl_Eof(in)) {
 	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
 	    if (got < 0) {
@@ -752,7 +752,7 @@ critcl::class def json::parser::c {
 	(void) Tcl_Close (ip, in);
 	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
-    
+
     method process proc {Tcl_Interp* ip pstring string} ok {
 	marpatcl_rtc_enter (instance->state, string.s, string.len);
 	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);

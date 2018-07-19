@@ -123,17 +123,17 @@ proc marpa::import {cmd {dst {}} {up 2}} {
     #puts XXX\t([info level -1])
     #puts XXX.C=$cmd
     #puts XXX.D=$dst
-    
+
     set fqn  [uplevel $up [list namespace which -command $cmd]]
     set cn   [uplevel 1 {namespace current}]
 
     #puts XXX.F=$fqn
     #puts XXX.N=$cn
-    
+
     if {$dst eq {}} { set dst [namespace tail $cmd] }
 
     #puts XXX.D=$dst
-    
+
     interp alias {} ${cn}::$dst {} $fqn
 
     debug.marpa/support {/ok: ${cn}::$dst}
@@ -241,7 +241,7 @@ proc marpa::asset {self} {
     if {[dict exists $asset $self]} {
 	return [dict get $asset $self]
     }
-    
+
     set ch [open $self]
     # Skip over code, use special EOF handling analogous to `source`.
     fconfigure $ch -eofchar \x1A

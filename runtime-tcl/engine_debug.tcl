@@ -81,11 +81,11 @@ oo::class create marpa::engine::debug {
 	}
 	return [list $ddot $drule]
     }
-    
+
     method TrimTrailingWS {text} {
 	return [join [lmap line [split $text \n] { string trimright $line }] \n]
     }
-    
+
     # # ## ### ##### ######## #############
     ## II. Pretty print the evaluation steps of a parse tree.
 
@@ -95,7 +95,7 @@ oo::class create marpa::engine::debug {
 	fileutil::writeFile $path $sheet
 	return "Saved $path"
     }
-    
+
     method parse-tree {instructions} {
 	# instructions = list (type details ...)
 	# where details = dict (key in (id, value, first, last, dst))
@@ -136,7 +136,7 @@ oo::class create marpa::engine::debug {
 	}
 	return [join $sheet \n]
     }
-    
+
     ##
     # # ## ### ##### ######## #############
 }

@@ -37,7 +37,7 @@ critcl::cutil::tracer     off
 critcl::debug symbols
 #critcl::debug memory
 #critcl::debug symbols memory
-    
+
 # # ## ### ##### ######## #############
 ## Administrivia
 

@@ -276,7 +276,7 @@ critcl::class def @slif-name@ {
          * skip == 2: <class> new           ...
          *      == 3: <class> create <name> ...
          */
-	
+
 	if (objc > 0) {
 	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
 	    goto error;
@@ -295,7 +295,7 @@ critcl::class def @slif-name@ {
 	Tcl_SetChannelOption (ip, in, "-translation", "binary");
 	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
 	// TODO: abort on failed set-channel-option
-	
+
 	Tcl_Obj* cbuf = Tcl_NewObj();
 	Tcl_Obj* ebuf = Tcl_NewObj();
 	while (!Tcl_Eof(in)) {
@@ -361,7 +361,7 @@ return
 	/* -- Delegate to the parse event descriptor facade */
 	return marpatcl_rtc_pedesc_invoke (instance->pedesc, ip, args.c, args.v);
     }
-   
+
     # Note how `rtc` is declared before `pedesc`. We need it
     # initalized to be able to feed it into the construction of the
     # PE descriptor facade.
