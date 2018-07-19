@@ -546,7 +546,7 @@ critcl::class def <Name> {
          * skip == 2: <class> new           ...
          *      == 3: <class> create <name> ...
          */
-	
+
 	if (objc > 0) {
 	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
 	    goto error;
@@ -565,7 +565,7 @@ critcl::class def <Name> {
 	Tcl_SetChannelOption (ip, in, "-translation", "binary");
 	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
 	// TODO: abort on failed set-channel-option
-	
+
 	Tcl_Obj* cbuf = Tcl_NewObj();
 	Tcl_Obj* ebuf = Tcl_NewObj();
 	while (!Tcl_Eof(in)) {
