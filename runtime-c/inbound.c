@@ -48,6 +48,8 @@ marpatcl_rtc_inbound_init (marpatcl_rtc_p p)
     IN.trailer   = 0;
     IN.header    = 0;
 
+    marpatcl_rtc_clindex_init (&IN.index);
+
     TRACE_RETURN_VOID;
 }
 
@@ -55,7 +57,9 @@ void
 marpatcl_rtc_inbound_free (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
-    /* nothing to do */
+
+    marpatcl_rtc_clindex_release (&IN.index);
+	
     TRACE_RETURN_VOID;
 }
 
@@ -70,20 +74,23 @@ void
 marpatcl_rtc_inbound_moveto (marpatcl_rtc_p p, int cpos)
 {
     TRACE_FUNC ("((rtc*) %p, pos = %d)", p, cpos);
-    // APPROX: bytes, FIX!! must be chars
-    IN.location  = cpos;
+
     IN.clocation = cpos;
-    // compute delta vs clocation, and start, moveby from the smaller.
+    IN.location  = marpatcl_rtc_clindex_find (&IN.index, IN.clocation);
+
+    TRACE ("((rtc*) %p, now pos = %d ~ %d)", p, IN.clocation, IN.location);
     TRACE_RETURN_VOID;
 }
 
 void
 marpatcl_rtc_inbound_moveby (marpatcl_rtc_p p, int cdelta)
 {
-    TRACE_FUNC ("((rtc*) %p, pos += %d)", p, cdelta);
-    // APPROX: bytes, FIX!! must be chars
-    IN.location += cdelta;
+    TRACE_FUNC ("((rtc*) %p, pos %d += %d)", p, IN.clocation, cdelta);
+
     IN.clocation += cdelta;
+    IN.location  = marpatcl_rtc_clindex_find (&IN.index, IN.clocation);
+
+    TRACE ("((rtc*) %p, now pos = %d ~ %d)", p, IN.clocation, IN.location);
     TRACE_RETURN_VOID;
 }
 
@@ -163,13 +170,16 @@ step (marpatcl_rtc_p p, const unsigned char* bytes)
 #define LEAD2(c)  (((c) & 0xE0) == 0xC0) // 0b1110,0000 : 0b1100,0000
 #define LEAD3(c)  (((c) & 0xF0) == 0xE0) // 0b1111,0000 : 0b1110,0000
 #define LEAD4(c)  (((c) & 0xF8) == 0xF0) // 0b1111,1000 : 0b1111,0000
-
+#define MOVE_HEADER for(; IN.header; IN.header --) { MOVE (1); }
+#define MOVE(k) \
+    IN.clocation ++;							\
+    marpatcl_rtc_clindex_update (&IN.index, IN.clocation, IN.location, k) \
+    
     if (SINGLE (ch)) {
 	// A single stands for itself, no trailers expected, no lead
 	IN.trailer = 0;
 	IN.header  = 0;
-	IN.clocation ++;
-
+	MOVE (1);
     } else if (TRAIL (ch)) {
 	// A trailer should come after a lead-in.
 	if (IN.trailer > 0) {
@@ -179,18 +189,18 @@ step (marpatcl_rtc_p p, const unsigned char* bytes)
 	    IN.header  ++;
 	    if (IN.trailer == 0) {
 		// All expected trailers found, step a character. Reset header.
-		IN.clocation ++;
+		MOVE (IN.header);
 		IN.header = 0;
 	    }
 	} else {
 	    // A standalone trailer is unexpected, and stands for itself.
-	    IN.clocation ++;
+	    MOVE (1);
 	}
     } else if (LEAD2 (ch)) {
 	if (IN.trailer > 0) {
 	    // Unexpected begin of a character, previous incomplete.
 	    // The previous bytes all stand for themselves now.
-	    IN.clocation += IN.header;
+	    MOVE_HEADER;
 	}
 	// Start of 2 byte character. Expect one trailer.
 	IN.trailer = 1;
@@ -200,7 +210,7 @@ step (marpatcl_rtc_p p, const unsigned char* bytes)
 	if (IN.trailer > 0) {
 	    // Unexpected begin of a character, previous incomplete.
 	    // The previous bytes all stand for themselves now.
-	    IN.clocation += IN.header;
+	    MOVE_HEADER;
 	}
 	// Start of 3 byte character. Expect 2 trailers.
 	IN.trailer = 2;
@@ -210,7 +220,7 @@ step (marpatcl_rtc_p p, const unsigned char* bytes)
 	if (IN.trailer > 0) {
 	    // Unexpected begin of a character, previous incomplete.
 	    // The previous bytes all stand for themselves now.
-	    IN.clocation += IN.header;
+	    MOVE_HEADER;
 	}
 	// Start of 4 byte character. Expect 3 trailers.
 	IN.trailer = 1;

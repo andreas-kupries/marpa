@@ -12,6 +12,7 @@
  */
 
 #include <rtc.h>
+#include <clindex.h>
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -24,9 +25,10 @@ typedef struct marpatcl_rtc_inbound {
     int trailer;   /* Number of bytes in the expected trailer */
     int header;    /* Number of bytes in a header so far */
     //
-    // Index. Allow for fast access to anywhere in the input even in the
-    // presence multi-byte characters, i.e. beyond ASCII.
+    // Index. Enables fast access to anywhere in the input even in the
+    // presence multi-byte characters, i.e non-ASCII.
     //
+    marpatcl_rtc_clindex index;
 } marpatcl_rtc_inbound;
 
 /*
