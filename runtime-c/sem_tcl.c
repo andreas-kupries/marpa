@@ -13,6 +13,7 @@
 #include <symset.h>
 #include <stack.h>
 #include <progress.h>
+#include <strdup.h>
 #include <critcl_trace.h>
 #include <critcl_assert.h>
 #include <critcl_callback/critcl_callbackDecls.h>
@@ -25,6 +26,8 @@ TRACE_TAG_OFF (eh);
  * - - -- --- ----- -------- ------------- ---------------------
  * Shorthands, externals, and forward declarations for internals.
  */
+
+#define STRDUP(s) marpatcl_rtc_strdup (s)
 
 #define TAKE   Tcl_IncrRefCount
 #define RELE   Tcl_DecrRefCount
@@ -161,13 +164,63 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p 
     TRACE_RETURN ("ERROR", TCL_ERROR);
 }
 
+int
+marpatcl_rtc_pe_set_symbols (Tcl_Interp* ip, marpatcl_rtc_p p, int c, Tcl_Obj** v)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, c %d, (Tcl_Obj**) %p", ip, p, c, v);
+
+    // Replace the set of symbols
+    marpatcl_rtc_symset* syms = marpatcl_rtc_lexer_pe_get_symbols (p);
+    marpatcl_rtc_symset_clear (syms);
+    
+    int k;
+    for (k=0; k < c; k++) {
+	// convert char* of the symbols to sym id.
+	char* s   = Tcl_GetString (v [k]);
+	int   sid = marpatcl_rtc_spec_symid (SPEC->l0, s);
+
+	if (sid < 0) {
+	    // TODO set error message
+	    TRACE_RETURN ("%d", TCL_ERROR);
+	}
+	
+	marpatcl_rtc_symset_add (syms, sid);
+    }
+
+    TRACE_RETURN ("%d", TCL_OK);
+}
+
+void
+marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p, int c, Tcl_Obj** v)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, c %d, (Tcl_Obj**) %p", p, c, v);
+	
+    // Replace the set of sem values
+    marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
+    marpatcl_rtc_stack_clear (svids);
+    
+    int k;
+    for (k=0; k < c; k++) {
+	char*             s  = STRDUP (Tcl_GetString (v [k]));
+	marpatcl_rtc_sv_p sv = marpatcl_rtc_sv_cons_string (s, 1);
+	int               sid = marpatcl_rtc_store_add (p, sv);
+	marpatcl_rtc_stack_push (svids, sid);
+    }
+
+    TRACE_RETURN_VOID;
+}
+
 Tcl_Obj*
-marpatcl_rtc_pe_semvalues (Tcl_Interp* ip, marpatcl_rtc_p p)
+marpatcl_rtc_pe_get_semvalues (Tcl_Interp* ip, marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((Interp*) %p, (rtc*) %p", ip, p);
 
     marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
     if (!svids) {
+	const char* msg = "key \"sv\" not known in dictionary";
+	// Note 1: This message matches the error produced by the rt-Tcl facade.
+	// Note 2: Tcl_ResetResult implied by the outer Tcl command calling this function.
+	Tcl_AppendResult (ip, msg, NULL);
 	TRACE_RETURN ("(Tcl_Obj*) %p", 0);
     }
 
@@ -188,7 +241,7 @@ marpatcl_rtc_pe_semvalues (Tcl_Interp* ip, marpatcl_rtc_p p)
 }
 
 Tcl_Obj*
-marpatcl_rtc_pe_symbols (Tcl_Interp* ip, marpatcl_rtc_p p)
+marpatcl_rtc_pe_get_symbols (Tcl_Interp* ip, marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((Interp*) %p, (rtc*) %p)", ip, p);
     marpatcl_rtc_symset* syms = marpatcl_rtc_lexer_pe_get_symbols (p);

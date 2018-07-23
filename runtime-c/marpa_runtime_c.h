@@ -174,6 +174,12 @@ typedef struct marpatcl_rtc_symvec {
  *     shared array.
  */
 
+typedef struct marpatcl_rtc_symid {
+    marpatcl_rtc_size size;   /* Size of table */
+    const char**      symbol; /* Symbol names, lexicographically sorted */
+    marpatcl_rtc_sym* id;     /* Associated symbol id */
+} marpatcl_rtc_symid;
+
 typedef struct marpatcl_rtc_event_spec {
     marpatcl_rtc_sym       sym;    /* Symbol the event is for */
     marpatcl_rtc_eventtype type;   /* Type of event */
@@ -181,8 +187,9 @@ typedef struct marpatcl_rtc_event_spec {
 } marpatcl_rtc_event_spec;
 
 typedef struct marpatcl_rtc_events {
-    marpatcl_rtc_size        size; /* Number of declared events */
-    marpatcl_rtc_event_spec* data; /* Event specifications */
+    marpatcl_rtc_size        size;  /* Number of declared events */
+    marpatcl_rtc_event_spec* data;  /* Event specifications */
+    marpatcl_rtc_symid*      idmap; /* Map of convertible symbols */
 } marpatcl_rtc_events;
 
 /*

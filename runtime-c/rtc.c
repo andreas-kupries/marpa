@@ -154,7 +154,7 @@ marpatcl_rtc_gather_events (marpatcl_rtc_p         p,       // TRACE-only data
 	}
 
 	// Extend result with active event for requested and symbol
-	marpatcl_rtc_symset_include (result, 1, &k);
+	marpatcl_rtc_symset_add (result, k);
 	TRACE_ADD (" - taking event %d", k);
 	TRACE_CLOSER;
     }

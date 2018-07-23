@@ -560,7 +560,7 @@ lex_complete (marpatcl_rtc_p p)
 	    // Collect the discarded symbols if we have parse events to take into account.
 	    // Note that we look at the ACS symbol here, not the terminal, which is bogus.
 	    if (!SPEC->l0->events) continue;
-	    marpatcl_rtc_symset_include (DISCARDS, 1, &token);
+	    marpatcl_rtc_symset_add (DISCARDS, token);
 	    continue;
 	}
 
@@ -589,7 +589,7 @@ lex_complete (marpatcl_rtc_p p)
 	    }
 	}
 
-	marpatcl_rtc_symset_include (FOUND, 1, &terminal);
+	marpatcl_rtc_symset_add (FOUND, terminal);
 	// (**) See (xx) for where the SVs are collected (if not in lex-only mode).
 
 	// SV deduplication: If the semantic codes are all for a value

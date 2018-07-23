@@ -40,11 +40,12 @@ typedef struct marpatcl_rtc {
     marpatcl_rtc_event_cmd  event;   /* Dispatcher for parse events ... */
     void*                   ecdata;  /* ... and its client data */
 
-    /* Rule information for progress reports. Indexed by rule, returns PC of
-     * spec instruction for the rule. From this lhs and rhs symbol ids can be
-     * infered, from which we can in turn infer symbol names. Valid if and
-     * only if the corresponding progress tag is active (TRACE_TAG_ON, see
-     * progress.h)
+    /* Rule information for progress reports. Indexed by rule, returns the PC
+     * of the spec bytecode instruction for the rule. From this lhs and rhs
+     * symbol ids can be infered, from which we can then in turn infer symbol
+     * names. Valid if and only if the corresponding progress tag is active
+     * (TRACE_TAG_ON, see progress.h), and during error reporting (which will
+     * dynamically generate the information if it is not present).
      */
     
     marpatcl_rtc_stack_p  l0_rule; /* lexer  */

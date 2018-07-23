@@ -65,7 +65,7 @@ debug prefix marpa/gen/runtime/c {[debug caller] | }
 ## @slif-name-tag@   -- Grammar information: Derived from name.
 ##                      Tag for Tcl `debug` commands.
 ## @tool-operator@   -- Name of user invoking the tool
-## @tool@            -- Name of the pool generating the output
+## @tool@            -- Name of the tool generating the output
 ## @generation-time@ -- Date/Time of when tool was invoked
 #
 ## Engine-specific placeholders
@@ -350,8 +350,9 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     lappend map @string-offset-v@  [TabularArray [P offsets] $config]
     incr dsz [P str-size]
     lappend map @string-data-sz@ [P str-size]
-    lappend map @string-data-v@  [FlowArray [P strings] \
-				      [dict merge $config {separator { } n -1}]]
+    lappend map @string-data-v@  \
+	[FlowArray [P strings] \
+	     [dict merge $config {separator { } n -1}]]
 
     incr dsz 24 ;# sizeof(marpatcl_rtc_string)
 
@@ -443,12 +444,13 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 	    set l0events [Events2Table $l0events L G]
 	    set name     [CName]_events
 	    set l0name   [CName]_l0events
+	    set l0map    [CName]_l0idmap
 
 	    lappend map @have-events@         [llength $l0events]
 	    lappend map @event-table@         [EventTable  $name $l0events]
 	    lappend map @event-names@         [EventNames  $l0events]
 	    lappend map @l0-event-struct-ref@ [EventRef    $l0name $l0events]
-	    lappend map @l0-event-struct@     [EventStruct $l0name $l0events $name]
+	    lappend map @l0-event-struct@     [EventStruct $l0name $l0events $name $l0map $lex]
 
 	    incr dsz 0 ;# TODO XXX size of the event structures
 	}
@@ -461,14 +463,17 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 	    set name     [CName]_events
 	    set l0name   [CName]_l0events
 	    set g1name   [CName]_g1events
+	    set l0map    [CName]_l0idmap
+	    set g1map    [CName]_g1idmap
 
 	    lappend map @have-events@         [llength $events]
 	    lappend map @event-table@         [EventTable  $name $events]
 	    lappend map @event-names@         [EventNames  $events]
 	    lappend map @l0-event-struct-ref@ [EventRef    $l0name $l0events]
-	    lappend map @l0-event-struct@     [EventStruct $l0name $l0events $name]
+	    lappend map @l0-event-struct@     [EventStruct $l0name $l0events $name $l0map $lex]
 	    lappend map @g1-event-struct-ref@ [EventRef    $g1name $g1events]
-	    lappend map @g1-event-struct@     [EventStruct $g1name $g1events $name $nl]
+	    lappend map @g1-event-struct@     [EventStruct $g1name $g1events $name $g1map \
+						   [concat $lex $g1symbols] $nl]
 
 	    incr dsz 0 ;# TODO XXX size of the event structures
 	}
@@ -1051,8 +1056,8 @@ proc ::marpa::gen::runtime::c::Events2Table {dict lsym gsym} {
 		# terminal symbols instead. And G1 parse events use G1
 		# symbols as well.
 		switch -exact -- $type {
-		    discard { set sid [$lsym 2id @ACS:$symbol] }
-		    default { set sid [$gsym 2id $symbol] }
+		    discard { set sid [L 2id @ACS:$symbol] }
+		    default { set sid [G 2id $symbol] }
 		}
 		lappend table [list $event $symbol $sid $ctype $active]
 	    }
@@ -1084,19 +1089,62 @@ proc ::marpa::gen::runtime::c::EventNames {table} {
     return [join $names \n]
 }
 
+proc ::marpa::gen::runtime::c::SymIdMap {name symbols config} {
+    set cname [CName]
+
+    set n [llength $symbols]
+    set symbols [lsort -dict $symbols]
+
+    lappend decl "\n    static const char* ${name}_sym \[$n\] = \{"
+    set last [lindex $symbols end]
+    foreach s $symbols {
+	lappend ids [G 2id $s]
+	set sep [expr {$s eq $last ? "" : ","}]
+
+	# XXX Find a way to reference the existing string pool
+	# directly, instead of making separate subset of the strings.
+	# The constructions below result in `initializer is not a
+	# constant` :(
+
+	#lappend decl "\t${cname}_pool.string + [P offset $s]$sep // $s"
+	#lappend decl "\t&${cname}_pool.string\[[P offset $s]\]$sep // $s"
+	lappend decl "\t\"$s\"$sep"
+    }
+    lappend decl "    \};"
+
+    lappend decl "\n    static marpatcl_rtc_sym ${name}_id \[$n\] = \{"
+    lappend decl [TabularArray $ids $config]
+    lappend decl "    \};"
+
+    lappend decl "\n    static marpatcl_rtc_symid $name = \{"
+    lappend decl "	/* .size   */ $n,"
+    lappend decl "	/* .symbol */ ${name}_sym,"
+    lappend decl "	/* .id     */ ${name}_id,"
+    lappend decl "    \};"
+    return [join $decl \n]
+}
+
 proc ::marpa::gen::runtime::c::EventTable {name table} {
     set n [llength $table]
     if {!$n} { return "" }
 
-    set tn [string length marpatcl_rtc_event_predicted]
+    set sn 0 ; set tn 0
+    foreach item $table {
+	lassign $item event sym sid type active
+	set sl [string length $sid]  ; set sn [expr {max($sn,$sl)}]
+	set tl [string length $type] ; set tn [expr {max($tn,$tl)}]
+    }
 
     lappend decl "\n    static marpatcl_rtc_event_spec $name \[$n\] = \{"
     lappend decl "    // sym, type, active"
+
     foreach item $table {
 	lassign $item event sym sid type active
 	# TODO: left-pad / right-align the columns
-	lappend decl [format "\t\{ $sid, %-${tn}s, $active \}, // ${sym}: $event" \
-			  $type]
+	lappend decl \
+	    [format \
+		 "\t\{ %${sn}d, %-${tn}s, $active \}, // ${sym}: $event" \
+		 $sid $type]
     }
     lappend decl "    \};\n"
     # dsz + len(table)*(4+4+4)
@@ -1104,16 +1152,21 @@ proc ::marpa::gen::runtime::c::EventTable {name table} {
     return [join $decl \n]
 }
 
-proc ::marpa::gen::runtime::c::EventStruct {name table dname {offset 0}} {
+proc ::marpa::gen::runtime::c::EventStruct {name table dname mname msym {offset 0}} {
     set n [llength $table]
     if {!$n} { return "" }
 
+    upvar 1 config config
+    lappend decl [SymIdMap $mname $msym $config]
+    #
     lappend decl "\n    static marpatcl_rtc_events $name = \{"
+    lappend decl "\t/* .size  */ $n,"
     if {$offset} {
-	lappend decl "\t$n, ${dname} + $offset"
+	lappend decl "\t/* .data  */ ${dname} + $offset,"
     } else {
-	lappend decl "\t$n, ${dname}"
+	lappend decl "\t/* .data  */ ${dname},"
     }
+    lappend decl "\t/* .idmap */ &$mname"
     lappend decl "    \};\n"
     # dsz + 8 (2+4+pad:2)
 
@@ -1651,15 +1704,15 @@ oo::class create marpa::gen::runtime::c::Bytes {
 # # ## ### ##### ######## #############
 
 oo::class create marpa::gen::runtime::c::Pool {
+    variable mymax     ; # length, maximum
     variable mystr     ; # dict (string -> string) : external -> transformed
     variable mypool    ; # dict (string -> length),
     #       post-finalize: dict (string -> id)
-    variable myfinal   ; # bool
-    variable mystrings ; # list (string)
-    variable mylengths ; # list (length)
-    variable myoffsets ; # list (offset)
-    variable mymax     ; # length, maximum
-    variable mystrsize ; # total length
+    variable myfinal   ; # bool			| control flag
+    variable mystrings ; # list (string)	\.
+    variable mylengths ; # list (length)	 > Valid only after
+    variable myoffsets ; # list (offset)	 > Finalize
+    variable mystrsize ; # total length		/.
     variable bmap      ;# byte mapping
 
     constructor {} {
@@ -1759,6 +1812,12 @@ oo::class create marpa::gen::runtime::c::Pool {
 	my Finalize
 	# double-ref, external -> internal -> id
 	return [dict get $mypool [dict get $mystr $str]]
+    }
+
+    method offset {str} {
+	my Finalize
+	# triple-ref, external -> internal -> id -> offset
+	return [lindex $myoffsets [dict get $mypool [dict get $mystr $str]]]
     }
 
     method size {} {

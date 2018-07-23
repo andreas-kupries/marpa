@@ -70,11 +70,11 @@ critcl::class def marpa::runtime::c::pedesc {
     }
 
     method symbols proc {Tcl_Interp* interp} object0 {
-	return marpatcl_rtc_pe_symbols (interp, instance->state);
+	return marpatcl_rtc_pe_get_symbols (interp, instance->state);
     }
 
     method sv proc {Tcl_Interp* interp} object0 {
-	return marpatcl_rtc_pe_semvalues (interp, instance->state);
+	return marpatcl_rtc_pe_get_semvalues (interp, instance->state);
     }
 
     method start proc {} int {
@@ -95,14 +95,12 @@ critcl::class def marpa::runtime::c::pedesc {
 	return (char*) marpatcl_rtc_lexer_pe_get_lexeme_value (instance->state);
     }
 
-    method symbols: proc {} void {
-	/* XXX TODO FILL XXX */
-	ASSERT (0,"symbols: missing");
+    method symbols: proc {Tcl_Interp* ip list syms} ok {
+	return marpatcl_rtc_pe_set_symbols (ip, instance->state, syms.c, syms.v);
     }
 
-    method sv: proc {list svlist} void {
-	/* XXX TODO FILL XXX */
-	ASSERT (0,"sv: missing");
+    method sv: proc {list svs} void {
+	marpatcl_rtc_pe_set_semvalues (instance->state, svs.c, svs.v);
     }
 
     method start: proc {int start} void {
@@ -131,13 +129,13 @@ critcl::class def marpa::runtime::c::pedesc {
 	ADD ("length = ((%d))",    marpatcl_rtc_lexer_pe_get_lexeme_length (instance->state));
 	ADD ("start = ((%d))",     marpatcl_rtc_lexer_pe_get_lexeme_start (instance->state));
 
-	Tcl_Obj* sv = marpatcl_rtc_pe_semvalues (interp, instance->state);
+	Tcl_Obj* sv = marpatcl_rtc_pe_get_semvalues (interp, instance->state);
 	if (sv) {
 	    ADD ("sv = ((%s))", Tcl_GetString (sv));
 	    Tcl_DecrRefCount (sv);
 	}
 
-	Tcl_Obj* names = marpatcl_rtc_pe_symbols (interp, instance->state);
+	Tcl_Obj* names = marpatcl_rtc_pe_get_symbols (interp, instance->state);
 	ADD ("symbols = ((%s))", Tcl_GetString (names));
 	Tcl_DecrRefCount (names);
 
