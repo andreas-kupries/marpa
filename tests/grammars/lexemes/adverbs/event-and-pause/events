@@ -6,6 +6,8 @@ symbols = ((bs))
 value = ((bbb))
 @location = 3
 @resume = 3
+^sym = >>bs<<
+^sv  = >>bbb<<
 ___________________________((record ::PARSE before beforeA))
 length = ((3))
 start = ((6))
@@ -14,6 +16,8 @@ symbols = ((as))
 value = ((aaa))
 @location = 5
 @resume = 8
+^sym = >>as<<
+^sv  = >>aaa<<
 ___________________________((record ::PARSE before beforeA))
 length = ((1))
 start = ((11))
@@ -22,6 +26,8 @@ symbols = ((as))
 value = ((a))
 @location = 10
 @resume = 11
+^sym = >>as<<
+^sv  = >>a<<
 ___________________________((record ::PARSE after afterB))
 length = ((1))
 start = ((12))
@@ -30,3 +36,5 @@ symbols = ((bs))
 value = ((b))
 @location = 12
 @resume = 12
+^sym = >>bs<<
+^sv  = >>b<<

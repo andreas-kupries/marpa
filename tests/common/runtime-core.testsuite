@@ -127,6 +127,34 @@ test-grammar-map rt_example --> id rte base {
 		    # The input now points to the last character of
 		    # the lexeme, and on resume the lexer advances to
 		    # the next character to start processing from.
+
+		    set symbols [$p match symbols]
+		    foreach s $symbols {
+			lappend ::recording "^sym = >>$s<<"
+		    }
+
+		    if {$type in {after before}} {
+			# Retrieve and return the symbols and their
+			# sem values. A check that both directions
+			# are working.
+
+			set semvalues [$p match sv]
+			foreach s $semvalues {
+			    lappend ::recording "^sv  = >>$s<<"
+			}
+
+			$p match symbols: $symbols
+			$p match sv:      $semvalues
+
+			# TODO: go through `alternate`
+		    } else {
+
+			# discard and non-lexeme events do not come
+			# with sem values.
+			lappend ::recording *[list [catch {
+			    $p match sv
+			} msg] $msg]
+		    }
 		}]} {
 		    lappend ::recording $::errorInfo
 		}

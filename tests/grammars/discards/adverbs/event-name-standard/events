@@ -6,6 +6,8 @@ value = ((
 ))
 @location = 5
 @resume = 5
+^sym = >>space<<
+*1 {key "sv" not known in dictionary}
 ___________________________((record ::PARSE discard whitespace))
 length = ((7))
 start = ((11))
@@ -15,3 +17,5 @@ value = ((
 ))
 @location = 17
 @resume = 17
+^sym = >>space<<
+*1 {key "sv" not known in dictionary}
