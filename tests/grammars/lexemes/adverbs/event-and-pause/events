@@ -8,6 +8,7 @@ value = ((bbb))
 @resume = 3
 ^sym = >>bs<<
 ^sv  = >>bbb<<
+>>bs<< ~~ >>bbb<<
 ___________________________((record ::PARSE before beforeA))
 length = ((3))
 start = ((6))
@@ -18,6 +19,7 @@ value = ((aaa))
 @resume = 8
 ^sym = >>as<<
 ^sv  = >>aaa<<
+>>as<< ~~ >>aaa<<
 ___________________________((record ::PARSE before beforeA))
 length = ((1))
 start = ((11))
@@ -28,6 +30,7 @@ value = ((a))
 @resume = 11
 ^sym = >>as<<
 ^sv  = >>a<<
+>>as<< ~~ >>a<<
 ___________________________((record ::PARSE after afterB))
 length = ((1))
 start = ((12))
@@ -38,3 +41,4 @@ value = ((b))
 @resume = 12
 ^sym = >>bs<<
 ^sv  = >>b<<
+>>bs<< ~~ >>b<<

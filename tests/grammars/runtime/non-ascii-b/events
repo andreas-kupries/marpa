@@ -8,6 +8,7 @@ value = ((0 Plain))
 @resume = 6
 ^sym = >>general lex<<
 ^sv  = >>0 7 {0 Plain}<<
+>>general lex<< ~~ >>0 7 {0 Plain}<<
 ___________________________((record ::PARSE discard whitespace))
 length = ((1))
 start = ((7))
@@ -38,6 +39,7 @@ value = ((13 UTF-8 2 byte: © (extended latin - copyright sign)))
 @resume = 64
 ^sym = >>general lex<<
 ^sv  = >>13 52 {13 UTF-8 2 byte: © (extended latin - copyright sign)}<<
+>>general lex<< ~~ >>13 52 {13 UTF-8 2 byte: © (extended latin - copyright sign)}<<
 ___________________________((record ::PARSE discard whitespace))
 length = ((1))
 start = ((65))
@@ -68,6 +70,7 @@ value = ((71 UTF-8 3 byte: ↺ (arrows - ccw)))
 @resume = 103
 ^sym = >>general lex<<
 ^sv  = >>71 33 {71 UTF-8 3 byte: ↺ (arrows - ccw)}<<
+>>general lex<< ~~ >>71 33 {71 UTF-8 3 byte: ↺ (arrows - ccw)}<<
 ___________________________((record ::PARSE discard whitespace))
 length = ((1))
 start = ((104))
@@ -98,3 +101,4 @@ value = ((110 Plain again))
 @resume = 124
 ^sym = >>general lex<<
 ^sv  = >>110 15 {110 Plain again}<<
+>>general lex<< ~~ >>110 15 {110 Plain again}<<
