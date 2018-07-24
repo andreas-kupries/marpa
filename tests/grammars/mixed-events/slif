@@ -1,0 +1,6 @@
+event fox = on = completed A
+A ::= B
+
+:discard ~ C event => snafu
+B ~ 'a'
+C ~ 'c'

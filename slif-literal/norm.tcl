@@ -8,7 +8,7 @@
 # SLIF support. Utilies for working with L0 literals.
 # Normalization (Simplifications without breaking the literal into many)
 # See doc/atoms.md
-    
+
 # # ## ### ##### ######## #############
 ## Administrivia
 

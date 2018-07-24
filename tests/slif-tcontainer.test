@@ -146,7 +146,7 @@ test-grammar-map gcstate --> id gcstate base {
 
     # Ignore cases without a result to check
     if {![file exists $base/gcr_tcl]} continue
-    
+
     set expected [test-grammar-result $base gcr_tcl]
     set kd       [format $format $k]
 

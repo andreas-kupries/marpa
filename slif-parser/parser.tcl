@@ -5,6 +5,7 @@
 #                                     http://core.tcl.tk/akupries/
 ##
 # (c) 2018 Grammar marpa::slif::parser 0 By Jeffrey Kegler + Andreas Kupries
+### --- manually modified to runtime-c changes for parse events ---
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "marpa::slif::parser".
 ##	Generated On Sat Mar 24 00:43:53 PDT 2018
@@ -4989,7 +4990,8 @@ critcl::ccode {
 	/* .symbols */  { 999, marpa_slif_parser_l0_sym_name },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
-	/* .rcode   */  marpa_slif_parser_l0_rule_definitions
+	/* .rcode   */  marpa_slif_parser_l0_rule_definitions,
+	0 // .events
     };
 
     static marpatcl_rtc_sym marpa_slif_parser_l0semantics [3] = { /* 6 bytes */
@@ -5209,7 +5211,8 @@ critcl::ccode {
 	/* .symbols */  { 156, marpa_slif_parser_g1_sym_name },
 	/* .rules   */  { 154, marpa_slif_parser_g1_rule_name },
 	/* .lhs     */  { 154, marpa_slif_parser_g1_rule_lhs },
-	/* .rcode   */  marpa_slif_parser_g1_rule_definitions
+	/* .rcode   */  marpa_slif_parser_g1_rule_definitions,
+	0 // .events
     };
 
     static marpatcl_rtc_sym marpa_slif_parser_g1semantics [4] = { /* 8 bytes */
@@ -5285,25 +5288,25 @@ critcl::class def marpa::slif::parser {
     } {
 	if (instance->result) marpatcl_rtc_sv_unref (instance->result);
     }
-    
+
     insvariable marpatcl_rtc_p state {
 	C-level engine, RTC structures.
     } {
 	instance->state = marpatcl_rtc_cons (&marpa_slif_parser_spec,
 					     NULL /* actions - TODO FUTURE */,
-					     @stem@_result,
-					     (void*) instance );
+					     @stem@_result, (void*) instance,
+					     0, 0 /* no event callback */ );
     } {
 	marpatcl_rtc_destroy (instance->state);
     }
-    
+
     constructor {
         /*
 	 * Syntax:                          ... []
          * skip == 2: <class> new           ...
          *      == 3: <class> create <name> ...
          */
-	
+
 	if (objc > 0) {
 	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
 	    goto error;
@@ -5313,7 +5316,6 @@ critcl::class def marpa::slif::parser {
     method process-file proc {Tcl_Interp* ip Tcl_Obj* path} ok {
 	int res, got;
 	char* buf;
-	Tcl_Obj* cbuf = Tcl_NewObj();
 	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
 	if (!in) {
 	    return TCL_ERROR;
@@ -5322,23 +5324,29 @@ critcl::class def marpa::slif::parser {
 	Tcl_SetChannelOption (ip, in, "-translation", "binary");
 	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
 	// TODO: abort on failed set-channel-option
-	
+
+	Tcl_Obj* cbuf = Tcl_NewObj();
+	Tcl_Obj* ebuf = Tcl_NewObj();
 	while (!Tcl_Eof(in)) {
 	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
 	    if (got < 0) {
+		Tcl_DecrRefCount (cbuf);
+		Tcl_DecrRefCount (ebuf);
 		return TCL_ERROR;
 	    }
 	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
-	    buf = Tcl_GetStringFromObj (cbuf, &got);
-	    marpatcl_rtc_enter (instance->state, buf, got);
-	    if (marpatcl_rtc_failed (instance->state)) break;
+	    Tcl_AppendObjToObj (ebuf, cbuf);
 	}
 	Tcl_DecrRefCount (cbuf);
-
 	(void) Tcl_Close (ip, in);
+
+	buf = Tcl_GetStringFromObj (ebuf, &got);
+	marpatcl_rtc_enter (instance->state, buf, got);
+	Tcl_DecrRefCount (ebuf);
+
 	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
-    
+
     method process proc {Tcl_Interp* ip pstring string} ok {
 	marpatcl_rtc_enter (instance->state, string.s, string.len);
 	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);

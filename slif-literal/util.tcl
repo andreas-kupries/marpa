@@ -7,7 +7,7 @@
 
 # SLIF support. Utilies for working with L0 literals.
 # See doc/atoms.md
-    
+
 # # ## ### ##### ######## #############
 ## Administrivia
 
@@ -89,7 +89,7 @@ proc ::marpa::slif::literal::util::ccnorm {data} {
     lassign [ccsplit $data] codes names
     lappend r {*}[marpa unicode norm-class $codes]
     lappend r {*}[lsort -dict -unique $names]
-    return $r    
+    return $r
 }
 
 proc ::marpa::slif::literal::util::ccsplit {data} {

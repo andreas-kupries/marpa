@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Grammar specification)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
@@ -22,11 +22,20 @@ TRACE_TAG_OFF (names);
  * - - -- --- ----- -------- ------------- ---------------------
  * API
  *
- * Regarding "rule_data".
- * Per rule we push 2 entries. PC of the instruction, and additional
- * information. The latter is currently only used by
- * - PRIS instructions to refer back to the PRIO instructions which provided their LHS.
- * - BRAN instructions to store the RHS byte.
+ * Regarding "rule_data".*
+ * - Per rule we push 2 numbers. PC of the instruction first, and additional
+ *   information. The latter is currently only used by
+ *   - PRIS instructions to refer back to the PRIO instructions which provided
+ *     their LHS.
+ *   - BRAN instructions store the RHS byte.
+ *   - Everything else just uses `0` as placeholder
+ *
+ * See `rtc_int.h` (`marpatcl_rtc.*_rule`) for there this information is
+ * saved.
+ *
+ * See `sem_tcl.c` (`error_lex_progress`) and called functions for where it is
+ * used (entrypoint). Actual use happens in `progress.c`
+ * (`marpatcl_rtc_progress`, and `decode_rule`).
  */
 
 marpatcl_rtc_stack_p
@@ -350,8 +359,9 @@ marpatcl_rtc_spec_setup_rd (marpatcl_rtc_rules* s)
 	    /* end of rules, detail = start symbol */
 	    s->rules.size = marpatcl_rtc_stack_size (rule_data) / 2;
 	    // TODO: Store this somewhere else. (s) are the const grammar
-	    // TODO: structures, i.e. could quite possibly be RO, with the
-	    // TODO: write here seg.faulting.
+	    // TODO: structures, i.e. could quite possibly be in RO memory,
+	    // TODO: with this write here seg.faulting.
+	    
 	    TRACE_RETURN ("(stack*) %p", rule_data);
 	    
 	case MARPATCL_RC_PRIO:
@@ -401,6 +411,41 @@ marpatcl_rtc_spec_setup_rd (marpatcl_rtc_rules* s)
 
     ASSERT (0, "reached the unreachable");
     TRACE_RETURN ("(stack*) %p", rule_data);
+}
+
+
+int
+marpatcl_rtc_spec_symid (marpatcl_rtc_rules* g, const char* symname)
+{
+    TRACE_FUNC ("((rules*) %p, %s)", g, symname ? symname : "<<null>>");
+    marpatcl_rtc_events* e   = g->events;
+    marpatcl_rtc_symid*  map = e->idmap;
+
+    // Binary search for the symbol in the table, then return its id.
+    
+    int low, high;
+    for (low = 0, high = map->size-1; low <= high; ) {
+	int mid   = (low+high)/2;
+	const char* probe = map->symbol [mid];
+	
+	TRACE ("probe [%d..%d] @%d = %s ~ %s", low, high, mid, probe, symname);
+
+	int delta = strcmp (probe, symname);
+	
+	if (!delta) {
+	    TRACE ("%s ==> %d", symname, map->id [mid]);
+	    TRACE_RETURN ("%d", map->id [mid]);
+	}
+	if (delta > 0) {
+	    high = mid-1;
+	    continue;
+	}
+
+	low = mid+1;
+    }
+
+    TRACE ("%s not found", symname);
+    TRACE_RETURN ("%d", -1);
 }
 
 

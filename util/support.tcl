@@ -20,7 +20,7 @@ debug prefix marpa/support {[debug caller] | }
 # # ## ### ##### ######## #############
 
 namespace eval marpa {
-    namespace export D DX E EP X import fqn filter K A C C* asset
+    namespace export D DX E EP X import fqn filter K A C C* asset asset*
 }
 
 # # ## ### ##### ######## #############
@@ -123,17 +123,17 @@ proc marpa::import {cmd {dst {}} {up 2}} {
     #puts XXX\t([info level -1])
     #puts XXX.C=$cmd
     #puts XXX.D=$dst
-    
+
     set fqn  [uplevel $up [list namespace which -command $cmd]]
     set cn   [uplevel 1 {namespace current}]
 
     #puts XXX.F=$fqn
     #puts XXX.N=$cn
-    
+
     if {$dst eq {}} { set dst [namespace tail $cmd] }
 
     #puts XXX.D=$dst
-    
+
     interp alias {} ${cn}::$dst {} $fqn
 
     debug.marpa/support {/ok: ${cn}::$dst}
@@ -205,6 +205,33 @@ namespace eval marpa {
     variable asset {}
 }
 
+proc marpa::asset* {self} {
+    # This command assumes multiple attached text assets, and returns
+    # a list containing them all, in order.  For speed the content is
+    # memoized.
+    debug.marpa/support {}
+
+    variable asset
+    if {[dict exists $asset $self]} {
+	return [dict get $asset $self]
+    }
+
+    set ch [open $self]
+    # Skip over code, use special EOF handling analogous to `source`.
+    fconfigure $ch -eofchar \x1A
+    read $ch
+
+    # Switch to regular EOF handling and skip the separator character
+    fconfigure $ch -eofchar {}
+    read $ch 1
+
+    # Read assets, split into list, memoize, and return
+    set content [read $ch]
+    close $ch
+    dict set asset $self [set cl [split $content \x1A]]
+    return $cl
+}
+
 proc marpa::asset {self} {
     # This command assumes a single attached text asset, and returns it.
     # For speed the content is memoized.
@@ -214,15 +241,17 @@ proc marpa::asset {self} {
     if {[dict exists $asset $self]} {
 	return [dict get $asset $self]
     }
-    
+
     set ch [open $self]
     # Skip over code, use special EOF handling analogous to `source`.
     fconfigure $ch -eofchar \x1A
     read $ch
+
     # Switch to regular EOF handling and skip the separator character
     fconfigure $ch -eofchar {}
     read $ch 1
-    # Read asset, close, memoize, and return
+
+    # Read asset, memoize, and return
     set content [read $ch]
     close $ch
     dict set asset $self $content

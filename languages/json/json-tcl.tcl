@@ -41,7 +41,7 @@ oo::class create json::parser::tcl {
     # requested information. Their base-class implementations simply
     # throw errors, thus preventing the construction of an incomplete
     # parser.
-    
+
     method Characters {} {
 	debug.json/parser/tcl
 	# Literals: The directly referenced (allowed) characters.
@@ -69,7 +69,7 @@ oo::class create json::parser::tcl {
 	    {@CHR:<\175>}   \175
 	}
     }
-    
+
     method Classes {} {
 	debug.json/parser/tcl
 	# Literals: The character classes in use
@@ -85,7 +85,7 @@ oo::class create json::parser::tcl {
 	    {@RAN:<\udc00\udfff>}         {[\udc00-\udfff]}
 	}
     }
-    
+
     method Lexemes {} {
 	debug.json/parser/tcl
 	# Lexer API: Lexeme symbols (Cannot be terminal). G1 terminals
@@ -104,7 +104,7 @@ oo::class create json::parser::tcl {
 	    rbracket   1
 	}
     }
-    
+
     method Discards {} {
 	debug.json/parser/tcl
 	# Discarded symbols (whitespace)
@@ -112,7 +112,7 @@ oo::class create json::parser::tcl {
 	    whitespace
 	}
     }
-    
+
     method L0.Symbols {} {
 	# Non-lexeme, non-literal symbols
 	debug.json/parser/tcl

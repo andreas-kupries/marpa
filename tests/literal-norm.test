@@ -59,7 +59,7 @@ foreach literal [cases literals] norm [cases normalized] {
     #if {[string match *charclass*   $literal]} continue
     #if {[string match *character*   $literal]} continue
     #if {[string match *string*      $literal]} continue
-    
+
     test marpa-slif-literal-norm-2.$k.@$nline "norm, $literal (@$lline) -> @$nline" -body {
 	catch {
 	    marpa::slif::literal norm $literal

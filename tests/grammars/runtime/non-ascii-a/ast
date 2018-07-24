@@ -1,0 +1,19 @@
+words
+  word
+    general
+      @0 7 {'0 Plain'}
+  word
+    LB
+  word
+    general
+      @13 52 {'13 UTF-8 2 byte: \302\251 (extended latin - copyright sign)'}
+  word
+    LB
+  word
+    general
+      @71 33 {'71 UTF-8 3 byte: \342\206\272 (arrows - ccw)'}
+  word
+    LB
+  word
+    general
+      @110 15 {'110 Plain again'}

@@ -1,0 +1,117 @@
+# -*- tcl -*-
+##
+# This template is BSD-licensed.
+# (c) 2017-2018 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                          http://core.tcl.tk/akupries/
+##
+# (c) <Year> Grammar <Name> By <Writer>
+##
+##	`marpa::runtime::tcl`-derived Lexer for grammar "<Name>".
+##	Generated On <GenerationTime>
+##		  By <Operator>
+##		 Via <Tool>
+
+package provide <Name> <Version>
+
+# # ## ### ##### ######## #############
+## Requisites
+
+package require Tcl 8.5             ;# -- Foundation
+package require TclOO               ;# -- Implies Tcl 8.5 requirement.
+package require debug               ;# Tracing
+package require debug::caller       ;# Tracing
+package require marpa::runtime::tcl ;# Engine
+
+# # ## ### ##### ######## #############
+
+debug define <Name>
+debug prefix <Name> {[debug caller] | }
+
+# # ## ### ##### ######## #############
+
+oo::class create <Name> {
+    superclass marpa::engine::tcl::lex
+
+    # Lifecycle: No constructor needed. No state.
+    # All data is embedded as literals into methods
+
+    # Declare the various things needed by the engine for its
+    # operation.  To get the information the base class will call on
+    # these methods in the proper order. The methods simply return the
+    # requested information. Their base-class implementations simply
+    # throw errors, thus preventing the construction of an incomplete
+    # lexer.
+
+    method Characters {} {
+	debug.<Name>
+	# Literals: The directly referenced (allowed) characters.
+	return {
+	    @CHR:<a>   a
+	    @CHR:<c>   c
+	}
+    }
+
+    method Classes {} {
+	debug.<Name>
+	# Literals: The character classes in use
+	return {
+	    
+	}
+    }
+
+    method Lexemes {} {
+	debug.<Name>
+	# Lexer API: Lexeme symbols (Cannot be terminal).
+	return {
+	    B   1
+	}
+    }
+
+    method Discards {} {
+	debug.<Name>
+	# Discarded symbols (whitespace)
+	return {
+	    C
+	}
+    }
+
+    method Symbols {} {
+	# Non-lexeme, non-literal symbols
+	debug.<Name>
+	return {
+	    C
+	}
+    }
+
+    method Rules {} {
+	# Rules for all symbols but the literals
+	debug.<Name>
+	return {
+	    {B := @CHR:<a>}
+	    {C := @CHR:<c>}
+	}
+    }
+
+    method Semantics {} {
+	debug.<Name>
+	# NOTE. This is currently limited to array semantics.
+	# NOTE. No support for command semantics in the lexer yet.
+	return {values}
+    }
+
+    method Events {} {
+	debug.<Name>
+	# L0 parse event definitions (pre-, post-lexeme, discard)
+	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Due to the nature of SLIF syntax we can only associate one
+	# event per type with each symbol, for a maximum of three.
+	return {
+	    C {
+	        discard {snafu on}
+	    }
+	}
+    }
+}
+
+# # ## ### ##### ######## #############
+return

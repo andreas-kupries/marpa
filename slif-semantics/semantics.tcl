@@ -171,7 +171,7 @@ oo::class create marpa::slif::semantics {
 	my destroy
 	return
     }
-    
+
     # # ## ### ##### ######## #############
     ## AST processing methods
 
@@ -516,7 +516,7 @@ oo::class create marpa::slif::semantics {
 	Container l0 configure $symbol {*}$adverbs
 
 	if {![dict exists $adverbs latm]} return
-	
+
 	LATM exclude $symbol
 	return
     }

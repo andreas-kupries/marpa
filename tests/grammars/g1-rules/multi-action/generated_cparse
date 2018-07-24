@@ -1,8 +1,8 @@
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
-# (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                     http://core.tcl.tk/akupries/
+# (c) 2017-2018 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                          http://core.tcl.tk/akupries/
 ##
 # (c) <Year> Grammar <Name> <Version> By <Writer>
 ##
@@ -11,7 +11,7 @@
 ##		  By <Operator>
 ##		 Via <Tool>
 ##
-#* Space taken: 6064 bytes
+#* Space taken: 6068 bytes
 ##
 #* Statistics
 #* L0
@@ -33,6 +33,7 @@ package provide <Name> <Version>
 
 package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
+
 critcl::buildrequirement {
     package require critcl::class
     package require critcl::cutil
@@ -54,6 +55,7 @@ critcl::debug symbols
 ## Requirements
 
 critcl::api import marpa::runtime::c 0
+critcl::api import critcl::callback  1
 
 # # ## ### ##### ######## ############# #####################
 ## Static data structures declaring the grammar
@@ -419,7 +421,8 @@ critcl::ccode {
 	/* .symbols */  { 259, <Name>_l0_sym_name },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
-	/* .rcode   */  <Name>_l0_rule_definitions
+	/* .rcode   */  <Name>_l0_rule_definitions,
+	/* .events  */  0
     };
 
     static marpatcl_rtc_sym <Name>_l0semantics [1] = { /* 2 bytes */
@@ -460,7 +463,8 @@ critcl::ccode {
 	/* .symbols */  { 3, <Name>_g1_sym_name },
 	/* .rules   */  { 2, <Name>_g1_rule_name },
 	/* .lhs     */  { 2, <Name>_g1_rule_lhs },
-	/* .rcode   */  <Name>_g1_rule_definitions
+	/* .rcode   */  <Name>_g1_rule_definitions,
+	/* .events  */  0
     };
 
     static marpatcl_rtc_sym <Name>_g1semantics [8] = { /* 16 bytes */
@@ -522,25 +526,35 @@ critcl::class def <Name> {
     } {
 	if (instance->result) marpatcl_rtc_sv_unref (instance->result);
     }
-    
+
+    # Setup without events
+
+    method on-event proc {object args} void {}
+
+    method match proc {object args} ok {
+	// No events: Facade not present, no access to the runtime structures.
+	// TODO: Set error message
+	return TCL_ERROR;
+    }
+
     insvariable marpatcl_rtc_p state {
 	C-level engine, RTC structures.
     } {
 	instance->state = marpatcl_rtc_cons (&<Name>_spec,
-					     NULL /* actions - TODO FUTURE */,
-					     @stem@_result,
-					     (void*) instance );
+					     NULL, /* No actions */
+					     @stem@_result, (void*) instance,
+					     0, 0 );
     } {
 	marpatcl_rtc_destroy (instance->state);
     }
-    
+
     constructor {
         /*
 	 * Syntax:                          ... []
          * skip == 2: <class> new           ...
          *      == 3: <class> create <name> ...
          */
-	
+
 	if (objc > 0) {
 	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
 	    goto error;
@@ -550,8 +564,8 @@ critcl::class def <Name> {
     method process-file proc {Tcl_Interp* ip Tcl_Obj* path} ok {
 	int res, got;
 	char* buf;
-	Tcl_Obj* cbuf = Tcl_NewObj();
 	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
+
 	if (!in) {
 	    return TCL_ERROR;
 	}
@@ -559,35 +573,45 @@ critcl::class def <Name> {
 	Tcl_SetChannelOption (ip, in, "-translation", "binary");
 	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
 	// TODO: abort on failed set-channel-option
-	
+
+	Tcl_Obj* cbuf = Tcl_NewObj();
+	Tcl_Obj* ebuf = Tcl_NewObj();
 	while (!Tcl_Eof(in)) {
 	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
 	    if (got < 0) {
+		Tcl_DecrRefCount (cbuf);
+		Tcl_DecrRefCount (ebuf);
 		return TCL_ERROR;
 	    }
 	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
-	    buf = Tcl_GetStringFromObj (cbuf, &got);
-	    marpatcl_rtc_enter (instance->state, buf, got);
-	    if (marpatcl_rtc_failed (instance->state)) break;
+	    Tcl_AppendObjToObj (ebuf, cbuf);
 	}
 	Tcl_DecrRefCount (cbuf);
-
 	(void) Tcl_Close (ip, in);
+
+	buf = Tcl_GetStringFromObj (ebuf, &got);
+	marpatcl_rtc_enter (instance->state, buf, got);
+	Tcl_DecrRefCount (ebuf);
+
 	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
-    
+
     method process proc {Tcl_Interp* ip pstring string} ok {
 	marpatcl_rtc_enter (instance->state, string.s, string.len);
 	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
 
     support {
-	/* Helper function capturing parse results (semantic values of the parser)
+	/*
 	** Stem:  @stem@
 	** Pkg:   @package@
 	** Class: @class@
 	** IType: @instancetype@
 	** CType: @classtype@
+	*/
+
+	/*
+	** Helper function capturing parse results (semantic values of the parser)
 	*/
 
 	static void

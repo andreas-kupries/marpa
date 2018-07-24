@@ -68,7 +68,7 @@ proc usage {} {
 proc transform {bytes} {
     # take bytes and annotate with class (0, 1, 2, 3, 4, 5, 6).
     # then look for complete characters and add value to the annotations.
-    
+
     set codes [lmap b $bytes { C $b }]
     set types [lmap c $codes { T $c }]
     set at -1
@@ -76,7 +76,7 @@ proc transform {bytes} {
 	incr at
 	N/$t $c {*}[lrange $codes [expr {$at+1}] [expr {$at+$t-1}]]
     }]
-    
+
     list $bytes $codes $types $notes
 }
 
@@ -115,7 +115,7 @@ proc N/4 {code ta tb tc} {
     # 155 \233 10'011'011 | \0337777
     # 191 \277 10'111'111 | d114687
     # 191 \277 10'111'111 | x1BFFF
-    
+
     if {[T $ta] != 0} { return "Too short" }
     if {[T $tb] != 0} { return "Too short" }
     if {[T $tc] != 0} { return "Too short" }

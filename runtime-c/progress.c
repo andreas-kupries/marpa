@@ -31,10 +31,14 @@ decode_rule (marpatcl_rtc_rules*  g,
     };
     marpatcl_rtc_sym* ins;
     marpatcl_rtc_sym cmd, detail, proper, sep, start, stop, lhs;
+
+    // See `spec.c` (`marpatcl_rtc_spec_setup(_rd))`) for the places
+    // generating this information.
     int pc   = marpatcl_rtc_stack_get (rd, 2*rule);
     int rarg = marpatcl_rtc_stack_get (rd, 2*rule + 1);
     int k;
 
+    // Inspect the bytecode for the rule.
     ins = g->rcode + pc;
     MARPATCL_RCMD_UNBOX (ins[0], cmd, detail);
     *insname = iname[cmd];
@@ -51,7 +55,8 @@ decode_rule (marpatcl_rtc_rules*  g,
     case MARPATCL_RC_PRIS:
 	marpatcl_rtc_stack_clear (rhs);
 	for (k=0; k < detail; k++) { marpatcl_rtc_stack_push (rhs, ins[1+k]); }
-	// Back to the PRIO specifying the LHS (rarg = pc for this PRIO)
+	// Move to the PRIO instruction specifying the shared LHS (rarg == pc
+	// for this PRIO instruction)
 	ins = g->rcode + rarg;
 	return ins[1];
 

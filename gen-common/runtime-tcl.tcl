@@ -585,7 +585,7 @@ proc ::marpa::gen::runtime::tcl::CX {code} {
 
 proc ::marpa::gen::runtime::tcl::Char {code} {
     debug.marpa/gen/runtime/tcl {}
-    
+
     # Note: Older versions of `char` (v1.0.1 or earlier) convert all
     #       control characters they encounter to octal before checking
     #       for `beyond ASCII`. This causes them to convert non-ASCII

@@ -1,0 +1,650 @@
+# -*- tcl -*-
+##
+# This template is BSD-licensed.
+# (c) 2017-2018 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                          http://core.tcl.tk/akupries/
+##
+# (c) <Year> Grammar <Name> <Version> By <Writer>
+##
+##	`marpa::runtime::c`-derived Lexer for grammar "<Name>".
+##	Generated On <GenerationTime>
+##		  By <Operator>
+##		 Via <Tool>
+##
+#* Space taken: 6050 bytes
+##
+#* Statistics
+#* L0
+#* - #Symbols:   261
+#* - #Lexemes:   1
+#* - #Discards:  1
+#* - #Always:    1
+#* - #Rule Insn: 4 (+2: setup, start-sym)
+#* - #Rules:     4 (>= insn, brange)
+
+package provide <Name> <Version>
+
+# # ## ### ##### ######## #############
+## Requisites
+
+package require Tcl 8.5 ;# apply, lassign, ...
+package require critcl 3.1
+critcl::buildrequirement {
+    package require critcl::class
+    package require critcl::cutil
+    package require critcl::literals
+}
+
+if {![critcl::compiling]} {
+    error "Unable to build <Name>, no compiler found."
+}
+
+critcl::cutil::alloc
+critcl::cutil::assertions on
+critcl::cutil::tracer     on
+
+critcl::debug symbols
+#critcl::debug memory
+#critcl::debug symbols memory
+
+# # ## ### ##### ######## ############# #####################
+## Requirements
+
+critcl::api import marpa::runtime::c 0
+critcl::api import critcl::callback  1
+
+# # ## ### ##### ######## ############# #####################
+## Static data structures declaring the grammar
+
+critcl::include string.h ;# memcpy
+critcl::ccode {
+    TRACE_OFF;
+
+    /*
+    ** Shared string pool (520 bytes lengths over 260 entries)
+    **                    (520 bytes offsets -----^)
+    **                    (4230 bytes character content)
+    */
+
+    static marpatcl_rtc_size <Name>_pool_length [260] = { /* 520 bytes */
+	 9,  1,  1,  1,  1,  1, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 16, 16, 16, 16, 16, 16, 16, 16,
+	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+	16, 16, 16, 16
+    };
+
+    static marpatcl_rtc_size <Name>_pool_offset [260] = { /* 520 bytes */
+	   0,   10,   12,   14,   16,   18,   20,   35,   50,   65,   80,   95,  110,  125,  140,  155,
+	 170,  186,  202,  218,  234,  250,  266,  282,  298,  314,  330,  346,  362,  378,  394,  410,
+	 426,  442,  458,  474,  490,  506,  522,  538,  554,  570,  586,  602,  618,  634,  650,  666,
+	 682,  698,  714,  730,  746,  762,  778,  794,  810,  826,  842,  858,  874,  890,  906,  922,
+	 938,  954,  970,  986, 1002, 1018, 1034, 1050, 1066, 1082, 1098, 1114, 1130, 1146, 1162, 1178,
+	1194, 1210, 1226, 1242, 1258, 1274, 1290, 1306, 1322, 1338, 1354, 1370, 1386, 1402, 1418, 1434,
+	1450, 1466, 1482, 1498, 1514, 1530, 1546, 1562, 1578, 1595, 1612, 1629, 1646, 1663, 1680, 1697,
+	1714, 1731, 1748, 1765, 1782, 1799, 1816, 1833, 1850, 1867, 1884, 1901, 1918, 1935, 1952, 1969,
+	1986, 2003, 2020, 2037, 2054, 2071, 2088, 2105, 2122, 2139, 2156, 2173, 2190, 2207, 2224, 2241,
+	2258, 2275, 2292, 2309, 2326, 2343, 2360, 2377, 2394, 2411, 2428, 2445, 2462, 2479, 2496, 2513,
+	2530, 2547, 2564, 2581, 2598, 2615, 2632, 2649, 2666, 2683, 2700, 2717, 2734, 2751, 2768, 2785,
+	2802, 2819, 2836, 2853, 2870, 2887, 2904, 2921, 2938, 2955, 2972, 2989, 3006, 3023, 3040, 3057,
+	3074, 3091, 3108, 3125, 3142, 3159, 3176, 3193, 3210, 3227, 3244, 3261, 3278, 3295, 3312, 3329,
+	3346, 3363, 3380, 3397, 3414, 3431, 3448, 3465, 3482, 3499, 3516, 3533, 3550, 3567, 3584, 3601,
+	3618, 3635, 3652, 3669, 3686, 3703, 3720, 3737, 3754, 3771, 3788, 3805, 3822, 3839, 3856, 3873,
+	3890, 3907, 3924, 3941, 3958, 3975, 3992, 4009, 4026, 4043, 4060, 4077, 4094, 4111, 4128, 4145,
+	4162, 4179, 4196, 4213
+    };
+
+    static marpatcl_rtc_string <Name>_pool = { /* 24 + 4230 bytes */
+	<Name>_pool_length,
+	<Name>_pool_offset,
+	/*   0 */ "@L0:START\0"
+	/*   1 */ "A\0"
+	/*   2 */ "a\0"
+	/*   3 */ "B\0"
+	/*   4 */ "C\0"
+	/*   5 */ "c\0"
+	/*   6 */ "ILLEGAL_BYTE_0\0"
+	/*   7 */ "ILLEGAL_BYTE_1\0"
+	/*   8 */ "ILLEGAL_BYTE_2\0"
+	/*   9 */ "ILLEGAL_BYTE_3\0"
+	/*  10 */ "ILLEGAL_BYTE_4\0"
+	/*  11 */ "ILLEGAL_BYTE_5\0"
+	/*  12 */ "ILLEGAL_BYTE_6\0"
+	/*  13 */ "ILLEGAL_BYTE_7\0"
+	/*  14 */ "ILLEGAL_BYTE_8\0"
+	/*  15 */ "ILLEGAL_BYTE_9\0"
+	/*  16 */ "ILLEGAL_BYTE_10\0"
+	/*  17 */ "ILLEGAL_BYTE_11\0"
+	/*  18 */ "ILLEGAL_BYTE_12\0"
+	/*  19 */ "ILLEGAL_BYTE_13\0"
+	/*  20 */ "ILLEGAL_BYTE_14\0"
+	/*  21 */ "ILLEGAL_BYTE_15\0"
+	/*  22 */ "ILLEGAL_BYTE_16\0"
+	/*  23 */ "ILLEGAL_BYTE_17\0"
+	/*  24 */ "ILLEGAL_BYTE_18\0"
+	/*  25 */ "ILLEGAL_BYTE_19\0"
+	/*  26 */ "ILLEGAL_BYTE_20\0"
+	/*  27 */ "ILLEGAL_BYTE_21\0"
+	/*  28 */ "ILLEGAL_BYTE_22\0"
+	/*  29 */ "ILLEGAL_BYTE_23\0"
+	/*  30 */ "ILLEGAL_BYTE_24\0"
+	/*  31 */ "ILLEGAL_BYTE_25\0"
+	/*  32 */ "ILLEGAL_BYTE_26\0"
+	/*  33 */ "ILLEGAL_BYTE_27\0"
+	/*  34 */ "ILLEGAL_BYTE_28\0"
+	/*  35 */ "ILLEGAL_BYTE_29\0"
+	/*  36 */ "ILLEGAL_BYTE_30\0"
+	/*  37 */ "ILLEGAL_BYTE_31\0"
+	/*  38 */ "ILLEGAL_BYTE_32\0"
+	/*  39 */ "ILLEGAL_BYTE_33\0"
+	/*  40 */ "ILLEGAL_BYTE_34\0"
+	/*  41 */ "ILLEGAL_BYTE_35\0"
+	/*  42 */ "ILLEGAL_BYTE_36\0"
+	/*  43 */ "ILLEGAL_BYTE_37\0"
+	/*  44 */ "ILLEGAL_BYTE_38\0"
+	/*  45 */ "ILLEGAL_BYTE_39\0"
+	/*  46 */ "ILLEGAL_BYTE_40\0"
+	/*  47 */ "ILLEGAL_BYTE_41\0"
+	/*  48 */ "ILLEGAL_BYTE_42\0"
+	/*  49 */ "ILLEGAL_BYTE_43\0"
+	/*  50 */ "ILLEGAL_BYTE_44\0"
+	/*  51 */ "ILLEGAL_BYTE_45\0"
+	/*  52 */ "ILLEGAL_BYTE_46\0"
+	/*  53 */ "ILLEGAL_BYTE_47\0"
+	/*  54 */ "ILLEGAL_BYTE_48\0"
+	/*  55 */ "ILLEGAL_BYTE_49\0"
+	/*  56 */ "ILLEGAL_BYTE_50\0"
+	/*  57 */ "ILLEGAL_BYTE_51\0"
+	/*  58 */ "ILLEGAL_BYTE_52\0"
+	/*  59 */ "ILLEGAL_BYTE_53\0"
+	/*  60 */ "ILLEGAL_BYTE_54\0"
+	/*  61 */ "ILLEGAL_BYTE_55\0"
+	/*  62 */ "ILLEGAL_BYTE_56\0"
+	/*  63 */ "ILLEGAL_BYTE_57\0"
+	/*  64 */ "ILLEGAL_BYTE_58\0"
+	/*  65 */ "ILLEGAL_BYTE_59\0"
+	/*  66 */ "ILLEGAL_BYTE_60\0"
+	/*  67 */ "ILLEGAL_BYTE_61\0"
+	/*  68 */ "ILLEGAL_BYTE_62\0"
+	/*  69 */ "ILLEGAL_BYTE_63\0"
+	/*  70 */ "ILLEGAL_BYTE_64\0"
+	/*  71 */ "ILLEGAL_BYTE_65\0"
+	/*  72 */ "ILLEGAL_BYTE_66\0"
+	/*  73 */ "ILLEGAL_BYTE_67\0"
+	/*  74 */ "ILLEGAL_BYTE_68\0"
+	/*  75 */ "ILLEGAL_BYTE_69\0"
+	/*  76 */ "ILLEGAL_BYTE_70\0"
+	/*  77 */ "ILLEGAL_BYTE_71\0"
+	/*  78 */ "ILLEGAL_BYTE_72\0"
+	/*  79 */ "ILLEGAL_BYTE_73\0"
+	/*  80 */ "ILLEGAL_BYTE_74\0"
+	/*  81 */ "ILLEGAL_BYTE_75\0"
+	/*  82 */ "ILLEGAL_BYTE_76\0"
+	/*  83 */ "ILLEGAL_BYTE_77\0"
+	/*  84 */ "ILLEGAL_BYTE_78\0"
+	/*  85 */ "ILLEGAL_BYTE_79\0"
+	/*  86 */ "ILLEGAL_BYTE_80\0"
+	/*  87 */ "ILLEGAL_BYTE_81\0"
+	/*  88 */ "ILLEGAL_BYTE_82\0"
+	/*  89 */ "ILLEGAL_BYTE_83\0"
+	/*  90 */ "ILLEGAL_BYTE_84\0"
+	/*  91 */ "ILLEGAL_BYTE_85\0"
+	/*  92 */ "ILLEGAL_BYTE_86\0"
+	/*  93 */ "ILLEGAL_BYTE_87\0"
+	/*  94 */ "ILLEGAL_BYTE_88\0"
+	/*  95 */ "ILLEGAL_BYTE_89\0"
+	/*  96 */ "ILLEGAL_BYTE_90\0"
+	/*  97 */ "ILLEGAL_BYTE_91\0"
+	/*  98 */ "ILLEGAL_BYTE_92\0"
+	/*  99 */ "ILLEGAL_BYTE_93\0"
+	/* 100 */ "ILLEGAL_BYTE_94\0"
+	/* 101 */ "ILLEGAL_BYTE_95\0"
+	/* 102 */ "ILLEGAL_BYTE_96\0"
+	/* 103 */ "ILLEGAL_BYTE_98\0"
+	/* 104 */ "ILLEGAL_BYTE_100\0"
+	/* 105 */ "ILLEGAL_BYTE_101\0"
+	/* 106 */ "ILLEGAL_BYTE_102\0"
+	/* 107 */ "ILLEGAL_BYTE_103\0"
+	/* 108 */ "ILLEGAL_BYTE_104\0"
+	/* 109 */ "ILLEGAL_BYTE_105\0"
+	/* 110 */ "ILLEGAL_BYTE_106\0"
+	/* 111 */ "ILLEGAL_BYTE_107\0"
+	/* 112 */ "ILLEGAL_BYTE_108\0"
+	/* 113 */ "ILLEGAL_BYTE_109\0"
+	/* 114 */ "ILLEGAL_BYTE_110\0"
+	/* 115 */ "ILLEGAL_BYTE_111\0"
+	/* 116 */ "ILLEGAL_BYTE_112\0"
+	/* 117 */ "ILLEGAL_BYTE_113\0"
+	/* 118 */ "ILLEGAL_BYTE_114\0"
+	/* 119 */ "ILLEGAL_BYTE_115\0"
+	/* 120 */ "ILLEGAL_BYTE_116\0"
+	/* 121 */ "ILLEGAL_BYTE_117\0"
+	/* 122 */ "ILLEGAL_BYTE_118\0"
+	/* 123 */ "ILLEGAL_BYTE_119\0"
+	/* 124 */ "ILLEGAL_BYTE_120\0"
+	/* 125 */ "ILLEGAL_BYTE_121\0"
+	/* 126 */ "ILLEGAL_BYTE_122\0"
+	/* 127 */ "ILLEGAL_BYTE_123\0"
+	/* 128 */ "ILLEGAL_BYTE_124\0"
+	/* 129 */ "ILLEGAL_BYTE_125\0"
+	/* 130 */ "ILLEGAL_BYTE_126\0"
+	/* 131 */ "ILLEGAL_BYTE_127\0"
+	/* 132 */ "ILLEGAL_BYTE_128\0"
+	/* 133 */ "ILLEGAL_BYTE_129\0"
+	/* 134 */ "ILLEGAL_BYTE_130\0"
+	/* 135 */ "ILLEGAL_BYTE_131\0"
+	/* 136 */ "ILLEGAL_BYTE_132\0"
+	/* 137 */ "ILLEGAL_BYTE_133\0"
+	/* 138 */ "ILLEGAL_BYTE_134\0"
+	/* 139 */ "ILLEGAL_BYTE_135\0"
+	/* 140 */ "ILLEGAL_BYTE_136\0"
+	/* 141 */ "ILLEGAL_BYTE_137\0"
+	/* 142 */ "ILLEGAL_BYTE_138\0"
+	/* 143 */ "ILLEGAL_BYTE_139\0"
+	/* 144 */ "ILLEGAL_BYTE_140\0"
+	/* 145 */ "ILLEGAL_BYTE_141\0"
+	/* 146 */ "ILLEGAL_BYTE_142\0"
+	/* 147 */ "ILLEGAL_BYTE_143\0"
+	/* 148 */ "ILLEGAL_BYTE_144\0"
+	/* 149 */ "ILLEGAL_BYTE_145\0"
+	/* 150 */ "ILLEGAL_BYTE_146\0"
+	/* 151 */ "ILLEGAL_BYTE_147\0"
+	/* 152 */ "ILLEGAL_BYTE_148\0"
+	/* 153 */ "ILLEGAL_BYTE_149\0"
+	/* 154 */ "ILLEGAL_BYTE_150\0"
+	/* 155 */ "ILLEGAL_BYTE_151\0"
+	/* 156 */ "ILLEGAL_BYTE_152\0"
+	/* 157 */ "ILLEGAL_BYTE_153\0"
+	/* 158 */ "ILLEGAL_BYTE_154\0"
+	/* 159 */ "ILLEGAL_BYTE_155\0"
+	/* 160 */ "ILLEGAL_BYTE_156\0"
+	/* 161 */ "ILLEGAL_BYTE_157\0"
+	/* 162 */ "ILLEGAL_BYTE_158\0"
+	/* 163 */ "ILLEGAL_BYTE_159\0"
+	/* 164 */ "ILLEGAL_BYTE_160\0"
+	/* 165 */ "ILLEGAL_BYTE_161\0"
+	/* 166 */ "ILLEGAL_BYTE_162\0"
+	/* 167 */ "ILLEGAL_BYTE_163\0"
+	/* 168 */ "ILLEGAL_BYTE_164\0"
+	/* 169 */ "ILLEGAL_BYTE_165\0"
+	/* 170 */ "ILLEGAL_BYTE_166\0"
+	/* 171 */ "ILLEGAL_BYTE_167\0"
+	/* 172 */ "ILLEGAL_BYTE_168\0"
+	/* 173 */ "ILLEGAL_BYTE_169\0"
+	/* 174 */ "ILLEGAL_BYTE_170\0"
+	/* 175 */ "ILLEGAL_BYTE_171\0"
+	/* 176 */ "ILLEGAL_BYTE_172\0"
+	/* 177 */ "ILLEGAL_BYTE_173\0"
+	/* 178 */ "ILLEGAL_BYTE_174\0"
+	/* 179 */ "ILLEGAL_BYTE_175\0"
+	/* 180 */ "ILLEGAL_BYTE_176\0"
+	/* 181 */ "ILLEGAL_BYTE_177\0"
+	/* 182 */ "ILLEGAL_BYTE_178\0"
+	/* 183 */ "ILLEGAL_BYTE_179\0"
+	/* 184 */ "ILLEGAL_BYTE_180\0"
+	/* 185 */ "ILLEGAL_BYTE_181\0"
+	/* 186 */ "ILLEGAL_BYTE_182\0"
+	/* 187 */ "ILLEGAL_BYTE_183\0"
+	/* 188 */ "ILLEGAL_BYTE_184\0"
+	/* 189 */ "ILLEGAL_BYTE_185\0"
+	/* 190 */ "ILLEGAL_BYTE_186\0"
+	/* 191 */ "ILLEGAL_BYTE_187\0"
+	/* 192 */ "ILLEGAL_BYTE_188\0"
+	/* 193 */ "ILLEGAL_BYTE_189\0"
+	/* 194 */ "ILLEGAL_BYTE_190\0"
+	/* 195 */ "ILLEGAL_BYTE_191\0"
+	/* 196 */ "ILLEGAL_BYTE_192\0"
+	/* 197 */ "ILLEGAL_BYTE_193\0"
+	/* 198 */ "ILLEGAL_BYTE_194\0"
+	/* 199 */ "ILLEGAL_BYTE_195\0"
+	/* 200 */ "ILLEGAL_BYTE_196\0"
+	/* 201 */ "ILLEGAL_BYTE_197\0"
+	/* 202 */ "ILLEGAL_BYTE_198\0"
+	/* 203 */ "ILLEGAL_BYTE_199\0"
+	/* 204 */ "ILLEGAL_BYTE_200\0"
+	/* 205 */ "ILLEGAL_BYTE_201\0"
+	/* 206 */ "ILLEGAL_BYTE_202\0"
+	/* 207 */ "ILLEGAL_BYTE_203\0"
+	/* 208 */ "ILLEGAL_BYTE_204\0"
+	/* 209 */ "ILLEGAL_BYTE_205\0"
+	/* 210 */ "ILLEGAL_BYTE_206\0"
+	/* 211 */ "ILLEGAL_BYTE_207\0"
+	/* 212 */ "ILLEGAL_BYTE_208\0"
+	/* 213 */ "ILLEGAL_BYTE_209\0"
+	/* 214 */ "ILLEGAL_BYTE_210\0"
+	/* 215 */ "ILLEGAL_BYTE_211\0"
+	/* 216 */ "ILLEGAL_BYTE_212\0"
+	/* 217 */ "ILLEGAL_BYTE_213\0"
+	/* 218 */ "ILLEGAL_BYTE_214\0"
+	/* 219 */ "ILLEGAL_BYTE_215\0"
+	/* 220 */ "ILLEGAL_BYTE_216\0"
+	/* 221 */ "ILLEGAL_BYTE_217\0"
+	/* 222 */ "ILLEGAL_BYTE_218\0"
+	/* 223 */ "ILLEGAL_BYTE_219\0"
+	/* 224 */ "ILLEGAL_BYTE_220\0"
+	/* 225 */ "ILLEGAL_BYTE_221\0"
+	/* 226 */ "ILLEGAL_BYTE_222\0"
+	/* 227 */ "ILLEGAL_BYTE_223\0"
+	/* 228 */ "ILLEGAL_BYTE_224\0"
+	/* 229 */ "ILLEGAL_BYTE_225\0"
+	/* 230 */ "ILLEGAL_BYTE_226\0"
+	/* 231 */ "ILLEGAL_BYTE_227\0"
+	/* 232 */ "ILLEGAL_BYTE_228\0"
+	/* 233 */ "ILLEGAL_BYTE_229\0"
+	/* 234 */ "ILLEGAL_BYTE_230\0"
+	/* 235 */ "ILLEGAL_BYTE_231\0"
+	/* 236 */ "ILLEGAL_BYTE_232\0"
+	/* 237 */ "ILLEGAL_BYTE_233\0"
+	/* 238 */ "ILLEGAL_BYTE_234\0"
+	/* 239 */ "ILLEGAL_BYTE_235\0"
+	/* 240 */ "ILLEGAL_BYTE_236\0"
+	/* 241 */ "ILLEGAL_BYTE_237\0"
+	/* 242 */ "ILLEGAL_BYTE_238\0"
+	/* 243 */ "ILLEGAL_BYTE_239\0"
+	/* 244 */ "ILLEGAL_BYTE_240\0"
+	/* 245 */ "ILLEGAL_BYTE_241\0"
+	/* 246 */ "ILLEGAL_BYTE_242\0"
+	/* 247 */ "ILLEGAL_BYTE_243\0"
+	/* 248 */ "ILLEGAL_BYTE_244\0"
+	/* 249 */ "ILLEGAL_BYTE_245\0"
+	/* 250 */ "ILLEGAL_BYTE_246\0"
+	/* 251 */ "ILLEGAL_BYTE_247\0"
+	/* 252 */ "ILLEGAL_BYTE_248\0"
+	/* 253 */ "ILLEGAL_BYTE_249\0"
+	/* 254 */ "ILLEGAL_BYTE_250\0"
+	/* 255 */ "ILLEGAL_BYTE_251\0"
+	/* 256 */ "ILLEGAL_BYTE_252\0"
+	/* 257 */ "ILLEGAL_BYTE_253\0"
+	/* 258 */ "ILLEGAL_BYTE_254\0"
+	/* 259 */ "ILLEGAL_BYTE_255\0"
+    };
+
+    static marpatcl_rtc_event_spec <Name>_events [1] = {
+    // sym, type, active
+	{ 257, marpatcl_rtc_event_discard, 1 }, // C: snafu
+    };
+
+    /*
+    ** L0 structures
+    */
+
+    static marpatcl_rtc_sym <Name>_l0_sym_name [261] = { /* 522 bytes */
+	/* --- (256) --- --- --- Characters
+	 */
+	  6,   7,   8,   9,  10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21,
+	 22,  23,  24,  25,  26,  27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,
+	 38,  39,  40,  41,  42,  43,  44,  45,  46,  47,  48,  49,  50,  51,  52,  53,
+	 54,  55,  56,  57,  58,  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69,
+	 70,  71,  72,  73,  74,  75,  76,  77,  78,  79,  80,  81,  82,  83,  84,  85,
+	 86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,  98,  99, 100, 101,
+	102,   2, 103,   5, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,
+	116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131,
+	132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147,
+	148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163,
+	164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179,
+	180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195,
+	196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211,
+	212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227,
+	228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243,
+	244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259,
+
+	/* --- (1) --- --- --- ACS: Lexeme
+	 */
+	3,
+
+	/* --- (1) --- --- --- ACS: Discard
+	 */
+	4,
+
+	/* --- (1) --- --- --- Lexeme
+	 */
+	3,
+
+	/* --- (1) --- --- --- Discard
+	 */
+	4,
+
+	/* --- (1) --- --- --- Internal
+	 */
+	0
+    };
+
+    static marpatcl_rtc_sym <Name>_l0_rule_definitions [15] = { /* 30 bytes */
+	MARPATCL_RCMD_SETUP (2),
+	MARPATCL_RCMD_PRIO  (1), 258, 97,       /* <B>         ::= <@CHR:<a>> */
+	MARPATCL_RCMD_PRIO  (1), 259, 99,       /* <C>         ::= <@CHR:<c>> */
+	MARPATCL_RCMD_PRIO  (2), 260, 256, 258, /* <@L0:START> ::= <@ACS:B> <B> */
+	MARPATCL_RCMD_PRIS  (2)     , 257, 259, /*             |   <@ACS:C> <C> */
+	MARPATCL_RCMD_DONE  (260)
+    };
+
+    static const char* <Name>_l0idmap_sym [1] = {
+	"B"
+    };
+
+    static marpatcl_rtc_sym <Name>_l0idmap_id [1] = {
+	0
+    };
+
+    static marpatcl_rtc_symid <Name>_l0idmap = {
+	/* .size   */ 1,
+	/* .symbol */ <Name>_l0idmap_sym,
+	/* .id     */ <Name>_l0idmap_id,
+    };
+
+    static marpatcl_rtc_events <Name>_l0events = {
+	/* .size  */ 1,
+	/* .data  */ <Name>_events,
+	/* .idmap */ &<Name>_l0idmap
+    };
+
+    static marpatcl_rtc_rules <Name>_l0 = { /* 48 */
+	/* .sname   */  &<Name>_pool,
+	/* .symbols */  { 261, <Name>_l0_sym_name },
+	/* .rules   */  { 0, NULL },
+	/* .lhs     */  { 0, NULL },
+	/* .rcode   */  <Name>_l0_rule_definitions,
+	/* .events  */  &<Name>_l0events
+    };
+
+    static marpatcl_rtc_sym <Name>_l0semantics [1] = { /* 2 bytes */
+	MARPATCL_SV_VALUE
+    };
+
+    /*
+    ** G1 structures - None, lexing only
+    */
+
+    /*
+    ** Engine definition. G1 fields nulled.
+    ** Triggers lex-only operation in the runtime.
+    */
+
+    static marpatcl_rtc_sym <Name>_always [1] = { /* 2 bytes */
+	1
+    };
+
+    static marpatcl_rtc_spec <Name>_spec = { /* 72 */
+	/* .lexemes    */  1,
+	/* .discards   */  1,
+	/* .l_symbols  */  261,
+	/* .g_symbols  */  0,
+	/* .always     */  { 1, <Name>_always },
+	/* .l0         */  &<Name>_l0,
+	/* .g1         */  NULL,
+	/* .l0semantic */  { 1, <Name>_l0semantics },
+	/* .g1semantic */  { 0, 0 },
+	/* .g1mask     */  { 0, 0 }
+    };
+    /* --- end of generated data structures --- */
+}
+
+# # ## ### ##### ######## ############# #####################
+## Class exposing the grammar engine.
+
+critcl::literals::def <Name>_event {
+    u0 "snafu"
+} +list
+
+critcl::class def <Name> {
+
+    insvariable marpatcl_rtc_lex lstate {
+	State for the token callback to store the incoming tokens and
+	values before they get passed to the Tcl level.
+    } {
+	marpatcl_rtc_lex_init (&instance->lstate);
+    } {
+	marpatcl_rtc_lex_release (&instance->lstate);
+    }
+
+    # Setup for events
+
+    method on-event proc {object args} void {
+	marpatcl_rtc_eh_setup (&instance->ehstate, args.c, args.v);
+    }
+
+    method match proc {Tcl_Interp* ip object args} ok {
+	/* -- Delegate to the parse event descriptor facade */
+	return marpatcl_rtc_pedesc_invoke (instance->pedesc, ip, args.c, args.v);
+    }
+
+    # Note how `rtc` is declared before `pedesc`. We need it
+    # initalized to be able to feed it into the construction of the
+    # PE descriptor facade.
+    insvariable marpatcl_rtc_p state {
+	C-level engine, RTC structure.
+    } {
+	instance->state = marpatcl_rtc_cons (&<Name>_spec,
+					     NULL, /* No actions */
+					     marpatcl_rtc_lex_token, (void*) &instance->lstate,
+					     marpatcl_rtc_eh_report, (void*) &instance->ehstate );
+    } {
+	marpatcl_rtc_destroy (instance->state);
+    }
+
+    insvariable marpatcl_rtc_pedesc_p pedesc {
+	Facade to the parse event descriptor structures.
+	Maintained only when we have parse events declared, i.e. possible.
+    } {
+	// Feed our RTC structure into the facade class so that its constructor has access to it.
+	marpatcl_rtc_pedesc_rtc_set (interp, instance->state);
+	instance->pedesc = marpatcl_rtc_pedesc_new (interp, 0, 0);
+	ASSERT (!marpatcl_rtc_pedesc_rtc_get (interp), "Constructor failed to take rtc structure");
+    } {
+	marpatcl_rtc_pedesc_destroy (instance->pedesc);
+    }
+
+    insvariable marpatcl_ehandlers ehstate {
+	Handler for parse events
+    } {
+	marpatcl_rtc_eh_init (&instance->ehstate, interp,
+			      (marpatcl_events_to_names) <Name>_event_list);
+	// h.self initialized by the constructor post-body
+	/* See on-event above for further setup */
+    } {
+	marpatcl_rtc_eh_clear (&instance->ehstate);
+	Tcl_DecrRefCount (instance->ehstate.self);
+	instance->ehstate.self = 0;
+    }
+
+    constructor {
+        /*
+	 * Syntax:                          ... []
+         * skip == 2: <class> new           ...
+         *      == 3: <class> create <name> ...
+         */
+
+	if (objc > 0) {
+	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
+	    goto error;
+	}
+
+	instance->lstate.ip = interp;
+    } {
+	/* Post body. Save the FQN for use in the callbacks */
+	instance->ehstate.self = fqn;
+	Tcl_IncrRefCount (fqn);
+    }
+
+    method process-file proc {Tcl_Interp* ip Tcl_Obj* path list outcmd} ok {
+	int res, got;
+	char* buf;
+	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
+
+	if (!in) {
+	    return TCL_ERROR;
+	}
+	Tcl_SetChannelBufferSize (in, 4096);
+	Tcl_SetChannelOption (ip, in, "-translation", "binary");
+	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
+	// TODO: abort on failed set-channel-option
+
+	instance->lstate.matched = critcl_callback_new (ip, outcmd.c, outcmd.v, 3);
+	critcl_callback_extend (instance->lstate.matched, Tcl_NewStringObj ("enter", -1));
+
+	Tcl_Obj* cbuf = Tcl_NewObj();
+	Tcl_Obj* ebuf = Tcl_NewObj();
+	while (!Tcl_Eof(in)) {
+	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
+	    if (got < 0) {
+		Tcl_DecrRefCount (cbuf);
+		Tcl_DecrRefCount (ebuf);
+		return TCL_ERROR;
+	    }
+	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
+	    Tcl_AppendObjToObj (ebuf, cbuf);
+	}
+	Tcl_DecrRefCount (cbuf);
+	(void) Tcl_Close (ip, in);
+
+	buf = Tcl_GetStringFromObj (ebuf, &got);
+	marpatcl_rtc_enter (instance->state, buf, got);
+	Tcl_DecrRefCount (ebuf);
+
+	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
+	critcl_callback_extend (on_eof, Tcl_NewStringObj ("eof", -1));
+
+	res = critcl_callback_invoke (on_eof, 0, 0);
+
+	critcl_callback_destroy (on_eof);
+	critcl_callback_destroy (instance->lstate.matched);
+	instance->lstate.matched = 0;
+
+	return res;
+    }
+
+    method process proc {Tcl_Interp* ip pstring string list outcmd} ok {
+	int res;
+
+	instance->lstate.matched = critcl_callback_new (ip, outcmd.c, outcmd.v, 3);
+	critcl_callback_extend (instance->lstate.matched, Tcl_NewStringObj ("enter", -1));
+
+	marpatcl_rtc_enter (instance->state, string.s, string.len);
+
+	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
+	critcl_callback_extend (on_eof, Tcl_NewStringObj ("eof", -1));
+
+	res = critcl_callback_invoke (on_eof, 0, 0);
+
+	critcl_callback_destroy (on_eof);
+	critcl_callback_destroy (instance->lstate.matched);
+	instance->lstate.matched = 0;
+
+	return res;
+    }
+}
+
+# # ## ### ##### ######## ############# #####################
+return

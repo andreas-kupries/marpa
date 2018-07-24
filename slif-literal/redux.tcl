@@ -7,7 +7,7 @@
 
 # SLIF support. Utilies for working with L0 literals.
 # See doc/atoms.md
-    
+
 # # ## ### ##### ######## #############
 ## Administrivia
 
@@ -70,12 +70,12 @@ oo::class create ::marpa::slif::literal::rstate {
     variable myresults ; # list (symbol) - queue of completed symbols
     variable mydef     ; # dict (symbol -> literal) - definition database
     variable mysym     ; # symbol callback (reducer ++ 'symbol')
-    
+
     # The active literal is the literal currently being reduced
     variable myctype    ; # Active literal, type
     variable mycdetails ; # Ditto, details
     variable mycsym     ; # Ditto, name of symbol
-    
+
     # # ## ### ##### ######## #############
 
     constructor {} {
@@ -88,14 +88,14 @@ oo::class create ::marpa::slif::literal::rstate {
 	set mycdetails {}
 	return
     }
-    
+
     method process {gc args} {
 	debug.marpa/slif/literal/rstate {}
 	my from-container $gc
 	my to-container $gc [my reduce {*}$args]
 	return
     }
-    
+
     method to-container {gc reductions} {
 	debug.marpa/slif/literal/rstate {}
 	lassign $reductions worklist aliases
@@ -129,7 +129,7 @@ oo::class create ::marpa::slif::literal::rstate {
 	$gc l0 fixup $aliases
 	return
     }
-    
+
     method from-container {gc} {
 	debug.marpa/slif/literal/rstate {}
 	my work-on [concat {*}[lmap {sym rhs} [dict get [$gc l0 serialize] literal] {
@@ -137,7 +137,7 @@ oo::class create ::marpa::slif::literal::rstate {
 	}]]
 	return
     }
-    
+
     method work-on {worklist} {
 	debug.marpa/slif/literal/rstate {}
 	#my XB
@@ -215,7 +215,7 @@ oo::class create ::marpa::slif::literal::rstate {
 	my ClearActive
 	return -code return
     }
-    
+
     method rules* {args} {
 	debug.marpa/slif/literal/rstate {}
 	my Place done work $mycsym [linsert $args 0 composite]
@@ -229,9 +229,9 @@ oo::class create ::marpa::slif::literal::rstate {
 	my ClearActive
 	return -code return
     }
-    
+
     # # ## internals
-    
+
     method ClearActive {} {
 	debug.marpa/slif/literal/rstate {}
 	set mycsym    {}
@@ -239,12 +239,12 @@ oo::class create ::marpa::slif::literal::rstate {
 	set mcdetails {}
 	return
     }
-    
+
     method Undecided {} {
 	debug.marpa/slif/literal/rstate {}
 	expr {$myctype ne {}}
     }
-    
+
     method Work? {} {
 	debug.marpa/slif/literal/rstate {}
 	llength $mywork
@@ -307,7 +307,7 @@ oo::class create ::marpa::slif::literal::rstate {
 		    set details [lassign $literal type]
 		    my E "Unable to reduce irreducible literal ($type ($details))" \
 			SLIF LITERAL IRREDUCIBLE
-		}		
+		}
 		lappend mywork $litsymbol
 	    }
 	    return   - done {
@@ -360,7 +360,7 @@ oo::class create ::marpa::slif::literal::rstate {
 	set mysym $args
 	return
     }
-    
+
     method SYM {literal} {
 	debug.marpa/slif/literal/rstate {}
 	{*}$mysym [self] $literal

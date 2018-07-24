@@ -133,7 +133,7 @@ oo::class create marpa::slif::container::grammar::l0 {
 	return [lrange $mypriority 0 end]
 	# See the note in alter.tcl for explanation of the lrange.
     }
-    
+
     # - -- --- ----- -------- -------------
     # Public API
 

@@ -88,7 +88,7 @@ proc ::gen::LoadTcl {} {
 proc ::gen::LoadRTC {} {
     upvar 1 cl cl
 
-    # Load the resulting parser package
+    # Load the resulting parser package. Required runtime first.
     kt local* support marpa::runtime::c
 
     # Match the directory used by bin/i-gen for the package

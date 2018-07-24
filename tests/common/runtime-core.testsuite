@@ -114,19 +114,55 @@ test-grammar-map rt_example --> id rte base {
 	    proc record {p type enames args} {
 		# For testing we just record the information about the
 		# event for matching against expectations.
-		lappend ::recording ___________________________(([info level 0]))
-		lappend ::recording {*}[$p match view]
+		if {[catch {
+		    lappend ::recording ___________________________(([info level 0]))
+		    lappend ::recording {*}[$p match view]
+		    # Move input so that lexer resumes reading with
+		    # the character after the lexeme.  Written as is
+		    # with absolutes so that it works for all events
+		    # (discard, pre-, post-lexeme) we are testing
+		    # without requiring conditionals
+		    $p match moveto [$p match start] [$p match length] -1
+		    lappend ::recording "@resume = [$p match location?]"
+		    # The input now points to the last character of
+		    # the lexeme, and on resume the lexer advances to
+		    # the next character to start processing from.
 
-		# Move input so that lexer resumes reading with the
-		# character after the lexeme.  Written as is with
-		# absolutes so that it works for all events (discard,
-		# pre-, post-lexeme) we are testing without requiring
-		# conditionals
-		$p match moveto [$p match start] [$p match length] -1
-		lappend ::recording "@resume = [$p match location?]"
-		# The input now points to the last character of the
-		# lexeme, and on resume the lexer advances to the next
-		# character to start processing from.
+		    set symbols [$p match symbols]
+		    foreach s $symbols {
+			lappend ::recording "^sym = >>$s<<"
+		    }
+
+		    if {$type in {after before}} {
+			# Retrieve and return the symbols and their
+			# sem values. A check that both directions
+			# are working.
+
+			set semvalues [$p match sv]
+			foreach s $semvalues {
+			    lappend ::recording "^sv  = >>$s<<"
+			}
+
+			$p match symbols: $symbols
+			$p match sv:      $semvalues
+
+			foreach v $semvalues s $symbols {
+			    $p match alternate $s $v
+			}
+
+			foreach v [$p match sv] s [$p match symbols] {
+			    lappend ::recording  ">>$s<< ~~ >>$v<<"
+			}
+		    } else {
+			# discard and non-lexeme events do not come
+			# with sem values.
+			lappend ::recording *[list [catch {
+			    $p match sv
+			} msg] $msg]
+		    }
+		}]} {
+		    lappend ::recording $::errorInfo
+		}
 		return
 	    }
 	    setup

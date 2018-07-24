@@ -142,7 +142,7 @@ critcl::class def ::marpa::Bocage {
 	t = @stem@_tree (instance);
 	status = marpa_t_next (t);
 	TRACE_TAG (parse, "self.Marpa_Tree %p = status %d", t, status);
-	
+
 	if (status == -1) {
 	    /* Done with tree iterator */
 	    marpa_t_unref (t);
@@ -162,7 +162,7 @@ critcl::class def ::marpa::Bocage {
 	    // TODO: Failed to create valuator, generate message
 	    TRACE_TAG_RETURN (parse, "%d", TCL_ERROR);
 	}
-	
+
 	steps = Tcl_NewListObj (0,0);
 	stop  = 0;
 	while (!stop) {

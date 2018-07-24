@@ -206,7 +206,7 @@ proc marpa::unicode::data::cc::ranges {cclass} {
 	set cclass [string range $cclass 1 end]
 	return [marpa::unicode::unfold [ranges $cclass]]
     }
-    
+
     if {[dict exists $ccalias $cclass]} {
 	return [dict get $cc [dict get $ccalias $cclass]]
     }

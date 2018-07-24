@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (SV for Tcl)
  * - - -- --- ----- -------- ------------- ----------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  *
  * Requirements
  */
@@ -13,15 +13,21 @@
 #include <symset.h>
 #include <stack.h>
 #include <progress.h>
+#include <strdup.h>
 #include <critcl_trace.h>
 #include <critcl_assert.h>
+#include <critcl_callback/critcl_callbackDecls.h>
+#include <marpatcl_rtc_eventtype.h>
 
 TRACE_OFF;
+TRACE_TAG_OFF (eh);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * Shorthands, externals, and forward declarations for internals.
  */
+
+#define STRDUP(s) marpatcl_rtc_strdup (s)
 
 #define TAKE   Tcl_IncrRefCount
 #define RELE   Tcl_DecrRefCount
@@ -33,10 +39,100 @@ static const char* qcs       (int i);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
- * API
+ * API -- Generic event handling
  */
 
-extern int
+void
+marpatcl_rtc_eh_init (marpatcl_ehandlers* e, Tcl_Interp* ip,
+		      marpatcl_events_to_names to_names)
+{
+    TRACE_TAG_FUNC (eh, "(marpatcl_ehandler*) %p, (Tcl_Interp*) %p", e, ip);
+
+    e->ip       = ip;
+    e->to_names = to_names;
+
+    int i;
+    for (i=0; i < marpatcl_rtc_eventtype_LAST; i++) {
+	e->event [i] = 0;
+    }
+
+    TRACE_TAG_RETURN_VOID (eh);
+}
+
+void
+marpatcl_rtc_eh_clear (marpatcl_ehandlers* e)
+{
+    TRACE_TAG_FUNC (eh, "(marpatcl_ehandler*) %p", e);
+
+    int i;
+    for (i=0; i < marpatcl_rtc_eventtype_LAST; i++) {
+	if (!e->event [i]) continue;
+	critcl_callback_destroy (e->event [i]);
+    }
+
+    TRACE_TAG_RETURN_VOID (eh);
+}
+
+void
+marpatcl_rtc_eh_setup (marpatcl_ehandlers* e,
+		       int                 c,
+		       Tcl_Obj* const*     v)
+{
+    TRACE_TAG_FUNC (eh, "(marpatcl_ehandler*) %p, c=%d, v=%p", e, c, v);
+
+    marpatcl_rtc_eh_clear (e);
+    marpatcl_rtc_eh_init  (e, e->ip, e->to_names);
+
+    if (!c) {
+	TRACE_TAG (eh, "Skipping setup, no command prefix", 0);
+	TRACE_TAG_RETURN_VOID (eh);
+    }
+
+    TRACE_TAG (eh, "Setting up per-event callbacks", 0);
+
+    int i;
+    for (i=0; i < marpatcl_rtc_eventtype_LAST; i++) {
+	e->event [i] = critcl_callback_new (e->ip, c, (Tcl_Obj**) v, 3);
+	critcl_callback_extend (e->event [i], e->self);
+	critcl_callback_extend (e->event [i], marpatcl_rtc_eventtype_decode (e->ip, i));
+	// Of the three argument slots we created the callback with now only
+	// one is left, to hold the list of event names.
+    }
+
+    TRACE_TAG_RETURN_VOID (eh);
+}
+
+void
+marpatcl_rtc_eh_report (void*                  cdata,
+			marpatcl_rtc_eventtype type,
+			int                    c,
+			int*                   ids)
+{
+    TRACE_TAG_FUNC (eh, "(marpatcl_ehandler*) %p, type=%d, c=%d, v=%p", cdata, type, c, ids);
+    marpatcl_ehandlers_p e = (marpatcl_ehandlers_p) cdata;
+
+    if (!e->event[0]) {
+	TRACE_TAG (eh, "PE ignored, no Tcl callback", 0);
+	TRACE_TAG_RETURN_VOID (eh);
+	TRACE_RETURN_VOID;
+    }
+
+    TRACE_TAG (eh, "PE taken, posting to Tcl", 0);
+
+    Tcl_Obj* events = e->to_names (e->ip, c, ids);
+    TAKE (events);
+
+    critcl_callback_invoke (e->event [type], 1, &events);
+
+    RELE (events);
+    TRACE_TAG_RETURN_VOID (eh);
+}
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API -- Generic parse completion
+ */
+
+int
 marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p p)
 {
     /* This function is called with a pointer to where the SV will be
@@ -68,7 +164,147 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p 
     TRACE_RETURN ("ERROR", TCL_ERROR);
 }
 
-extern Tcl_Obj*
+int
+marpatcl_rtc_pe_alternate (Tcl_Interp* ip, marpatcl_rtc_p p,
+			   const char* symbol, const char* semvalue)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, sym %s, sv %s", ip, p, symbol, semvalue);
+
+    int symid = marpatcl_rtc_spec_symid (SPEC->l0, symbol);
+
+    if (symid < 0) {
+	// TODO set error message
+	TRACE_RETURN ("%d", TCL_ERROR);
+    }
+
+    marpatcl_rtc_sv_p sv   = marpatcl_rtc_sv_cons_string (STRDUP (semvalue), 1);
+    int               svid = marpatcl_rtc_store_add (p, sv);
+
+    marpatcl_rtc_symset* syms  = marpatcl_rtc_lexer_pe_get_symbols (p);
+    marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
+
+    if (LEX.m_clearfirst) {
+	marpatcl_rtc_symset_clear (syms);
+	marpatcl_rtc_stack_clear  (svids);
+	LEX.m_clearfirst = 0;
+    }
+
+    marpatcl_rtc_symset_add (syms,  symid);
+    marpatcl_rtc_stack_push (svids, svid);
+
+    TRACE_RETURN ("%d", TCL_OK);
+}
+
+int
+marpatcl_rtc_pe_set_symbols (Tcl_Interp* ip, marpatcl_rtc_p p, int c, Tcl_Obj** v)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, c %d, (Tcl_Obj**) %p", ip, p, c, v);
+
+    // Replace the set of symbols
+    marpatcl_rtc_symset* syms = marpatcl_rtc_lexer_pe_get_symbols (p);
+    marpatcl_rtc_symset_clear (syms);
+    
+    int k;
+    for (k=0; k < c; k++) {
+	// convert char* of the symbols to sym id.
+	char* s   = Tcl_GetString (v [k]);
+	int   sid = marpatcl_rtc_spec_symid (SPEC->l0, s);
+
+	if (sid < 0) {
+	    // TODO set error message
+	    TRACE_RETURN ("%d", TCL_ERROR);
+	}
+	
+	marpatcl_rtc_symset_add (syms, sid);
+    }
+
+    TRACE_RETURN ("%d", TCL_OK);
+}
+
+void
+marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p, int c, Tcl_Obj** v)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, c %d, (Tcl_Obj**) %p", p, c, v);
+	
+    // Replace the set of sem values
+    marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
+    marpatcl_rtc_stack_clear (svids);
+    
+    int k;
+    for (k=0; k < c; k++) {
+	char*             s  = STRDUP (Tcl_GetString (v [k]));
+	marpatcl_rtc_sv_p sv = marpatcl_rtc_sv_cons_string (s, 1);
+	int               sid = marpatcl_rtc_store_add (p, sv);
+
+	TRACE (" [%d] := (sv*) %p", sid, sv);
+	ASSERT (sid > 0, "Bad store id, zero or less not allowed");
+	marpatcl_rtc_stack_push (svids, sid);
+    }
+
+    TRACE_RETURN_VOID;
+}
+
+Tcl_Obj*
+marpatcl_rtc_pe_get_semvalues (Tcl_Interp* ip, marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p", ip, p);
+
+    marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
+    if (!svids) {
+	const char* msg = "key \"sv\" not known in dictionary";
+	// Note 1: This message matches the error produced by the rt-Tcl facade.
+	// Note 2: Tcl_ResetResult implied by the outer Tcl command calling this function.
+	Tcl_AppendResult (ip, msg, NULL);
+	TRACE_RETURN ("(Tcl_Obj*) %p", 0);
+    }
+
+    int k, len, *ids = marpatcl_rtc_stack_data (svids, &len);
+    Tcl_Obj* svlist = Tcl_NewListObj (0, 0);
+
+    for (k=0; k < len; k++) {
+	ASSERT (ids[k] > 0, "Bad store id, zero or less not allowed");
+
+	marpatcl_rtc_sv_p sv = marpatcl_rtc_store_get (p, ids[k]);
+	Tcl_Obj* svo = marpatcl_rtc_sv_astcl (ip, sv);
+	if (TCL_OK != Tcl_ListObjAppendElement (ip, svlist, svo)) goto error;
+    }
+
+    TRACE_RETURN ("(Tcl_Obj*) %p", svlist);
+
+ error:
+    RELE (svlist);
+    TRACE_RETURN ("(Tcl_Obj*) %p", 0);
+}
+
+Tcl_Obj*
+marpatcl_rtc_pe_get_symbols (Tcl_Interp* ip, marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p)", ip, p);
+    marpatcl_rtc_symset* syms = marpatcl_rtc_lexer_pe_get_symbols (p);
+    marpatcl_rtc_rules* rules = LEX.m_event == marpatcl_rtc_event_discard
+	? SPEC->l0
+	: SPEC->g1
+	;
+    Tcl_Obj* names = Tcl_NewListObj (0,0);
+    int n = marpatcl_rtc_symset_size (syms);
+    int k;
+
+    for (k=0; k<n; k++) {
+	int slen;
+	const char* sname = marpatcl_rtc_spec_symname (rules, syms->dense[k], &slen);
+	if (!sname) goto error;
+	Tcl_Obj* name = Tcl_NewStringObj (sname, slen);
+	if (!name) goto error;
+	if (TCL_OK != Tcl_ListObjAppendElement (ip, names, name)) goto error;
+    }
+
+    TRACE_RETURN ("(Tcl_Obj*) %p", names);
+ error:
+    RELE (names);
+    TRACE_RETURN ("(Tcl_Obj*) %p", 0);
+}
+
+Tcl_Obj*
 marpatcl_rtc_sv_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_p sv)
 {
     Tcl_Obj *svres, *null;
@@ -81,6 +317,104 @@ marpatcl_rtc_sv_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_p sv)
 
     TRACE ("R ((Tcl_Obj*) %p) (rc %d))", svres, svres ? svres->refCount : -1);
     TRACE_RETURN ("(Tcl_Obj*) %p", svres);
+}
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API - Generic lex-only state support
+ */
+
+void
+marpatcl_rtc_lex_init (marpatcl_rtc_lex_p state)
+{
+    TRACE_FUNC ("(marpatcl_rtc_lex_p %p)", state);
+
+    state->tokens  = marpatcl_rtc_sv_cons_evec (1); // Expandable
+    state->values  = marpatcl_rtc_sv_cons_evec (1); // Expandable
+    state->ip      = 0;
+    state->matched = 0;
+
+    TRACE ("cons (marpatcl_rtc_lex_p %p).(tokens %p)", state, state->tokens);
+    TRACE ("cons (marpatcl_rtc_lex_p %p).(values %p)", state, state->values);
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_lex_release (marpatcl_rtc_lex_p state)
+{
+    TRACE_FUNC ("(marpatcl_rtc_lex_p %p)", state);
+
+    if (state->tokens) marpatcl_rtc_sv_unref (state->tokens);
+    if (state->values) marpatcl_rtc_sv_unref (state->values);
+
+    state->tokens = 0;
+    state->values = 0;
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_lex_token (void* cdata, marpatcl_rtc_sv_p sv)
+{
+    marpatcl_rtc_lex_p state = (marpatcl_rtc_lex_p) cdata;
+    TRACE_FUNC ("(marpatcl_rtc_lex_p %p), ((sv*) %p)", state, sv);
+
+    // See rtc/lexer.c 'complete' (!SPEC->g1) for the caller.
+    //
+    // Call sequence:
+    // - sv == 0 : "enter" begins
+    // - sv == 1 : "enter" is complete, call to Tcl
+    // - any other sv:
+    //   - even call => sv is token [string]
+    //   - odd  call => sv is value [any]
+
+    if (sv == 0) {
+	// Begin "enter"
+	TRACE ("%s", "enter /begin");
+
+	TRACE ("- clear (marpatcl_rtc_lex_p %p).(tokens %p)", state, state->tokens);
+	marpatcl_rtc_sv_vec_clear (state->tokens);
+
+	TRACE ("- clear (marpatcl_rtc_lex_p %p).(values %p)", state, state->values);
+	marpatcl_rtc_sv_vec_clear (state->values);
+
+	TRACE ("%s", "enter /begin done");
+	TRACE_RETURN_VOID;
+    }
+
+    if (sv == ((marpatcl_rtc_sv_p) 1)) {
+	// Complete "enter", call into Tcl
+	TRACE ("%s", "enter close /begin");
+
+	Tcl_Obj* v[2];
+	v[0] = marpatcl_rtc_sv_astcl (state->ip, state->tokens);
+	v[1] = marpatcl_rtc_sv_astcl (state->ip, state->values);
+
+	TRACE ("%s", "enter close - callback");
+	(void) critcl_callback_invoke (state->matched, 2, v);
+	TRACE ("%s", "enter close - callback return");
+
+	TRACE ("%s", "enter close /done");
+	TRACE_RETURN_VOID;
+    };
+
+    if (marpatcl_rtc_sv_vec_size (state->tokens) ==
+	marpatcl_rtc_sv_vec_size (state->values)) {
+	// Even call, both pads are empty or filled with matching t/v pairs.
+	// This call is a new token.
+
+	TRACE ("push token ((sv*) %p)", sv);
+	marpatcl_rtc_sv_vec_push (state->tokens, sv);
+    } else {
+	// Odd call, we have one more token than values.
+	// This call is a new value, match them again.
+
+	TRACE ("push value ((sv*) %p)", sv);
+	marpatcl_rtc_sv_vec_push (state->values, sv);
+    }
+
+    TRACE_RETURN_VOID;
 }
 
 /*
