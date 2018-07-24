@@ -165,6 +165,37 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p 
 }
 
 int
+marpatcl_rtc_pe_alternate (Tcl_Interp* ip, marpatcl_rtc_p p,
+			   const char* symbol, const char* semvalue)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, sym %s, sv %s", ip, p, symbol, semvalue);
+
+    int symid = marpatcl_rtc_spec_symid (SPEC->l0, symbol);
+
+    if (symid < 0) {
+	// TODO set error message
+	TRACE_RETURN ("%d", TCL_ERROR);
+    }
+
+    marpatcl_rtc_sv_p sv   = marpatcl_rtc_sv_cons_string (STRDUP (semvalue), 1);
+    int               svid = marpatcl_rtc_store_add (p, sv);
+
+    marpatcl_rtc_symset* syms  = marpatcl_rtc_lexer_pe_get_symbols (p);
+    marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
+
+    if (LEX.m_clearfirst) {
+	marpatcl_rtc_symset_clear (syms);
+	marpatcl_rtc_stack_clear  (svids);
+	LEX.m_clearfirst = 0;
+    }
+
+    marpatcl_rtc_symset_add (syms,  symid);
+    marpatcl_rtc_stack_push (svids, svid);
+
+    TRACE_RETURN ("%d", TCL_OK);
+}
+
+int
 marpatcl_rtc_pe_set_symbols (Tcl_Interp* ip, marpatcl_rtc_p p, int c, Tcl_Obj** v)
 {
     TRACE_FUNC ("((Interp*) %p, (rtc*) %p, c %d, (Tcl_Obj**) %p", ip, p, c, v);
@@ -204,6 +235,9 @@ marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p, int c, Tcl_Obj** v)
 	char*             s  = STRDUP (Tcl_GetString (v [k]));
 	marpatcl_rtc_sv_p sv = marpatcl_rtc_sv_cons_string (s, 1);
 	int               sid = marpatcl_rtc_store_add (p, sv);
+
+	TRACE (" [%d] := (sv*) %p", sid, sv);
+	ASSERT (sid > 0, "Bad store id, zero or less not allowed");
 	marpatcl_rtc_stack_push (svids, sid);
     }
 
@@ -228,6 +262,8 @@ marpatcl_rtc_pe_get_semvalues (Tcl_Interp* ip, marpatcl_rtc_p p)
     Tcl_Obj* svlist = Tcl_NewListObj (0, 0);
 
     for (k=0; k < len; k++) {
+	ASSERT (ids[k] > 0, "Bad store id, zero or less not allowed");
+
 	marpatcl_rtc_sv_p sv = marpatcl_rtc_store_get (p, ids[k]);
 	Tcl_Obj* svo = marpatcl_rtc_sv_astcl (ip, sv);
 	if (TCL_OK != Tcl_ListObjAppendElement (ip, svlist, svo)) goto error;

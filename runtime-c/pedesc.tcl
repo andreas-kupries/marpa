@@ -148,9 +148,8 @@ critcl::class def marpa::runtime::c::pedesc {
 	return 0;
     }
 
-    method alternate proc {object symbol object sv} void {
-	/* XXX TODO FILL XXX */
-	ASSERT (0,"alternate missing");
+    method alternate proc {Tcl_Interp* ip pstring symbol pstring sv} ok {
+	return marpatcl_rtc_pe_alternate (ip, instance->state, symbol.s, sv.s);
     }
 }
 

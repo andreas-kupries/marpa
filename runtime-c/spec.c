@@ -415,7 +415,7 @@ marpatcl_rtc_spec_setup_rd (marpatcl_rtc_rules* s)
 
 
 int
-marpatcl_rtc_spec_symid (marpatcl_rtc_rules* g, char* symname)
+marpatcl_rtc_spec_symid (marpatcl_rtc_rules* g, const char* symname)
 {
     TRACE_FUNC ("((rules*) %p, %s)", g, symname ? symname : "<<null>>");
     marpatcl_rtc_events* e   = g->events;

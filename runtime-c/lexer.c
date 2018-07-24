@@ -47,10 +47,11 @@ static int num_utf_chars (const char *src);
  * Shorthands
  */
 
-#define POST_EVENT(type) \
+#define POST_EVENT(type)						\
     TRACE ("PE %s %d -> (%p, cd %p)", #type, EVENTS->n, p->event, p->ecdata); \
-    LEX.m_event = type; \
-    p->event (p->ecdata, type, EVENTS->n, EVENTS->dense); \
+    LEX.m_event = type;							\
+    LEX.m_clearfirst = 1;						\
+    p->event (p->ecdata, type, EVENTS->n, EVENTS->dense);		\
     LEX.m_event = -1
 
 #define STRDUP(s) marpatcl_rtc_strdup (s)
@@ -606,8 +607,9 @@ lex_complete (marpatcl_rtc_p p)
 		// Parsing. Convert semantic values to identifiers we can
 		// carry within the marpa engine.
 		svid = marpatcl_rtc_store_add (p, sv);
-		marpatcl_rtc_sv_unref_i (sv); // Store now owns it.
 		TRACE_ADD (" [%d] :=", svid);
+		ASSERT (svid > 0, "Bad store id, zero or less not allowed");
+		marpatcl_rtc_sv_unref_i (sv); // Store now owns it.
 	    }
 	}
 	TRACE_CLOSER;

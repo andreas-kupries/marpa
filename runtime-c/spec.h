@@ -67,7 +67,7 @@ const char*          marpatcl_rtc_spec_rulename (marpatcl_rtc_rules* g,  marpatc
 const char*          marpatcl_rtc_spec_string   (marpatcl_rtc_string* p, marpatcl_rtc_sym id, int* len);
 marpatcl_rtc_sym*    marpatcl_rtc_spec_g1decode (marpatcl_rtc_symvec* coding, marpatcl_rtc_sym rule, int* len);
 marpatcl_rtc_sym     marpatcl_rtc_spec_g1map    (marpatcl_rtc_symvec* map, marpatcl_rtc_sym id);
-int                  marpatcl_rtc_spec_symid    (marpatcl_rtc_rules* g, char* symname);
+int                  marpatcl_rtc_spec_symid    (marpatcl_rtc_rules* g, const char* symname);
 
 #endif
 
