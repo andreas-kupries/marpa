@@ -373,7 +373,7 @@ critcl::ccode {
 
     static marpatcl_rtc_event_spec <Name>_events [1] = {
     // sym, type, active
-	{ 257, marpatcl_rtc_event_discard  , 1 }, // C: snafu
+	{ 257, marpatcl_rtc_event_discard, 1 }, // C: snafu
     };
 
     /*
@@ -430,8 +430,24 @@ critcl::ccode {
 	MARPATCL_RCMD_DONE  (260)
     };
 
+    static const char* <Name>_l0idmap_sym [1] = {
+	"B"
+    };
+
+    static marpatcl_rtc_sym <Name>_l0idmap_id [1] = {
+	0
+    };
+
+    static marpatcl_rtc_symid <Name>_l0idmap = {
+	/* .size   */ 1,
+	/* .symbol */ <Name>_l0idmap_sym,
+	/* .id     */ <Name>_l0idmap_id,
+    };
+
     static marpatcl_rtc_events <Name>_l0events = {
-	1, <Name>_events
+	/* .size  */ 1,
+	/* .data  */ <Name>_events,
+	/* .idmap */ &<Name>_l0idmap
     };
 
     static marpatcl_rtc_rules <Name>_l0 = { /* 48 */

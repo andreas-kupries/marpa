@@ -461,8 +461,25 @@ critcl::ccode {
 	MARPATCL_RCMD_DONE  (1)
     };
 
+    static const char* <Name>_g1idmap_sym [2] = {
+	"@LEX:@CHR:<a>",
+	"A"
+    };
+
+    static marpatcl_rtc_sym <Name>_g1idmap_id [2] = {
+	0, 1
+    };
+
+    static marpatcl_rtc_symid <Name>_g1idmap = {
+	/* .size   */ 2,
+	/* .symbol */ <Name>_g1idmap_sym,
+	/* .id     */ <Name>_g1idmap_id,
+    };
+
     static marpatcl_rtc_events <Name>_g1events = {
-	1, <Name>_events
+	/* .size  */ 1,
+	/* .data  */ <Name>_events,
+	/* .idmap */ &<Name>_g1idmap
     };
 
     static marpatcl_rtc_rules <Name>_g1 = { /* 48 */
@@ -667,4 +684,3 @@ critcl::class def <Name> {
 
 # # ## ### ##### ######## ############# #####################
 return
-

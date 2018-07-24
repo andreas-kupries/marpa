@@ -376,7 +376,7 @@ critcl::ccode {
     static marpatcl_rtc_event_spec <Name>_events [2] = {
     // sym, type, active
 	{ 257, marpatcl_rtc_event_discard  , 1 }, // C: snafu
-	{ 1, marpatcl_rtc_event_completed, 1 }, // A: fox
+	{   1, marpatcl_rtc_event_completed, 1 }, // A: fox
     };
 
     /*
@@ -433,8 +433,24 @@ critcl::ccode {
 	MARPATCL_RCMD_DONE  (260)
     };
 
+    static const char* <Name>_l0idmap_sym [1] = {
+	"B"
+    };
+
+    static marpatcl_rtc_sym <Name>_l0idmap_id [1] = {
+	0
+    };
+
+    static marpatcl_rtc_symid <Name>_l0idmap = {
+	/* .size   */ 1,
+	/* .symbol */ <Name>_l0idmap_sym,
+	/* .id     */ <Name>_l0idmap_id,
+    };
+
     static marpatcl_rtc_events <Name>_l0events = {
-	1, <Name>_events
+	/* .size  */ 1,
+	/* .data  */ <Name>_events,
+	/* .idmap */ &<Name>_l0idmap
     };
 
     static marpatcl_rtc_rules <Name>_l0 = { /* 48 */
@@ -478,8 +494,25 @@ critcl::ccode {
 	MARPATCL_RCMD_DONE  (1)
     };
 
+    static const char* <Name>_g1idmap_sym [2] = {
+	"A",
+	"B"
+    };
+
+    static marpatcl_rtc_sym <Name>_g1idmap_id [2] = {
+	1, 0
+    };
+
+    static marpatcl_rtc_symid <Name>_g1idmap = {
+	/* .size   */ 2,
+	/* .symbol */ <Name>_g1idmap_sym,
+	/* .id     */ <Name>_g1idmap_id,
+    };
+
     static marpatcl_rtc_events <Name>_g1events = {
-	1, <Name>_events + 1
+	/* .size  */ 1,
+	/* .data  */ <Name>_events + 1,
+	/* .idmap */ &<Name>_g1idmap
     };
 
     static marpatcl_rtc_rules <Name>_g1 = { /* 48 */
