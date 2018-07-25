@@ -18,6 +18,24 @@
 ## are given a pointer to the main RTC structure, and the containing
 ## object has a method delegating to the instance.
 
+critcl::argtype posint {
+    if (Tcl_GetIntFromObj(interp, @@, &@A) != TCL_OK) return TCL_ERROR;
+    if (@A <= 0) {
+	// TODO: error message
+	return TCL_ERROR;
+    }
+} int int
+
+critcl::argtype location {
+    if (Tcl_GetIntFromObj(interp, @@, &@A) != TCL_OK) return TCL_ERROR;
+    if (@A < 0) {
+	// TODO: error message
+	return TCL_ERROR;
+    }
+    /* Cannot check for max location without pre-scanning to have a full clindex.
+    */
+} int int
+
 critcl::class def marpa::runtime::c::pedesc {
     support {
 	#include <lexer.h>
@@ -55,7 +73,7 @@ critcl::class def marpa::runtime::c::pedesc {
 	return marpatcl_rtc_inbound_location (instance->state);
     }
 
-    method moveto proc {int pos int args} void {
+    method moveto proc {location pos int args} void {
 	int k;
 	for (k = 0; k < args.c; k++) { pos += args.v [k]; }
 	marpatcl_rtc_inbound_moveto (instance->state, pos);
@@ -69,11 +87,11 @@ critcl::class def marpa::runtime::c::pedesc {
 	marpatcl_rtc_inbound_moveby (instance->state, -delta);
     }
 
-    method stop-at proc {int pos} void {
+    method stop-at proc {location pos} void {
 	marpatcl_rtc_inbound_stopat (instance->state, pos);
     }
 
-    method limit proc {int limit} void {
+    method limit proc {posint limit} void {
 	marpatcl_rtc_inbound_limit (instance->state, limit);
     }
 
