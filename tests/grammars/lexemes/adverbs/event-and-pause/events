@@ -4,8 +4,8 @@ start = ((1))
 sv = ((bbb))
 symbols = ((bs))
 value = ((bbb))
-@location = 3
-@resume = 3
+@location = 4
+@resume = 4
 ^sym = >>bs<<
 ^sv  = >>bbb<<
 >>bs<< ~~ >>bbb<<
@@ -16,7 +16,7 @@ sv = ((aaa))
 symbols = ((as))
 value = ((aaa))
 @location = 5
-@resume = 8
+@resume = 9
 ^sym = >>as<<
 ^sv  = >>aaa<<
 >>as<< ~~ >>aaa<<
@@ -27,7 +27,7 @@ sv = ((a))
 symbols = ((as))
 value = ((a))
 @location = 10
-@resume = 11
+@resume = 12
 ^sym = >>as<<
 ^sv  = >>a<<
 >>as<< ~~ >>a<<
@@ -37,8 +37,8 @@ start = ((12))
 sv = ((b))
 symbols = ((bs))
 value = ((b))
-@location = 12
-@resume = 12
+@location = 13
+@resume = 13
 ^sym = >>bs<<
 ^sv  = >>b<<
 >>bs<< ~~ >>b<<

@@ -24,8 +24,8 @@ debug define marpa/inbound
 # # ## ### ##### ######## #############
 ## Entry object for character streams.
 #
-# Counts locations, saves per-char semantic values, before driving the
-# next element in the chain.
+# Counts locations, saves per-character semantic values, before
+# driving the next element in the chain.
 
 oo::class create marpa::inbound {
     marpa::E marpa/inbound INBOUND
@@ -103,9 +103,9 @@ oo::class create marpa::inbound {
 	marpa::import $postprocessor Forward
 
 	set mytext     "" ; # Input is empty
-	set mylocation -1 ; # location (of current character) in
-			    # input, currently before the first
-			    # character
+	set mylocation -1 ; # Location of the current character in
+			    # the input, currently set to just before
+			    # the first character (of nothing).
 
 	# Attach ourselves to the postprocessor, as its input
 	Forward input: [self]
@@ -119,11 +119,12 @@ oo::class create marpa::inbound {
 
     method location? {} {
 	debug.marpa/inbound {[debug caller] | ==> $mylocation}
-	return $mylocation
+	return [expr {$mylocation + 1}]
     }
 
     method moveto {pos args} {
 	debug.marpa/inbound {[debug caller] | }
+	incr pos -1
 	set mylocation $pos
 	foreach delta $args { incr mylocation $delta }
 	return
@@ -182,14 +183,24 @@ oo::class create marpa::inbound {
 
 	debug.marpa/inbound {[debug caller] | DO _______________________________________ /START}
 
-	while {$mylocation < $max} {
-	    # The outer loop catches when gate, lexer, etc. bounce us
-	    # back after reaching EOF. Because this means that the
-	    # last characters need re-processing.
+	# Notes on locations.
+	# [1] At the beginning of the loop `mylocation` points to the
+	#     __last__ processed character.
+	# [2] We move to the current character just before processing
+	#     it (Forward enter ...).
+	# [3] When parse events are invoked we point to the character
+	#     to process next (i.e. one ahead), and have to compensate
+	#     on return so that the loop entry condition [1] is true
+	#     again. We actually make the translation in the location
+	#     methods of this class, see `location?` and below,
+	#     without actually moving.
+	# [4] The double-loop construction is present to ensure that
+	#     when the inner main processing loop hits EOF the eof
+	#     handling can bounce the engine away from EOF and
+	#     processing is restarted for the last characters.
 
+	while {$mylocation < $max} {
 	    while {$mylocation < $max} {
-		# On loop entry the location points to the previously processed character
-		# We now move to the current character, then extract and process it.
 		incr mylocation
 		set ch [lindex $mytext $mylocation]
 
@@ -206,10 +217,10 @@ oo::class create marpa::inbound {
 
 		debug.marpa/inbound {[debug caller] | DO _______________________________________ /NEXT}
 	    }
-
 	    # Trigger end of data processing in the post-processors.
-	    # Note that this may rewind the input to an earlier place,
-	    # forcing re-processing of some of the last characters.
+	    # (Ad 4) Note that this may rewind the input to an earlier
+	    # place, forcing re-processing of some of the last
+	    # characters.
 	    debug.marpa/inbound {[debug caller] | DO _______________________________________ /EOF}
 	    Forward eof
 

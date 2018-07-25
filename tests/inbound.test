@@ -66,7 +66,7 @@ test marpa-inbound-1.1 {constructor, initial state} -setup {
     list [IN location?] [logged]
 } -cleanup {
     IN destroy
-} -result {-1 {
+} -result {0 {
   GATE C {input: ::IN}
   GATE R {input: ::IN} = {}
 }}
@@ -135,7 +135,7 @@ test marpa-inbound-3.2.3 {eof, post-allows location?} -setup {
 } -cleanup {
     IN destroy
     logged
-} -result -1
+} -result 0
 
 # # ## ### ##### ######## ############# #####################
 ## enter - wrong args, state changes, call sequences
@@ -164,7 +164,7 @@ test marpa-inbound-4.1.0 {enter, results, state changes, external calls} -setup 
     list [IN enter FOO] [IN location?] [logged]
 } -cleanup {
     IN destroy
-} -result {{} 2 {
+} -result {{} 3 {
   GATE C {input: ::IN}
   GATE R {input: ::IN} = {}
   GATE C {enter F 0}
@@ -183,7 +183,7 @@ test marpa-inbound-4.1.1 {enter nothing, results, state changes, external calls}
     list [IN enter {}] [IN location?] [logged]
 } -cleanup {
     IN destroy
-} -result {{} -1 {
+} -result {{} 0 {
   GATE C {input: ::IN}
   GATE R {input: ::IN} = {}
 }}
@@ -206,7 +206,7 @@ test marpa-inbound-4.2.1 {enter, post-allows location?} -setup {
 } -cleanup {
     IN destroy
     logged
-} -result -1
+} -result 0
 
 test marpa-inbound-4.2.2 {enter, post-allows eof} -setup {
     marpa::inbound create IN [log GATE]
@@ -259,7 +259,7 @@ test marpa-inbound-5.1.0 {read, results, state changes, external calls} -setup {
 } -cleanup {
     IN destroy
     close $chan
-} -result {{} 2 {
+} -result {{} 3 {
   GATE C {input: ::IN}
   GATE R {input: ::IN} = {}
   GATE C {enter F 0}
@@ -280,7 +280,7 @@ test marpa-inbound-5.1.1 {read nothing, results, state changes, external calls} 
 } -cleanup {
     IN destroy
     close $chan
-} -result {{} -1 {
+} -result {{} 0 {
   GATE C {input: ::IN}
   GATE R {input: ::IN} = {}
 }}
@@ -307,7 +307,7 @@ test marpa-inbound-5.2.1 {read, post-allows location?} -setup {
     IN destroy
     logged
     close $chan
-} -result -1
+} -result 0
 
 test marpa-inbound-5.2.2 {read, post-allows eof} -setup {
     set chan [tcl::chan::string {}]

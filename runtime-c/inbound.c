@@ -67,7 +67,7 @@ int
 marpatcl_rtc_inbound_location (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
-    TRACE_RETURN ("%d", IN.clocation);
+    TRACE_RETURN ("%d", IN.clocation + 1);
 }
 
 void
@@ -75,7 +75,7 @@ marpatcl_rtc_inbound_moveto (marpatcl_rtc_p p, int cpos)
 {
     TRACE_FUNC ("((rtc*) %p, pos = %d)", p, cpos);
 
-    IN.clocation = cpos;
+    IN.clocation = cpos - 1;
     IN.location  = marpatcl_rtc_clindex_find (&IN.index, IN.clocation);
 
     TRACE ("((rtc*) %p, now pos = %d ~ %d)", p, IN.clocation, IN.location);
@@ -107,16 +107,27 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
 	n = strlen (bytes);
     }
     n --;
-
     TRACE ("max %d", n);
+
+
+    // Notes on locations and the processing loops.
+    //
+    // [1] At the beginning of the loop `mylocation` points to the __last__
+    //     processed character.
+    // [2] We move to the current character just before processing it (Forward
+    //     enter ...).
+    // [3] When parse events are invoked we point to the character to process
+    //     next (i.e. one ahead), and have to compensate on return so that the
+    //     loop entry condition [1] is true again. We actually make the
+    //     translation in the location methods of this class, see `location?`
+    //     and below, without actually moving.
+    // [4] The double-loop construction is present to ensure that when the
+    //     inner main processing loop hits EOF the eof handling can bounce the
+    //     engine away from EOF and processing is restarted for the last
+    //     characters.
+    
     while (IN.location < n) {
-	// The outer loop catches when gate, lexer, etc. bounce us back after
-	// reaching EOF. Because this means that the last characters need
-	// re-processing.
 	while (IN.location < n) {
-	    // On loop entry the location points to the previously processed
-	    // character. We now move to the current character, then extract and
-	    // process it.
 	    ch = step (p, bytes);
 	    TRACE ("byte %3d at %d c %d <%s>", ch, IN.location, IN.clocation, NAME(ch));
 
@@ -127,12 +138,11 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
 	    // use:
 	    // - Rewind after reading behind the current lexeme
 	    // - Rewind for parse events.
-
 	}
 	TRACE ("Failed/i = %d @ %d max %d", FAIL.fail, IN.location, n);
 	if (FAIL.fail) break;
 	// Trigger end of data processing in the post-processors.
-	// Note that this may rewind the input to an earlier place,
+	// (Ad 4) Note that this may rewind the input to an earlier place,
 	// forcing re-processing of some of the last characters.
 	marpatcl_rtc_gate_eof (p);
     }

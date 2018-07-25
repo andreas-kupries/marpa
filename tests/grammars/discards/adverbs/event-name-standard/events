@@ -4,8 +4,8 @@ start = ((5))
 symbols = ((space))
 value = ((
 ))
-@location = 5
-@resume = 5
+@location = 6
+@resume = 6
 ^sym = >>space<<
 *1 {key "sv" not known in dictionary}
 ___________________________((record ::PARSE discard whitespace))
@@ -15,7 +15,7 @@ symbols = ((space))
 value = ((
      
 ))
-@location = 17
-@resume = 17
+@location = 18
+@resume = 18
 ^sym = >>space<<
 *1 {key "sv" not known in dictionary}
