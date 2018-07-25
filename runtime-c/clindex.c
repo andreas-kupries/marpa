@@ -94,10 +94,27 @@ marpatcl_rtc_clindex_find (marpatcl_rtc_clindex* index, int cloc)
 {
     TRACE_FUNC ("((clindex*) %p, @ %d)", index, cloc);
     
-    if (cloc >= MC) {
+    if (cloc == MC) {
+	// The target location is at the maximal visited.
+	// Use the cached maximal data.
+
+	TRACE ("%d == [max @ %d]", cloc, MB);
+	TRACE_RETURN ("goto %d", MB);
+    }
+
+    if (cloc > MC) {
 	// The target location is at or after the maximal visited.
 	// Use the cached maximal data as pseudo run.
-	TRACE ("%d >= [%d max @ %d, scaled %d]", cloc, MC, MB, ML);
+
+	// BUG for `>` !! We cannot do this as is. This assumes that we have
+	// same-length characters from the maximal known, i.e. this wrongly
+	// extrapolates into the unknown not yet visited part of the input.
+
+	// FIX/TODO: Force a scan ahead to the target location to make it
+	// maximal and the index properly extended, then recursively re-find.
+
+	TRACE ("%d > [%d max @ %d, scaled %d, extrapolated, BUG]", cloc, MC, MB, ML);
+	ASSERT (0, "Bad extrapolation");
 	TRACE_RETURN ("goto %d", MB + ML*(cloc-MC));
     }
 
