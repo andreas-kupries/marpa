@@ -80,9 +80,10 @@ oo::class create marpa::inbound {
     # # -- --- ----- -------- -------------
     ## State
 
-    variable mylocation ; # Input location
-    variable mytext     ; # Physical input stream
-    			  # (list! of characters)
+    variable mylocation     ; # Input location
+    variable mystoplocation ; # Trigger location for stop events
+    variable mytext         ; # Physical input stream
+    			      # (list! of characters)
 
     # API:
     # 1 cons  (postprocessor) - Create, link
@@ -139,6 +140,20 @@ oo::class create marpa::inbound {
     method moveby {delta} {
 	debug.marpa/inbound {[debug caller] | }
 	incr mylocation $delta
+	return
+    }
+
+    method stop-at {pos} {
+	debug.marpa/inbound {[debug caller] | }
+	set mystoplocation $pos
+	return
+    }
+
+    method limit {delta} {
+	debug.marpa/inbound {[debug caller] | }
+	set  mystoplocation $mylocation
+	incr mystoplocation
+	incr mystoplocation $delta
 	return
     }
 

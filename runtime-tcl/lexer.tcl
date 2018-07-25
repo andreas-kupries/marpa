@@ -169,6 +169,7 @@ oo::class create marpa::lexer {
 	# Match information storage, and public facade.
 	# The latter is created and configured in `gate:`.
 	marpa::lexer::match create M
+	M event: 0
 	M g1start: {} ; # XXX pull information from parser.
 	M g1length: 1
 
@@ -484,6 +485,16 @@ oo::class create marpa::lexer {
 	return $prehandler
     }
 
+    method Post {type events} {
+	debug.marpa/lexer {[debug caller] | }
+	# Note, M is passed implicitly, made accessible through the
+	# `match` method of the main object.
+	M event: 1
+	Forward post $type $events
+	M event: 0
+	return
+    }
+    
     method redo {n} {
 	debug.marpa/lexer {[debug caller] | }
 	# Lexer method, called by parser.
@@ -666,11 +677,8 @@ oo::class create marpa::lexer {
 		M fresh: 1
 		debug.marpa/lexer/events {E Discard Match: [join [M view] "\nE         Match:"]}
 
-		# Note, M is passed implicitly, made accessible
-		# through the `match` method of the main
-		# object. Further, any changes made to M by the event
-		# handler are ignored.
-		Forward post discard $events
+		# Note, any changes the event handler makes to M are ignored.
+		my Post discard $events
 	    }
 
 	    # Second, restart lexing without informing the parser,
@@ -699,12 +707,12 @@ oo::class create marpa::lexer {
 		set prehandler [my PEFill $found $sv]
 		# Move input location to just before start of lexeme
 		Gate moveto [M start] -1
-		Forward post before $events
+		my Post before $events
 	    } else {
 		set events [my events? after $ef]
 		if {[llength $events]} {
 		    set prehandler [my PEFill $found $sv]
-		    Forward post after $events
+		    my Post post after $events
 		}
 	    }
 

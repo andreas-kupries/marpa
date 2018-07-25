@@ -33,9 +33,9 @@ oo::class create marpa::lexer::ped {
 	marpa::import $g Gate
     }
 
-    foreach m {location? moveto rewind moveby} {
+    foreach m {location? moveto rewind moveby stop-at limit} {
 	# Access to input location: accessor & modifiers
-	forward $m  Gate $m
+	forward $m  my Access Gate $m
     } ; unset m
 
     # API
@@ -45,12 +45,18 @@ oo::class create marpa::lexer::ped {
 	value    values
     } {
 	# Access to match information: modifier/accessor
-	forward ${part}:  Store ${part}:
-	forward ${part}   Store ${part}
+	forward ${part}:  my Access Store ${part}:
+	forward ${part}   my Access Store ${part}
     } ; unset part
 
+    method Access {args} {
+	my ValidatePermissions
+	return [{*}$args]
+    }
+    
     # Debug helper method, also testsuite
     method view {} {
+	my ValidatePermissions
 	set     r [Store view {symbols sv start length value values}]
 	lappend r "@location = [Gate location?]"
     }
@@ -58,6 +64,7 @@ oo::class create marpa::lexer::ped {
     # Incremental rebuild of the symbol/sv set
     # First call clears and appends, further only appends
     method alternate {symbol sv} {
+	my ValidatePermissions
 	if {[Store fresh]} {
 	    Store symbols: {}
 	    Store sv:      {}
@@ -66,6 +73,13 @@ oo::class create marpa::lexer::ped {
 	Store symbols: [linsert [Store symbols] end $symbol]
 	Store sv:      [linsert [Store sv]      end $sv]
 	return
+    }
+
+
+    method ValidatePermissions {} {
+	if {[Store event]} return ; # Access permitted
+	return -code error -errorcode {MARPA MATCH PERMIT} \
+	    "Invalid access to match state, not inside event handler"
     }
 }
 
@@ -93,7 +107,7 @@ oo::class create marpa::lexer::match {
 	debug.marpa/lexer/match {[debug caller] | }
 	set myparts {
 	    start    {}	    length   {}	fresh 1
-	    g1start  {}	    g1length {}
+	    g1start  {}	    g1length {} event 0
 	    symbol   {}	    lhs      {}
 	    rule     {}	    value    {}
 	}
@@ -119,7 +133,7 @@ oo::class create marpa::lexer::match {
 
     foreach {part key} {
 	symbols  -	sv       -	fresh -
-	start    -	length   -
+	start    -	length   -	event -
 	g1start  -	g1length -
 	name     symbol	lhs      -
 	symbol   -	rule     -
