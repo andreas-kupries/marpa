@@ -19,8 +19,9 @@ TRACE_TAG_OFF (stream);
  * Shorthands
  */
 
-#define ACCEPT (&GATE.acceptable)
-#define LEX_R  (LEX.recce)
+#undef  ACCEPT /* LEX.acceptable */
+#define ACCEPT  (&GATE.acceptable)
+#define LEX_R   (LEX.recce)
 
 #ifdef CRITCL_TRACER
 static void
