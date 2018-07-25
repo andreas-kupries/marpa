@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Sets of marpa-symbols, dynamic)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-2018 Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_SYMSET_H

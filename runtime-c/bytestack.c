@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Stacks of bytes)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2018 Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
