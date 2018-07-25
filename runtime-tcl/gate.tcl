@@ -164,6 +164,10 @@ oo::class create marpa::gate {
 	forward $m  Input $m
     } ; unset m
 
+    method stop {} {
+	Forward stop ;# notify lexer
+    }
+
     # # -- --- ----- -------- -------------
     ## Public API
 

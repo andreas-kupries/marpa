@@ -22,12 +22,14 @@
  */
 
 typedef enum {
-    marpatcl_rtc_event_before,
-    marpatcl_rtc_event_after,
-    marpatcl_rtc_event_discard,
-    marpatcl_rtc_event_predicted,
-    marpatcl_rtc_event_completed,
-    marpatcl_rtc_event_nulled,
+    marpatcl_rtc_event_before,    // lexer/lexeme events
+    marpatcl_rtc_event_after,     // .
+    marpatcl_rtc_event_discard,   // .
+    marpatcl_rtc_event_predicted, // parser events
+    marpatcl_rtc_event_completed, // .
+    marpatcl_rtc_event_nulled,    // .
+    //
+    marpatcl_rtc_event_stop,      // io event
     //
     marpatcl_rtc_eventtype_LAST
 } marpatcl_rtc_eventtype;

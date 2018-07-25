@@ -69,6 +69,14 @@ critcl::class def marpa::runtime::c::pedesc {
 	marpatcl_rtc_inbound_moveby (instance->state, -delta);
     }
 
+    method stop-at proc {int pos} void {
+	marpatcl_rtc_inbound_stopat (instance->state, pos);
+    }
+
+    method limit proc {int limit} void {
+	marpatcl_rtc_inbound_limit (instance->state, limit);
+    }
+
     method symbols proc {Tcl_Interp* interp} object0 {
 	return marpatcl_rtc_pe_get_symbols (interp, instance->state);
     }

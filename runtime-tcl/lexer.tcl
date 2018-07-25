@@ -180,6 +180,10 @@ oo::class create marpa::lexer {
 	return
     }
 
+    method stop {} {
+	my Post stop {}
+    }
+
     # # -- --- ----- -------- -------------
     ## Public API
 

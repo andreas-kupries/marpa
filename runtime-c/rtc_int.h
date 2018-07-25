@@ -69,6 +69,18 @@ typedef struct marpatcl_rtc {
 #define LRD  (p->l0_rule)
 #define PRD  (p->g1_rule)
 
+#define ACCEPT   (&LEX.acceptable)
+#define FOUND    (&LEX.found)
+#define EVENTS   (&LEX.events)
+#define DISCARDS (&LEX.discards)
+
+#define POST_EVENT(type)						\
+    TRACE ("PE %s %d -> (%p, cd %p)", #type, EVENTS->n, p->event, p->ecdata); \
+    LEX.m_event = type;							\
+    LEX.m_clearfirst = 1;						\
+    p->event (p->ecdata, type, EVENTS->n, EVENTS->dense);		\
+    LEX.m_event = -1
+
 #endif
 
 /*

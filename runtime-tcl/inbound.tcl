@@ -150,6 +150,7 @@ oo::class create marpa::inbound {
     }
 
     method limit {delta} {
+	# assert delta > 0
 	debug.marpa/inbound {[debug caller] | }
 	set  mystoplocation $mylocation
 	incr mystoplocation
@@ -187,6 +188,8 @@ oo::class create marpa::inbound {
 	debug.marpa/inbound {[debug caller] | }
 	set mytext     [split $string {}]
 	set mylocation -1
+	# stop before input - cannot trigger == do not stop
+	set mystoplocation -2
 	return
     }
 
@@ -217,6 +220,16 @@ oo::class create marpa::inbound {
 	while {$mylocation < $max} {
 	    while {$mylocation < $max} {
 		incr mylocation
+
+		if {$mylocation == $mystoplocation} {
+		    # Stop triggered.
+		    # Bounce, clear stop marker, post event, restart
+		    incr mylocation -1
+		    set mystoplocation -2
+		    Forward stop ;# notify gate
+		    continue
+		}
+
 		set ch [lindex $mytext $mylocation]
 
 		# Semantic value is character location (s.a.)

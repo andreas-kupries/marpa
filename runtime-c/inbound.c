@@ -45,6 +45,7 @@ marpatcl_rtc_inbound_init (marpatcl_rtc_p p)
 
     IN.location  = -1;
     IN.clocation = -1;
+    IN.cstop     = -2;
     IN.trailer   = 0;
     IN.header    = 0;
 
@@ -95,6 +96,27 @@ marpatcl_rtc_inbound_moveby (marpatcl_rtc_p p, int cdelta)
 }
 
 void
+marpatcl_rtc_inbound_stopat (marpatcl_rtc_p p, int cpos)
+{
+    TRACE_FUNC ("((rtc*) %p, pos = %d)", p, cpos);
+
+    IN.cstop = cpos;
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_inbound_limit (marpatcl_rtc_p p, int limit)
+{
+    // ASSERT limit > 0 == critcl pos.int TODO
+    TRACE_FUNC ("((rtc*) %p, limit = %d)", p, limit);
+
+    IN.cstop = IN.clocation + limit;
+
+    TRACE_RETURN_VOID;
+}
+
+void
 marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
 {
 #define NAME(sym) marpatcl_rtc_spec_symname (SPEC->l0, sym, 0)
@@ -128,8 +150,22 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
     
     while (IN.location < n) {
 	while (IN.location < n) {
+	    int prevbloc = IN.location;
+	    int prevcloc = IN.clocation;
+
 	    ch = step (p, bytes);
 	    TRACE ("byte %3d at %d c %d <%s>", ch, IN.location, IN.clocation, NAME(ch));
+
+	    if (IN.clocation == IN.cstop) {
+		// Stop triggered.
+		// Bounce, clear stop marker, post event, restart
+		 IN.location  = prevbloc;
+		 IN.clocation = prevcloc;
+		 IN.cstop     = -2;
+		 marpatcl_rtc_symset_clear (EVENTS);
+		 POST_EVENT (marpatcl_rtc_event_stop);
+		 continue;
+	    }
 
 	    marpatcl_rtc_gate_enter (p, ch);
 	    if (FAIL.fail) break;
