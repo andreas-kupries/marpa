@@ -1,0 +1,230 @@
+# -*- tcl -*-
+## (c) 2017-2018 Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+
+## Execution core for testing the marpa runtime engines with various
+## SLIF-specified grammars demonstrating various features and possible
+## behaviours. This is similiar to parser-core, one stage further.
+
+## Specialized form of the `runtime-core.testsuite` to test the
+## `match` ensemble with regard to argument validation, and access
+## control.
+
+## Configured by the caller with methods for
+## - overall initialization and finalization
+## - parser creation and destruction
+## - Result selection
+#
+## The methods expected to exist are
+#
+## * label      :: return string to name the tests
+## * initialize :: global setup, for the suite
+## * finalize   :: global cleanup, for the suite
+## * input      :: input selection by label / base directory
+## * result     :: result selection by label / base directory
+
+## The name of the parser class is stored in the `gen` config, under
+## key `cl`.
+
+# # ## ### ##### ######## ############# #####################
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+kt require support fileutil ;# cat
+
+# # ## ### ##### ######## ############# #####################
+## Local shorthands
+
+proc setup   {} { [gen cget cl] create PARSE }
+proc cleanup {} { PARSE destroy }
+
+proc stash {k} {
+    global rtdebug
+    if {![info exists rtdebug] || !$rtdebug} return
+    set dst [top]/[label]_${k}-stash
+    file delete -force $dst
+    file mkdir $dst
+    set cl [gen cget cl]
+
+    file copy [td]/${cl}.tcl     $dst/
+    # RTC specific. Not for Tcl.
+    catch {
+	file copy [td]/OUT_${cl}_LOG $dst/
+	file copy [td]/OUT_${cl}     $dst/
+    }
+    return
+}
+
+# # ## ### ##### ######## ############# #####################
+## No method sequence checking for the parser.
+## Methods can be called in any order.
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/ast.tcl
+kt source support/dirs.tcl
+kt source support/grammars.tcl
+kt source support/textutils.tcl
+
+# # ## ### ##### ######## ############# #####################
+## Setup dynamic parts of the testsuite
+## Currently only importing the `bootstrap/marpa-tcl-slif`
+
+exec [td]/grammars/setup.sh
+
+# # ## ### ##### ######## ############# #####################
+
+initialize
+
+# # ## ### ##### ######## ############# #####################
+## Actual processing - Id formatting prep
+
+incr max
+test-grammar-files rt_example --> __ __ { incr max }
+set format %0[string length $max]d
+unset max
+
+# # ## ### ##### ######## ############# #####################
+
+incr k
+test-grammar-map rt_example --> id rte base {
+    gen configure gr $rte
+    gen setup cl rte$k
+
+    # Debugging - Keep the generated parser and related files for
+    # post-mortem review.
+    stash $k
+
+    set input  [fget [input  $base]]
+    set kd     [format $format $k]
+
+    if {![file exists $base/match]} continue
+    # Use only match examples.
+
+    # Get the expected match API behaviour
+    set result [string trimright [fget $base/match]]
+
+    test marpa-[label]-runtime-events-match-2.${kd}---${id} "[label] :: events match $id" -body {
+	catch {
+	    PARSE process $input
+	    join $recording \n
+	} msg
+	set msg ;# set ::errorInfo
+    } -setup {
+	set recording {}
+	proc record {p type enames args} {
+	    lappend ::recording ___________________________(([info level 0]))
+	    # Go through all methods of the match api and record their responses
+	    # Validation, event-specific access control, etc.
+	    foreach cmd {
+		location?
+		{location? X}
+		moveto
+		{moveto {}}
+		{moveto -1}
+		{moveto 0}
+		location?
+		moveby
+		{moveby {}}
+		{moveby 5}
+		location?
+		{moveby -5}
+		location?
+		rewind
+		{rewind {}}
+		{rewind -5}
+		location?
+		{rewind 5}
+		location?
+		stop?
+		{stop? X}
+		stop-at
+		{stop-at {}}
+		{stop-at -1}
+		{stop-at 10}
+		stop?
+		limit
+		{limit {}}
+		{limit -1}
+		{limit 10}
+		stop?
+		symbols
+		{symbols X}
+		sv
+		{sv X}
+		start
+		{start X}
+		length
+		{length X}
+		value
+		{value X}
+		values
+		{values X}
+		symbols:
+		{symbols: {}}
+		sv:
+		{sv: {}}
+		start:
+		{start: {}}
+		{start: -1}
+		{start: 0}
+		length:
+		{length: {}}
+		{length: -1}
+		{length: 10}
+		value:
+		{value: {}}
+		values:
+		{values: {}}
+		alternate
+		{alternate {}}
+		{alternate {} {} X}
+		{alternate A V}
+		view X
+		view
+	    } {
+		set state [catch {
+		    $p match {*}$cmd
+		} result]
+		lappend ::recording "___ (( $cmd ))" "_ => $state" "_ ~~ `$result`" ""
+	    }
+
+	    # Force clear symbol/sv where possible
+	    catch { $p match symbols: {} }
+	    catch { $p match sv:      {} }
+
+	    # And move to the end of the input. This forces the engine to abort.
+	    $p match moveto [string length $input]
+	    return
+	}
+	setup
+	PARSE on-event record
+    } -cleanup {
+	cleanup
+	rename record {}
+	unset msg recording
+    } -result $result
+
+    gen cleanup
+    incr k
+}
+
+# # ## ### ##### ######## ############# #####################
+unset k base format result kd input rte
+rename setup   {}
+rename cleanup {}
+
+# # ## ### ##### ######## ############# #####################
+finalize
+
+# # ## ### ##### ######## ############# #####################
+rename label      {}
+rename result     {}
+rename initialize {}
+rename finalize   {}
+return
