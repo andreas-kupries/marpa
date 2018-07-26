@@ -191,7 +191,9 @@ marpatcl_rtc_pe_alternate (Tcl_Interp* ip, marpatcl_rtc_p p,
     marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
 
     // Ignore call when we have no destination to fill (discard events)
-    if (!svids) return;
+    if (!svids) {
+	TRACE_RETURN ("%d", 1);
+    }
 
     int symid = marpatcl_rtc_spec_symid (SPEC->l0, symbol);
 
@@ -254,7 +256,7 @@ marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p, int c, Tcl_Obj** v)
     marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
 
     // Ignore call when we have no destination to fill (discard events)
-    if (!svids) return;
+    if (!svids) TRACE_RETURN_VOID;
     
     marpatcl_rtc_stack_clear (svids);
     

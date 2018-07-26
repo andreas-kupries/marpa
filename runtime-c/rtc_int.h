@@ -1,7 +1,7 @@
 /* Runtime for C-engine (RTC). Declarations. (Engine: All together)
  *                             Internal
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_INT_H
@@ -14,6 +14,7 @@
 
 #include <spec.h>
 #include <inbound.h>
+#include <clindex.h>
 #include <gate.h>
 #include <lexer.h>
 #include <parser.h>
@@ -28,6 +29,7 @@
 typedef struct marpatcl_rtc {
     Marpa_Config            config;  /* Config info shared to lexer and parser */
     marpatcl_rtc_spec*      spec;    /* Static grammar definitions */
+    marpatcl_rtc_clindex    clindex; /* Fast mapping from character to byte locations */
     marpatcl_rtc_inbound    in;      /* Main dispatch */
     marpatcl_rtc_gate       gate;    /* Gating to lexer */
     marpatcl_rtc_lexer      lexer;   /* Lexing, gating to parser */
@@ -59,6 +61,7 @@ typedef struct marpatcl_rtc {
 
 #define SPEC (p->spec)
 #define IN   (p->in)
+#define CLI  (p->clindex)
 #define GATE (p->gate)
 #define LEX  (p->lexer)
 #define PAR  (p->parser)

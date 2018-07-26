@@ -12,8 +12,6 @@
 TRACE_OFF;
 TRACE_TAG_OFF (enter);
 
-static unsigned char step (marpatcl_rtc_p p, const unsigned char* bytes);
-
 #ifdef CRITCL_TRACER
 static void
 print_input (const unsigned char* bytes, int n)
@@ -43,13 +41,12 @@ marpatcl_rtc_inbound_init (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
 
+    IN.bytes     = 0;
     IN.location  = -1;
     IN.clocation = -1;
     IN.cstop     = -2;
     IN.trailer   = 0;
     IN.header    = 0;
-
-    marpatcl_rtc_clindex_init (&IN.index);
 
     TRACE_RETURN_VOID;
 }
@@ -58,9 +55,7 @@ void
 marpatcl_rtc_inbound_free (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
-
-    marpatcl_rtc_clindex_release (&IN.index);
-	
+    // nothing to do	
     TRACE_RETURN_VOID;
 }
 
@@ -77,7 +72,7 @@ marpatcl_rtc_inbound_moveto (marpatcl_rtc_p p, int cpos)
     TRACE_FUNC ("((rtc*) %p, pos = %d)", p, cpos);
 
     IN.clocation = cpos - 1;
-    IN.location  = marpatcl_rtc_clindex_find (&IN.index, IN.clocation);
+    IN.location  = marpatcl_rtc_clindex_find (p, IN.clocation);
 
     TRACE ("((rtc*) %p, now pos = %d ~ %d)", p, IN.clocation, IN.location);
     TRACE_RETURN_VOID;
@@ -89,7 +84,7 @@ marpatcl_rtc_inbound_moveby (marpatcl_rtc_p p, int cdelta)
     TRACE_FUNC ("((rtc*) %p, pos %d += %d)", p, IN.clocation, cdelta);
 
     IN.clocation += cdelta;
-    IN.location  = marpatcl_rtc_clindex_find (&IN.index, IN.clocation);
+    IN.location  = marpatcl_rtc_clindex_find (p, IN.clocation);
 
     TRACE ("((rtc*) %p, now pos = %d ~ %d)", p, IN.clocation, IN.location);
     TRACE_RETURN_VOID;
@@ -111,7 +106,7 @@ marpatcl_rtc_inbound_limit (marpatcl_rtc_p p, int limit)
     // ASSERT limit > 0 == critcl pos.int TODO
     TRACE_FUNC ("((rtc*) %p, limit = %d)", p, limit);
 
-    IN.cstop = IN.clocation + limit;
+    IN.cstop = IN.clocation + 1 + limit;
 
     TRACE_RETURN_VOID;
 }
@@ -138,6 +133,7 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
     n --;
     TRACE ("max %d", n);
 
+    IN.bytes = (char*) bytes;
 
     // Notes on locations and the processing loops.
     //
@@ -160,12 +156,12 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
 	    int prevbloc = IN.location;
 	    int prevcloc = IN.clocation;
 
-	    ch = step (p, bytes);
-	    TRACE ("byte %3d at %d c %d <%s>", ch, IN.location, IN.clocation, NAME(ch));
+	    ch = marpatcl_rtc_inbound_step (p);
+	    TRACE ("byte %3d @ char %d ~ byte %d = <%s>", ch, IN.clocation, IN.location, NAME(ch));
 
 	    if (IN.clocation == IN.cstop) {
 		// Stop triggered.
-		// Bounce, clear stop marker, post event, restart
+		// Bounce, clear stop marker, post event, restart from bounce
 		 IN.location  = prevbloc;
 		 IN.clocation = prevcloc;
 		 IN.cstop     = -2;
@@ -204,18 +200,16 @@ marpatcl_rtc_inbound_eof (marpatcl_rtc_p p)
     TRACE_RETURN_VOID;
 }
 
-/*
- * - - -- --- ----- -------- ------------- ---------------------
- */
-
-static unsigned char
-step (marpatcl_rtc_p p, const unsigned char* bytes)
+unsigned char
+marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
 {
+    TRACE_FUNC ("((rtc*) %p)", p);
+
     // Step to the next byte location
     IN.location ++;
 
     // Extract byte to process
-    unsigned char ch = bytes [IN.location];
+    unsigned char ch = IN.bytes [IN.location];
 
     // Possibly step to the next character location as well
 #define SINGLE(c) (((c) & 0x80) == 0x00) // 0b1000,0000 : 0b0000,0000
@@ -224,9 +218,10 @@ step (marpatcl_rtc_p p, const unsigned char* bytes)
 #define LEAD3(c)  (((c) & 0xF0) == 0xE0) // 0b1111,0000 : 0b1110,0000
 #define LEAD4(c)  (((c) & 0xF8) == 0xF0) // 0b1111,1000 : 0b1111,0000
 #define MOVE_HEADER for(; IN.header; IN.header --) { MOVE (1); }
-#define MOVE(k) \
-    IN.clocation ++;							\
-    marpatcl_rtc_clindex_update (&IN.index, IN.clocation, IN.location, k) \
+#define MOVE(k)						\
+    IN.clocation ++;					\
+    TRACE ("reached %d by %d", IN.clocation, k);	\
+    marpatcl_rtc_clindex_update (p, k)
     
     if (SINGLE (ch)) {
 	// A single stands for itself, no trailers expected, no lead
@@ -283,7 +278,7 @@ step (marpatcl_rtc_p p, const unsigned char* bytes)
 	ASSERT (0,"");
     }
 
-    return ch;
+    TRACE_RETURN ("=> %d", ch);
 }
 
 /*

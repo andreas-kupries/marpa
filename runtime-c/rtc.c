@@ -37,6 +37,7 @@ marpatcl_rtc_cons (marpatcl_rtc_spec*      g,
     marpatcl_rtc_fail_init    (p);
     marpatcl_rtc_store_init   (p);
     marpatcl_rtc_inbound_init (p);
+    marpatcl_rtc_clindex_init (p);
     marpatcl_rtc_gate_init    (p);
     marpatcl_rtc_lexer_init   (p);
 
@@ -60,6 +61,7 @@ marpatcl_rtc_destroy (marpatcl_rtc_p p)
     marpatcl_rtc_lexer_free   (p);
     marpatcl_rtc_gate_free    (p);
     marpatcl_rtc_inbound_free (p);
+    marpatcl_rtc_clindex_free (p);
     marpatcl_rtc_store_free   (p);
     marpatcl_rtc_fail_free    (p);
     FREE (p);

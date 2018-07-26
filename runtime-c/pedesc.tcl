@@ -21,7 +21,7 @@
 critcl::argtype posint {
     if (Tcl_GetIntFromObj(interp, @@, &@A) != TCL_OK) return TCL_ERROR;
     if (@A <= 0) {
-	Tcl_AppendResult (interp, "Expected integer > 0, have \"",
+	Tcl_AppendResult (interp, "expected integer > 0, but got \"",
 			  Tcl_GetString (@@), "\"", NULL);
 	return TCL_ERROR;
     }
@@ -30,7 +30,7 @@ critcl::argtype posint {
 critcl::argtype posint0 {
     if (Tcl_GetIntFromObj(interp, @@, &@A) != TCL_OK) return TCL_ERROR;
     if (@A < 0) {
-	Tcl_AppendResult (interp, "Expected integer >= 0, have \"",
+	Tcl_AppendResult (interp, "expected integer >= 0, but got \"",
 			  Tcl_GetString (@@), "\"", NULL);
 	return TCL_ERROR;
     }
@@ -39,7 +39,7 @@ critcl::argtype posint0 {
 critcl::argtype location {
     if (Tcl_GetIntFromObj(interp, @@, &@A) != TCL_OK) return TCL_ERROR;
     if (@A < 0) {
-	Tcl_AppendResult (interp, "Expected location (>= 0), have \"",
+	Tcl_AppendResult (interp, "expected location (>= 0), but got \"",
 			  Tcl_GetString (@@), "\"", NULL);
 	return TCL_ERROR;
     }
