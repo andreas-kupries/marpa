@@ -143,6 +143,12 @@ oo::class create marpa::inbound {
 	return
     }
 
+    method stop? {pos} {
+	debug.marpa/inbound {[debug caller] | }
+	if {$mystoplocation < 0} { return {} }
+	return $mystoplocation
+    }
+
     method stop-at {pos} {
 	debug.marpa/inbound {[debug caller] | }
 	set mystoplocation $pos
@@ -189,7 +195,7 @@ oo::class create marpa::inbound {
 	set mytext     [split $string {}]
 	set mylocation -1
 	# stop before input - cannot trigger == do not stop
-	set mystoplocation -2
+	set mystoplocation -1
 	return
     }
 
@@ -225,7 +231,7 @@ oo::class create marpa::inbound {
 		    # Stop triggered.
 		    # Bounce, clear stop marker, post event, restart
 		    incr mylocation -1
-		    set mystoplocation -2
+		    set mystoplocation -1
 		    Forward stop ;# notify gate
 		    continue
 		}

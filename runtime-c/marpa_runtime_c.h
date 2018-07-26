@@ -17,8 +17,10 @@
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
- * Enumeration of parse event types. See also pevents.tcl for the
- * mapping between this and Tcl strings.
+ * Enumeration of parse event types.
+ *
+ * ATTENTION -- See also pevents.tcl for the mapping between this and Tcl strings.
+ *           -- Has to match.
  */
 
 typedef enum {

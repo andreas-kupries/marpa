@@ -33,7 +33,7 @@ oo::class create marpa::lexer::ped {
 	marpa::import $g Gate
     }
 
-    foreach m {location? moveto rewind moveby stop-at limit} {
+    foreach m {location? moveto rewind moveby stop? stop-at limit} {
 	# Access to input location: accessor & modifiers
 	forward $m  my Access Gate $m
     } ; unset m

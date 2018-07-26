@@ -165,23 +165,46 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p 
 }
 
 int
+marpatcl_rtc_pe_access (Tcl_Interp* ip, marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, event = %d ~ %d",
+		ip, p, LEX.m_event, marpatcl_rtc_eventtype_LAST);
+    
+    if (LEX.m_event != marpatcl_rtc_eventtype_LAST) {
+	TRACE_RETURN ("%d", 1);
+    }
+
+    const char* msg = "Invalid access to match state, not inside event handler";
+
+    Tcl_SetErrorCode (ip, "MARPA", "MATCH", "PERMIT", NULL);
+    Tcl_AppendResult (ip, msg, NULL);
+
+    TRACE_RETURN ("%d", 0);
+}
+
+int
 marpatcl_rtc_pe_alternate (Tcl_Interp* ip, marpatcl_rtc_p p,
 			   const char* symbol, const char* semvalue)
 {
     TRACE_FUNC ("((Interp*) %p, (rtc*) %p, sym %s, sv %s", ip, p, symbol, semvalue);
 
+    marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
+
+    // Ignore call when we have no destination to fill (discard events)
+    if (!svids) return;
+
     int symid = marpatcl_rtc_spec_symid (SPEC->l0, symbol);
 
     if (symid < 0) {
-	// TODO set error message
-	TRACE_RETURN ("%d", TCL_ERROR);
+	Tcl_SetErrorCode (ip, "MARPA", NULL);
+	Tcl_AppendResult (ip, "Unknown lexeme \"", symbol, "\"", NULL);
+	TRACE_RETURN ("%d", 0);
     }
 
     marpatcl_rtc_sv_p sv   = marpatcl_rtc_sv_cons_string (STRDUP (semvalue), 1);
     int               svid = marpatcl_rtc_store_add (p, sv);
 
     marpatcl_rtc_symset* syms  = marpatcl_rtc_lexer_pe_get_symbols (p);
-    marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
 
     if (LEX.m_clearfirst) {
 	marpatcl_rtc_symset_clear (syms);
@@ -192,7 +215,7 @@ marpatcl_rtc_pe_alternate (Tcl_Interp* ip, marpatcl_rtc_p p,
     marpatcl_rtc_symset_add (syms,  symid);
     marpatcl_rtc_stack_push (svids, svid);
 
-    TRACE_RETURN ("%d", TCL_OK);
+    TRACE_RETURN ("%d", 1);
 }
 
 int
@@ -211,14 +234,15 @@ marpatcl_rtc_pe_set_symbols (Tcl_Interp* ip, marpatcl_rtc_p p, int c, Tcl_Obj** 
 	int   sid = marpatcl_rtc_spec_symid (SPEC->l0, s);
 
 	if (sid < 0) {
-	    // TODO set error message
-	    TRACE_RETURN ("%d", TCL_ERROR);
+	    Tcl_SetErrorCode (ip, "MARPA", NULL);
+	    Tcl_AppendResult (ip, "Unknown lexeme \"", s, "\"", NULL);
+	    TRACE_RETURN ("%d", 0);
 	}
 	
 	marpatcl_rtc_symset_add (syms, sid);
     }
 
-    TRACE_RETURN ("%d", TCL_OK);
+    TRACE_RETURN ("%d", 1);
 }
 
 void
@@ -228,6 +252,10 @@ marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p, int c, Tcl_Obj** v)
 	
     // Replace the set of sem values
     marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
+
+    // Ignore call when we have no destination to fill (discard events)
+    if (!svids) return;
+    
     marpatcl_rtc_stack_clear (svids);
     
     int k;

@@ -159,7 +159,7 @@ oo::class create marpa::gate {
 	return
     }
 
-    foreach m {location? moveto rewind moveby stop-at limit} {
+    foreach m {location? moveto rewind moveby stop? stop-at limit} {
 	# Access to input location, accessor & modifiers
 	forward $m  Input $m
     } ; unset m

@@ -1,5 +1,5 @@
 # -*- tcl -*-
-## (c) 2017-2018 Andreas Kupries
+## (c) 2018 Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 
 ## Execution core for testing the marpa runtime engines with various
@@ -45,7 +45,7 @@ proc cleanup {} { PARSE destroy }
 
 proc stash {k} {
     global rtdebug
-    if {![info exists rtdebug] || !$rtdebug} return
+    #if {![info exists rtdebug] || !$rtdebug} return
     set dst [top]/[label]_${k}-stash
     file delete -force $dst
     file mkdir $dst
@@ -91,10 +91,107 @@ unset max
 
 # # ## ### ##### ######## ############# #####################
 
+set commands {
+    0 {location? X}
+    1 location?
+    0 moveto
+    0 {moveto {}}
+    0 {moveto -1}
+    1 {moveto 0}
+    0 location?
+    0 moveby
+    0 {moveby {}}
+    1 {moveby 5}
+    0 location?
+    0 {moveby -5}
+    0 location?
+    0 rewind
+    0 {rewind {}}
+    0 {rewind -5}
+    0 location?
+    1 {rewind 5}
+    0 location?
+    0 {stop? X}
+    1 stop?
+    0 stop-at
+    0 {stop-at {}}
+    0 {stop-at -1}
+    1 {stop-at 10}
+    0 stop?
+    0 limit
+    0 {limit {}}
+    0 {limit -1}
+    1 {limit 10}
+    0 stop?
+    0 {symbols X}
+    1 symbols
+    0 {sv X}
+    1 sv
+    0 {start X}
+    1 start
+    0 {length X}
+    1 length
+    0 {value X}
+    1 value
+    0 {values X}
+    1 values
+    0 symbols:
+    1 {symbols: {}}
+    0 sv:
+    1 {sv: {}}
+    0 start:
+    0 {start: {}}
+    0 {start: -1}
+    1 {start: 0}
+    0 length:
+    0 {length: {}}
+    0 {length: -1}
+    1 {length: 10}
+    0 value:
+    1 {value: {}}
+    0 values:
+    1 {values: {}}
+    0 alternate
+    0 {alternate {}}
+    0 {alternate {} {} X}
+    1 {alternate A V}
+    0 {view X}
+    1 view
+}
+
+proc record {p type enames args} {
+    global commands
+    lappend ::recording ___________________________(([info level 0]))
+
+    # Go through all methods of the match api and record their
+    # responses. Validation, event-specific access control, etc.
+    foreach {___ cmd} $commands {
+	set state [catch {
+	    $p match {*}$cmd
+	} result]
+	lappend ::recording "___ (( $cmd ))" "_ => $state" "_ ~~ `$result`" ""
+    }
+
+    # Force clear symbol/sv where possible
+    catch { $p match symbols: {} }
+    catch { $p match sv:      {} }
+
+    # And move to the end of the input.
+    # This forces the engine to abort.
+    $p match moveto [string length $input]
+    return
+}
+
+# # ## ### ##### ######## ############# #####################
+
+set outside 1
 incr k
-test-grammar-map rt_example --> id rte base {
+test-grammar-map rt_example --> id rte base {    
+    if {![file exists $base/match]} continue
+    # Use only match examples.
+
     gen configure gr $rte
-    gen setup cl rte$k
+    gen setup cl rte${k}_[label]
 
     # Debugging - Keep the generated parser and related files for
     # post-mortem review.
@@ -103,13 +200,30 @@ test-grammar-map rt_example --> id rte base {
     set input  [fget [input  $base]]
     set kd     [format $format $k]
 
-    if {![file exists $base/match]} continue
-    # Use only match examples.
-
     # Get the expected match API behaviour
     set result [string trimright [fget $base/match]]
 
-    test marpa-[label]-runtime-events-match-2.${kd}---${id} "[label] :: events match $id" -body {
+    if {$outside} {
+	set outside 0
+
+	foreach {ok cmd} $commands {
+	    incr j
+	    if {!$ok} continue
+	    set jd [format "%02d" $j]
+	    test marpa-[label]-events-match-1.${jd}-$id "[label] :: events match outside $cmd" -body {
+		PARSE match {*}$cmd
+	    } -setup {
+		setup
+	    } -cleanup {
+		cleanup
+	    } -returnCodes error \
+		-result {Invalid access to match state, not inside event handler}
+	}
+
+	## TODO: create a test with stop event. See below for lexing/parsing events.
+    }
+    
+    test marpa-[label]-events-match-3.${kd}---${id} "[label] :: events match $id" -body {
 	catch {
 	    PARSE process $input
 	    join $recording \n
@@ -117,96 +231,10 @@ test-grammar-map rt_example --> id rte base {
 	set msg ;# set ::errorInfo
     } -setup {
 	set recording {}
-	proc record {p type enames args} {
-	    lappend ::recording ___________________________(([info level 0]))
-	    # Go through all methods of the match api and record their responses
-	    # Validation, event-specific access control, etc.
-	    foreach cmd {
-		location?
-		{location? X}
-		moveto
-		{moveto {}}
-		{moveto -1}
-		{moveto 0}
-		location?
-		moveby
-		{moveby {}}
-		{moveby 5}
-		location?
-		{moveby -5}
-		location?
-		rewind
-		{rewind {}}
-		{rewind -5}
-		location?
-		{rewind 5}
-		location?
-		stop?
-		{stop? X}
-		stop-at
-		{stop-at {}}
-		{stop-at -1}
-		{stop-at 10}
-		stop?
-		limit
-		{limit {}}
-		{limit -1}
-		{limit 10}
-		stop?
-		symbols
-		{symbols X}
-		sv
-		{sv X}
-		start
-		{start X}
-		length
-		{length X}
-		value
-		{value X}
-		values
-		{values X}
-		symbols:
-		{symbols: {}}
-		sv:
-		{sv: {}}
-		start:
-		{start: {}}
-		{start: -1}
-		{start: 0}
-		length:
-		{length: {}}
-		{length: -1}
-		{length: 10}
-		value:
-		{value: {}}
-		values:
-		{values: {}}
-		alternate
-		{alternate {}}
-		{alternate {} {} X}
-		{alternate A V}
-		view X
-		view
-	    } {
-		set state [catch {
-		    $p match {*}$cmd
-		} result]
-		lappend ::recording "___ (( $cmd ))" "_ => $state" "_ ~~ `$result`" ""
-	    }
-
-	    # Force clear symbol/sv where possible
-	    catch { $p match symbols: {} }
-	    catch { $p match sv:      {} }
-
-	    # And move to the end of the input. This forces the engine to abort.
-	    $p match moveto [string length $input]
-	    return
-	}
 	setup
 	PARSE on-event record
     } -cleanup {
 	cleanup
-	rename record {}
 	unset msg recording
     } -result $result
 
@@ -216,6 +244,7 @@ test-grammar-map rt_example --> id rte base {
 
 # # ## ### ##### ######## ############# #####################
 unset k base format result kd input rte
+rename record  {}
 rename setup   {}
 rename cleanup {}
 

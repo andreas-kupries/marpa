@@ -79,7 +79,7 @@ typedef struct marpatcl_rtc {
     LEX.m_event = type;							\
     LEX.m_clearfirst = 1;						\
     p->event (p->ecdata, type, EVENTS->n, EVENTS->dense);		\
-    LEX.m_event = -1
+    LEX.m_event = marpatcl_rtc_eventtype_LAST
 
 #endif
 

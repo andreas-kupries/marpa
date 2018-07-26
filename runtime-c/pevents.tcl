@@ -20,6 +20,7 @@ critcl::emap::def marpatcl_rtc_eventtype {
     "predicted"	marpatcl_rtc_event_predicted
     "completed"	marpatcl_rtc_event_completed
     "nulled"	marpatcl_rtc_event_nulled
+    "stop"	marpatcl_rtc_event_stop
 } -mode {+list c}
 
 # API pieces

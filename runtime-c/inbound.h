@@ -53,6 +53,7 @@ void marpatcl_rtc_inbound_moveto    (marpatcl_rtc_p p, int cpos);
 void marpatcl_rtc_inbound_moveby    (marpatcl_rtc_p p, int cdelta);
 void marpatcl_rtc_inbound_stopat    (marpatcl_rtc_p p, int cpos);
 void marpatcl_rtc_inbound_limit     (marpatcl_rtc_p p, int limit);
+int  marpatcl_rtc_inbound_stoploc   (marpatcl_rtc_p p);
 
 #endif
 

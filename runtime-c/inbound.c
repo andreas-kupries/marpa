@@ -116,6 +116,13 @@ marpatcl_rtc_inbound_limit (marpatcl_rtc_p p, int limit)
     TRACE_RETURN_VOID;
 }
 
+int
+marpatcl_rtc_inbound_stoploc (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE_RETURN ("%d", IN.cstop);
+}
+
 void
 marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
 {
