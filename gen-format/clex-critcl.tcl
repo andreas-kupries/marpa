@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2017-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                          http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -92,7 +92,7 @@ return
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
-# (c) 2017-2018 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                                          http://core.tcl.tk/akupries/
 ##
 # (c) @slif-year@ Grammar @slif-name@ @slif-version@ By @slif-writer@

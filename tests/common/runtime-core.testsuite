@@ -1,5 +1,5 @@
 # -*- tcl -*-
-## (c) 2017-2018 Andreas Kupries
+## (c) 2017-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 
 ## Execution core for testing the marpa runtime engines with various

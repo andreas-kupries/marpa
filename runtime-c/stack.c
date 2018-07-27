@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Stacks of ints)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */

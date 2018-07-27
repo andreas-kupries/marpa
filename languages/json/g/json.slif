@@ -1,6 +1,6 @@
 # # ## ### ##### ######## ############# #####################
 ## JSON specification -- SLIF grammar for use by TclMarpa.
-## (c) 2017-2018 Andreas Kupries
+## (c) 2017-present Andreas Kupries
 #
 # References:
 # - https://core.tcl.tk/akupries/marpa/		Tcl+Marpa

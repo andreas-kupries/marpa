@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Character location indexing)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2018 Andreas Kupries
+ * (c) 2018-present Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */

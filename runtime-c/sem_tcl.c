@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (SV for Tcl)
  * - - -- --- ----- -------- ------------- ----------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements
  */

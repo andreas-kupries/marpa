@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Engine: All together)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Notes:
  * - This engine is byte-based, not character-based. It is the responsibility

@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: Lexer gating)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, assertions and tracing via an external environment header.
  */

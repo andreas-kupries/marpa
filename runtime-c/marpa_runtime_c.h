@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Engine: API types)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Header for the public types, i.e the types exposed through the stub
  * functions.

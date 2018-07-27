@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Engine: Input processing)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_INBOUND_H

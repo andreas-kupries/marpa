@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ## Basic output utilities
 #
-# Copyright 2017-2018 Andreas Kupries
+# Copyright 2017-present Andreas Kupries
 #
 # - wr,  wr*,  write-comment,   write-sep,   write-items
 # - wrc, wrc*, write-c-comment, write-c-sep, write-c-items

@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: Input processing)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, tracing via an external environment header.
  */

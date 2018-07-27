@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Tcl Environment)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  */ 
 #ifndef MARPATCL_RTC_ENVTCL_H
 #define MARPATCL_RTC_ENVTCL_H

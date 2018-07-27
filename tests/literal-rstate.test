@@ -1,5 +1,5 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2017-2018 Andreas Kupries
+## (c) 2017-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## marpa::slif::literal
 ## State class for reductions (literals to process, work and result queues)

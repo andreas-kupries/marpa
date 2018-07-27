@@ -1,5 +1,5 @@
 # -*- tcl -*-
-## (c) 2017-2018 Andreas Kupries
+## (c) 2017-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## Execution core for testing all kinds of marpa-based parser engines.
 ## Configured by the caller with methods for

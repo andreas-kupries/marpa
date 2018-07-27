@@ -1,7 +1,7 @@
 /* Runtime for C-engine (RTC). Declarations. (Semantic values, and ASTs)
  *                             Internal.
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_SEM_INT_H

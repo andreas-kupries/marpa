@@ -1,7 +1,7 @@
 '\"
 '\" Generated from file 'marpatcl_slif\&.man' by tcllib/doctools with format 'nroff'
 '\" Copyright (c) 2015-2018 Andreas Kupries
-'\" Copyright (c) 2018 Documentation, Andreas Kupries
+'\" Copyright (c) 2018-present Documentation, Andreas Kupries
 '\"
 .TH "marpatcl_slif" n 0\&.2 doc "Marpa/Tcl, a binding to libmarpa"
 .\" The -*- nroff -*- definitions below are for supplemental macros used
@@ -316,6 +316,6 @@ aycock, character classes, document processing, earley, horspool, joop leo, lexi
 .SH COPYRIGHT
 .nf
 Copyright (c) 2015-2018 Andreas Kupries
-Copyright (c) 2018 Documentation, Andreas Kupries
+Copyright (c) 2018-present Documentation, Andreas Kupries
 
 .fi

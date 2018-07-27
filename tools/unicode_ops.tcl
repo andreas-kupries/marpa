@@ -3,7 +3,7 @@
 # - normalization,
 # - negation,
 #
-# Copyright 2017-2018 Andreas Kupries
+# Copyright 2017-present Andreas Kupries
 
 proc norm-class {charclass} {
     # debug.marpa/unicode {}

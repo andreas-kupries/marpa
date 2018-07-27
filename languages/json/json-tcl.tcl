@@ -4,7 +4,7 @@
 # (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                                     http://core.tcl.tk/akupries/
 ##
-# (c) 2018 Grammar json::parser::tcl By Andreas Kupries
+# (c) 2018-present Grammar json::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "json::parser::tcl".
 ##	Generated On Tue Mar 13 08:05:02 PDT 2018
