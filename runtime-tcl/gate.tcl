@@ -159,13 +159,14 @@ oo::class create marpa::gate {
 	return
     }
 
-    foreach m {location? moveto rewind moveby stop? stop-at limit} {
+    foreach m {location from rewind relative stop to limit dont-stop} {
+	# TODO: Check which are actually required.
 	# Access to input location, accessor & modifiers
 	forward $m  Input $m
     } ; unset m
 
-    method stop {} {
-	Forward stop ;# notify lexer
+    method signal-stop {} {
+	Forward signal-stop ;# notify lexer
     }
 
     # # -- --- ----- -------- -------------

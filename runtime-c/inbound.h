@@ -45,10 +45,13 @@ void marpatcl_rtc_inbound_free      (marpatcl_rtc_p p);
 int  marpatcl_rtc_inbound_location  (marpatcl_rtc_p p);
 void marpatcl_rtc_inbound_enter     (marpatcl_rtc_p p, const unsigned char* bytes, int n);
 void marpatcl_rtc_inbound_eof       (marpatcl_rtc_p p);
+
 void marpatcl_rtc_inbound_moveto    (marpatcl_rtc_p p, int cpos);
 void marpatcl_rtc_inbound_moveby    (marpatcl_rtc_p p, int cdelta);
-void marpatcl_rtc_inbound_stopat    (marpatcl_rtc_p p, int cpos);
-void marpatcl_rtc_inbound_limit     (marpatcl_rtc_p p, int limit);
+
+void marpatcl_rtc_inbound_set_stop  (marpatcl_rtc_p p, int cpos);
+void marpatcl_rtc_inbound_set_limit (marpatcl_rtc_p p, int limit);
+void marpatcl_rtc_inbound_no_stop   (marpatcl_rtc_p p);
 int  marpatcl_rtc_inbound_stoploc   (marpatcl_rtc_p p);
 
 unsigned char marpatcl_rtc_inbound_step (marpatcl_rtc_p p);

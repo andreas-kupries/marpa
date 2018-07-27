@@ -118,12 +118,12 @@ oo::class create marpa::inbound {
     # # -- --- ----- -------- -------------
     ## Public API
 
-    method location? {} {
+    method location {} {
 	debug.marpa/inbound {[debug caller] | ==> $mylocation}
 	return [expr {$mylocation + 1}]
     }
 
-    method moveto {pos args} {
+    method from {pos args} {
 	debug.marpa/inbound {[debug caller] | }
 	incr pos -1
 	set mylocation $pos
@@ -137,21 +137,27 @@ oo::class create marpa::inbound {
 	return
     }
 
-    method moveby {delta} {
+    method relative {delta} {
 	debug.marpa/inbound {[debug caller] | }
 	incr mylocation $delta
 	return
     }
 
-    method stop? {pos} {
+    method stop {} {
 	debug.marpa/inbound {[debug caller] | }
 	if {$mystoplocation < 0} { return {} }
 	return $mystoplocation
     }
 
-    method stop-at {pos} {
+    method to {pos} {
 	debug.marpa/inbound {[debug caller] | }
 	set mystoplocation $pos
+	return
+    }
+
+    method dont-stop {} {
+	debug.marpa/inbound {[debug caller] | }
+	set mystoplocation -1
 	return
     }
 
@@ -232,7 +238,7 @@ oo::class create marpa::inbound {
 		    # Bounce, clear stop marker, post event, restart
 		    incr mylocation -1
 		    set mystoplocation -1
-		    Forward stop ;# notify gate
+		    Forward signal-stop ;# notify gate
 		    continue
 		}
 

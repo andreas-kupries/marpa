@@ -35,33 +35,36 @@
 General control: Not allowed to be called outside of an event handler,
 i.e. when no event is active.
 
-|Method|Discard|Before|After|Stop|Predicted|Completed|Nulled|
+|Method|Stop|Discard|Before|After|Predicted|Completed|Nulled|
 |---|---|---|---|---|---|---|---|
-|location?	|*|*|*|*|*|*|*|
+|location	|*|*|*|*|*|*|*|
+|stop		|*|*|*|*|*|*|*|
 |---|---|---|---|---|---|---|---|
-|moveto		|*|*|*|*|-|-|-|
-|moveby		|*|*|*|*|-|-|-|
+|from		|*|*|*|*|-|-|-|
+|relative	|*|*|*|*|-|-|-|
 |(rewind)	|*|*|*|*|-|-|-|
-|stop-at	|*|*|*|*|-|-|-|
+|dont-stop	|*|*|*|*|-|-|-|
+|to		|*|*|*|*|-|-|-|
 |limit		|*|*|*|*|-|-|-|
 |---|---|---|---|---|---|---|---|
-|symbols	|*|*|*|1|?|?|?|
-|sv		|1|*|*|1|?|?|?|
-|start		|*|*|*|-|?|?|?|
-|length		|*|*|*|-|?|?|?|
-|value		|*|*|*|-|?|?|?|
-|values		|*|*|*|-|?|?|?|
+|symbols	|1|*|*|*|-|-|-|
+|sv		|1|1|*|*|-|-|-|
 |---|---|---|---|---|---|---|---|
-|symbols:	|-|*|*|-|-|-|-|
-|sv:		|-|*|*|-|-|-|-|
-|start:		|-|*|*|-|-|-|-|
-|length:	|-|*|*|-|-|-|-|
-|value:		|-|*|*|-|-|-|-|
-|values:	|-|*|*|-|-|-|-|
+|start		|-|*|*|*|-|-|-|
+|length		|-|*|*|*|-|-|-|
+|value		|-|*|*|*|-|-|-|
+|values		|-|*|*|*|-|-|-|
 |---|---|---|---|---|---|---|---|
-|alternate	|-|*|*|-|-|-|-|
+|symbols:	|-|-|*|*|-|-|-|
+|sv:		|-|-|*|*|-|-|-|
+|start:		|-|-|*|*|-|-|-|
+|length:	|-|-|*|*|-|-|-|
+|value:		|-|-|*|*|-|-|-|
+|values:	|-|-|*|*|-|-|-|
 |---|---|---|---|---|---|---|---|
-|view		|2|*|*|2|?|?|?|
+|alternate	|-|-|*|*|-|-|-|
+|---|---|---|---|---|---|---|---|
+|view		|2|*|*|2|-|-|-|
 
 (Ad 1) Allowed, empty result/string
 (Ad 2) Disallowed data suppressed

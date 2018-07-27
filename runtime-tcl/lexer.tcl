@@ -169,7 +169,7 @@ oo::class create marpa::lexer {
 	# Match information storage, and public facade.
 	# The latter is created and configured in `gate:`.
 	marpa::lexer::match create M
-	M event: 0
+	M event: {}
 	M g1start: {} ; # XXX pull information from parser.
 	M g1length: 1
 
@@ -180,7 +180,7 @@ oo::class create marpa::lexer {
 	return
     }
 
-    method stop {} {
+    method signal-stop {} {
 	my Post stop {}
     }
 
@@ -237,8 +237,11 @@ oo::class create marpa::lexer {
     method export {names} {
 	# names :: map (sym -> latm)
 	debug.marpa/lexer {[debug caller] | }
+
+	M lexemes $names
+
 	# Create base symbols.
-	# Create the internal acceptability controls symbols (short: ACS) for the base
+	# Create the internal acceptability controls symbols (short: ACS) for the bas
 	# Get the same symbols from parser as well, the third set.
 
 	set allnames [dict keys $names]
@@ -493,12 +496,12 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | }
 	# Note, M is passed implicitly, made accessible through the
 	# `match` method of the main object.
-	M event: 1
+	M event: $type
 	Forward post $type $events
-	M event: 0
+	M event: {}
 	return
     }
-    
+
     method redo {n} {
 	debug.marpa/lexer {[debug caller] | }
 	# Lexer method, called by parser.
@@ -552,8 +555,8 @@ oo::class create marpa::lexer {
 	    }
 	}
 
-	M length: [expr {$latest-1}]
 	M value:  [string range $mylexeme 0 end-$redo]
+	#M length: [expr {$latest-1}]
 
 	debug.marpa/lexer {[debug caller] | Lexeme start:  [M start]}
 	debug.marpa/lexer {[debug caller] | Lexeme length: [M length]}
@@ -710,13 +713,13 @@ oo::class create marpa::lexer {
 	    if {[llength $events]} {
 		set prehandler [my PEFill $found $sv]
 		# Move input location to just before start of lexeme
-		Gate moveto [M start] -1
+		Gate from [M start] -1
 		my Post before $events
 	    } else {
 		set events [my events? after $ef]
 		if {[llength $events]} {
 		    set prehandler [my PEFill $found $sv]
-		    my Post post after $events
+		    my Post after $events
 		}
 	    }
 

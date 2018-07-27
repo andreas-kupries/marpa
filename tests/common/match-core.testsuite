@@ -97,27 +97,28 @@ unset max
 
 # Basic access control. Syntax and arguments have to be valid to reach that check
 set access_commands {
-    location?
-    {moveto 0}
-    {moveby 5}
-    {rewind 5}
-    stop?
-    {stop-at 10}
-    {limit 10}
-    symbols
-    sv
-    start
-    length
-    value
-    values
-    {symbols: {}}
-    {sv: {}}
-    {start: 0}
+    {alternate A V}
+    {dont-stop}
+    {from 0}
     {length: 10}
+    {length}
+    {limit 10}
+    {location}
+    {relative 5}
+    {rewind 5}
+    {start: 0}
+    {start}
+    {stop}
+    {sv: {}}
+    {sv}
+    {symbols: {}}
+    {symbols}
+    {to 10}
     {value: {}}
     {values: {}}
-    {alternate A V}
-    view
+    {values}
+    {value}
+    {view}
 }
 
 # Bad syntax, bad argument types
@@ -126,6 +127,10 @@ set invalid_commands {
     {alternate {} {} X}	{wrong # args: should be "marpatcl_rtc_pedesc alternate symbol sv"}
     {alternate {}}	{wrong # args: should be "marpatcl_rtc_pedesc alternate symbol sv"}
     {alternate}		{wrong # args: should be "marpatcl_rtc_pedesc alternate symbol sv"}
+    {dont-stop X}	{wrong # args: should be "marpatcl_rtc_pedesc dont-stop"}
+    {from -1}		{expected location (>= 0), but got "-1"}
+    {from {}}		{expected integer but got ""}
+    {from}		{wrong # args: should be "marpatcl_rtc_pedesc moveto pos ?args...?"}
     {length X}		{wrong # args: should be "marpatcl_rtc_pedesc length"}
     {length: -1}	{expected integer >= 0, but got "-1"}
     {length: {}}	{expected integer but got ""}
@@ -133,26 +138,23 @@ set invalid_commands {
     {limit -1}		{expected integer > 0, but got "-1"}
     {limit {}}		{expected integer but got ""}
     {limit}		{wrong # args: should be "marpatcl_rtc_pedesc limit limit"}
-    {location? X}	{wrong # args: should be "marpatcl_rtc_pedesc location?"}
-    {moveby {}}		{expected integer but got ""}
-    {moveby}		{wrong # args: should be "marpatcl_rtc_pedesc moveby delta"}
-    {moveto -1}		{expected location (>= 0), but got "-1"}
-    {moveto {}}		{expected integer but got ""}
-    {moveto}		{wrong # args: should be "marpatcl_rtc_pedesc moveto pos ?args...?"}
+    {location X}	{wrong # args: should be "marpatcl_rtc_pedesc location?"}
+    {relative {}}	{expected integer but got ""}
+    {relative}		{wrong # args: should be "marpatcl_rtc_pedesc moveby delta"}
     {rewind {}}		{expected integer but got ""}
     {rewind}		{wrong # args: should be "marpatcl_rtc_pedesc rewind delta"}
     {start X}		{wrong # args: should be "marpatcl_rtc_pedesc start"}
     {start: -1}		{expected location (>= 0), but got "-1"}
     {start: {}}		{expected integer but got ""}
     {start:}		{wrong # args: should be "marpatcl_rtc_pedesc start: start"}
-    {stop-at -1}	{expected location (>= 0), but got "-1"}
-    {stop-at {}}	{expected integer but got ""}
-    {stop-at}		{wrong # args: should be "marpatcl_rtc_pedesc stop-at pos"}
-    {stop? X}		{wrong # args: should be "marpatcl_rtc_pedesc stop?"}
+    {stop X}		{wrong # args: should be "marpatcl_rtc_pedesc stop?"}
     {sv X}		{wrong # args: should be "marpatcl_rtc_pedesc sv"}
     {sv:}		{wrong # args: should be "marpatcl_rtc_pedesc sv: svs"}
     {symbols X}		{wrong # args: should be "marpatcl_rtc_pedesc symbols"}
     {symbols:}		{wrong # args: should be "marpatcl_rtc_pedesc symbols: syms"}
+    {to -1}		{expected location (>= 0), but got "-1"}
+    {to {}}		{expected integer but got ""}
+    {to}		{wrong # args: should be "marpatcl_rtc_pedesc stop-at pos"}
     {value X}		{wrong # args: should be "marpatcl_rtc_pedesc value"}
     {value:}		{wrong # args: should be "marpatcl_rtc_pedesc value: value"}
     {values X}		{wrong # args: should be "marpatcl_rtc_pedesc values"}
@@ -162,22 +164,24 @@ set invalid_commands {
 
 # Ok syntax, ok arguments, probe fine-grained access control, per event-type
 set commands {
-    location?
-    {moveto 0}
-    location?
-    {moveby 5}
-    location?
-    {moveby -5}
-    location?
+    location
+    {from 0}
+    location
+    {relative 5}
+    location
+    {relative -5}
+    location
     {rewind -5}
-    location?
+    location
     {rewind 5}
-    location?
-    stop?
-    {stop-at 10}
-    stop?
+    location
+    stop
+    {to 10}
+    stop
     {limit 10}
-    stop?
+    stop
+    dont-stop
+    stop
     symbols
     sv
     start
@@ -185,9 +189,13 @@ set commands {
     value
     values
     {symbols: {}}
+    {symbols}
     {sv: {}}
+    {sv}
     {start: 0}
+    {start}
     {length: 10}
+    {length}
     {value: {}}
     {values: {}}
     {alternate A V}
@@ -227,8 +235,9 @@ proc record {max p type enames args} {
 
 	# And move to the end of the input.
 	# This forces the engine to abort.
+	# This may cause a parse error.
 	++ EndMove
-	$p match moveto $max
+	$p match from $max
     } msg]
     ++ "~ $ok ($msg)"
     return
@@ -238,7 +247,7 @@ proc record {max p type enames args} {
 
 set outside 1
 incr k
-test-grammar-map rt_example --> id rte base {    
+test-grammar-map rt_example --> id rte base {
     if {![file exists $base/match]} continue
     # Use only match examples.
 
@@ -295,11 +304,11 @@ test-grammar-map rt_example --> id rte base {
     if {$events} {
 	# Get the expected match API behaviour
 	set result [string trimright [fget $base/match]]
-	
+
 	test marpa-[label]-match-event-1.${kd}---${id} "[label] ::  match event $id" -body {
 	    # The forced abort through the event handler can trigger a
 	    # parse error. Which we are not interested in.
-	    catch { PARSE process $input }
+	    catch { PARSE process $input } msg
 	    join $recording \n
 	} -setup {
 	    set recording {}

@@ -91,7 +91,17 @@ marpatcl_rtc_inbound_moveby (marpatcl_rtc_p p, int cdelta)
 }
 
 void
-marpatcl_rtc_inbound_stopat (marpatcl_rtc_p p, int cpos)
+marpatcl_rtc_inbound_no_stop (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p", p);
+
+    IN.cstop = -1;
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_inbound_set_stop (marpatcl_rtc_p p, int cpos)
 {
     TRACE_FUNC ("((rtc*) %p, pos = %d)", p, cpos);
 
@@ -101,7 +111,7 @@ marpatcl_rtc_inbound_stopat (marpatcl_rtc_p p, int cpos)
 }
 
 void
-marpatcl_rtc_inbound_limit (marpatcl_rtc_p p, int limit)
+marpatcl_rtc_inbound_set_limit (marpatcl_rtc_p p, int limit)
 {
     // ASSERT limit > 0 == critcl pos.int TODO
     TRACE_FUNC ("((rtc*) %p, limit = %d)", p, limit);

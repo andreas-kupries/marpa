@@ -1,51 +1,57 @@
 ___________________________((::record 23 ::PARSE discard whitespace))
-___ (( location? ))
+___ (( location ))
 _ => 0 | ((6))
 
-___ (( moveto 0 ))
+___ (( from 0 ))
 _ => 0 | (())
 
-___ (( location? ))
+___ (( location ))
 _ => 0 | ((0))
 
-___ (( moveby 5 ))
+___ (( relative 5 ))
 _ => 0 | (())
 
-___ (( location? ))
+___ (( location ))
 _ => 0 | ((5))
 
-___ (( moveby -5 ))
+___ (( relative -5 ))
 _ => 0 | (())
 
-___ (( location? ))
+___ (( location ))
 _ => 0 | ((0))
 
 ___ (( rewind -5 ))
 _ => 0 | (())
 
-___ (( location? ))
+___ (( location ))
 _ => 0 | ((5))
 
 ___ (( rewind 5 ))
 _ => 0 | (())
 
-___ (( location? ))
+___ (( location ))
 _ => 0 | ((0))
 
-___ (( stop? ))
+___ (( stop ))
 _ => 0 | (())
 
-___ (( stop-at 10 ))
+___ (( to 10 ))
 _ => 0 | (())
 
-___ (( stop? ))
+___ (( stop ))
 _ => 0 | ((10))
 
 ___ (( limit 10 ))
 _ => 0 | (())
 
-___ (( stop? ))
+___ (( stop ))
 _ => 0 | ((10))
+
+___ (( dont-stop ))
+_ => 0 | (())
+
+___ (( stop ))
+_ => 0 | (())
 
 ___ (( symbols ))
 _ => 0 | ((space))
@@ -68,28 +74,41 @@ _ => 0 | ((
 ))
 
 ___ (( symbols: {} ))
-_ => 0 | (())
+_ => 1 | ((Invalid access to match state, expected before, or after event))
+
+___ (( symbols ))
+_ => 0 | ((space))
 
 ___ (( sv: {} ))
-_ => 0 | (())
+_ => 1 | ((Invalid access to match state, expected before, or after event))
+
+___ (( sv ))
+_ => 1 | ((key "sv" not known in dictionary))
 
 ___ (( start: 0 ))
-_ => 0 | (())
+_ => 1 | ((Invalid access to match state, expected before, or after event))
+
+___ (( start ))
+_ => 0 | ((5))
 
 ___ (( length: 10 ))
-_ => 0 | (())
+_ => 1 | ((Invalid access to match state, expected before, or after event))
+
+___ (( length ))
+_ => 0 | ((1))
 
 ___ (( value: {} ))
-_ => 0 | (())
+_ => 1 | ((Invalid access to match state, expected before, or after event))
 
 ___ (( values: {} ))
-_ => 0 | (())
+_ => 1 | ((Invalid access to match state, expected before, or after event))
 
 ___ (( alternate A V ))
-_ => 0 | (())
+_ => 1 | ((Invalid access to match state, expected before, or after event))
 
 ___ (( view ))
-_ => 0 | (({length = ((0))} {start = ((0))} {symbols = (())} {value = (())} {@location = 0}))
+_ => 0 | (({length = ((1))} {start = ((5))} {symbols = ((space))} {value = ((
+))} {@location = 0}))
 
 Clear
 EndMove

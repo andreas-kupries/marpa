@@ -37,7 +37,10 @@ extern void     marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p,
 extern int      marpatcl_rtc_pe_alternate   (Tcl_Interp* ip, marpatcl_rtc_p p,
 					     const char* symbol, const char* semvalue);
 
-extern int      marpatcl_rtc_pe_access (Tcl_Interp* ip, marpatcl_rtc_p p);
+extern int      marpatcl_rtc_pe_access     (Tcl_Interp* ip, marpatcl_rtc_p p);
+extern int      marpatcl_rtc_pe_ba_event   (Tcl_Interp* ip, marpatcl_rtc_p p);
+extern int      marpatcl_rtc_pe_dba_event  (Tcl_Interp* ip, marpatcl_rtc_p p);
+extern int      marpatcl_rtc_pe_sdba_event (Tcl_Interp* ip, marpatcl_rtc_p p);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

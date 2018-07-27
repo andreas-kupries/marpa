@@ -33,53 +33,88 @@ oo::class create marpa::lexer::ped {
 	marpa::import $g Gate
     }
 
-    foreach m {location? moveto rewind moveby stop? stop-at limit} {
+    foreach {m code} {
+	location	*
+	stop		*
+	from		sdba
+	relative	sdba
+	rewind		sdba
+	to		sdba
+	limit		sdba
+	dont-stop	sdba
+    } {
 	# Access to input location: accessor & modifiers
-	forward $m  my Access Gate $m
+	forward $m  my Access $code Gate $m
     } ; unset m
 
     # API
-    foreach part {
-	symbols  sv
-	start    length
-	value    values
+    foreach {part rcode wcode key} {
+	symbols	sdba	ba m-symbols
+	sv	sdba	ba -
+	start	dba	ba -
+	length	dba	ba -
+	value	dba	ba -
+	values	dba	ba -
     } {
+	if {$key eq "-"} { set key $part }
 	# Access to match information: modifier/accessor
-	forward ${part}:  my Access Store ${part}:
-	forward ${part}   my Access Store ${part}
+	forward ${part}:  my Access $wcode Store ${key}:
+	forward ${part}   my Access $rcode Store ${key}
     } ; unset part
 
-    method Access {args} {
+    method Access {code args} {
 	my ValidatePermissions
+	my ValidateType $code
 	return [{*}$args]
-    }
-    
-    # Debug helper method, also testsuite
-    method view {} {
-	my ValidatePermissions
-	set     r [Store view {symbols sv start length value values}]
-	lappend r "@location = [Gate location?]"
     }
 
     # Incremental rebuild of the symbol/sv set
     # First call clears and appends, further only appends
     method alternate {symbol sv} {
 	my ValidatePermissions
+	my ValidateType ba
 	if {[Store fresh]} {
-	    Store symbols: {}
-	    Store sv:      {}
+	    Store m-symbols: {}
+	    Store sv:        {}
 	    Store fresh: 0
 	}
-	Store symbols: [linsert [Store symbols] end $symbol]
-	Store sv:      [linsert [Store sv]      end $sv]
+	Store m-symbols: [linsert [Store m-symbols] end $symbol]
+	Store sv:        [linsert [Store sv]        end $sv]
 	return
     }
 
+    # Debug helper method, also testsuite
+    method view {} {
+	my ValidatePermissions
+	my ValidateType sdba
+	set     r [Store view {symbols sv start length value values}]
+	lappend r "@location = [Gate location]"
+    }
 
     method ValidatePermissions {} {
-	if {[Store event]} return ; # Access permitted
+	if {[Store event] ne {}} return ; # Access permitted
 	return -code error -errorcode {MARPA MATCH PERMIT} \
 	    "Invalid access to match state, not inside event handler"
+    }
+
+    method ValidateType {code} {
+	# Fast handling when any event allowed
+	if {$code eq "*"} return
+	# Translate code to set of allowed events
+	lassign [dict get {
+	    ba   {BA_EVENT   {before after}}
+	    dba  {DBA_EVENT  {discard before after}}
+	    sdba {SDBA_EVENT {stop discard before after}}
+	} $code] ecode types
+	# And check ...
+	if {[Store event] in $types} return ; # Access permitted
+	if {[llength $types] == 1} {
+	    set x $types
+	} {
+	    set x [linsert [join $types {, }] end-1 or]
+	}
+	return -code error -errorcode [list MARPA MATCH $ecode] \
+	    "Invalid access to match state, expected $x event"
     }
 }
 
@@ -100,6 +135,8 @@ oo::class create marpa::lexer::match {
     # 'rule'	 (^tree) Rule id of the matched lexeme
     # 'value'	 Token value of the lexeme, i.e. the matched string.
 
+    variable mylexeme ;# map (name -> latm)
+
     # # -- --- ----- -------- -------------
     ## Lifecycle
 
@@ -107,7 +144,7 @@ oo::class create marpa::lexer::match {
 	debug.marpa/lexer/match {[debug caller] | }
 	set myparts {
 	    start    {}	    length   {}	fresh 1
-	    g1start  {}	    g1length {} event 0
+	    g1start  {}	    g1length {} event {}
 	    symbol   {}	    lhs      {}
 	    rule     {}	    value    {}
 	}
@@ -115,10 +152,17 @@ oo::class create marpa::lexer::match {
 	return
     }
 
+    method lexemes {map} {
+	debug.marpa/lexer/match {[debug caller] | }
+	set mylexeme $map
+	return
+    }
+
     # # -- --- ----- -------- -------------
     ## State inspection for narrative tracing
 
     method view {{keys {}}} {
+	debug.marpa/lexer/match {[debug caller] | }
 	if {![llength $keys]} {
 	    set keys [dict keys $myparts]
 	}
@@ -132,7 +176,7 @@ oo::class create marpa::lexer::match {
     ## Public API - Accessors and modifiers
 
     foreach {part key} {
-	symbols  -	sv       -	fresh -
+	sv       -	symbols	 -	fresh -
 	start    -	length   -	event -
 	g1start  -	g1length -
 	name     symbol	lhs      -
@@ -144,7 +188,32 @@ oo::class create marpa::lexer::match {
 	forward ${part}   my Get   $key
 	forward ${part}~  my Clear $key
     }
+
     unset part key
+
+    forward value:  my SetValue
+    forward values: my SetValue
+
+    forward m-symbols:  my SetSymbols
+    forward m-symbols   my Get    symbols
+    forward m-symbols~  my Clear  symbols
+
+    method SetValue {value} {
+	debug.marpa/lexer/match {[debug caller] | }
+	dict set myparts value  $value
+	dict set myparts length [string length $value]
+	return
+    }
+
+    method SetSymbols {value} {
+	debug.marpa/lexer/match {[debug caller] | }
+	foreach sym $value {
+	    if {[dict exists $mylexeme $sym]} continue
+	    return -code error "Unknown lexeme \"$sym\""
+	}
+	dict set myparts symbols $value
+	return
+    }
 
     method Set {key value} {
 	debug.marpa/lexer/match {[debug caller] | }

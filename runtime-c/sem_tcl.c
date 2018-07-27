@@ -183,6 +183,75 @@ marpatcl_rtc_pe_access (Tcl_Interp* ip, marpatcl_rtc_p p)
 }
 
 int
+marpatcl_rtc_pe_ba_event (Tcl_Interp* ip, marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, event = %d ~ %d|%d",
+		ip, p, LEX.m_event,
+		marpatcl_rtc_event_before,
+		marpatcl_rtc_event_after);
+    
+    if ((LEX.m_event == marpatcl_rtc_event_before) ||
+	(LEX.m_event == marpatcl_rtc_event_after)) {
+	TRACE_RETURN ("%d", 1);
+    }
+
+    const char* msg = "Invalid access to match state, expected before, or after event";
+
+    Tcl_SetErrorCode (ip, "MARPA", "MATCH", "BA_EVENT", NULL);
+    Tcl_AppendResult (ip, msg, NULL);
+
+    TRACE_RETURN ("%d", 0);
+}
+
+int
+marpatcl_rtc_pe_dba_event (Tcl_Interp* ip, marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, event = %d ~ %d|%d|%d",
+		ip, p, LEX.m_event,
+		marpatcl_rtc_event_discard,
+		marpatcl_rtc_event_before,
+		marpatcl_rtc_event_after);
+    
+    if ((LEX.m_event == marpatcl_rtc_event_before) ||
+	(LEX.m_event == marpatcl_rtc_event_after) ||
+	(LEX.m_event == marpatcl_rtc_event_discard)) {
+	TRACE_RETURN ("%d", 1);
+    }
+
+    const char* msg = "Invalid access to match state, expected discard, before, or after event";
+
+    Tcl_SetErrorCode (ip, "MARPA", "MATCH", "DBA_EVENT", NULL);
+    Tcl_AppendResult (ip, msg, NULL);
+
+    TRACE_RETURN ("%d", 0);
+}
+
+int
+marpatcl_rtc_pe_sdba_event (Tcl_Interp* ip, marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, event = %d ~ %d|%d|%d|%d",
+		ip, p, LEX.m_event,
+		marpatcl_rtc_event_stop,
+		marpatcl_rtc_event_discard,
+		marpatcl_rtc_event_before,
+		marpatcl_rtc_event_after);
+    
+    if ((LEX.m_event == marpatcl_rtc_event_before) ||
+	(LEX.m_event == marpatcl_rtc_event_after) ||
+	(LEX.m_event == marpatcl_rtc_event_discard) ||
+	(LEX.m_event == marpatcl_rtc_event_stop)) {
+	TRACE_RETURN ("%d", 1);
+    }
+
+    const char* msg = "Invalid access to match state, expected stop, discard, before, or after event";
+
+    Tcl_SetErrorCode (ip, "MARPA", "MATCH", "DBA_EVENT", NULL);
+    Tcl_AppendResult (ip, msg, NULL);
+
+    TRACE_RETURN ("%d", 0);
+}
+
+int
 marpatcl_rtc_pe_alternate (Tcl_Interp* ip, marpatcl_rtc_p p,
 			   const char* symbol, const char* semvalue)
 {
