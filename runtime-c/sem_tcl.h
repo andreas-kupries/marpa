@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (SV for Tcl)
  * - - -- --- ----- -------- ------------- -------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_SEM_TCL_H

@@ -324,10 +324,19 @@ marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p, int c, Tcl_Obj** v)
     // Replace the set of sem values
     marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
 
+    TRACE ("(stack_p) %p", svids);
+
     // Ignore call when we have no destination to fill (discard events)
-    if (!svids) TRACE_RETURN_VOID;
-    
+    if (!svids) {
+	TRACE ("%s", "no stack, skip");
+	TRACE_RETURN_VOID;
+    }
+
+    TRACE ("(stack_p) %p = %d", marpatcl_rtc_stack_size (svids));
+
     marpatcl_rtc_stack_clear (svids);
+
+    TRACE ("(stack_p) %p = %d", marpatcl_rtc_stack_size (svids));
     
     int k;
     for (k=0; k < c; k++) {
@@ -340,6 +349,7 @@ marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p, int c, Tcl_Obj** v)
 	marpatcl_rtc_stack_push (svids, sid);
     }
 
+    TRACE ("(stack_p) %p = %d", marpatcl_rtc_stack_size (svids));
     TRACE_RETURN_VOID;
 }
 
@@ -360,11 +370,17 @@ marpatcl_rtc_pe_get_semvalues (Tcl_Interp* ip, marpatcl_rtc_p p)
     int k, len, *ids = marpatcl_rtc_stack_data (svids, &len);
     Tcl_Obj* svlist = Tcl_NewListObj (0, 0);
 
+    TRACE ("(stack_p) %p = %d", svids, len);
+
     for (k=0; k < len; k++) {
 	ASSERT (ids[k] > 0, "Bad store id, zero or less not allowed");
 
 	marpatcl_rtc_sv_p sv = marpatcl_rtc_store_get (p, ids[k]);
 	Tcl_Obj* svo = marpatcl_rtc_sv_astcl (ip, sv);
+
+	TRACE ("(stack_p) %p [%d] := %d ~ (%p) ~ ((%s))",
+	       svids, k, ids[k], sv, Tcl_GetString (svo));
+
 	if (TCL_OK != Tcl_ListObjAppendElement (ip, svlist, svo)) goto error;
     }
 
