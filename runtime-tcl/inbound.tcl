@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -170,19 +170,19 @@ oo::class create marpa::inbound {
 	return
     }
 
-    method enter {string} {
+    method enter {string {from -1} {to -1}} {
 	debug.marpa/inbound {[debug caller] | }
 	my Def $string
-	my Process
+	my Process $from $to
 	# XXX eof here
 	return
     }
 
-    method read {chan} {
+    method read {chan {from -1} {to -1}} {
 	debug.marpa/inbound {[debug caller] | }
 	# Read entire channel into memory for processing
 	my Def [read $chan]
-	my Process
+	my Process $from $to
 	# XXX eof here
 	return
     }
@@ -205,8 +205,11 @@ oo::class create marpa::inbound {
 	return
     }
 
-    method Process {} {
+    method Process {from to} {
 	debug.marpa/inbound {[debug caller] | }
+
+	set mylocation     $from
+	set mystoplocation $to
 
 	set  max [llength $mytext]
 	incr max -1

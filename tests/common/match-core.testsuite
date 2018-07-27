@@ -1,9 +1,9 @@
 # -*- tcl -*-
-## (c) 2018-present-present Andreas Kupries
+## (c) 2018-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 
-set syntax 0
-set access 0
+set syntax 1
+set access 1
 set events 1
 
 ## Execution core for testing the marpa runtime engines with various
@@ -326,7 +326,7 @@ test-grammar-map rt_example --> id rte base {
 	    test marpa-[label]-events-match-2.${kd}---${id} "[label] :: events match $id, stop" -body {
 		catch {
 		    # Force a stop event
-		    PARSE process $input -stop 5
+		    PARSE process $input to 5 ;# from 0 (default)
 		}
 		join $recording \n
 	    } -setup {

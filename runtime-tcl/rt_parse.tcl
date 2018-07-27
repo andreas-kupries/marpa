@@ -111,23 +111,59 @@ oo::class create marpa::engine::tcl::parse {
 	return
     }
 
-    method process-file {path} {
+    method process-file {path args} {
 	debug.marpa/engine/tcl/parse {}
+	set options [my Options $args]
 	set myresult {}
 	set chan [open $path r]
 	# Drive the pipeline from the channel.
-	IN read $chan
+	IN read $chan {*}$options
 	IN eof
 	return $myresult
     }
 
-    method process {string} {
+    method process {string args} {
 	debug.marpa/engine/tcl/parse {}
 	set myresult {}
 	# Drive the pipeline from the string
-	IN enter $string
+	IN enter $string {*}[my Options $args]
 	IN eof
 	return $myresult
+    }
+
+    # # ## ### ##### ######## #############
+
+    method Options {words} {
+	debug.marpa/engine/tcl/parse {}
+	if {[llength $words] % 2 == 1} {
+	    my E "Last option has no value" {WRONG ARGS}
+	}
+	set from   0 ;# int >= 0 (location)
+	set to    -1 ;# int >= 0 (location)
+	set limit -1 ;# int >  0
+	foreach {key value} $words {
+	    switch -exact -- $key {
+		from {
+		    set from $value
+		}
+		to {
+		    set to $value ; set limit -1
+		}
+		limit {
+		    set to -1 ; set limit $value
+		}
+		default {
+		    my E "Unknown option \"$key\", expected one of from, limit, or to" {BAD OPTION}
+		}
+	    }
+	}
+
+	if {$limit >= 0} {
+	    set to [expr {$from + $limit}]
+	}
+
+	incr from -1
+	return [list $from $to]
     }
 
     # # ## ### ##### ######## #############
