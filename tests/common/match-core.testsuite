@@ -1,5 +1,5 @@
 # -*- tcl -*-
-## (c) 2018 Andreas Kupries
+## (c) 2018-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 
 set syntax 0
@@ -132,10 +132,10 @@ set invalid_commands {
     {from {}}		{expected integer but got ""}
     {from}		{wrong # args: should be "marpatcl_rtc_pedesc moveto pos ?args...?"}
     {length X}		{wrong # args: should be "marpatcl_rtc_pedesc length"}
-    {length: -1}	{expected integer >= 0, but got "-1"}
+    {length: -1}	{expected int >= 0, but got "-1"}
     {length: {}}	{expected integer but got ""}
     {length:}		{wrong # args: should be "marpatcl_rtc_pedesc length: length"}
-    {limit -1}		{expected integer > 0, but got "-1"}
+    {limit -1}		{expected int > 0, but got "-1"}
     {limit {}}		{expected integer but got ""}
     {limit}		{wrong # args: should be "marpatcl_rtc_pedesc limit limit"}
     {location X}	{wrong # args: should be "marpatcl_rtc_pedesc location?"}

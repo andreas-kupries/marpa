@@ -18,24 +18,10 @@
 ## are given a pointer to the main RTC structure, and the containing
 ## object has a method delegating to the instance.
 
-critcl::argtype posint {
-    if (Tcl_GetIntFromObj(interp, @@, &@A) != TCL_OK) return TCL_ERROR;
-    if (@A <= 0) {
-	Tcl_AppendResult (interp, "expected integer > 0, but got \"",
-			  Tcl_GetString (@@), "\"", NULL);
-	return TCL_ERROR;
-    }
-} int int
+critcl::argtype posint = {int > 0}
+critcl::argtype posint0 = {int >= 0}
 
-critcl::argtype posint0 {
-    if (Tcl_GetIntFromObj(interp, @@, &@A) != TCL_OK) return TCL_ERROR;
-    if (@A < 0) {
-	Tcl_AppendResult (interp, "expected integer >= 0, but got \"",
-			  Tcl_GetString (@@), "\"", NULL);
-	return TCL_ERROR;
-    }
-} int int
-
+# Technically an {int >= 0}. However needed a changed error message.
 critcl::argtype location {
     if (Tcl_GetIntFromObj(interp, @@, &@A) != TCL_OK) return TCL_ERROR;
     if (@A < 0) {
