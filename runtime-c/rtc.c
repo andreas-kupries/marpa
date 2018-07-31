@@ -27,7 +27,7 @@ marpatcl_rtc_cons (marpatcl_rtc_spec*      g,
 {
     marpatcl_rtc_p p;
     TRACE_FUNC ("((spec*) %p, (cmd) %p)", g, a);
-    
+
     p = ALLOC (marpatcl_rtc);
     SPEC = g;
     ACT  = a;
@@ -126,11 +126,11 @@ marpatcl_rtc_gather_events (marpatcl_rtc_p         p,       // TRACE-only data
 
     marpatcl_rtc_sym k;
     marpatcl_rtc_symset_clear (result);
-				     
+
     for (k=0; k < decls->size; k++) {
 	TRACE_HEADER (1);
 	TRACE_ADD ("[%d] = (%s %s (%d %s))",
-		   k, 
+		   k,
 		   decls->data[k].active ? "on " : "off",
 		   marpatcl_rtc_eventtype_decode_cstr (decls->data[k].type),
 		   decls->data[k].sym, marpatcl_rtc_spec_symname (SPEC->l0, decls->data[k].sym, 0));

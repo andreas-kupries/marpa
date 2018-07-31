@@ -49,7 +49,7 @@ void
 marpatcl_rtc_clindex_free (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
-    
+
     marpatcl_rtc_stack_destroy (CL);
     marpatcl_rtc_stack_destroy (BL);
     marpatcl_rtc_bytestack_destroy (BS);
@@ -99,7 +99,7 @@ marpatcl_rtc_clindex_find (marpatcl_rtc_p p, int cloc)
 {
     TRACE_FUNC ("((rtc*) %p, -> %d, max %d ~b %d @ char %d ~b %d)",
 		p, cloc, MC, MB, IN.clocation, IN.location);
-    
+
     if (cloc == MC) {
 	// The target location is at the maximal visited.
 	// Use the cached maximal data.
@@ -176,7 +176,7 @@ marpatcl_rtc_clindex_find (marpatcl_rtc_p p, int cloc)
 	int mid   = (low+high)/2;
 	int probe = cl [mid];
 	TRACE ("probe [%d..%d] @%d = %d ~ %d", low, high, mid, probe, cloc);
-		
+
 	if (probe == cloc) {
 	    // Found target location exactly. That makes the calculation trivial.
 	    // We return the stored byte location.

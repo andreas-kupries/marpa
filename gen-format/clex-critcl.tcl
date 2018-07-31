@@ -271,7 +271,7 @@ critcl::class def @slif-name@ {
 	Tcl_DecrRefCount (instance->name);
     }
 
-    
+
     method on-event proc {object args} void {
 	marpatcl_rtc_eh_setup (&instance->ehstate, args.c, args.v);
     }

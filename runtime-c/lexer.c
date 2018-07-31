@@ -318,7 +318,7 @@ marpatcl_rtc_lexer_eof (marpatcl_rtc_p p)
 	// This is signaled by a `true` return. If that is so we must not
 	// report to the parser yet. We will come to this method again, after
 	// the characters were re-processed.
-	
+
 	// MAYBE FAIL - TODO Handling ?
     }
 

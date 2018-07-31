@@ -32,7 +32,7 @@ typedef struct SBR {
     unsigned char n;      /* Length of the sequence */
     BR  br[MAX_BYTES];    /* Ranges of the sequence */
 } SBR;
-	
+
 typedef struct ASBR {
     int n;      /* Number of alternates in the class */
     SBR sbr[1]; /* Alternates allocated as part of structure */

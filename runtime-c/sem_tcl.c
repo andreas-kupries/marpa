@@ -428,7 +428,7 @@ marpatcl_rtc_pe_match (marpatcl_rtc_pedesc_p p, Tcl_Interp* ip, Tcl_Obj* name,
 		       int c, Tcl_Obj*CONST* v)
 {
     TRACE_FUNC ("((Interp*) %p, (pedesc*) %p, %d, (Tcl_Obj**) %p)", ip, p, c, v);
-    
+
     int res = marpatcl_rtc_pedesc_invoke (p, ip, c, v);
 
     if (res != TCL_ERROR) {

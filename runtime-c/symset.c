@@ -66,7 +66,7 @@ marpatcl_rtc_symset_clear (marpatcl_rtc_symset* s)
     TRACE_RETURN_VOID;
 }
 
-int 
+int
 marpatcl_rtc_symset_contains (marpatcl_rtc_symset* s, Marpa_Symbol_ID c)
 {
     TRACE_FUNC ("((symset*) %p, sym %d)", s, c);
@@ -76,7 +76,7 @@ marpatcl_rtc_symset_contains (marpatcl_rtc_symset* s, Marpa_Symbol_ID c)
     TRACE_RETURN ("%d", (XL [c] < SZ) && (DE [XL [c]] == c));
 }
 
-int 
+int
 marpatcl_rtc_symset_size (marpatcl_rtc_symset* s)
 {
     TRACE_FUNC ("((symset*) %p)", s);

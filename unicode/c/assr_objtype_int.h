@@ -17,7 +17,7 @@
 /*
  * The structure we use for the int rep
  */
-    
+
 typedef struct OTASSR {
     int    refCount; /* Counter indicating sharing status of the structure */
     ASSR_p assr;     /* Actual intrep, heap allocated */

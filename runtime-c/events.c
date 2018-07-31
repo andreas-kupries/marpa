@@ -30,7 +30,7 @@ marpatcl_rtc_lexer_events (marpatcl_rtc_p p)
     Marpa_Event      event;
 
     TRACE_FUNC ("((rtc*) %p)", p);
-    
+
     int v, i, n = marpa_g_event_count (LEX.g);
 
     for (i = 0; i < n; i++) {
@@ -54,7 +54,7 @@ marpatcl_rtc_parser_events (marpatcl_rtc_p p)
     Marpa_Event      event;
 
     TRACE_FUNC ("((rtc*) %p)", p);
-    
+
     int v, i, n = marpa_g_event_count (PAR.g);
 
     for (i = 0; i < n; i++) {

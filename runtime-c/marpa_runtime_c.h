@@ -4,7 +4,7 @@
  *
  * Header for the public types, i.e the types exposed through the stub
  * functions.
- * 
+ *
  */
 
 #ifndef MARPATCL_RTC_TYPES_H

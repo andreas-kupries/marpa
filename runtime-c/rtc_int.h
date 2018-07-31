@@ -49,7 +49,7 @@ typedef struct marpatcl_rtc {
      * (TRACE_TAG_ON, see progress.h), and during error reporting (which will
      * dynamically generate the information if it is not present).
      */
-    
+
     marpatcl_rtc_stack_p  l0_rule; /* lexer  */
     marpatcl_rtc_stack_p  g1_rule; /* parser */
 } marpatcl_rtc;

@@ -63,7 +63,7 @@ marpatcl_rtc_parser_free (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
     TRACE ("del (recce) %p, (grammar) %p", PAR.recce, PAR.g);
-	
+
     marpa_g_unref (PAR.g);
     PAR.g = 0;
     if (PAR.recce) marpa_r_unref (PAR.recce);

@@ -55,7 +55,7 @@ void
 marpatcl_rtc_inbound_free (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
-    // nothing to do	
+    // nothing to do
     TRACE_RETURN_VOID;
 }
 
@@ -148,7 +148,7 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n,
     // Initial processing range.
     marpatcl_rtc_inbound_moveto   (p, from);
     marpatcl_rtc_inbound_set_stop (p, to);
-    
+
     // Notes on locations and the processing loops.
     //
     // [1] At the beginning of the loop `mylocation` points to the __last__
@@ -164,7 +164,7 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n,
     //     inner main processing loop hits EOF the eof handling can bounce the
     //     engine away from EOF and processing is restarted for the last
     //     characters.
-    
+
     while (IN.location < n) {
 	while (IN.location < n) {
 	    int prevbloc = IN.location;
@@ -236,7 +236,7 @@ marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
     IN.clocation ++;					\
     TRACE ("reached %d by %d", IN.clocation, k);	\
     marpatcl_rtc_clindex_update (p, k)
-    
+
     if (SINGLE (ch)) {
 	// A single stands for itself, no trailers expected, no lead
 	IN.trailer = 0;
