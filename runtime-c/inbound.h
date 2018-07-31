@@ -43,7 +43,8 @@ typedef struct marpatcl_rtc_inbound {
 void marpatcl_rtc_inbound_init      (marpatcl_rtc_p p);
 void marpatcl_rtc_inbound_free      (marpatcl_rtc_p p);
 int  marpatcl_rtc_inbound_location  (marpatcl_rtc_p p);
-void marpatcl_rtc_inbound_enter     (marpatcl_rtc_p p, const unsigned char* bytes, int n);
+void marpatcl_rtc_inbound_enter     (marpatcl_rtc_p p, const unsigned char* bytes,
+				     int n, int from ,int to);
 void marpatcl_rtc_inbound_eof       (marpatcl_rtc_p p);
 
 void marpatcl_rtc_inbound_moveto    (marpatcl_rtc_p p, int cpos);

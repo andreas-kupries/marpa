@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -116,7 +116,7 @@ oo::class create marpa::parser {
 
     destructor {
 	# The parser is done.
-	catch { RECCE destroy }
+	catch { PRECCE destroy } ; set ::errorInfo {}
 	return
     }
 
@@ -151,12 +151,12 @@ oo::class create marpa::parser {
 	# push the first feedback about acceptable symbols up.
 	Lexer discard $whitespace
 
-	GRAMMAR recognizer create RECCE [mymethod Events]
-	debug.marpa/parser {RECCE = [namespace which -command RECCE]}
+	GRAMMAR recognizer create PRECCE [mymethod Events]
+	debug.marpa/parser {PRECCE = [namespace which -command PRECCE]}
 
-	RECCE start-input
+	PRECCE start-input
 
-	Lexer acceptable [RECCE expected-terminals]
+	Lexer acceptable [PRECCE expected-terminals]
 	return
     }
 
@@ -184,17 +184,17 @@ oo::class create marpa::parser {
 	# Drive the low-level recognizer
 	debug.marpa/parser {forward recce}
 	foreach sym $syms v $sv {
-	    RECCE alternative $sym $v 1
+	    PRECCE alternative $sym $v 1
 	}
 	try {
-	    RECCE earleme-complete
+	    PRECCE earleme-complete
 	} trap {MARPA PARSE_EXHAUSTED} {e o} {
 	    # Do nothing. Exhaustion is checked below.
 	} on error {e o} {
 	    return {*}$o $e
 	}
 
-	if {[RECCE exhausted?]} {
+	if {[PRECCE exhausted?]} {
 	    debug.marpa/parser {exhausted}
 	    my Complete
 	    return
@@ -205,7 +205,7 @@ oo::class create marpa::parser {
 	# p_lexer.tcl 'acceptable').
 
 	debug.marpa/parser {Feedback, lexemes}
-	Lexer acceptable [RECCE expected-terminals]
+	Lexer acceptable [PRECCE expected-terminals]
 
 	debug.marpa/parser {}
 	return
@@ -220,12 +220,12 @@ oo::class create marpa::parser {
 	my Complete
 
 	# Note, as the backend does not call us with 'acceptable' we
-	# have no left-over RECCE to destroy, contrary to the lexer's
+	# have no left-over PRECCE to destroy, contrary to the lexer's
 	# situation.
 
 	Forward eof
 
-	catch { RECCE destroy }
+	catch { PRECCE destroy } ; set ::errorInfo {}
 	return
     }
 
@@ -241,7 +241,7 @@ oo::class create marpa::parser {
 	oo::objdefine [self] mixin marpa::engine::debug
 	dict set context g1 report [my progress-report-current]
 
-	RECCE destroy
+	catch { PRECCE destroy } ; set ::errorInfo {}
 
 	Forward fail context
 
@@ -383,11 +383,11 @@ oo::class create marpa::parser {
     method Complete {} {
 	debug.marpa/parser {}
 
-	# No RECCE implies that either the parser never got fully off
+	# No PRECCE implies that either the parser never got fully off
 	# the ground yet, or that it already did all the completion
 	# work. In either case, nothing has to be done.
 
-	if {![llength [info commands RECCE]]} return
+	if {![llength [info commands PRECCE]]} return
 
 	# For a parse we (must?) assume (for now?) that it must end at
 	# the latest earleme. If not we generate suitable parse error
@@ -395,11 +395,11 @@ oo::class create marpa::parser {
 
 	debug.marpa/parser/report {[my progress-report-current]}
 
-	set latest [RECCE latest-earley-set]
+	set latest [PRECCE latest-earley-set]
 	while {[catch {
 	    debug.marpa/parser        {Check @$latest}
 	    debug.marpa/parser/forest {[debug caller] | Check @$latest}
-	    RECCE forest create FOREST $latest
+	    PRECCE forest create FOREST $latest
 	}]} {
 	    incr latest -1
 	    if {$latest < 0} {
@@ -439,7 +439,7 @@ oo::class create marpa::parser {
 	# by L0 discards. As these do not make it to the parser's
 	# enter.
 	debug.marpa/parser {Feedback, lexemes, discard only}
-	Lexer acceptable [RECCE expected-terminals]
+	Lexer acceptable [PRECCE expected-terminals]
 
 	# The parser is done. Destruction happens in "eof" or "fail".
 	set mydone 1
@@ -450,8 +450,8 @@ oo::class create marpa::parser {
     ## Helper for determination of dynamic destination state (enter).
 
     method exhausted {} {
-	# 'enter' destroys RECCE when it is exhausted.
-	return $mydone; #string equal [info commands RECCE] {}
+	# 'enter' destroys PRECCE when it is exhausted.
+	return $mydone; #string equal [info commands PRECCE] {}
     }
 
     # # ## ### ##### ######## #############

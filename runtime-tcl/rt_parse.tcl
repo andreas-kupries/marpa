@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -45,7 +45,7 @@ oo::class create marpa::engine::tcl::parse {
 	marpa::semstore create STORE
 	marpa::semcore  create SEMA  STORE
 	marpa::parser   create PARSE STORE SEMA [self]
-	marpa::lexer    create LEX   STORE PARSE
+	marpa::lexer    create LEX   [self] STORE PARSE
 	marpa::gate     create GATE  LEX
 	marpa::inbound  create IN    GATE
 
@@ -158,7 +158,7 @@ oo::class create marpa::engine::tcl::parse {
 	    }
 	}
 
-	if {$limit >= 0} {
+	if {$limit > 0} {
 	    set to [expr {$from + $limit}]
 	}
 

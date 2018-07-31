@@ -44,7 +44,7 @@ marpatcl_rtc_inbound_init (marpatcl_rtc_p p)
     IN.bytes     = 0;
     IN.location  = -1;
     IN.clocation = -1;
-    IN.cstop     = -2;
+    IN.cstop     = -1;
     IN.trailer   = 0;
     IN.header    = 0;
 
@@ -129,12 +129,12 @@ marpatcl_rtc_inbound_stoploc (marpatcl_rtc_p p)
 }
 
 void
-marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
+marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n, int from, int to)
 {
 #define NAME(sym) marpatcl_rtc_spec_symname (SPEC->l0, sym, 0)
 
     unsigned char ch;
-    TRACE_FUNC ("(rtc %p bytes %p, n %d)", p, bytes, n);
+    TRACE_FUNC ("(rtc %p bytes %p, n %d, [%d...%d])", p, bytes, n, from, to);
     TRACE_TAG_DO (enter, print_input (bytes, n));
 
     if (n < 0) {
@@ -145,6 +145,10 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
 
     IN.bytes = (char*) bytes;
 
+    // Initial processing range.
+    marpatcl_rtc_inbound_moveto   (p, from);
+    marpatcl_rtc_inbound_set_stop (p, to);
+    
     // Notes on locations and the processing loops.
     //
     // [1] At the beginning of the loop `mylocation` points to the __last__

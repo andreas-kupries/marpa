@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
 # (c) 2018-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -33,40 +33,47 @@ oo::class create marpa::lexer::ped {
 	marpa::import $g Gate
     }
 
-    foreach {m code} {
-	location	*
-	stop		*
-	from		sdba
-	relative	sdba
-	rewind		sdba
-	to		sdba
-	limit		sdba
-	dont-stop	sdba
-    } {
-	# Access to input location: accessor & modifiers
-	forward $m  my Access $code Gate $m
-    } ; unset m
+    # Full implementation of all the methods in question.
+    # We want rtC and rt-Tcl to match in behaviour, as much as possible.
+    # For the facade this means, check argument types (int, range, etc.) first,
+    # before checking access permission.
+    #
+    # Still written strongly to look like a table
 
-    # API
-    foreach {part rcode wcode key} {
-	symbols	sdba	ba m-symbols
-	sv	sdba	ba -
-	start	dba	ba -
-	length	dba	ba -
-	value	dba	ba -
-	values	dba	ba -
-    } {
-	if {$key eq "-"} { set key $part }
-	# Access to match information: modifier/accessor
-	forward ${part}:  my Access $wcode Store ${key}:
-	forward ${part}   my Access $rcode Store ${key}
-    } ; unset part
+    # Access to input location: accessor & modifiers
 
-    method Access {code args} {
-	my ValidatePermissions
-	my ValidateType $code
-	return [{*}$args]
+    method location  {} { my Access *    Gate location  }
+    method stop      {} { my Access *    Gate stop      }
+    method dont-stop {} { my Access sdba Gate dont-stop }
+
+    method relative {delta} { my Int $delta ; my Access sdba Gate relative $delta }
+    method rewind   {delta} { my Int $delta ; my Access sdba Gate rewind   $delta }
+
+    method from  {pos args} {
+	my Location $pos
+	foreach d $args { my Int $d }
+	my Access sdba Gate from  $pos {*}$args
     }
+
+    method to    {pos}   { my Location $pos   ; my Access sdba Gate to    $pos   }
+    method limit {limit} { my Posint   $limit ; my Access sdba Gate limit $limit }
+
+    # Match/lexeme access
+
+    method symbols {} { my Access sdba Store m-symbols }
+    method sv      {} { my Access sdba Store sv        }
+    method start   {} { my Access dba  Store start     }
+    method length  {} { my Access dba  Store length    }
+    method value   {} { my Access dba  Store value     }
+    method values  {} { my Access dba  Store values    }
+
+    method symbols: {syms}  { my Access ba Store m-symbols: $syms  }
+    method sv:      {svs}   { my Access ba Store sv:        $svs   }
+    method value:   {value} { my Access ba Store value:     $value }
+    method values:  {value} { my Access ba Store values:    $value }
+
+    method start:   {start}  { my Location $start  ; my Access ba Store start:  $start }
+    method length:  {length} { my Posint0  $length ; my Access ba Store length: $length }
 
     # Incremental rebuild of the symbol/sv set
     # First call clears and appends, further only appends
@@ -89,6 +96,33 @@ oo::class create marpa::lexer::ped {
 	my ValidateType sdba
 	set     r [Store view {symbols sv start length value values}]
 	lappend r "@location = [Gate location]"
+    }
+
+    # Internal helpers (Argument checks, access control)
+    method Int {x} { incr x 0 }
+
+    method Posint {x} {
+	incr x 0
+	if {$x >= 0} return
+	return -code error "expected int > 0, but got \"$x\""
+    }
+
+    method Posint0 {x} {
+	incr x 0
+	if {$x >= 0} return
+	return -code error "expected int >= 0, but got \"$x\""
+    }
+
+    method Location {x} {
+	incr x 0
+	if {$x >= 0} return
+	return -code error "expected location (>= 0), but got \"$x\""
+    }
+
+    method Access {code args} {
+	my ValidatePermissions
+	my ValidateType $code
+	return [{*}$args]
     }
 
     method ValidatePermissions {} {

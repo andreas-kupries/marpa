@@ -124,42 +124,43 @@ set access_commands {
 # Bad syntax, bad argument types
 
 set invalid_commands {
-    {alternate {} {} X}	{wrong # args: should be "marpatcl_rtc_pedesc alternate symbol sv"}
-    {alternate {}}	{wrong # args: should be "marpatcl_rtc_pedesc alternate symbol sv"}
-    {alternate}		{wrong # args: should be "marpatcl_rtc_pedesc alternate symbol sv"}
-    {dont-stop X}	{wrong # args: should be "marpatcl_rtc_pedesc dont-stop"}
+    {alternate {} {} X}	{wrong # args: should be "PARSE match alternate symbol sv"}
+    {alternate {}}	{wrong # args: should be "PARSE match alternate symbol sv"}
+    {alternate}		{wrong # args: should be "PARSE match alternate symbol sv"}
+    {dont-stop X}	{wrong # args: should be "PARSE match dont-stop"}
     {from -1}		{expected location (>= 0), but got "-1"}
     {from {}}		{expected integer but got ""}
-    {from}		{wrong # args: should be "marpatcl_rtc_pedesc moveto pos ?args...?"}
-    {length X}		{wrong # args: should be "marpatcl_rtc_pedesc length"}
+    {from 1 {}}		{expected integer but got ""}
+    {from}		{wrong # args: should be "PARSE match from pos ..."}
+    {length X}		{wrong # args: should be "PARSE match length"}
     {length: -1}	{expected int >= 0, but got "-1"}
     {length: {}}	{expected integer but got ""}
-    {length:}		{wrong # args: should be "marpatcl_rtc_pedesc length: length"}
+    {length:}		{wrong # args: should be "PARSE match length: length"}
     {limit -1}		{expected int > 0, but got "-1"}
     {limit {}}		{expected integer but got ""}
-    {limit}		{wrong # args: should be "marpatcl_rtc_pedesc limit limit"}
-    {location X}	{wrong # args: should be "marpatcl_rtc_pedesc location?"}
+    {limit}		{wrong # args: should be "PARSE match limit limit"}
+    {location X}	{wrong # args: should be "PARSE match location"}
     {relative {}}	{expected integer but got ""}
-    {relative}		{wrong # args: should be "marpatcl_rtc_pedesc moveby delta"}
+    {relative}		{wrong # args: should be "PARSE match relative delta"}
     {rewind {}}		{expected integer but got ""}
-    {rewind}		{wrong # args: should be "marpatcl_rtc_pedesc rewind delta"}
-    {start X}		{wrong # args: should be "marpatcl_rtc_pedesc start"}
+    {rewind}		{wrong # args: should be "PARSE match rewind delta"}
+    {start X}		{wrong # args: should be "PARSE match start"}
     {start: -1}		{expected location (>= 0), but got "-1"}
     {start: {}}		{expected integer but got ""}
-    {start:}		{wrong # args: should be "marpatcl_rtc_pedesc start: start"}
-    {stop X}		{wrong # args: should be "marpatcl_rtc_pedesc stop?"}
-    {sv X}		{wrong # args: should be "marpatcl_rtc_pedesc sv"}
-    {sv:}		{wrong # args: should be "marpatcl_rtc_pedesc sv: svs"}
-    {symbols X}		{wrong # args: should be "marpatcl_rtc_pedesc symbols"}
-    {symbols:}		{wrong # args: should be "marpatcl_rtc_pedesc symbols: syms"}
+    {start:}		{wrong # args: should be "PARSE match start: start"}
+    {stop X}		{wrong # args: should be "PARSE match stop"}
+    {sv X}		{wrong # args: should be "PARSE match sv"}
+    {sv:}		{wrong # args: should be "PARSE match sv: svs"}
+    {symbols X}		{wrong # args: should be "PARSE match symbols"}
+    {symbols:}		{wrong # args: should be "PARSE match symbols: syms"}
     {to -1}		{expected location (>= 0), but got "-1"}
     {to {}}		{expected integer but got ""}
-    {to}		{wrong # args: should be "marpatcl_rtc_pedesc stop-at pos"}
-    {value X}		{wrong # args: should be "marpatcl_rtc_pedesc value"}
-    {value:}		{wrong # args: should be "marpatcl_rtc_pedesc value: value"}
-    {values X}		{wrong # args: should be "marpatcl_rtc_pedesc values"}
-    {values:}		{wrong # args: should be "marpatcl_rtc_pedesc values: value"}
-    {view X}		{wrong # args: should be "marpatcl_rtc_pedesc view"}
+    {to}		{wrong # args: should be "PARSE match to pos"}
+    {value X}		{wrong # args: should be "PARSE match value"}
+    {value:}		{wrong # args: should be "PARSE match value: value"}
+    {values X}		{wrong # args: should be "PARSE match values"}
+    {values:}		{wrong # args: should be "PARSE match values: value"}
+    {view X}		{wrong # args: should be "PARSE match view"}
 }
 
 # Ok syntax, ok arguments, probe fine-grained access control, per event-type

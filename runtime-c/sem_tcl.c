@@ -27,6 +27,10 @@ TRACE_TAG_OFF (eh);
  * Shorthands, externals, and forward declarations for internals.
  */
 
+extern int marpatcl_rtc_pedesc_invoke (marpatcl_rtc_pedesc_p p,
+				       Tcl_Interp* ip,
+				       int c, Tcl_Obj*CONST* v);
+
 #define STRDUP(s) marpatcl_rtc_strdup (s)
 
 #define TAKE   Tcl_IncrRefCount
@@ -169,7 +173,7 @@ marpatcl_rtc_pe_access (Tcl_Interp* ip, marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((Interp*) %p, (rtc*) %p, event = %d ~ %d",
 		ip, p, LEX.m_event, marpatcl_rtc_eventtype_LAST);
-    
+
     if (LEX.m_event != marpatcl_rtc_eventtype_LAST) {
 	TRACE_RETURN ("%d", 1);
     }
@@ -189,7 +193,7 @@ marpatcl_rtc_pe_ba_event (Tcl_Interp* ip, marpatcl_rtc_p p)
 		ip, p, LEX.m_event,
 		marpatcl_rtc_event_before,
 		marpatcl_rtc_event_after);
-    
+
     if ((LEX.m_event == marpatcl_rtc_event_before) ||
 	(LEX.m_event == marpatcl_rtc_event_after)) {
 	TRACE_RETURN ("%d", 1);
@@ -211,7 +215,7 @@ marpatcl_rtc_pe_dba_event (Tcl_Interp* ip, marpatcl_rtc_p p)
 		marpatcl_rtc_event_discard,
 		marpatcl_rtc_event_before,
 		marpatcl_rtc_event_after);
-    
+
     if ((LEX.m_event == marpatcl_rtc_event_before) ||
 	(LEX.m_event == marpatcl_rtc_event_after) ||
 	(LEX.m_event == marpatcl_rtc_event_discard)) {
@@ -235,7 +239,7 @@ marpatcl_rtc_pe_sdba_event (Tcl_Interp* ip, marpatcl_rtc_p p)
 		marpatcl_rtc_event_discard,
 		marpatcl_rtc_event_before,
 		marpatcl_rtc_event_after);
-    
+
     if ((LEX.m_event == marpatcl_rtc_event_before) ||
 	(LEX.m_event == marpatcl_rtc_event_after) ||
 	(LEX.m_event == marpatcl_rtc_event_discard) ||
@@ -297,7 +301,7 @@ marpatcl_rtc_pe_set_symbols (Tcl_Interp* ip, marpatcl_rtc_p p, int c, Tcl_Obj** 
     // Replace the set of symbols
     marpatcl_rtc_symset* syms = marpatcl_rtc_lexer_pe_get_symbols (p);
     marpatcl_rtc_symset_clear (syms);
-    
+
     int k;
     for (k=0; k < c; k++) {
 	// convert char* of the symbols to sym id.
@@ -309,7 +313,7 @@ marpatcl_rtc_pe_set_symbols (Tcl_Interp* ip, marpatcl_rtc_p p, int c, Tcl_Obj** 
 	    Tcl_AppendResult (ip, "Unknown lexeme \"", s, "\"", NULL);
 	    TRACE_RETURN ("%d", 0);
 	}
-	
+
 	marpatcl_rtc_symset_add (syms, sid);
     }
 
@@ -320,7 +324,7 @@ void
 marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p, int c, Tcl_Obj** v)
 {
     TRACE_FUNC ("((Interp*) %p, (rtc*) %p, c %d, (Tcl_Obj**) %p", p, c, v);
-	
+
     // Replace the set of sem values
     marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
 
@@ -337,7 +341,7 @@ marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p, int c, Tcl_Obj** v)
     marpatcl_rtc_stack_clear (svids);
 
     TRACE ("(stack_p) %p = %d", marpatcl_rtc_stack_size (svids));
-    
+
     int k;
     for (k=0; k < c; k++) {
 	char*             s  = STRDUP (Tcl_GetString (v [k]));
@@ -417,6 +421,122 @@ marpatcl_rtc_pe_get_symbols (Tcl_Interp* ip, marpatcl_rtc_p p)
  error:
     RELE (names);
     TRACE_RETURN ("(Tcl_Obj*) %p", 0);
+}
+
+int
+marpatcl_rtc_pe_match (marpatcl_rtc_pedesc_p p, Tcl_Interp* ip, Tcl_Obj* name,
+		       int c, Tcl_Obj*CONST* v)
+{
+    TRACE_FUNC ("((Interp*) %p, (pedesc*) %p, %d, (Tcl_Obj**) %p)", ip, p, c, v);
+    
+    int res = marpatcl_rtc_pedesc_invoke (p, ip, c, v);
+
+    if (res != TCL_ERROR) {
+	TRACE_RETURN ("%d", res);
+    }
+
+    // Rewrite `marpatcl_rtc_pedesc` into `<self> match`, in both error
+    // message and stack trace.
+
+    Tcl_Obj* dst [2];
+    Tcl_Obj* map [2];
+    Tcl_Obj* cmd [4];
+
+    dst [0] = name;
+    dst [1] = Tcl_NewStringObj ("match", -1);
+
+    map[0] = Tcl_NewStringObj ("marpatcl_rtc_pedesc", -1);
+    map[1] = Tcl_NewListObj (2, dst);
+
+    cmd [0] = Tcl_NewStringObj ("string", -1);
+    cmd [1] = Tcl_NewStringObj ("map", -1);
+    cmd [2] = Tcl_NewListObj (2, map);
+    cmd [3] = Tcl_GetObjResult (ip);
+
+    TAKE (cmd [0]);
+    TAKE (cmd [1]);
+    TAKE (cmd [2]);
+    TAKE (cmd [3]);
+
+    Tcl_EvalObjv (ip, 4, cmd, 0);
+
+    RELE (cmd [0]);
+    RELE (cmd [1]);
+    RELE (cmd [2]);
+    RELE (cmd [3]);
+
+    // TODO: errorInfo - Note how the above rewrites the message in place. the errorinfo forces us to remember a bit.
+
+    TRACE_RETURN ("%d", res);
+}
+
+int
+marpatcl_rtc_pe_range (Tcl_Interp*    interp,
+		       int	      objc,
+		       Tcl_Obj*CONST* objv,
+		       int*           from,
+		       int*           to)
+{
+    if ((objc % 2) == 1) {
+	Tcl_AppendResult (interp, "Last option has no value", NULL);
+	return 0;
+    }
+
+    int f =  0; int i;
+    int t = -1;
+    int l = -1;
+
+    for (i = 0; i < objc; i+=2) {
+	const char* option = Tcl_GetString (objv[i]);
+	Tcl_Obj*   value   = objv [i+1];
+	if (strcmp ("from", option) == 0) {
+	    if (Tcl_GetIntFromObj (interp, value, &f) != TCL_OK) {
+		return 0;
+	    }
+	    if (f < 0) {
+		Tcl_AppendResult (interp, "expected location (>= 0), but got \"",
+				  Tcl_GetString (value), "\"", NULL);
+		return 0;
+	    }
+	    continue;
+	}
+	if (strcmp ("to", option) == 0) {
+	    if (Tcl_GetIntFromObj (interp, value, &t) != TCL_OK) {
+		return 0;
+	    }
+	    if (t < 0) {
+		Tcl_AppendResult (interp, "expected location (>= 0), but got \"",
+				  Tcl_GetString (value), "\"", NULL);
+		return 0;
+	    }
+	    l = -1;
+	    continue;
+	}
+	if (strcmp ("limit", option) == 0) {
+	    if (Tcl_GetIntFromObj (interp, value, &l) != TCL_OK) {
+		return 0;
+	    }
+	    if (l < 1) {
+		Tcl_AppendResult (interp, "expected int > 0, but got \"",
+				  Tcl_GetString (value), "\"", NULL);
+		return 0;
+	    }
+	    t = -1;
+	    continue;
+	}
+	Tcl_AppendResult (interp, "Unknown option \"", option,
+			  "\", expected one of from, limit, or to",
+			  NULL);
+	return 0;
+    }
+
+    if (l > 0) {
+	t = f + l;
+    }
+
+    *from = f; // No (--). Handled by inbound_enter (call to inbound_moveto).
+    *to   = t;
+    return 1;
 }
 
 Tcl_Obj*

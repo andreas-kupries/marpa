@@ -2851,7 +2851,7 @@ critcl::class def marpa::slif::literal::parser {
 	    }
 	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
 	    buf = Tcl_GetStringFromObj (cbuf, &got);
-	    marpatcl_rtc_enter (instance->state, buf, got);
+	    marpatcl_rtc_enter (instance->state, buf, got, 0, -1);
 	    if (marpatcl_rtc_failed (instance->state)) break;
 	}
 	Tcl_DecrRefCount (cbuf);
@@ -2861,7 +2861,7 @@ critcl::class def marpa::slif::literal::parser {
     }
 
     method process proc {Tcl_Interp* ip pstring string} ok {
-	marpatcl_rtc_enter (instance->state, string.s, string.len);
+	marpatcl_rtc_enter (instance->state, string.s, string.len, 0, -1);
 	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
 

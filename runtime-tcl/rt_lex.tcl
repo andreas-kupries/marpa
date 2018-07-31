@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -42,7 +42,7 @@ oo::class create marpa::engine::tcl::lex {
 	# - STORE : Store for token values (lexer semantic information)
 
 	marpa::semstore create STORE
-	marpa::lexer    create LEX   STORE [self]
+	marpa::lexer    create LEX   [self] STORE [self]
 	marpa::gate     create GATE  LEX
 	marpa::inbound  create IN    GATE
 

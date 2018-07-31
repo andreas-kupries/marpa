@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -67,6 +67,8 @@ oo::class create marpa::lexer {
     # # -- --- ----- -------- -------------
     ## Configuration
 
+    variable myenv
+
     # Static
     variable mypublic     ;# sym id:local  -> id:parser
     variable myacs        ;# sym id:parser -> id:acs:local
@@ -98,11 +100,11 @@ oo::class create marpa::lexer {
     variable mynull       ;# Semantic value for ACS, empty string,
 			   # floating location
 
-    # RECCE - Local recognizer object.
+    # LRECCE - Local recognizer object.
     # - Created in acceptable.
     # - Destroyed in either eof or enter
-    #   eof may encounter state where RECCE does not exist.
-    variable myrecce ;# Store RECCE handle, for easier querying.
+    #   eof may encounter state where LRECCE does not exist.
+    variable myrecce ;# Store LRECCE handle, for easier querying.
 
     ##
     # API self:
@@ -134,7 +136,7 @@ oo::class create marpa::lexer {
     # # -- --- ----- -------- -------------
     ## Lifecycle
 
-    constructor {semstore parser} {
+    constructor {engine semstore parser} {
 	method-benchmarking
 	debug.marpa/lexer {[debug caller] | }
 	debug.marpa/lexer/report {[marpa DX {Activate progress reports...} {
@@ -153,6 +155,7 @@ oo::class create marpa::lexer {
 	# Gate will attach during setup.
 
 	# Dynamic state for processing
+	set myenv  [namespace tail $engine]
 	set myacceptable {}   ;# Parser gating.
 	set myaccmemo    {}   ;# Cache for gating.
 	set myrecce      {}   ;# Local recce management
@@ -187,7 +190,19 @@ oo::class create marpa::lexer {
     # # -- --- ----- -------- -------------
     ## Public API
 
-    forward match PED
+    method match {args} {
+	try {
+	    PED {*}$args
+	} on error {e o} {
+	    # Rewrite internal to external references
+	    lappend map PED [list $myenv match]
+	    set ei [dict get $o -errorinfo]
+	    set ei [string map $map $ei]
+	    set e  [string map $map $e]
+	    dict set o -errorinfo $ei
+	    return {*}$o $e
+	}
+    }
 
     method events {spec} {
 	debug.marpa/lexer {[debug caller] | }
@@ -344,18 +359,18 @@ oo::class create marpa::lexer {
 	append mylexeme $thechar
 	debug.marpa/lexer {[debug caller 2] | step recce engine}
 	foreach sym $syms {
-	    RECCE alternative $sym 1 1 ;# FAKE sv for the chars in the lexeme.
+	    LRECCE alternative $sym 1 1 ;# FAKE sv for the chars in the lexeme.
 	}
 
 	try {
-	    RECCE earleme-complete
+	    LRECCE earleme-complete
 	} trap {MARPA PARSE_EXHAUSTED} {e o} {
 	    # Do nothing. Exhaustion is checked below.
 	} on error {e o} {
 	    return {*}$o $e
 	}
 
-	if {[RECCE exhausted?]} {
+	if {[LRECCE exhausted?]} {
 	    debug.marpa/lexer {[debug caller 2] | exhausted}
 	    my Complete
 
@@ -367,7 +382,7 @@ oo::class create marpa::lexer {
 	# acceptable symbols, i.e. characters and classes.
 
 	debug.marpa/lexer {[debug caller 2] | Feedback to gate, chars and classes}
-	Gate acceptable [RECCE expected-terminals]
+	Gate acceptable [LRECCE expected-terminals]
 
 	debug.marpa/lexer {[debug caller 2] | /ok}
 	return
@@ -424,8 +439,8 @@ oo::class create marpa::lexer {
 	#  Note that the flush leaves us with a just-started
 	# recognizer, which we have to remove again.
 	if {$myrecce ne {}} {
-	    debug.marpa/lexer {[debug caller] | RECCE kill 1 [namespace which -command RECCE]}
-	    RECCE destroy
+	    debug.marpa/lexer {[debug caller] | LRECCE kill 1 [namespace which -command LRECCE]}
+	    LRECCE destroy
 	    set myrecce {}
 	}
 
@@ -441,12 +456,12 @@ oo::class create marpa::lexer {
 	# accept. Transform this into a list of ACS ids, and insert
 	# them into the recognizer.
 
-	set myrecce [GRAMMAR recognizer create RECCE [mymethod Events]]
-	debug.marpa/lexer {[debug caller 1] | RECCE ::=  [namespace which -command RECCE]}
+	set myrecce [GRAMMAR recognizer create LRECCE [mymethod Events]]
+	debug.marpa/lexer {[debug caller 1] | LRECCE ::=  [namespace which -command LRECCE]}
 	M start: {}
 	set mylexeme {}
 
-	RECCE start-input
+	LRECCE start-input
 	debug.marpa/lexer/report {[my progress-report-current]}
 	debug.marpa/lexer/stream {START ([my DIds $syms])}
 
@@ -469,15 +484,15 @@ oo::class create marpa::lexer {
 	    }
 	    foreach s $enter {
 		debug.marpa/lexer {[debug caller 1] | U ==> $s <[my 2Name1 $s]>}
-		RECCE alternative $s $mynull 1
+		LRECCE alternative $s $mynull 1
 	    }
-	    RECCE earleme-complete
+	    LRECCE earleme-complete
 	    # Tcl 8.6: lmap
 	}
 
 	# Push the set of now acceptable lexer symbols down into the
 	# gate instance
-	Gate acceptable [RECCE expected-terminals]
+	Gate acceptable [LRECCE expected-terminals]
 	return
     }
 
@@ -540,13 +555,13 @@ oo::class create marpa::lexer {
 
 	# I. Extract the location of longest lexeme from the
 	#    recognizer state
-	set latest [RECCE latest-earley-set]
+	set latest [LRECCE latest-earley-set]
 	set redo   0
 
 	while {[catch {
 	    debug.marpa/lexer        {[debug caller] | Check @$latest}
 	    debug.marpa/lexer/forest {[debug caller] | Check @$latest}
-	    RECCE forest create FOREST $latest
+	    LRECCE forest create FOREST $latest
 	} msg o]} {
 	    incr redo
 	    incr latest -1
@@ -645,8 +660,8 @@ oo::class create marpa::lexer {
 	# default mode.
 
 	# The current recognizer is done.
-	debug.marpa/lexer {[debug caller] | RECCE kill 2 [namespace which -command RECCE]}
-	RECCE destroy
+	debug.marpa/lexer {[debug caller] | LRECCE kill 2 [namespace which -command LRECCE]}
+	LRECCE destroy
 	set myrecce {}
 
 	# Reposition the gate/input so that the next lexeme match
@@ -697,7 +712,7 @@ oo::class create marpa::lexer {
 	} else {
 	    # Pushed the found lexemes (possibly none (*)) to the
 	    # parser. This will also give us feedback about the new
-	    # set of acceptable lexemes, and generate a new RECCE, see
+	    # set of acceptable lexemes, and generate a new LRECCE, see
 	    # 'Acceptable'.
 	    #
 	    # (*) This happens when neither lexemes nor discards were
@@ -768,8 +783,8 @@ oo::class create marpa::lexer {
 
 	# The current recognizer is done.
 	if {$myrecce ne {}} {
-	    debug.marpa/lexer {[debug caller] | RECCE kill 3 [namespace which -command RECCE]}
-	    RECCE destroy
+	    debug.marpa/lexer {[debug caller] | LRECCE kill 3 [namespace which -command LRECCE]}
+	    LRECCE destroy
 	    set myrecce {}
 	}
 
@@ -813,7 +828,7 @@ oo::class create marpa::lexer {
 	# characters.
 
 	oo::objdefine [self] mixin marpa::engine::debug
-	set max [RECCE latest-earley-set]
+	set max [LRECCE latest-earley-set]
 	set rep {}
 	for {set k 0} {$k <= $max} {incr k} {
 	    lappend rep [my progress-report $k]
@@ -973,7 +988,7 @@ oo::class create marpa::lexer::sequencer {
 	my __Init
 	my __Fail made     ! "Setup missing" MISSING SETUP
 	# XXX Remove above, induce seg.fault - marpa-lexer-1.3.1
-	# acceptable ... RECCE start-input ... NULL recognizer ptr
+	# acceptable ... LRECCE start-input ... NULL recognizer ptr
 	# ... incomplete/bad recce construction ...
 	# ... Empty grammar ?!
 	my __Fail gated    ! "Data missing" MISSING DATA

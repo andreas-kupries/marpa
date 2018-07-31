@@ -70,11 +70,11 @@ marpatcl_rtc_destroy (marpatcl_rtc_p p)
 }
 
 void
-marpatcl_rtc_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
+marpatcl_rtc_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n, int from, int to)
 {
-    TRACE_FUNC ("((rtc*) %p, (char*) %p [%d]))", p, bytes, n);
+    TRACE_FUNC ("((rtc*) %p, (char*) %p [%d], [%d...%d]))", p, bytes, n, from, to);
 
-    marpatcl_rtc_inbound_enter (p, bytes, n);
+    marpatcl_rtc_inbound_enter (p, bytes, n, from, to);
 
     TRACE_RETURN_VOID;
 }

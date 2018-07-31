@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
 # (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -323,16 +323,16 @@ oo::class create marpa::inbound::sequencer {
     # # -- --- ----- -------- -------------
     ## Checked API methods
 
-    method enter {string} {
+    method enter {string {from -1} {to -1}} {
 	my __Init
 	my __Fail done ! "Unable to process input after EOF" EOF
-	next $string
+	next $string $from $to
     }
 
-    method read {chan} {
+    method read {chan {from -1} {to -1}} {
 	my __Init
 	my __Fail done ! "Unable to process input after EOF" EOF
-	next $chan
+	next $chan $from $to
     }
 
     method eof {} {

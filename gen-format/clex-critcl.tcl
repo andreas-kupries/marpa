@@ -67,19 +67,7 @@ proc ::marpa::gen::format::clex-critcl::container {gc} {
 	events l0
     }]
 
-    lassign [lmap segment [marpa asset* $self] {
-	string trim $segment
-    }] template setup_events setup_no_events setup_post
-
-    if {[dict get $config @have-events@]} {
-	dict set config @__event_setup__@ [string map $config $setup_events]
-	dict set config @__event_pkg__@   "\n    package require critcl::literals"
-	dict set config @__event_post__@  " $setup_post"
-    } else {
-	dict set config @__event_setup__@ [string map $config $setup_no_events]
-	dict set config @__event_pkg__@   ""
-	dict set config @__event_post__@  " \{\}"
-    }
+    set template [string trim [marpa asset $self]]
 
     return [string map $config $template]
 }
@@ -122,7 +110,8 @@ package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
 critcl::buildrequirement {
     package require critcl::class
-    package require critcl::cutil@__event_pkg__@
+    package require critcl::cutil
+    package require critcl::literals
 }
 
 if {![critcl::compiling]} {
@@ -237,105 +226,6 @@ critcl::class def @slif-name@ {
 	marpatcl_rtc_lex_release (&instance->lstate);
     }
 
-    @__event_setup__@
-
-    constructor {
-        /*
-	 * Syntax:                          ... []
-         * skip == 2: <class> new           ...
-         *      == 3: <class> create <name> ...
-         */
-
-	if (objc > 0) {
-	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
-	    goto error;
-	}
-
-	instance->lstate.ip = interp;
-    }@__event_post__@
-
-    method process-file proc {Tcl_Interp* ip Tcl_Obj* path list outcmd} ok {
-	int res, got;
-	char* buf;
-	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
-
-	if (!in) {
-	    return TCL_ERROR;
-	}
-	Tcl_SetChannelBufferSize (in, 4096);
-	Tcl_SetChannelOption (ip, in, "-translation", "binary");
-	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
-	// TODO: abort on failed set-channel-option
-
-	instance->lstate.matched = critcl_callback_new (ip, outcmd.c, outcmd.v, 3);
-	critcl_callback_extend (instance->lstate.matched, Tcl_NewStringObj ("enter", -1));
-
-	Tcl_Obj* cbuf = Tcl_NewObj();
-	Tcl_Obj* ebuf = Tcl_NewObj();
-	while (!Tcl_Eof(in)) {
-	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
-	    if (got < 0) {
-		Tcl_DecrRefCount (cbuf);
-		Tcl_DecrRefCount (ebuf);
-		return TCL_ERROR;
-	    }
-	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
-	    Tcl_AppendObjToObj (ebuf, cbuf);
-	}
-	Tcl_DecrRefCount (cbuf);
-	(void) Tcl_Close (ip, in);
-
-	buf = Tcl_GetStringFromObj (ebuf, &got);
-	marpatcl_rtc_enter (instance->state, buf, got);
-	Tcl_DecrRefCount (ebuf);
-
-	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
-	critcl_callback_extend (on_eof, Tcl_NewStringObj ("eof", -1));
-
-	res = critcl_callback_invoke (on_eof, 0, 0);
-
-	critcl_callback_destroy (on_eof);
-	critcl_callback_destroy (instance->lstate.matched);
-	instance->lstate.matched = 0;
-
-	return res;
-    }
-
-    method process proc {Tcl_Interp* ip pstring string list outcmd} ok {
-	int res;
-
-	instance->lstate.matched = critcl_callback_new (ip, outcmd.c, outcmd.v, 3);
-	critcl_callback_extend (instance->lstate.matched, Tcl_NewStringObj ("enter", -1));
-
-	marpatcl_rtc_enter (instance->state, string.s, string.len);
-
-	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
-	critcl_callback_extend (on_eof, Tcl_NewStringObj ("eof", -1));
-
-	res = critcl_callback_invoke (on_eof, 0, 0);
-
-	critcl_callback_destroy (on_eof);
-	critcl_callback_destroy (instance->lstate.matched);
-	instance->lstate.matched = 0;
-
-	return res;
-    }
-}
-
-# # ## ### ##### ######## ############# #####################
-return
-
-    # Setup for events
-
-    method on-event proc {object args} void {
-	marpatcl_rtc_eh_setup (&instance->ehstate, args.c, args.v);
-    }
-
-    method match proc {Tcl_Interp* ip object args} ok {
-	/* -- Delegate to the parse event descriptor facade */
-	return marpatcl_rtc_pedesc_invoke (instance->pedesc, ip, args.c, args.v);
-    }
-
     # Note how `rtc` is declared before `pedesc`. We need it
     # initalized to be able to feed it into the construction of the
     # PE descriptor facade.
@@ -367,37 +257,124 @@ return
     } {
 	marpatcl_rtc_eh_init (&instance->ehstate, interp,
 			      (marpatcl_events_to_names) @slif-name@_event_list);
-	// h.self initialized by the constructor post-body
+	/* h.self initialized by the constructor post-body */
 	/* See on-event above for further setup */
     } {
 	marpatcl_rtc_eh_clear (&instance->ehstate);
 	Tcl_DecrRefCount (instance->ehstate.self);
 	instance->ehstate.self = 0;
     }
-
-    # Setup without events
 
-    method on-event proc {object args} void {}
-
-    method match proc {object args} ok {
-	// No events: Facade not present, no access to the runtime structures.
-	// TODO: Set error message
-	return TCL_ERROR;
+    insvariable Tcl_Obj* name {
+	Object name, tail
+    } { /* Initialized in the post constructor */ } {
+	Tcl_DecrRefCount (instance->name);
     }
 
-    insvariable marpatcl_rtc_p state {
-	C-level engine, RTC structures.
-    } {
-	instance->state = marpatcl_rtc_cons (&@cname@_spec,
-					     NULL, /* No actions */
-					     marpatcl_rtc_lex_token, (void*) &instance->lstate,
-					     0, 0 );
-    } {
-	marpatcl_rtc_destroy (instance->state);
+    
+    method on-event proc {object args} void {
+	marpatcl_rtc_eh_setup (&instance->ehstate, args.c, args.v);
     }
-
-{
+
+    method match proc {Tcl_Interp* ip object args} ok {
+	/* -- Delegate to the parse event descriptor facade */
+	return marpatcl_rtc_pe_match (instance->pedesc, ip, instance->name,
+				      args.c, args.v);
+    }
+
+    constructor {
+        /*
+	 * Syntax:                          ... []
+         * skip == 2: <class> new           ...
+         *      == 3: <class> create <name> ...
+         */
+
+	if (objc > 0) {
+	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
+	    goto error;
+	}
+
+	instance->lstate.ip = interp;
+    } {
 	/* Post body. Save the FQN for use in the callbacks */
 	instance->ehstate.self = fqn;
 	Tcl_IncrRefCount (fqn);
+        instance->name = Tcl_NewStringObj (Tcl_GetCommandName (interp, instance->cmd), -1);
+        Tcl_IncrRefCount (instance->name);
     }
+
+    method process-file proc {Tcl_Interp* ip Tcl_Obj* path list outcmd object args} ok {
+	int from, to;
+	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
+
+	int res, got;
+	char* buf;
+	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
+
+	if (!in) {
+	    return TCL_ERROR;
+	}
+	Tcl_SetChannelBufferSize (in, 4096);
+	Tcl_SetChannelOption (ip, in, "-translation", "binary");
+	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
+	// TODO: abort on failed set-channel-option
+
+	instance->lstate.matched = critcl_callback_new (ip, outcmd.c, outcmd.v, 3);
+	critcl_callback_extend (instance->lstate.matched, Tcl_NewStringObj ("enter", -1));
+
+	Tcl_Obj* cbuf = Tcl_NewObj();
+	Tcl_Obj* ebuf = Tcl_NewObj();
+	while (!Tcl_Eof(in)) {
+	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
+	    if (got < 0) {
+		Tcl_DecrRefCount (cbuf);
+		Tcl_DecrRefCount (ebuf);
+		return TCL_ERROR;
+	    }
+	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
+	    Tcl_AppendObjToObj (ebuf, cbuf);
+	}
+	Tcl_DecrRefCount (cbuf);
+	(void) Tcl_Close (ip, in);
+
+	buf = Tcl_GetStringFromObj (ebuf, &got);
+	marpatcl_rtc_enter (instance->state, buf, got, from, to);
+	Tcl_DecrRefCount (ebuf);
+
+	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
+	critcl_callback_extend (on_eof, Tcl_NewStringObj ("eof", -1));
+
+	res = critcl_callback_invoke (on_eof, 0, 0);
+
+	critcl_callback_destroy (on_eof);
+	critcl_callback_destroy (instance->lstate.matched);
+	instance->lstate.matched = 0;
+
+	return res;
+    }
+
+    method process proc {Tcl_Interp* ip pstring string list outcmd object args} ok {
+	int from, to;
+	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
+
+	int res;
+	instance->lstate.matched = critcl_callback_new (ip, outcmd.c, outcmd.v, 3);
+	critcl_callback_extend (instance->lstate.matched, Tcl_NewStringObj ("enter", -1));
+
+	marpatcl_rtc_enter (instance->state, string.s, string.len, from, to);
+
+	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
+	critcl_callback_extend (on_eof, Tcl_NewStringObj ("eof", -1));
+
+	res = critcl_callback_invoke (on_eof, 0, 0);
+
+	critcl_callback_destroy (on_eof);
+	critcl_callback_destroy (instance->lstate.matched);
+	instance->lstate.matched = 0;
+
+	return res;
+    }
+}
+
+# # ## ### ##### ######## ############# #####################
+return

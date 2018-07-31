@@ -167,7 +167,7 @@ test marpa-inbound-4.0.1 {enter, wrong args, too many} -setup {
 } -cleanup {
     IN destroy
     logged
-} -returnCodes error -result {wrong # args: should be "IN enter string"}
+} -returnCodes error -result {wrong # args: should be "IN enter string ?from? ?to?"}
 
 test marpa-inbound-4.1.0 {enter, results, state changes, external calls} -setup {
     marpa::inbound create IN [log GATE]
@@ -251,16 +251,16 @@ test marpa-inbound-5.0.0 {read, wrong args, not enough} -setup {
 } -cleanup {
     IN destroy
     logged
-} -returnCodes error -result {wrong # args: should be "IN read chan"}
+} -returnCodes error -result {wrong # args: should be "IN read chan ?from? ?to?"}
 
 test marpa-inbound-5.0.1 {read, wrong args, too many} -setup {
     marpa::inbound create IN [log GATE]
 } -body {
-    IN read CHAN X
+    IN read CHAN -1 -1 X
 } -cleanup {
     IN destroy
     logged
-} -returnCodes error -result {wrong # args: should be "IN read chan"}
+} -returnCodes error -result {wrong # args: should be "IN read chan ?from? ?to?"}
 
 test marpa-inbound-5.1.0 {read, results, state changes, external calls} -setup {
     set chan [tcl::chan::string FOO]
