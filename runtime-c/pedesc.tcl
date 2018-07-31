@@ -237,7 +237,13 @@ critcl::class def marpa::runtime::c::pedesc {
 	Tcl_Obj* list = Tcl_NewListObj (0, 0);
 
 	ADD ("length = ((%d))",    marpatcl_rtc_lexer_pe_get_lexeme_length (instance->state));
-	ADD ("start = ((%d))",     marpatcl_rtc_lexer_pe_get_lexeme_start (instance->state));
+
+	int start = marpatcl_rtc_lexer_pe_get_lexeme_start (instance->state);
+	if (start < 0) {
+	    ADD ("start = ((%s))", "");
+	} else {
+	    ADD ("start = ((%d))", start);
+	}
 
 	Tcl_Obj* sv = marpatcl_rtc_pe_get_semvalues (ip, instance->state);
 	if (sv) {
@@ -246,8 +252,10 @@ critcl::class def marpa::runtime::c::pedesc {
 	}
 
 	Tcl_Obj* names = marpatcl_rtc_pe_get_symbols (ip, instance->state);
-	ADD ("symbols = ((%s))", Tcl_GetString (names));
-	Tcl_DecrRefCount (names);
+	if (names) {
+	    ADD ("symbols = ((%s))", Tcl_GetString (names));
+	    Tcl_DecrRefCount (names);
+	}
 
 	ADD ("value = ((%s))", marpatcl_rtc_lexer_pe_get_lexeme_value (instance->state));
 	ADD ("@location = %d", marpatcl_rtc_inbound_location (instance->state));

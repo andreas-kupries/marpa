@@ -363,7 +363,8 @@ marpatcl_rtc_pe_get_semvalues (Tcl_Interp* ip, marpatcl_rtc_p p)
     TRACE_FUNC ("((Interp*) %p, (rtc*) %p", ip, p);
 
     marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
-    if (!svids) {
+
+    if (!svids || (LEX.m_event == marpatcl_rtc_event_stop)) {
 	const char* msg = "key \"sv\" not known in dictionary";
 	// Note 1: This message matches the error produced by the rt-Tcl facade.
 	// Note 2: Tcl_ResetResult implied by the outer Tcl command calling this function.
@@ -399,6 +400,15 @@ Tcl_Obj*
 marpatcl_rtc_pe_get_symbols (Tcl_Interp* ip, marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((Interp*) %p, (rtc*) %p)", ip, p);
+
+    if (LEX.m_event == marpatcl_rtc_event_stop) {
+	const char* msg = "key \"symbols\" not known in dictionary";
+	// Note 1: This message matches the error produced by the rt-Tcl facade.
+	// Note 2: Tcl_ResetResult implied by the outer Tcl command calling this function.
+	Tcl_AppendResult (ip, msg, NULL);
+	TRACE_RETURN ("(Tcl_Obj*) %p", 0);
+    }
+
     marpatcl_rtc_symset* syms = marpatcl_rtc_lexer_pe_get_symbols (p);
     marpatcl_rtc_rules* rules = LEX.m_event == marpatcl_rtc_event_discard
 	? SPEC->l0
