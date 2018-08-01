@@ -21,13 +21,14 @@ debug prefix marpa/engine/tcl/lex {[debug caller] | }
 ##
 
 oo::class create marpa::engine::tcl::lex {
+    superclass marpa::engine::tcl::base
+
     # # ## ### ##### ######## #############
     marpa::E marpa/engine/tcl/lex ENGINE TCL LEX
 
     constructor {} {
 	debug.marpa/engine/tcl/lex {}
-	set myid          {}
-	set myeventprefix {}
+	set myid {}
 
 	# Build the processing pipeline, then configure the various
 	# pieces.  Object creation is in backward direction, i.e. from
@@ -86,37 +87,29 @@ oo::class create marpa::engine::tcl::lex {
     # # ## ### ##### ######## #############
     ## State
 
-    variable myid mylex myeventprefix
+    variable myid mylex
     # myid          :: map (id -> string) - Lexemes
     # mylex         :: list (id) - dict keys of myid
-    # myeventprefix :: list (word...)
-
-    # myeventprefix - Callback command to handle parse events
 
     # # ## ### ##### ######## #############
     ## Public API
 
-    method on-event {args} {
+    method process-file {path out args} {
 	debug.marpa/engine/tcl/lex {}
-	set myeventprefix $args
-	return
-    }
-
-    method process-file {path out} {
-	debug.marpa/engine/tcl/lex {}
+	set options [my Options $args]
 	marpa::import $out Forward
 	set chan [open $path r]
 	# Drive the pipeline from the channel.
-	IN read $chan
+	IN read $chan {*}$options
 	IN eof
 	return
     }
 
-    method process {string out} {
+    method process {string out args} {
 	debug.marpa/engine/tcl/lex {}
 	marpa::import $out Forward
 	# Drive the pipeline from the string
-	IN enter $string
+	IN enter $string {*}[my Options $args]
 	IN eof
 	return
     }
@@ -125,18 +118,6 @@ oo::class create marpa::engine::tcl::lex {
     ## This wrapper acts as the parser to the embedded lexer core. The
     ## methods below handle the lexer/parser communication, and
     ## talking to the configured output driver.
-
-    method post {args} {
-	debug.marpa/engine/tcl/lex {}
-	if {![llength $myeventprefix]} {
-	    debug.marpa/engine/tcl/lex { Ignored }
-	    return
-	}
-	# XXX try ? ignore errors ?
-	debug.marpa/engine/tcl/lex { Invoke }
-	uplevel #0 [linsert $args 0 {*}$myeventprefix [self]]
-	return
-    }
 
     method gate: {lexcore} {
 	debug.marpa/engine/tcl/lex {}

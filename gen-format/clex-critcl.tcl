@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
 # (c) 2017-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -69,6 +69,15 @@ proc ::marpa::gen::format::clex-critcl::container {gc} {
 
     set template [string trim [marpa asset $self]]
 
+    if {[dict get $config @have-events@]} {
+	set cname [dict get $config @cname@]
+	dict set config @__event_pkg__@   "\n    package require critcl::literals"
+	dict set config @__event_list__@  "${cname}_event_list"
+    } else {
+	dict set config @__event_pkg__@   ""
+	dict set config @__event_list__@  0
+    }
+
     return [string map $config $template]
 }
 
@@ -81,7 +90,7 @@ return
 ##
 # This template is BSD-licensed.
 # (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                          http://core.tcl.tk/akupries/
+#                                             http://core.tcl.tk/akupries/
 ##
 # (c) @slif-year@ Grammar @slif-name@ @slif-version@ By @slif-writer@
 ##
@@ -110,8 +119,7 @@ package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
 critcl::buildrequirement {
     package require critcl::class
-    package require critcl::cutil
-    package require critcl::literals
+    package require critcl::cutil@__event_pkg__@
 }
 
 if {![critcl::compiling]} {
@@ -256,7 +264,7 @@ critcl::class def @slif-name@ {
 	Handler for parse events
     } {
 	marpatcl_rtc_eh_init (&instance->ehstate, interp,
-			      (marpatcl_events_to_names) @slif-name@_event_list);
+			      (marpatcl_events_to_names) @__event_list__@);
 	/* h.self initialized by the constructor post-body */
 	/* See on-event above for further setup */
     } {

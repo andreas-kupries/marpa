@@ -11,7 +11,7 @@
 # # ## ### ##### ######## #############
 ## Requisites
 
-package require oo::util ;# mymethod
+#package require oo::util ;# mymethod
 #package require char     ;# quoting
 
 debug define marpa/engine/tcl/parse
@@ -21,12 +21,13 @@ debug prefix marpa/engine/tcl/parse {[debug caller] | }
 ##
 
 oo::class create marpa::engine::tcl::parse {
+    superclass marpa::engine::tcl::base
+
     # # ## ### ##### ######## #############
     marpa::E marpa/engine/tcl/parse ENGINE TCL PARSE
 
     constructor {} {
 	debug.marpa/engine/tcl/parse {}
-	set myeventprefix {}
 
 	# Build the processing pipeline, then configure the various
 	# pieces.  Object creation is in backward direction, i.e. from
@@ -98,18 +99,10 @@ oo::class create marpa::engine::tcl::parse {
     # # ## ### ##### ######## #############
     ## State
 
-    variable myresult myeventprefix
-
-    # myeventprefix - Callback command to handle parse events
+    variable myresult
 
     # # ## ### ##### ######## #############
     ## Public API
-
-    method on-event {args} {
-	debug.marpa/engine/tcl/parse {}
-	set myeventprefix $args
-	return
-    }
 
     method process-file {path args} {
 	debug.marpa/engine/tcl/parse {}
@@ -132,56 +125,9 @@ oo::class create marpa::engine::tcl::parse {
     }
 
     # # ## ### ##### ######## #############
-
-    method Options {words} {
-	debug.marpa/engine/tcl/parse {}
-	if {[llength $words] % 2 == 1} {
-	    my E "Last option has no value" {WRONG ARGS}
-	}
-	set from   0 ;# int >= 0 (location)
-	set to    -1 ;# int >= 0 (location)
-	set limit -1 ;# int >  0
-	foreach {key value} $words {
-	    switch -exact -- $key {
-		from {
-		    set from $value
-		}
-		to {
-		    set to $value ; set limit -1
-		}
-		limit {
-		    set to -1 ; set limit $value
-		}
-		default {
-		    my E "Unknown option \"$key\", expected one of from, limit, or to" {BAD OPTION}
-		}
-	    }
-	}
-
-	if {$limit > 0} {
-	    set to [expr {$from + $limit}]
-	}
-
-	incr from -1
-	return [list $from $to]
-    }
-
-    # # ## ### ##### ######## #############
     ## This wrapper acts as the AST handler to the embedded parse
     ## core. The methods below handle the parser/handler
     ## communication.
-
-    method post {args} {
-	debug.marpa/engine/tcl/parse {}
-	if {![llength $myeventprefix]} {
-	    debug.marpa/engine/tcl/parse { Ignored }
-	    return
-	}
-	# XXX try ? ignore errors ?
-	debug.marpa/engine/tcl/parse { Invoke }
-	uplevel #0 [linsert $args 0 {*}$myeventprefix [self]]
-	return
-    }
 
     method enter {ast} {
 	debug.marpa/engine/tcl/parse {}

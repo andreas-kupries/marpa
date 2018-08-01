@@ -103,7 +103,7 @@ oo::class create marpa::lexer::ped {
 
     method Posint {x} {
 	incr x 0
-	if {$x >= 0} return
+	if {$x > 0} return
 	return -code error "expected int > 0, but got \"$x\""
     }
 

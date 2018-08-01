@@ -122,8 +122,12 @@ marpatcl_rtc_eh_report (void*                  cdata,
     }
 
     TRACE_TAG (eh, "PE taken, posting to Tcl", 0);
-
-    Tcl_Obj* events = e->to_names (e->ip, c, ids);
+    Tcl_Obj* events;
+    if (c) {
+	events = e->to_names (e->ip, c, ids);
+    } else {
+	events = Tcl_NewListObj (0, 0);
+    }
     TAKE (events);
 
     critcl_callback_invoke (e->event [type], 1, &events);
