@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Grammar specification)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
@@ -90,7 +90,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s, int rd)
 	    // TODO: structures, i.e. could quite possibly be RO, with the
 	    // TODO: write here seg.faulting.
 	    TRACE_RETURN ("(stack*) %p", rule_data);
-	    
+
 	case MARPATCL_RC_PRIO:
 	    /* priority -- full spec */
 	    TRACE_HEADER (1);
@@ -106,7 +106,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s, int rd)
 		TRACE_ADD (" %d <%s>", pc[2+k], NAME (pc[2+k]));
 	    }
 	    TRACE_CLOSER;
-	    
+
 	    lastlhs = pc[1];
 	    marpa_g_rule_new (g, lastlhs, scratch, detail);
 	    if (rd) lpc = pc;
@@ -143,7 +143,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s, int rd)
 
 	    marpa_g_sequence_new (g, detail, pc[1], -1, 0, 0);
 	    PUSH (0);
-	    
+
 	    pc += 2;
 	    break;
 	case MARPATCL_RC_QUP:
@@ -157,7 +157,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s, int rd)
 
 	    marpa_g_sequence_new (g, detail, pc[1], -1, 1, 0);
 	    PUSH (0);
-	    
+
 	    pc += 2;
 	    break;
 	case MARPATCL_RC_QUNS:
@@ -175,7 +175,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s, int rd)
 
 	    marpa_g_sequence_new (g, detail, pc[1], sep, 0, FLAGS(proper));
 	    PUSH (0);
-	    
+
 	    pc += 3;
 	    break;
 	case MARPATCL_RC_QUPS:
@@ -193,7 +193,7 @@ marpatcl_rtc_spec_setup (Marpa_Grammar g, marpatcl_rtc_rules* s, int rd)
 
 	    marpa_g_sequence_new (g, detail, pc[1], sep, 1, FLAGS(proper));
 	    PUSH (0);
-	    
+
 	    pc += 3;
 	    break;
 	case MARPATCL_RC_BRAN:
@@ -276,7 +276,7 @@ marpatcl_rtc_spec_g1decode (marpatcl_rtc_symvec* coding, marpatcl_rtc_sym rule, 
     ASSERT (len, "No place for length")
     tag = coding->data [0];
     TRACE ("tag %d", tag);
-    
+
     switch (tag) {
     case MARPATCL_S_SINGLE:
 	/* Masks are identical for all rules, i.e. independent of the
@@ -289,7 +289,7 @@ marpatcl_rtc_spec_g1decode (marpatcl_rtc_symvec* coding, marpatcl_rtc_sym rule, 
 	ASSERT_BOUNDS (1, coding->size);
 	length = coding->data [1];
 	TRACE ("single, length %d", length);
-	    
+
 	*len = length;
 	if (!length) {
 	    TRACE_RETURN ("(sym*) %p", NULL);
@@ -317,7 +317,7 @@ marpatcl_rtc_spec_g1decode (marpatcl_rtc_symvec* coding, marpatcl_rtc_sym rule, 
 	ASSERT_BOUNDS (1+offset, coding->size);
 	length = coding->data[1+offset];
 	TRACE ("per, length %d", length);
-	
+
 	*len = length;
 	if (!length) {
 	    TRACE_RETURN ("(sym*) %p (len 0)", NULL);
@@ -361,9 +361,9 @@ marpatcl_rtc_spec_setup_rd (marpatcl_rtc_rules* s)
 	    // TODO: Store this somewhere else. (s) are the const grammar
 	    // TODO: structures, i.e. could quite possibly be in RO memory,
 	    // TODO: with this write here seg.faulting.
-	    
+
 	    TRACE_RETURN ("(stack*) %p", rule_data);
-	    
+
 	case MARPATCL_RC_PRIO:
 	    /* priority -- full spec */
 	    lpc = pc;
@@ -422,16 +422,16 @@ marpatcl_rtc_spec_symid (marpatcl_rtc_rules* g, const char* symname)
     marpatcl_rtc_symid*  map = e->idmap;
 
     // Binary search for the symbol in the table, then return its id.
-    
+
     int low, high;
     for (low = 0, high = map->size-1; low <= high; ) {
 	int mid   = (low+high)/2;
 	const char* probe = map->symbol [mid];
-	
+
 	TRACE ("probe [%d..%d] @%d = %s ~ %s", low, high, mid, probe, symname);
 
 	int delta = strcmp (probe, symname);
-	
+
 	if (!delta) {
 	    TRACE ("%s ==> %d", symname, map->id [mid]);
 	    TRACE_RETURN ("%d", map->id [mid]);

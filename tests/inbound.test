@@ -1,5 +1,5 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2016 Andreas Kupries
+## (c) 2016-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## marpa::inbound
 
@@ -49,6 +49,17 @@ kt source support/common.tcl
 # eof    | FAIL | 3.2.0
 # -------+------+
 
+# TODO tests for inbound cursor control
+##
+# [..] location
+# [..] from
+# [..] rewind
+# [..] relative
+# [..] stop
+# [..] to
+# [..] dont-stop
+# [..] limit
+
 # # ## ### ##### ######## ############# #####################
 ## constructor - wrong args, initial state, calls
 
@@ -63,7 +74,7 @@ test marpa-inbound-1.0.1 {constructor, wrong args, too many} -body {
 test marpa-inbound-1.1 {constructor, initial state} -setup {
     marpa::inbound create IN [log GATE]
 } -body {
-    list [IN location?] [logged]
+    list [IN location] [logged]
 } -cleanup {
     IN destroy
 } -result {0 {
@@ -127,11 +138,11 @@ test marpa-inbound-3.2.2 {eof, post-forbids read} -setup {
     logged
 } -returnCodes error -result {Unable to process input after EOF}
 
-test marpa-inbound-3.2.3 {eof, post-allows location?} -setup {
+test marpa-inbound-3.2.3 {eof, post-allows location} -setup {
     marpa::inbound create IN [log GATE]
     IN eof
 } -body {
-    IN location?
+    IN location
 } -cleanup {
     IN destroy
     logged
@@ -147,21 +158,21 @@ test marpa-inbound-4.0.0 {enter, wrong args, not enough} -setup {
 } -cleanup {
     IN destroy
     logged
-} -returnCodes error -result {wrong # args: should be "IN enter string"}
+} -returnCodes error -result {wrong # args: should be "IN enter string ?from? ?to?"}
 
 test marpa-inbound-4.0.1 {enter, wrong args, too many} -setup {
     marpa::inbound create IN [log GATE]
 } -body {
-    IN enter STRING X
+    IN enter STRING FROM TO X
 } -cleanup {
     IN destroy
     logged
-} -returnCodes error -result {wrong # args: should be "IN enter string"}
+} -returnCodes error -result {wrong # args: should be "IN enter string ?from? ?to?"}
 
 test marpa-inbound-4.1.0 {enter, results, state changes, external calls} -setup {
     marpa::inbound create IN [log GATE]
 } -body {
-    list [IN enter FOO] [IN location?] [logged]
+    list [IN enter FOO] [IN location] [logged]
 } -cleanup {
     IN destroy
 } -result {{} 3 {
@@ -180,7 +191,7 @@ test marpa-inbound-4.1.0 {enter, results, state changes, external calls} -setup 
 test marpa-inbound-4.1.1 {enter nothing, results, state changes, external calls} -setup {
     marpa::inbound create IN [log GATE]
 } -body {
-    list [IN enter {}] [IN location?] [logged]
+    list [IN enter {}] [IN location] [logged]
 } -cleanup {
     IN destroy
 } -result {{} 0 {
@@ -198,11 +209,11 @@ test marpa-inbound-4.2.0 {enter, post-allows enter} -setup {
     logged
 } -result {}
 
-test marpa-inbound-4.2.1 {enter, post-allows location?} -setup {
+test marpa-inbound-4.2.1 {enter, post-allows location} -setup {
     marpa::inbound create IN [log GATE]
     IN enter {}
 } -body {
-    IN location?
+    IN location
 } -cleanup {
     IN destroy
     logged
@@ -240,22 +251,22 @@ test marpa-inbound-5.0.0 {read, wrong args, not enough} -setup {
 } -cleanup {
     IN destroy
     logged
-} -returnCodes error -result {wrong # args: should be "IN read chan"}
+} -returnCodes error -result {wrong # args: should be "IN read chan ?from? ?to?"}
 
 test marpa-inbound-5.0.1 {read, wrong args, too many} -setup {
     marpa::inbound create IN [log GATE]
 } -body {
-    IN read CHAN X
+    IN read CHAN -1 -1 X
 } -cleanup {
     IN destroy
     logged
-} -returnCodes error -result {wrong # args: should be "IN read chan"}
+} -returnCodes error -result {wrong # args: should be "IN read chan ?from? ?to?"}
 
 test marpa-inbound-5.1.0 {read, results, state changes, external calls} -setup {
     set chan [tcl::chan::string FOO]
     marpa::inbound create IN [log GATE]
 } -body {
-    list [IN read $chan] [IN location?] [logged]
+    list [IN read $chan] [IN location] [logged]
 } -cleanup {
     IN destroy
     close $chan
@@ -276,7 +287,7 @@ test marpa-inbound-5.1.1 {read nothing, results, state changes, external calls} 
     set chan [tcl::chan::string {}]
     marpa::inbound create IN [log GATE]
 } -body {
-    list [IN read $chan] [IN location?] [logged]
+    list [IN read $chan] [IN location] [logged]
 } -cleanup {
     IN destroy
     close $chan
@@ -297,12 +308,12 @@ test marpa-inbound-5.2.0 {read, post-allows enter} -setup {
     close $chan
 } -result {}
 
-test marpa-inbound-5.2.1 {read, post-allows location?} -setup {
+test marpa-inbound-5.2.1 {read, post-allows location} -setup {
     set chan [tcl::chan::string {}]
     marpa::inbound create IN [log GATE]
     IN read $chan
 } -body {
-    IN location?
+    IN location
 } -cleanup {
     IN destroy
     logged

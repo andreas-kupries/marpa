@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Grammar specification)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_SPEC_H

@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Stacks of bytes)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2018-present Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_BYTESTACK_H

@@ -1,11 +1,12 @@
 /* Runtime for C-engine (RTC). Declarations. (Character location indexing)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2018 Andreas Kupries
+ * (c) 2018-present Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_CLINDEX_H
 #define MARPATCL_RTC_CLINDEX_H
 
+#include <rtc.h>
 #include <bytestack.h>
 #include <stack.h>
 
@@ -34,10 +35,10 @@ typedef struct marpatcl_rtc_clindex {
  * find     - return byte location for character location
  */
 
-void marpatcl_rtc_clindex_init    (marpatcl_rtc_clindex* index);
-void marpatcl_rtc_clindex_release (marpatcl_rtc_clindex* index);
-void marpatcl_rtc_clindex_update  (marpatcl_rtc_clindex* index, int cloc, int bloc, int blen);
-int  marpatcl_rtc_clindex_find    (marpatcl_rtc_clindex* index, int cloc);
+void marpatcl_rtc_clindex_init   (marpatcl_rtc_p p);
+void marpatcl_rtc_clindex_free   (marpatcl_rtc_p p);
+void marpatcl_rtc_clindex_update (marpatcl_rtc_p p, int blen);
+int  marpatcl_rtc_clindex_find   (marpatcl_rtc_p p, int cloc);
 
 #endif
 

@@ -4,7 +4,7 @@
 # (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                                     http://core.tcl.tk/akupries/
 ##
-# (c) 2018 Grammar json::parser::c 1 By Andreas Kupries
+# (c) 2018-present Grammar json::parser::c 1 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "json::parser::c".
 ##	Generated On Tue Mar 20 20:43:56 PDT 2018
@@ -744,7 +744,7 @@ critcl::class def json::parser::c {
 	    }
 	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
 	    buf = Tcl_GetStringFromObj (cbuf, &got);
-	    marpatcl_rtc_enter (instance->state, buf, got);
+	    marpatcl_rtc_enter (instance->state, buf, got, 0, -1);
 	    if (marpatcl_rtc_failed (instance->state)) break;
 	}
 	Tcl_DecrRefCount (cbuf);
@@ -754,7 +754,7 @@ critcl::class def json::parser::c {
     }
 
     method process proc {Tcl_Interp* ip pstring string} ok {
-	marpatcl_rtc_enter (instance->state, string.s, string.len);
+	marpatcl_rtc_enter (instance->state, string.s, string.len, 0, -1);
 	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
 

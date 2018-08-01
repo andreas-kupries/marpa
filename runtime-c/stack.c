@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Stacks of ints)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
@@ -31,14 +31,14 @@ marpatcl_rtc_stack_cons (int initial_capacity)
 {
     marpatcl_rtc_stack_p s;
     TRACE_FUNC ("(initial_capacity %d)", initial_capacity);
-    
+
     s = ALLOC (marpatcl_rtc_stack);
 
     if (initial_capacity < 0) {
 	initial_capacity = DEFAULT_INITIAL_CAPACITY;
     }
     TRACE ("initial_capacity %d", initial_capacity);
-    
+
     SZ  = 0;
     CAP = initial_capacity;
     VAL = NALLOC (int, initial_capacity);
@@ -58,7 +58,7 @@ marpatcl_rtc_stack_destroy (marpatcl_rtc_stack_p s)
     TRACE_RETURN_VOID;
 }
 
-int 
+int
 marpatcl_rtc_stack_size (marpatcl_rtc_stack_p s)
 {
     TRACE_FUNC ("((stack*) %p, (int*) data %p)", s, VAL);

@@ -48,7 +48,7 @@ static Tcl_ObjType marpatcl_scr_objtype = {
  * - destructor
  * - aquire, release reference
  */
-    
+
 OTSCR*
 marpatcl_otscr_new (SCR* scr)
 {
@@ -69,7 +69,7 @@ marpatcl_otscr_destroy (OTSCR* otscr)
 {
     TRACE_FUNC ("((OTSCR*) %p (rc %d, scr %p))",
 		otscr, otscr->refCount, otscr->scr);
-	
+
     marpatcl_scr_destroy (otscr->scr);
 
     TRACE ("DEL (OTSCR*) %p", otscr);
@@ -87,7 +87,7 @@ marpatcl_otscr_take (OTSCR* otscr)
     TRACE ("(OTSCR*) %p (rc=%d)", otscr, otscr ? otscr->refCount : -5);
     TRACE_RETURN ("(OTSCR*) %p", otscr);
 }
-    
+
 void
 marpatcl_otscr_release (OTSCR* otscr)
 {
@@ -112,7 +112,7 @@ marpatcl_otscr_release (OTSCR* otscr)
  * - stringify
  * - shimmer
  */
-    
+
 void
 marpatcl_scr_rep_free (Tcl_Obj* o)
 {
@@ -124,20 +124,20 @@ marpatcl_scr_rep_free (Tcl_Obj* o)
 
     TRACE_RETURN_VOID;
 }
-    
+
 void
 marpatcl_scr_rep_dup (Tcl_Obj* src, Tcl_Obj* dst)
 {
     TRACE_FUNC ("(src %p (rc=%d), dst %p)",
 		src, src ? src->refCount : -5, dst);
-	
+
     marpatcl_otscr_take (OTSCR_REP(src));
     dst->INT_REP = src->INT_REP;
     dst->typePtr = &marpatcl_scr_objtype;
 
     TRACE_RETURN_VOID;
 }
-    
+
 void
 marpatcl_scr_rep_str (Tcl_Obj* o)
 {
@@ -163,14 +163,14 @@ marpatcl_scr_rep_str (Tcl_Obj* o)
 	 i++, cr++) {
 	if (cr->start == cr->end) {
 	    /* range is single element */
-	    sprintf(buf, "%d", cr->start); 
+	    sprintf(buf, "%d", cr->start);
 	    Tcl_DStringAppendElement (&ds, buf);
 	} else {
 	    /* actual range */
 	    Tcl_DStringStartSublist(&ds);
-	    sprintf(buf, "%d", cr->start); 
+	    sprintf(buf, "%d", cr->start);
 	    Tcl_DStringAppendElement (&ds, buf);
-	    sprintf(buf, "%d", cr->end); 
+	    sprintf(buf, "%d", cr->end);
 	    Tcl_DStringAppendElement (&ds, buf);
 	    Tcl_DStringEndSublist(&ds);
 	}
@@ -212,7 +212,7 @@ marpatcl_scr_rep_from_any (Tcl_Interp* ip, Tcl_Obj* o)
     for (i = 0; i < objc; i++) {
 	Tcl_Obj* elt = objv[i];
 	TRACE ("PROCESS. [%02d] %p", i, elt);
-	    
+
 	/*
 	 * First handle objects which already have a suitable type.  No
 	 * conversions required, only data extraction and validation.
@@ -276,7 +276,7 @@ marpatcl_scr_rep_from_any (Tcl_Interp* ip, Tcl_Obj* o)
     }
 
     TRACE ("USE %d", scr->n);
-	
+
     otscr = marpatcl_otscr_take (marpatcl_otscr_new (scr));
 
     /*
@@ -311,7 +311,7 @@ marpatcl_new_otscr_obj (OTSCR* otscr)
     TRACE_FUNC ("((OTSCR*) %p)", otscr);
     obj = Tcl_NewObj ();
     TRACE ("(Tcl_Obj*) %p (rc=%d)", obj, obj->refCount);
-	
+
     Tcl_InvalidateStringRep (obj);
     obj->INT_REP = marpatcl_otscr_take (otscr);
     obj->typePtr = &marpatcl_scr_objtype;

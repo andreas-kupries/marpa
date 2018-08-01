@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Semantic values, and ASTs)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2018 Andreas Kupries
+ * (c) 2018-present Andreas Kupries
  *
  * Debugging helper. Memory diagnosis.
  * Track all allocated values in a global list (***), plus origin information.

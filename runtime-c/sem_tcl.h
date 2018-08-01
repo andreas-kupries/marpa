@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (SV for Tcl)
  * - - -- --- ----- -------- ------------- -------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_SEM_TCL_H
@@ -36,6 +36,23 @@ extern void     marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p,
 
 extern int      marpatcl_rtc_pe_alternate   (Tcl_Interp* ip, marpatcl_rtc_p p,
 					     const char* symbol, const char* semvalue);
+
+extern int      marpatcl_rtc_pe_access     (Tcl_Interp* ip, marpatcl_rtc_p p);
+extern int      marpatcl_rtc_pe_ba_event   (Tcl_Interp* ip, marpatcl_rtc_p p);
+extern int      marpatcl_rtc_pe_dba_event  (Tcl_Interp* ip, marpatcl_rtc_p p);
+extern int      marpatcl_rtc_pe_sdba_event (Tcl_Interp* ip, marpatcl_rtc_p p);
+
+extern int      marpatcl_rtc_pe_match (marpatcl_rtc_pedesc_p instance,
+				       Tcl_Interp*	     interp,
+				       Tcl_Obj*              name,
+				       int		     objc,
+				       Tcl_Obj*CONST*	     objv);
+
+extern int marpatcl_rtc_pe_range (Tcl_Interp*	 interp,
+				  int		 objc,
+				  Tcl_Obj*CONST* objv,
+				  int*           from,
+				  int*           to);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

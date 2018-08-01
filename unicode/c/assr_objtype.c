@@ -78,12 +78,12 @@ OTASSR*
 marpatcl_otassr_take (OTASSR* otassr)
 {
     TRACE_FUNC ("((OTASSR*) %p)", otassr);
-	
+
     otassr->refCount ++;
     TRACE ("(OTASSR*) %p (rc %d)", otassr, otassr ? otassr->refCount : -5);
     TRACE_RETURN ("(OTASSR*) %p", otassr);
 }
-    
+
 void
 marpatcl_otassr_release (OTASSR* otassr)
 {
@@ -108,7 +108,7 @@ marpatcl_otassr_release (OTASSR* otassr)
  * - stringify
  * - shimmer
  */
-    
+
 void
 marpatcl_assr_rep_free (Tcl_Obj* o)
 {
@@ -116,7 +116,7 @@ marpatcl_assr_rep_free (Tcl_Obj* o)
     marpatcl_otassr_release (OTASSR_REP(o));
     TRACE_RETURN_VOID;
 }
-    
+
 void
 marpatcl_assr_rep_dup (Tcl_Obj* src, Tcl_Obj* dst)
 {
@@ -129,7 +129,7 @@ marpatcl_assr_rep_dup (Tcl_Obj* src, Tcl_Obj* dst)
 
     TRACE_RETURN_VOID;
 }
-    
+
 void
 marpatcl_assr_rep_str (Tcl_Obj* o)
 {
@@ -142,7 +142,7 @@ marpatcl_assr_rep_str (Tcl_Obj* o)
     int         i, k;
     SSR*        ssr;
     SR*         sr;
-	
+
     TRACE_FUNC ("(o %p (rc %d))", o, o ? o->refCount : -5);
 
     Tcl_DStringInit (&ds);
@@ -160,7 +160,7 @@ marpatcl_assr_rep_str (Tcl_Obj* o)
 	    Tcl_DStringStartSublist(&ds);
 	    sprintf(buf, "%d", sr->start);
 	    Tcl_DStringAppendElement (&ds, buf);
-	    sprintf(buf, "%d", sr->end); 
+	    sprintf(buf, "%d", sr->end);
 	    Tcl_DStringAppendElement (&ds, buf);
 	    Tcl_DStringEndSublist(&ds);
 	}
@@ -183,7 +183,7 @@ marpatcl_new_otassr_obj (OTASSR* otassr)
 {
     Tcl_Obj* obj = Tcl_NewObj ();
     TRACE_FUNC ("((OTASSR*) %p)", otassr);
-	
+
     Tcl_InvalidateStringRep (obj);
     obj->internalRep.otherValuePtr = marpatcl_otassr_take (otassr);
     obj->typePtr                   = &marpatcl_assr_objtype;

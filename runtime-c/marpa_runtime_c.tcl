@@ -100,6 +100,8 @@ critcl::api function void marpatcl_rtc_enter {
     marpatcl_rtc_p         p
     {const unsigned char*} bytes
     int                    n
+    int                    from
+    int                    to
 }
 critcl::api function int marpatcl_rtc_failed {
     marpatcl_rtc_p p
@@ -170,6 +172,22 @@ critcl::api function void marpatcl_rtc_eh_report {
 
 # access to parse event descriptor facade
 
+critcl::api function int marpatcl_rtc_pe_range {
+    Tcl_Interp*	   interp
+    int		   objc
+    Tcl_Obj*CONST* objv
+    int*           from
+    int*           to
+}
+
+critcl::api function int marpatcl_rtc_pe_match {
+    marpatcl_rtc_pedesc_p instance
+    Tcl_Interp*		  interp
+    Tcl_Obj*              name
+    int			  objc
+    Tcl_Obj*CONST*	  objv
+}
+
 critcl::api function marpatcl_rtc_pedesc_p marpatcl_rtc_pedesc_new {
     Tcl_Interp*	   interp
     int		   objc
@@ -178,15 +196,10 @@ critcl::api function marpatcl_rtc_pedesc_p marpatcl_rtc_pedesc_new {
 critcl::api function void marpatcl_rtc_pedesc_destroy {
     marpatcl_rtc_pedesc_p instance
 }
-critcl::api function int marpatcl_rtc_pedesc_invoke {
-    marpatcl_rtc_pedesc_p instance
-    Tcl_Interp*		  interp
-    int			  objc
-    Tcl_Obj*CONST*	  objv
-}
 critcl::api function marpatcl_rtc_p marpatcl_rtc_pedesc_rtc_get {
     Tcl_Interp* interp
 }
+
 critcl::api function void marpatcl_rtc_pedesc_rtc_set {
     Tcl_Interp*	   interp
     marpatcl_rtc_p v

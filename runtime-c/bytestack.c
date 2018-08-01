@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Stacks of bytes)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2018-present Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
@@ -31,14 +31,14 @@ marpatcl_rtc_bytestack_cons (int initial_capacity)
 {
     marpatcl_rtc_bytestack_p s;
     TRACE_FUNC ("(initial_capacity %d)", initial_capacity);
-    
+
     s = ALLOC (marpatcl_rtc_bytestack);
 
     if (initial_capacity < 0) {
 	initial_capacity = DEFAULT_INITIAL_CAPACITY;
     }
     TRACE ("initial_capacity %d", initial_capacity);
-    
+
     SZ  = 0;
     CAP = initial_capacity;
     VAL = NALLOC (unsigned char, initial_capacity);
@@ -57,7 +57,7 @@ marpatcl_rtc_bytestack_destroy (marpatcl_rtc_bytestack_p s)
     TRACE_RETURN_VOID;
 }
 
-int 
+int
 marpatcl_rtc_bytestack_size (marpatcl_rtc_bytestack_p s)
 {
     TRACE_FUNC ("(bytestack*) %p)", s);

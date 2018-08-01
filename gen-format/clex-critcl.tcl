@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2017-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -67,18 +67,15 @@ proc ::marpa::gen::format::clex-critcl::container {gc} {
 	events l0
     }]
 
-    lassign [lmap segment [marpa asset* $self] {
-	string trim $segment
-    }] template setup_events setup_no_events setup_post
+    set template [string trim [marpa asset $self]]
 
     if {[dict get $config @have-events@]} {
-	dict set config @__event_setup__@ [string map $config $setup_events]
+	set cname [dict get $config @cname@]
 	dict set config @__event_pkg__@   "\n    package require critcl::literals"
-	dict set config @__event_post__@  " $setup_post"
+	dict set config @__event_list__@  "${cname}_event_list"
     } else {
-	dict set config @__event_setup__@ [string map $config $setup_no_events]
 	dict set config @__event_pkg__@   ""
-	dict set config @__event_post__@  " \{\}"
+	dict set config @__event_list__@  0
     }
 
     return [string map $config $template]
@@ -92,8 +89,8 @@ return
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
-# (c) 2017-2018 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                          http://core.tcl.tk/akupries/
+# (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                             http://core.tcl.tk/akupries/
 ##
 # (c) @slif-year@ Grammar @slif-name@ @slif-version@ By @slif-writer@
 ##
@@ -237,7 +234,61 @@ critcl::class def @slif-name@ {
 	marpatcl_rtc_lex_release (&instance->lstate);
     }
 
-    @__event_setup__@
+    # Note how `rtc` is declared before `pedesc`. We need it
+    # initalized to be able to feed it into the construction of the
+    # PE descriptor facade.
+    insvariable marpatcl_rtc_p state {
+	C-level engine, RTC structure.
+    } {
+	instance->state = marpatcl_rtc_cons (&@cname@_spec,
+					     NULL, /* No actions */
+					     marpatcl_rtc_lex_token, (void*) &instance->lstate,
+					     marpatcl_rtc_eh_report, (void*) &instance->ehstate );
+    } {
+	marpatcl_rtc_destroy (instance->state);
+    }
+
+    insvariable marpatcl_rtc_pedesc_p pedesc {
+	Facade to the parse event descriptor structures.
+	Maintained only when we have parse events declared, i.e. possible.
+    } {
+	// Feed our RTC structure into the facade class so that its constructor has access to it.
+	marpatcl_rtc_pedesc_rtc_set (interp, instance->state);
+	instance->pedesc = marpatcl_rtc_pedesc_new (interp, 0, 0);
+	ASSERT (!marpatcl_rtc_pedesc_rtc_get (interp), "Constructor failed to take rtc structure");
+    } {
+	marpatcl_rtc_pedesc_destroy (instance->pedesc);
+    }
+
+    insvariable marpatcl_ehandlers ehstate {
+	Handler for parse events
+    } {
+	marpatcl_rtc_eh_init (&instance->ehstate, interp,
+			      (marpatcl_events_to_names) @__event_list__@);
+	/* h.self initialized by the constructor post-body */
+	/* See on-event above for further setup */
+    } {
+	marpatcl_rtc_eh_clear (&instance->ehstate);
+	Tcl_DecrRefCount (instance->ehstate.self);
+	instance->ehstate.self = 0;
+    }
+
+    insvariable Tcl_Obj* name {
+	Object name, tail
+    } { /* Initialized in the post constructor */ } {
+	Tcl_DecrRefCount (instance->name);
+    }
+
+
+    method on-event proc {object args} void {
+	marpatcl_rtc_eh_setup (&instance->ehstate, args.c, args.v);
+    }
+
+    method match proc {Tcl_Interp* ip object args} ok {
+	/* -- Delegate to the parse event descriptor facade */
+	return marpatcl_rtc_pe_match (instance->pedesc, ip, instance->name,
+				      args.c, args.v);
+    }
 
     constructor {
         /*
@@ -252,9 +303,18 @@ critcl::class def @slif-name@ {
 	}
 
 	instance->lstate.ip = interp;
-    }@__event_post__@
+    } {
+	/* Post body. Save the FQN for use in the callbacks */
+	instance->ehstate.self = fqn;
+	Tcl_IncrRefCount (fqn);
+        instance->name = Tcl_NewStringObj (Tcl_GetCommandName (interp, instance->cmd), -1);
+        Tcl_IncrRefCount (instance->name);
+    }
 
-    method process-file proc {Tcl_Interp* ip Tcl_Obj* path list outcmd} ok {
+    method process-file proc {Tcl_Interp* ip Tcl_Obj* path list outcmd object args} ok {
+	int from, to;
+	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
+
 	int res, got;
 	char* buf;
 	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
@@ -286,7 +346,7 @@ critcl::class def @slif-name@ {
 	(void) Tcl_Close (ip, in);
 
 	buf = Tcl_GetStringFromObj (ebuf, &got);
-	marpatcl_rtc_enter (instance->state, buf, got);
+	marpatcl_rtc_enter (instance->state, buf, got, from, to);
 	Tcl_DecrRefCount (ebuf);
 
 	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
@@ -301,13 +361,15 @@ critcl::class def @slif-name@ {
 	return res;
     }
 
-    method process proc {Tcl_Interp* ip pstring string list outcmd} ok {
-	int res;
+    method process proc {Tcl_Interp* ip pstring string list outcmd object args} ok {
+	int from, to;
+	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
 
+	int res;
 	instance->lstate.matched = critcl_callback_new (ip, outcmd.c, outcmd.v, 3);
 	critcl_callback_extend (instance->lstate.matched, Tcl_NewStringObj ("enter", -1));
 
-	marpatcl_rtc_enter (instance->state, string.s, string.len);
+	marpatcl_rtc_enter (instance->state, string.s, string.len, from, to);
 
 	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
 	critcl_callback_extend (on_eof, Tcl_NewStringObj ("eof", -1));
@@ -324,80 +386,3 @@ critcl::class def @slif-name@ {
 
 # # ## ### ##### ######## ############# #####################
 return
-
-    # Setup for events
-
-    method on-event proc {object args} void {
-	marpatcl_rtc_eh_setup (&instance->ehstate, args.c, args.v);
-    }
-
-    method match proc {Tcl_Interp* ip object args} ok {
-	/* -- Delegate to the parse event descriptor facade */
-	return marpatcl_rtc_pedesc_invoke (instance->pedesc, ip, args.c, args.v);
-    }
-
-    # Note how `rtc` is declared before `pedesc`. We need it
-    # initalized to be able to feed it into the construction of the
-    # PE descriptor facade.
-    insvariable marpatcl_rtc_p state {
-	C-level engine, RTC structure.
-    } {
-	instance->state = marpatcl_rtc_cons (&@cname@_spec,
-					     NULL, /* No actions */
-					     marpatcl_rtc_lex_token, (void*) &instance->lstate,
-					     marpatcl_rtc_eh_report, (void*) &instance->ehstate );
-    } {
-	marpatcl_rtc_destroy (instance->state);
-    }
-
-    insvariable marpatcl_rtc_pedesc_p pedesc {
-	Facade to the parse event descriptor structures.
-	Maintained only when we have parse events declared, i.e. possible.
-    } {
-	// Feed our RTC structure into the facade class so that its constructor has access to it.
-	marpatcl_rtc_pedesc_rtc_set (interp, instance->state);
-	instance->pedesc = marpatcl_rtc_pedesc_new (interp, 0, 0);
-	ASSERT (!marpatcl_rtc_pedesc_rtc_get (interp), "Constructor failed to take rtc structure");
-    } {
-	marpatcl_rtc_pedesc_destroy (instance->pedesc);
-    }
-
-    insvariable marpatcl_ehandlers ehstate {
-	Handler for parse events
-    } {
-	marpatcl_rtc_eh_init (&instance->ehstate, interp,
-			      (marpatcl_events_to_names) @slif-name@_event_list);
-	// h.self initialized by the constructor post-body
-	/* See on-event above for further setup */
-    } {
-	marpatcl_rtc_eh_clear (&instance->ehstate);
-	Tcl_DecrRefCount (instance->ehstate.self);
-	instance->ehstate.self = 0;
-    }
-
-    # Setup without events
-
-    method on-event proc {object args} void {}
-
-    method match proc {object args} ok {
-	// No events: Facade not present, no access to the runtime structures.
-	// TODO: Set error message
-	return TCL_ERROR;
-    }
-
-    insvariable marpatcl_rtc_p state {
-	C-level engine, RTC structures.
-    } {
-	instance->state = marpatcl_rtc_cons (&@cname@_spec,
-					     NULL, /* No actions */
-					     marpatcl_rtc_lex_token, (void*) &instance->lstate,
-					     0, 0 );
-    } {
-	marpatcl_rtc_destroy (instance->state);
-    }
-
-{
-	/* Post body. Save the FQN for use in the callbacks */
-	instance->ehstate.self = fqn;
-	Tcl_IncrRefCount (fqn);
-    }

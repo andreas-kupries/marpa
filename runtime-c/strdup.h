@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. String duplication.
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2018 Andreas Kupries
+ * (c) 2018-present Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_STRDUP_H

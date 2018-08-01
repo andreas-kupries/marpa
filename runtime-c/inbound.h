@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Engine: Input processing)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_INBOUND_H
@@ -20,15 +20,12 @@
  */
 
 typedef struct marpatcl_rtc_inbound {
-    int location;  /* Location of the current byte in the input (byte offset). */
-    int clocation; /* Same, as character offset */
-    int trailer;   /* Number of bytes in the expected trailer */
-    int header;    /* Number of bytes in a header so far */
-    //
-    // Index. Enables fast access to anywhere in the input even in the
-    // presence multi-byte characters, i.e non-ASCII.
-    //
-    marpatcl_rtc_clindex index;
+    unsigned char* bytes;     /* Input byte string to process */
+    int            location;  /* Index of the current byte in the input (byte offset) */
+    int            clocation; /* Same, as character offset */
+    int            cstop;     /* Location to stop processing at */
+    int            trailer;   /* Number of bytes in the expected trailer */
+    int            header;    /* Number of bytes in a header so far */
 } marpatcl_rtc_inbound;
 
 /*
@@ -46,10 +43,19 @@ typedef struct marpatcl_rtc_inbound {
 void marpatcl_rtc_inbound_init      (marpatcl_rtc_p p);
 void marpatcl_rtc_inbound_free      (marpatcl_rtc_p p);
 int  marpatcl_rtc_inbound_location  (marpatcl_rtc_p p);
-void marpatcl_rtc_inbound_enter     (marpatcl_rtc_p p, const unsigned char* bytes, int n);
+void marpatcl_rtc_inbound_enter     (marpatcl_rtc_p p, const unsigned char* bytes,
+				     int n, int from ,int to);
 void marpatcl_rtc_inbound_eof       (marpatcl_rtc_p p);
+
 void marpatcl_rtc_inbound_moveto    (marpatcl_rtc_p p, int cpos);
 void marpatcl_rtc_inbound_moveby    (marpatcl_rtc_p p, int cdelta);
+
+void marpatcl_rtc_inbound_set_stop  (marpatcl_rtc_p p, int cpos);
+void marpatcl_rtc_inbound_set_limit (marpatcl_rtc_p p, int limit);
+void marpatcl_rtc_inbound_no_stop   (marpatcl_rtc_p p);
+int  marpatcl_rtc_inbound_stoploc   (marpatcl_rtc_p p);
+
+unsigned char marpatcl_rtc_inbound_step (marpatcl_rtc_p p);
 
 #endif
 

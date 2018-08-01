@@ -1,8 +1,8 @@
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
-# (c) 2017-2018 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                          http://core.tcl.tk/akupries/
+# (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                             http://core.tcl.tk/akupries/
 ##
 # (c) <Year> Grammar <Name> <Version> By <Writer>
 ##
@@ -509,17 +509,6 @@ critcl::class def <Name> {
 	marpatcl_rtc_lex_release (&instance->lstate);
     }
 
-    # Setup for events
-
-    method on-event proc {object args} void {
-	marpatcl_rtc_eh_setup (&instance->ehstate, args.c, args.v);
-    }
-
-    method match proc {Tcl_Interp* ip object args} ok {
-	/* -- Delegate to the parse event descriptor facade */
-	return marpatcl_rtc_pedesc_invoke (instance->pedesc, ip, args.c, args.v);
-    }
-
     # Note how `rtc` is declared before `pedesc`. We need it
     # initalized to be able to feed it into the construction of the
     # PE descriptor facade.
@@ -551,12 +540,29 @@ critcl::class def <Name> {
     } {
 	marpatcl_rtc_eh_init (&instance->ehstate, interp,
 			      (marpatcl_events_to_names) <Name>_event_list);
-	// h.self initialized by the constructor post-body
+	/* h.self initialized by the constructor post-body */
 	/* See on-event above for further setup */
     } {
 	marpatcl_rtc_eh_clear (&instance->ehstate);
 	Tcl_DecrRefCount (instance->ehstate.self);
 	instance->ehstate.self = 0;
+    }
+
+    insvariable Tcl_Obj* name {
+	Object name, tail
+    } { /* Initialized in the post constructor */ } {
+	Tcl_DecrRefCount (instance->name);
+    }
+
+
+    method on-event proc {object args} void {
+	marpatcl_rtc_eh_setup (&instance->ehstate, args.c, args.v);
+    }
+
+    method match proc {Tcl_Interp* ip object args} ok {
+	/* -- Delegate to the parse event descriptor facade */
+	return marpatcl_rtc_pe_match (instance->pedesc, ip, instance->name,
+				      args.c, args.v);
     }
 
     constructor {
@@ -576,9 +582,14 @@ critcl::class def <Name> {
 	/* Post body. Save the FQN for use in the callbacks */
 	instance->ehstate.self = fqn;
 	Tcl_IncrRefCount (fqn);
+        instance->name = Tcl_NewStringObj (Tcl_GetCommandName (interp, instance->cmd), -1);
+        Tcl_IncrRefCount (instance->name);
     }
 
-    method process-file proc {Tcl_Interp* ip Tcl_Obj* path list outcmd} ok {
+    method process-file proc {Tcl_Interp* ip Tcl_Obj* path list outcmd object args} ok {
+	int from, to;
+	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
+
 	int res, got;
 	char* buf;
 	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
@@ -610,7 +621,7 @@ critcl::class def <Name> {
 	(void) Tcl_Close (ip, in);
 
 	buf = Tcl_GetStringFromObj (ebuf, &got);
-	marpatcl_rtc_enter (instance->state, buf, got);
+	marpatcl_rtc_enter (instance->state, buf, got, from, to);
 	Tcl_DecrRefCount (ebuf);
 
 	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
@@ -625,13 +636,15 @@ critcl::class def <Name> {
 	return res;
     }
 
-    method process proc {Tcl_Interp* ip pstring string list outcmd} ok {
-	int res;
+    method process proc {Tcl_Interp* ip pstring string list outcmd object args} ok {
+	int from, to;
+	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
 
+	int res;
 	instance->lstate.matched = critcl_callback_new (ip, outcmd.c, outcmd.v, 3);
 	critcl_callback_extend (instance->lstate.matched, Tcl_NewStringObj ("enter", -1));
 
-	marpatcl_rtc_enter (instance->state, string.s, string.len);
+	marpatcl_rtc_enter (instance->state, string.s, string.len, from, to);
 
 	critcl_callback_p on_eof = critcl_callback_new (ip, outcmd.c, outcmd.v, 1);
 	critcl_callback_extend (on_eof, Tcl_NewStringObj ("eof", -1));

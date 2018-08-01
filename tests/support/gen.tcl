@@ -1,5 +1,5 @@
 # -*- tcl -*-
-## (c) 2017-2018 Andreas Kupries
+## (c) 2017-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## A variant of `marpa-gen` built into the test suite.
 ## Enables dynamic creation of parsers and lexers to test.

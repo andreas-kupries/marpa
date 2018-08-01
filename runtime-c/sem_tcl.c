@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (SV for Tcl)
  * - - -- --- ----- -------- ------------- ----------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements
  */
@@ -26,6 +26,10 @@ TRACE_TAG_OFF (eh);
  * - - -- --- ----- -------- ------------- ---------------------
  * Shorthands, externals, and forward declarations for internals.
  */
+
+extern int marpatcl_rtc_pedesc_invoke (marpatcl_rtc_pedesc_p p,
+				       Tcl_Interp* ip,
+				       int c, Tcl_Obj*CONST* v);
 
 #define STRDUP(s) marpatcl_rtc_strdup (s)
 
@@ -118,8 +122,12 @@ marpatcl_rtc_eh_report (void*                  cdata,
     }
 
     TRACE_TAG (eh, "PE taken, posting to Tcl", 0);
-
-    Tcl_Obj* events = e->to_names (e->ip, c, ids);
+    Tcl_Obj* events;
+    if (c) {
+	events = e->to_names (e->ip, c, ids);
+    } else {
+	events = Tcl_NewListObj (0, 0);
+    }
     TAKE (events);
 
     critcl_callback_invoke (e->event [type], 1, &events);
@@ -165,23 +173,117 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p 
 }
 
 int
+marpatcl_rtc_pe_access (Tcl_Interp* ip, marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, event = %d ~ %d",
+		ip, p, LEX.m_event, marpatcl_rtc_eventtype_LAST);
+
+    if (LEX.m_event != marpatcl_rtc_eventtype_LAST) {
+	TRACE_RETURN ("%d", 1);
+    }
+
+    const char* msg = "Invalid access to match state, not inside event handler";
+
+    Tcl_SetErrorCode (ip, "MARPA", "MATCH", "PERMIT", NULL);
+    Tcl_AppendResult (ip, msg, NULL);
+
+    TRACE_RETURN ("%d", 0);
+}
+
+int
+marpatcl_rtc_pe_ba_event (Tcl_Interp* ip, marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, event = %d ~ %d|%d",
+		ip, p, LEX.m_event,
+		marpatcl_rtc_event_before,
+		marpatcl_rtc_event_after);
+
+    if ((LEX.m_event == marpatcl_rtc_event_before) ||
+	(LEX.m_event == marpatcl_rtc_event_after)) {
+	TRACE_RETURN ("%d", 1);
+    }
+
+    const char* msg = "Invalid access to match state, expected before, or after event";
+
+    Tcl_SetErrorCode (ip, "MARPA", "MATCH", "BA_EVENT", NULL);
+    Tcl_AppendResult (ip, msg, NULL);
+
+    TRACE_RETURN ("%d", 0);
+}
+
+int
+marpatcl_rtc_pe_dba_event (Tcl_Interp* ip, marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, event = %d ~ %d|%d|%d",
+		ip, p, LEX.m_event,
+		marpatcl_rtc_event_discard,
+		marpatcl_rtc_event_before,
+		marpatcl_rtc_event_after);
+
+    if ((LEX.m_event == marpatcl_rtc_event_before) ||
+	(LEX.m_event == marpatcl_rtc_event_after) ||
+	(LEX.m_event == marpatcl_rtc_event_discard)) {
+	TRACE_RETURN ("%d", 1);
+    }
+
+    const char* msg = "Invalid access to match state, expected discard, before, or after event";
+
+    Tcl_SetErrorCode (ip, "MARPA", "MATCH", "DBA_EVENT", NULL);
+    Tcl_AppendResult (ip, msg, NULL);
+
+    TRACE_RETURN ("%d", 0);
+}
+
+int
+marpatcl_rtc_pe_sdba_event (Tcl_Interp* ip, marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, event = %d ~ %d|%d|%d|%d",
+		ip, p, LEX.m_event,
+		marpatcl_rtc_event_stop,
+		marpatcl_rtc_event_discard,
+		marpatcl_rtc_event_before,
+		marpatcl_rtc_event_after);
+
+    if ((LEX.m_event == marpatcl_rtc_event_before) ||
+	(LEX.m_event == marpatcl_rtc_event_after) ||
+	(LEX.m_event == marpatcl_rtc_event_discard) ||
+	(LEX.m_event == marpatcl_rtc_event_stop)) {
+	TRACE_RETURN ("%d", 1);
+    }
+
+    const char* msg = "Invalid access to match state, expected stop, discard, before, or after event";
+
+    Tcl_SetErrorCode (ip, "MARPA", "MATCH", "DBA_EVENT", NULL);
+    Tcl_AppendResult (ip, msg, NULL);
+
+    TRACE_RETURN ("%d", 0);
+}
+
+int
 marpatcl_rtc_pe_alternate (Tcl_Interp* ip, marpatcl_rtc_p p,
 			   const char* symbol, const char* semvalue)
 {
     TRACE_FUNC ("((Interp*) %p, (rtc*) %p, sym %s, sv %s", ip, p, symbol, semvalue);
 
+    marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
+
+    // Ignore call when we have no destination to fill (discard events)
+    if (!svids) {
+	TRACE_RETURN ("%d", 1);
+    }
+
     int symid = marpatcl_rtc_spec_symid (SPEC->l0, symbol);
 
     if (symid < 0) {
-	// TODO set error message
-	TRACE_RETURN ("%d", TCL_ERROR);
+	Tcl_SetErrorCode (ip, "MARPA", NULL);
+	Tcl_AppendResult (ip, "Unknown lexeme \"", symbol, "\"", NULL);
+	TRACE_RETURN ("%d", 0);
     }
 
     marpatcl_rtc_sv_p sv   = marpatcl_rtc_sv_cons_string (STRDUP (semvalue), 1);
     int               svid = marpatcl_rtc_store_add (p, sv);
 
     marpatcl_rtc_symset* syms  = marpatcl_rtc_lexer_pe_get_symbols (p);
-    marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
 
     if (LEX.m_clearfirst) {
 	marpatcl_rtc_symset_clear (syms);
@@ -192,7 +294,7 @@ marpatcl_rtc_pe_alternate (Tcl_Interp* ip, marpatcl_rtc_p p,
     marpatcl_rtc_symset_add (syms,  symid);
     marpatcl_rtc_stack_push (svids, svid);
 
-    TRACE_RETURN ("%d", TCL_OK);
+    TRACE_RETURN ("%d", 1);
 }
 
 int
@@ -203,7 +305,7 @@ marpatcl_rtc_pe_set_symbols (Tcl_Interp* ip, marpatcl_rtc_p p, int c, Tcl_Obj** 
     // Replace the set of symbols
     marpatcl_rtc_symset* syms = marpatcl_rtc_lexer_pe_get_symbols (p);
     marpatcl_rtc_symset_clear (syms);
-    
+
     int k;
     for (k=0; k < c; k++) {
 	// convert char* of the symbols to sym id.
@@ -211,25 +313,39 @@ marpatcl_rtc_pe_set_symbols (Tcl_Interp* ip, marpatcl_rtc_p p, int c, Tcl_Obj** 
 	int   sid = marpatcl_rtc_spec_symid (SPEC->l0, s);
 
 	if (sid < 0) {
-	    // TODO set error message
-	    TRACE_RETURN ("%d", TCL_ERROR);
+	    Tcl_SetErrorCode (ip, "MARPA", NULL);
+	    Tcl_AppendResult (ip, "Unknown lexeme \"", s, "\"", NULL);
+	    TRACE_RETURN ("%d", 0);
 	}
-	
+
 	marpatcl_rtc_symset_add (syms, sid);
     }
 
-    TRACE_RETURN ("%d", TCL_OK);
+    TRACE_RETURN ("%d", 1);
 }
 
 void
 marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p, int c, Tcl_Obj** v)
 {
     TRACE_FUNC ("((Interp*) %p, (rtc*) %p, c %d, (Tcl_Obj**) %p", p, c, v);
-	
+
     // Replace the set of sem values
     marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
+
+    TRACE ("(stack_p) %p", svids);
+
+    // Ignore call when we have no destination to fill (discard events)
+    if (!svids) {
+	TRACE ("%s", "no stack, skip");
+	TRACE_RETURN_VOID;
+    }
+
+    TRACE ("(stack_p) %p = %d", marpatcl_rtc_stack_size (svids));
+
     marpatcl_rtc_stack_clear (svids);
-    
+
+    TRACE ("(stack_p) %p = %d", marpatcl_rtc_stack_size (svids));
+
     int k;
     for (k=0; k < c; k++) {
 	char*             s  = STRDUP (Tcl_GetString (v [k]));
@@ -241,6 +357,7 @@ marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p, int c, Tcl_Obj** v)
 	marpatcl_rtc_stack_push (svids, sid);
     }
 
+    TRACE ("(stack_p) %p = %d", marpatcl_rtc_stack_size (svids));
     TRACE_RETURN_VOID;
 }
 
@@ -250,7 +367,8 @@ marpatcl_rtc_pe_get_semvalues (Tcl_Interp* ip, marpatcl_rtc_p p)
     TRACE_FUNC ("((Interp*) %p, (rtc*) %p", ip, p);
 
     marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
-    if (!svids) {
+
+    if (!svids || (LEX.m_event == marpatcl_rtc_event_stop)) {
 	const char* msg = "key \"sv\" not known in dictionary";
 	// Note 1: This message matches the error produced by the rt-Tcl facade.
 	// Note 2: Tcl_ResetResult implied by the outer Tcl command calling this function.
@@ -261,11 +379,17 @@ marpatcl_rtc_pe_get_semvalues (Tcl_Interp* ip, marpatcl_rtc_p p)
     int k, len, *ids = marpatcl_rtc_stack_data (svids, &len);
     Tcl_Obj* svlist = Tcl_NewListObj (0, 0);
 
+    TRACE ("(stack_p) %p = %d", svids, len);
+
     for (k=0; k < len; k++) {
 	ASSERT (ids[k] > 0, "Bad store id, zero or less not allowed");
 
 	marpatcl_rtc_sv_p sv = marpatcl_rtc_store_get (p, ids[k]);
 	Tcl_Obj* svo = marpatcl_rtc_sv_astcl (ip, sv);
+
+	TRACE ("(stack_p) %p [%d] := %d ~ (%p) ~ ((%s))",
+	       svids, k, ids[k], sv, Tcl_GetString (svo));
+
 	if (TCL_OK != Tcl_ListObjAppendElement (ip, svlist, svo)) goto error;
     }
 
@@ -280,6 +404,15 @@ Tcl_Obj*
 marpatcl_rtc_pe_get_symbols (Tcl_Interp* ip, marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((Interp*) %p, (rtc*) %p)", ip, p);
+
+    if (LEX.m_event == marpatcl_rtc_event_stop) {
+	const char* msg = "key \"symbols\" not known in dictionary";
+	// Note 1: This message matches the error produced by the rt-Tcl facade.
+	// Note 2: Tcl_ResetResult implied by the outer Tcl command calling this function.
+	Tcl_AppendResult (ip, msg, NULL);
+	TRACE_RETURN ("(Tcl_Obj*) %p", 0);
+    }
+
     marpatcl_rtc_symset* syms = marpatcl_rtc_lexer_pe_get_symbols (p);
     marpatcl_rtc_rules* rules = LEX.m_event == marpatcl_rtc_event_discard
 	? SPEC->l0
@@ -302,6 +435,122 @@ marpatcl_rtc_pe_get_symbols (Tcl_Interp* ip, marpatcl_rtc_p p)
  error:
     RELE (names);
     TRACE_RETURN ("(Tcl_Obj*) %p", 0);
+}
+
+int
+marpatcl_rtc_pe_match (marpatcl_rtc_pedesc_p p, Tcl_Interp* ip, Tcl_Obj* name,
+		       int c, Tcl_Obj*CONST* v)
+{
+    TRACE_FUNC ("((Interp*) %p, (pedesc*) %p, %d, (Tcl_Obj**) %p)", ip, p, c, v);
+
+    int res = marpatcl_rtc_pedesc_invoke (p, ip, c, v);
+
+    if (res != TCL_ERROR) {
+	TRACE_RETURN ("%d", res);
+    }
+
+    // Rewrite `marpatcl_rtc_pedesc` into `<self> match`, in both error
+    // message and stack trace.
+
+    Tcl_Obj* dst [2];
+    Tcl_Obj* map [2];
+    Tcl_Obj* cmd [4];
+
+    dst [0] = name;
+    dst [1] = Tcl_NewStringObj ("match", -1);
+
+    map[0] = Tcl_NewStringObj ("marpatcl_rtc_pedesc", -1);
+    map[1] = Tcl_NewListObj (2, dst);
+
+    cmd [0] = Tcl_NewStringObj ("string", -1);
+    cmd [1] = Tcl_NewStringObj ("map", -1);
+    cmd [2] = Tcl_NewListObj (2, map);
+    cmd [3] = Tcl_GetObjResult (ip);
+
+    TAKE (cmd [0]);
+    TAKE (cmd [1]);
+    TAKE (cmd [2]);
+    TAKE (cmd [3]);
+
+    Tcl_EvalObjv (ip, 4, cmd, 0);
+
+    RELE (cmd [0]);
+    RELE (cmd [1]);
+    RELE (cmd [2]);
+    RELE (cmd [3]);
+
+    // TODO: errorInfo - Note how the above rewrites the message in place. the errorinfo forces us to remember a bit.
+
+    TRACE_RETURN ("%d", res);
+}
+
+int
+marpatcl_rtc_pe_range (Tcl_Interp*    interp,
+		       int	      objc,
+		       Tcl_Obj*CONST* objv,
+		       int*           from,
+		       int*           to)
+{
+    if ((objc % 2) == 1) {
+	Tcl_AppendResult (interp, "Last option has no value", NULL);
+	return 0;
+    }
+
+    int f =  0; int i;
+    int t = -1;
+    int l = -1;
+
+    for (i = 0; i < objc; i+=2) {
+	const char* option = Tcl_GetString (objv[i]);
+	Tcl_Obj*   value   = objv [i+1];
+	if (strcmp ("from", option) == 0) {
+	    if (Tcl_GetIntFromObj (interp, value, &f) != TCL_OK) {
+		return 0;
+	    }
+	    if (f < 0) {
+		Tcl_AppendResult (interp, "expected location (>= 0), but got \"",
+				  Tcl_GetString (value), "\"", NULL);
+		return 0;
+	    }
+	    continue;
+	}
+	if (strcmp ("to", option) == 0) {
+	    if (Tcl_GetIntFromObj (interp, value, &t) != TCL_OK) {
+		return 0;
+	    }
+	    if (t < 0) {
+		Tcl_AppendResult (interp, "expected location (>= 0), but got \"",
+				  Tcl_GetString (value), "\"", NULL);
+		return 0;
+	    }
+	    l = -1;
+	    continue;
+	}
+	if (strcmp ("limit", option) == 0) {
+	    if (Tcl_GetIntFromObj (interp, value, &l) != TCL_OK) {
+		return 0;
+	    }
+	    if (l < 1) {
+		Tcl_AppendResult (interp, "expected int > 0, but got \"",
+				  Tcl_GetString (value), "\"", NULL);
+		return 0;
+	    }
+	    t = -1;
+	    continue;
+	}
+	Tcl_AppendResult (interp, "Unknown option \"", option,
+			  "\", expected one of from, limit, or to",
+			  NULL);
+	return 0;
+    }
+
+    if (l > 0) {
+	t = f + l;
+    }
+
+    *from = f; // No (--). Handled by inbound_enter (call to inbound_moveto).
+    *to   = t;
+    return 1;
 }
 
 Tcl_Obj*

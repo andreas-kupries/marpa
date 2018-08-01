@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ## Data structures and accessors for the management of fold classes.
 #
-# Copyright 2017-2018 Andreas Kupries
+# Copyright 2017-present Andreas Kupries
 #
 # - fold-add-code codepoint up down
 # - fold-verify-and-cleanup

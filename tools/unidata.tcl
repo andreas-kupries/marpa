@@ -13,7 +13,7 @@
 # elements of the class.  The result of that is then used in generator
 # backends to provide unicode support.
 #
-# Copyright 2017-2018 Andreas Kupries
+# Copyright 2017-present Andreas Kupries
 
 package require Tcl 8.5
 package require fileutil

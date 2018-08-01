@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: Lexer gating)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, assertions and tracing via an external environment header.
  */
@@ -19,8 +19,9 @@ TRACE_TAG_OFF (stream);
  * Shorthands
  */
 
-#define ACCEPT (&GATE.acceptable)
-#define LEX_R  (LEX.recce)
+#undef  ACCEPT /* LEX.acceptable */
+#define ACCEPT  (&GATE.acceptable)
+#define LEX_R   (LEX.recce)
 
 #ifdef CRITCL_TRACER
 static void

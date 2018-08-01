@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Progress reports)
  * - - -- --- ----- -------- ------------- ----------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, assertions and allocations via an external environment header.
  */

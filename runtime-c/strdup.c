@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. String duplication
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2018 Andreas Kupries
+ * (c) 2018-present Andreas Kupries
  *
  * Requirements - Allocation macros via an external environment header.
  */

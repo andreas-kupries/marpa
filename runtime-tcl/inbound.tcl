@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -80,9 +80,10 @@ oo::class create marpa::inbound {
     # # -- --- ----- -------- -------------
     ## State
 
-    variable mylocation ; # Input location
-    variable mytext     ; # Physical input stream
-    			  # (list! of characters)
+    variable mylocation     ; # Input location
+    variable mystoplocation ; # Trigger location for stop events
+    variable mytext         ; # Physical input stream
+    			      # (list! of characters)
 
     # API:
     # 1 cons  (postprocessor) - Create, link
@@ -117,12 +118,12 @@ oo::class create marpa::inbound {
     # # -- --- ----- -------- -------------
     ## Public API
 
-    method location? {} {
+    method location {} {
 	debug.marpa/inbound {[debug caller] | ==> $mylocation}
 	return [expr {$mylocation + 1}]
     }
 
-    method moveto {pos args} {
+    method from {pos args} {
 	debug.marpa/inbound {[debug caller] | }
 	incr pos -1
 	set mylocation $pos
@@ -136,25 +137,52 @@ oo::class create marpa::inbound {
 	return
     }
 
-    method moveby {delta} {
+    method relative {delta} {
 	debug.marpa/inbound {[debug caller] | }
 	incr mylocation $delta
 	return
     }
 
-    method enter {string} {
+    method stop {} {
+	debug.marpa/inbound {[debug caller] | }
+	if {$mystoplocation < 0} { return {} }
+	return $mystoplocation
+    }
+
+    method to {pos} {
+	debug.marpa/inbound {[debug caller] | }
+	set mystoplocation $pos
+	return
+    }
+
+    method dont-stop {} {
+	debug.marpa/inbound {[debug caller] | }
+	set mystoplocation -1
+	return
+    }
+
+    method limit {delta} {
+	# assert delta > 0
+	debug.marpa/inbound {[debug caller] | }
+	set  mystoplocation $mylocation
+	incr mystoplocation
+	incr mystoplocation $delta
+	return
+    }
+
+    method enter {string {from -1} {to -1}} {
 	debug.marpa/inbound {[debug caller] | }
 	my Def $string
-	my Process
+	my Process $from $to
 	# XXX eof here
 	return
     }
 
-    method read {chan} {
+    method read {chan {from -1} {to -1}} {
 	debug.marpa/inbound {[debug caller] | }
 	# Read entire channel into memory for processing
 	my Def [read $chan]
-	my Process
+	my Process $from $to
 	# XXX eof here
 	return
     }
@@ -172,11 +200,16 @@ oo::class create marpa::inbound {
 	debug.marpa/inbound {[debug caller] | }
 	set mytext     [split $string {}]
 	set mylocation -1
+	# stop before input - cannot trigger == do not stop
+	set mystoplocation -1
 	return
     }
 
-    method Process {} {
+    method Process {from to} {
 	debug.marpa/inbound {[debug caller] | }
+
+	set mylocation     $from
+	set mystoplocation $to
 
 	set  max [llength $mytext]
 	incr max -1
@@ -202,6 +235,16 @@ oo::class create marpa::inbound {
 	while {$mylocation < $max} {
 	    while {$mylocation < $max} {
 		incr mylocation
+
+		if {$mylocation == $mystoplocation} {
+		    # Stop triggered.
+		    # Bounce, clear stop marker, post event, restart
+		    incr mylocation -1
+		    set mystoplocation -1
+		    Forward signal-stop ;# notify gate
+		    continue
+		}
+
 		set ch [lindex $mytext $mylocation]
 
 		# Semantic value is character location (s.a.)
@@ -280,16 +323,16 @@ oo::class create marpa::inbound::sequencer {
     # # -- --- ----- -------- -------------
     ## Checked API methods
 
-    method enter {string} {
+    method enter {string {from -1} {to -1}} {
 	my __Init
 	my __Fail done ! "Unable to process input after EOF" EOF
-	next $string
+	next $string $from $to
     }
 
-    method read {chan} {
+    method read {chan {from -1} {to -1}} {
 	my __Init
 	my __Fail done ! "Unable to process input after EOF" EOF
-	next $chan
+	next $chan $from $to
     }
 
     method eof {} {

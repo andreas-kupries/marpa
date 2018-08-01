@@ -17,7 +17,7 @@
 /*
  * The structure we use for the int rep
  */
-    
+
 typedef struct OTSCR {
     int   refCount; /* Counter indicating sharing status of the structure */
     SCR_p scr;      /* Actual intrep, heap allocated */

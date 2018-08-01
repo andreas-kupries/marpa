@@ -22,7 +22,7 @@ extern OTASBR_p marpatcl_otasbr_new     (ASBR_p asbr);
 extern void     marpatcl_otasbr_destroy (OTASBR_p otasbr);
 extern OTASBR_p marpatcl_otasbr_take    (OTASBR_p otasbr);
 extern void     marpatcl_otasbr_release (OTASBR_p otasbr);
-    
+
 extern void marpatcl_asbr_rep_free     (Tcl_Obj* o);
 extern void marpatcl_asbr_rep_dup      (Tcl_Obj* src, Tcl_Obj* dst);
 extern void marpatcl_asbr_rep_str      (Tcl_Obj* o);

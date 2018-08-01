@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -66,6 +66,8 @@ oo::class create marpa::lexer {
 
     # # -- --- ----- -------- -------------
     ## Configuration
+
+    variable myenv
 
     # Static
     variable mypublic     ;# sym id:local  -> id:parser
@@ -134,7 +136,7 @@ oo::class create marpa::lexer {
     # # -- --- ----- -------- -------------
     ## Lifecycle
 
-    constructor {semstore parser} {
+    constructor {engine semstore parser} {
 	method-benchmarking
 	debug.marpa/lexer {[debug caller] | }
 	debug.marpa/lexer/report {[marpa DX {Activate progress reports...} {
@@ -153,6 +155,7 @@ oo::class create marpa::lexer {
 	# Gate will attach during setup.
 
 	# Dynamic state for processing
+	set myenv  [namespace tail $engine]
 	set myacceptable {}   ;# Parser gating.
 	set myaccmemo    {}   ;# Cache for gating.
 	set myrecce      {}   ;# Local recce management
@@ -169,6 +172,7 @@ oo::class create marpa::lexer {
 	# Match information storage, and public facade.
 	# The latter is created and configured in `gate:`.
 	marpa::lexer::match create M
+	M event: {}
 	M g1start: {} ; # XXX pull information from parser.
 	M g1length: 1
 
@@ -179,10 +183,26 @@ oo::class create marpa::lexer {
 	return
     }
 
+    method signal-stop {} {
+	my Post stop {}
+    }
+
     # # -- --- ----- -------- -------------
     ## Public API
 
-    forward match PED
+    method match {args} {
+	try {
+	    PED {*}$args
+	} on error {e o} {
+	    # Rewrite internal to external references
+	    lappend map PED [list $myenv match]
+	    set ei [dict get $o -errorinfo]
+	    set ei [string map $map $ei]
+	    set e  [string map $map $e]
+	    dict set o -errorinfo $ei
+	    return {*}$o $e
+	}
+    }
 
     method events {spec} {
 	debug.marpa/lexer {[debug caller] | }
@@ -232,8 +252,11 @@ oo::class create marpa::lexer {
     method export {names} {
 	# names :: map (sym -> latm)
 	debug.marpa/lexer {[debug caller] | }
+
+	M lexemes $names
+
 	# Create base symbols.
-	# Create the internal acceptability controls symbols (short: ACS) for the base
+	# Create the internal acceptability controls symbols (short: ACS) for the bas
 	# Get the same symbols from parser as well, the third set.
 
 	set allnames [dict keys $names]
@@ -434,6 +457,9 @@ oo::class create marpa::lexer {
 	# them into the recognizer.
 
 	set myrecce [GRAMMAR recognizer create RECCE [mymethod Events]]
+	# NOTE 1: The engine_debug:progress-reports makes use of this fixed name.
+	# NOTE 2: Shared between lexer and parser, forces the same for parser.
+	# TODO MAYBE: accessor method for use by debug to separate this.
 	debug.marpa/lexer {[debug caller 1] | RECCE ::=  [namespace which -command RECCE]}
 	M start: {}
 	set mylexeme {}
@@ -482,6 +508,16 @@ oo::class create marpa::lexer {
 	M sv:      $sv
 	M fresh:   1
 	return $prehandler
+    }
+
+    method Post {type events} {
+	debug.marpa/lexer {[debug caller] | }
+	# Note, M is passed implicitly, made accessible through the
+	# `match` method of the main object.
+	M event: $type
+	Forward post $type $events
+	M event: {}
+	return
     }
 
     method redo {n} {
@@ -537,8 +573,8 @@ oo::class create marpa::lexer {
 	    }
 	}
 
-	M length: [expr {$latest-1}]
 	M value:  [string range $mylexeme 0 end-$redo]
+	#M length: [expr {$latest-1}]
 
 	debug.marpa/lexer {[debug caller] | Lexeme start:  [M start]}
 	debug.marpa/lexer {[debug caller] | Lexeme length: [M length]}
@@ -666,11 +702,8 @@ oo::class create marpa::lexer {
 		M fresh: 1
 		debug.marpa/lexer/events {E Discard Match: [join [M view] "\nE         Match:"]}
 
-		# Note, M is passed implicitly, made accessible
-		# through the `match` method of the main
-		# object. Further, any changes made to M by the event
-		# handler are ignored.
-		Forward post discard $events
+		# Note, any changes the event handler makes to M are ignored.
+		my Post discard $events
 	    }
 
 	    # Second, restart lexing without informing the parser,
@@ -698,13 +731,13 @@ oo::class create marpa::lexer {
 	    if {[llength $events]} {
 		set prehandler [my PEFill $found $sv]
 		# Move input location to just before start of lexeme
-		Gate moveto [M start] -1
-		Forward post before $events
+		Gate from [M start] -1
+		my Post before $events
 	    } else {
 		set events [my events? after $ef]
 		if {[llength $events]} {
 		    set prehandler [my PEFill $found $sv]
-		    Forward post after $events
+		    my Post after $events
 		}
 	    }
 

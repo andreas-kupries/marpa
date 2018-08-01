@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: Input processing)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, tracing via an external environment header.
  */
@@ -11,8 +11,6 @@
 
 TRACE_OFF;
 TRACE_TAG_OFF (enter);
-
-static unsigned char step (marpatcl_rtc_p p, const unsigned char* bytes);
 
 #ifdef CRITCL_TRACER
 static void
@@ -43,12 +41,12 @@ marpatcl_rtc_inbound_init (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
 
+    IN.bytes     = 0;
     IN.location  = -1;
     IN.clocation = -1;
+    IN.cstop     = -1;
     IN.trailer   = 0;
     IN.header    = 0;
-
-    marpatcl_rtc_clindex_init (&IN.index);
 
     TRACE_RETURN_VOID;
 }
@@ -57,9 +55,7 @@ void
 marpatcl_rtc_inbound_free (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
-
-    marpatcl_rtc_clindex_release (&IN.index);
-	
+    // nothing to do
     TRACE_RETURN_VOID;
 }
 
@@ -76,7 +72,7 @@ marpatcl_rtc_inbound_moveto (marpatcl_rtc_p p, int cpos)
     TRACE_FUNC ("((rtc*) %p, pos = %d)", p, cpos);
 
     IN.clocation = cpos - 1;
-    IN.location  = marpatcl_rtc_clindex_find (&IN.index, IN.clocation);
+    IN.location  = marpatcl_rtc_clindex_find (p, IN.clocation);
 
     TRACE ("((rtc*) %p, now pos = %d ~ %d)", p, IN.clocation, IN.location);
     TRACE_RETURN_VOID;
@@ -88,19 +84,57 @@ marpatcl_rtc_inbound_moveby (marpatcl_rtc_p p, int cdelta)
     TRACE_FUNC ("((rtc*) %p, pos %d += %d)", p, IN.clocation, cdelta);
 
     IN.clocation += cdelta;
-    IN.location  = marpatcl_rtc_clindex_find (&IN.index, IN.clocation);
+    IN.location  = marpatcl_rtc_clindex_find (p, IN.clocation);
 
     TRACE ("((rtc*) %p, now pos = %d ~ %d)", p, IN.clocation, IN.location);
     TRACE_RETURN_VOID;
 }
 
 void
-marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
+marpatcl_rtc_inbound_no_stop (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p", p);
+
+    IN.cstop = -1;
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_inbound_set_stop (marpatcl_rtc_p p, int cpos)
+{
+    TRACE_FUNC ("((rtc*) %p, pos = %d)", p, cpos);
+
+    IN.cstop = cpos;
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_inbound_set_limit (marpatcl_rtc_p p, int limit)
+{
+    // ASSERT limit > 0 == critcl pos.int TODO
+    TRACE_FUNC ("((rtc*) %p, limit = %d)", p, limit);
+
+    IN.cstop = IN.clocation + 1 + limit;
+
+    TRACE_RETURN_VOID;
+}
+
+int
+marpatcl_rtc_inbound_stoploc (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE_RETURN ("%d", IN.cstop);
+}
+
+void
+marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n, int from, int to)
 {
 #define NAME(sym) marpatcl_rtc_spec_symname (SPEC->l0, sym, 0)
 
     unsigned char ch;
-    TRACE_FUNC ("(rtc %p bytes %p, n %d)", p, bytes, n);
+    TRACE_FUNC ("(rtc %p bytes %p, n %d, [%d...%d])", p, bytes, n, from, to);
     TRACE_TAG_DO (enter, print_input (bytes, n));
 
     if (n < 0) {
@@ -109,6 +143,11 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
     n --;
     TRACE ("max %d", n);
 
+    IN.bytes = (char*) bytes;
+
+    // Initial processing range.
+    marpatcl_rtc_inbound_moveto   (p, from);
+    marpatcl_rtc_inbound_set_stop (p, to);
 
     // Notes on locations and the processing loops.
     //
@@ -125,11 +164,25 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
     //     inner main processing loop hits EOF the eof handling can bounce the
     //     engine away from EOF and processing is restarted for the last
     //     characters.
-    
+
     while (IN.location < n) {
 	while (IN.location < n) {
-	    ch = step (p, bytes);
-	    TRACE ("byte %3d at %d c %d <%s>", ch, IN.location, IN.clocation, NAME(ch));
+	    int prevbloc = IN.location;
+	    int prevcloc = IN.clocation;
+
+	    ch = marpatcl_rtc_inbound_step (p);
+	    TRACE ("byte %3d @ char %d ~ byte %d = <%s>", ch, IN.clocation, IN.location, NAME(ch));
+
+	    if (IN.clocation == IN.cstop) {
+		// Stop triggered.
+		// Bounce, clear stop marker, post event, restart from bounce
+		 IN.location  = prevbloc;
+		 IN.clocation = prevcloc;
+		 IN.cstop     = -2;
+		 marpatcl_rtc_symset_clear (EVENTS);
+		 POST_EVENT (marpatcl_rtc_event_stop);
+		 continue;
+	    }
 
 	    marpatcl_rtc_gate_enter (p, ch);
 	    if (FAIL.fail) break;
@@ -161,18 +214,16 @@ marpatcl_rtc_inbound_eof (marpatcl_rtc_p p)
     TRACE_RETURN_VOID;
 }
 
-/*
- * - - -- --- ----- -------- ------------- ---------------------
- */
-
-static unsigned char
-step (marpatcl_rtc_p p, const unsigned char* bytes)
+unsigned char
+marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
 {
+    TRACE_FUNC ("((rtc*) %p)", p);
+
     // Step to the next byte location
     IN.location ++;
 
     // Extract byte to process
-    unsigned char ch = bytes [IN.location];
+    unsigned char ch = IN.bytes [IN.location];
 
     // Possibly step to the next character location as well
 #define SINGLE(c) (((c) & 0x80) == 0x00) // 0b1000,0000 : 0b0000,0000
@@ -181,10 +232,11 @@ step (marpatcl_rtc_p p, const unsigned char* bytes)
 #define LEAD3(c)  (((c) & 0xF0) == 0xE0) // 0b1111,0000 : 0b1110,0000
 #define LEAD4(c)  (((c) & 0xF8) == 0xF0) // 0b1111,1000 : 0b1111,0000
 #define MOVE_HEADER for(; IN.header; IN.header --) { MOVE (1); }
-#define MOVE(k) \
-    IN.clocation ++;							\
-    marpatcl_rtc_clindex_update (&IN.index, IN.clocation, IN.location, k) \
-    
+#define MOVE(k)						\
+    IN.clocation ++;					\
+    TRACE ("reached %d by %d", IN.clocation, k);	\
+    marpatcl_rtc_clindex_update (p, k)
+
     if (SINGLE (ch)) {
 	// A single stands for itself, no trailers expected, no lead
 	IN.trailer = 0;
@@ -240,7 +292,7 @@ step (marpatcl_rtc_p p, const unsigned char* bytes)
 	ASSERT (0,"");
     }
 
-    return ch;
+    TRACE_RETURN ("=> %d", ch);
 }
 
 /*

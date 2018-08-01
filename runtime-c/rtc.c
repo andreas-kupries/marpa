@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: All together)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, allocations and tracing via an external environment header.
  */
@@ -27,7 +27,7 @@ marpatcl_rtc_cons (marpatcl_rtc_spec*      g,
 {
     marpatcl_rtc_p p;
     TRACE_FUNC ("((spec*) %p, (cmd) %p)", g, a);
-    
+
     p = ALLOC (marpatcl_rtc);
     SPEC = g;
     ACT  = a;
@@ -37,6 +37,7 @@ marpatcl_rtc_cons (marpatcl_rtc_spec*      g,
     marpatcl_rtc_fail_init    (p);
     marpatcl_rtc_store_init   (p);
     marpatcl_rtc_inbound_init (p);
+    marpatcl_rtc_clindex_init (p);
     marpatcl_rtc_gate_init    (p);
     marpatcl_rtc_lexer_init   (p);
 
@@ -60,6 +61,7 @@ marpatcl_rtc_destroy (marpatcl_rtc_p p)
     marpatcl_rtc_lexer_free   (p);
     marpatcl_rtc_gate_free    (p);
     marpatcl_rtc_inbound_free (p);
+    marpatcl_rtc_clindex_free (p);
     marpatcl_rtc_store_free   (p);
     marpatcl_rtc_fail_free    (p);
     FREE (p);
@@ -68,11 +70,11 @@ marpatcl_rtc_destroy (marpatcl_rtc_p p)
 }
 
 void
-marpatcl_rtc_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
+marpatcl_rtc_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n, int from, int to)
 {
-    TRACE_FUNC ("((rtc*) %p, (char*) %p [%d]))", p, bytes, n);
+    TRACE_FUNC ("((rtc*) %p, (char*) %p [%d], [%d...%d]))", p, bytes, n, from, to);
 
-    marpatcl_rtc_inbound_enter (p, bytes, n);
+    marpatcl_rtc_inbound_enter (p, bytes, n, from, to);
 
     TRACE_RETURN_VOID;
 }
@@ -124,11 +126,11 @@ marpatcl_rtc_gather_events (marpatcl_rtc_p         p,       // TRACE-only data
 
     marpatcl_rtc_sym k;
     marpatcl_rtc_symset_clear (result);
-				     
+
     for (k=0; k < decls->size; k++) {
 	TRACE_HEADER (1);
 	TRACE_ADD ("[%d] = (%s %s (%d %s))",
-		   k, 
+		   k,
 		   decls->data[k].active ? "on " : "off",
 		   marpatcl_rtc_eventtype_decode_cstr (decls->data[k].type),
 		   decls->data[k].sym, marpatcl_rtc_spec_symname (SPEC->l0, decls->data[k].sym, 0));

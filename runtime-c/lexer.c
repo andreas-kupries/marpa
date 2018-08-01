@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: Lexing, Parser gating)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
@@ -47,19 +47,7 @@ static int num_utf_chars (const char *src);
  * Shorthands
  */
 
-#define POST_EVENT(type)						\
-    TRACE ("PE %s %d -> (%p, cd %p)", #type, EVENTS->n, p->event, p->ecdata); \
-    LEX.m_event = type;							\
-    LEX.m_clearfirst = 1;						\
-    p->event (p->ecdata, type, EVENTS->n, EVENTS->dense);		\
-    LEX.m_event = -1
-
 #define STRDUP(s) marpatcl_rtc_strdup (s)
-
-#define ACCEPT   (&LEX.acceptable)
-#define FOUND    (&LEX.found)
-#define EVENTS   (&LEX.events)
-#define DISCARDS (&LEX.discards)
 
 #define PARS_R (PAR.recce)
 #define ALWAYS (SPEC->always)
@@ -330,7 +318,7 @@ marpatcl_rtc_lexer_eof (marpatcl_rtc_p p)
 	// This is signaled by a `true` return. If that is so we must not
 	// report to the parser yet. We will come to this method again, after
 	// the characters were re-processed.
-	
+
 	// MAYBE FAIL - TODO Handling ?
     }
 

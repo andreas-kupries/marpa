@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: Semantic store)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, tracing via an external environment header.
  */
@@ -25,7 +25,7 @@ marpatcl_rtc_store_init (marpatcl_rtc_p p)
 
     // Push a dummy value to ensure that all true SVs get ids starting from 1.
     marpatcl_rtc_sva_push (&STOR.content, NULL);
-    
+
     TRACE_RETURN_VOID;
 }
 

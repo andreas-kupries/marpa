@@ -1,10 +1,10 @@
 /* Runtime for C-engine (RTC). Declarations. (Engine: API types)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Header for the public types, i.e the types exposed through the stub
  * functions.
- * 
+ *
  */
 
 #ifndef MARPATCL_RTC_TYPES_H
@@ -17,17 +17,21 @@
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------
- * Enumeration of parse event types. See also pevents.tcl for the
- * mapping between this and Tcl strings.
+ * Enumeration of parse event types.
+ *
+ * ATTENTION -- See also pevents.tcl for the mapping between this and Tcl strings.
+ *           -- Has to match.
  */
 
 typedef enum {
-    marpatcl_rtc_event_before,
-    marpatcl_rtc_event_after,
-    marpatcl_rtc_event_discard,
-    marpatcl_rtc_event_predicted,
-    marpatcl_rtc_event_completed,
-    marpatcl_rtc_event_nulled,
+    marpatcl_rtc_event_stop,      // io event
+    //
+    marpatcl_rtc_event_before,    // lexer/lexeme events
+    marpatcl_rtc_event_after,     // .
+    marpatcl_rtc_event_discard,   // .
+    marpatcl_rtc_event_predicted, // parser events
+    marpatcl_rtc_event_completed, // .
+    marpatcl_rtc_event_nulled,    // .
     //
     marpatcl_rtc_eventtype_LAST
 } marpatcl_rtc_eventtype;
