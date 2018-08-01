@@ -1,0 +1,146 @@
+# -*- tcl -*-
+
+error "Incomplete state - Not handling input/result yet"
+
+## (c) 2018-present Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## Execution core for testing the HEREDOC parser on top of different runtimes.
+## Configured by the caller with procedures.
+## - overall initialization and finalization
+## - parser creation and destruction
+## - AST result selection
+#
+## The procedures expected to exist are
+# * rt          :: Name of the runtime (`c` or `tcl`)
+# * constraints :: Constraints for a particular test case id
+#
+## Derived from these are
+# * cl  :: Name of the parser class
+# * tnp :: Prefix for test case name
+
+# # ## ### ##### ######## ############# #####################
+## Local configuration (restrictions for debug)
+
+set skipfiles 0
+
+# # ## ### ##### ######## ############# #####################
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+kt require support fileutil ;# cat
+
+# # ## ### ##### ######## ############# #####################
+## Local shorthands
+
+proc tnp     {} { return lang-heredoc-rt_[rt]  }
+proc cl      {} { return heredoc::parser::[rt] }
+proc setup   {} { heredoc::parser create PARSE [[cl new]] }
+proc cleanup {} { PARSE destroy }
+
+# # ## ### ##### ######## ############# #####################
+## No method sequence checking for the parser.
+## Methods can be called in any order.
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/ast.tcl
+kt source support/dirs.tcl
+kt source support/textutils.tcl
+
+# # ## ### ##### ######## ############# #####################
+
+kt local support [cl]
+
+# # ## ### ##### ######## ############# #####################
+##  1 constructor/0
+##  2 process/1		(string)
+
+# # ## ### ##### ######## ############# #####################
+## constructor - wrong args, initial state, calls
+
+test [tnp]-constructor-1.0 "[cl] :: constructor, wrong args, not enough" -body {
+    heredoc::parser new
+}   -returnCodes error \
+    -result "wrong # args: should be \"heredoc::parser new core\""
+
+test [tnp]-constructor-1.1 "[cl] :: constructor, wrong args, too many" -body {
+    heredoc::parser new CORE X
+}   -returnCodes error \
+    -result "wrong # args: should be \"heredoc::parser new core\""
+
+# # ## ### ##### ######## ############# #####################
+## process - argument checking
+
+test [tnp]-process-1.0 "[cl] :: process, wrong args, not enough" -body {
+    PARSE process
+}   -setup   setup \
+    -cleanup cleanup \
+    -returnCodes error \
+    -result {wrong # args: should be "PARSE process text"}
+
+test [tnp]-process-1.1 "[cl] :: process, wrong args, too many" -body {
+    PARSE process DATA X
+}   -setup   setup \
+    -cleanup cleanup \
+    -returnCodes error \
+    -result {wrong # args: should be "PARSE process text"}
+
+# # ## ### ##### ######## ############# #####################
+## process - Actual processing - Id formatting prep
+
+# # ## ### ##### ######## ############# #####################
+
+set max [llength $will_accept]
+set fmt %0[string length $max]d
+
+set k -1
+foreach infile $will_accept {
+
+    ## XXX TODO examples as inputs, need place for results
+
+    
+    #continue
+    incr k
+    # - --   -----        -------------
+    set kd       [format $fmt $k]
+    set id       [file rootname [file tail $infile]]
+    set cat      [string index $id 0]
+    set input    [fgetc $infile [coding]]
+    set exfile   [td]/result/$cat/$id
+    set expected {}
+    catch { set expected [string trim [fget $exfile]] }
+
+    # - --   -----        -------------
+    
+    test [tnp]-process-2.${kd}---${id} "[cl] :: process $id" -body {
+	# catch {utf-show [split $input {}]}
+	# For rt-c activate `TRACE` tag `enter` in `inbound.c` and use the rebuilt runtime.
+
+	catch {
+	    ast-format [PARSE process $input]
+	} msg
+	set msg
+    } -setup setup -cleanup {
+	cleanup
+	unset msg
+    } -result $expected
+}
+
+# # ## ### ##### ######## ############# #####################
+unset -nocomplain max fmt k infile kd exfile input expected id
+rename setup   {}
+rename cleanup {}
+rename tnp     {}
+rename cl      {}
+
+# # ## ### ##### ######## ############# #####################
+rename rt          {}
+rename constraints {}
+
+# # ## ### ##### ######## ############# #####################
+return

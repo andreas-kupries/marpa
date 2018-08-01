@@ -1,0 +1,10 @@
+<<A, <<B, <<A;
+a1
+A
+b
+B
+a2
+A
+<<WHEN;
+when
+WHEN

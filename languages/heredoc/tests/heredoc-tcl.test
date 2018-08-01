@@ -1,0 +1,25 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2018-present Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## rt-tcl + heredoc.slif
+##
+
+##
+## Test heredoc parser on top of RT-Tcl.
+## 
+
+# # ## ### ##### ######## ############# #####################
+## API to the heredoc-core
+
+proc rt          {} { return tcl }
+proc constraints {id} {
+    return {}
+}
+
+# # ## ### ##### ######## ############# #####################
+##
+
+kt source common/hd-core.testsuite
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

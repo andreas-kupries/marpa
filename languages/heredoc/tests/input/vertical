@@ -1,0 +1,6 @@
+say <<A
+lorem ipsum
+A
+say <<A
+delta vau
+A

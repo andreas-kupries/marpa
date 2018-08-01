@@ -1,0 +1,10 @@
+say <<ENDA, <<ENDB, <<ENDC; say <<ENDD;
+a
+ENDA
+b
+ENDB
+c
+ENDC
+d
+ENDD
+

@@ -1,0 +1,27 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2018-present Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## (cparse) rtc-critcl + heredoc.slif
+##
+
+##
+## Test heredoc parser on top of RT-C.
+## 
+
+kt require support critcl   ;# compile & run
+
+# # ## ### ##### ######## ############# #####################
+## API to the heredoc-core
+
+proc rt          {} { return c }
+proc constraints {id} {
+    return {}
+}
+
+# # ## ### ##### ######## ############# #####################
+##
+
+kt source common/hd-core.testsuite
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests
