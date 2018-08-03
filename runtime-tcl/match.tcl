@@ -69,6 +69,7 @@ oo::class create marpa::lexer::ped {
     # Incremental rebuild of the symbol/sv set
     # First call clears and appends, further only appends
     method alternate {symbol sv} { my Access ba Store alternate $symbol $sv }
+    method clear     {}          { my Access ba Store clear                 }
 
     # Debug helper method, also testsuite
     method view {} {
@@ -160,7 +161,7 @@ oo::class create marpa::lexer::match {
 	set myparts {
 	    g1start  {}	    g1length 1
 	    start    {}	    length   {}	    value    {}
-	    symbol   {}	    lhs      {}	    rule     {}
+	    name     {}	    lhs      {}	    rule     {}
 	    fresh    1
 	    event    {}
 	}
@@ -195,7 +196,7 @@ oo::class create marpa::lexer::match {
 	return
     }
 
-    method event {type args} {
+    method event! {type args} {
 	debug.marpa/lexer/match {[debug caller] | }
 	try {
 	    dict set myparts event $type
@@ -203,6 +204,11 @@ oo::class create marpa::lexer::match {
 	} finally {
 	    dict set myparts event {}
 	}
+    }
+
+    method event {} {
+	debug.marpa/lexer/match {[debug caller] | }
+	return [dict get $myparts event]
     }
 
     method value: {value} {
@@ -244,7 +250,7 @@ oo::class create marpa::lexer::match {
 
     method rule: {symbol lhs rule} {
 	debug.marpa/lexer/match {[debug caller] | }
-	dict set myparts symbol $symbol
+	dict set myparts name   $symbol
 	dict set myparts lhs    $lhs
 	dict set myparts rule   $rule
 	return
@@ -269,24 +275,32 @@ oo::class create marpa::lexer::match {
     ## Public API - Facade accessors
 
     method alternate {symbol sv} {
+	debug.marpa/lexer/match {[debug caller] | }
 	if {![dict exists $mylexeme $symbol]} {
 	    return -code error "Unknown lexeme \"$symbol\""
 	}
 	if {[dict get $myparts fresh]} {
-	    dict set myparts symbols {}
-	    dict set myparts sv      {}
-	    dict set myparts fresh   0
+	    my clear
 	}
 	dict lappend myparts symbols $symbol
 	dict lappend myparts sv      $sv
+	return
+    }
+
+    method clear {} {
+	debug.marpa/lexer/match {[debug caller] | }
+	dict set myparts symbols {}
+	dict set myparts sv      {}
+	dict set myparts fresh   0
+	return
     }
 
     if 0 {
 	## accessors for things not used by the lexer parse events ...
 	foreach {part key} {
-	    g1start  -	g1length -
+	    g1start  -		g1length -
 	    name     symbol	lhs      -
-	    symbol   -	rule     -
+	    symbol   -		rule     -
 	} {
 	    if {$key eq "-"} { set key $part }
 	    forward ${part}:  my Set   $key

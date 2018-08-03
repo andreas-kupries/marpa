@@ -171,6 +171,12 @@ critcl::class def marpa::runtime::c::pedesc {
 	CHK (marpatcl_rtc_pe_alternate (ip, instance->state, symbol.s, sv.s));
     }
 
+    method clear proc {Tcl_Interp* ip} object0 {
+	M_PERMIT;
+	M_BA_EV;
+	CHK (marpatcl_rtc_pe_clear (ip, instance->state));
+    }
+
     method view proc {Tcl_Interp* ip} object0 {
 	M_PERMIT;
 	M_SDBA_EV;

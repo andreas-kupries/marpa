@@ -29,11 +29,7 @@ extern int      marpatcl_rtc_sv_complete  (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv
 extern Tcl_Obj* marpatcl_rtc_pe_get_symbols   (Tcl_Interp* ip, marpatcl_rtc_p p);
 extern Tcl_Obj* marpatcl_rtc_pe_get_semvalues (Tcl_Interp* ip, marpatcl_rtc_p p);
 
-extern int      marpatcl_rtc_pe_set_symbols   (Tcl_Interp* ip, marpatcl_rtc_p p,
-					       int c, Tcl_Obj* v[]);
-extern void     marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p,
-					       int c, Tcl_Obj* v[]);
-
+extern int      marpatcl_rtc_pe_clear       (Tcl_Interp* ip, marpatcl_rtc_p p);
 extern int      marpatcl_rtc_pe_alternate   (Tcl_Interp* ip, marpatcl_rtc_p p,
 					     const char* symbol, const char* semvalue);
 

@@ -100,23 +100,15 @@ set access_commands {
     {alternate A V}
     {dont-stop}
     {from 0}
-    {length: 10}
     {length}
     {limit 10}
     {location}
-    {relative 5}
-    {rewind 5}
-    {start: 0}
+    {from+ 5}
     {start}
     {stop}
-    {sv: {}}
     {sv}
-    {symbols: {}}
     {symbols}
     {to 10}
-    {value: {}}
-    {values: {}}
-    {values}
     {value}
     {view}
 }
@@ -133,73 +125,41 @@ set invalid_commands {
     {from 1 {}}		{expected integer but got ""}
     {from}		{wrong # args: should be "PARSE match from pos ..."}
     {length X}		{wrong # args: should be "PARSE match length"}
-    {length: -1}	{expected int >= 0, but got "-1"}
-    {length: {}}	{expected integer but got ""}
-    {length:}		{wrong # args: should be "PARSE match length: length"}
     {limit -1}		{expected int > 0, but got "-1"}
     {limit {}}		{expected integer but got ""}
     {limit}		{wrong # args: should be "PARSE match limit limit"}
     {location X}	{wrong # args: should be "PARSE match location"}
-    {relative {}}	{expected integer but got ""}
-    {relative}		{wrong # args: should be "PARSE match relative delta"}
-    {rewind {}}		{expected integer but got ""}
-    {rewind}		{wrong # args: should be "PARSE match rewind delta"}
+    {from+ {}}		{expected integer but got ""}
+    {from+}		{wrong # args: should be "PARSE match from+ delta"}
     {start X}		{wrong # args: should be "PARSE match start"}
-    {start: -1}		{expected location (>= 0), but got "-1"}
-    {start: {}}		{expected integer but got ""}
-    {start:}		{wrong # args: should be "PARSE match start: start"}
     {stop X}		{wrong # args: should be "PARSE match stop"}
     {sv X}		{wrong # args: should be "PARSE match sv"}
-    {sv:}		{wrong # args: should be "PARSE match sv: svs"}
     {symbols X}		{wrong # args: should be "PARSE match symbols"}
-    {symbols:}		{wrong # args: should be "PARSE match symbols: syms"}
     {to -1}		{expected location (>= 0), but got "-1"}
     {to {}}		{expected integer but got ""}
     {to}		{wrong # args: should be "PARSE match to pos"}
     {value X}		{wrong # args: should be "PARSE match value"}
-    {value:}		{wrong # args: should be "PARSE match value: value"}
-    {values X}		{wrong # args: should be "PARSE match values"}
-    {values:}		{wrong # args: should be "PARSE match values: value"}
     {view X}		{wrong # args: should be "PARSE match view"}
 }
 
 # Ok syntax, ok arguments, probe fine-grained access control, per event-type
 set commands {
     location
-    {from 0}
-    location
-    {relative 5}
-    location
-    {relative -5}
-    location
-    {rewind -5}
-    location
-    {rewind 5}
-    location
+    {from 0}	location
+    {from+ 5}	location
+    {from+ -5}	location
     stop
-    {to 10}
-    stop
-    {limit 10}
-    stop
-    dont-stop
-    stop
+    {to 10}	stop
+    {limit 10}	stop
+    dont-stop	stop
     symbols
     sv
     start
     length
     value
-    values
-    {symbols: {}}
-    {symbols}
-    {sv: {}}
-    {sv}
-    {start: 0}
-    {start}
-    {length: 10}
-    {length}
-    {value: {}}
-    {values: {}}
     {alternate A V}
+    {symbols}
+    {sv}
     view
 }
 
@@ -231,8 +191,7 @@ proc record {max p type enames args} {
 
 	# Force clear symbol/sv where possible
 	++ Clear
-	catch { $p match symbols: {} }
-	catch { $p match sv:      {} }
+	catch { $p match clear }
 
 	# And move to the end of the input.
 	# This forces the engine to abort.

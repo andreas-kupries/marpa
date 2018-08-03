@@ -242,7 +242,10 @@ oo::class create marpa::lexer {
 
     method action {names} {
 	debug.marpa/lexer {[debug caller] | }
-	set myparts $names
+	set myparts [string map {
+	    values value
+	    symbol name
+	} $names]
 	return
     }
 
@@ -507,7 +510,7 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | }
 	# Note, MSTATE is passed implicitly, made accessible through the
 	# `match` method of the main object.
-	MSTATE event $type \
+	MSTATE event! $type \
 	    Forward post $type $events
 	return
     }
@@ -722,7 +725,6 @@ oo::class create marpa::lexer {
 		set prehandler [my PEFill $found $sv]
 		# Move input location to just before start of lexeme
 		Gate from [MSTATE start] -1
-XXX specialized move!
 		my Post before $events
 	    } else {
 		set events [my events? after $ef]
