@@ -99,17 +99,11 @@ oo::class create heredoc::parser {
 		    incr last_hd_end 2 ;# \n\n
 		    set  hdvalue     [string range $text $hdstart ${hdend}-1]
 		}
+
+		set hdlength [string length $hdvalue]
 		    
 		# Pass to parser
-		$mycore match start: $hdstart
-		$mycore match value: $hdvalue
-		# Note: The lexeme length is implicitly set by the
-		# lexeme value. We could override it _now_, should we
-		# wish to.
-		$mycore match alternate heredoc
-		# Note: It is this call without a sem.value specified
-		# which causes the engine to create a sem.value from
-		# the changed lexeme information.
+		$mycore match alternate heredoc [list $hdstart $hdlength $hdvalue]
 	    }
 	    stop {
 		# We reached the end of the current line. That the

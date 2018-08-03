@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
 # (c) 2018-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -18,7 +18,7 @@
 ## are given a pointer to the main RTC structure, and the containing
 ## object has a method delegating to the instance.
 
-critcl::argtype posint = {int > 0}
+critcl::argtype posint  = {int > 0}
 critcl::argtype posint0 = {int >= 0}
 
 # Technically an {int >= 0}. However needed a changed error message.
@@ -90,13 +90,6 @@ critcl::class def marpa::runtime::c::pedesc {
 	return INT (marpatcl_rtc_inbound_location (instance->state));
     }
 
-    method stop proc {Tcl_Interp* ip} object0 {
-	M_PERMIT;
-	int pos = marpatcl_rtc_inbound_stoploc (instance->state);
-	if (pos < 0) NIL;
-	return INT (pos);
-    }
-
     method from proc {Tcl_Interp* ip location pos int args} object0 {
 	M_PERMIT;
 	M_SDBA_EV;
@@ -107,18 +100,18 @@ critcl::class def marpa::runtime::c::pedesc {
 	NIL;
     }
 
-    method relative proc {Tcl_Interp* ip int delta} object0 {
+    method from+ proc {Tcl_Interp* ip int delta} object0 {
 	M_PERMIT;
 	M_SDBA_EV;
 	marpatcl_rtc_inbound_moveby (instance->state, delta);
 	NIL;
     }
 
-    method rewind proc {Tcl_Interp* ip int delta} object0 {
+    method stop proc {Tcl_Interp* ip} object0 {
 	M_PERMIT;
-	M_SDBA_EV;
-	marpatcl_rtc_inbound_moveby (instance->state, -delta);
-	NIL;
+	int pos = marpatcl_rtc_inbound_stoploc (instance->state);
+	if (pos < 0) NIL;
+	return INT (pos);
     }
 
     method to proc {Tcl_Interp* ip location pos} object0 {
@@ -172,58 +165,16 @@ critcl::class def marpa::runtime::c::pedesc {
 	return STR (marpatcl_rtc_lexer_pe_get_lexeme_value (instance->state));
     }
 
-    method values proc {Tcl_Interp* ip} object0 {
-	M_PERMIT;
-	M_DBA_EV;
-	return STR (marpatcl_rtc_lexer_pe_get_lexeme_value (instance->state));
-    }
-
-    method symbols: proc {Tcl_Interp* ip list syms} object0 {
-	M_PERMIT;
-	M_BA_EV;
-	CHK (marpatcl_rtc_pe_set_symbols (ip, instance->state, syms.c, syms.v));
-    }
-
-    method sv: proc {Tcl_Interp* ip list svs} object0 {
-	M_PERMIT;
-	M_BA_EV;
-	marpatcl_rtc_pe_set_semvalues (instance->state, svs.c, svs.v);
-	NIL;
-    }
-
-    method start: proc {Tcl_Interp* ip location start} object0 {
-	M_PERMIT;
-	M_BA_EV;
-	marpatcl_rtc_lexer_pe_set_lexeme_start (instance->state, start);
-	NIL;
-    }
-
-    method length: proc {Tcl_Interp* ip posint0 length} object0 {
-	M_PERMIT;
-	M_BA_EV;
-	marpatcl_rtc_lexer_pe_set_lexeme_length (instance->state, length);
-	NIL;
-    }
-
-    method value: proc {Tcl_Interp* ip pstring value} object0 {
-	M_PERMIT;
-	M_BA_EV;
-	marpatcl_rtc_lexer_pe_set_lexeme_value (instance->state, value.s);
-	NIL;
-    }
-
-    method values: proc {Tcl_Interp* ip pstring value} object0 {
-	M_PERMIT;
-	M_BA_EV;
-	marpatcl_rtc_lexer_pe_set_lexeme_value (instance->state, value.s);
-	NIL;
-    }
-
     method alternate proc {Tcl_Interp* ip pstring symbol pstring sv} object0 {
 	M_PERMIT;
 	M_BA_EV;
-
 	CHK (marpatcl_rtc_pe_alternate (ip, instance->state, symbol.s, sv.s));
+    }
+
+    method clear proc {Tcl_Interp* ip} object0 {
+	M_PERMIT;
+	M_BA_EV;
+	CHK (marpatcl_rtc_pe_clear (ip, instance->state));
     }
 
     method view proc {Tcl_Interp* ip} object0 {
