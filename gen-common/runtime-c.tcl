@@ -1077,7 +1077,7 @@ proc ::marpa::gen::runtime::c::EventRef {name table} {
 proc ::marpa::gen::runtime::c::EventNames {table} {
     if {![llength $table]} { return "" }
 
-    lappend names "\ncritcl::literals::def [core-config? name]_event \{"
+    lappend names "\ncritcl::literals::def [CName]_event \{"
     set k 0
     foreach item $table {
 	lassign $item event _ _ _ _
