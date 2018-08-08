@@ -61,7 +61,7 @@ proc marpa::semstd::locmerge {id args} {
 
 proc marpa::semstd::builtin {parts id args} {
     debug.marpa/semstd {}
-    
+
     set result {}
     foreach item $parts {
 	lassign $item part detail

@@ -1,5 +1,5 @@
 # -*- tcl -*-
-## (c) 2017-2018 Andreas Kupries
+## (c) 2017-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 
 ## Execution core for testing the marpa runtime engines with various
@@ -95,20 +95,95 @@ test-grammar-map rt_example --> id rte base {
     # Debugging - Keep the generated parser and related files for
     # post-mortem review.
     stash $k
- 
+
     set input  [fget [input  $base]]
-    set result [string trimright [fget [result $base]]]
     set kd     [format $format $k]
 
-    test marpa-[label]-runtime-process-2.${kd}---${id} "[label] :: process $id" -body {
-	catch {
-	    ast-format [PARSE process $input]
-	} msg
-	set msg ;# set ::errorInfo
-    } -setup setup -cleanup {
-	cleanup
-	unset msg
-    } -result $result
+    if {[file exists $base/events]} {
+	# runtime example for events
+	set result [string trimright [fget $base/events]]
+
+	test marpa-[label]-runtime-process-2.${kd}---${id} "[label] :: process $id" -body {
+	    catch {
+		PARSE process $input
+		join $recording \n
+	    } msg
+	    set msg ;# set ::errorInfo
+	} -setup {
+	    set recording {}
+	    proc record {p type enames args} {
+		# For testing we just record the information about the
+		# event for matching against expectations.
+		if {[catch {
+		    lappend ::recording ___________________________(([info level 0]))
+		    lappend ::recording {*}[$p match view]
+		    # Move input so that lexer resumes reading with
+		    # the character after the lexeme.  Written as is
+		    # with absolutes so that it works for all events
+		    # (discard, pre-, post-lexeme) we are testing
+		    # without requiring conditionals
+		    $p match from [$p match start] [$p match length]
+		    lappend ::recording "@resume = [$p match location]"
+		    # The input now points to the last character of
+		    # the lexeme, and on resume the lexer advances to
+		    # the next character to start processing from.
+
+		    set symbols [$p match symbols]
+		    foreach s $symbols {
+			lappend ::recording "^sym = >>$s<<"
+		    }
+
+		    if {$type in {after before}} {
+			# Retrieve and return the symbols and their
+			# sem values. A check that both directions
+			# are working.
+
+			set semvalues [$p match sv]
+			foreach s $semvalues {
+			    lappend ::recording "^sv  = >>$s<<"
+			}
+
+			foreach v $semvalues s $symbols {
+			    $p match alternate $s $v
+			}
+
+			foreach v [$p match sv] s [$p match symbols] {
+			    lappend ::recording  ">>$s<< ~~ >>$v<<"
+			}
+		    } else {
+			# discard and non-lexeme events do not come
+			# with sem values.
+			lappend ::recording *[list [catch {
+			    $p match sv
+			} msg] $msg]
+		    }
+		}]} {
+		    lappend ::recording $::errorInfo
+		}
+		return
+	    }
+	    setup
+	    PARSE on-event record
+	} -cleanup {
+	    cleanup
+	    rename record {}
+	    unset msg recording
+	} -result $result
+
+    } else {
+	# runtime example for AST
+	set result [string trimright [fget [result $base]]]
+
+	test marpa-[label]-runtime-process-2.${kd}---${id} "[label] :: process $id" -body {
+	    catch {
+		ast-format [PARSE process $input]
+	    } msg
+	    set msg ;# set ::errorInfo
+	} -setup setup -cleanup {
+	    cleanup
+	    unset msg
+	} -result $result
+    }
 
     gen cleanup
     incr k

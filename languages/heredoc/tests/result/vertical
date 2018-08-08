@@ -1,0 +1,13 @@
+statements
+  expressions
+    expression
+      sayer
+        expressions
+          heredoc decl
+            @9 11 {'lorem ipsum'}
+  expressions
+    expression
+      sayer
+        expressions
+          heredoc decl
+            @32 9 {'delta vau'}

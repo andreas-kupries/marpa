@@ -4,7 +4,7 @@
 # (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                                     http://core.tcl.tk/akupries/
 ##
-# (c) 2018 Grammar json::parser::c 1 By Andreas Kupries
+# (c) 2018-present Grammar json::parser::c 1 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "json::parser::c".
 ##	Generated On Tue Mar 20 20:43:56 PDT 2018
@@ -575,7 +575,8 @@ critcl::ccode {
 	/* .symbols */  { 318, json_parser_c_l0_sym_name },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
-	/* .rcode   */  json_parser_c_l0_rule_definitions
+	/* .rcode   */  json_parser_c_l0_rule_definitions,
+	0
     };
 
     static marpatcl_rtc_sym json_parser_c_l0semantics [3] = { /* 6 bytes */
@@ -634,7 +635,8 @@ critcl::ccode {
 	/* .symbols */  { 24, json_parser_c_g1_sym_name },
 	/* .rules   */  { 18, json_parser_c_g1_rule_name },
 	/* .lhs     */  { 18, json_parser_c_g1_rule_lhs },
-	/* .rcode   */  json_parser_c_g1_rule_definitions
+	/* .rcode   */  json_parser_c_g1_rule_definitions,
+	0
     };
 
     static marpatcl_rtc_sym json_parser_c_g1semantics [4] = { /* 8 bytes */
@@ -697,25 +699,25 @@ critcl::class def json::parser::c {
     } {
 	if (instance->result) marpatcl_rtc_sv_unref (instance->result);
     }
-    
+
     insvariable marpatcl_rtc_p state {
 	C-level engine, RTC structures.
     } {
 	instance->state = marpatcl_rtc_cons (&json_parser_c_spec,
 					     NULL /* actions - TODO FUTURE */,
-					     @stem@_result,
-					     (void*) instance );
+					     @stem@_result, (void*) instance,
+					     0, 0 );
     } {
 	marpatcl_rtc_destroy (instance->state);
     }
-    
+
     constructor {
         /*
 	 * Syntax:                          ... []
          * skip == 2: <class> new           ...
          *      == 3: <class> create <name> ...
          */
-	
+
 	if (objc > 0) {
 	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
 	    goto error;
@@ -734,7 +736,7 @@ critcl::class def json::parser::c {
 	Tcl_SetChannelOption (ip, in, "-translation", "binary");
 	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
 	// TODO: abort on failed set-channel-option
-	
+
 	while (!Tcl_Eof(in)) {
 	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
 	    if (got < 0) {
@@ -742,7 +744,7 @@ critcl::class def json::parser::c {
 	    }
 	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
 	    buf = Tcl_GetStringFromObj (cbuf, &got);
-	    marpatcl_rtc_enter (instance->state, buf, got);
+	    marpatcl_rtc_enter (instance->state, buf, got, 0, -1);
 	    if (marpatcl_rtc_failed (instance->state)) break;
 	}
 	Tcl_DecrRefCount (cbuf);
@@ -750,9 +752,9 @@ critcl::class def json::parser::c {
 	(void) Tcl_Close (ip, in);
 	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
-    
+
     method process proc {Tcl_Interp* ip pstring string} ok {
-	marpatcl_rtc_enter (instance->state, string.s, string.len);
+	marpatcl_rtc_enter (instance->state, string.s, string.len, 0, -1);
 	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
     }
 

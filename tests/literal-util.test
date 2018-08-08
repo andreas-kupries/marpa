@@ -1,5 +1,5 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2017-2018 Andreas Kupries
+## (c) 2017-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## marpa::slif::literal
 ## utility functions
@@ -25,11 +25,11 @@ kt source cases/ccranges.tcl
 kt source cases/lit-symbol.tcl
 
 # # ## ### ##### ######## ############# #####################
-## [ok] ccranges  
-## [ok] symbol    
-## [ok] eltype    
-## [ok] ccunfold  
-## [ok] ccsplit   
+## [ok] ccranges
+## [ok] symbol
+## [ok] eltype
+## [ok] ccunfold
+## [ok] ccsplit
 
 # # ## ### ##### ######## ############# #####################
 ## ccranges - Expand a mixed charclass into pure set of ranges

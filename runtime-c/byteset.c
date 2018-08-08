@@ -1,8 +1,12 @@
 /* Runtime for C-engine (RTC). Implementation. (Sets of bytes - max 256)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, assertions and tracing via an external environment header.
+ *
+ * NOTE. This structure works without memory initialization and thus may cause
+ *       memory checkers like valgrind to generate lots of false positives.
+ * Ref:  https://core.tcl.tk/akupries/marpa/wiki?name=fast+sparse+integer+sets+in+C
  */
 
 #include <environment.h>
@@ -35,7 +39,7 @@ marpatcl_rtc_byteset_clear (marpatcl_rtc_byteset* s)
     TRACE_RETURN_VOID;
 }
 
-int 
+int
 marpatcl_rtc_byteset_contains (marpatcl_rtc_byteset* s, unsigned char c)
 {
     // sizeof (unsigned char) == 8 --> max(c) = 255, no assertion required
@@ -70,7 +74,7 @@ marpatcl_rtc_byteset_link (marpatcl_rtc_byteset* s, int n)
     TRACE_RETURN_VOID;
 }
 
-int 
+int
 marpatcl_rtc_byteset_size (marpatcl_rtc_byteset* s)
 {
     TRACE_FUNC ("((byteset*) %p)", s);

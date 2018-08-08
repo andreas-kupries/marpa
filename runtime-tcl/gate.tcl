@@ -93,7 +93,6 @@ oo::class create marpa::gate {
 
     variable myaccmemo
     variable myacceptable ;# sym -> .
-    variable myhistory    ;# Entered characters and semantic values.
     variable mylastchar   ;# last character "enter"ed into the gate
     variable mylastloc    ;# and its location
     variable myflushed    ;# flush indicator
@@ -137,10 +136,9 @@ oo::class create marpa::gate {
 	# Dynamic state for processing
 	set mylastchar   {} ;# char/loc before anything was entered
 	set mylastloc    -1 ;#
-	set myhistory    {} ;# queue of processed characters (and locations)
 	set myaccmemo    {}
 	set myacceptable {} ;# set of expected/allowed symbols,
-	# initially none
+	                     # initially none
 	set myflushed    0
 
 	# Static configuration
@@ -153,6 +151,22 @@ oo::class create marpa::gate {
 
 	debug.marpa/gate {[debug caller] | /ok}
 	return
+    }
+
+    method input: {inbound} {
+	debug.marpa/lexer {[debug caller] | }
+	marpa::import $inbound Input
+	return
+    }
+
+    foreach m {location from rewind relative stop to limit dont-stop} {
+	# TODO: Check which are actually required.
+	# Access to input location, accessor & modifiers
+	forward $m  Input $m
+    } ; unset m
+
+    method signal-stop {} {
+	Forward signal-stop ;# notify lexer
     }
 
     # # -- --- ----- -------- -------------
@@ -179,16 +193,10 @@ oo::class create marpa::gate {
 	debug.marpa/gate {[debug caller] | }
 	upvar 1 $cv context
 
-	if {0&&[llength $myhistory]} {
-	    # Pull location information out of the history.
-	    lassign [lrange $myhistory end-1 end] char location
-	} else {
-	    # When history is not available try to pull information
-	    # from the last character which went into the gate
-	    # instead, as a last fallback.
-	    set char     $mylastchar
-	    set location $mylastloc
-	}
+	# Pull information from the last character which went into the
+	# gate.
+	set char     $mylastchar
+	set location $mylastloc
 
 	my ExtendContext context $char $location
 	return
@@ -207,42 +215,36 @@ oo::class create marpa::gate {
 	# here, allow for _one_ re-try after a flush was forced to the
 	# postprocessor.
 
-	set myflushed 0
-	while {1} {
-	    debug.marpa/gate {[debug caller 1] | match ($myacceptable)}
+	debug.marpa/gate {[debug caller 1] | match ($myacceptable)}
 
-	    set match [my Matches $char]
-	    if {[llength $match]} {
-		# ... remember the char now for possible rewind request.
-		##
-		#     Note that we cannot remember the match data,
-		#     because that is predicated on myacceptable,
-		#     which may have changed if the char is re-entered
-		#     later via 'redo'.
-		lappend myhistory $char $location
+	set match [my Matches $char]
+	if {[llength $match]} {
+	    # Note that we cannot remember the match data, because
+	    # that is predicated on myacceptable, which may have
+	    # changed if the char is re-entered later via 'redo'.
 
-		# ... Let the postprocessor deal with any ambiguity
-		debug.marpa/gate {[debug caller 1] | push ($match)}
-		# sub lexer gate sv - char + lcoation
-		Forward enter $match $char $location
-
-		# We are good.
-		return
-	    }
-
-	    # The character we have is not acceptable. Depending on the
-	    # flush indicator we either fail, or flush and indicate that.
-	    my FailAfterFlush $char $location
-
-	    debug.marpa/gate {[debug caller 1] | flush ($myflushed) ...}
+	    # ... Let the postprocessor deal with any ambiguity
 	    debug.marpa/gate {[debug caller 1] | push ($match)}
-
-	    incr myflushed
-	    # Note that a non-empty redo signaled from the lexer will
-	    # clear the flush indicator, see `redo`.
+	    # sub lexer gate sv - char + lcoation
 	    Forward enter $match $char $location
-	    # Loop to retry
+
+	    # We are good. Clear flush indicator.
+	    set myflushed 0
+	    return
 	}
+
+	# The character we have is not acceptable. Depending on the
+	# flush indicator we either fail, or flush and indicate that.
+	my FailAfterFlush $char $location
+
+	debug.marpa/gate {[debug caller 1] | flush ($myflushed) ...}
+	debug.marpa/gate {[debug caller 1] | push ($match)}
+
+	Input rewind 1 ; # Put the unacceptable character back
+	incr myflushed
+	# Note that a non-empty redo signaled from the lexer will
+	# clear the flush indicator, see `redo`.
+	Forward enter $match $char $location
 	return
     }
 
@@ -264,27 +266,20 @@ oo::class create marpa::gate {
 
     method redo {n} {
 	debug.marpa/gate {[debug caller] | }
-	if {$n} {
-	    # Reset flush state. The redo implies that the flushed
-	    # token did not cover the input till the character causing
-	    # the flush. That means that we may have another token in
-	    # the redone part of the input which the current character
-	    # has to flush again.
-	    debug.marpa/gate {[debug caller] | flush reset}
-	    set myflushed 0
-	    # Redo/enter the last n characters
-	    # Note: 2 slots per char (char + value) => Times 2.
-	    incr n $n
-	    incr n -1
-	    set pending [lrange $myhistory end-$n end]
-	    set myhistory {}
-	    foreach {char value} $pending {
-		my enter $char $value
-	    }
-	} else {
-	    # Redo nothing
-	    set myhistory {}
-	}
+	# Bail quickly when where is nothing to be done.
+	if {!$n} return
+
+	# Clear the flush indicator. The non-empty redo implies that
+	# the flushed token did not cover the input till the character
+	# causing the flush. That means that we may have another token
+	# in the to-be-redone part of the input which the current
+	# character has to flush again.
+	debug.marpa/gate {[debug caller] | flush reset}
+	set myflushed 0
+
+	# Actually redo/enter the last n characters.  This is done by
+	# simply moving the input back that much.
+	Input rewind $n
 	return
     }
 

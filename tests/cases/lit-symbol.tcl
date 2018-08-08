@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2018-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                          http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -50,7 +50,7 @@ proc lit-symbol {} {
     ++ {string 97 45}                                @STR:<a->
 
     # Codepoints beyond the BMP
-    
+
     ++ {character 65535}   @CHR:<\\uffff>
     ++ {character 65536}   @CHR:<\\u10000>
     ++ {character 131071}  @CHR:<\\u1ffff>

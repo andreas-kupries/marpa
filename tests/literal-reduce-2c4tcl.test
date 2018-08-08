@@ -1,5 +1,5 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2017-2018 Andreas Kupries
+## (c) 2017-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## marpa::slif::literal
 ## Reducer (Simplifications able to break a literal into many)
@@ -56,7 +56,7 @@ foreach literal [cases literals] redex [cases redux2c4tcl] {
     }
 
     #if {![string match cc/*          $literal]} continue
-    
+
     test marpa-slif-literal-reduce-2c4tcl-2.$k.@$rline "reduce 2c4tcl, step, $literal (@$lline) -> @$rline" -setup {
     } -body {
 	if {![catch {

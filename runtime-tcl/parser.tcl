@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -116,12 +116,17 @@ oo::class create marpa::parser {
 
     destructor {
 	# The parser is done.
-	catch { RECCE destroy }
+	catch { RECCE destroy } ; set ::errorInfo {}
 	return
     }
-    
+
     # # -- --- ----- -------- -------------
     ## Public API
+
+    method post {args} {
+	debug.marpa/parser {}
+	Forward post {*}$args
+    }
 
     method gate: {lexer} {
 	debug.marpa/parser {}
@@ -147,6 +152,9 @@ oo::class create marpa::parser {
 	Lexer discard $whitespace
 
 	GRAMMAR recognizer create RECCE [mymethod Events]
+	# NOTE 1: The engine_debug:progress-reports makes use of this fixed name.
+	# NOTE 2: Shared between lexer and parser, forces the same for parser.
+	# TODO MAYBE: accessor method for use by debug to separate this.
 	debug.marpa/parser {RECCE = [namespace which -command RECCE]}
 
 	RECCE start-input
@@ -220,7 +228,7 @@ oo::class create marpa::parser {
 
 	Forward eof
 
-	catch { RECCE destroy }
+	catch { RECCE destroy } ; set ::errorInfo {}
 	return
     }
 
@@ -236,7 +244,7 @@ oo::class create marpa::parser {
 	oo::objdefine [self] mixin marpa::engine::debug
 	dict set context g1 report [my progress-report-current]
 
-	RECCE destroy
+	catch { RECCE destroy } ; set ::errorInfo {}
 
 	Forward fail context
 
@@ -258,13 +266,13 @@ oo::class create marpa::parser {
 	set myname $name
 	return
     }
-    
+
     method :A {lhs __ parts} {
 	debug.marpa/parser {}
 	set myparts $parts
 	return
     }
-    
+
     method :M {lhs __ mask args} {
 	debug.marpa/parser {}
 	# TODO: validate |mask| <= |args| |mask|
@@ -321,7 +329,7 @@ oo::class create marpa::parser {
     # # -- --- ----- -------- -------------
     ## Rule runtime support - builtin construction of semantic value
     ## TODO: support for general command prefix.
-    
+
     method CompleteParts {parts id rid} {
 	debug.marpa/parser {}
 	# 'start'	offset where lexeme starts
@@ -408,7 +416,7 @@ oo::class create marpa::parser {
 		dict set context origin parser
 
 		set mydone 1 ; # Now exhausted
-		
+
 		Forward fail context
 		return
 	    }

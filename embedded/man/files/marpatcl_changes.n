@@ -1,7 +1,7 @@
 '\"
 '\" Generated from file 'marpatcl_changes\&.man' by tcllib/doctools with format 'nroff'
 '\" Copyright (c) 2015-2018 Andreas Kupries
-'\" Copyright (c) 2018 Documentation, Andreas Kupries
+'\" Copyright (c) 2018-present Documentation, Andreas Kupries
 '\"
 .TH "marpatcl_changes" n 1 doc "Marpa/Tcl, a binding to libmarpa"
 .\" The -*- nroff -*- definitions below are for supplemental macros used
@@ -273,7 +273,7 @@ Database Class:	\\fB\\$3\\fR
 ..
 .BS
 .SH NAME
-marpatcl_changes \- Marpa/Tcl Changes
+marpatcl_changes \- Marpa/Tcl - Changes
 .SH DESCRIPTION
 .PP
 .PP
@@ -302,6 +302,6 @@ aycock, character classes, document processing, earley, horspool, joop leo, lexi
 .SH COPYRIGHT
 .nf
 Copyright (c) 2015-2018 Andreas Kupries
-Copyright (c) 2018 Documentation, Andreas Kupries
+Copyright (c) 2018-present Documentation, Andreas Kupries
 
 .fi

@@ -13,7 +13,7 @@
 # elements of the class.  The result of that is then used in generator
 # backends to provide unicode support.
 #
-# Copyright 2017-2018 Andreas Kupries
+# Copyright 2017-present Andreas Kupries
 
 package require Tcl 8.5
 package require fileutil
@@ -73,7 +73,7 @@ proc main {selfdir} {
     write-h-header
     write-h-limits
     write-h-sep {unidata done}
-    
+
     pong-done
     return
 }
@@ -111,7 +111,7 @@ proc do-unidata {first last name category __ __ __ __ __ __ __ __ __ up low __} 
     #                       1    2        3  4  5  6  7  8  9  10 11 12 13  14
     #pong "Unidata $first .. $last = $category"
     cc-extend $category [list $first $last]
-       
+
     fold-add-code $first $up $low
     return
 }
@@ -170,17 +170,17 @@ proc categories {} {
 
 	# Control has custom Tcl definition.
 	if {$cat eq "Cc"} continue
-	
+
 	set label [string tolower $label]
 	set cat   [string tolower $cat]
 	alias-def $label $cat
-	
+
 	foreach suffix { :bmp :smp } {
 	    if {![cc-exists $cat$suffix] &&
 		![alias-exists $cat$suffix]
 	    } continue
 	    alias-def $label$suffix $cat$suffix
-	}	
+	}
     }
 }
 

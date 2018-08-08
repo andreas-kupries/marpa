@@ -16,7 +16,7 @@
 #include <critcl_alloc.h>
 
 TRACE_OFF;
-  
+
 #define EMIT(v)					\
     ASSERT (index < 2, "too many characters");	\
     cr[index].start = cr[index].end = (v);	\

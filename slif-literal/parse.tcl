@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2017-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -8,7 +8,7 @@
 # SLIF support. Utilies for working with L0 literals.
 # Conversion of literals to the internal representation.
 # See doc/atoms.md
-    
+
 # # ## ### ##### ######## #############
 ## Administrivia
 

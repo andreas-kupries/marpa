@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2017-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -206,7 +206,7 @@ proc marpa::unicode::data::cc::ranges {cclass} {
 	set cclass [string range $cclass 1 end]
 	return [marpa::unicode::unfold [ranges $cclass]]
     }
-    
+
     if {[dict exists $ccalias $cclass]} {
 	return [dict get $cc [dict get $ccalias $cclass]]
     }

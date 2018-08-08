@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -38,8 +38,8 @@ oo::class create marpa::engine::debug {
 	try {
 	    set n [RECCE report-start $location]
 	    package require struct::matrix
-	    struct::matrix M
-	    M add columns 6
+	    struct::matrix PR
+	    PR add columns 6
 	    # (%%) cols = (indent rule span lhs arrow rhs+dot)
 	    for {} {$n > 0} {incr n -1} {
 		lassign [RECCE report-next] rule dot origin
@@ -50,16 +50,16 @@ oo::class create marpa::engine::debug {
 
 		# And save...
 		#(r$rule,d$dot,o$origin)
-		M add row [list ______ $drule @$origin-${location} <${lhs}> --> $drhs]
+		PR add row [list ______ $drule @$origin-${location} <${lhs}> --> $drhs]
 		# (%%)          0      1      2                    3        4     5
 		#               indent ^rule  ^span                lhs      arrow rhs+dot
 	    }
-	    set report [my TrimTrailingWS [M format 2string]]
+	    set report [my TrimTrailingWS [PR format 2string]]
 	} on error {e o} {
 	    set report [join [list "ERROR: $o" $e] \n]
 	} finally {
 	    catch { RECCE report-finish }
-	    M destroy
+	    PR destroy
 	}
 	return $report
     }
@@ -81,11 +81,11 @@ oo::class create marpa::engine::debug {
 	}
 	return [list $ddot $drule]
     }
-    
+
     method TrimTrailingWS {text} {
 	return [join [lmap line [split $text \n] { string trimright $line }] \n]
     }
-    
+
     # # ## ### ##### ######## #############
     ## II. Pretty print the evaluation steps of a parse tree.
 
@@ -95,7 +95,7 @@ oo::class create marpa::engine::debug {
 	fileutil::writeFile $path $sheet
 	return "Saved $path"
     }
-    
+
     method parse-tree {instructions} {
 	# instructions = list (type details ...)
 	# where details = dict (key in (id, value, first, last, dst))
@@ -136,7 +136,7 @@ oo::class create marpa::engine::debug {
 	}
 	return [join $sheet \n]
     }
-    
+
     ##
     # # ## ### ##### ######## #############
 }

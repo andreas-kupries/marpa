@@ -1,5 +1,5 @@
 # -*- tcl -*-
-## (c) 2017-2018 Andreas Kupries
+## (c) 2017-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## A variant of `marpa-gen` built into the test suite.
 ## Enables dynamic creation of parsers and lexers to test.
@@ -36,6 +36,12 @@ proc ::gen::cleanup {} {
     removeFile      [td]/OUT_[cget cl]_LOG
     removeFile      [td]/GEN_LOG
     return
+}
+
+proc ::gen::I {gc args} {
+    puts XX_S\t$args
+    flush stdout
+    #GC {*}$args
 }
 
 proc ::gen::setup {args} {
@@ -82,7 +88,7 @@ proc ::gen::LoadTcl {} {
 proc ::gen::LoadRTC {} {
     upvar 1 cl cl
 
-    # Load the resulting parser package
+    # Load the resulting parser package. Required runtime first.
     kt local* support marpa::runtime::c
 
     # Match the directory used by bin/i-gen for the package

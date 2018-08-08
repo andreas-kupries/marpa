@@ -1,13 +1,13 @@
 # -*- tcl -*-
 ##
-# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2017-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
 # SLIF support. Utilies for working with L0 literals.
 # See doc/atoms.md
-    
+
 # # ## ### ##### ######## #############
 ## Administrivia
 
@@ -89,7 +89,7 @@ proc ::marpa::slif::literal::util::ccnorm {data} {
     lassign [ccsplit $data] codes names
     lappend r {*}[marpa unicode norm-class $codes]
     lappend r {*}[lsort -dict -unique $names]
-    return $r    
+    return $r
 }
 
 proc ::marpa::slif::literal::util::ccsplit {data} {

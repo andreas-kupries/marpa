@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: Parsing)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
@@ -9,6 +9,7 @@
 #include <parser.h>
 #include <rtc_int.h>
 #include <sem_int.h>
+#include <symset.h>
 #include <events.h>
 #include <lexer.h>
 #include <progress.h>
@@ -46,6 +47,7 @@ marpatcl_rtc_parser_init (marpatcl_rtc_p p)
     marpatcl_rtc_parser_events (p);
 
     PAR.recce = marpa_r_new (PAR.g);
+    TRACE ("new (recce) %p, (grammar) %p", PAR.recce, PAR.g);
 
     res = marpa_r_start_input (PAR.recce);
     marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 start_input");
@@ -60,17 +62,20 @@ void
 marpatcl_rtc_parser_free (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE ("del (recce) %p, (grammar) %p", PAR.recce, PAR.g);
 
     marpa_g_unref (PAR.g);
+    PAR.g = 0;
     if (PAR.recce) marpa_r_unref (PAR.recce);
+    PAR.recce = 0;
 
     TRACE_RETURN_VOID;
 }
 
 void
-marpatcl_rtc_parser_enter (marpatcl_rtc_p p, int found)
+marpatcl_rtc_parser_enter (marpatcl_rtc_p p)
 {
-    int res;
+    int res, found = marpatcl_rtc_symset_size (&LEX.found);
     TRACE_FUNC ("(rtc %p, found %d)", p, found);
 
     if (!found) {
@@ -78,9 +83,30 @@ marpatcl_rtc_parser_enter (marpatcl_rtc_p p, int found)
 	TRACE_RETURN_VOID;
     }
 
-    /* Note: The token alternatives have already been entered, as part of
-     * lexer.c/complete(), before it called this function.
+    /*
+     * It is time to enter the token alternatives. The data is available in
+     * LEX.found (terminals) and LEX.m_sv (SV ids).
+     *
+     * __ATTENTION__ We make here use of the fact that the `dense` array of
+     * symsets contains the terminals in order of inclusion == order of them
+     * found, and that this matches the order of the ids in the m_sv stack.
+     *
+     * Also, that both set and stack will have the same size.
      */
+
+    int k, nsv;
+    int*             svids = marpatcl_rtc_stack_data (LEX.m_sv, &nsv);
+    Marpa_Symbol_ID* syms  = marpatcl_rtc_symset_dense (&LEX.found);
+
+    ASSERT (found == nsv, "Expected matching size for set of terminals and stack of SV ids");
+
+    for (k=0; k < found; k++) {
+	int svid     = svids [k];
+	int terminal = syms  [k];
+
+	res = marpa_r_alternative (PAR.recce, terminal, svid, 1);
+	marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 alternative");
+    }
 
     res = marpa_r_earleme_complete (PAR.recce);
     if (res && (marpa_g_error (PAR.g, NULL) != MARPA_ERR_PARSE_EXHAUSTED)) {
@@ -168,6 +194,8 @@ complete (marpatcl_rtc_p p)
 	    TRACE_CLOSER;
 
 	    marpatcl_rtc_failit (p, "parser");
+
+	    TRACE ("del (recce) %p, (grammar) %p", PAR.recce, PAR.g);
 	    marpa_r_unref (PAR.recce);
 	    PAR.recce = 0;
 
@@ -338,6 +366,7 @@ complete (marpatcl_rtc_p p)
     // make it to the parser's enter.
     marpatcl_rtc_lexer_acceptable (p, 0);
 
+    TRACE ("del (recce) %p, (grammar) %p", PAR.recce, PAR.g);
     marpa_r_unref (PAR.recce);
     PAR.recce = 0;
 

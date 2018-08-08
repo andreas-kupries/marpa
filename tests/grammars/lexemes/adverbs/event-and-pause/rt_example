@@ -1,0 +1,11 @@
+# This grammar demonstrates operation of pre- and post-lexeme events
+A ::= ab +
+ab ::= as | bs
+as ~ a +
+bs ~ b +
+a ~ 'a'
+b ~ 'b'
+:lexeme ~ as event => beforeA pause => before
+:lexeme ~ bs event => afterB  pause => after
+:discard ~ space
+space ~ [[:space:]] +

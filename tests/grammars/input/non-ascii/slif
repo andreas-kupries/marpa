@@ -1,0 +1,9 @@
+# See ./tools/utf-sample-gen.tcl for the code which generated this file
+lexeme default = latm => 1 action => [value]
+# Plain ASCII: A
+:default ::= action => [values]
+# UTF-8 2 byte: © (extended latin - copyright sign)
+Code ::= A B
+# UTF-8 3 byte: ↺ (arrows - ccw)
+A ~ 'A'
+B ~ 'B'

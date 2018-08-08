@@ -134,6 +134,7 @@ proc ingest {path} {
     marpa::slif::parser    create PARSE
     set start  [clock milliseconds]
     set ast [PARSE process-file $path]
+    #set ast [PARSE process [fileutil::cat $path]]
     set done   [clock milliseconds]
     set millis [expr {$done-$start}]
     set sec    [expr {double($millis)/1000}]

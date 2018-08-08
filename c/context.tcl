@@ -7,7 +7,7 @@
 
 # # ## ### ##### ######## #############
 
-## This file defines the per-intepreter structures collecting
+## This file defines the per-interpreter structures collecting
 ## information relevant to the whole package, i.e. all classes and
 ## instances. All classes, and instances will have a reference to this
 ## structure which is initialized at class and instance construction

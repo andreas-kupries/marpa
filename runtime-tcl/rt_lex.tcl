@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -21,31 +21,33 @@ debug prefix marpa/engine/tcl/lex {[debug caller] | }
 ##
 
 oo::class create marpa::engine::tcl::lex {
+    superclass marpa::engine::tcl::base
+
     # # ## ### ##### ######## #############
     marpa::E marpa/engine/tcl/lex ENGINE TCL LEX
 
     constructor {} {
 	debug.marpa/engine/tcl/lex {}
 	set myid {}
-	
+
 	# Build the processing pipeline, then configure the various
 	# pieces.  Object creation is in backward direction, i.e. from
 	# the end of the pipeline to the beginning.  Loading the
 	# grammar specification then proceeds in forward direction.
-	# The following initialization then foes backward again.
+	# The following initialization then goes backward again.
 
 	# Parts
 	# - IN    : Basic character processing (location for token, file handling)
 	# - GATE  : Character to symbol mapping, incl. char classes, gating
 	# - LEX   : Marpa core engine specialized for lexing (semantics, lexemes)
 	# - STORE : Store for token values (lexer semantic information)
-	
+
 	marpa::semstore create STORE
-	marpa::lexer    create LEX   STORE [self]
+	marpa::lexer    create LEX   [self] STORE [self]
 	marpa::gate     create GATE  LEX
 	marpa::inbound  create IN    GATE
 
-	#           v-----+  v-----+
+	#           v-----\ v------\
 	# IN --> GATE --> LEX ---> Self --> output
 	#                 \        \               .
 	#                  \------> \--> STORE
@@ -57,6 +59,7 @@ oo::class create marpa::engine::tcl::lex {
 	LEX symbols [my Symbols]
 	LEX rules   [my Rules]
 	LEX discard [my Discards]
+	LEX events  [my Events]
 
 	# Initial acceptability
 	LEX acceptable $mylex
@@ -78,32 +81,35 @@ oo::class create marpa::engine::tcl::lex {
 	my E "Missing implementation of virtual method \"$m\"" \
 	    API VIRTUAL [string toupper $m]
     }
-    
+
+    forward match  LEX match
+
     # # ## ### ##### ######## #############
     ## State
 
     variable myid mylex
-    # myid  :: map (id -> string) - Lexemes
-    # mylex :: list(id) - dict keys of myid
+    # myid          :: map (id -> string) - Lexemes
+    # mylex         :: list (id) - dict keys of myid
 
     # # ## ### ##### ######## #############
     ## Public API
-    
-    method process-file {path out} {
+
+    method process-file {path out args} {
 	debug.marpa/engine/tcl/lex {}
+	set options [my Options $args]
 	marpa::import $out Forward
 	set chan [open $path r]
 	# Drive the pipeline from the channel.
-	IN read $chan
+	IN read $chan {*}$options
 	IN eof
 	return
     }
 
-    method process {string out} {
+    method process {string out args} {
 	debug.marpa/engine/tcl/lex {}
 	marpa::import $out Forward
 	# Drive the pipeline from the string
-	IN enter $string
+	IN enter $string {*}[my Options $args]
 	IN eof
 	return
     }
@@ -117,7 +123,7 @@ oo::class create marpa::engine::tcl::lex {
 	debug.marpa/engine/tcl/lex {}
 	return
     }
-    
+
     method symbols {lexemes} {
 	debug.marpa/engine/tcl/lex {}
 	return [set mylex [lmap w $lexemes {
@@ -126,7 +132,7 @@ oo::class create marpa::engine::tcl::lex {
 	    set id
 	}]]
     }
-    
+
     method enter {symbols values} {
 	debug.marpa/engine/tcl/lex {}
 	Forward enter \

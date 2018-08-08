@@ -22,7 +22,7 @@ extern OTASSR_p marpatcl_otassr_new     (ASSR_p assr);
 extern void     marpatcl_otassr_destroy (OTASSR_p otassr);
 extern OTASSR_p marpatcl_otassr_take    (OTASSR_p otassr);
 extern void     marpatcl_otassr_release (OTASSR_p otassr);
-    
+
 extern void marpatcl_assr_rep_free     (Tcl_Obj* o);
 extern void marpatcl_assr_rep_dup      (Tcl_Obj* src, Tcl_Obj* dst);
 extern void marpatcl_assr_rep_str      (Tcl_Obj* o);

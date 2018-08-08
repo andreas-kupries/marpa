@@ -1,0 +1,4 @@
+statements
+  expressions
+    heredoc decl
+      @5 11 {'lorem ipsum'}

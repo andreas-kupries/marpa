@@ -1,6 +1,8 @@
 #!/usr/bin/env tclsh
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2017-2018 Andreas Kupries
+##
+# (c) 2017-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 #
 # # ## ### ##### ######## ############# #####################
 ## Regenerate the SLIF boot parser
@@ -16,14 +18,17 @@ package require fileutil
 
 #debug on util/benchmarking
 
-if {[llength $argv] != 1} {
-    puts "Usage: $argv0 /path/to/main/destination/directory"
+if {[llength $argv] > 1} {
+    puts "Usage: $argv0 ?/path/to/main/destination/directory?"
     puts "Results are written to:"
     puts " - DST/slif-parser/parser.tcl"
     puts " - DST/slif-literal/lparser.tcl"
     puts ""
     exit 1
 }
+
+# Default: Current working directory.
+if {![llength $argv]} { lappend argv [pwd] }
 
 set selfdir  [file dirname [file normalize [info script]]]
 set meta     [file join $selfdir marpa-tcl-slif slif]

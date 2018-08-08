@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ## Datastructures and accessors for char class aliases management
 #
-# Copyright 2017-2018 Andreas Kupries
+# Copyright 2017-present Andreas Kupries
 #
 # - alias-def
 # - alias-exists

@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2018-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                          http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -88,7 +88,7 @@ proc lit-parse {} {
     ++ N01 {'\u10F60F'}         {character 1111567}
     ++ N01 {'\uD800'}           {character 55296}
     ++ N01 {'\uDB00'}           {character 56064}
-    
+
     # ++ N01 {'\'} {string }
     # ++ N01 {'\'} {string }
     # ++ N01 {'\'} {string }

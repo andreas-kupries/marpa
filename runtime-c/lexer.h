@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Engine: Lexing, Parser gating)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_LEXER_H
@@ -22,17 +22,31 @@
  */
 
 typedef struct marpatcl_rtc_lexer {
+    int                  single_sv;     /* Bool, true if SV is identical across symbols */
     Marpa_Grammar        g;             /* Underlying L0 grammar */
     Marpa_Recognizer     recce;         /* Current recognizer */
     marpatcl_rtc_symset  acceptable;    /* Currently acceptable parser symbols */
-    marpatcl_rtc_stack_p lexeme;        /* The characters in the current match (byte vector) */
-    int                  cstart;        /* Location of match start (char offset) */
-    int                  start;         /* Location of match start (byte offset) */
-    int                  length;        /* Length of match (in byte) */
-    marpatcl_rtc_symset  found;         /* Symbols found at current match */
-    int                  single_sv;     /* Bool, true if SV is identical across symbols */
 
+    /*
+     * Information about the current match
+     */
 
+    int                  cstart;        /* Start location (char offset) */
+    int                  start;         /* Start location (byte offset) */
+    int                  clength;       /* Length (in characters), or -1 (undef) */
+    int                  length;        /* Length (in byte) */
+
+    marpatcl_rtc_stack_p lexeme;        /* Collected characters (byte vector) */
+    char*                lexemestr;     /* Lexeme string, or NULL */
+    // FUTURE: capacity ? reduce memory churn (know length, s.a)
+
+    marpatcl_rtc_symset  found;         /* Found terminal  symbols  */
+    marpatcl_rtc_symset  discards;      /* Found discarded symbols  */
+    marpatcl_rtc_symset  events;        /* Found lexer parse events */
+    int                  m_event;       /* Active parse event, or -1 */
+
+    marpatcl_rtc_stack_p m_sv;          /* Id's of the collected semantic values */
+    int                  m_clearfirst;  /* Flag to trigger clearing of sv/found */
 } marpatcl_rtc_lexer;
 
 /*
@@ -53,6 +67,20 @@ void  marpatcl_rtc_lexer_enter      (marpatcl_rtc_p p, int ch); /* IN.location i
 void  marpatcl_rtc_lexer_flush      (marpatcl_rtc_p p);         /* IN.location implied */
 void  marpatcl_rtc_lexer_eof        (marpatcl_rtc_p p);
 void  marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep);
+
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ * API - match state accessors and mutators
+ */
+
+int         marpatcl_rtc_lexer_pe_get_lexeme_start  (marpatcl_rtc_p p);
+int         marpatcl_rtc_lexer_pe_get_lexeme_length (marpatcl_rtc_p p);
+const char* marpatcl_rtc_lexer_pe_get_lexeme_value  (marpatcl_rtc_p p);
+
+marpatcl_rtc_symset* marpatcl_rtc_lexer_pe_get_symbols   (marpatcl_rtc_p p);
+marpatcl_rtc_stack_p marpatcl_rtc_lexer_pe_get_semvalues (marpatcl_rtc_p p);
+
 #endif
 
 /*

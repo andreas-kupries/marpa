@@ -1,0 +1,4 @@
+statements
+  expressions
+    heredoc decl
+      @5 42 {'lorem ipsum\nthe quick brown fox\ndelta vau\n'}

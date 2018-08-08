@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2018-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                          http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -23,7 +23,7 @@ proc lit-reduce-full {} {
     +C {} error RIL
 
     # % %% %%% %%%%% %%%%%%%% %%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%
-    L {string 65 66 300}    
+    L {string 65 66 300}
 
     +C {} error RT
 

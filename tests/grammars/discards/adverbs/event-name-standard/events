@@ -1,0 +1,21 @@
+___________________________((record ::PARSE discard whitespace))
+length = ((1))
+start = ((5))
+symbols = ((space))
+value = ((
+))
+@location = 6
+@resume = 6
+^sym = >>space<<
+*1 {key "sv" not known in dictionary}
+___________________________((record ::PARSE discard whitespace))
+length = ((7))
+start = ((11))
+symbols = ((space))
+value = ((
+     
+))
+@location = 18
+@resume = 18
+^sym = >>space<<
+*1 {key "sv" not known in dictionary}
