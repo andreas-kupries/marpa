@@ -1,13 +1,13 @@
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
-# (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                     http://core.tcl.tk/akupries/
+# (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                          http://core.tcl.tk/akupries/
 ##
 # (c) 2018 Grammar doctools::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "doctools::parser::tcl".
-##	Generated On Tue Mar 27 12:44:25 PDT 2018
+##	Generated On Wed Aug 08 15:08:51 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 
@@ -41,7 +41,7 @@ oo::class create doctools::parser::tcl {
     # requested information. Their base-class implementations simply
     # throw errors, thus preventing the construction of an incomplete
     # parser.
-    
+
     method Characters {} {
 	debug.doctools/parser/tcl
 	# Literals: The directly referenced (allowed) characters.
@@ -83,7 +83,7 @@ oo::class create doctools::parser::tcl {
 	    {@CHR:<\r>}     \r
 	}
     }
-    
+
     method Classes {} {
 	debug.doctools/parser/tcl
 	# Literals: The character classes in use
@@ -99,7 +99,7 @@ oo::class create doctools::parser::tcl {
 	    {@RAN:<\udc00\udfff>}                        {[\udc00-\udfff]}
 	}
     }
-    
+
     method Lexemes {} {
 	debug.doctools/parser/tcl
 	# Lexer API: Lexeme symbols (Cannot be terminal). G1 terminals
@@ -175,7 +175,7 @@ oo::class create doctools::parser::tcl {
 	    SimpleWordPlusSpace   1
 	}
     }
-    
+
     method Discards {} {
 	debug.doctools/parser/tcl
 	# Discarded symbols (whitespace)
@@ -183,7 +183,7 @@ oo::class create doctools::parser::tcl {
 	    Whitespace
 	}
     }
-    
+
     method L0.Symbols {} {
 	# Non-lexeme, non-literal symbols
 	debug.doctools/parser/tcl
@@ -493,6 +493,15 @@ oo::class create doctools::parser::tcl {
 	return {start length value}
     }
 
+    method L0.Events {} {
+	debug.doctools/parser/tcl
+	# L0 parse event definitions (pre-, post-lexeme, discard)
+	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Due to the nature of SLIF syntax we can only associate one
+	# event per type with each symbol, for a maximum of three.
+	return {}
+    }
+
     method G1.Symbols {} {
 	# Structural symbols
 	debug.doctools/parser/tcl
@@ -793,6 +802,14 @@ oo::class create doctools::parser::tcl {
 	    {xref := c_keywords}
 	    {xref := c_see_also}
 	}
+    }
+
+    method G1.Events {} {
+	debug.doctools/parser/tcl
+	# G1 parse event definitions (predicted, nulled, completed)
+	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Each symbol can have more than one event per type.
+	return {}
     }
 
     method Start {} {
