@@ -13,10 +13,7 @@ kt require support critcl   ;# compile & run
 # # ## ### ##### ######## ############# #####################
 ## API to the heredoc-core
 
-proc rt          {} { return c }
-proc constraints {id} {
-    return {}
-}
+proc rt {} { return c }
 
 # # ## ### ##### ######## ############# #####################
 ##

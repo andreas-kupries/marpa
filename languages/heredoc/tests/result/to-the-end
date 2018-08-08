@@ -1,0 +1,7 @@
+statements
+  expressions
+    expression
+      sayer
+        expressions
+          heredoc decl
+            @9 42 {'lorem ipsum\nthe quick brown fox\ndelta vau\n'}

@@ -1,7 +1,4 @@
 # -*- tcl -*-
-
-error "Incomplete state - Not handling input/result yet"
-
 ## (c) 2018-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## Execution core for testing the HEREDOC parser on top of different runtimes.
@@ -12,16 +9,10 @@ error "Incomplete state - Not handling input/result yet"
 #
 ## The procedures expected to exist are
 # * rt          :: Name of the runtime (`c` or `tcl`)
-# * constraints :: Constraints for a particular test case id
 #
 ## Derived from these are
 # * cl  :: Name of the parser class
 # * tnp :: Prefix for test case name
-
-# # ## ### ##### ######## ############# #####################
-## Local configuration (restrictions for debug)
-
-set skipfiles 0
 
 # # ## ### ##### ######## ############# #####################
 
@@ -34,12 +25,14 @@ kt require support oo::util
 kt require support TclOO
 kt require support fileutil ;# cat
 
+# Parser packages - See (xx)
+
 # # ## ### ##### ######## ############# #####################
 ## Local shorthands
 
 proc tnp     {} { return lang-heredoc-rt_[rt]  }
 proc cl      {} { return heredoc::parser::[rt] }
-proc setup   {} { heredoc::parser create PARSE [[cl new]] }
+proc setup   {} { heredoc::parser create PARSE [[cl] new] }
 proc cleanup {} { PARSE destroy }
 
 # # ## ### ##### ######## ############# #####################
@@ -53,7 +46,9 @@ kt source support/dirs.tcl
 kt source support/textutils.tcl
 
 # # ## ### ##### ######## ############# #####################
+## (xx)
 
+kt local testing heredoc::parser
 kt local support [cl]
 
 # # ## ### ##### ######## ############# #####################
@@ -95,32 +90,25 @@ test [tnp]-process-1.1 "[cl] :: process, wrong args, too many" -body {
 
 # # ## ### ##### ######## ############# #####################
 
-set max [llength $will_accept]
-set fmt %0[string length $max]d
+set inputs [glob -directory [td]/input *]
+set max    [llength $inputs]
+set fmt    %0[string length $max]d
 
 set k -1
-foreach infile $will_accept {
-
-    ## XXX TODO examples as inputs, need place for results
-
-    
-    #continue
+foreach infile $inputs {
     incr k
     # - --   -----        -------------
     set kd       [format $fmt $k]
-    set id       [file rootname [file tail $infile]]
-    set cat      [string index $id 0]
-    set input    [fgetc $infile [coding]]
-    set exfile   [td]/result/$cat/$id
+    set id       [file tail $infile]
+    set input    [fget $infile]
+    set exfile   [td]/result/$id
     set expected {}
     catch { set expected [string trim [fget $exfile]] }
 
     # - --   -----        -------------
     
     test [tnp]-process-2.${kd}---${id} "[cl] :: process $id" -body {
-	# catch {utf-show [split $input {}]}
 	# For rt-c activate `TRACE` tag `enter` in `inbound.c` and use the rebuilt runtime.
-
 	catch {
 	    ast-format [PARSE process $input]
 	} msg
@@ -132,15 +120,13 @@ foreach infile $will_accept {
 }
 
 # # ## ### ##### ######## ############# #####################
-unset -nocomplain max fmt k infile kd exfile input expected id
+unset -nocomplain inputs max fmt k infile kd id input exfile expected
+
 rename setup   {}
 rename cleanup {}
 rename tnp     {}
 rename cl      {}
-
-# # ## ### ##### ######## ############# #####################
-rename rt          {}
-rename constraints {}
+rename rt      {}
 
 # # ## ### ##### ######## ############# #####################
 return

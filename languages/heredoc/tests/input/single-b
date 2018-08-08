@@ -1,3 +1,4 @@
-say <<A;
+say <<A
 lorem ipsum
 A
+;

@@ -1,6 +1,6 @@
-say <<A
+say <<A;
 lorem ipsum
 A
-say <<A
+say <<A;
 delta vau
 A

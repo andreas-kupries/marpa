@@ -1,8 +1,8 @@
-say <<A, <<A;
+<<A, <<A;
 lorem ipsum
 A
 delta vau
 A
-say <<B;
+<<B;
 quick brown fox
 B

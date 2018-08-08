@@ -18,12 +18,15 @@ lexeme default =
 :start ::= statements
 
 statements  ::= statement +
-statement   ::= expressions semicolon
+statement   ::= expressions (semicolon)
+	action => ::first
 expressions ::= expression +
 	separator => comma
 
-expression ::= <heredoc decl>
-	   |   say expressions
+expression ::= <heredoc decl>	action => ::first
+	   |   sayer
+
+sayer ::= (say) expressions
 
 # # ## ### ##### ######## ############# #####################
 

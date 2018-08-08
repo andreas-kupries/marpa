@@ -7,7 +7,7 @@
 # (c) 2018 Grammar heredoc::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "heredoc::parser::tcl".
-##	Generated On Wed Aug 01 13:26:52 PDT 2018
+##	Generated On Wed Aug 08 12:05:14 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 
@@ -136,6 +136,7 @@ oo::class create heredoc::parser::tcl {
 	    expression
 	    expressions
 	    {heredoc decl}
+	    sayer
 	    statement
 	    statements
 	}
@@ -146,11 +147,16 @@ oo::class create heredoc::parser::tcl {
 	debug.heredoc/parser/tcl
 	return {
 	    {__ :A {name values}}
-	    {expression := say expressions}
+	    {expression := sayer}
+	    {__ :A Afirst}
 	    {expression := {heredoc decl}}
+	    {__ :A {name values}}
 	    {expressions + expression comma 0}
 	    {{heredoc decl} :M 0 {heredoc start} heredoc}
-	    {statement := expressions semicolon}
+	    {sayer :M 0 say expressions}
+	    {__ :A Afirst}
+	    {statement :M 1 expressions semicolon}
+	    {__ :A {name values}}
 	    {statements + statement}
 	}
     }

@@ -1,4 +1,4 @@
-say <<A, <<A;
+<<A, <<A;
 lorem ipsum
 A
 delta vau

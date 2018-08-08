@@ -5,7 +5,7 @@
 ## heredoc utility - parse heredoc into AST.
 
 # @@ Meta Begin
-# Application jq 0.1
+# Application hd 0.1
 # Meta author      {Andreas Kupries}
 # Meta category    Parser
 # Meta description A minimal HEREDOC parser and dumper.

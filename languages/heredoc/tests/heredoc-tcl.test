@@ -11,10 +11,7 @@
 # # ## ### ##### ######## ############# #####################
 ## API to the heredoc-core
 
-proc rt          {} { return tcl }
-proc constraints {id} {
-    return {}
-}
+proc rt {} { return tcl }
 
 # # ## ### ##### ######## ############# #####################
 ##

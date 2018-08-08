@@ -7,11 +7,11 @@
 # (c) 2018 Grammar heredoc::parser::c 1 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "heredoc::parser::c".
-##	Generated On Wed Aug 01 13:26:51 PDT 2018
+##	Generated On Wed Aug 08 12:05:14 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 ##
-#* Space taken: 5658 bytes
+#* Space taken: 5704 bytes
 ##
 #* Statistics
 #* L0
@@ -22,9 +22,9 @@
 #* - #Rule Insn: 22 (+2: setup, start-sym)
 #* - #Rules:     73 (>= insn, brange)
 #* G1
-#* - #Symbols:   10
-#* - #Rule Insn: 6 (+2: setup, start-sym)
-#* - #Rules:     6 (match insn)
+#* - #Symbols:   11
+#* - #Rule Insn: 7 (+2: setup, start-sym)
+#* - #Rules:     7 (match insn)
 
 package provide heredoc::parser::c 1
 
@@ -63,12 +63,12 @@ critcl::api import critcl::callback  1
 
 critcl::ccode {
     /*
-    ** Shared string pool (548 bytes lengths over 274 entries)
-    **                    (548 bytes offsets -----^)
-    **                    (3566 bytes character content)
+    ** Shared string pool (550 bytes lengths over 275 entries)
+    **                    (550 bytes offsets -----^)
+    **                    (3572 bytes character content)
     */
 
-    static marpatcl_rtc_size heredoc_parser_c_pool_length [274] = { /* 548 bytes */
+    static marpatcl_rtc_size heredoc_parser_c_pool_length [275] = { /* 550 bytes */
 	 1,  1,  2,  9, 12,  7,  5,  5,  8,  3,  3,  2,  2,  2,  1,  1,
 	 1,  1,  1,  1,  5,  1,  1,  1,  1, 10, 11,  1,  1,  1,  1,  1,
 	 1,  7, 12, 13,  1,  1, 14, 14, 14, 14, 14, 14, 14, 14, 14, 15,
@@ -85,11 +85,11 @@ critcl::ccode {
 	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
 	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,  1,  1,  1,  1,  1,
 	 1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  3,
-	 9,  9, 10,  1,  1,  1,  1,  1,  1,  1,  1, 10,  1,  1,  1,  1,
-	 1,  1
+	 5,  9,  9, 10,  1,  1,  1,  1,  1,  1,  1,  1, 10,  1,  1,  1,
+	 1,  1,  1
     };
 
-    static marpatcl_rtc_size heredoc_parser_c_pool_offset [274] = { /* 548 bytes */
+    static marpatcl_rtc_size heredoc_parser_c_pool_offset [275] = { /* 550 bytes */
 	   0,    2,    4,    7,   17,   30,   38,   44,   50,   59,   63,   67,   70,   73,   76,   78,
 	  80,   82,   84,   86,   88,   94,   96,   98,  100,  102,  113,  125,  127,  129,  131,  133,
 	 135,  137,  145,  158,  172,  174,  176,  191,  206,  221,  236,  251,  266,  281,  296,  311,
@@ -106,11 +106,11 @@ critcl::ccode {
 	2993, 3010, 3027, 3044, 3061, 3078, 3095, 3112, 3129, 3146, 3163, 3180, 3197, 3214, 3231, 3248,
 	3265, 3282, 3299, 3316, 3333, 3350, 3367, 3384, 3401, 3418, 3435, 3452, 3454, 3456, 3458, 3460,
 	3462, 3464, 3466, 3468, 3470, 3472, 3474, 3476, 3478, 3480, 3482, 3484, 3486, 3488, 3490, 3492,
-	3496, 3506, 3516, 3527, 3529, 3531, 3533, 3535, 3537, 3539, 3541, 3543, 3554, 3556, 3558, 3560,
-	3562, 3564
+	3496, 3502, 3512, 3522, 3533, 3535, 3537, 3539, 3541, 3543, 3545, 3547, 3549, 3560, 3562, 3564,
+	3566, 3568, 3570
     };
 
-    static marpatcl_rtc_string heredoc_parser_c_pool = { /* 24 + 3566 bytes */
+    static marpatcl_rtc_string heredoc_parser_c_pool = { /* 24 + 3572 bytes */
 	heredoc_parser_c_pool_length,
 	heredoc_parser_c_pool_offset,
 	/*   0 */ ",\0"
@@ -369,24 +369,25 @@ critcl::ccode {
 	/* 253 */ "S\0"
 	/* 254 */ "s\0"
 	/* 255 */ "say\0"
-	/* 256 */ "semicolon\0"
-	/* 257 */ "statement\0"
-	/* 258 */ "statements\0"
-	/* 259 */ "T\0"
-	/* 260 */ "t\0"
-	/* 261 */ "U\0"
-	/* 262 */ "u\0"
-	/* 263 */ "V\0"
-	/* 264 */ "v\0"
-	/* 265 */ "W\0"
-	/* 266 */ "w\0"
-	/* 267 */ "whitespace\0"
-	/* 268 */ "X\0"
-	/* 269 */ "x\0"
-	/* 270 */ "Y\0"
-	/* 271 */ "y\0"
-	/* 272 */ "Z\0"
-	/* 273 */ "z\0"
+	/* 256 */ "sayer\0"
+	/* 257 */ "semicolon\0"
+	/* 258 */ "statement\0"
+	/* 259 */ "statements\0"
+	/* 260 */ "T\0"
+	/* 261 */ "t\0"
+	/* 262 */ "U\0"
+	/* 263 */ "u\0"
+	/* 264 */ "V\0"
+	/* 265 */ "v\0"
+	/* 266 */ "W\0"
+	/* 267 */ "w\0"
+	/* 268 */ "whitespace\0"
+	/* 269 */ "X\0"
+	/* 270 */ "x\0"
+	/* 271 */ "Y\0"
+	/* 272 */ "y\0"
+	/* 273 */ "Z\0"
+	/* 274 */ "z\0"
     };
 
     static marpatcl_rtc_event_spec heredoc_parser_c_events [1] = {
@@ -406,9 +407,9 @@ critcl::ccode {
 	  9,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,  77,   0,  78,  79,  80,
 	 81,  82,  83,  84,  85,  86,  87,  88,  89,  90,  91,  10,   1,  92,  93,  94,
 	 95,  14,  16,  18,  21,  23,  27,  29,  31,  36, 235, 237, 239, 241, 243, 245,
-	247, 249, 251, 253, 259, 261, 263, 265, 268, 270, 272,  96,  97,  98,  99, 100,
+	247, 249, 251, 253, 260, 262, 264, 266, 269, 271, 273,  96,  97,  98,  99, 100,
 	101,  15,  17,  19,  22,  24,  28,  30,  32,  37, 236, 238, 240, 242, 244, 246,
-	248, 250, 252, 254, 260, 262, 264, 266, 269, 271, 273, 102, 103, 104, 105, 106,
+	248, 250, 252, 254, 261, 263, 265, 267, 270, 272, 274, 102, 103, 104, 105, 106,
 	107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122,
 	123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138,
 	139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154,
@@ -420,19 +421,19 @@ critcl::ccode {
 
 	/* --- (5) --- --- --- ACS: Lexeme
 	 */
-	 20,  33,  35, 255, 256,
+	 20,  33,  35, 255, 257,
 
 	/* --- (1) --- --- --- ACS: Discard
 	 */
-	267,
+	268,
 
 	/* --- (5) --- --- --- Lexeme
 	 */
-	 20,  33,  35, 255, 256,
+	 20,  33,  35, 255, 257,
 
 	/* --- (1) --- --- --- Discard
 	 */
-	267,
+	268,
 
 	/* --- (8) --- --- --- Internal
 	 */
@@ -507,66 +508,73 @@ critcl::ccode {
     ** G1 structures
     */
 
-    static marpatcl_rtc_sym heredoc_parser_c_g1_sym_name [10] = { /* 20 bytes */
+    static marpatcl_rtc_sym heredoc_parser_c_g1_sym_name [11] = { /* 22 bytes */
 	/* --- (5) --- --- --- Terminals
 	 */
-	 20,  33,  35, 255, 256,
+	 20,  33,  35, 255, 257,
 
-	/* --- (5) --- --- --- Structure
+	/* --- (6) --- --- --- Structure
 	 */
-	258, 257,  26,  25,  34
+	259, 258,  26,  25, 256,  34
     };
 
-    static marpatcl_rtc_sym heredoc_parser_c_g1_rule_name [6] = { /* 12 bytes */
-	258, 257,  26,  25,  25,  34
+    static marpatcl_rtc_sym heredoc_parser_c_g1_rule_name [7] = { /* 14 bytes */
+	259, 258,  26,  25,  25, 256,  34
     };
 
-    static marpatcl_rtc_sym heredoc_parser_c_g1_rule_lhs [6] = { /* 12 bytes */
-	5, 6, 7, 8, 8, 9
+    static marpatcl_rtc_sym heredoc_parser_c_g1_rule_lhs [7] = { /* 14 bytes */
+	 5,  6,  7,  8,  8,  9, 10
     };
 
-    static marpatcl_rtc_sym heredoc_parser_c_g1_rule_definitions [21] = { /* 42 bytes */
+    static marpatcl_rtc_sym heredoc_parser_c_g1_rule_definitions [24] = { /* 48 bytes */
 	MARPATCL_RCMD_SETUP (2),
 	MARPATCL_RCMD_QUP   (5), 6,                        /* <statements>   ::= <statement> + */
 	MARPATCL_RCMD_PRIO  (2), 6, 7, 4,                  /* <statement>    ::= <expressions> <semicolon> */
 	MARPATCL_RCMD_QUPS  (7), 8, MARPATCL_RCMD_SEP (0), /* <expressions>  ::= <expression> + (<comma>) */
-	MARPATCL_RCMD_PRIO  (1), 8, 9,                     /* <expression>   ::= <heredoc decl> */
-	MARPATCL_RCMD_PRIS  (2)   , 3, 7,                  /*                |   <say> <expressions> */
-	MARPATCL_RCMD_PRIO  (2), 9, 2, 1,                  /* <heredoc decl> ::= <heredoc start> <heredoc> */
+	MARPATCL_RCMD_PRIO  (1), 8, 10,                    /* <expression>   ::= <heredoc decl> */
+	MARPATCL_RCMD_PRIS  (1)   , 9,                     /*                |   <sayer> */
+	MARPATCL_RCMD_PRIO  (2), 9, 3, 7,                  /* <sayer>        ::= <say> <expressions> */
+	MARPATCL_RCMD_PRIO  (2), 10, 2, 1,                 /* <heredoc decl> ::= <heredoc start> <heredoc> */
 	MARPATCL_RCMD_DONE  (5)
     };
 
     static marpatcl_rtc_rules heredoc_parser_c_g1 = { /* 48 */
 	/* .sname   */  &heredoc_parser_c_pool,
-	/* .symbols */  { 10, heredoc_parser_c_g1_sym_name },
-	/* .rules   */  { 6, heredoc_parser_c_g1_rule_name },
-	/* .lhs     */  { 6, heredoc_parser_c_g1_rule_lhs },
+	/* .symbols */  { 11, heredoc_parser_c_g1_sym_name },
+	/* .rules   */  { 7, heredoc_parser_c_g1_rule_name },
+	/* .lhs     */  { 7, heredoc_parser_c_g1_rule_lhs },
 	/* .rcode   */  heredoc_parser_c_g1_rule_definitions,
 	/* .events  */  0
     };
 
-    static marpatcl_rtc_sym heredoc_parser_c_g1semantics [4] = { /* 8 bytes */
-	/* --- (1) --- --- --- Tag
-	 */
-	MARPATCL_S_SINGLE,
-
-	/* --- (3) --- --- --- Common Semantics
-	 */
-	2, MARPATCL_SV_RULE_NAME, MARPATCL_SV_VALUE
-    };
-
-    static marpatcl_rtc_sym heredoc_parser_c_g1masking [9] = { /* 18 bytes */
+    static marpatcl_rtc_sym heredoc_parser_c_g1semantics [13] = { /* 26 bytes */
 	/* --- (1) --- --- --- Tag
 	 */
 	MARPATCL_S_PER,
 
-	/* --- (6) --- --- --- Mask Offsets
+	/* --- (7) --- --- --- Semantics Offsets
 	 */
-	0, 0, 0, 0, 0, 6,
+	9, 7, 9, 7, 9, 9, 9,
+
+	/* --- (2) --- --- --- Semantics Data
+	 */
+	         /*  7 */ 1, MARPATCL_SV_A_FIRST,
+	           /*  9 */ 2, MARPATCL_SV_RULE_NAME,     MARPATCL_SV_VALUE
+    };
+
+    static marpatcl_rtc_sym heredoc_parser_c_g1masking [12] = { /* 24 bytes */
+	/* --- (1) --- --- --- Tag
+	 */
+	MARPATCL_S_PER,
+
+	/* --- (7) --- --- --- Mask Offsets
+	 */
+	0, 9, 0, 0, 0, 7, 7,
 
 	/* --- (2) --- --- --- Mask Data
 	 */
-	/* 6 */ 1, 0
+	/*  7 */ 1, 0,
+	/*  9 */ 1, 1
     };
 
     /*
@@ -581,13 +589,13 @@ critcl::ccode {
 	/* .lexemes    */  5,
 	/* .discards   */  1,
 	/* .l_symbols  */  276,
-	/* .g_symbols  */  10,
+	/* .g_symbols  */  11,
 	/* .always     */  { 1, heredoc_parser_c_always },
 	/* .l0         */  &heredoc_parser_c_l0,
 	/* .g1         */  &heredoc_parser_c_g1,
 	/* .l0semantic */  { 3, heredoc_parser_c_l0semantics },
-	/* .g1semantic */  { 4, heredoc_parser_c_g1semantics },
-	/* .g1mask     */  { 9, heredoc_parser_c_g1masking }
+	/* .g1semantic */  { 13, heredoc_parser_c_g1semantics },
+	/* .g1mask     */  { 12, heredoc_parser_c_g1masking }
     };
     /* --- end of generated data structures --- */
 }
@@ -595,7 +603,7 @@ critcl::ccode {
 # # ## ### ##### ######## ############# #####################
 ## Class exposing the grammar engine.
 
-critcl::literals::def heredoc::parser::c_event {
+critcl::literals::def heredoc_parser_c_event {
     u0 "heredoc"
 } +list
 

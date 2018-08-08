@@ -1,0 +1,7 @@
+statements
+  expressions
+    heredoc decl
+      @10 11 {'lorem ipsum'}
+    @3 1 ','
+    heredoc decl
+      @24 9 {'delta vau'}
