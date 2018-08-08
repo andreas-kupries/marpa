@@ -1,0 +1,36 @@
+GC lexeme-semantics action {array value}
+GC comment LATM default: 1
+GC comment g1 defaults = {action {array values}}
+GC comment definition Code 218 4
+GC comment g1-definition Code undef --> {JMP brick}
+GC comment usage A 227 1
+GC comment usage B 229 1
+GC comment g1-usage A undef --> {JMP floater}
+GC comment g1-usage B undef --> {JMP floater}
+GC g1 priority-rule Code {A B} 0 action {array values} mask {0 0}
+GC comment definition A 264 1
+GC comment l0-definition A floater --> {JMP lexeme make-lexeme}
+GC l0 lexeme A
+GC g1 terminal A
+GC comment usage @CHR:<A> 268 3
+GC comment definition @CHR:<A> 268 3
+GC comment <literal> @CHR:<A> undef --> {JMP literal}
+GC l0 literal @CHR:<A> character 65
+GC comment l0-usage @CHR:<A> literal --> NOP
+GC l0 priority-rule A @CHR:<A> 0
+GC comment definition B 272 1
+GC comment l0-definition B floater --> {JMP lexeme make-lexeme}
+GC l0 lexeme B
+GC g1 terminal B
+GC comment usage @CHR:<B> 276 3
+GC comment definition @CHR:<B> 276 3
+GC comment <literal> @CHR:<B> undef --> {JMP literal}
+GC l0 literal @CHR:<B> character 66
+GC comment l0-usage @CHR:<B> literal --> NOP
+GC l0 priority-rule B @CHR:<B> 0
+GC comment Semantics completion processing
+GC start! Code
+GC comment LATM fix 1
+GC l0 configure A latm 1
+GC l0 configure B latm 1
+GC comment DDE fix {}

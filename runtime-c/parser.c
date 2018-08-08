@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: Parsing)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
  */
@@ -9,6 +9,7 @@
 #include <parser.h>
 #include <rtc_int.h>
 #include <sem_int.h>
+#include <symset.h>
 #include <events.h>
 #include <lexer.h>
 #include <progress.h>
@@ -37,7 +38,7 @@ marpatcl_rtc_parser_init (marpatcl_rtc_p p)
 {
     int res;
     TRACE_FUNC ("((rtc*) %p)", p);
-    
+
     PAR.g = marpa_g_new (CONF);
     (void) marpa_g_force_valued (PAR.g);
     PRD   = marpatcl_rtc_spec_setup (PAR.g, SPEC->g1, TRACE_TAG_VAR (parser_progress));
@@ -46,6 +47,7 @@ marpatcl_rtc_parser_init (marpatcl_rtc_p p)
     marpatcl_rtc_parser_events (p);
 
     PAR.recce = marpa_r_new (PAR.g);
+    TRACE ("new (recce) %p, (grammar) %p", PAR.recce, PAR.g);
 
     res = marpa_r_start_input (PAR.recce);
     marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 start_input");
@@ -60,27 +62,51 @@ void
 marpatcl_rtc_parser_free (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE ("del (recce) %p, (grammar) %p", PAR.recce, PAR.g);
 
     marpa_g_unref (PAR.g);
+    PAR.g = 0;
     if (PAR.recce) marpa_r_unref (PAR.recce);
+    PAR.recce = 0;
 
     TRACE_RETURN_VOID;
 }
 
 void
-marpatcl_rtc_parser_enter (marpatcl_rtc_p p, int found)
+marpatcl_rtc_parser_enter (marpatcl_rtc_p p)
 {
-    int res;
+    int res, found = marpatcl_rtc_symset_size (&LEX.found);
     TRACE_FUNC ("(rtc %p, found %d)", p, found);
-    
+
     if (!found) {
 	complete (p);
 	TRACE_RETURN_VOID;
     }
 
-    /* Note: The token alternatives have already been entered, as part of
-     * lexer.c/complete(), before it called this function.
+    /*
+     * It is time to enter the token alternatives. The data is available in
+     * LEX.found (terminals) and LEX.m_sv (SV ids).
+     *
+     * __ATTENTION__ We make here use of the fact that the `dense` array of
+     * symsets contains the terminals in order of inclusion == order of them
+     * found, and that this matches the order of the ids in the m_sv stack.
+     *
+     * Also, that both set and stack will have the same size.
      */
+
+    int k, nsv;
+    int*             svids = marpatcl_rtc_stack_data (LEX.m_sv, &nsv);
+    Marpa_Symbol_ID* syms  = marpatcl_rtc_symset_dense (&LEX.found);
+
+    ASSERT (found == nsv, "Expected matching size for set of terminals and stack of SV ids");
+
+    for (k=0; k < found; k++) {
+	int svid     = svids [k];
+	int terminal = syms  [k];
+
+	res = marpa_r_alternative (PAR.recce, terminal, svid, 1);
+	marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 alternative");
+    }
 
     res = marpa_r_earleme_complete (PAR.recce);
     if (res && (marpa_g_error (PAR.g, NULL) != MARPA_ERR_PARSE_EXHAUSTED)) {
@@ -139,8 +165,8 @@ marpatcl_rtc_parser_eof (marpatcl_rtc_p p)
 void
 complete (marpatcl_rtc_p p)
 {
-    Marpa_Tree   t;    marpatcl_rtc_sv_p sv;			     
-    Marpa_Order  o;    marpatcl_rtc_sva  es;  /* evaluation stack */    
+    Marpa_Tree   t;    marpatcl_rtc_sv_p sv;
+    Marpa_Order  o;    marpatcl_rtc_sva  es;  /* evaluation stack */
     Marpa_Bocage b;    marpatcl_rtc_sva  rhs; /* rule rhs scratch pad */
     Marpa_Value  v;
     marpatcl_rtc_sym* mv;
@@ -153,7 +179,7 @@ complete (marpatcl_rtc_p p)
     }
 
     PAR_P (p);
-    
+
     /* Find location with parse, work backwards from the end of the token-sequence */
     latest = marpa_r_latest_earley_set (PAR.recce);
     while (1) {
@@ -168,6 +194,8 @@ complete (marpatcl_rtc_p p)
 	    TRACE_CLOSER;
 
 	    marpatcl_rtc_failit (p, "parser");
+
+	    TRACE ("del (recce) %p, (grammar) %p", PAR.recce, PAR.g);
 	    marpa_r_unref (PAR.recce);
 	    PAR.recce = 0;
 
@@ -179,7 +207,7 @@ complete (marpatcl_rtc_p p)
 
     TRACE_ADD (" ok", 0);
     TRACE_CLOSER;
-    
+
     /* Get all the valid parses at the location and evaluate them.
      */
 
@@ -191,7 +219,7 @@ complete (marpatcl_rtc_p p)
 
     marpatcl_rtc_sva_init (&es,  10, 0);
     marpatcl_rtc_sva_init (&rhs, 10, 0);
-    
+
     while (1) {
 	/* Per parse tree */
 	int rid, stop, status = marpa_t_next (t);
@@ -251,7 +279,7 @@ complete (marpatcl_rtc_p p)
 			   marpa_v_result(v),
 			   marpa_v_arg_0(v),
 			   marpa_v_arg_n(v));
-		
+
 		marpatcl_rtc_sva_copy (&rhs, &es,
 				       marpa_v_arg_0(v), marpa_v_arg_n(v));
 		rid = marpa_v_rule(v);
@@ -281,7 +309,7 @@ complete (marpatcl_rtc_p p)
 			   marpatcl_rtc_spec_symname (SPEC->g1, marpa_v_token(v), 0),
 			   marpa_v_result(v),
 			   marpa_v_token_value(v));
-		
+
 		sv = marpatcl_rtc_store_get(p, marpa_v_token_value(v));
 		SHOW_SV (sv);
 		marpatcl_rtc_sva_set_fill (&es, marpa_v_result(v), sv);
@@ -338,6 +366,7 @@ complete (marpatcl_rtc_p p)
     // make it to the parser's enter.
     marpatcl_rtc_lexer_acceptable (p, 0);
 
+    TRACE ("del (recce) %p, (grammar) %p", PAR.recce, PAR.g);
     marpa_r_unref (PAR.recce);
     PAR.recce = 0;
 
@@ -382,7 +411,7 @@ get_sv (marpatcl_rtc_p      p,
 #define G1_LEN          (G1_END - G1_START + 1)
 
     int LEX_LEN = -1; // TODO remove fake
-    
+
     for (k = 0; k < klen; k++) {
 	switch (kv [k]) {
 	case MARPATCL_SV_START:		DO (start, marpatcl_rtc_sv_cons_int (LEX.start));		break;//TODO lex location for parse element?
@@ -399,9 +428,9 @@ get_sv (marpatcl_rtc_p      p,
 
 	case  MARPATCL_SV_A_FIRST:
 	    /* Special action ::first */
-	    marpatcl_rtc_sv_destroy (sv);
+	    marpatcl_rtc_sv_destroy_i (sv);
 	    return marpatcl_rtc_sva_get (rhs, 0);
-	    
+
 	default: ASSERT (0, "Invalid array descriptor key");
 	}
     }

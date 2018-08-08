@@ -1,0 +1,44 @@
+___________________________((record ::PARSE after afterB))
+length = ((3))
+start = ((1))
+sv = ((bbb))
+symbols = ((bs))
+value = ((bbb))
+@location = 4
+@resume = 4
+^sym = >>bs<<
+^sv  = >>bbb<<
+>>bs<< ~~ >>bbb<<
+___________________________((record ::PARSE before beforeA))
+length = ((3))
+start = ((6))
+sv = ((aaa))
+symbols = ((as))
+value = ((aaa))
+@location = 5
+@resume = 9
+^sym = >>as<<
+^sv  = >>aaa<<
+>>as<< ~~ >>aaa<<
+___________________________((record ::PARSE before beforeA))
+length = ((1))
+start = ((11))
+sv = ((a))
+symbols = ((as))
+value = ((a))
+@location = 10
+@resume = 12
+^sym = >>as<<
+^sv  = >>a<<
+>>as<< ~~ >>a<<
+___________________________((record ::PARSE after afterB))
+length = ((1))
+start = ((12))
+sv = ((b))
+symbols = ((bs))
+value = ((b))
+@location = 13
+@resume = 13
+^sym = >>bs<<
+^sv  = >>b<<
+>>bs<< ~~ >>b<<

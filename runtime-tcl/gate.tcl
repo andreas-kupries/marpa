@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -93,10 +93,9 @@ oo::class create marpa::gate {
 
     variable myaccmemo
     variable myacceptable ;# sym -> .
-    variable myhistory    ;# Entered characters and semantic values.
     variable mylastchar   ;# last character "enter"ed into the gate
     variable mylastloc    ;# and its location
-    variable myflushed    ;# flush state
+    variable myflushed    ;# flush indicator
 
     # # -- --- ----- -------- -------------
     ## Configuration
@@ -137,10 +136,9 @@ oo::class create marpa::gate {
 	# Dynamic state for processing
 	set mylastchar   {} ;# char/loc before anything was entered
 	set mylastloc    -1 ;#
-	set myhistory    {} ;# queue of processed characters (and locations)
 	set myaccmemo    {}
 	set myacceptable {} ;# set of expected/allowed symbols,
-	# initially none
+	                     # initially none
 	set myflushed    0
 
 	# Static configuration
@@ -153,6 +151,22 @@ oo::class create marpa::gate {
 
 	debug.marpa/gate {[debug caller] | /ok}
 	return
+    }
+
+    method input: {inbound} {
+	debug.marpa/lexer {[debug caller] | }
+	marpa::import $inbound Input
+	return
+    }
+
+    foreach m {location from rewind relative stop to limit dont-stop} {
+	# TODO: Check which are actually required.
+	# Access to input location, accessor & modifiers
+	forward $m  Input $m
+    } ; unset m
+
+    method signal-stop {} {
+	Forward signal-stop ;# notify lexer
     }
 
     # # -- --- ----- -------- -------------
@@ -179,16 +193,10 @@ oo::class create marpa::gate {
 	debug.marpa/gate {[debug caller] | }
 	upvar 1 $cv context
 
-	if {0&&[llength $myhistory]} {
-	    # Pull location information out of the history.
-	    lassign [lrange $myhistory end-1 end] char location
-	} else {
-	    # When history is not available try to pull information
-	    # from the last character which went into the gate
-	    # instead, as a last fallback.
-	    set char     $mylastchar
-	    set location $mylastloc
-	}
+	# Pull information from the last character which went into the
+	# gate.
+	set char     $mylastchar
+	set location $mylastloc
 
 	my ExtendContext context $char $location
 	return
@@ -201,92 +209,42 @@ oo::class create marpa::gate {
 	set mylastchar $char
 	set mylastloc  $location
 
-	# Trick for lazy setup of the gate datastructures in the face
-	# of unknown characters. These can only exist as part of some
-	# character class. As a standalone they would have been
-	# declared already and be known.
-	##
-	# Extend the map when encountering an unknown character, check
-	# the char classes for one it may belong to. Note, this is the
-	# only way an unknown character can appear in later stages.
-	# Because being unknown means that it is not in the list of
-	# individually recognized characters of the grammar
-	if {![dict exists $mymap $char]} {
-	    debug.marpa/gate {[debug caller 1] | Extend maps}
-	    dict set mymap $char {}
-	    dict for {name spec} $myclass {
-		lassign $spec pattern classid
-		if {![regexp -- $pattern $char]} continue
-		dict lappend mymap $char $classid
-
-		debug.marpa/gate {[debug caller 1] | + '[char quote cstring $char]' = $classid '$name'}
-	    }
-	}
+	my ClassFill $char
 
 	# Map the character to all its symbols, if any ...  Do a loop
 	# here, allow for _one_ re-try after a flush was forced to the
 	# postprocessor.
 
-	set myflushed 0
-	while {1} {
-	    debug.marpa/gate {[debug caller 1] | match ($myacceptable)}
-	    set match {}
+	debug.marpa/gate {[debug caller 1] | match ($myacceptable)}
 
-	    foreach possible [dict get $mymap $char] {
-		# ... and check which of them are acceptable, if any
-		if {![dict exists $myacceptable $possible]} {
-		    debug.marpa/gate {[debug caller 1] | .test ($possible) FAIL}
-		    continue
-		}
-		debug.marpa/gate {[debug caller 1] | .test ($possible) OK}
-		# ... collect the acceptables
-		lappend match $possible
-	    }
-	    if {[llength $match]} {
-		# ... remember the char now for possible rewind request.
-		##
-		#     Note thay we cannot remember the match data,
-		#     because that is predicated on myacceptable,
-		#     which may have changed if the char is re-entered
-		#     later via 'redo'.
-		lappend myhistory $char $location
+	set match [my Matches $char]
+	if {[llength $match]} {
+	    # Note that we cannot remember the match data, because
+	    # that is predicated on myacceptable, which may have
+	    # changed if the char is re-entered later via 'redo'.
 
-		# ... Let the postprocessor deal with any ambiguity
-		debug.marpa/gate {[debug caller 1] | push ($match)}
-		# sub lexer gate sv - char + lcoation
-		Forward enter $match $char $location
-
-		# We are good.
-		return
-	    }
-
-	    # The character we have is not acceptable. If we just
-	    # reached it we flush our state to the postprocessor, so
-	    # that it may check if it is has a lexeme, after which the
-	    # character may be accepted. If we flushed already, then
-	    # we have to error out, there is no forward from here.
-	    if {$myflushed} {
-		debug.marpa/gate {[debug caller 1] | ...flushed}
-		
-		my ExtendContext context $char $location
-		Forward fail context
-
-		# Note: This method must not return, but throw an
-		# error at some point. If it returns we have an
-		# internal problem at hand as well. In that case we
-		# report that now, together with the context.
-
-		my E "Unexpected return without error for problem: $context" \
-		    INTERNAL ILLEGAL RETURN $context
-	    }
-
-	    incr myflushed
-	    debug.marpa/gate {[debug caller 1] | flush ($myflushed) ...}
+	    # ... Let the postprocessor deal with any ambiguity
 	    debug.marpa/gate {[debug caller 1] | push ($match)}
-
+	    # sub lexer gate sv - char + lcoation
 	    Forward enter $match $char $location
-	    # Loop to retry
+
+	    # We are good. Clear flush indicator.
+	    set myflushed 0
+	    return
 	}
+
+	# The character we have is not acceptable. Depending on the
+	# flush indicator we either fail, or flush and indicate that.
+	my FailAfterFlush $char $location
+
+	debug.marpa/gate {[debug caller 1] | flush ($myflushed) ...}
+	debug.marpa/gate {[debug caller 1] | push ($match)}
+
+	Input rewind 1 ; # Put the unacceptable character back
+	incr myflushed
+	# Note that a non-empty redo signaled from the lexer will
+	# clear the flush indicator, see `redo`.
+	Forward enter $match $char $location
 	return
     }
 
@@ -308,28 +266,43 @@ oo::class create marpa::gate {
 
     method redo {n} {
 	debug.marpa/gate {[debug caller] | }
-	if {$n} {
-	    # Reset flush state. The redo implies that the flushed
-	    # token did not cover the input till the character causing
-	    # the flush. That means that we may have another token in
-	    # the redone part of the input which the current character
-	    # has to flush again.
-	    debug.marpa/gate {[debug caller] | flush reset}
-	    set myflushed 0
-	    # Redo/enter the last n characters
-	    # Note: 2 slots per char (char + value) => Times 2.
-	    incr n $n
-	    incr n -1
-	    set pending [lrange $myhistory end-$n end]
-	    set myhistory {}
-	    foreach {char value} $pending {
-		my enter $char $value
-	    }
-	} else {
-	    # Redo nothing
-	    set myhistory {}
-	}
+	# Bail quickly when where is nothing to be done.
+	if {!$n} return
+
+	# Clear the flush indicator. The non-empty redo implies that
+	# the flushed token did not cover the input till the character
+	# causing the flush. That means that we may have another token
+	# in the to-be-redone part of the input which the current
+	# character has to flush again.
+	debug.marpa/gate {[debug caller] | flush reset}
+	set myflushed 0
+
+	# Actually redo/enter the last n characters.  This is done by
+	# simply moving the input back that much.
+	Input rewind $n
 	return
+    }
+
+    method FailAfterFlush {char location} {
+	debug.marpa/gate {[debug caller] | }
+	# The character we have is not acceptable. If we just reached
+	# it we flush our state to the postprocessor, so that it may
+	# check if it is has a lexeme, after which the character may
+	# be accepted. If we flushed already, then we have to error
+	# out, there is no forward from here.
+	if {!$myflushed} return
+	debug.marpa/gate {[debug caller] | ...flushed}
+
+	my ExtendContext context $char $location
+	Forward fail context
+
+	# Note: This method must not return, but throw an error at
+	# some point. If it returns we have an internal problem at
+	# hand as well. In that case we report that now, together with
+	# the context.
+
+	my E "Unexpected return without error for problem: $context" \
+	    INTERNAL ILLEGAL RETURN $context
     }
 
     method ExtendContext {cv char location} {
@@ -340,7 +313,7 @@ oo::class create marpa::gate {
 	    ![dict exists $context from]} {
 	    dict set context origin gate
 	}
-	
+
 	if {$location ne {}} {
 	    dict set context l0 at $location
 	}
@@ -365,7 +338,7 @@ oo::class create marpa::gate {
 		# TODO: The above can be handled as a package to
 		# handle integer sets, ranges, with characters mapped
 		# in and out via their 'codepoints'.
-		
+
 		# NOTE: See `marpa::slif::literal`
 	    } else {
 		dict set amap $sym '[char quote cstring $cname]'
@@ -376,6 +349,49 @@ oo::class create marpa::gate {
 	dict set context l0 acceptable [lsort -dict $acceptable]
 	dict set context l0 acceptsym  [lsort -integer [dict keys $myacceptable]]
 	dict set context l0 acceptmap  $amap
+	return
+    }
+
+    method Matches {char} {
+	debug.marpa/gate {[debug caller 1] | '[char quote cstring $char]' }
+	set match {}
+	foreach possible [dict get $mymap $char] {
+	    # ... and check which of them are acceptable, if any
+	    if {![dict exists $myacceptable $possible]} {
+		debug.marpa/gate {[debug caller 1] | .test ($possible) FAIL}
+		continue
+	    }
+	    debug.marpa/gate {[debug caller 1] | .test ($possible) OK}
+	    # ... collect the acceptables
+	    lappend match $possible
+	}
+	return $match
+    }
+
+    method ClassFill {char} {
+	debug.marpa/gate {[debug caller 1] | '[char quote cstring $char]' }
+	# Trick for lazy setup of the gate datastructures in the face
+	# of unknown characters. These can only exist as part of some
+	# character class. As a standalone they would have been
+	# declared already and be known.
+	##
+	# Extend the map when encountering an unknown character, check
+	# the char classes for one it may belong to. Note, this is the
+	# only way an unknown character can appear in later stages.
+	# Because being unknown means that it is not in the list of
+	# individually recognized characters of the grammar
+
+	if {[dict exists $mymap $char]} return
+
+	debug.marpa/gate {[debug caller 1] | Extend maps}
+	dict set mymap $char {}
+	dict for {name spec} $myclass {
+	    lassign $spec pattern classid
+	    if {![regexp -- $pattern $char]} continue
+
+	    dict lappend mymap $char $classid
+	    debug.marpa/gate {[debug caller 1] | + '[char quote cstring $char]' = $classid '$name'}
+	}
 	return
     }
 
@@ -444,7 +460,7 @@ oo::class create marpa::gate {
     method name-of {s} {
 	dict get $myrmap $id
     }
-    
+
     ##
     # # ## ### ##### ######## #############
 }

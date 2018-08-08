@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2017-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -102,7 +102,7 @@ proc ::marpa::slif::literal::reduce::2c4tcl::reduce::cc/c {state args} {
     # The simplest ASBR has one alternate, with only one element in
     # the sequence. That we can rewrite directly without a new
     # composite symbol.
-    
+
     if {([llength $asbr] == 1) && ([llength [lindex $asbr 0]] == 1)} {
 	# asbr has one alternate, having only one element in the
 	# sequence. No need to inject a priority rule. We can rewrite
@@ -127,7 +127,7 @@ proc ::marpa::slif::literal::reduce::2c4tcl::reduce::string {state args} {
     # args = codepoints.
     # convert to sequence of byte sequences, flatten, single alternative
     # 2utf - tcl = mutf-8, cesu-8
-   
+
     $state rules*! [concat {*}[lmap codepoint $args {
 	lmap byte [2utf $codepoint tcl] {
 	    L byte $byte }
@@ -180,7 +180,7 @@ proc ::marpa::slif::literal::reduce::2c4tcl::reduce::^character {state codepoint
     } else {
 	set before $codepoint ; incr before -1
 	set after  $codepoint ; incr after
-    
+
 	$state is-a cc/c [R 0 $before] [R $after [max]]
     }
 }
@@ -210,7 +210,7 @@ proc ::marpa::slif::literal::reduce::2c4tcl::reduce::^range {state start end} {
     # A negated range is a charclass of 2 ranges, before and after.
     # The general case of ^character. Go through charclass for
     # normalization and further reduction.
-    
+
     set pre  $start ; incr pre -1
     set post $end   ; incr post
 
@@ -250,7 +250,7 @@ proc ::marpa::slif::literal::reduce::2c4tcl::reduce::^named-class {state name} {
 
 proc ::marpa::slif::literal::reduce::2c4tcl::reduce::^%named-class {state name} {
     # See named-class. case-unfold and negate before sending it on.
-    
+
     $state is-a cc/c {*}[negate-class [unfold [data cc ranges $name]]]
 }
 

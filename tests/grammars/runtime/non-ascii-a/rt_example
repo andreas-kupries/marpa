@@ -1,0 +1,22 @@
+# The same grammar as for multi-flush.
+# The example OTOH contains multi-byte characters,
+# demonstrating the location tracking of the runtimes.
+# (A) Tracking without moves by events
+
+lexeme default =    latm => 1 action => [start,length,value]
+:default ::=   	    action => [name,values]
+
+:discard ~ whitespace
+whitespace ~ [[:space:]] +
+
+words	::= word +
+word	::= LB | <general>
+LB    	::= ( '[lb]' )
+
+<general> ::= <general lex>
+
+<general lex>     ~ <general limiter>
+<general lex>     ~ <general limiter> <general limiter>
+<general lex>     ~ <general limiter> <general middle> <general limiter>
+<general limiter> ~ [^\133\135[:space:]]
+<general middle>  ~ [^\133\135\n\r\t\f\v] +

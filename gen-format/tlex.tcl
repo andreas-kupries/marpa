@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2017-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -75,8 +75,8 @@ return
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
-# (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                     http://core.tcl.tk/akupries/
+# (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                          http://core.tcl.tk/akupries/
 ##
 # (c) @slif-year@ Grammar @slif-name@ By @slif-writer@
 ##
@@ -115,31 +115,31 @@ oo::class create @slif-name@ {
     # requested information. Their base-class implementations simply
     # throw errors, thus preventing the construction of an incomplete
     # lexer.
-    
+
     method Characters {} {
 	debug.@slif-name-tag@
 	# Literals: The directly referenced (allowed) characters.
 	return {@characters@}
     }
-    
+
     method Classes {} {
 	debug.@slif-name-tag@
 	# Literals: The character classes in use
 	return {@classes@}
     }
-    
+
     method Lexemes {} {
 	debug.@slif-name-tag@
 	# Lexer API: Lexeme symbols (Cannot be terminal).
 	return {@lexemes@}
     }
-    
+
     method Discards {} {
 	debug.@slif-name-tag@
 	# Discarded symbols (whitespace)
 	return {@discards@}
     }
-    
+
     method Symbols {} {
 	# Non-lexeme, non-literal symbols
 	debug.@slif-name-tag@
@@ -157,6 +157,15 @@ oo::class create @slif-name@ {
 	# NOTE. This is currently limited to array semantics.
 	# NOTE. No support for command semantics in the lexer yet.
 	return {@l0-semantics@}
+    }
+
+    method Events {} {
+	debug.@slif-name-tag@
+	# L0 parse event definitions (pre-, post-lexeme, discard)
+	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Due to the nature of SLIF syntax we can only associate one
+	# event per type with each symbol, for a maximum of three.
+	return {@l0-events@}
     }
 }
 

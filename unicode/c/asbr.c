@@ -33,7 +33,7 @@ typedef struct ASBRState {
     ccSBR* top;
     int    depth;
 } ASBRState;
-    
+
 static void merge    (ASBRState* state, SBR* current);
 static int  merge2   (ASBRState* state);
 static int  merging  (SBR* prev, SBR* top);
@@ -75,7 +75,7 @@ marpatcl_asbr_destroy (ASBR* asbr) {
     FREE (asbr);
     TRACE_RETURN_VOID;
 }
-    
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  */
@@ -91,12 +91,12 @@ marpatcl_asbr_new (SCR* scr, int flags) {
 
     state.top   = NULL;
     state.depth = 0;
-	
+
     TRACE_FUNC ("(scr %p)", scr);
 
     marpatcl_scr_norm (scr);
     SCR_DUMP ("marpatcl_asbr_new", scr);
-	
+
     for (cr = &scr->cr[0], i = 0, lastcode = 0;
 	 i < scr->n;
 	 cr++, i++)	{
@@ -115,7 +115,7 @@ marpatcl_asbr_new (SCR* scr, int flags) {
 
     CCSBR_DUMP (state.top);
     TRACE ("ccsbr = %p /%d", state.top, state.depth);
-	
+
     /*
      * Convert state to asbr
      * ATTENTION: top becomes last, iterate backward
@@ -141,7 +141,7 @@ marpatcl_asbr_new (SCR* scr, int flags) {
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  */
-        
+
 static void
 finalize (ASBRState* state)
 {
@@ -158,7 +158,7 @@ merge (ASBRState* state, SBR* current)
     push (state, current);
     while (merge2 (state));
 }
-    
+
 static void
 push (ASBRState* state, SBR* current)
 {

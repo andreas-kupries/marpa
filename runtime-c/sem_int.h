@@ -1,7 +1,7 @@
 /* Runtime for C-engine (RTC). Declarations. (Semantic values, and ASTs)
  *                             Internal.
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_SEM_INT_H
@@ -32,6 +32,32 @@
 #define T_GET     (TAG >> 4)
 #define FLAGS     (TAG & 0xF)
 #define OWN (1)
+
+/* Switch sv reference debugging into and out of the system.
+ */
+
+#ifdef SEM_REF_DEBUG
+extern void        svd_report (const char* tag, const char* ofile, int oline, marpatcl_rtc_sv_p sv);
+extern void        svd_link   (const char* ofile, int oline, marpatcl_rtc_sv_p sv);
+extern void        svd_unlink (const char* ofile, int oline, marpatcl_rtc_sv_p sv);
+extern const char* sv_type    (marpatcl_rtc_sv_p sv);
+
+#ifndef CRITCL_TRACER
+extern char* marpatcl_rtc_sv_show (marpatcl_rtc_sv_p sv, int* len);
+#endif
+
+#define SEM_LINK(x)   svd_link   (ofile, oline, x)
+#define SEM_UNLINK(x) svd_unlink (ofile, oline, x)
+#define SEM_TAKE(x)   svd_report ("TAKE", ofile, oline, x)
+#define SEM_RELE(x)   svd_report ("RELE", ofile, oline, x)
+#define API(n,...) __ ## n (const char* ofile, int oline, __VA_ARGS__)
+#else
+#define SEM_LINK(x)   /*nothing*/
+#define SEM_UNLINK(x) /*nothing*/
+#define SEM_TAKE(x)   /*nothing*/
+#define SEM_RELE(x)   /*nothing*/
+#define API(n,...) n (__VA_ARGS__)
+#endif
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

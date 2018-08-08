@@ -46,7 +46,7 @@ marpatcl_scr_new (int n)
 
     if (n < 1) { n = 1; }
     TRACE ("Allocating %d", n);
-	
+
     scr = (SCR*) ckalloc (sizeof(SCR) + n*sizeof(CR));
     TRACE ("NEW scr    = %p .. %p [%d] [%d+%d*%d]", scr,
 	   ((char*) scr)+sizeof(SCR)+n*sizeof(CR),
@@ -114,7 +114,7 @@ void
 marpatcl_scr_norm (SCR_p scr)
 {
     TRACE_FUNC ("((SCR*) %p (elt %d @ %p))", scr, scr->n, scr->cr);
-	
+
     /*
      * Normalization is done in place. This is possible because the resulting
      * class cannot use more ranges than the input. It may have strictly less,
@@ -205,7 +205,7 @@ marpatcl_scr_norm (SCR_p scr)
 
 	TRACE ("%s", "(*) Last");
 	previous ++;
-	    
+
 	scr->n = previous - &scr->cr[0];
 #undef PS
 #undef PE
@@ -236,7 +236,7 @@ marpatcl_scr_complement (SCR_p scr, int smp)
     CR *current, *sentinel, *store;
 
     TRACE_FUNC ("((SCR*) %p (elt %d @ %p))", scr, scr->n, scr->cr);
-	
+
     if (scr->n == 0) {
 	/*
 	 * Negating an empty class yields the full range.
@@ -247,7 +247,7 @@ marpatcl_scr_complement (SCR_p scr, int smp)
 	TRACE ("ncr out %p :: #elements: %d, canonical", ncr, ncr->n);
 	TRACE_RETURN ("(SCR*) %p", ncr);
     }
-	
+
     marpatcl_scr_norm (scr);
     TRACE ("#norm elt: %d", scr->n);
 
@@ -256,7 +256,7 @@ marpatcl_scr_complement (SCR_p scr, int smp)
      * depends on which of the two unicode limits are touched by the class, or
      * not.
      */
-	
+
     cmin = (smp ? (UNI_BMP+1) : 0);
     cmax = UNI_MAX;
 
@@ -314,7 +314,7 @@ marpatcl_scr_complement (SCR_p scr, int smp)
 	TRACE ("  Sto/C %d...%d", store->start, store->end);
 	store ++;
     }
-	
+
     ncr->n = store - &ncr->cr[0];
     ncr->canon = 1;
     TRACE ("#final:    %d\n", ncr->n);
@@ -336,7 +336,7 @@ marpatcl_scr_unfold (SCR_p scr)
      * We use a pseudo-SCR as temporary storage before normalization generates
      * the final form. See `temp`.
      */
-   
+
     /*
      * NOTE: UNI_MAX originates from `unidata.h` (generated).
      */
@@ -344,7 +344,7 @@ marpatcl_scr_unfold (SCR_p scr)
     SCR temp, *ncr;
 
     TRACE_FUNC ("((SCR*) %p (elt %d @ %p))", scr, scr->n, scr->cr);
-    
+
     if (scr->n == 0) {
 	/*
 	 * Expanding an empty class stays empty.
@@ -359,7 +359,7 @@ marpatcl_scr_unfold (SCR_p scr)
      * Normalization of the non-empty input may reduce the amount of temp
      * storage needed by removing possible duplicates and overlaps.
      */
-    
+
     marpatcl_scr_norm (scr);
     TRACE ("#norm elt: %d @ %p", scr->n, scr->cr);
     SCR_DUMP("N", scr);
@@ -369,7 +369,7 @@ marpatcl_scr_unfold (SCR_p scr)
      * UNI_FMAX times that for temp storage, as each codepoint may expand that
      * much.
      */
-    
+
     for (points = 0, i = 0; i < scr->n; i++) {
 	TRACE ("Count   %d...%d = %d",
 	       scr->cr[i].start,
@@ -379,7 +379,7 @@ marpatcl_scr_unfold (SCR_p scr)
     }
 
     TRACE ("#points: %d", points);
-	
+
     temp.canon = 0;
     temp.n     = 0;
     temp.max   = UNI_FMAX * points;
@@ -412,7 +412,7 @@ marpatcl_scr_unfold (SCR_p scr)
     ASSERT (temp.n <= temp.max, "unfold overflow");
 
     TRACE ("#raw expanded: %d", temp.n);
-    
+
     /*
      * Finalization: normalize, and copy into actual result.
      */

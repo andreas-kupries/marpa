@@ -1,0 +1,25 @@
+#!/usr/bin/env tclsh
+# -*- tcl -*-
+
+proc F {x} {
+    #set x [expr {double($x) / (1024*1024)}];#M
+    #set x [expr {double($x) / 1024}];#K
+    set x [expr {double($x)}];#B
+    format %5.2f $x
+}
+
+proc memuse {label alloc max} {
+    global pa pm
+    if {[catch {
+	set da [expr {$alloc - $pa}]
+	set dm [expr {$max - $pm}]
+	puts "memuse\t$label\t[F $alloc]\t[F $max]\t[F $da]\t[F $dm]"
+    }]} {
+	puts "memuse\t$label\t[F $alloc]\t[F $max]"
+    }
+    set pa $alloc
+    set pm $max
+    return
+}
+
+eval [read stdin]

@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2017-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -206,7 +206,7 @@ proc ::marpa::slif::literal::reduce::2tcl::reduce::range {state start end} {
 proc ::marpa::slif::literal::reduce::2tcl::reduce::%range {state start end} {
     # an empty range is illegal
     if {$end <= $start} EmptyRange
-    
+
     # Unfold the character casing, then go through a charclass to
     # normalize and reduce further.
 
@@ -236,7 +236,7 @@ proc ::marpa::slif::literal::reduce::2tcl::reduce::^named-class {state name} {
 
 proc ::marpa::slif::literal::reduce::2tcl::reduce::^%named-class {state name} {
     # See %named-class. case-unfold and negate before sending it on.
-    
+
     $state is-a charclass {*}[negate-class [unfold [data cc ranges $name]]]
 }
 
@@ -303,7 +303,7 @@ proc ::marpa::slif::literal::reduce::2tcl::reduce::CC {neg pieces} {
 	smpn smpchars smpranges smpnames
 
     #puts AAA\t[join $__ \nAAA\t]
-    
+
     if {$bmpn && $smpn} {
 	# mixed elements
 	set smpcc [CC/data $smpchars $smpranges $smpnames]
@@ -352,7 +352,7 @@ proc ::marpa::slif::literal::reduce::2tcl::reduce::CC {neg pieces} {
 	    return [list is-a! {*}[CC/lit $bmpn $bmpchars $bmpranges $bmpnames]]
 	}
     }
-    
+
     if {$smpn} {
 	# Class elements touch only SMP
 	set smpcc [CC/data $smpchars $smpranges $smpnames]
@@ -394,7 +394,7 @@ proc ::marpa::slif::literal::reduce::2tcl::reduce::CC/lit {n chars ranges names 
 	    return [list {*}"${prefix}named-class" [lindex $names 0]]
 	}
     }
-    
+
     lappend cc {*}"${prefix}charclass"
     lappend cc {*}[CC/data $chars $ranges $names]
     return $cc
@@ -407,7 +407,7 @@ proc ::marpa::slif::literal::reduce::2tcl::reduce::CC/data {chars ranges names} 
 }
 
 proc ::marpa::slif::literal::reduce::2tcl::reduce::CC/split {pieces} {
-    set bmpn      0  ; set smpn      0 
+    set bmpn      0  ; set smpn      0
     set bmpchars  {} ; set smpchars  {}
     set bmpranges {} ; set smpranges {}
     set bmpnames  {} ; set smpnames  {}
@@ -417,7 +417,7 @@ proc ::marpa::slif::literal::reduce::2tcl::reduce::CC/split {pieces} {
     # like. From now on we can assume that chars, ranges, and names
     # are unique, and properly separate. That makes the follow up
     # processing much easier.
-    
+
     foreach el [ccnorm $pieces] {
 	switch -exact -- [eltype $el] {
 	    character {
@@ -430,13 +430,13 @@ proc ::marpa::slif::literal::reduce::2tcl::reduce::CC/split {pieces} {
 
 		if {$s == [bmp]} { ++ bmp chars $s } else { ++ bmp ranges [R $s [bmp]] }
 		if {$e == [smp]} { ++ smp chars $e } else { ++ smp ranges [R [smp] $e] }
-		
+
 	    }
 	    named-class {
 		set b [data cc have ${el}:bmp]
 		set h [data cc have ${el}:smp]
 		# assert (b || h)
-		
+
 		if {$b && $h} {
 		    if {[data cc have-tcl $el]} {
 			++ bmp names $el

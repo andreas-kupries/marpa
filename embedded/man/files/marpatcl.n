@@ -1,9 +1,9 @@
 '\"
 '\" Generated from file 'marpatcl\&.man' by tcllib/doctools with format 'nroff'
 '\" Copyright (c) 2015-2018 Andreas Kupries
-'\" Copyright (c) 2018 Documentation, Andreas Kupries
+'\" Copyright (c) 2018-present Documentation, Andreas Kupries
 '\"
-.TH "marpatcl" n 0\&.2 doc "Marpa/Tcl, a binding to libmarpa"
+.TH "marpatcl_marpagen" n 0\&.2 doc "Marpa/Tcl, a binding to libmarpa"
 .\" The -*- nroff -*- definitions below are for supplemental macros used
 .\" in Tcl/Tk manual entries.
 .\"
@@ -273,27 +273,135 @@ Database Class:	\\fB\\$3\\fR
 ..
 .BS
 .SH NAME
-marpatcl \- Marpa/Tcl -
+marpatcl_marpagen \- Marpa/Tcl - The Generator Application
 .SH SYNOPSIS
-package require \fBTcl  8\&.5\fR
-.sp
-package require \fBTk  8\&.5\fR
-.sp
-package require \fBmarpa  ?0\&.2?\fR
+\fBmarpa-gen\fR ?options\&.\&.\&.? ?--? \fIgrammar-file\fR ?\fIoutput\fR?
 .sp
 .BE
 .SH DESCRIPTION
 .PP
-For a basic introduction of the whole Marpa/Tcl eco-system
-please read the \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR (sic!)\&.
-The basic concepts used here, like \&.\&.\&. are described in the reference
-manpage for the \fIMarpa/Tcl - Foundation\fR\&.  We will not repeat
-them here, but assume that the reader knows them already\&.
+Welcome to Marpa/Tcl, a Tcl binding to the "\fIlibmarpa\fR" parsing
+engine\&.
+.PP
+Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR,
+if you have not done so already, to get an overview of the whole system\&.
+.SH AUDIENCE
+This document is targeted at users intending to create parser packages
+with Marpa/Tcl\&.
+.SH MARPA-GEN
+\fBmarpa-gen\fR is the generator application used to read a SLIF
+grammar definition and create various forms of output, including
+packages implementing parsers and lexers for the grammar\&.
+.PP
+To make effective use of it is recommended to also read
+\fIMarpa/Tcl - The SLIF grammar specification language\fR
+.TP
+\fBmarpa-gen\fR ?options\&.\&.\&.? ?--? \fIgrammar-file\fR ?\fIoutput\fR?
+In its most basic form the generator command is invoked with the path
+to a \fIgrammar-file\fR, printing the result to \fBstdout\fR\&.
+If a second path to \fIoutput\fR is specified the result is saved into
+that file, possibly creating it\&.
+.sp
+Invoking the command with no arguments, while technically
+invalid, causes it to print basic help information, i\&.e\&. syntax,
+available options, and available output types\&.
+.sp
+The available options are:
+.RS
+.TP
+\fB-author\fR string
+.TP
+\fB-A\fR string
+Specifies the name of the author to embed in the output, provided that
+is supported by the chosen type\&. Defaults to the name of the user
+invoking the generator\&.
+.TP
+\fB-name\fR string
+.TP
+\fB-N\fR string
+Specifies the name of the result to embed in the output, provided that
+is supported by the chosen type\&. Defaults to the empty string\&.
+.TP
+\fB-type\fR string
+.TP
+\fB-T\fR string
+Specifies the type of output to generate\&.
+If not specified defaults to \fBtparse\fR\&.
+The currently available output types are
+.RS
+.TP
+clex-critcl
+Generate a lexer written in C and embedded into Tcl via \fBcritcl\fR\&.
+The grammar is rewritten to handle charactres beyond the unicode BMP
+via CESU-8, i\&.e\&. UTF-8 encoded pairs of surrogate characters, to match
+Tcl\&.
+The structural rules of the input grammar are ignored\&.
+See also \fBtlex\fR\&.
+.TP
+cparse-critcl
+Generate a parser written in C and embedded into Tcl via \fBcritcl\fR\&.
+The grammar is rewritten to handle charactres beyond the unicode BMP
+via CESU-8, i\&.e\&. UTF-8 encoded pairs of surrogate characters, to match
+Tcl\&.
+.TP
+cparse-raw
+Generate a parser written in C, without any embedding\&.
+The grammar is rewritten to handle the unicode SMP via normal UTF-8
+encoding, i\&.e\&. as sequences of 4 bytes\&.
+.TP
+gc
+Generates Tcl code which initializes a
+\fBmarpa::slif::container\fR with the serialization of the input
+grammar\&.
+.TP
+gc-c
+As \fBgc\fR above, with the grammar rewritten like is done for
+\fBcparse-critcl\fR, and \fBclex-critcl\fR\&.
+.TP
+gc-compact
+As \fBgc\fR above, with all superfluous whitespace removed\&.
+.TP
+gc-tcl
+As \fBgc\fR above, with the grammar rewritten like is done for
+\fBtparse\fR and \fBtlex\fR\&.
+.TP
+slif
+Generate a SLIF grammar\&.
+Defaults from the input are resolved\&.
+Rules are sorted, and reformatted (pretty printed)\&.
+.TP
+tlex
+Generate a lexer written in Tcl\&.
+The structural rules of the input grammar are ignored\&.
+See also \fBclex-critcl\fR\&.
+.TP
+tparse
+Generate a parser written in Tcl\&.
+.RE
+.TP
+\fB-version\fR string
+.TP
+\fB-V\fR string
+Specifies the version to number embed in the output, provided that is
+supported by the chosen type\&. Defaults to \fB1\fR\&.
+.TP
+\fB--\fR
+This option ends option processing, even if arguments coming after it
+start with dash (\fB-\fR)\&.
+.RE
+.PP
+.SH "BUGS, IDEAS, FEEDBACK"
+This document, and the package it describes, will undoubtedly contain
+bugs and other problems\&.
+Please report such at the
+\fIMarpa/Tcl Tracker\fR [https://core\&.tcl\&.tk/akupries/marpatcl]\&.
+Please also report any ideas for enhancements you may have for either
+package and/or documentation\&.
 .SH KEYWORDS
 aycock, character classes, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
 .SH COPYRIGHT
 .nf
 Copyright (c) 2015-2018 Andreas Kupries
-Copyright (c) 2018 Documentation, Andreas Kupries
+Copyright (c) 2018-present Documentation, Andreas Kupries
 
 .fi

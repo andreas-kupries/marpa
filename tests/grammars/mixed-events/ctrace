@@ -1,0 +1,40 @@
+GC comment usage A 27 1
+GC comment g1-usage A undef --> {JMP floater}
+
+	GC g1 event A {fox on completed}
+
+GC comment definition A 29 1
+GC comment g1-definition A floater --> {JMP brick}
+GC comment usage B 35 1
+GC comment g1-usage B undef --> {JMP floater}
+GC g1 priority-rule A B 0 action {array values} mask 0
+GC comment usage C 49 1
+GC comment :discard C undef --> {JMP discard:u make-discard}
+GC l0 discard C
+
+	GC l0 configure C event {snafu on discard}
+
+GC comment DDE skip C
+GC comment definition B 66 1
+GC comment l0-definition B floater --> {JMP lexeme make-lexeme}
+GC l0 lexeme B
+GC g1 terminal B
+GC comment usage @CHR:<a> 70 3
+GC comment definition @CHR:<a> 70 3
+GC comment <literal> @CHR:<a> undef --> {JMP literal}
+GC l0 literal @CHR:<a> character 97
+GC comment l0-usage @CHR:<a> literal --> NOP
+GC l0 priority-rule B @CHR:<a> 0
+GC comment definition C 74 1
+GC comment l0-definition C discard:u --> {JMP discard}
+GC comment usage @CHR:<c> 78 3
+GC comment definition @CHR:<c> 78 3
+GC comment <literal> @CHR:<c> undef --> {JMP literal}
+GC l0 literal @CHR:<c> character 99
+GC comment l0-usage @CHR:<c> literal --> NOP
+GC l0 priority-rule C @CHR:<c> 0
+GC comment Semantics completion processing
+GC start! A
+GC comment LATM fix 1
+GC l0 configure B latm 1
+GC comment DDE fix {}

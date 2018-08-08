@@ -1,7 +1,7 @@
 '\"
 '\" Generated from file 'marpatcl_installer\&.man' by tcllib/doctools with format 'nroff'
 '\" Copyright (c) 2015-2018 Andreas Kupries
-'\" Copyright (c) 2018 Documentation, Andreas Kupries
+'\" Copyright (c) 2018-present Documentation, Andreas Kupries
 '\"
 .TH "marpatcl_install_guide" n 1 doc "Marpa/Tcl, a binding to libmarpa"
 .\" The -*- nroff -*- definitions below are for supplemental macros used
@@ -275,35 +275,42 @@ Database Class:	\\fB\\$3\\fR
 .SH NAME
 marpatcl_install_guide \- Marpa/Tcl - The Installer's Guide
 .SH DESCRIPTION
+.PP
 Welcome to Marpa/Tcl, a Tcl binding to the "\fIlibmarpa\fR" parsing
 engine\&.
 .PP
-The audience of this document is anyone wishing to build the packages,
-for either themselves, or others\&.
+Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR,
+if you have not done so already, to get an overview of the whole system\&.
+.SH AUDIENCE
+This documented is targeted at anyone wishing to build MarpaTcl's
+packages and application, for either themselves, or others\&.
 .PP
-For a developer intending to extend or modify the packages we
-additionally provide
+Please read \fIMarpa/Tcl - How To Get The Sources\fR first, if that
+was not done already\&. Here we assume that the sources are already
+available in a directory of your choice\&.
+.PP
+For developers building Marpa/Tcl with the intent to extend or modify
+the packages and application we additionally provide
 .IP [1]
 \fIMarpa/Tcl - The Developer's Guide\fR\&.
 .PP
-.PP
-Please read \fIMarpa/Tcl - How To Get The Sources\fR first, if that was
-not done already\&. Here we assume that the sources are already
-available in a directory of your choice\&.
 .PP
 .SH REQUISITES
 Before Marpa/Tcl can be build and used a number of requisites must be installed\&.
 These are:
 .IP [1]
+Jeffrey Kegler's \fBlibmarpa\fR library\&.
+For details see \fBLibmarpa\fR\&.
+.IP [2]
 The scripting language Tcl\&.
 For details see \fBTcl\fR\&.
-.IP [2]
+.IP [3]
 The \fBcritcl\fR package (C embedding) for \fBTcl\fR\&.
 For details see \fBCriTcl\fR\&.
-.IP [3]
+.IP [4]
 Various packages from the Tcllib bundles for \fBTcl\fR\&.
 For details see \fBTcllib\fR\&.
-.IP [4]
+.IP [5]
 The \fBkettle\fR application (Build tool) for \fBTcl\fR\&.
 For details see \fBKettle\fR\&.
 .PP
@@ -312,6 +319,27 @@ is essentially clean\&. Of course, if parts of the dependencies listed
 below are already installed the associated steps can be skipped\&. It is
 still recommended to read their sections though, to validate that the
 dependencies they talk about are indeed installed\&.
+.SS LIBMARPA
+This C library is the foundation of Marpa/Tcl, providing the parser
+engine we bind to\&.
+.PP
+The instructions for its installation, including the retrieval of its
+sources, can be found at
+\fIhttp://jeffreykegler\&.github\&.io/Marpa-web-site/libmarpa\&.html\fR\&.
+.PP
+As we are only interested in the library itself installation of the
+\fBMarpa::R2\fR Perl binding is not necessary\&. Marpa/Tcl also
+comes with its own testsuite\&.
+.PP
+Regarding packages for the various Linux distributions which would
+make installation more convenient, I have currently only found/seen:
+.TP
+Ubuntu
+\fBlibmarpa-r2-perl\fR is the Perl binding I mentioned
+above\&. Based on the set of installed files I believe that
+libmarpa is part of the shared library for the binding itself,
+and not installed as a separate binary\&.
+.PP
 .SS TCL
 As we are building a set of Tcl packages it should be pretty much
 obvious that a working Tcl installation is needed, and I will not
@@ -554,11 +582,18 @@ like
     /path/to/tclsh8\&.5 /path/to/kettle -f /path/to/marpatcl/build\&.tcl help
 
 .CE
+.SH "BUGS, IDEAS, FEEDBACK"
+This document, and the package it describes, will undoubtedly contain
+bugs and other problems\&.
+Please report such at the
+\fIMarpa/Tcl Tracker\fR [https://core\&.tcl\&.tk/akupries/marpatcl]\&.
+Please also report any ideas for enhancements you may have for either
+package and/or documentation\&.
 .SH KEYWORDS
 aycock, character classes, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
 .SH COPYRIGHT
 .nf
 Copyright (c) 2015-2018 Andreas Kupries
-Copyright (c) 2018 Documentation, Andreas Kupries
+Copyright (c) 2018-present Documentation, Andreas Kupries
 
 .fi

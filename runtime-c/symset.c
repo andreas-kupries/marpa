@@ -1,8 +1,12 @@
 /* Runtime for C-engine (RTC). Implementation. (Sets of marpa-symbols, dynamic)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, assertions, allocations and tracing via an external environment header.
+ *
+ * NOTE. This structure works without memory initialization and thus may cause
+ *       memory checkers like valgrind to generate lots of false positives.
+ * Ref:  https://core.tcl.tk/akupries/marpa/wiki?name=fast+sparse+integer+sets+in+C
  */
 
 #include <environment.h>
@@ -62,7 +66,7 @@ marpatcl_rtc_symset_clear (marpatcl_rtc_symset* s)
     TRACE_RETURN_VOID;
 }
 
-int 
+int
 marpatcl_rtc_symset_contains (marpatcl_rtc_symset* s, Marpa_Symbol_ID c)
 {
     TRACE_FUNC ("((symset*) %p, sym %d)", s, c);
@@ -72,7 +76,7 @@ marpatcl_rtc_symset_contains (marpatcl_rtc_symset* s, Marpa_Symbol_ID c)
     TRACE_RETURN ("%d", (XL [c] < SZ) && (DE [XL [c]] == c));
 }
 
-int 
+int
 marpatcl_rtc_symset_size (marpatcl_rtc_symset* s)
 {
     TRACE_FUNC ("((symset*) %p)", s);
@@ -112,6 +116,7 @@ marpatcl_rtc_symset_include (marpatcl_rtc_symset* s, int c, marpatcl_rtc_sym* v)
     TRACE_FUNC ("((symset*) %p, #sym %d, (sym*) %p)", s, c, v);
 
     for (k = 0; k < c; k++) {
+	// Inlined _add
 	x = v[k];
 	TRACE_TAG (details, "(symset*) %p, plus [%d,%d] %d", s, SZ, k, x);
 	ASSERT (x < CAP, "Symbol beyond set capacity");
@@ -122,6 +127,25 @@ marpatcl_rtc_symset_include (marpatcl_rtc_symset* s, int c, marpatcl_rtc_sym* v)
 	XL [x] = SZ;
 	SZ ++;
     }
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_symset_add (marpatcl_rtc_symset* s, marpatcl_rtc_sym v)
+{
+    TRACE_FUNC ("((symset*) %p, #sym %d, (sym) %d)", s, v);
+
+    TRACE_TAG (details, "(symset*) %p, plus [%d] %d", s, SZ, v);
+    ASSERT (v < CAP, "Symbol beyond set capacity");
+
+    /* Skip if already a member */
+    if ((XL [v] < SZ) && (DE [XL [v]] == v)) {
+	TRACE_RETURN_VOID;
+    }
+    DE [SZ] = v;
+    XL [v] = SZ;
+    SZ ++;
 
     TRACE_RETURN_VOID;
 }

@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Implementation. (Engine: Input processing)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017-2018 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  *
  * Requirements - Note, tracing via an external environment header.
  */
@@ -11,9 +11,6 @@
 
 TRACE_OFF;
 TRACE_TAG_OFF (enter);
-
-static void
-step (marpatcl_rtc_p p, unsigned char ch);
 
 #ifdef CRITCL_TRACER
 static void
@@ -44,8 +41,10 @@ marpatcl_rtc_inbound_init (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
 
+    IN.bytes     = 0;
     IN.location  = -1;
     IN.clocation = -1;
+    IN.cstop     = -1;
     IN.trailer   = 0;
     IN.header    = 0;
 
@@ -56,7 +55,7 @@ void
 marpatcl_rtc_inbound_free (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
-    /* nothing to do */
+    // nothing to do
     TRACE_RETURN_VOID;
 }
 
@@ -64,29 +63,144 @@ int
 marpatcl_rtc_inbound_location (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
-    TRACE_RETURN ("%d", IN.location);
+    TRACE_RETURN ("%d", IN.clocation + 1);
 }
 
 void
-marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n)
+marpatcl_rtc_inbound_moveto (marpatcl_rtc_p p, int cpos)
 {
-    const unsigned char* c;
-    TRACE_FUNC ("(rtc %p bytes %p, n %d)", p, bytes, n);
+    TRACE_FUNC ("((rtc*) %p, pos = %d)", p, cpos);
+
+    IN.clocation = cpos - 1;
+    IN.location  = marpatcl_rtc_clindex_find (p, IN.clocation);
+
+    TRACE ("((rtc*) %p, now pos = %d ~ %d)", p, IN.clocation, IN.location);
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_inbound_moveby (marpatcl_rtc_p p, int cdelta)
+{
+    TRACE_FUNC ("((rtc*) %p, pos %d += %d)", p, IN.clocation, cdelta);
+
+    IN.clocation += cdelta;
+    IN.location  = marpatcl_rtc_clindex_find (p, IN.clocation);
+
+    TRACE ("((rtc*) %p, now pos = %d ~ %d)", p, IN.clocation, IN.location);
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_inbound_no_stop (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p", p);
+
+    IN.cstop = -1;
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_inbound_set_stop (marpatcl_rtc_p p, int cpos)
+{
+    TRACE_FUNC ("((rtc*) %p, pos = %d)", p, cpos);
+
+    IN.cstop = cpos;
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_inbound_set_limit (marpatcl_rtc_p p, int limit)
+{
+    // ASSERT limit > 0 == critcl pos.int TODO
+    TRACE_FUNC ("((rtc*) %p, limit = %d)", p, limit);
+
+    IN.cstop = IN.clocation + 1 + limit;
+
+    TRACE_RETURN_VOID;
+}
+
+int
+marpatcl_rtc_inbound_stoploc (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE_RETURN ("%d", IN.cstop);
+}
+
+void
+marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n, int from, int to)
+{
+#define NAME(sym) marpatcl_rtc_spec_symname (SPEC->l0, sym, 0)
+
+    unsigned char ch;
+    TRACE_FUNC ("(rtc %p bytes %p, n %d, [%d...%d])", p, bytes, n, from, to);
     TRACE_TAG_DO (enter, print_input (bytes, n));
 
     if (n < 0) {
-	for (c = bytes; *c && !FAIL.fail; c++) {
-	    step (p, *c);
-	    marpatcl_rtc_gate_enter (p, *c);
+	n = strlen (bytes);
+    }
+    n --;
+    TRACE ("max %d", n);
+
+    IN.bytes = (char*) bytes;
+
+    // Initial processing range.
+    marpatcl_rtc_inbound_moveto   (p, from);
+    marpatcl_rtc_inbound_set_stop (p, to);
+
+    // Notes on locations and the processing loops.
+    //
+    // [1] At the beginning of the loop `mylocation` points to the __last__
+    //     processed character.
+    // [2] We move to the current character just before processing it (Forward
+    //     enter ...).
+    // [3] When parse events are invoked we point to the character to process
+    //     next (i.e. one ahead), and have to compensate on return so that the
+    //     loop entry condition [1] is true again. We actually make the
+    //     translation in the location methods of this class, see `location?`
+    //     and below, without actually moving.
+    // [4] The double-loop construction is present to ensure that when the
+    //     inner main processing loop hits EOF the eof handling can bounce the
+    //     engine away from EOF and processing is restarted for the last
+    //     characters.
+
+    while (IN.location < n) {
+	while (IN.location < n) {
+	    int prevbloc = IN.location;
+	    int prevcloc = IN.clocation;
+
+	    ch = marpatcl_rtc_inbound_step (p);
+	    TRACE ("byte %3d @ char %d ~ byte %d = <%s>", ch, IN.clocation, IN.location, NAME(ch));
+
+	    if (IN.clocation == IN.cstop) {
+		// Stop triggered.
+		// Bounce, clear stop marker, post event, restart from bounce
+		 IN.location  = prevbloc;
+		 IN.clocation = prevcloc;
+		 IN.cstop     = -2;
+		 marpatcl_rtc_symset_clear (EVENTS);
+		 POST_EVENT (marpatcl_rtc_event_stop);
+		 continue;
+	    }
+
+	    marpatcl_rtc_gate_enter (p, ch);
+	    if (FAIL.fail) break;
+	    // Note, the post-processor (gate, lexer) have access to the
+	    // location, via methods moveto, moveby, and rewind. Examples of
+	    // use:
+	    // - Rewind after reading behind the current lexeme
+	    // - Rewind for parse events.
 	}
-    } else {
-	for (c = bytes; n && !FAIL.fail; c++, n--) {
-	    step (p, *c);
-	    marpatcl_rtc_gate_enter (p, *c);
-	}
+	TRACE ("Failed/i = %d @ %d max %d", FAIL.fail, IN.location, n);
+	if (FAIL.fail) break;
+	// Trigger end of data processing in the post-processors.
+	// (Ad 4) Note that this may rewind the input to an earlier place,
+	// forcing re-processing of some of the last characters.
+	marpatcl_rtc_gate_eof (p);
     }
 
-    TRACE ("Failed = %d", FAIL.fail);
+    TRACE ("Failed/o = %d @ %d max %d", FAIL.fail, IN.location, n);
     TRACE_RETURN_VOID;
 }
 
@@ -100,56 +214,65 @@ marpatcl_rtc_inbound_eof (marpatcl_rtc_p p)
     TRACE_RETURN_VOID;
 }
 
-/*
- * - - -- --- ----- -------- ------------- ---------------------
- */
-
-static void
-step (marpatcl_rtc_p p, unsigned char ch)
+unsigned char
+marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
 {
-    /* Step to the next byte and character location */
+    TRACE_FUNC ("((rtc*) %p)", p);
+
+    // Step to the next byte location
     IN.location ++;
 
+    // Extract byte to process
+    unsigned char ch = IN.bytes [IN.location];
+
+    // Possibly step to the next character location as well
 #define SINGLE(c) (((c) & 0x80) == 0x00) // 0b1000,0000 : 0b0000,0000
-#define TAIL(c)   (((c) & 0xC0) == 0x80) // 0b1100,0000 : 0b1000,0000
+#define TRAIL(c)  (((c) & 0xC0) == 0x80) // 0b1100,0000 : 0b1000,0000
 #define LEAD2(c)  (((c) & 0xE0) == 0xC0) // 0b1110,0000 : 0b1100,0000
 #define LEAD3(c)  (((c) & 0xF0) == 0xE0) // 0b1111,0000 : 0b1110,0000
 #define LEAD4(c)  (((c) & 0xF8) == 0xF0) // 0b1111,1000 : 0b1111,0000
+#define MOVE_HEADER for(; IN.header; IN.header --) { MOVE (1); }
+#define MOVE(k)						\
+    IN.clocation ++;					\
+    TRACE ("reached %d by %d", IN.clocation, k);	\
+    marpatcl_rtc_clindex_update (p, k)
 
-     if (SINGLE (ch)) {
-	// Single stands for itself, no trailers expected, no lead
+    if (SINGLE (ch)) {
+	// A single stands for itself, no trailers expected, no lead
 	IN.trailer = 0;
 	IN.header  = 0;
-	IN.clocation ++;
-	
-    } else if (TAIL (ch)) {
+	MOVE (1);
+    } else if (TRAIL (ch)) {
+	// A trailer should come after a lead-in.
 	if (IN.trailer > 0) {
+	    // A proper trailer extends the header, and reduces how much more
+	    // trailers to still expect.
 	    IN.trailer --;
 	    IN.header  ++;
 	    if (IN.trailer == 0) {
-		// All expected trailers found
-		IN.clocation ++;
+		// All expected trailers found, step a character. Reset header.
+		MOVE (IN.header);
 		IN.header = 0;
 	    }
 	} else {
-	    // (unexpected) standalone trailer, stands for itself.
-	    IN.clocation ++;
+	    // A standalone trailer is unexpected, and stands for itself.
+	    MOVE (1);
 	}
     } else if (LEAD2 (ch)) {
 	if (IN.trailer > 0) {
 	    // Unexpected begin of a character, previous incomplete.
 	    // The previous bytes all stand for themselves now.
-	    IN.clocation += IN.header;
+	    MOVE_HEADER;
 	}
 	// Start of 2 byte character. Expect one trailer.
 	IN.trailer = 1;
 	IN.header  = 1;
-	
+
     } else if (LEAD3 (ch)) {
 	if (IN.trailer > 0) {
 	    // Unexpected begin of a character, previous incomplete.
 	    // The previous bytes all stand for themselves now.
-	    IN.clocation += IN.header;
+	    MOVE_HEADER;
 	}
 	// Start of 3 byte character. Expect 2 trailers.
 	IN.trailer = 2;
@@ -159,7 +282,7 @@ step (marpatcl_rtc_p p, unsigned char ch)
 	if (IN.trailer > 0) {
 	    // Unexpected begin of a character, previous incomplete.
 	    // The previous bytes all stand for themselves now.
-	    IN.clocation += IN.header;
+	    MOVE_HEADER;
 	}
 	// Start of 4 byte character. Expect 3 trailers.
 	IN.trailer = 1;
@@ -168,6 +291,8 @@ step (marpatcl_rtc_p p, unsigned char ch)
     } else {
 	ASSERT (0,"");
     }
+
+    TRACE_RETURN ("=> %d", ch);
 }
 
 /*

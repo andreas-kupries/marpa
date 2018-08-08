@@ -17,7 +17,7 @@
 #include <critcl_alloc.h>
 
 TRACE_OFF;
-  
+
 #define EMIT(v)						\
     ASSERT (index < MAX_BYTES, "too many utf bytes");	\
     sbr->br[index].start = sbr->br[index].end = (v);	\
@@ -32,7 +32,7 @@ marpatcl_to_utf (SBR* sbr, int codepoint, int flags) {
 	EMIT (0x80);
 	return;
     }
-	
+
     if (codepoint < 128) {
 	EMIT (codepoint & 0x7f);
 	return;
@@ -57,14 +57,14 @@ marpatcl_to_utf (SBR* sbr, int codepoint, int flags) {
 	 * E   D    A   ....          E   D    B   ....
 	 * 11101101 1010yyyy 10xxxxxx 11101101 1011xxxx 10xxxxxx
 	 *                     abcdef              ghij   klmnop
-	 *	
+	 *
 	 * The encoding of Unicode supplementary characters works out to
 	 * the above. yyyy represents the "top five bits of the character"
 	 * minus one.
 	 */
 
 	codepoint -= 0x10000;
-	
+
 	EMIT (                             0xED);
 	EMIT (((codepoint >> 16) & 0x0F) | 0xA0);
 	EMIT (((codepoint >> 10) & 0x3F) | 0x80);

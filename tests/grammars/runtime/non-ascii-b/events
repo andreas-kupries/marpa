@@ -1,0 +1,104 @@
+___________________________((record ::PARSE before general))
+length = ((7))
+start = ((0))
+sv = (({0 7 {0 Plain}}))
+symbols = (({general lex}))
+value = ((0 Plain))
+@location = -1
+@resume = 7
+^sym = >>general lex<<
+^sv  = >>0 7 {0 Plain}<<
+>>general lex<< ~~ >>0 7 {0 Plain}<<
+___________________________((record ::PARSE discard whitespace))
+length = ((1))
+start = ((7))
+symbols = ((whitespace))
+value = ((
+))
+@location = 8
+@resume = 8
+^sym = >>whitespace<<
+*1 {key "sv" not known in dictionary}
+___________________________((record ::PARSE discard whitespace))
+length = ((1))
+start = ((12))
+symbols = ((whitespace))
+value = ((
+))
+@location = 13
+@resume = 13
+^sym = >>whitespace<<
+*1 {key "sv" not known in dictionary}
+___________________________((record ::PARSE before general))
+length = ((52))
+start = ((13))
+sv = (({13 52 {13 UTF-8 2 byte: © (extended latin - copyright sign)}}))
+symbols = (({general lex}))
+value = ((13 UTF-8 2 byte: © (extended latin - copyright sign)))
+@location = 12
+@resume = 65
+^sym = >>general lex<<
+^sv  = >>13 52 {13 UTF-8 2 byte: © (extended latin - copyright sign)}<<
+>>general lex<< ~~ >>13 52 {13 UTF-8 2 byte: © (extended latin - copyright sign)}<<
+___________________________((record ::PARSE discard whitespace))
+length = ((1))
+start = ((65))
+symbols = ((whitespace))
+value = ((
+))
+@location = 66
+@resume = 66
+^sym = >>whitespace<<
+*1 {key "sv" not known in dictionary}
+___________________________((record ::PARSE discard whitespace))
+length = ((1))
+start = ((70))
+symbols = ((whitespace))
+value = ((
+))
+@location = 71
+@resume = 71
+^sym = >>whitespace<<
+*1 {key "sv" not known in dictionary}
+___________________________((record ::PARSE before general))
+length = ((33))
+start = ((71))
+sv = (({71 33 {71 UTF-8 3 byte: ↺ (arrows - ccw)}}))
+symbols = (({general lex}))
+value = ((71 UTF-8 3 byte: ↺ (arrows - ccw)))
+@location = 70
+@resume = 104
+^sym = >>general lex<<
+^sv  = >>71 33 {71 UTF-8 3 byte: ↺ (arrows - ccw)}<<
+>>general lex<< ~~ >>71 33 {71 UTF-8 3 byte: ↺ (arrows - ccw)}<<
+___________________________((record ::PARSE discard whitespace))
+length = ((1))
+start = ((104))
+symbols = ((whitespace))
+value = ((
+))
+@location = 105
+@resume = 105
+^sym = >>whitespace<<
+*1 {key "sv" not known in dictionary}
+___________________________((record ::PARSE discard whitespace))
+length = ((1))
+start = ((109))
+symbols = ((whitespace))
+value = ((
+))
+@location = 110
+@resume = 110
+^sym = >>whitespace<<
+*1 {key "sv" not known in dictionary}
+___________________________((record ::PARSE before general))
+length = ((15))
+start = ((110))
+sv = (({110 15 {110 Plain again}}))
+symbols = (({general lex}))
+value = ((110 Plain again))
+@location = 109
+@resume = 125
+^sym = >>general lex<<
+^sv  = >>110 15 {110 Plain again}<<
+>>general lex<< ~~ >>110 15 {110 Plain again}<<

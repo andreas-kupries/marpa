@@ -42,7 +42,7 @@ marpatcl_rtc_failit (marpatcl_rtc_p p, const char* origin)
     TRACE_FUNC ("((rtc*) %p, origin '%s')", p, origin ? origin : "<<null>>");
 
     // todo: lexer progress report, parser progress report
-    
+
     FAIL.fail = 1;
     if (origin && !FAIL.origin) {
 	FAIL.origin = origin;
@@ -76,7 +76,7 @@ marpatcl_rtc_fail_syscheck (marpatcl_rtc_p p, Marpa_Grammar g, int res, const ch
 	marpatcl_rtc_failit (p, "libmarpa: symbol not found");
 	ASSERT (0, "syscheck missing symbol");
     }
-    
+
     TRACE_RETURN_VOID;
 }
 

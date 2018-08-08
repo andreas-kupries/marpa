@@ -1,0 +1,8 @@
+say <<A, <<A;
+lorem ipsum
+A
+delta vau
+A
+say <<B;
+quick brown fox
+B

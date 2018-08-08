@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ## Data structures and accessors for the management of fold classes.
 #
-# Copyright 2017-2018 Andreas Kupries
+# Copyright 2017-present Andreas Kupries
 #
 # - fold-add-code codepoint up down
 # - fold-verify-and-cleanup
@@ -47,7 +47,7 @@ proc fold-write-c {} {
     set foldmax $maxn
 
     write-c-sep {case folding, equivalence sets}
-    
+
     wrc "static int fold_set\[[llength $sets]] = \{"
     write-c-items 24 \t $sets
     wrc "\};"

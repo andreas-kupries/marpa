@@ -25,6 +25,9 @@ grammar {
                 }
             }
         }
+        latm {
+            A 1
+        }
         lexeme {
             A { {priority @CHR:<a> 0} }
         }

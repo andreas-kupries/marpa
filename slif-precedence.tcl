@@ -10,7 +10,7 @@
 ##
 # See doc/precedence-rewrite
 # See doc.1/facts-precedence.txt
-    
+
 # # ## ### ##### ######## #############
 ## Administrivia
 

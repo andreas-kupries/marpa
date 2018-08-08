@@ -1,0 +1,322 @@
+# -*- tcl -*-
+## (c) 2018-present Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+
+set syntax 1
+set access 1
+set events 1
+
+## Execution core for testing the marpa runtime engines with various
+## SLIF-specified grammars demonstrating various features and possible
+## behaviours. This is similiar to parser-core, one stage further.
+
+## Specialized form of the `runtime-core.testsuite` to test the
+## `match` ensemble with regard to argument validation, and access
+## control.
+
+## Configured by the caller with methods for
+## - overall initialization and finalization
+## - parser creation and destruction
+## - Result selection
+#
+## The methods expected to exist are
+#
+## * label      :: return string to name the tests
+## * initialize :: global setup, for the suite
+## * finalize   :: global cleanup, for the suite
+## * input      :: input selection by label / base directory
+## * result     :: result selection by label / base directory
+
+## The name of the parser class is stored in the `gen` config, under
+## key `cl`.
+
+# # ## ### ##### ######## ############# #####################
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+kt require support fileutil ;# cat
+
+# # ## ### ##### ######## ############# #####################
+## Local shorthands
+
+proc setup   {} { [gen cget cl] create PARSE }
+proc cleanup {} { PARSE destroy }
+
+proc stash {k} {
+    global rtdebug
+    if {![info exists rtdebug] || !$rtdebug} return
+    set dst [top]/[label]_${k}-stash
+    file delete -force $dst
+    file mkdir $dst
+    set cl [gen cget cl]
+
+    file copy [td]/${cl}.tcl     $dst/
+    # RTC specific. Not for Tcl.
+    catch {
+	file copy [td]/OUT_${cl}_LOG $dst/
+	file copy [td]/OUT_${cl}     $dst/
+    }
+    return
+}
+
+# # ## ### ##### ######## ############# #####################
+## No method sequence checking for the parser.
+## Methods can be called in any order.
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/ast.tcl
+kt source support/dirs.tcl
+kt source support/grammars.tcl
+kt source support/textutils.tcl
+
+# # ## ### ##### ######## ############# #####################
+## Setup dynamic parts of the testsuite
+## Currently only importing the `bootstrap/marpa-tcl-slif`
+
+exec [td]/grammars/setup.sh
+
+# # ## ### ##### ######## ############# #####################
+
+initialize
+
+# # ## ### ##### ######## ############# #####################
+## Actual processing - Id formatting prep
+
+incr max
+test-grammar-files rt_example --> __ __ { incr max }
+set format %0[string length $max]d
+unset max
+
+# # ## ### ##### ######## ############# #####################
+
+# Basic access control. Syntax and arguments have to be valid to reach that check
+set access_commands {
+    {alternate A V}
+    {dont-stop}
+    {from 0}
+    {length}
+    {limit 10}
+    {location}
+    {from+ 5}
+    {start}
+    {stop}
+    {sv}
+    {symbols}
+    {to 10}
+    {value}
+    {view}
+}
+
+# Bad syntax, bad argument types
+
+set invalid_commands {
+    {alternate {} {} X}	{wrong # args: should be "PARSE match alternate symbol sv"}
+    {alternate {}}	{wrong # args: should be "PARSE match alternate symbol sv"}
+    {alternate}		{wrong # args: should be "PARSE match alternate symbol sv"}
+    {dont-stop X}	{wrong # args: should be "PARSE match dont-stop"}
+    {from -1}		{expected location (>= 0), but got "-1"}
+    {from {}}		{expected integer but got ""}
+    {from 1 {}}		{expected integer but got ""}
+    {from}		{wrong # args: should be "PARSE match from pos ..."}
+    {length X}		{wrong # args: should be "PARSE match length"}
+    {limit -1}		{expected int > 0, but got "-1"}
+    {limit {}}		{expected integer but got ""}
+    {limit}		{wrong # args: should be "PARSE match limit limit"}
+    {location X}	{wrong # args: should be "PARSE match location"}
+    {from+ {}}		{expected integer but got ""}
+    {from+}		{wrong # args: should be "PARSE match from+ delta"}
+    {start X}		{wrong # args: should be "PARSE match start"}
+    {stop X}		{wrong # args: should be "PARSE match stop"}
+    {sv X}		{wrong # args: should be "PARSE match sv"}
+    {symbols X}		{wrong # args: should be "PARSE match symbols"}
+    {to -1}		{expected location (>= 0), but got "-1"}
+    {to {}}		{expected integer but got ""}
+    {to}		{wrong # args: should be "PARSE match to pos"}
+    {value X}		{wrong # args: should be "PARSE match value"}
+    {view X}		{wrong # args: should be "PARSE match view"}
+}
+
+# Ok syntax, ok arguments, probe fine-grained access control, per event-type
+set commands {
+    location
+    {from 0}	location
+    {from+ 5}	location
+    {from+ -5}	location
+    stop
+    {to 10}	stop
+    {limit 10}	stop
+    dont-stop	stop
+    symbols
+    sv
+    start
+    length
+    value
+    {alternate A V}
+    {symbols}
+    {sv}
+    view
+}
+
+proc ++ {args} {
+    global recording
+    #puts "ZZZ [join $args "\nZZZ "]" ; flush stdout
+    lappend recording {*}$args
+    return
+}
+
+proc record {max p type enames args} {
+    global commands
+    set ok [catch {
+	++ ___________________________(([info level 0]))
+
+	# Go through all methods of the match api and record their
+	# responses. We are only interested in the fine-grained access
+	# control. Basic AC, syntax, and argument validation is already
+	# done, from the outside.
+
+	foreach cmd $commands {
+	    ++ "___ (( $cmd ))"
+	    set state [catch {
+		$p match {*}$cmd
+	    } result]
+	    ++ "_ => $state | (($result))"
+	    ++ ""
+	}
+
+	# Force clear symbol/sv where possible
+	++ Clear
+	catch { $p match clear }
+
+	# And move to the end of the input.
+	# This forces the engine to abort.
+	# This may cause a parse error.
+	++ EndMove
+	$p match from $max
+    } msg]
+    ++ "~ $ok ($msg)"
+    return
+}
+
+# # ## ### ##### ######## ############# #####################
+
+set outside 1
+incr k
+test-grammar-map rt_example --> id rte base {
+    if {![file exists $base/match]} continue
+    # Use only match examples.
+
+    gen configure gr $rte
+    gen setup cl rte${k}_[label]
+
+    # Debugging - Keep the generated parser and related files for
+    # post-mortem review.
+    stash $k
+
+    set input  [fget [input  $base]]
+    set kd     [format $format $k]
+
+    if {$access} {
+	# Basic access control. Reject all API calls from the
+	# outside. Note, this happens after argument type validation.
+
+	set j 0
+	foreach cmd $access_commands {
+	    incr j
+	    set jd [format "%02d" $j]
+	    test marpa-[label]-match-access-1.${kd}.${jd}-$id "[label] :: match outside: $cmd" -body {
+		PARSE match {*}$cmd
+	    } -setup {
+		setup
+	    } -cleanup {
+		cleanup
+	    } -returnCodes error \
+		-result {Invalid access to match state, not inside event handler}
+	}
+
+	unset cmd j jd
+    }
+
+    if {$syntax} {
+	# Match syntax and argument type validation
+
+	foreach {cmd result} $invalid_commands {
+	    incr j
+	    set jd [format "%02d" $j]
+	    test marpa-[label]-match-syntax-1.${kd}.${jd}-$id "[label] :: match syntax: $cmd" -body {
+		PARSE match {*}$cmd
+	    } -setup {
+		setup
+	    } -cleanup {
+		cleanup
+	    } -returnCodes error -result $result
+	}
+
+	unset j jd cmd
+    }
+
+    # Record of API behaviour for specific event types (before, after, discard, stop)
+    if {$events} {
+	# Get the expected match API behaviour
+	set result [string trimright [fget $base/match]]
+
+	test marpa-[label]-match-event-1.${kd}---${id} "[label] ::  match event $id" -body {
+	    # The forced abort through the event handler can trigger a
+	    # parse error. Which we are not interested in.
+	    catch { PARSE process $input } msg
+	    join $recording \n
+	} -setup {
+	    set recording {}
+	    setup
+	    PARSE on-event ::record [string length $input]
+	} -cleanup {
+	    cleanup
+	    unset recording
+	} -result $result
+
+	if {[file exists $base/stop]} {
+	    # Get the expected stop API behaviour
+	    set result [string trimright [fget $base/stop]]
+
+	    test marpa-[label]-events-match-2.${kd}---${id} "[label] :: events match $id, stop" -body {
+		catch {
+		    # Force a stop event
+		    PARSE process $input to 5 ;# from 0 (default)
+		}
+		join $recording \n
+	    } -setup {
+		set recording {}
+		setup
+		PARSE on-event ::record [string length $input]
+	    } -cleanup {
+		cleanup
+		unset recording
+	    } -result $result
+	}
+    }
+
+    gen cleanup
+    incr k
+}
+
+# # ## ### ##### ######## ############# #####################
+unset k base format result kd input rte syntax access events access_commands invalid_commands commands
+rename record  {}
+rename ++      {}
+rename setup   {}
+rename cleanup {}
+
+# # ## ### ##### ######## ############# #####################
+finalize
+
+# # ## ### ##### ######## ############# #####################
+rename label      {}
+rename result     {}
+rename initialize {}
+rename finalize   {}
+return

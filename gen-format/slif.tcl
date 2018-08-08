@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2017-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2017-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -177,7 +177,7 @@ proc ::marpa::gen::format::slif::DumpG1Events {gc} {
     debug.marpa/gen/format/slif {}
 
     # G1 has completed|nulled|predicted events
-    
+
     if {![dict exists $gc g1 events]} return
 
     Section "Structural events"
@@ -224,7 +224,7 @@ proc ::marpa::gen::format::slif::RewriteLexemeEvents {gcv} {
 	    set event [dict get $gc l0 events $sym before]
 	    dict unset gc l0 events $sym before
 	    dict set gc lex $sym [list before $event]
-	    
+
 	} elseif {[dict exists $gc l0 events $sym after]} {
 	    set event [dict get $gc l0 events $sym after]
 	    dict unset gc l0 events $sym after
@@ -284,12 +284,12 @@ proc ::marpa::gen::format::slif::RewriteLiterals {gcv} {
 
     # Further rewrites then push this information into the l0 rule
     # definitions, replacing the lit symbols with their values
-    
+
     dict set gc g1 lit {}
     dict set gc l0 lit {}
 
     if {![dict exists $gc l0 literal]} return
-    
+
     dict for {sym lit} [dict get $gc l0 literal] {
 	dict set gc l0 lit $sym [SlifLit {*}[lindex $lit 0]]
     }
@@ -344,7 +344,7 @@ proc ::marpa::gen::format::slif::CC {pieces iv} {
 		if {[string match %* $element]} {
 		    set imodifier :i
 		    set element [string range $element 1 end]
-		}		
+		}
 		set _ "\[:${element}:\]"
 	    }
 	}
@@ -611,7 +611,7 @@ proc ::marpa::gen::format::slif::FormatSymbol {symbol sname area defs} {
 
 		set prefix $cont
 		set lastprec $prec
-		
+
 	    }
 	    quantified {
 		set attr [lassign $details rhs pos]

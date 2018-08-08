@@ -32,7 +32,7 @@ typedef struct SSR {
     unsigned char n;      /* Length of the sequence */
     SR  sr[MAX_POINTS];    /* Ranges of the sequence */
 } SSR;
-	
+
 typedef struct ASSR {
     int n;      /* Number of alternates in the class */
     SSR ssr[1]; /* Alternates allocated as part of structure */

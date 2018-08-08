@@ -1,0 +1,97 @@
+#!/usr/bin/env tclsh
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2018-present Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## Parser generator application - Internal - Used by test suite
+## Do not install.
+
+if {[llength $argv] != 6} {
+    puts stderr "Usage: $argv0 top prefix format name grammar result"
+    exit 1
+}
+
+# Report back how we are called.
+puts [linsert $argv 0 [info nameofexecutable]]
+
+# Syntax:  <top> <prefix> <format> <name> <grammar> <result>
+lassign $argv top prefix format name grammar result
+
+# Prepare package database
+
+set saved $auto_path
+set auto_path [list $prefix/lib]
+catch { package require bogus }
+set auto_path $saved
+
+# The in-memory package database now contains a list of all packages
+# declared on the provided path. None of these packages will be
+# searched for anymore. This is used to pull all marpa packages from
+# the tested build.
+
+# Patch the application arguments.
+unset   argv
+lappend argv -T $format -V 1 -N $name -A Testsuite -- $grammar $result
+
+# Inject post-processing for RTC-based results. The results shall
+# always be a requireable package. In slightly different locations.
+# That however the caller can easily adapt to. The main point is
+# to have all of the generation and compilation in a child-process,
+# limiting the memory requirements of the test process.
+
+proc post {} {
+    global format prefix top name result
+    if {$format ni {cparse-critcl clex-critcl}} return
+
+    package require fileutil
+    
+    # Note: Running an external critcl process to compile the new
+    # parser avoids issues with multiple definitions of various custom
+    # arg/result types interfering with each other.
+
+    # Match the directory used by gen::LoadRTC for the package
+    set         out ${top}/tests/OUT_${name}
+    file mkdir $out/C $out/L
+
+    exec ln -s [file normalize ${top}/rtc] rtc
+    exec ln -s [file normalize ${top}/c] c
+
+    # NOTE: The prefix provides us with the location of the main debug
+    # installation of marpa packages under test. That is also where we
+    # will find the stub decls for the C runtime package needed by the
+    # lexer/parser to-be.
+
+    # And the include directory associated with the executable running
+    # this and critcl is where we should find critcl-specific headers,
+    # like for critcl::callback.
+    
+    set maintclinc [file dirname [file dirname [info nameofexecutable]]]/include
+    
+    lappend cmd critcl -pkg -keep \
+	-cache  $out/C \
+	-libdir $out/L \
+	-I ${prefix}/include \
+	-I $maintclinc \
+	$result
+
+    puts \n$cmd\n
+    
+    if {[catch {
+	fileutil::writeFile ${out}_LOG $cmd\n\n
+	exec >>& ${out}_LOG {*}$cmd
+    }]} {
+	file copy ${out}_LOG ${out}_ERRLOG
+    }
+
+    file delete rtc c
+    return
+}
+
+rename exit __exit
+proc exit {{status 0}} {
+    if {$status == 0} post
+    __exit $status
+}
+
+# Hand over to marpa-gen for the actual work
+source [file dirname [file dirname [file normalize [info script]/__]]]/marpa-gen
+exit

@@ -30,11 +30,11 @@ marpatcl_rtc_lexer_events (marpatcl_rtc_p p)
     Marpa_Event      event;
 
     TRACE_FUNC ("((rtc*) %p)", p);
-    
+
     int v, i, n = marpa_g_event_count (LEX.g);
 
     for (i = 0; i < n; i++) {
-	TRACE_RUN (const char* ets);
+	TRACE_RUN (const char* ets = 0);
 
 	etype = marpa_g_event (LEX.g, &event, i);
 	ASSERT (etype >= 0, "Bad event type");
@@ -54,11 +54,11 @@ marpatcl_rtc_parser_events (marpatcl_rtc_p p)
     Marpa_Event      event;
 
     TRACE_FUNC ("((rtc*) %p)", p);
-    
+
     int v, i, n = marpa_g_event_count (PAR.g);
 
     for (i = 0; i < n; i++) {
-	TRACE_RUN (const char* ets);
+	TRACE_RUN (const char* ets = 0);
 
 	etype = marpa_g_event (PAR.g, &event, i);
 	ASSERT (etype >= 0, "Bad event type");

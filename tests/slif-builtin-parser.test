@@ -1,5 +1,5 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2017 Andreas Kupries
+## (c) 2017-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## marpa::slif::parser -- builtin
 
@@ -12,7 +12,7 @@ gen configure cl marpa::slif::parser
 
 proc result {base} { locate $base ast_rtc ast }
 proc label      {} { return "builtin" }
-proc initialize {} {}
+proc initialize {} { kt local* support marpa::slif::parser }
 proc finalize   {} {}
 
 # # ## ### ##### ######## ############# #####################

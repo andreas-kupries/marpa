@@ -113,12 +113,14 @@
 <ul class="doctools_toc">
 <li class="doctools_section"><a href="#toc">Table Of Contents</a></li>
 <li class="doctools_section"><a href="#section1">Description</a></li>
-<li class="doctools_section"><a href="#section2">Developing for Marpa/Tcl</a>
+<li class="doctools_section"><a href="#section2">Audience</a></li>
+<li class="doctools_section"><a href="#section3">Developing for Marpa/Tcl</a>
 <ul>
-<li class="doctools_subsection"><a href="#subsection1">Architecture &amp; Concepts</a></li>
+<li class="doctools_subsection"><a href="#subsection1">System Architecture</a></li>
 <li class="doctools_subsection"><a href="#subsection2">Directory structure</a></li>
 </ul>
 </li>
+<li class="doctools_section"><a href="#section4">Bugs, Ideas, Feedback</a></li>
 <li class="doctools_section"><a href="#keywords">Keywords</a></li>
 <li class="doctools_section"><a href="#copyright">Copyright</a></li>
 </ul>
@@ -126,9 +128,13 @@
 <div id="section1" class="doctools_section"><h2><a name="section1">Description</a></h2>
 <p>Welcome to Marpa/Tcl, a Tcl binding to the &quot;<b class="file">libmarpa</b>&quot; parsing
 engine.</p>
-<p>This document is a guide for developers working on Marpa/Tcl,
-i.e. maintainers fixing bugs, extending the package's functionality,
-etc.</p>
+<p>Please read the document <i class="term"><a href="marpatcl_intro.html">Marpa/Tcl - Introduction to Marpa/Tcl</a></i>,
+if you have not done so already, to get an overview of the whole system.</p>
+</div>
+<div id="section2" class="doctools_section"><h2><a name="section2">Audience</a></h2>
+<p>This document is a guide targeted at all developers working on the
+internals of Marpa/Tcl, i.e. maintainers fixing bugs, developers
+adding functionality, etc.</p>
 <p>Please read</p>
 <ol class="doctools_enumerated">
 <li><p><i class="term"><a href="marpatcl_sources.html">Marpa/Tcl - How To Get The Sources</a></i> and</p></li>
@@ -136,20 +142,65 @@ etc.</p>
 </ol>
 <p>first, if that was not done already.
 Here we assume that the sources are already available in a directory
-of your choice, and that you not only know how to build and install
-them, but also have all the necessary requisites to actually do
-so. The guide to the sources in particular also explains which source
-code management system is used, where to find it, how to set it up,
-etc.</p>
+of the reader's choice, and that the reader not only knows how to
+build and install them, but also has all the necessary requisites to
+actually do so. The guide to the sources in particular also explains
+which source code management system is used, where to find it, how to
+set it up, etc.</p>
 </div>
-<div id="section2" class="doctools_section"><h2><a name="section2">Developing for Marpa/Tcl</a></h2>
-<div id="subsection1" class="doctools_subsection"><h3><a name="subsection1">Architecture &amp; Concepts</a></h3>
-<p>Most of the overall architecture and design is all introduced in the
-user documentation, namely</p>
+<div id="section3" class="doctools_section"><h2><a name="section3">Developing for Marpa/Tcl</a></h2>
+<div id="subsection1" class="doctools_subsection"><h3><a name="subsection1">System Architecture</a></h3>
+<p>The system can be split into roughly six sections, as seen in the
+figure below. The seventh, highlighted in green, is <b class="package"><a href="../../index.html#key0">libmarpa</a></b>
+itself, which is technically outside of the system.</p>
+<p><img alt="architecture" src="../../image/architecture.png"></p>
+<p>In more detail:</p>
+<dl class="doctools_definitions">
+<dt>Applications</dt>
+<dd><p>At the top we have the <b class="cmd">marpa-gen</b> application. It integrates and
+uses all of the packages to provide a parser generator reading
+grammars specified using SLIF and producing results in a variety of
+formats.</p></dd>
+<dt>SLIF</dt>
+<dd><p>The packages supporting the SLIF language for grammar specifications.
+This is a very close sibling to the SLIF language used by
+<a href="https://jeffreykegler.github.io/Marpa-web-site/">Marpa::R2</a>, the current stable version of the Perl
+binding.</p>
+<p>It can be further divided into groups for parsing SLIF, the
+semantics for translating a parse into a container, a container for
+SLIF grammars, and the processing of literals (strings and character
+classes).</p></dd>
+<dt>Generators</dt>
+<dd><p>The packages for producing a variety of formats from a SLIF grammar
+container. Further divided into serialization of containers as Tcl
+code, parsers and lexers based on the Tcl and C runtimes, and
+reconstruction of SLIF from a container.</p></dd>
+<dt>rt-Tcl</dt>
+<dd><p>The package <b class="package">marpa::runtime::tcl</b>. It implements a parse
+engine in Tcl. This uses <b class="package">marpa::c</b>, which is a thin wrapper
+around <b class="package"><a href="../../index.html#key0">libmarpa</a></b>.</p></dd>
+<dt>rt-C</dt>
+<dd><p>The package <b class="package">marpa::runtime::c</b>. It implements a parse engine
+in C, directly on top of <b class="package"><a href="../../index.html#key0">libmarpa</a></b>, without wrappers.</p></dd>
+<dt>Unicode data and utilities</dt>
+<dd><p>The <b class="package">marpa::unicode</b> package. It provides access to named
+character classes, case folding, de- and encoding codepoints to
+various representations, character class operations, etc.</p></dd>
+<dt>libmarpa</dt>
+<dd><p>Jeffrey Kegler's base library implementing an Earley parser which has
+the fixes by John Aycock, Nigel Horspool and Joop Leo. This is the
+foundation for the rest of the system.</p></dd>
+</dl>
+<p>The package dependencies are a bit large, and will be shown
+per-section, in the documentation of each section.</p>
 <ol class="doctools_enumerated">
-<li><p><i class="term"><a href="marpatcl_intro.html">Marpa/Tcl - Introduction to Marpa/Tcl</a></i>, and</p></li>
+<li><p><i class="term">Marpa/Tcl - Application</i>.</p></li>
+<li><p><i class="term">Marpa/Tcl - SLIF</i>.</p></li>
+<li><p><i class="term">Marpa/Tcl - Generation</i>.</p></li>
+<li><p><i class="term">Marpa/Tcl - Runtime/Tcl</i>.</p></li>
+<li><p><i class="term">Marpa/Tcl - Runtime/C</i>.</p></li>
+<li><p><i class="term">Marpa/Tcl - Unicode Data &amp; Utilities</i>.</p></li>
 </ol>
-<p>Here we concentrate on some details of the internals.</p>
 </div>
 <div id="subsection2" class="doctools_subsection"><h3><a name="subsection2">Directory structure</a></h3>
 <dl class="doctools_definitions">
@@ -315,6 +366,14 @@ user documentation, namely</p>
 </dl></dd>
 </dl>
 </div>
+</div>
+<div id="section4" class="doctools_section"><h2><a name="section4">Bugs, Ideas, Feedback</a></h2>
+<p>This document, and the package it describes, will undoubtedly contain
+bugs and other problems.
+Please report such at the
+<a href="https://core.tcl.tk/akupries/marpatcl">Marpa/Tcl Tracker</a>.
+Please also report any ideas for enhancements you may have for either
+package and/or documentation.</p>
 </div>
 <div id="keywords" class="doctools_section"><h2><a name="keywords">Keywords</a></h2>
 <p><a href="../../index.html#key2">aycock</a>, <a href="../../index.html#key9">character classes</a>, <a href="../../index.html#key10">document processing</a>, <a href="../../index.html#key1">earley</a>, <a href="../../index.html#key11">horspool</a>, <a href="../../index.html#key7">joop leo</a>, <a href="../../index.html#key6">lexing</a>, <a href="../../index.html#key0">libmarpa</a>, <a href="../../index.html#key5">nigel horspool</a>, <a href="../../index.html#key3">parsing</a>, <a href="../../index.html#key8">regex</a>, <a href="../../index.html#key4">table parsing</a></p>

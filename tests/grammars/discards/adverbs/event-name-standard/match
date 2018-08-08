@@ -1,0 +1,75 @@
+___________________________((::record 23 ::PARSE discard whitespace))
+___ (( location ))
+_ => 0 | ((6))
+
+___ (( from 0 ))
+_ => 0 | (())
+
+___ (( location ))
+_ => 0 | ((0))
+
+___ (( from+ 5 ))
+_ => 0 | (())
+
+___ (( location ))
+_ => 0 | ((5))
+
+___ (( from+ -5 ))
+_ => 0 | (())
+
+___ (( location ))
+_ => 0 | ((0))
+
+___ (( stop ))
+_ => 0 | (())
+
+___ (( to 10 ))
+_ => 0 | (())
+
+___ (( stop ))
+_ => 0 | ((10))
+
+___ (( limit 10 ))
+_ => 0 | (())
+
+___ (( stop ))
+_ => 0 | ((10))
+
+___ (( dont-stop ))
+_ => 0 | (())
+
+___ (( stop ))
+_ => 0 | (())
+
+___ (( symbols ))
+_ => 0 | ((space))
+
+___ (( sv ))
+_ => 1 | ((key "sv" not known in dictionary))
+
+___ (( start ))
+_ => 0 | ((5))
+
+___ (( length ))
+_ => 0 | ((1))
+
+___ (( value ))
+_ => 0 | ((
+))
+
+___ (( alternate A V ))
+_ => 1 | ((Invalid access to match state, expected before, or after event))
+
+___ (( symbols ))
+_ => 0 | ((space))
+
+___ (( sv ))
+_ => 1 | ((key "sv" not known in dictionary))
+
+___ (( view ))
+_ => 0 | (({length = ((1))} {start = ((5))} {symbols = ((space))} {value = ((
+))} {@location = 0}))
+
+Clear
+EndMove
+~ 0 ()

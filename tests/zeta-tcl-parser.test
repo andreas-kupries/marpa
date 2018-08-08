@@ -8,7 +8,7 @@
 ## Larger testing of exporter results, and runtime
 ## - export::tparse,
 ## - engine::tcl
-## 
+##
 
 kt source  support/gen.tcl
 

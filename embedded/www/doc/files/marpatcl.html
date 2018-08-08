@@ -1,6 +1,6 @@
 
 <!DOCTYPE html><html><head>
-<title>marpatcl - Marpa/Tcl, a binding to libmarpa</title>
+<title>marpatcl_marpagen - Marpa/Tcl, a binding to libmarpa</title>
 <style type="text/css"><!--
     HTML {
 	background: 	#FFFFFF;
@@ -96,7 +96,7 @@
    -->
 <!-- Copyright &amp;copy; 2015-2018 Andreas Kupries   -- Copyright &amp;copy; 2018 Documentation, Andreas Kupries
    -->
-<!-- marpatcl.n
+<!-- marpatcl_marpagen.n
    -->
 <body><hr> [
    <a href="../../../../../../home">Home</a>
@@ -105,34 +105,131 @@
 | <a href="../../index.html">Keyword Index</a>
  ] <hr>
 <div class="doctools">
-<h1 class="doctools_title">marpatcl(n) 0.2 doc &quot;Marpa/Tcl, a binding to libmarpa&quot;</h1>
+<h1 class="doctools_title">marpatcl_marpagen(n) 0.2 doc &quot;Marpa/Tcl, a binding to libmarpa&quot;</h1>
 <div id="name" class="doctools_section"><h2><a name="name">Name</a></h2>
-<p>marpatcl - Marpa/Tcl -</p>
+<p>marpatcl_marpagen - Marpa/Tcl - The Generator Application</p>
 </div>
 <div id="toc" class="doctools_section"><h2><a name="toc">Table Of Contents</a></h2>
 <ul class="doctools_toc">
 <li class="doctools_section"><a href="#toc">Table Of Contents</a></li>
 <li class="doctools_section"><a href="#synopsis">Synopsis</a></li>
 <li class="doctools_section"><a href="#section1">Description</a></li>
+<li class="doctools_section"><a href="#section2">Audience</a></li>
+<li class="doctools_section"><a href="#section3">marpa-gen</a></li>
+<li class="doctools_section"><a href="#section4">Bugs, Ideas, Feedback</a></li>
 <li class="doctools_section"><a href="#keywords">Keywords</a></li>
 <li class="doctools_section"><a href="#copyright">Copyright</a></li>
 </ul>
 </div>
 <div id="synopsis" class="doctools_section"><h2><a name="synopsis">Synopsis</a></h2>
 <div class="doctools_synopsis">
-<ul class="doctools_requirements">
-<li>package require <b class="pkgname">Tcl 8.5</b></li>
-<li>package require <b class="pkgname">Tk 8.5</b></li>
-<li>package require <b class="pkgname">marpa <span class="opt">?0.2?</span></b></li>
+<ul class="doctools_syntax">
+<li><a href="#1"><b class="syscmd">marpa-gen</b> <span class="opt">?options...?</span> <span class="opt">?--?</span> <i class="arg">grammar-file</i> <span class="opt">?<i class="arg">output</i>?</span></a></li>
 </ul>
 </div>
 </div>
 <div id="section1" class="doctools_section"><h2><a name="section1">Description</a></h2>
-<p>For a basic introduction of the whole Marpa/Tcl eco-system
-please read the <i class="term"><a href="marpatcl_intro.html">Marpa/Tcl - Introduction to Marpa/Tcl</a></i> (sic!).
-The basic concepts used here, like ... are described in the reference
-manpage for the <i class="term">Marpa/Tcl - Foundation</i>.  We will not repeat
-them here, but assume that the reader knows them already.</p>
+<p>Welcome to Marpa/Tcl, a Tcl binding to the &quot;<b class="file">libmarpa</b>&quot; parsing
+engine.</p>
+<p>Please read the document <i class="term"><a href="marpatcl_intro.html">Marpa/Tcl - Introduction to Marpa/Tcl</a></i>,
+if you have not done so already, to get an overview of the whole system.</p>
+</div>
+<div id="section2" class="doctools_section"><h2><a name="section2">Audience</a></h2>
+<p>This document is targeted at users intending to create parser packages
+with Marpa/Tcl.</p>
+</div>
+<div id="section3" class="doctools_section"><h2><a name="section3">marpa-gen</a></h2>
+<p><b class="syscmd">marpa-gen</b> is the generator application used to read a SLIF
+grammar definition and create various forms of output, including
+packages implementing parsers and lexers for the grammar.</p>
+<p>To make effective use of it is recommended to also read
+<i class="term"><a href="marpatcl_slif.html">Marpa/Tcl - The SLIF grammar specification language</a></i></p>
+<dl class="doctools_definitions">
+<dt><a name="1"><b class="syscmd">marpa-gen</b> <span class="opt">?options...?</span> <span class="opt">?--?</span> <i class="arg">grammar-file</i> <span class="opt">?<i class="arg">output</i>?</span></a></dt>
+<dd><p>In its most basic form the generator command is invoked with the path
+to a <i class="arg">grammar-file</i>, printing the result to <b class="const">stdout</b>.
+If a second path to <i class="arg">output</i> is specified the result is saved into
+that file, possibly creating it.</p>
+<p>Invoking the command with no arguments, while technically
+invalid, causes it to print basic help information, i.e. syntax,
+available options, and available output types.</p>
+<p>The available options are:</p>
+<dl class="doctools_options">
+<dt><b class="option">-author</b> string</dt>
+<dd></dd>
+<dt><b class="option">-A</b> string</dt>
+<dd><p>Specifies the name of the author to embed in the output, provided that
+is supported by the chosen type. Defaults to the name of the user
+invoking the generator.</p></dd>
+<dt><b class="option">-name</b> string</dt>
+<dd></dd>
+<dt><b class="option">-N</b> string</dt>
+<dd><p>Specifies the name of the result to embed in the output, provided that
+is supported by the chosen type. Defaults to the empty string.</p></dd>
+<dt><b class="option">-type</b> string</dt>
+<dd></dd>
+<dt><b class="option">-T</b> string</dt>
+<dd><p>Specifies the type of output to generate.
+If not specified defaults to <b class="const">tparse</b>.
+The currently available output types are</p>
+<dl class="doctools_definitions">
+<dt>clex-critcl</dt>
+<dd><p>Generate a lexer written in C and embedded into Tcl via <b class="package">critcl</b>.
+The grammar is rewritten to handle charactres beyond the unicode BMP
+via CESU-8, i.e. UTF-8 encoded pairs of surrogate characters, to match
+Tcl.
+The structural rules of the input grammar are ignored.
+See also <b class="const">tlex</b>.</p></dd>
+<dt>cparse-critcl</dt>
+<dd><p>Generate a parser written in C and embedded into Tcl via <b class="package">critcl</b>.
+The grammar is rewritten to handle charactres beyond the unicode BMP
+via CESU-8, i.e. UTF-8 encoded pairs of surrogate characters, to match
+Tcl.</p></dd>
+<dt>cparse-raw</dt>
+<dd><p>Generate a parser written in C, without any embedding.
+The grammar is rewritten to handle the unicode SMP via normal UTF-8
+encoding, i.e. as sequences of 4 bytes.</p></dd>
+<dt>gc</dt>
+<dd><p>Generates Tcl code which initializes a
+<b class="package">marpa::slif::container</b> with the serialization of the input
+grammar.</p></dd>
+<dt>gc-c</dt>
+<dd><p>As <b class="const">gc</b> above, with the grammar rewritten like is done for
+<b class="const">cparse-critcl</b>, and <b class="const">clex-critcl</b>.</p></dd>
+<dt>gc-compact</dt>
+<dd><p>As <b class="const">gc</b> above, with all superfluous whitespace removed.</p></dd>
+<dt>gc-tcl</dt>
+<dd><p>As <b class="const">gc</b> above, with the grammar rewritten like is done for
+<b class="const">tparse</b> and <b class="const">tlex</b>.</p></dd>
+<dt>slif</dt>
+<dd><p>Generate a SLIF grammar.
+Defaults from the input are resolved.
+Rules are sorted, and reformatted (pretty printed).</p></dd>
+<dt>tlex</dt>
+<dd><p>Generate a lexer written in Tcl.
+The structural rules of the input grammar are ignored.
+See also <b class="const">clex-critcl</b>.</p></dd>
+<dt>tparse</dt>
+<dd><p>Generate a parser written in Tcl.</p></dd>
+</dl></dd>
+<dt><b class="option">-version</b> string</dt>
+<dd></dd>
+<dt><b class="option">-V</b> string</dt>
+<dd><p>Specifies the version to number embed in the output, provided that is
+supported by the chosen type. Defaults to <b class="const">1</b>.</p></dd>
+<dt><b class="option">--</b></dt>
+<dd><p>This option ends option processing, even if arguments coming after it
+start with dash (<b class="const">-</b>).</p></dd>
+</dl></dd>
+</dl>
+</div>
+<div id="section4" class="doctools_section"><h2><a name="section4">Bugs, Ideas, Feedback</a></h2>
+<p>This document, and the package it describes, will undoubtedly contain
+bugs and other problems.
+Please report such at the
+<a href="https://core.tcl.tk/akupries/marpatcl">Marpa/Tcl Tracker</a>.
+Please also report any ideas for enhancements you may have for either
+package and/or documentation.</p>
 </div>
 <div id="keywords" class="doctools_section"><h2><a name="keywords">Keywords</a></h2>
 <p><a href="../../index.html#key2">aycock</a>, <a href="../../index.html#key9">character classes</a>, <a href="../../index.html#key10">document processing</a>, <a href="../../index.html#key1">earley</a>, <a href="../../index.html#key11">horspool</a>, <a href="../../index.html#key7">joop leo</a>, <a href="../../index.html#key6">lexing</a>, <a href="../../index.html#key0">libmarpa</a>, <a href="../../index.html#key5">nigel horspool</a>, <a href="../../index.html#key3">parsing</a>, <a href="../../index.html#key8">regex</a>, <a href="../../index.html#key4">table parsing</a></p>

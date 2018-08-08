@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2017-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -62,7 +62,10 @@ proc ::marpa::gen::format::tparse::container {gc} {
     debug.marpa/gen/format/tparse {}
     variable self
     marpa fqn gc
-    set config   [marpa::gen::runtime::tcl config [$gc serialize]]
+
+    set config [marpa::gen::runtime::tcl config [$gc serialize]]
+    debug.marpa/gen/format/tparse {[set _ ""][join [lmap {k v} $config {set _ "$k = $v"}] \n][unset _]}
+
     set template [string trim [marpa asset $self]]
     return [string map $config $template]
 }
@@ -75,8 +78,8 @@ return
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
-# (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                     http://core.tcl.tk/akupries/
+# (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                          http://core.tcl.tk/akupries/
 ##
 # (c) @slif-year@ Grammar @slif-name@ By @slif-writer@
 ##
@@ -115,31 +118,31 @@ oo::class create @slif-name@ {
     # requested information. Their base-class implementations simply
     # throw errors, thus preventing the construction of an incomplete
     # parser.
-    
+
     method Characters {} {
 	debug.@slif-name-tag@
 	# Literals: The directly referenced (allowed) characters.
 	return {@characters@}
     }
-    
+
     method Classes {} {
 	debug.@slif-name-tag@
 	# Literals: The character classes in use
 	return {@classes@}
     }
-    
+
     method Lexemes {} {
 	debug.@slif-name-tag@
 	# Lexer API: Lexeme symbols (Cannot be terminal). G1 terminals
 	return {@lexemes@}
     }
-    
+
     method Discards {} {
 	debug.@slif-name-tag@
 	# Discarded symbols (whitespace)
 	return {@discards@}
     }
-    
+
     method L0.Symbols {} {
 	# Non-lexeme, non-literal symbols
 	debug.@slif-name-tag@
@@ -159,6 +162,15 @@ oo::class create @slif-name@ {
 	return {@l0-semantics@}
     }
 
+    method L0.Events {} {
+	debug.@slif-name-tag@
+	# L0 parse event definitions (pre-, post-lexeme, discard)
+	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Due to the nature of SLIF syntax we can only associate one
+	# event per type with each symbol, for a maximum of three.
+	return {@l0-events@}
+    }
+
     method G1.Symbols {} {
 	# Structural symbols
 	debug.@slif-name-tag@
@@ -169,6 +181,14 @@ oo::class create @slif-name@ {
 	# Structural rules, including actions, masks, and names
 	debug.@slif-name-tag@
 	return {@g1-rules@}
+    }
+
+    method G1.Events {} {
+	debug.@slif-name-tag@
+	# G1 parse event definitions (predicted, nulled, completed)
+	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Each symbol can have more than one event per type.
+	return {@g1-events@}
     }
 
     method Start {} {

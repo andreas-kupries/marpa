@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -11,7 +11,7 @@
 # # ## ### ##### ######## #############
 ## Requisites
 
-package require oo::util ;# mymethod
+#package require oo::util ;# mymethod
 #package require char     ;# quoting
 
 debug define marpa/engine/tcl/parse
@@ -21,12 +21,14 @@ debug prefix marpa/engine/tcl/parse {[debug caller] | }
 ##
 
 oo::class create marpa::engine::tcl::parse {
+    superclass marpa::engine::tcl::base
+
     # # ## ### ##### ######## #############
     marpa::E marpa/engine/tcl/parse ENGINE TCL PARSE
 
     constructor {} {
 	debug.marpa/engine/tcl/parse {}
-	
+
 	# Build the processing pipeline, then configure the various
 	# pieces.  Object creation is in backward direction, i.e. from
 	# the end of the pipeline to the beginning.  Loading the
@@ -40,15 +42,15 @@ oo::class create marpa::engine::tcl::parse {
 	# - PARSE : Marpa core engine specialized for parsing
 	# - SEMA  : Semantics
 	# - STORE : Store for token values (lexer semantic information)
-	
+
 	marpa::semstore create STORE
 	marpa::semcore  create SEMA  STORE
 	marpa::parser   create PARSE STORE SEMA [self]
-	marpa::lexer    create LEX   STORE PARSE
+	marpa::lexer    create LEX   [self] STORE PARSE
 	marpa::gate     create GATE  LEX
 	marpa::inbound  create IN    GATE
 
-	#           v-----+  v-----+                    #
+	#           v-----\ v------\                    #
 	# IN --> GATE --> LEX ---> PARSE --> self       #
 	#                  \        \ \                 #
 	#                   \        \ \-> SEMA         #
@@ -65,10 +67,10 @@ oo::class create marpa::engine::tcl::parse {
 	PARSE symbols [my G1.Symbols]
 	PARSE rules   [my G1.Rules]
 	PARSE parse   [my Start] [my Discards]
+	LEX   events  [my L0.Events]
+	PARSE events  [my G1.Events]
 
 	# TODO: Actual user semantics
-	# TODO: L0 events
-	# TODO: G1 events
 	# TODO: tracing/reporting/red-ruby-slippers
 	return
     }
@@ -91,30 +93,33 @@ oo::class create marpa::engine::tcl::parse {
 	my E "Missing implementation of virtual method \"$m\"" \
 	    API VIRTUAL [string toupper $m]
     }
-    
+
+    forward match  LEX match
+
     # # ## ### ##### ######## #############
     ## State
 
     variable myresult
-    
+
     # # ## ### ##### ######## #############
     ## Public API
-    
-    method process-file {path} {
+
+    method process-file {path args} {
 	debug.marpa/engine/tcl/parse {}
+	set options [my Options $args]
 	set myresult {}
 	set chan [open $path r]
 	# Drive the pipeline from the channel.
-	IN read $chan
+	IN read $chan {*}$options
 	IN eof
 	return $myresult
     }
 
-    method process {string} {
+    method process {string args} {
 	debug.marpa/engine/tcl/parse {}
 	set myresult {}
 	# Drive the pipeline from the string
-	IN enter $string
+	IN enter $string {*}[my Options $args]
 	IN eof
 	return $myresult
     }
@@ -123,7 +128,7 @@ oo::class create marpa::engine::tcl::parse {
     ## This wrapper acts as the AST handler to the embedded parse
     ## core. The methods below handle the parser/handler
     ## communication.
-    
+
     method enter {ast} {
 	debug.marpa/engine/tcl/parse {}
 	set myresult $ast
@@ -184,7 +189,7 @@ oo::class create marpa::engine::tcl::parse {
 	} elseif {[dict exists $context l0 char]} {
 	    append msg "Stopped after reading '" [char quote cstring [dict get $context l0 char]] "'."
 	}
-	
+
 	set chars 0
 	if {[dict exists $context l0 acceptable]} {
 	    append msg " Expected any character in \["
@@ -219,7 +224,7 @@ oo::class create marpa::engine::tcl::parse {
 		append msg " (dict exists $context l0 acceptsym])"
 	    }
 	}
-	
+
 	if {0&&[dict exists $context g1 report]} {
 	    append msg "\nG1 Report:\n[dict get $context g1 report]"
 	}

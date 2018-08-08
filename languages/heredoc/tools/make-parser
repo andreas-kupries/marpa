@@ -1,0 +1,20 @@
+#!/bin/bash
+
+g="g/heredoc.slif"
+v=1
+a="Andreas Kupries"
+base="heredoc::parser::"
+
+marpa-gen \
+    -V $v -A "${a}" \
+    -T cparse-critcl \
+    -N ${base}c \
+    $g heredoc-c.tcl
+echo
+
+marpa-gen \
+    -V $v -A "${a}" \
+    -T tparse \
+    -N ${base}tcl \
+    $g heredoc-tcl.tcl
+echo

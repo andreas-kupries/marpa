@@ -113,20 +113,23 @@
 <ul class="doctools_toc">
 <li class="doctools_section"><a href="#toc">Table Of Contents</a></li>
 <li class="doctools_section"><a href="#section1">Description</a></li>
-<li class="doctools_section"><a href="#section2">Requisites</a>
+<li class="doctools_section"><a href="#section2">Audience</a></li>
+<li class="doctools_section"><a href="#section3">Requisites</a>
 <ul>
-<li class="doctools_subsection"><a href="#subsection1">Tcl</a></li>
-<li class="doctools_subsection"><a href="#subsection2">CriTcl</a></li>
-<li class="doctools_subsection"><a href="#subsection3">Tcllib</a></li>
-<li class="doctools_subsection"><a href="#subsection4">Kettle</a></li>
+<li class="doctools_subsection"><a href="#subsection1">Libmarpa</a></li>
+<li class="doctools_subsection"><a href="#subsection2">Tcl</a></li>
+<li class="doctools_subsection"><a href="#subsection3">CriTcl</a></li>
+<li class="doctools_subsection"><a href="#subsection4">Tcllib</a></li>
+<li class="doctools_subsection"><a href="#subsection5">Kettle</a></li>
 </ul>
 </li>
-<li class="doctools_section"><a href="#section3">Build &amp; Installation Instructions</a>
+<li class="doctools_section"><a href="#section4">Build &amp; Installation Instructions</a>
 <ul>
-<li class="doctools_subsection"><a href="#subsection5">Build &amp; Installation (Unix)</a></li>
-<li class="doctools_subsection"><a href="#subsection6">Build &amp; Installation (Windows)</a></li>
+<li class="doctools_subsection"><a href="#subsection6">Build &amp; Installation (Unix)</a></li>
+<li class="doctools_subsection"><a href="#subsection7">Build &amp; Installation (Windows)</a></li>
 </ul>
 </li>
+<li class="doctools_section"><a href="#section5">Bugs, Ideas, Feedback</a></li>
 <li class="doctools_section"><a href="#keywords">Keywords</a></li>
 <li class="doctools_section"><a href="#copyright">Copyright</a></li>
 </ul>
@@ -134,36 +137,61 @@
 <div id="section1" class="doctools_section"><h2><a name="section1">Description</a></h2>
 <p>Welcome to Marpa/Tcl, a Tcl binding to the &quot;<b class="file">libmarpa</b>&quot; parsing
 engine.</p>
-<p>The audience of this document is anyone wishing to build the packages,
-for either themselves, or others.</p>
-<p>For a developer intending to extend or modify the packages we
-additionally provide</p>
+<p>Please read the document <i class="term"><a href="marpatcl_intro.html">Marpa/Tcl - Introduction to Marpa/Tcl</a></i>,
+if you have not done so already, to get an overview of the whole system.</p>
+</div>
+<div id="section2" class="doctools_section"><h2><a name="section2">Audience</a></h2>
+<p>This documented is targeted at anyone wishing to build MarpaTcl's
+packages and application, for either themselves, or others.</p>
+<p>Please read <i class="term"><a href="marpatcl_sources.html">Marpa/Tcl - How To Get The Sources</a></i> first, if that
+was not done already. Here we assume that the sources are already
+available in a directory of your choice.</p>
+<p>For developers building Marpa/Tcl with the intent to extend or modify
+the packages and application we additionally provide</p>
 <ol class="doctools_enumerated">
 <li><p><i class="term"><a href="marpatcl_devguide.html">Marpa/Tcl - The Developer's Guide</a></i>.</p></li>
 </ol>
-<p>Please read <i class="term"><a href="marpatcl_sources.html">Marpa/Tcl - How To Get The Sources</a></i> first, if that was
-not done already. Here we assume that the sources are already
-available in a directory of your choice.</p>
 </div>
-<div id="section2" class="doctools_section"><h2><a name="section2">Requisites</a></h2>
+<div id="section3" class="doctools_section"><h2><a name="section3">Requisites</a></h2>
 <p>Before Marpa/Tcl can be build and used a number of requisites must be installed.
 These are:</p>
 <ol class="doctools_enumerated">
+<li><p>Jeffrey Kegler's <b class="package"><a href="../../index.html#key0">libmarpa</a></b> library.
+       For details see <span class="sectref"><a href="#subsection1">Libmarpa</a></span>.</p></li>
 <li><p>The scripting language Tcl.
-       For details see <span class="sectref"><a href="#subsection1">Tcl</a></span>.</p></li>
+       For details see <span class="sectref"><a href="#subsection2">Tcl</a></span>.</p></li>
 <li><p>The <b class="package">critcl</b> package (C embedding) for <b class="syscmd">Tcl</b>.
-       For details see <span class="sectref"><a href="#subsection2">CriTcl</a></span>.</p></li>
+       For details see <span class="sectref"><a href="#subsection3">CriTcl</a></span>.</p></li>
 <li><p>Various packages from the Tcllib bundles for <b class="syscmd">Tcl</b>.
-       For details see <span class="sectref"><a href="#subsection3">Tcllib</a></span>.</p></li>
+       For details see <span class="sectref"><a href="#subsection4">Tcllib</a></span>.</p></li>
 <li><p>The <b class="package">kettle</b> application (Build tool) for <b class="syscmd">Tcl</b>.
-       For details see <span class="sectref"><a href="#subsection4">Kettle</a></span>.</p></li>
+       For details see <span class="sectref"><a href="#subsection5">Kettle</a></span>.</p></li>
 </ol>
 <p>This list assumes that the machine where Marpa/Tcl is to be installed
 is essentially clean. Of course, if parts of the dependencies listed
 below are already installed the associated steps can be skipped. It is
 still recommended to read their sections though, to validate that the
 dependencies they talk about are indeed installed.</p>
-<div id="subsection1" class="doctools_subsection"><h3><a name="subsection1">Tcl</a></h3>
+<div id="subsection1" class="doctools_subsection"><h3><a name="subsection1">Libmarpa</a></h3>
+<p>This C library is the foundation of Marpa/Tcl, providing the parser
+engine we bind to.</p>
+<p>The instructions for its installation, including the retrieval of its
+sources, can be found at
+<a href="http://jeffreykegler.github.io/Marpa-web-site/libmarpa.html">http://jeffreykegler.github.io/Marpa-web-site/libmarpa.html</a>.</p>
+<p>As we are only interested in the library itself installation of the
+<b class="package">Marpa::R2</b> Perl binding is not necessary. Marpa/Tcl also
+comes with its own testsuite.</p>
+<p>Regarding packages for the various Linux distributions which would
+make installation more convenient, I have currently only found/seen:</p>
+<dl class="doctools_definitions">
+<dt>Ubuntu</dt>
+<dd><p><b class="package">libmarpa-r2-perl</b> is the Perl binding I mentioned
+	above. Based on the set of installed files I believe that
+	libmarpa is part of the shared library for the binding itself,
+	and not installed as a separate binary.</p></dd>
+</dl>
+</div>
+<div id="subsection2" class="doctools_subsection"><h3><a name="subsection2">Tcl</a></h3>
 <p>As we are building a set of Tcl packages it should be pretty much
 obvious that a working Tcl installation is needed, and I will not
 belabor the point.</p>
@@ -186,10 +214,10 @@ ActiveState.</p>
 </pre>
 <p>to install all packages ActiveState provides, and the kitchensink, as
 the distribution itself usually contains only the most important set
-of packages. This ensures that the dependencies for <span class="sectref"><a href="#subsection2">CriTcl</a></span>,
+of packages. This ensures that the dependencies for <span class="sectref"><a href="#subsection3">CriTcl</a></span>,
 and Marpa/Tcl are all present, and more.</p>
 <p>If that is not your liking you have to read the sections for
-<span class="sectref"><a href="#subsection2">CriTcl</a></span>, and Marpa/Tcl to determine the exact set of packages
+<span class="sectref"><a href="#subsection3">CriTcl</a></span>, and Marpa/Tcl to determine the exact set of packages
 required, and install only these using</p>
 <pre class="doctools_example">
     teacup install $packagename
@@ -209,9 +237,9 @@ be found at</p>
 <dd><p><a href="http://core.tcl.tk/tcl/">http://core.tcl.tk/tcl/</a></p></dd>
 </dl>
 </div>
-<div id="subsection2" class="doctools_subsection"><h3><a name="subsection2">CriTcl</a></h3>
+<div id="subsection3" class="doctools_subsection"><h3><a name="subsection3">CriTcl</a></h3>
 <p>To build Marpa/Tcl the tool <b class="syscmd">critcl</b> is required.</p>
-<p>Marpa/Tcl's build system (based on <span class="sectref"><a href="#subsection4">Kettle</a></span>) accepts it
+<p>Marpa/Tcl's build system (based on <span class="sectref"><a href="#subsection5">Kettle</a></span>) accepts it
 either as an application found in the PATH (be it starkit or
 starpack), or as a Tcl package available to the <b class="syscmd">tclsh</b> used to
 run their build &amp; installation processes.</p>
@@ -228,7 +256,7 @@ install CriTcl, including a list of its dependencies.</p>
 problems with their directions please file a bug against the critcl
 project, and not Marpa/Tcl.</p>
 </div>
-<div id="subsection3" class="doctools_subsection"><h3><a name="subsection3">Tcllib</a></h3>
+<div id="subsection4" class="doctools_subsection"><h3><a name="subsection4">Tcllib</a></h3>
 <p>To use Marpa/Tcl a few packages found in the bundle Tcllib are
 required. These packages are:</p>
 <ol class="doctools_enumerated">
@@ -263,7 +291,7 @@ will not be repeated here. If there are problems with its directions
 please file a bug against the Tcllib project at the above url, and not
 Marpa/Tcl.</p>
 </div>
-<div id="subsection4" class="doctools_subsection"><h3><a name="subsection4">Kettle</a></h3>
+<div id="subsection5" class="doctools_subsection"><h3><a name="subsection5">Kettle</a></h3>
 <p>To build Marpa/Tcl the tool <b class="syscmd">kettle</b> is required.</p>
 <p>Marpa/Tcl's build system requires it as an application found in
 the PATH.</p>
@@ -284,12 +312,12 @@ problems with their directions please file a bug against the Kettle
 project, and not Marpa/Tcl.</p>
 </div>
 </div>
-<div id="section3" class="doctools_section"><h2><a name="section3">Build &amp; Installation Instructions</a></h2>
-<div id="subsection5" class="doctools_subsection"><h3><a name="subsection5">Build &amp; Installation (Unix)</a></h3>
+<div id="section4" class="doctools_section"><h2><a name="section4">Build &amp; Installation Instructions</a></h2>
+<div id="subsection6" class="doctools_subsection"><h3><a name="subsection6">Build &amp; Installation (Unix)</a></h3>
 <p>This section describes the actions required to install Marpa/Tcl on
 Unix systems (Linux, BSD, and related, including OS X).
 If you have to install Marpa/Tcl on a Windows machine see section
-<span class="sectref"><a href="#subsection6">Build &amp; Installation (Windows)</a></span> instead.</p>
+<span class="sectref"><a href="#subsection7">Build &amp; Installation (Windows)</a></span> instead.</p>
 <p>To install Marpa/Tcl simply run</p>
 <pre class="doctools_example">
     /path/to/tclsh8.5 /path/to/marpatcl/build.tcl install
@@ -310,12 +338,12 @@ like</p>
     /path/to/tclsh8.5 /path/to/marpa/tcl/build.tcl help
 </pre>
 </div>
-<div id="subsection6" class="doctools_subsection"><h3><a name="subsection6">Build &amp; Installation (Windows)</a></h3>
+<div id="subsection7" class="doctools_subsection"><h3><a name="subsection7">Build &amp; Installation (Windows)</a></h3>
 <p>This section describes the actions required to install Marpa/Tcl on
 Windows(tm) systems.
 If you have to install Marpa/Tcl on a Unix machine (Linux, BSD, and
 related, including OS X) see section
-<span class="sectref"><a href="#subsection5">Build &amp; Installation (Unix)</a></span> instead.</p>
+<span class="sectref"><a href="#subsection6">Build &amp; Installation (Unix)</a></span> instead.</p>
 <p>To install Marpa/Tcl simply run</p>
 <pre class="doctools_example">
     /path/to/tclsh8.5 /path/to/kettle -f /path/to/marpatcl/build.tcl install
@@ -344,6 +372,14 @@ like</p>
     /path/to/tclsh8.5 /path/to/kettle -f /path/to/marpatcl/build.tcl help
 </pre>
 </div>
+</div>
+<div id="section5" class="doctools_section"><h2><a name="section5">Bugs, Ideas, Feedback</a></h2>
+<p>This document, and the package it describes, will undoubtedly contain
+bugs and other problems.
+Please report such at the
+<a href="https://core.tcl.tk/akupries/marpatcl">Marpa/Tcl Tracker</a>.
+Please also report any ideas for enhancements you may have for either
+package and/or documentation.</p>
 </div>
 <div id="keywords" class="doctools_section"><h2><a name="keywords">Keywords</a></h2>
 <p><a href="../../index.html#key2">aycock</a>, <a href="../../index.html#key9">character classes</a>, <a href="../../index.html#key10">document processing</a>, <a href="../../index.html#key1">earley</a>, <a href="../../index.html#key11">horspool</a>, <a href="../../index.html#key7">joop leo</a>, <a href="../../index.html#key6">lexing</a>, <a href="../../index.html#key0">libmarpa</a>, <a href="../../index.html#key5">nigel horspool</a>, <a href="../../index.html#key3">parsing</a>, <a href="../../index.html#key8">regex</a>, <a href="../../index.html#key4">table parsing</a></p>

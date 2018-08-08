@@ -1,6 +1,6 @@
 /* Runtime for C-engine (RTC). Declarations. (Sets of marpa-symbols, dynamic)
  * - - -- --- ----- -------- ------------- ---------------------
- * (c) 2017 Andreas Kupries
+ * (c) 2017-present Andreas Kupries
  */
 
 #ifndef MARPATCL_RTC_SYMSET_H
@@ -56,6 +56,8 @@ Marpa_Symbol_ID* marpatcl_rtc_symset_dense    (marpatcl_rtc_symset* s);
 void             marpatcl_rtc_symset_link     (marpatcl_rtc_symset* s, int n);
 void             marpatcl_rtc_symset_include  (marpatcl_rtc_symset* s,
 					       int c, marpatcl_rtc_sym* v);
+void             marpatcl_rtc_symset_add      (marpatcl_rtc_symset* s,
+					       marpatcl_rtc_sym     v);
 
 #endif
 

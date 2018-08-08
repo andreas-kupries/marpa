@@ -1,0 +1,67 @@
+# # ## ### ##### ######## ############# #####################
+## HEREDOC specification -- SLIF grammar for use by TclMarpa.
+## (c) 2018-present Andreas Kupries
+#
+# References:
+# - https://core.tcl.tk/akupries/marpa/			Tcl+Marpa
+# - https://gist.github.com/jeffreykegler/5431739	Marpa::R2 heredoc demo
+
+# # ## ### ##### ######## ############# #####################
+
+:default ::=
+	action => [name,values]
+
+lexeme default =
+	action => [start,length,value]
+       	latm   => 1
+
+:start ::= statements
+
+statements  ::= statement +
+statement   ::= expressions (semicolon)
+	action => ::first
+expressions ::= expression +
+	separator => comma
+
+expression ::= <heredoc decl>	action => ::first
+	   |   sayer
+
+sayer ::= (say) expressions
+
+# # ## ### ##### ######## ############# #####################
+
+semicolon ~ ';'
+comma	  ~ ','
+say 	  ~ 'say'
+
+# # ## ### ##### ######## ############# #####################
+## Heredoc. Here be shenanigans.
+#
+# The rule shown does not match the appearance of the input.  We use
+# `pause` to interupt and procedurally extract the actual data to be
+# sent to the G1.
+#
+# The syntax the lexer accepts for the `heredoc` itself is actually
+# that of the identifier after the start symbol, i.e. of the
+# terminator string to use. The external heredoc scanner/processor has
+# access to this information from within the event handler, enabling
+# it to extract the actual document and place it as the lexeme value
+# instead.
+
+<heredoc decl> ::= (<heredoc start>) heredoc
+
+<heredoc start> ~ '<<'
+heredoc	 	~ [a-zA-Z]+
+# just allow ascii alpha identifiers.
+# unicode [:word:] is large. 
+:lexeme ~ heredoc
+	pause => after
+	event => heredoc
+
+# # ## ### ##### ######## ############# #####################
+
+:discard ~ whitespace
+whitespace ~ [\t\n\r ] +
+# No need to use [[:space:]] in this simple demo
+
+# # ## ### ##### ######## ############# #####################

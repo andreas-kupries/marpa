@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -24,8 +24,8 @@ debug define marpa/inbound
 # # ## ### ##### ######## #############
 ## Entry object for character streams.
 #
-# Counts locations, saves per-char semantic values, before driving the
-# next element in the chain.
+# Counts locations, saves per-character semantic values, before
+# driving the next element in the chain.
 
 oo::class create marpa::inbound {
     marpa::E marpa/inbound INBOUND
@@ -80,7 +80,10 @@ oo::class create marpa::inbound {
     # # -- --- ----- -------- -------------
     ## State
 
-    variable mylocation ; # Input location
+    variable mylocation     ; # Input location
+    variable mystoplocation ; # Trigger location for stop events
+    variable mytext         ; # Physical input stream
+    			      # (list! of characters)
 
     # API:
     # 1 cons  (postprocessor) - Create, link
@@ -100,9 +103,13 @@ oo::class create marpa::inbound {
 
 	marpa::import $postprocessor Forward
 
-	set mylocation -1 ; # location (of current character) in
-			    # input, currently before the first
-			    # character
+	set mytext     "" ; # Input is empty
+	set mylocation -1 ; # Location of the current character in
+			    # the input, currently set to just before
+			    # the first character (of nothing).
+
+	# Attach ourselves to the postprocessor, as its input
+	Forward input: [self]
 
 	debug.marpa/inbound {[debug caller] | /ok}
 	return
@@ -111,43 +118,159 @@ oo::class create marpa::inbound {
     # # -- --- ----- -------- -------------
     ## Public API
 
-    method location? {} {
+    method location {} {
 	debug.marpa/inbound {[debug caller] | ==> $mylocation}
-	return $mylocation
+	return [expr {$mylocation + 1}]
     }
 
-    method enter {string} {
+    method from {pos args} {
 	debug.marpa/inbound {[debug caller] | }
-
-	if {$string eq {}} return
-	foreach ch [split $string {}] {
-	    # Count character location (offset in input)
-	    incr mylocation
-
-	    # Semantic value is character location (s.a.)
-	    # And push into the pipeline
-	    debug.marpa/inbound {[debug caller 1] | DO '[char quote cstring $ch]' ($mylocation) ______}
-	    debug.marpa/inbound {[debug caller 1] | DO _______________________________________}
-	    Forward enter $ch $mylocation
-	}
+	incr pos -1
+	set mylocation $pos
+	foreach delta $args { incr mylocation $delta }
 	return
     }
 
-    method read {chan} {
+    method rewind {delta} {
 	debug.marpa/inbound {[debug caller] | }
+	incr mylocation [expr {-1 * $delta}]
+	return
+    }
 
-	# Process channel in blocks
-	while {![eof $chan]} {
-	    my enter [read $chan 1024]
-	}
-	# **Attention**: We cannot signal eof here! Because we might
-	# get more input to process, from other channels or strings.
+    method relative {delta} {
+	debug.marpa/inbound {[debug caller] | }
+	incr mylocation $delta
+	return
+    }
+
+    method stop {} {
+	debug.marpa/inbound {[debug caller] | }
+	if {$mystoplocation < 0} { return {} }
+	return $mystoplocation
+    }
+
+    method to {pos} {
+	debug.marpa/inbound {[debug caller] | }
+	set mystoplocation $pos
+	return
+    }
+
+    method dont-stop {} {
+	debug.marpa/inbound {[debug caller] | }
+	set mystoplocation -1
+	return
+    }
+
+    method limit {delta} {
+	# assert delta > 0
+	debug.marpa/inbound {[debug caller] | }
+	set  mystoplocation $mylocation
+	incr mystoplocation
+	incr mystoplocation $delta
+	return
+    }
+
+    method enter {string {from -1} {to -1}} {
+	debug.marpa/inbound {[debug caller] | }
+	my Def $string
+	my Process $from $to
+	# XXX eof here
+	return
+    }
+
+    method read {chan {from -1} {to -1}} {
+	debug.marpa/inbound {[debug caller] | }
+	# Read entire channel into memory for processing
+	my Def [read $chan]
+	my Process $from $to
+	# XXX eof here
 	return
     }
 
     method eof {} {
 	debug.marpa/inbound {[debug caller] | }
 	Forward eof
+	return
+    }
+
+    # # ## ### ##### ######## #############
+    ## Internal support functionality
+
+    method Def {string} {
+	debug.marpa/inbound {[debug caller] | }
+	set mytext     [split $string {}]
+	set mylocation -1
+	# stop before input - cannot trigger == do not stop
+	set mystoplocation -1
+	return
+    }
+
+    method Process {from to} {
+	debug.marpa/inbound {[debug caller] | }
+
+	set mylocation     $from
+	set mystoplocation $to
+
+	set  max [llength $mytext]
+	incr max -1
+
+	debug.marpa/inbound {[debug caller] | DO _______________________________________ /START}
+
+	# Notes on locations.
+	# [1] At the beginning of the loop `mylocation` points to the
+	#     __last__ processed character.
+	# [2] We move to the current character just before processing
+	#     it (Forward enter ...).
+	# [3] When parse events are invoked we point to the character
+	#     to process next (i.e. one ahead), and have to compensate
+	#     on return so that the loop entry condition [1] is true
+	#     again. We actually make the translation in the location
+	#     methods of this class, see `location?` and below,
+	#     without actually moving.
+	# [4] The double-loop construction is present to ensure that
+	#     when the inner main processing loop hits EOF the eof
+	#     handling can bounce the engine away from EOF and
+	#     processing is restarted for the last characters.
+
+	while {$mylocation < $max} {
+	    while {$mylocation < $max} {
+		incr mylocation
+
+		if {$mylocation == $mystoplocation} {
+		    # Stop triggered.
+		    # Bounce, clear stop marker, post event, restart
+		    incr mylocation -1
+		    set mystoplocation -1
+		    Forward signal-stop ;# notify gate
+		    continue
+		}
+
+		set ch [lindex $mytext $mylocation]
+
+		# Semantic value is character location (s.a.)
+		# And push into the pipeline
+		debug.marpa/inbound {[debug caller] | DO '[char quote cstring $ch]' ($mylocation) ______}
+		debug.marpa/inbound {[debug caller] | DO _______________________________________}
+
+		Forward enter $ch $mylocation
+		# Note, the post-processor (gate, lexer) have access to the location, via methods
+		# moveto, moveby, and rewind. Examples of use:
+		# - Rewind after reading behind the current lexeme
+		# - Rewind for parse events.
+
+		debug.marpa/inbound {[debug caller] | DO _______________________________________ /NEXT}
+	    }
+	    # Trigger end of data processing in the post-processors.
+	    # (Ad 4) Note that this may rewind the input to an earlier
+	    # place, forcing re-processing of some of the last
+	    # characters.
+	    debug.marpa/inbound {[debug caller] | DO _______________________________________ /EOF}
+	    Forward eof
+
+	    debug.marpa/inbound {[debug caller] | DO _______________________________________ /NEXT.EOF}
+	}
+
+	debug.marpa/inbound {[debug caller] | DO _______________________________________ /DONE}
 	return
     }
 
@@ -200,16 +323,16 @@ oo::class create marpa::inbound::sequencer {
     # # -- --- ----- -------- -------------
     ## Checked API methods
 
-    method enter {string} {
+    method enter {string {from -1} {to -1}} {
 	my __Init
 	my __Fail done ! "Unable to process input after EOF" EOF
-	next $string
+	next $string $from $to
     }
 
-    method read {chan} {
+    method read {chan {from -1} {to -1}} {
 	my __Init
 	my __Fail done ! "Unable to process input after EOF" EOF
-	next $chan
+	next $chan $from $to
     }
 
     method eof {} {
