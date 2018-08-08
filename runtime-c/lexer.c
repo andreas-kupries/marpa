@@ -120,40 +120,6 @@ marpatcl_rtc_lexer_pe_get_semvalues (marpatcl_rtc_p p)
 		  : LEX.m_sv);
 }
 
-void
-marpatcl_rtc_lexer_pe_set_lexeme_start (marpatcl_rtc_p p, int start)
-{
-    TRACE_FUNC ("((rtc*) %p, start = %d)", p, start);
-
-    LEX.cstart = start;
-
-    TRACE_RETURN_VOID;
-}
-
-void
-marpatcl_rtc_lexer_pe_set_lexeme_length (marpatcl_rtc_p p, int length)
-{
-    TRACE_FUNC ("((rtc*) %p, len = %d)", p, length);
-
-    LEX.clength = length;
-
-    TRACE_RETURN_VOID;
-}
-
-void
-marpatcl_rtc_lexer_pe_set_lexeme_value (marpatcl_rtc_p p, const char* value)
-{
-    TRACE_FUNC ("((rtc*) %p, value = %d/%s)", p,
-		value ? num_utf_chars (value) : -1,
-		value ? value : "<null>");
-
-    LEX_FREE;
-    LEX.lexemestr = STRDUP (value);
-    LEX.clength   = num_utf_chars (LEX.lexemestr);
-
-    TRACE_RETURN_VOID;
-}
-
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API - lifecycle, accessors, and mutators

@@ -1,0 +1,16 @@
+statements
+  expressions
+    expression
+      sayer
+        expressions
+          heredoc decl
+            @14 11 {'lorem ipsum'}
+          @7 1 ','
+          heredoc decl
+            @28 9 {'delta vau'}
+  expressions
+    expression
+      sayer
+        expressions
+          heredoc decl
+            @49 15 {'quick brown fox'}

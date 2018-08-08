@@ -143,9 +143,6 @@ test-grammar-map rt_example --> id rte base {
 			    lappend ::recording "^sv  = >>$s<<"
 			}
 
-			$p match symbols: $symbols
-			$p match sv:      $semvalues
-
 			foreach v $semvalues s $symbols {
 			    $p match alternate $s $v
 			}

@@ -1,0 +1,65 @@
+#!/bin/bash
+#set -x
+
+clear
+echo _______________________________ configuration
+here="$(pwd)"                   ; echo here__: $here
+self="$0"                       ; echo self__: $self
+bindir="$(dirname "${self}")"   ; echo bindir: $bindir
+topdir="$(dirname "${bindir}")" ; echo topdir: $topdir
+
+echo _______________________________ cleanup temps
+find . -name "*~" -print
+find . -name "*~" -exec rm "{}" \;
+rm -rf OUT
+echo
+
+echo continue to grammar...
+read __
+
+clear
+echo
+echo _______________________________ setup
+(
+    less $topdir/g/heredoc.slif
+    
+    echo _______________________________ make parser packages
+    cd $topdir
+    $here/$bindir/make-parser
+
+    echo _______________________________ install parsers, local
+    ./build.tcl install --prefix $here/OUT --include-dir ~/opt/ActiveTcl/include
+)
+echo
+echo continue to C parser sources...
+read __
+
+less $topdir/heredoc-c.tcl
+
+clear
+echo _______________________________ run mini-processor over input
+echo
+heredocfile="${topdir}/examples/ak.hd"
+heredocfile="${topdir}/examples/gist-1.hd"
+heredocfile="${topdir}/examples/gist-2.hd"
+
+echo heredoc file: $heredocfile
+echo _______________________________ ..
+cat $heredocfile
+echo _______________________________ //
+echo
+echo continue to hd...
+read __
+
+clear
+echo
+$here/OUT/bin/hd $heredocfile > AST
+
+echo
+echo continue to ast...
+read __
+
+less AST
+
+echo
+exit

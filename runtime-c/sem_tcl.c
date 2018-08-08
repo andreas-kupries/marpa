@@ -260,10 +260,31 @@ marpatcl_rtc_pe_sdba_event (Tcl_Interp* ip, marpatcl_rtc_p p)
 }
 
 int
+marpatcl_rtc_pe_clear (Tcl_Interp* ip, marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p)", ip, p);
+
+    marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
+
+    // Ignore call when we have no destination to fill (discard events)
+    if (!svids) {
+	TRACE_RETURN ("%d", 1);
+    }
+
+    marpatcl_rtc_symset* syms  = marpatcl_rtc_lexer_pe_get_symbols (p);
+
+    marpatcl_rtc_symset_clear (syms);
+    marpatcl_rtc_stack_clear  (svids);
+    LEX.m_clearfirst = 0;
+
+    TRACE_RETURN ("%d", 1);
+}
+
+int
 marpatcl_rtc_pe_alternate (Tcl_Interp* ip, marpatcl_rtc_p p,
 			   const char* symbol, const char* semvalue)
 {
-    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, sym %s, sv %s", ip, p, symbol, semvalue);
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, sym %s, sv %s)", ip, p, symbol, semvalue);
 
     marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
 
@@ -295,70 +316,6 @@ marpatcl_rtc_pe_alternate (Tcl_Interp* ip, marpatcl_rtc_p p,
     marpatcl_rtc_stack_push (svids, svid);
 
     TRACE_RETURN ("%d", 1);
-}
-
-int
-marpatcl_rtc_pe_set_symbols (Tcl_Interp* ip, marpatcl_rtc_p p, int c, Tcl_Obj** v)
-{
-    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, c %d, (Tcl_Obj**) %p", ip, p, c, v);
-
-    // Replace the set of symbols
-    marpatcl_rtc_symset* syms = marpatcl_rtc_lexer_pe_get_symbols (p);
-    marpatcl_rtc_symset_clear (syms);
-
-    int k;
-    for (k=0; k < c; k++) {
-	// convert char* of the symbols to sym id.
-	char* s   = Tcl_GetString (v [k]);
-	int   sid = marpatcl_rtc_spec_symid (SPEC->l0, s);
-
-	if (sid < 0) {
-	    Tcl_SetErrorCode (ip, "MARPA", NULL);
-	    Tcl_AppendResult (ip, "Unknown lexeme \"", s, "\"", NULL);
-	    TRACE_RETURN ("%d", 0);
-	}
-
-	marpatcl_rtc_symset_add (syms, sid);
-    }
-
-    TRACE_RETURN ("%d", 1);
-}
-
-void
-marpatcl_rtc_pe_set_semvalues (marpatcl_rtc_p p, int c, Tcl_Obj** v)
-{
-    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, c %d, (Tcl_Obj**) %p", p, c, v);
-
-    // Replace the set of sem values
-    marpatcl_rtc_stack_p svids = marpatcl_rtc_lexer_pe_get_semvalues (p);
-
-    TRACE ("(stack_p) %p", svids);
-
-    // Ignore call when we have no destination to fill (discard events)
-    if (!svids) {
-	TRACE ("%s", "no stack, skip");
-	TRACE_RETURN_VOID;
-    }
-
-    TRACE ("(stack_p) %p = %d", marpatcl_rtc_stack_size (svids));
-
-    marpatcl_rtc_stack_clear (svids);
-
-    TRACE ("(stack_p) %p = %d", marpatcl_rtc_stack_size (svids));
-
-    int k;
-    for (k=0; k < c; k++) {
-	char*             s  = STRDUP (Tcl_GetString (v [k]));
-	marpatcl_rtc_sv_p sv = marpatcl_rtc_sv_cons_string (s, 1);
-	int               sid = marpatcl_rtc_store_add (p, sv);
-
-	TRACE (" [%d] := (sv*) %p", sid, sv);
-	ASSERT (sid > 0, "Bad store id, zero or less not allowed");
-	marpatcl_rtc_stack_push (svids, sid);
-    }
-
-    TRACE ("(stack_p) %p = %d", marpatcl_rtc_stack_size (svids));
-    TRACE_RETURN_VOID;
 }
 
 Tcl_Obj*

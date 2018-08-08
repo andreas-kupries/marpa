@@ -78,47 +78,8 @@ int         marpatcl_rtc_lexer_pe_get_lexeme_start  (marpatcl_rtc_p p);
 int         marpatcl_rtc_lexer_pe_get_lexeme_length (marpatcl_rtc_p p);
 const char* marpatcl_rtc_lexer_pe_get_lexeme_value  (marpatcl_rtc_p p);
 
-void        marpatcl_rtc_lexer_pe_set_lexeme_start  (marpatcl_rtc_p p, int         start);
-void        marpatcl_rtc_lexer_pe_set_lexeme_length (marpatcl_rtc_p p, int         length);
-void        marpatcl_rtc_lexer_pe_set_lexeme_value  (marpatcl_rtc_p p, const char* value);
-
 marpatcl_rtc_symset* marpatcl_rtc_lexer_pe_get_symbols   (marpatcl_rtc_p p);
 marpatcl_rtc_stack_p marpatcl_rtc_lexer_pe_get_semvalues (marpatcl_rtc_p p);
-
-// TODO: clearfirst,
-// TODO: sv, symbols (get only, set by direct access to the SV-vector)
-
-// TODO: symbol id/name translation ?
-//      Especially name -> id translation - emap ?!
-//      Present only when parse events declared ?!
-
-/* ***
-
-Match State
-
-- Keys are the state elements
-- Accessors are Set/Get/Clear.
-- Facade is Set/Get.
-
-Key		Accessors	Facade		PE/Discard	PE/Before	PE/After
----		---------	------		----------	---------	--------
-start		start		start		lexeme-start	/ditto		/ditto
-length		length		length		lexeme-length	/ditto		/ditto
-g1start		g1start		N/A
-g1length	g1length	N/A
-symbol		name, symbol	N/A
-lhs		lhs		N/A
-rule		rule		N/A
-value		value, values	value, values	lexeme		/ditto		/ditto
----		---------	------		----------	---------	--------
-fresh		fresh				true		true		/ditto
-sv		sv		sv		undef		(collected sv)	/ditto
-symbols		symbols		symbols		(discards)	(found)		/ditto
----		---------	------		----------	---------	--------
-				view (symbols sv, start, length, value, values)
-				alternate (fresh, symbols, sv)
-
-*** */
 
 #endif
 

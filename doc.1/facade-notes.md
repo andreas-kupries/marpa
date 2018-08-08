@@ -4,12 +4,12 @@
 
 |Method|Argument types|
 |---|---|
-|location?	|n/a|
+|location	|n/a|
 |---||
-|moveto		|location	|
-|moveby		|int		|
+|from		|location	|
+|relative	|int		|
 |(rewind)	|int		|
-|stop-at	|location	|
+|to		|location	|
 |limit		|pos.int	|
 |---||
 |symbols	|n/a|

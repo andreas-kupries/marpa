@@ -1,0 +1,7 @@
+say <<A
+lorem ipsum
+A
+, <<A
+delta vau
+A
+;

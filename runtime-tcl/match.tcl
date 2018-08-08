@@ -42,53 +42,34 @@ oo::class create marpa::lexer::ped {
 
     # Access to input location: accessor & modifiers
 
-    method location  {} { my Access *    Gate location  }
-    method stop      {} { my Access *    Gate stop      }
-    method dont-stop {} { my Access sdba Gate dont-stop }
-
-    method relative {delta} { my Int $delta ; my Access sdba Gate relative $delta }
-    method rewind   {delta} { my Int $delta ; my Access sdba Gate rewind   $delta }
+    method location  {} { my Access * Gate location  }
 
     method from  {pos args} {
 	my Location $pos
-	foreach d $args { my Int $d }
-	my Access sdba Gate from  $pos {*}$args
+	foreach d $args { my Int $d ; incr pos $d }
+	my Access sdba Gate from $pos
     }
 
-    method to    {pos}   { my Location $pos   ; my Access sdba Gate to    $pos   }
-    method limit {limit} { my Posint   $limit ; my Access sdba Gate limit $limit }
+    method from+ {delta} { my Int $delta ; my Access sdba Gate relative $delta }
+
+    method stop      {}      {                      my Access *    Gate stop      }
+    method to        {pos}   { my Location $pos   ; my Access sdba Gate to    $pos   }
+    method limit     {limit} { my Posint   $limit ; my Access sdba Gate limit $limit }
+    method dont-stop {}      {                      my Access sdba Gate dont-stop }
 
     # Match/lexeme access
 
-    method symbols {} { my Access sdba Store m-symbols }
-    method sv      {} { my Access sdba Store sv        }
+    method symbols {} { my Access sdba Store symbols }
+    method sv      {} { my Access sdba Store sv      }
+
     method start   {} { my Access dba  Store start     }
     method length  {} { my Access dba  Store length    }
     method value   {} { my Access dba  Store value     }
-    method values  {} { my Access dba  Store values    }
-
-    method symbols: {syms}  { my Access ba Store m-symbols: $syms  }
-    method sv:      {svs}   { my Access ba Store sv:        $svs   }
-    method value:   {value} { my Access ba Store value:     $value }
-    method values:  {value} { my Access ba Store values:    $value }
-
-    method start:   {start}  { my Location $start  ; my Access ba Store start:  $start }
-    method length:  {length} { my Posint0  $length ; my Access ba Store length: $length }
 
     # Incremental rebuild of the symbol/sv set
     # First call clears and appends, further only appends
-    method alternate {symbol sv} {
-	my ValidatePermissions
-	my ValidateType ba
-	if {[Store fresh]} {
-	    Store m-symbols: {}
-	    Store sv:        {}
-	    Store fresh: 0
-	}
-	Store m-symbols: [linsert [Store m-symbols] end $symbol]
-	Store sv:        [linsert [Store sv]        end $sv]
-	return
-    }
+    method alternate {symbol sv} { my Access ba Store alternate $symbol $sv }
+    method clear     {}          { my Access ba Store clear                 }
 
     # Debug helper method, also testsuite
     method view {} {
@@ -175,21 +156,176 @@ oo::class create marpa::lexer::match {
     ## Lifecycle
 
     constructor {} {
+	# XXX g1start - argument, get from G1
 	debug.marpa/lexer/match {[debug caller] | }
 	set myparts {
-	    start    {}	    length   {}	fresh 1
-	    g1start  {}	    g1length {} event {}
-	    symbol   {}	    lhs      {}
-	    rule     {}	    value    {}
+	    g1start  {}	    g1length 1
+	    start    {}	    length   {}	    value    {}
+	    name     {}	    lhs      {}	    rule     {}
+	    fresh    1
+	    event    {}
 	}
 	# Other values: sv, symbols
 	return
     }
 
+    # # -- --- ----- -------- -------------
+    ## API towards the lexer
+
     method lexemes {map} {
 	debug.marpa/lexer/match {[debug caller] | }
 	set mylexeme $map
 	return
+    }
+
+    method start:? {location} {
+	debug.marpa/lexer/match {[debug caller] | }
+	if {[dict get $myparts start] ne {}} return
+	dict set myparts start $location
+	return
+    }
+
+    method has-match {} {
+	debug.marpa/lexer/match {[debug caller] | }
+	return [expr {[dict get $myparts start] ne {}}]
+    }
+
+    method begin {} {
+	debug.marpa/lexer/match {[debug caller] | }
+	dict set myparts start {}
+	return
+    }
+
+    method event! {type args} {
+	debug.marpa/lexer/match {[debug caller] | }
+	try {
+	    dict set myparts event $type
+	    uplevel 1 $args
+	} finally {
+	    dict set myparts event {}
+	}
+    }
+
+    method event {} {
+	debug.marpa/lexer/match {[debug caller] | }
+	return [dict get $myparts event]
+    }
+
+    method value: {value} {
+	debug.marpa/lexer/match {[debug caller] | }
+	dict set myparts value  $value
+	dict set myparts length [string length $value]
+	return
+    }
+
+    method start {} {
+	debug.marpa/lexer/match {[debug caller] | }
+	return [dict get $myparts start]
+    }
+
+    method length {} {
+	debug.marpa/lexer/match {[debug caller] | }
+	return [dict get $myparts length]
+    }
+
+    method value {} {
+	debug.marpa/lexer/match {[debug caller] | }
+	return [dict get $myparts value]
+    }
+
+    method matched: {symbols {semvalues {}}} {
+	debug.marpa/lexer/match {[debug caller] | }
+	dict set myparts fresh 1
+
+	if {[llength $semvalues]} {
+	    # Assert: len(symbols) == len(semvalues)
+	    dict set myparts symbols $symbols
+	    dict set myparts sv      $semvalues
+	} else {
+	    dict set   myparts symbols $symbols
+	    dict unset myparts sv
+	}
+	return
+    }
+
+    method rule: {symbol lhs rule} {
+	debug.marpa/lexer/match {[debug caller] | }
+	dict set myparts name   $symbol
+	dict set myparts lhs    $lhs
+	dict set myparts rule   $rule
+	return
+    }
+
+    method symbols {} {
+	debug.marpa/lexer/match {[debug caller] | }
+	return [dict get $myparts symbols]
+    }
+
+    method sv {} {
+	debug.marpa/lexer/match {[debug caller] | }
+	return [dict get $myparts sv]
+    }
+
+    method pull {parts} {
+	debug.marpa/lexer/match {[debug caller] | }
+       return [lmap part $parts { dict get $myparts $part }]
+    }
+
+    # # -- --- ----- -------- -------------
+    ## Public API - Facade accessors
+
+    method alternate {symbol sv} {
+	debug.marpa/lexer/match {[debug caller] | }
+	if {![dict exists $mylexeme $symbol]} {
+	    return -code error "Unknown lexeme \"$symbol\""
+	}
+	if {[dict get $myparts fresh]} {
+	    my clear
+	}
+	dict lappend myparts symbols $symbol
+	dict lappend myparts sv      $sv
+	return
+    }
+
+    method clear {} {
+	debug.marpa/lexer/match {[debug caller] | }
+	dict set myparts symbols {}
+	dict set myparts sv      {}
+	dict set myparts fresh   0
+	return
+    }
+
+    if 0 {
+	## accessors for things not used by the lexer parse events ...
+	foreach {part key} {
+	    g1start  -		g1length -
+	    name     symbol	lhs      -
+	    symbol   -		rule     -
+	} {
+	    if {$key eq "-"} { set key $part }
+	    forward ${part}:  my Set   $key
+	    forward ${part}   my Get   $key
+	    forward ${part}~  my Clear $key
+	}
+
+	unset part key
+
+	method Set {key value} {
+	    debug.marpa/lexer/match {[debug caller] | }
+	    dict set myparts $key $value
+	    return
+	}
+
+	method Get {key} {
+	    debug.marpa/lexer/match {[debug caller] | }
+	    return [dict get $myparts $key]
+	}
+
+	method Clear {key} {
+	    debug.marpa/lexer/match {[debug caller] | }
+	    dict unset myparts $key
+	    return
+	}
     }
 
     # # -- --- ----- -------- -------------
@@ -204,66 +340,6 @@ oo::class create marpa::lexer::match {
 	    if {![dict exists $myparts $k]} continue
 	    set _ "$k = (([dict get $myparts $k]))"
 	}
-    }
-
-    # # -- --- ----- -------- -------------
-    ## Public API - Accessors and modifiers
-
-    foreach {part key} {
-	sv       -	symbols	 -	fresh -
-	start    -	length   -	event -
-	g1start  -	g1length -
-	name     symbol	lhs      -
-	symbol   -	rule     -
-	value    -	values   value
-    } {
-	if {$key eq "-"} { set key $part }
-	forward ${part}:  my Set   $key
-	forward ${part}   my Get   $key
-	forward ${part}~  my Clear $key
-    }
-
-    unset part key
-
-    forward value:  my SetValue
-    forward values: my SetValue
-
-    forward m-symbols:  my SetSymbols
-    forward m-symbols   my Get    symbols
-    forward m-symbols~  my Clear  symbols
-
-    method SetValue {value} {
-	debug.marpa/lexer/match {[debug caller] | }
-	dict set myparts value  $value
-	dict set myparts length [string length $value]
-	return
-    }
-
-    method SetSymbols {value} {
-	debug.marpa/lexer/match {[debug caller] | }
-	foreach sym $value {
-	    if {[dict exists $mylexeme $sym]} continue
-	    return -code error "Unknown lexeme \"$sym\""
-	}
-	dict set myparts symbols $value
-	return
-    }
-
-    method Set {key value} {
-	debug.marpa/lexer/match {[debug caller] | }
-	dict set myparts $key $value
-	return
-    }
-
-    method Get {key} {
-	debug.marpa/lexer/match {[debug caller] | }
-	return [dict get $myparts $key]
-    }
-
-    method Clear {key} {
-	debug.marpa/lexer/match {[debug caller] | }
-	dict unset myparts $key
-	return
     }
 
     # # ## ### ##### ######## #############

@@ -1,0 +1,11 @@
+say <<ENDA, <<ENDB, <<ENDC; say <<ENDD;
+lorem
+ipsum
+ENDA
+the quick brown fox
+jumps over the lazy dog
+ENDB
+all around the word
+ENDC
+skitter
+ENDD
