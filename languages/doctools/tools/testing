@@ -14,5 +14,5 @@ echo
 
 rm -rf X/* BUILD-* tests/core
 mkdir  X
-./build.tcl test --log X/X --test-include ~/opt/ActiveTcl/include
+./build.tcl test --log L/X --test-include ~/opt/ActiveTcl/include
 #./build.tcl test --log-mode full --test-include ~/opt/ActiveTcl/include 2>&1 | tee TL

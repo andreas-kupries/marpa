@@ -1,5 +1,5 @@
 # -*- tcl -*-
-## (c) 2018 Andreas Kupries
+## (c) 2018-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## Execution core for testing the DOCTOOLS parser on top of different runtimes.
 ## Configured by the caller with procedures.
@@ -86,14 +86,7 @@ test [tnp]-process-1.0 "[cl] :: process, wrong args, not enough" -body {
 }   -setup   setup \
     -cleanup cleanup \
     -returnCodes error \
-    -result {wrong # args: should be "PARSE process string"}
-
-test [tnp]-process-1.1 "[cl] :: process, wrong args, too many" -body {
-    PARSE process DATA X
-}   -setup   setup \
-    -cleanup cleanup \
-    -returnCodes error \
-    -result {wrong # args: should be "PARSE process string"}
+    -result {wrong # args: should be "PARSE process string ..."}
 
 # # ## ### ##### ######## ############# #####################
 ## process-file - argument checking
@@ -103,14 +96,7 @@ test [tnp]-process-file-1.0 "[cl] :: process-file, wrong args, not enough" -body
 }   -setup   setup \
     -cleanup cleanup \
     -returnCodes error \
-    -result {wrong # args: should be "PARSE process-file path"}
-
-test [tnp]-process-file-1.1 "[cl] :: process-file, wrong args, too many" -body {
-    PARSE process-file DATA X
-}   -setup   setup \
-    -cleanup cleanup \
-    -returnCodes error \
-    -result {wrong # args: should be "PARSE process-file path"}
+    -result {wrong # args: should be "PARSE process-file path ..."}
 
 # # ## ### ##### ######## ############# #####################
 ## process, process-file - Actual processing - Id formatting prep
