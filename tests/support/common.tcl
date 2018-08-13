@@ -1,6 +1,6 @@
 # -*- tcl -*-
 ##
-# (c) 2016-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+# (c) 2016-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                               http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
@@ -58,6 +58,16 @@ proc testcases {var varlist cases script} {
 }
 
 # # ## ### ##### ######## #############
+## Simplified interceptors
+
+proc jack {label method alist body args} {
+    global  __logs
+    set lambda [list $alist $body]
+    dict set __logs $label [set l [Marpa::Testing::Jack new $label $method $lambda [__logcenter] {*}$args]]
+    return $l
+}
+
+# # ## ### ##### ######## #############
 ## Simplified Log API. Hiding (the complexity of) the classes and
 ## instances from the users. Auto-creation and -destruction as much as
 ## possible. All logs go into a shared recorder.
@@ -100,7 +110,19 @@ proc logged {{sep "\n  "}} {
     #set sep "\n  "
     return ${sep}[join $entries $sep]\n
 }
+proc logged/keep {{sep "\n  "}} {
+    global __logcenter
+    set entries [$__logcenter __calls/keep]
+    if {![llength $entries]} { return {} }
+    #set sep "\n  "
+    return ${sep}[join $entries $sep]\n
+}
 proc lognull {args} {}
+
+proc ... {args} {
+    [__logcenter] {*}$args
+    return
+}
 
 # # ## ### ##### ######## #############
 ## Recorder class (importable)
@@ -114,6 +136,10 @@ oo::class create Marpa::Testing::Log {
 	set result $mycalls
 	my destroy
 	return $result
+    }
+
+    method __calls/keep {} {
+	return $mycalls
     }
 
     method __clear {} { set mycalls {} ; return }
@@ -201,6 +227,59 @@ oo::class create Marpa::Testing::Divert {
 	$mylogger $mylabel C $args
 	set result [uplevel 1 [list {*}$mytarget {*}$args]]
 	$mylogger $mylabel R $args = $result
+	return $result
+    }
+
+    # # ## ### ##### ######## #############
+}
+
+# # ## ### ##### ######## #############
+## Recorder class (importable), act on interception, forward, outside log
+
+oo::class create Marpa::Testing::Jack {
+    variable mylogger
+    variable mytarget
+    variable mylabel
+    variable mytrace
+    variable mymethod
+    variable mylambda
+
+    constructor {label method lambda logger args} {
+	set mylabel  $label
+	set mylogger $logger
+	set mytarget $args
+	set mytrace  0
+	set mymethod $method
+	set mylambda $lambda
+	return
+    }
+
+    method /trace {} {
+	set mytrace 1
+	return
+    }
+    export /trace
+
+    # # -- --- ----- -------- -------------
+    ## Record all methods. Forward to actual destination.
+    ## Recording is handled by a separate outside logger.
+    ## Which can be fed by multiple interceptors
+
+    method unknown {args} {
+	if {$mytrace} {
+	    # Tracing is a shorter log. Want to see only calls, return values irrelevant.
+	    $mylogger $mylabel {*}$args
+	    return [uplevel 1 [list {*}$mytarget {*}$args]]
+	}
+	if {[lindex $args 0] eq $mymethod} {
+	    # Invoke the lambda for the hijacked method
+	    $mylogger $mylabel C $args
+	    set result [uplevel 1 [list apply $mylambda {*}$args]]
+	    $mylogger $mylabel R $args = $result
+	} else {
+	    # Forward anything else to target
+	    set result [uplevel 1 [list {*}$mytarget {*}$args]]
+	}
 	return $result
     }
 

@@ -1,0 +1,12 @@
+{::PARSE stop {}} @13 !44
+{::PARSE stop {}} @4 !
+L
+  @0 3 'the'
+  @13 5 'quick'
+  @19 5 'brown'
+  @25 3 'fox'
+  @29 5 'jumps'
+  @35 4 'over'
+  @40 3 'the'
+  @4 4 'lazy'
+  @9 3 'dog'

@@ -141,24 +141,47 @@ marpatcl_rtc_eh_report (void*                  cdata,
  */
 
 int
-marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p p)
+marpatcl_rtc_fget  (Tcl_Interp* ip, marpatcl_rtc_p p,
+		    Tcl_Obj* path, Tcl_Obj** buf)
 {
-    /* This function is called with a pointer to where the SV will be
-     * stored. This is necesssary because at the time of the call the SV is
-     * not known yet. It is only after the call to 'marpatcl_rtc_eof' below
-     * that the SV will be known and stored at the referenced location.
-     */
+    int got;
+    Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
 
+    if (!in) {
+	return TCL_ERROR;
+    }
+    Tcl_SetChannelBufferSize (in, 4096);
+    Tcl_SetChannelOption (ip, in, "-translation", "binary");
+    Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
+    // TODO: abort on failed set-channel-option
+
+    Tcl_Obj* cbuf = Tcl_NewObj();
+    Tcl_Obj* ebuf = Tcl_NewObj();
+    while (!Tcl_Eof(in)) {
+	got = Tcl_ReadChars (in, cbuf, 4096, 0);
+	if (got < 0) {
+	    Tcl_DecrRefCount (cbuf);
+	    Tcl_DecrRefCount (ebuf);
+	    return TCL_ERROR;
+	}
+	if (!got) continue; /* Pass the buck to next Tcl_Eof */
+	Tcl_AppendObjToObj (ebuf, cbuf);
+    }
+    Tcl_DecrRefCount (cbuf);
+    (void) Tcl_Close (ip, in);
+    *buf = ebuf;
+    return TCL_OK;
+}
+
+int
+marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, marpatcl_rtc_p p)
+{
     TRACE_FUNC ("(Interp*) %p, (sv**) %p, (rtc*) %p", ip, sv, p);
 
     if (!marpatcl_rtc_failed (p)) {
-	TRACE ("EOF", 0);
-	marpatcl_rtc_eof (p);
-    }
-    if (!marpatcl_rtc_failed (p)) {
 	Tcl_Obj* r;
 	TRACE ("SV-AS-TCL (sv*) %p", sv);
-	r = marpatcl_rtc_sv_astcl (ip, *sv);
+	r = marpatcl_rtc_sv_astcl (ip, sv);
 	if (r) {
 	    TRACE ("SV OK (Tcl_Obj*) %p (rc %d)", r, r->refCount);
 	    Tcl_SetObjResult (ip, r);

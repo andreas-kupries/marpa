@@ -129,21 +129,23 @@ marpatcl_rtc_inbound_stoploc (marpatcl_rtc_p p)
 }
 
 void
-marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n, int from, int to)
+marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int max, int from, int to)
 {
 #define NAME(sym) marpatcl_rtc_spec_symname (SPEC->l0, sym, 0)
 
     unsigned char ch;
-    TRACE_FUNC ("(rtc %p bytes %p, n %d, [%d...%d])", p, bytes, n, from, to);
-    TRACE_TAG_DO (enter, print_input (bytes, n));
+    TRACE_FUNC ("(rtc %p bytes %p, n %d, [%d...%d])", p, bytes, max, from, to);
+    TRACE_TAG_DO (enter, print_input (bytes, max));
 
-    if (n < 0) {
-	n = strlen (bytes);
+    if (max < 0) {
+	max = strlen (bytes);
     }
-    n --;
-    TRACE ("max %d", n);
 
     IN.bytes = (char*) bytes;
+    IN.size  = max;
+
+    max --;
+    TRACE ("max %d", max);
 
     // Initial processing range.
     marpatcl_rtc_inbound_moveto   (p, from);
@@ -160,58 +162,82 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n,
     //     loop entry condition [1] is true again. We actually make the
     //     translation in the location methods of this class, see `location?`
     //     and below, without actually moving.
-    // [4] The double-loop construction is present to ensure that when the
-    //     inner main processing loop hits EOF the eof handling can bounce the
-    //     engine away from EOF and processing is restarted for the last
-    //     characters.
+    // [4] The previous double loop construction was eliminated by hoisting
+    //     the outer code into the proper contionals of the inner loop,
+    //     leaving a single loop handling all the things.
 
-    while (IN.location < n) {
-	while (IN.location < n) {
-	    int prevbloc = IN.location;
-	    int prevcloc = IN.clocation;
+    while (1) {
+	if (IN.location == max) {
+	    // Trigger end of data processing in the post-processors.
+	    // (Ad 4) Note that this may rewind the input to an earlier
+	    // place, forcing re-processing of some of the last
+	    // characters.
+	    marpatcl_rtc_gate_eof (p);
 
-	    ch = marpatcl_rtc_inbound_step (p);
-	    TRACE ("byte %3d @ char %d ~ byte %d = <%s>", ch, IN.clocation, IN.location, NAME(ch));
-
-	    if (IN.clocation == IN.cstop) {
-		// Stop triggered.
-		// Bounce, clear stop marker, post event, restart from bounce
-		 IN.location  = prevbloc;
-		 IN.clocation = prevcloc;
-		 IN.cstop     = -2;
-		 marpatcl_rtc_symset_clear (EVENTS);
-		 POST_EVENT (marpatcl_rtc_event_stop);
-		 continue;
-	    }
-
-	    marpatcl_rtc_gate_enter (p, ch);
-	    if (FAIL.fail) break;
-	    // Note, the post-processor (gate, lexer) have access to the
-	    // location, via methods moveto, moveby, and rewind. Examples of
-	    // use:
-	    // - Rewind after reading behind the current lexeme
-	    // - Rewind for parse events.
+	    if (IN.location == max) break;
+	    continue;
 	}
-	TRACE ("Failed/i = %d @ %d max %d", FAIL.fail, IN.location, n);
+
+	int prevbloc = IN.location;
+	int prevcloc = IN.clocation;
+
+	ch = marpatcl_rtc_inbound_step (p);
+	TRACE ("byte %3d @ char %d ~ byte %d = <%s>", ch, IN.clocation, IN.location, NAME(ch));
+
+	if (IN.clocation == IN.cstop) {
+	    // Stop triggered.
+	    // Bounce, clear stop marker, post event, restart from bounce
+	    IN.location  = prevbloc;
+	    IN.clocation = prevcloc;
+	    IN.cstop     = -2;
+	    marpatcl_rtc_symset_clear (EVENTS);
+	    POST_EVENT (marpatcl_rtc_event_stop);
+	    continue;
+	}
+
+	marpatcl_rtc_gate_enter (p, ch);
 	if (FAIL.fail) break;
-	// Trigger end of data processing in the post-processors.
-	// (Ad 4) Note that this may rewind the input to an earlier place,
-	// forcing re-processing of some of the last characters.
-	marpatcl_rtc_gate_eof (p);
+	// Note, the post-processor (gate, lexer) have access to the location,
+	// via methods moveto, moveby, and rewind. Examples of use:
+	// - Rewind after reading behind the current lexeme
+	// - Rewind for parse events.
     }
 
-    TRACE ("Failed/o = %d @ %d max %d", FAIL.fail, IN.location, n);
+    TRACE ("Failed/o = %d @ %d max %d", FAIL.fail, IN.location, max);
     TRACE_RETURN_VOID;
 }
 
-void
-marpatcl_rtc_inbound_eof (marpatcl_rtc_p p)
+int
+marpatcl_rtc_inbound_enter_more (marpatcl_rtc_p p,
+				 const unsigned char* bytes, int max)
 {
-    TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE_FUNC ("((rtc*) %p, (char*) %p [%d]))", p, bytes, max);
 
-    marpatcl_rtc_gate_eof (p);
+    if (max < 0) {
+	max = strlen (bytes);
+    }
 
-    TRACE_RETURN_VOID;
+    int            offset   = IN.size + 1;
+    int            newsize  = offset + max;
+    unsigned char* newbytes = REALLOC (IN.bytes, unsigned char, newsize);
+    ASSERT (newbytes, "Failed to expand memory for input");
+
+    newbytes [offset-1] = '\0';
+    memcpy (newbytes + offset, bytes, max * sizeof (unsigned char));
+
+    IN.bytes = newbytes;
+    IN.size  = newsize;
+
+    // Notes
+    // - The change to `IN.bytes` does not affect the `max` used by `enter`
+    //   above to detect the end of the primary input.
+    // - The new input will only be processed by moving explictly into its
+    //   region. Processing it will not trigger EOI.
+    // - The \0 separator ensures that positioning to the start of the first
+    //   of the secondary inputs without triggering the eof condition in
+    //   `enter` when we move to it.
+
+    TRACE_RETURN ("(offset) %d", offset);
 }
 
 unsigned char

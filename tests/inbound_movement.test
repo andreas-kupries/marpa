@@ -1,0 +1,160 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2018-present Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::inbound
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+kt require support tcl::chan::string ;# string channel for 'read' method.
+
+kt local   support marpa::c
+kt local   testing marpa::runtime::tcl
+
+# # ## ### ##### ######## ############# #####################
+## Demonstrate cursor movement and stitching extended input
+## into the primary.
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/common.tcl
+
+# # ## ### ##### ######## ############# #####################
+## complex movement
+
+test marpa-inbound-movement-1.0 {move and stitch} -setup {
+    unset -nocomplain callnum
+    marpa::inbound create IN [jack STOP signal-stop {args} {
+	global callnum
+	incr callnum
+	... $args #$callnum
+	switch -exact -- $callnum {
+	    1 {
+		# Reached stitch location. Add secondary input,
+		# and move cursor to it. Set stop marker for return.
+		IN from  [IN enter-more $::msgb]
+		IN limit [string length $::msgb]
+	    }
+	    2 {
+		# Reached end of secondry input.
+		# Move back to stitch point and continue
+		IN from 4
+	    }
+	}
+	... $args @[IN location] ![IN stop]
+    } [log GATE]]
+    set msga {the lazy dog}
+    set msgb {quick brown fox jumps over the }
+} -body {
+    list [IN enter $msga -1 4] [logged]
+} -cleanup {
+    IN destroy
+    unset callnum msga msgb
+} -result {{} {
+  GATE C {input: ::IN}
+  GATE R {input: ::IN} = {}
+  GATE C {enter t 0}
+  GATE R {enter t 0} = {}
+  GATE C {enter h 1}
+  GATE R {enter h 1} = {}
+  GATE C {enter e 2}
+  GATE R {enter e 2} = {}
+  GATE C {enter { } 3}
+  GATE R {enter { } 3} = {}
+  STOP C signal-stop
+  signal-stop #1
+  signal-stop @13 !44
+  STOP R signal-stop = {}
+  GATE C {enter q 13}
+  GATE R {enter q 13} = {}
+  GATE C {enter u 14}
+  GATE R {enter u 14} = {}
+  GATE C {enter i 15}
+  GATE R {enter i 15} = {}
+  GATE C {enter c 16}
+  GATE R {enter c 16} = {}
+  GATE C {enter k 17}
+  GATE R {enter k 17} = {}
+  GATE C {enter { } 18}
+  GATE R {enter { } 18} = {}
+  GATE C {enter b 19}
+  GATE R {enter b 19} = {}
+  GATE C {enter r 20}
+  GATE R {enter r 20} = {}
+  GATE C {enter o 21}
+  GATE R {enter o 21} = {}
+  GATE C {enter w 22}
+  GATE R {enter w 22} = {}
+  GATE C {enter n 23}
+  GATE R {enter n 23} = {}
+  GATE C {enter { } 24}
+  GATE R {enter { } 24} = {}
+  GATE C {enter f 25}
+  GATE R {enter f 25} = {}
+  GATE C {enter o 26}
+  GATE R {enter o 26} = {}
+  GATE C {enter x 27}
+  GATE R {enter x 27} = {}
+  GATE C {enter { } 28}
+  GATE R {enter { } 28} = {}
+  GATE C {enter j 29}
+  GATE R {enter j 29} = {}
+  GATE C {enter u 30}
+  GATE R {enter u 30} = {}
+  GATE C {enter m 31}
+  GATE R {enter m 31} = {}
+  GATE C {enter p 32}
+  GATE R {enter p 32} = {}
+  GATE C {enter s 33}
+  GATE R {enter s 33} = {}
+  GATE C {enter { } 34}
+  GATE R {enter { } 34} = {}
+  GATE C {enter o 35}
+  GATE R {enter o 35} = {}
+  GATE C {enter v 36}
+  GATE R {enter v 36} = {}
+  GATE C {enter e 37}
+  GATE R {enter e 37} = {}
+  GATE C {enter r 38}
+  GATE R {enter r 38} = {}
+  GATE C {enter { } 39}
+  GATE R {enter { } 39} = {}
+  GATE C {enter t 40}
+  GATE R {enter t 40} = {}
+  GATE C {enter h 41}
+  GATE R {enter h 41} = {}
+  GATE C {enter e 42}
+  GATE R {enter e 42} = {}
+  GATE C {enter { } 43}
+  GATE R {enter { } 43} = {}
+  STOP C signal-stop
+  signal-stop #2
+  signal-stop @4 !
+  STOP R signal-stop = {}
+  GATE C {enter l 4}
+  GATE R {enter l 4} = {}
+  GATE C {enter a 5}
+  GATE R {enter a 5} = {}
+  GATE C {enter z 6}
+  GATE R {enter z 6} = {}
+  GATE C {enter y 7}
+  GATE R {enter y 7} = {}
+  GATE C {enter { } 8}
+  GATE R {enter { } 8} = {}
+  GATE C {enter d 9}
+  GATE R {enter d 9} = {}
+  GATE C {enter o 10}
+  GATE R {enter o 10} = {}
+  GATE C {enter g 11}
+  GATE R {enter g 11} = {}
+  GATE C eof
+  GATE R eof = {}
+}}
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests
+return

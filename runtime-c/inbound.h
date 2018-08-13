@@ -21,7 +21,8 @@
 
 typedef struct marpatcl_rtc_inbound {
     unsigned char* bytes;     /* Input byte string to process */
-    int            location;  /* Index of the current byte in the input (byte offset) */
+    int            size;      /* Length of the input byte string */
+    int            location;  /* Index of the current byte in input (byte offset) */
     int            clocation; /* Same, as character offset */
     int            cstop;     /* Location to stop processing at */
     int            trailer;   /* Number of bytes in the expected trailer */
@@ -43,9 +44,12 @@ typedef struct marpatcl_rtc_inbound {
 void marpatcl_rtc_inbound_init      (marpatcl_rtc_p p);
 void marpatcl_rtc_inbound_free      (marpatcl_rtc_p p);
 int  marpatcl_rtc_inbound_location  (marpatcl_rtc_p p);
-void marpatcl_rtc_inbound_enter     (marpatcl_rtc_p p, const unsigned char* bytes,
-				     int n, int from ,int to);
-void marpatcl_rtc_inbound_eof       (marpatcl_rtc_p p);
+void marpatcl_rtc_inbound_enter     (marpatcl_rtc_p p,
+				     const unsigned char* bytes, int n,
+				     int from, int to);
+
+int  marpatcl_rtc_inbound_enter_more (marpatcl_rtc_p p,
+				      const unsigned char* bytes, int n);
 
 void marpatcl_rtc_inbound_moveto    (marpatcl_rtc_p p, int cpos);
 void marpatcl_rtc_inbound_moveby    (marpatcl_rtc_p p, int cdelta);

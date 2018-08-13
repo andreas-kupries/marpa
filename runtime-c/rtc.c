@@ -79,14 +79,14 @@ marpatcl_rtc_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n, int fro
     TRACE_RETURN_VOID;
 }
 
-void
-marpatcl_rtc_eof (marpatcl_rtc_p p)
+int
+marpatcl_rtc_enter_more (marpatcl_rtc_p p, const unsigned char* bytes, int n)
 {
-    TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE_FUNC ("((rtc*) %p, (char*) %p [%d]))", p, bytes, n);
 
-    marpatcl_rtc_inbound_eof (p);
+    int offset = marpatcl_rtc_inbound_enter_more (p, bytes, n);
 
-    TRACE_RETURN_VOID;
+    TRACE_RETURN ("(offset) %d", offset);
 }
 
 marpatcl_rtc_sv_p

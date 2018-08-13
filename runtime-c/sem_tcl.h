@@ -24,7 +24,10 @@
  */
 
 extern Tcl_Obj* marpatcl_rtc_sv_astcl     (Tcl_Interp* ip, marpatcl_rtc_sv_p sv);
-extern int      marpatcl_rtc_sv_complete  (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p p);
+extern int      marpatcl_rtc_sv_complete  (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, marpatcl_rtc_p p);
+
+extern int      marpatcl_rtc_fget  (Tcl_Interp* ip, marpatcl_rtc_p p,
+				    Tcl_Obj* path, Tcl_Obj** buf);
 
 extern Tcl_Obj* marpatcl_rtc_pe_get_symbols   (Tcl_Interp* ip, marpatcl_rtc_p p);
 extern Tcl_Obj* marpatcl_rtc_pe_get_semvalues (Tcl_Interp* ip, marpatcl_rtc_p p);

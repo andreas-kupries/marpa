@@ -45,12 +45,17 @@ marpatcl_rtc_p    marpatcl_rtc_cons    (marpatcl_rtc_spec*      g,
                                         marpatcl_rtc_event_cmd  e,
 					void*                   ecdata);
 void              marpatcl_rtc_destroy (marpatcl_rtc_p p);
+
 void              marpatcl_rtc_enter   (marpatcl_rtc_p       p,
 					const unsigned char* bytes,
 					int                  n,
 					int                  from,
 					int                  to);
-void              marpatcl_rtc_eof     (marpatcl_rtc_p p);
+
+int               marpatcl_rtc_enter_more (marpatcl_rtc_p       p,
+					   const unsigned char* bytes,
+					   int                  n);
+
 marpatcl_rtc_sv_p marpatcl_rtc_get_sv  (marpatcl_rtc_p p);
 /* marpatcl_rtc_failed - see fail.h */
 

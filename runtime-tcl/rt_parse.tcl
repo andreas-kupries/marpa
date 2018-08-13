@@ -111,7 +111,6 @@ oo::class create marpa::engine::tcl::parse {
 	set chan [open $path r]
 	# Drive the pipeline from the channel.
 	IN read $chan {*}$options
-	IN eof
 	return $myresult
     }
 
@@ -120,8 +119,20 @@ oo::class create marpa::engine::tcl::parse {
 	set myresult {}
 	# Drive the pipeline from the string
 	IN enter $string {*}[my Options $args]
-	IN eof
 	return $myresult
+    }
+
+    method extend-file {path} {
+	debug.marpa/engine/tcl/parse {}
+	set chan [open $path r]
+	set off [IN read-more $chan]
+	close $chan
+	return $off
+    }
+
+    method extend {string} {
+	debug.marpa/engine/tcl/parse {}
+	return [IN enter-more $string]
     }
 
     # # ## ### ##### ######## #############

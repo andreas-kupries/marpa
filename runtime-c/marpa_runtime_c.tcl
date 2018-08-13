@@ -103,17 +103,28 @@ critcl::api function void marpatcl_rtc_enter {
     int                    from
     int                    to
 }
+critcl::api function int marpatcl_rtc_enter_more {
+    marpatcl_rtc_p         p
+    {const unsigned char*} bytes
+    int                    n
+}
 critcl::api function int marpatcl_rtc_failed {
     marpatcl_rtc_p p
+}
+critcl::api function int marpatcl_rtc_fget {
+    Tcl_Interp*       ip
+    marpatcl_rtc_p    p
+    Tcl_Obj*          path
+    Tcl_Obj**         buf
 }
 critcl::api function Tcl_Obj* marpatcl_rtc_sv_astcl {
     Tcl_Interp*       ip
     marpatcl_rtc_sv_p sv
 }
 critcl::api function int marpatcl_rtc_sv_complete {
-    Tcl_Interp*        ip
-    marpatcl_rtc_sv_p* sv
-    marpatcl_rtc_p     p
+    Tcl_Interp*       ip
+    marpatcl_rtc_sv_p sv
+    marpatcl_rtc_p    p
 }
 critcl::api function marpatcl_rtc_sv_p marpatcl_rtc_sv_cons_evec {
     int capacity
