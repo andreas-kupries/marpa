@@ -21,7 +21,8 @@
 
 typedef struct marpatcl_rtc_inbound {
     unsigned char* bytes;     /* Input byte string to process */
-    int            size;      /* Length of the input byte string */
+    int            size;      /* Length of the input byte string, in bytes */
+    int            csize;     /* Same, in characters. <0 indicates byte, not yet converted */
     int            location;  /* Index of the current byte in input (byte offset) */
     int            clocation; /* Same, as character offset */
     int            cstop;     /* Location to stop processing at */
@@ -44,6 +45,7 @@ typedef struct marpatcl_rtc_inbound {
 void marpatcl_rtc_inbound_init      (marpatcl_rtc_p p);
 void marpatcl_rtc_inbound_free      (marpatcl_rtc_p p);
 int  marpatcl_rtc_inbound_location  (marpatcl_rtc_p p);
+int  marpatcl_rtc_inbound_last      (marpatcl_rtc_p p);
 void marpatcl_rtc_inbound_enter     (marpatcl_rtc_p p,
 				     const unsigned char* bytes, int n,
 				     int from, int to);

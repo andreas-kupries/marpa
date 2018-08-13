@@ -90,6 +90,11 @@ critcl::class def marpa::runtime::c::pedesc {
 	return INT (marpatcl_rtc_inbound_location (instance->state));
     }
 
+    method last proc {Tcl_Interp* ip} object0 {
+	M_PERMIT;
+	return INT (marpatcl_rtc_inbound_last (instance->state));
+    }
+
     method from proc {Tcl_Interp* ip location pos int args} object0 {
 	M_PERMIT;
 	M_SDBA_EV;

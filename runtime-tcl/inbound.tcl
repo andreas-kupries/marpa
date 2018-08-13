@@ -65,6 +65,7 @@ oo::class create marpa::inbound {
     variable mystoplocation ; # Trigger location for stop events
     variable mytext         ; # Physical input stream
     			      # (list! of characters)
+    variable mymax          ; # Location triggering EOF
 
     # API:
     #  1 cons       (postprocessor)    - Create, link
@@ -110,6 +111,11 @@ oo::class create marpa::inbound {
 
     # # -- --- ----- -------- -------------
     ## Public API
+
+    method last {} {
+	debug.marpa/inbound {[debug caller] | ==> $mymax}
+	return $mymax
+    }
 
     method location {} {
 	debug.marpa/inbound {[debug caller] | ==> $mylocation}
@@ -184,6 +190,7 @@ oo::class create marpa::inbound {
 
 	set  max [llength $mytext]
 	incr max -1
+	set mymax $max
 
 	debug.marpa/inbound {[debug caller 1] | DO _______________________________________ /START}
 

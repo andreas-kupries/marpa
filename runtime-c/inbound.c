@@ -66,6 +66,19 @@ marpatcl_rtc_inbound_location (marpatcl_rtc_p p)
     TRACE_RETURN ("%d", IN.clocation + 1);
 }
 
+int
+marpatcl_rtc_inbound_last (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+
+    if (IN.csize < 0) {
+	// Compute information, extend clindex to cover it.
+	IN.csize = marpatcl_rtc_clindex_find_c (p, -IN.csize);
+    }
+
+    TRACE_RETURN ("%d", IN.csize);
+}
+
 void
 marpatcl_rtc_inbound_moveto (marpatcl_rtc_p p, int cpos)
 {
@@ -143,6 +156,10 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int ma
 
     IN.bytes = (char*) bytes;
     IN.size  = max;
+    IN.csize = -max; // Negative value indicates information in byte waiting
+                     // for conversion into actual character location. We
+                     // defer the conversion until the information is actually
+                     // requested by the user. See `_last()`.
 
     max --;
     TRACE ("max %d", max);
