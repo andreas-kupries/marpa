@@ -1,0 +1,98 @@
+## (C) 2018-present
+# micro doctools language and grammar, reduced to a single regular
+# command, and the two special forms, vset and include.
+##
+# Trialing the needed event and stream support to implement the
+# special forms.
+##
+# 1. general text
+#
+# Commands
+# 2. vset (declare): 2 arguments, varname and value
+# 3. vset (use)    : 1 argument, varname
+# 4. include       : 1 argument, path to file to insert
+# 5. comment	   : 1 argument, the comment text
+# 6. strong	   : 1 argument, text for markup
+
+# Command argument processing
+# a. Brace quoted  `{...}` - No substitutions, unchanged text
+# b. Double quoted `"..."` - Command substitutions in text with whitespace allowed
+# c. Unquoted      `...`   - Command substitutions in text with whitespace NOT allowed
+
+# b. and c. need processing at the G1 level to handle the embedded commands.
+
+# Ad 5. Comments are special. Its argument is fully ignored. Embedded
+# commands are fully ignored. This can be handled fully at L0.
+
+# G1 structure
+
+command	::= strong
+	|   vdeclare
+	|   vuse
+	|   include
+
+strong	::= (C_strong)  argument			(c_done)
+vdecl	::= (C_vset)    arg_varname_def arg_value	(c_vset_done)
+vuse	::= (C_vset)    arg_varname_use			(c_vset_done)
+include	::= (C_include) arg_path			(c_include_done)
+
+# special forms of c_argument, where we can attach lexeme events at important points.
+
+argument	::= braced_word
+		|   quoted_word
+		|   unquoted_word
+braced_word	::= Braced
+quoted_word	::= (Dq) ... (Dq)
+unquoted_word	::= ...
+
+
+arg_varname_def	::=
+
+
+# L0 lexeme - G1 terminal
+
+C_vset		~ C_VSET
+C_include	~ C_INCLUDE
+C_strong	~ C_STRONG
+C_done		~ C_CLOSE
+
+Dq		~ DQ
+#Bl		~ BL
+#Br		~ BR
+
+:discard    ~ whitespace
+Whitespace  ~ SPACE
+	    | COMMENT
+
+# L0 internal
+
+COMMENT		~ C_COMMENT SPACE C_ARGUMENT SPACE0 CR
+C_ARGUMENT	~ BRACED
+		| QUOTED
+		| UNQUOTED
+
+BRACED		~ BL BRACED_ITEMS BR
+BRACE_ITEMS	~ BRACED_ITEM *
+BRACED_ITEM	~ 
+
+QUOTED		~ DQ QUOTED_ITEMS DQ
+QUOTED_ITEMS	~ QUOTED_ITEM *
+QUOTED_ITEM	~ 
+
+UNQUOTED	~ ...
+
+SPACE		~ [[:space:]] +
+SPACE0		~ [[:space:]] *
+
+C_VSET		~ CL SPACE0 'vset'
+C_INCLUDE	~ CL SPACE0 'include'
+C_STRONG	~ CL SPACE0 'strong'
+C_COMMENT	~ CL SPACE0 'comment'
+
+CL		~ '['
+CR		~ ']'
+
+BL		~ '{'
+BR		~ '}'
+
+DQ		~ '"'
