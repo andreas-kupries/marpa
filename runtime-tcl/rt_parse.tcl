@@ -72,6 +72,7 @@ oo::class create marpa::engine::tcl::parse {
 
 	# TODO: Actual user semantics
 	# TODO: tracing/reporting/red-ruby-slippers
+	next
 	return
     }
 

@@ -1,0 +1,12 @@
+words
+  word
+    markup
+      vdef
+        @0 25 {'[vset a [include _ipsum]]'}
+  word
+    g_text
+      @26 5 'lorem'
+  word
+    markup
+      vref
+        @32 8 {'[vset a]'}

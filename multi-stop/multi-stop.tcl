@@ -63,7 +63,7 @@ oo::class create marpa::multi-stop {
 	return
     }
 
-    destructor {} {
+    destructor {
 	debug.marpa/multi-stop {}
 	PAR destroy
 	MGR destroy
@@ -77,7 +77,7 @@ oo::class create marpa::multi-stop {
     forward extend-file  PAR extend-file
 
     forward on-event     MGR oe
-    forwatd match        MGR
+    forward match        MGR
 }
 
 # # ## ### ##### ######## #############
@@ -105,7 +105,7 @@ oo::class create marpa::multi-stop::mgr {
     }
 
     # State
-    variable myname mypos myindex myaction
+    variable myname mypos myindex myaction myshell
     # myname   :: dict (pos ::int     -> list (name :: string))
     # mypos    :: dict (name ::string -> pos :: int)
     # myaction :: dict (name ::string -> list (word :: string))

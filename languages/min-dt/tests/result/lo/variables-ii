@@ -1,0 +1,25 @@
+words
+  word
+    markup
+      vdef
+        @0 10 {'[vset a b]'}
+  word
+    markup
+      vdef
+        @11 14 {'[vset b \173c d\175]'}
+  word
+    markup
+      vdef
+        @26 18 {'[vset \173c d\175 \"e f\"]'}
+  word
+    markup
+      vdef
+        @45 16 {'[vset \"e f\" g\"h]'}
+  word
+    markup
+      vdef
+        @62 20 {'[vset g\"h \173i [j] k\175]'}
+  word
+    markup
+      vref
+        @84 36 {'[vset [vset [vset [vset [vset a]]]]]'}

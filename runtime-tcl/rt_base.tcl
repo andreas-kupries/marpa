@@ -24,7 +24,6 @@ oo::class create marpa::engine::tcl::base {
 
     constructor {} {
 	debug.marpa/engine/tcl/base {}
-
 	set myeventprefix {}
 	return
     }
@@ -34,8 +33,7 @@ oo::class create marpa::engine::tcl::base {
 
     variable myeventprefix
     # myeventprefix :: list (word...)
-
-    # myeventprefix - Callback command to handle parse events
+    # Callback command to handle parse events
 
     # # ## ### ##### ######## #############
     ## Public API
@@ -56,7 +54,6 @@ oo::class create marpa::engine::tcl::base {
 	    debug.marpa/engine/tcl/parse { Ignored }
 	    return
 	}
-	# XXX try ? ignore errors ?
 	debug.marpa/engine/tcl/parse { Invoke }
 	uplevel #0 [linsert $args 0 {*}$myeventprefix [self]]
 	return
