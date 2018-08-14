@@ -1,10 +1,13 @@
 ## (C) 2018-present
-# micro doctools language and grammar, reduced to a single regular
-# command, and the two special forms, vset and include.
-##
-# Trialing the needed event and stream support to implement the
-# special forms.
-##
+
+# Specifies the grammar of a micro doctools related language. Just a
+# single regular command, and the three special forms: vset, include,
+# and comment.
+
+# Used to trial what parse events and other support is needed to
+# implement the special forms.
+
+
 # 1. general text
 #
 # Commands
@@ -13,86 +16,256 @@
 # 4. include       : 1 argument, path to file to insert
 # 5. comment	   : 1 argument, the comment text
 # 6. strong	   : 1 argument, text for markup
-
+#
 # Command argument processing
 # a. Brace quoted  `{...}` - No substitutions, unchanged text
 # b. Double quoted `"..."` - Command substitutions in text with whitespace allowed
 # c. Unquoted      `...`   - Command substitutions in text with whitespace NOT allowed
-
+#
 # b. and c. need processing at the G1 level to handle the embedded commands.
 
-# Ad 5. Comments are special. Its argument is fully ignored. Embedded
-# commands are fully ignored. This can be handled fully at L0.
+# Ad 5. Comments are special. Their argument is fully ignored.
+#    	Embedded commands are fully ignored. The L0 layer can handle
+#    	this in full.
 
-# G1 structure
+# # ## ### ##### ######## ############# #####################
+
+:start	 ::= words
+
+:default ::= action => [name,values]
+
+lexeme default =
+	action => [start,length,value]
+       	latm   => 1
+
+# # ## ### ##### ######## ############# #####################
+##
+# Notes on symbol names
+# - all lower case  -- G1 symbol
+# - ALL UPPER CASE  -- L0 symbol, may not appear in G1 rules
+# - CamelCase       -- L0 lexeme, use in G1 rules, not in L0 rules
+
+# # ## ### ##### ######## ############# #####################
+## G1 structure
+
+words	::= word *
+word	::= g_text
+	|   command
+	
+g_text	::= GeneralText
 
 command	::= strong
-	|   vdeclare
-	|   vuse
+	|   vdef
+	|   vref
 	|   include
 
-strong	::= (C_strong)  argument			(c_done)
-vdecl	::= (C_vset)    arg_varname_def arg_value	(c_vset_done)
-vuse	::= (C_vset)    arg_varname_use			(c_vset_done)
-include	::= (C_include) arg_path			(c_include_done)
+strong	::= (Cl CStrong) argument (CDone)
 
-# special forms of c_argument, where we can attach lexeme events at important points.
+vdef	::= CVdef	# never seen actually, discarded
+vref	::= CVref	# never seen actually, replaced by its value
+
+include	::= (Cl CInclude) path_argument (CIncludeDone)
 
 argument	::= braced_word
 		|   quoted_word
 		|   unquoted_word
 braced_word	::= Braced
+
 quoted_word	::= (Dq) ... (Dq)
 unquoted_word	::= ...
 
+# # ## ### ##### ######## ############# #####################
+## L0 lexeme - G1 terminal
 
-arg_varname_def	::=
+GeneralText	~ GT_LIMITER
+		| GT_LIMITER           GT_LIMITER
+		| GT_LIMITER GT_MIDDLE GT_LIMITER
 
+CVset		~ C_VSET
+CInclude	~ C_INCLUDE
+CStrong		~ C_STRONG
 
-# L0 lexeme - G1 terminal
+Cl		~ CL
+CDone		~ CR
 
-C_vset		~ C_VSET
-C_include	~ C_INCLUDE
-C_strong	~ C_STRONG
-C_done		~ C_CLOSE
+CVdef		~ VAR_DEF
+CVref		~ VAR_REF
+
+:lexeme		~ CVdef	pause => after event => Vdef
+:lexeme		~ CVref	pause => after event => Vref
+
+CIncludeDone	~ CR	# - Injection point for included file
+
+Braced		~ BRACED
 
 Dq		~ DQ
-#Bl		~ BL
-#Br		~ BR
 
-:discard    ~ whitespace
-Whitespace  ~ SPACE
-	    | COMMENT
+:discard	~ Whitespace
+Whitespace	~ WHITE1
 
-# L0 internal
+# # ## ### ##### ######## ############# #####################
+## L0 internal
 
-COMMENT		~ C_COMMENT SPACE C_ARGUMENT SPACE0 CR
-C_ARGUMENT	~ BRACED
+# # ## ### ##### ######## ############# #####################
+## general text
+
+# \133, \135 are the brackets, i.e. `[` and `]`.
+#GT_LIMITER	~ [^\133\135[:space:]]
+GT_LIMITER	~ [^\133\135\n\r\t\f\v ]
+GT_MIDDLE	~ [^\133\135\n\r\t\f\v] +
+
+# # ## ### ##### ######## ############# #####################
+## special form: variable declaration
+
+VAR_DEF		~ CL WHITE0 'vset' WHITE1 VARNAME WHITE1 ARGUMENT WHITE0 CR
+VARNAME		~ VN_LEAD VN_TAIL
+VN_LEAD		~ ALPHA
+VN_TAIL		~ ALNUM *
+
+ALPHA		~ [_a-zA-Z]
+ALNUM		~ [_a-zA-Z0-9]
+
+#ALPHA		~ [_[:alpha:]]
+#ALNUM		~ [_[[:alnum:]]
+
+# # ## ### ##### ######## ############# #####################
+## special form: variable reference/use
+
+VAR_REF		~ CL WHITE0 'vset' WHITE1 VARNAME WHITE0 CR
+
+# # ## ### ##### ######## ############# #####################
+## special form: comment
+
+COMMENT		~ CL WHITE0 'comment' WHITE1 ARGUMENT WHITE0 CR
+ARGUMENT	~ BRACED
 		| QUOTED
 		| UNQUOTED
-
-BRACED		~ BL BRACED_ITEMS BR
-BRACE_ITEMS	~ BRACED_ITEM *
-BRACED_ITEM	~ 
-
-QUOTED		~ DQ QUOTED_ITEMS DQ
-QUOTED_ITEMS	~ QUOTED_ITEM *
-QUOTED_ITEM	~ 
-
-UNQUOTED	~ ...
-
-SPACE		~ [[:space:]] +
-SPACE0		~ [[:space:]] *
-
-C_VSET		~ CL SPACE0 'vset'
-C_INCLUDE	~ CL SPACE0 'include'
-C_STRONG	~ CL SPACE0 'strong'
-C_COMMENT	~ CL SPACE0 'comment'
-
 CL		~ '['
 CR		~ ']'
 
+BRACED		~ BL BRACED_ELEMS BR
+BRACE_ELEMS	~ BRACED_ELEM *
+BRACED_ELEM	~ ANY_UNBRACED
+		| BRACED
+		| BRACE_ESCAPED
+ANY_UNBRACED	~ [^{}]
+BRACE_ESCAPED	~ '\\{'
+		| '\\}'
 BL		~ '{'
 BR		~ '}'
 
+QUOTED		~ DQ QUOTED_ELEMS DQ
+QUOTED_ELEMS	~ QUOTED_ELEMENT *
+QUOTED_ELEM	~ SIMPLE
+		| SPACE1
+		| CMD
+		| QUOTE_ESCAPED
+#SIMPLE		~ [^\133\135[:space:]{}"] +
+SIMPLE		~ [^\133\135\n\r\t\f\v {}"] +
+QUOTE_ESCAPED	~ '\\{'
+		| '\\}'
+		| '\\'
 DQ		~ '"'
+
+UNQUOTED	~ UNQUOTED_ELEM +
+UNQUOTED_ELEM	~ [^\133\135{}"] +
+		| C_CMD
+
+CMD		~ CL WHITE0 WORDS WHITE0 CR
+WORDS		~ ARGUMENT *
+	separator => WHITE1
+
+# # ## ### ##### ######## ############# #####################
+## other forms of white space
+
+WHITE1		~ WHITE +
+WHITE0		~ WHITE *
+
+WHITE		~ SPACE1
+	    	| COMMENT
+	    	| CONTINUATION
+
+SPACE1		~ SPACE +
+SPACE0		~ SPACE *
+
+# simplified space to keep the engine small
+#SPACE		~ [[:space:]]
+SPACE		~ [\n\r\t\v\f ]
+
+CONTINUATION	~ SPACE0 '\134' NEWLINE SPACE0
+NEWLINE		~ [\r\n]
+		| '\r\n'
+
+# # ## ### ##### ######## ############# #####################
+## command names
+
+C_STRONG	~ 'strong'
+C_INCLUDE	~ 'include'
+
+#########################################################
+
+# The arguments to the commands above come in the following forms
+#
+# 1. Plain words, possible quoted or braced, no embedded commands.
+# 2. Combination of general text with markup (quoted)
+# 3. As 2, limited markup. (vget)
+
+# For the initial grammar we go with 2 for all possible arguments, to
+# make parsing easier on the existing corpus. After we know how to
+# handle the macros and inclusions we can go the restricted forms.
+
+cx_args		::= cx_arg +
+cx_arg	        ::= markup	action => ::first
+		|   c_vget	action => ::first
+	 	|   simple_word	action => ::first
+		|   braced_word	action => ::first
+		|   quoted_word	action => ::first
+
+# A simple word has substructure we have to be aware of at G1 level,
+# for the possible embedded markup. Note that whitespace and comments
+# now can occur here and will not be visible in the AST.  It is
+# similar to a quoted word, without the quotes, which disallow space,
+# etc. in the simple text connecting the markup pieces.
+
+simple_word	::= simple_elements
+simple_elements ::= simple_element +
+simple_element	::= SimpleWord
+		|   markup
+		|   c_vget
+		|   Escaped
+
+# A quoted word has substructure we have to be aware of at G1 level,
+# for the possible embedded markup. Note that whitespace and comments
+# now can occur here and will not be visible in the AST.
+
+quoted_word	::= ( Quote ) quoted_elements ( Quote )
+quoted_elements ::= quoted_element *
+quoted_element	::= SimpleWordPlusSpace
+		|   markup
+		|   c_vget
+		|   Escaped
+
+# # ## ### ##### ######## ############# #####################
+## Lexemes
+
+Quote	    ~ QUOTE
+
+C_closer    ~ C_CLOSER
+Escaped     ~ '\\{'
+	    | '\\}'
+	    | '\\['
+	    | '\\]'
+	    | '\\"'
+
+SimpleWord		~ SIMPLE_WORD
+SimpleWordPlusSpace	~ SIMPLE_ELEMENT_PLUS_SPACE +
+
+BracedWord	  	~ BRACED_WORD
+
+# # ## ### ##### ######## ############# #####################
+## Lexical sub-structure
+
+SIMPLE_WORD			~ SIMPLE_ELEMENT +
+SIMPLE_ELEMENT_PLUS_SPACE	~ [^\133\135{}"]
+
+# # ## ### ##### ######## ############# #####################
