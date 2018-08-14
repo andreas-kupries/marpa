@@ -1,0 +1,24 @@
+#!/bin/bash
+
+g="g/min-dt.slif"
+v=1
+a="Andreas Kupries"
+base="mindt::parser::"
+
+clear;echo
+
+marpa-gen \
+    -V $v -A "${a}" \
+    -T cparse-critcl \
+    -N ${base}c \
+    $g mindt-c.tcl \
+2>&1 | tee LOG-C
+echo
+
+marpa-gen \
+    -V $v -A "${a}" \
+    -T tparse \
+    -N ${base}tcl \
+    $g mindt-tcl.tcl \
+2>&1 | tee LOG-TCL
+echo

@@ -1,0 +1,11 @@
+[vset a b]
+[vset b {c d}]
+[vset {c d} "e f"]
+[vset "e f" g"h]
+[vset g"h {i [j] k}]
+
+1. [vset a]
+2. [vset b]
+3. [vset "c d"]
+4. [vset {e f}]
+5. [vset g"h]
