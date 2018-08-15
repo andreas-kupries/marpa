@@ -176,7 +176,7 @@ marpatcl_rtc_fget  (Tcl_Interp* ip, marpatcl_rtc_p p,
 int
 marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, marpatcl_rtc_p p)
 {
-    TRACE_FUNC ("(Interp*) %p, (sv**) %p, (rtc*) %p", ip, sv, p);
+    TRACE_FUNC ("(Interp*) %p, (sv*) %p, (rtc*) %p", ip, sv, p);
 
     if (!marpatcl_rtc_failed (p)) {
 	Tcl_Obj* r;
@@ -540,8 +540,16 @@ marpatcl_rtc_sv_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_p sv)
     TRACE_FUNC ("(Interp*) %p, (sv*) %p", ip, sv);
 
     null = Tcl_NewListObj (0,0);
+
+    // Yes, we can get a null sem value. It happens when then entire input is
+    // discarded, i.e. the parser never had any input.
+    if (!sv) {
+	TRACE_RETURN ("(Tcl_Obj*) %p", null);
+    }
+    
     TAKE (null);
     svres = astcl_do (ip, sv, null);
+    ASSERT (svres != null, "bad sv conversion");
     RELE (null);
 
     TRACE ("R ((Tcl_Obj*) %p) (rc %d))", svres, svres ? svres->refCount : -1);
