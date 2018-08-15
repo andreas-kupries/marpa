@@ -56,6 +56,8 @@ oo::class create mindt::parser {
 	#marpa::import $parser PAR
 	marpa::multi-stop create PAR $parser
 	PAR on-event [self namespace]::my ProcessSpecialForms
+	set label *primary*
+	set var   {}
 	return
     }
 
@@ -66,6 +68,8 @@ oo::class create mindt::parser {
     }
 
     forward process  PAR process
+    # TODO: wrap as method to rewrite parse errors based on
+    
     if 0 {method process {string args} {
 	debug.mindt/parser {[debug caller 0] | }
 	PAR process $string {*}$args
@@ -73,8 +77,58 @@ oo::class create mindt::parser {
 
     method ProcessSpecialForms {__ type enames} {
 	debug.mindt/parser {[debug caller 1] | }
-	# Do nothing at the moment.
+	# Discard matched lexeme
+	PAR match clear
+
+	set s [PAR match start]
+	set l [PAR match length]
+	set v [string range [PAR match value] 1 end-1]
+	# v :: Outer brackets [] stripped
+
+	# Use a separate parser to get the internal structure of the
+	# separate form. Then transform and resolve all the inner
+	# pieces before applying the outer form to the system state.
+
+	
+	# Event handling below may create alternatives.
+	#foreach e $enames { my Process$e $s $l $v }
+	#puts XA\t$s,$l\t($v)
+	my {*}$v
+	return
     }
+
+    method vset {name {value {}}} {
+	puts =V=\t([info level 0])
+	puts =V=\t|$name|
+	puts =V=\t|$value|
+    }
+    
+    method include {path} {
+	puts =I=\t([info level 0])
+    }
+    
+    method ProcessVdef {start len value} {
+	puts VD\t[info level 0]
+    }
+
+    method ProcessVref {start len value} {
+	puts VU\t[info level 0]
+    }
+
+    method ProcessInclude {start len value} {
+	puts I\t[info level 0]
+    }
+
+    # State information
+    # - var   :: dict (name :: string -> content :: *1)
+    #  content :: list/2,3 (start :: int, length :: int, ?value :: string?)
+    # - label :: string
+
+    # var   : mapping from variable nmes to content (location, actual
+    #         value for braced literals
+    # label : previous label of the input stream (include nesting)
+
+    variable var label
 }
 
 # # ## ### ##### ######## #############
