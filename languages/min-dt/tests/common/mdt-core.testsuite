@@ -105,7 +105,7 @@ foreach level {
 
     # # ## ### ##### ######## ############# #####################
 
-    set inputs [lsort -dict [glob -directory [td]/input *]]
+    set inputs [lsort -dict [glob -directory [td]/dt/input *]]
     set max    [llength $inputs]
     set fmt    %0[string length $max]d
 
@@ -119,8 +119,8 @@ foreach level {
 	set kd          [format $fmt $k]
 	set id          [file tail $infile]
 	set input       [fget $infile]
-	set exfile_ok   [td]/result/$level/$id
-	set exfile_err  [td]/result/$level/E-$id
+	set exfile_ok   [td]/dt/result/$level/$id
+	set exfile_err  [td]/dt/result/$level/E-$id
 
 	if {[file exists $exfile_ok]} {
 	    set expected [string trim [fget $exfile_ok]]
@@ -135,9 +135,10 @@ foreach level {
 	}
 
 	# - --   -----        -------------
+	# For rt-c activate `TRACE` tag `enter` in `inbound.c` and
+	# then use the rebuilt runtime.
     
 	test [tnp]-process-2.${kd}.${l}---${level}-${id} "[$level] :: process $id" -body {
-	    # For rt-c activate `TRACE` tag `enter` in `inbound.c` and use the rebuilt runtime.
 	    ast-format [PARSE process $input]
 	}   -setup   setup-$level \
 	    -cleanup cleanup \

@@ -13,7 +13,7 @@ echo
 # ( $bindir/make-parser ) 2>&1 | tee LOG-GENERATE
 
 rm -rf L/* BUILD-* tests/core
-mkdir  L
+mkdir  L 2>/dev/null
 
 #V="--valgrind 1"
 #S="--with-shell $TOOL_DIR/8.5/Install/bin/tclsh8.5"
