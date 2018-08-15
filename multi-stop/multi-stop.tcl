@@ -138,19 +138,19 @@ oo::class create marpa::multi-stop::mgr {
     # - mark-location name              | New, semi-replaces `stop`
     # - mark-active                     | Is `stop` under a different name
 
-    forward location        PAR location
+    forward location        PAR match location
     #
-    forward from      my RA PAR from
-    forward from+     my RA PAR from+
+    forward from      my RA PAR match from
+    forward from+     my RA PAR match from+
     #
-    forward symbols         PAR symbols
-    forward sv              PAR sv
-    forward start           PAR start
-    forward length          PAR length
-    forward value           PAR value
-    forward alternate       PAR alternate
-    forward clear           PAR clear
-    forward view            PAR view
+    forward symbols         PAR match symbols
+    forward sv              PAR match sv
+    forward start           PAR match start
+    forward length          PAR match length
+    forward value           PAR match value
+    forward alternate       PAR match alternate
+    forward clear           PAR match clear
+    forward view            PAR match view
 
     method RA {args} {
 	debug.marpa/multi-stop {}
