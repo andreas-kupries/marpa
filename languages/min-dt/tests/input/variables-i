@@ -9,3 +9,5 @@
 3. [vset "c d"]
 4. [vset {e f}]
 5. [vset g"h]
+
+[vset z y"]

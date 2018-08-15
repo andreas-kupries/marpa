@@ -7,8 +7,8 @@
 # (c) 2018 Grammar mindt::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "mindt::parser::tcl".
-##	Generated On Tue Aug 14 13:19:04 PDT 2018
-##		  By andreask@ten
+##	Generated On Tue Aug 14 19:24:33 PDT 2018
+##		  By aku@hephaistos
 ##		 Via marpa-gen
 
 package provide mindt::parser::tcl 1
@@ -276,6 +276,7 @@ oo::class create mindt::parser::tcl {
 	    g_text
 	    include
 	    markup
+	    quote
 	    quoted
 	    quoted_elem
 	    quoted_elems
@@ -285,6 +286,8 @@ oo::class create mindt::parser::tcl {
 	    tclword
 	    unquoted
 	    unquoted_elem
+	    unquoted_elems
+	    unquoted_leader
 	    vdef
 	    vref
 	    word
@@ -298,13 +301,14 @@ oo::class create mindt::parser::tcl {
 	return {
 	    {__ :A {name values}}
 	    {braced := Braced}
-	    {g_text := Quote}
-	    {g_text := Simple}
+	    {g_text := quote}
+	    {g_text := simple}
 	    {include := CInclude}
 	    {markup := include}
 	    {markup := strong}
 	    {markup := vdef}
 	    {markup := vref}
+	    {quote := Quote}
 	    {quoted :M {0 2} Quote quoted_elems Quote}
 	    {quoted_elem := markup}
 	    {quoted_elem := simple}
@@ -316,9 +320,13 @@ oo::class create mindt::parser::tcl {
 	    {tclword := braced}
 	    {tclword := quoted}
 	    {tclword := unquoted}
-	    {unquoted + unquoted_elem}
+	    {unquoted := unquoted_leader unquoted_elems}
 	    {unquoted_elem := markup}
+	    {unquoted_elem := quote}
 	    {unquoted_elem := simple}
+	    {unquoted_elems * unquoted_elem}
+	    {unquoted_leader := markup}
+	    {unquoted_leader := simple}
 	    {vdef := CVdef}
 	    {vref := CVref}
 	    {word := g_text}

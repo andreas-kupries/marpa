@@ -5,7 +5,8 @@ words
         @0 25 {'[vset a [include _ipsum]]'}
   word
     g_text
-      @26 5 'lorem'
+      simple
+        @26 5 'lorem'
   word
     markup
       vref

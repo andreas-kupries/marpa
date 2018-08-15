@@ -33,8 +33,8 @@ words	::= word *	# series of words with no further structure
 word	::= g_text	# beyond being a mix of text and markup (commands)
 	|   markup
 	
-g_text	::= Simple
-	|   Quote
+g_text	::= simple
+	|   quote
 
 markup	::= strong
 	|   vdef
@@ -57,12 +57,17 @@ quoted_elem	::= simple
 		|   space
 		|   markup
 
-unquoted	::= unquoted_elem +
+unquoted	::= unquoted_leader unquoted_elems
+unquoted_leader	::= simple
+		|   markup
+unquoted_elems	::= unquoted_elem *
 unquoted_elem	::= simple
 		|   markup
+		|   quote
 
 simple		::= Simple
 space		::= Space
+quote		::= Quote
 
 # # ## ### ##### ######## ############# #####################
 ## G1 special forms - never seen, either discarded, or replaced by its contents

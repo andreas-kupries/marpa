@@ -1,40 +1,53 @@
 words
   word
     g_text
-      @0 5 'lorem'
+      simple
+        @0 5 'lorem'
   word
     g_text
-      @6 5 'ipsum'
+      simple
+        @6 5 'ipsum'
   word
     g_text
-      @12 7 'dolores'
+      simple
+        @12 7 'dolores'
   word
     g_text
-      @20 3 'mea'
+      simple
+        @20 3 'mea'
   word
     g_text
-      @24 5 'culpa'
+      simple
+        @24 5 'culpa'
   word
     g_text
-      @30 3 'see'
+      simple
+        @30 3 'see'
   word
     g_text
-      @34 1 {'\"'}
+      quote
+        @34 1 {'\"'}
   word
     g_text
-      @35 3 'the'
+      simple
+        @35 3 'the'
   word
     g_text
-      @39 5 'quick'
+      simple
+        @39 5 'quick'
   word
     g_text
-      @45 5 'brown'
+      simple
+        @45 5 'brown'
   word
     g_text
-      @51 3 'fox'
+      simple
+        @51 3 'fox'
   word
     g_text
-      @55 3 '...'
+      simple
+        @55 3 '...'
   word
     g_text
-      @58 1 {'\"'}
+      quote
+        @58 1 {'\"'}

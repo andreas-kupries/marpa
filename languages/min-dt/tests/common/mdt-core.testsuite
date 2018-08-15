@@ -98,7 +98,7 @@ foreach level {
     }   -setup   setup-$level \
 	-cleanup cleanup \
 	-returnCodes error \
-	-result {wrong # args: should be "PARSE process string ?args...?"}
+	-result {wrong # args: should be "PARSE process string ..."}
 
     # # ## ### ##### ######## ############# #####################
     ## process - Actual processing - Id formatting prep

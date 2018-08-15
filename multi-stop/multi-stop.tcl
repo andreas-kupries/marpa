@@ -36,8 +36,8 @@ debug prefix marpa/multi-stop {[debug caller] | }
 # Meta description management into place. The adapter takes ownership
 # Meta description of the parser it wraps. Destruction of the adapter
 # Meta description destroys the parser as well.
-# Meta description 
-# Meta description 
+# Meta description
+# Meta description
 # Meta location    http:/core.tcl.tk/akupries/marpa
 # Meta platform    tcl
 # Meta require     {Tcl 8.5}
@@ -144,12 +144,12 @@ oo::class create marpa::multi-stop::mgr {
     forward from+     my RA PAR from+
     #
     forward symbols         PAR symbols
-    forward sv              PAR sv        
-    forward start           PAR start     
-    forward length          PAR length    
-    forward value           PAR value     
-    forward alternate       PAR alternate 
-    forward clear           PAR clear     
+    forward sv              PAR sv
+    forward start           PAR start
+    forward length          PAR length
+    forward value           PAR value
+    forward alternate       PAR alternate
+    forward clear           PAR clear
     forward view            PAR view
 
     method RA {args} {

@@ -9,28 +9,32 @@ words
         @11 19 {'[vset b_[vset a] x]'}
   word
     g_text
-      @32 2 '1.'
+      simple
+        @32 2 '1.'
   word
     markup
       vref
         @34 8 {'[vset a]'}
   word
     g_text
-      @43 2 '2.'
+      simple
+        @43 2 '2.'
   word
     markup
       vref
         @45 10 {'[vset b_b]'}
   word
     g_text
-      @56 2 '3.'
+      simple
+        @56 2 '3.'
   word
     markup
       vref
         @58 17 {'[vset b_[vset a]]'}
   word
     g_text
-      @76 2 '4.'
+      simple
+        @76 2 '4.'
   word
     markup
       vref

@@ -1,7 +1,8 @@
 words
   word
     g_text
-      @0 5 'lorem'
+      simple
+        @0 5 'lorem'
   word
     markup
       include

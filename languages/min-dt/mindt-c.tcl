@@ -7,11 +7,11 @@
 # (c) 2018 Grammar mindt::parser::c 1 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "mindt::parser::c".
-##	Generated On Tue Aug 14 13:19:03 PDT 2018
-##		  By andreask@ten
+##	Generated On Tue Aug 14 19:24:32 PDT 2018
+##		  By aku@hephaistos
 ##		 Via marpa-gen
 ##
-#* Space taken: 5500 bytes
+#* Space taken: 5613 bytes
 ##
 #* Statistics
 #* L0
@@ -22,9 +22,9 @@
 #* - #Rule Insn: 129 (+2: setup, start-sym)
 #* - #Rules:     529 (>= insn, brange)
 #* G1
-#* - #Symbols:   27
-#* - #Rule Insn: 27 (+2: setup, start-sym)
-#* - #Rules:     27 (match insn)
+#* - #Symbols:   30
+#* - #Rule Insn: 32 (+2: setup, start-sym)
+#* - #Rules:     32 (match insn)
 
 package provide mindt::parser::c 1
 
@@ -63,12 +63,12 @@ critcl::api import critcl::callback  1
 
 critcl::ccode {
     /*
-    ** Shared string pool (694 bytes lengths over 347 entries)
-    **                    (694 bytes offsets -----^)
-    **                    (1996 bytes character content)
+    ** Shared string pool (700 bytes lengths over 350 entries)
+    **                    (700 bytes offsets -----^)
+    **                    (2033 bytes character content)
     */
 
-    static marpatcl_rtc_size mindt_parser_c_pool_length [347] = { /* 694 bytes */
+    static marpatcl_rtc_size mindt_parser_c_pool_length [350] = { /* 700 bytes */
 	 1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
 	 1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  9,  5,  5,  8,
 	 6,  9, 10, 11, 11, 11, 11, 11, 11,  6, 21, 18, 10,  7,  8,  8,
@@ -87,13 +87,13 @@ critcl::ccode {
 	 1,  1,  1,  1,  1,  1,  6,  1,  1,  1,  1, 14, 16, 16, 16, 16,
 	16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,  7,  7,  1,
 	 1,  1,  1,  1,  1,  1,  1,  6,  1,  1,  7,  7, 12, 16,  1,  1,
-	 1,  1,  1,  1,  5,  5,  6,  6, 11, 11, 12, 12,  1,  1,  1,  1,
-	 6,  6,  6,  5,  5,  5,  6,  6,  6,  1,  1,  7,  1,  1,  8,  8,
-	13, 13,  1,  1,  7,  7,  4,  4,  4,  1,  1,  5,  6,  6, 10,  4,
-	 4,  5,  6,  1,  1,  1,  1,  1,  1,  1,  1
+	 1,  1,  1,  1,  5,  5,  5,  6,  6, 11, 11, 12, 12,  1,  1,  1,
+	 1,  6,  6,  6,  5,  5,  5,  6,  6,  6,  1,  1,  7,  1,  1,  8,
+	 8, 13, 13, 14, 15,  1,  1,  7,  7,  4,  4,  4,  1,  1,  5,  6,
+	 6, 10,  4,  4,  5,  6,  1,  1,  1,  1,  1,  1,  1,  1
     };
 
-    static marpatcl_rtc_size mindt_parser_c_pool_offset [347] = { /* 694 bytes */
+    static marpatcl_rtc_size mindt_parser_c_pool_offset [350] = { /* 700 bytes */
 	   0,    2,    4,    6,    8,   10,   12,   14,   16,   18,   20,   22,   24,   26,   28,   30,
 	  32,   34,   36,   38,   40,   42,   44,   46,   48,   50,   52,   54,   56,   66,   72,   78,
 	  87,   94,  104,  115,  127,  139,  151,  163,  175,  187,  194,  216,  235,  246,  254,  263,
@@ -112,13 +112,13 @@ critcl::ccode {
 	1249, 1251, 1253, 1255, 1257, 1259, 1261, 1268, 1270, 1272, 1274, 1276, 1291, 1308, 1325, 1342,
 	1359, 1376, 1393, 1410, 1427, 1444, 1461, 1478, 1495, 1512, 1529, 1546, 1563, 1580, 1588, 1596,
 	1598, 1600, 1602, 1604, 1606, 1608, 1610, 1612, 1619, 1621, 1623, 1631, 1639, 1652, 1669, 1671,
-	1673, 1675, 1677, 1679, 1681, 1687, 1693, 1700, 1707, 1719, 1731, 1744, 1757, 1759, 1761, 1763,
-	1765, 1772, 1779, 1786, 1792, 1798, 1804, 1811, 1818, 1825, 1827, 1829, 1837, 1839, 1841, 1850,
-	1859, 1873, 1887, 1889, 1891, 1899, 1907, 1912, 1917, 1922, 1924, 1926, 1932, 1939, 1946, 1957,
-	1962, 1967, 1973, 1980, 1982, 1984, 1986, 1988, 1990, 1992, 1994
+	1673, 1675, 1677, 1679, 1681, 1687, 1693, 1699, 1706, 1713, 1725, 1737, 1750, 1763, 1765, 1767,
+	1769, 1771, 1778, 1785, 1792, 1798, 1804, 1810, 1817, 1824, 1831, 1833, 1835, 1843, 1845, 1847,
+	1856, 1865, 1879, 1893, 1908, 1924, 1926, 1928, 1936, 1944, 1949, 1954, 1959, 1961, 1963, 1969,
+	1976, 1983, 1994, 1999, 2004, 2010, 2017, 2019, 2021, 2023, 2025, 2027, 2029, 2031
     };
 
-    static marpatcl_rtc_string mindt_parser_c_pool = { /* 24 + 1996 bytes */
+    static marpatcl_rtc_string mindt_parser_c_pool = { /* 24 + 2033 bytes */
 	mindt_parser_c_pool_length,
 	mindt_parser_c_pool_offset,
 	/*   0 */ "!\0"
@@ -415,59 +415,62 @@ critcl::ccode {
 	/* 291 */ "q\0"
 	/* 292 */ "QUOTE\0"
 	/* 293 */ "Quote\0"
-	/* 294 */ "QUOTED\0"
-	/* 295 */ "quoted\0"
-	/* 296 */ "QUOTED_ELEM\0"
-	/* 297 */ "quoted_elem\0"
-	/* 298 */ "QUOTED_ELEMS\0"
-	/* 299 */ "quoted_elems\0"
-	/* 300 */ "R\0"
-	/* 301 */ "r\0"
-	/* 302 */ "S\0"
-	/* 303 */ "s\0"
-	/* 304 */ "SIMPLE\0"
-	/* 305 */ "Simple\0"
-	/* 306 */ "simple\0"
-	/* 307 */ "SPACE\0"
-	/* 308 */ "Space\0"
-	/* 309 */ "space\0"
-	/* 310 */ "SPACE0\0"
-	/* 311 */ "SPACE1\0"
-	/* 312 */ "strong\0"
-	/* 313 */ "T\0"
-	/* 314 */ "t\0"
-	/* 315 */ "tclword\0"
-	/* 316 */ "U\0"
-	/* 317 */ "u\0"
-	/* 318 */ "UNQUOTED\0"
-	/* 319 */ "unquoted\0"
-	/* 320 */ "UNQUOTED_ELEM\0"
-	/* 321 */ "unquoted_elem\0"
-	/* 322 */ "V\0"
-	/* 323 */ "v\0"
-	/* 324 */ "VAR_DEF\0"
-	/* 325 */ "VAR_REF\0"
-	/* 326 */ "vdef\0"
-	/* 327 */ "vref\0"
-	/* 328 */ "vset\0"
-	/* 329 */ "W\0"
-	/* 330 */ "w\0"
-	/* 331 */ "WHITE\0"
-	/* 332 */ "WHITE0\0"
-	/* 333 */ "WHITE1\0"
-	/* 334 */ "Whitespace\0"
-	/* 335 */ "WORD\0"
-	/* 336 */ "word\0"
-	/* 337 */ "words\0"
-	/* 338 */ "WORDS1\0"
-	/* 339 */ "X\0"
-	/* 340 */ "x\0"
-	/* 341 */ "Y\0"
-	/* 342 */ "y\0"
-	/* 343 */ "Z\0"
-	/* 344 */ "z\0"
-	/* 345 */ "|\0"
-	/* 346 */ "~\0"
+	/* 294 */ "quote\0"
+	/* 295 */ "QUOTED\0"
+	/* 296 */ "quoted\0"
+	/* 297 */ "QUOTED_ELEM\0"
+	/* 298 */ "quoted_elem\0"
+	/* 299 */ "QUOTED_ELEMS\0"
+	/* 300 */ "quoted_elems\0"
+	/* 301 */ "R\0"
+	/* 302 */ "r\0"
+	/* 303 */ "S\0"
+	/* 304 */ "s\0"
+	/* 305 */ "SIMPLE\0"
+	/* 306 */ "Simple\0"
+	/* 307 */ "simple\0"
+	/* 308 */ "SPACE\0"
+	/* 309 */ "Space\0"
+	/* 310 */ "space\0"
+	/* 311 */ "SPACE0\0"
+	/* 312 */ "SPACE1\0"
+	/* 313 */ "strong\0"
+	/* 314 */ "T\0"
+	/* 315 */ "t\0"
+	/* 316 */ "tclword\0"
+	/* 317 */ "U\0"
+	/* 318 */ "u\0"
+	/* 319 */ "UNQUOTED\0"
+	/* 320 */ "unquoted\0"
+	/* 321 */ "UNQUOTED_ELEM\0"
+	/* 322 */ "unquoted_elem\0"
+	/* 323 */ "unquoted_elems\0"
+	/* 324 */ "unquoted_leader\0"
+	/* 325 */ "V\0"
+	/* 326 */ "v\0"
+	/* 327 */ "VAR_DEF\0"
+	/* 328 */ "VAR_REF\0"
+	/* 329 */ "vdef\0"
+	/* 330 */ "vref\0"
+	/* 331 */ "vset\0"
+	/* 332 */ "W\0"
+	/* 333 */ "w\0"
+	/* 334 */ "WHITE\0"
+	/* 335 */ "WHITE0\0"
+	/* 336 */ "WHITE1\0"
+	/* 337 */ "Whitespace\0"
+	/* 338 */ "WORD\0"
+	/* 339 */ "word\0"
+	/* 340 */ "words\0"
+	/* 341 */ "WORDS1\0"
+	/* 342 */ "X\0"
+	/* 343 */ "x\0"
+	/* 344 */ "Y\0"
+	/* 345 */ "y\0"
+	/* 346 */ "Z\0"
+	/* 347 */ "z\0"
+	/* 348 */ "|\0"
+	/* 349 */ "~\0"
     };
 
     static marpatcl_rtc_event_spec mindt_parser_c_events [3] = {
@@ -489,9 +492,9 @@ critcl::ccode {
 	 76,   0,  77,   1,   2,   3,   4,   5,  78,  79,   6,   7,   8,   9,  10,  11,
 	 12,  13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  80,  23,  24,  25,  26,
 	 27, 207, 210, 223, 238, 240, 242, 244, 247, 249, 271, 273, 275, 277, 280, 286,
-	288, 290, 300, 302, 313, 316, 322, 329, 339, 341, 343,  81,  82,  85, 204, 205,
+	288, 290, 301, 303, 314, 317, 325, 332, 342, 344, 346,  81,  82,  85, 204, 205,
 	206, 208, 211, 224, 239, 241, 243, 245, 248, 250, 272, 274, 276, 278, 281, 287,
-	289, 291, 301, 303, 314, 317, 323, 330, 340, 342, 344,  86, 345,  87, 346,  88,
+	289, 291, 302, 304, 315, 318, 326, 333, 343, 345, 347,  86, 348,  87, 349,  88,
 	 89,  90,  91,  92,  93,  94,  95,  96,  97,  98,  99, 100, 101, 102, 103, 104,
 	105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120,
 	121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136,
@@ -503,26 +506,26 @@ critcl::ccode {
 
 	/* --- (10) --- --- --- ACS: Lexeme
 	 */
-	216, 226, 227, 229, 235, 236, 237, 293, 305, 308,
+	216, 226, 227, 229, 235, 236, 237, 293, 306, 309,
 
 	/* --- (1) --- --- --- ACS: Discard
 	 */
-	334,
+	337,
 
 	/* --- (10) --- --- --- Lexeme
 	 */
-	216, 226, 227, 229, 235, 236, 237, 293, 305, 308,
+	216, 226, 227, 229, 235, 236, 237, 293, 306, 309,
 
 	/* --- (1) --- --- --- Discard
 	 */
-	334,
+	337,
 
 	/* --- (65) --- --- --- Internal
 	 */
-	 34,  42,  43,  32,  37,  41,  44,  83,  84, 202, 232, 270, 312, 328, 209, 212,
+	 34,  42,  43,  32,  37,  41,  44,  83,  84, 202, 232, 270, 313, 331, 209, 212,
 	213, 214, 215, 218, 219, 220, 221, 225, 228, 230, 231, 233, 234, 269, 282, 283,
-	284, 285, 292, 294, 296, 298, 304, 307, 310, 311, 318, 320, 324, 325, 331, 332,
-	333, 335, 338,  29,  30,  31,  33,  35,  45,  36,  38,  39,  40,  46,  47, 222,
+	284, 285, 292, 295, 297, 299, 305, 308, 311, 312, 319, 321, 327, 328, 334, 335,
+	336, 338, 341,  29,  30,  31,  33,  35,  45,  36,  38,  39,  40,  46,  47, 222,
 	 28
     };
 
@@ -706,64 +709,69 @@ critcl::ccode {
     ** G1 structures
     */
 
-    static marpatcl_rtc_sym mindt_parser_c_g1_sym_name [27] = { /* 54 bytes */
+    static marpatcl_rtc_sym mindt_parser_c_g1_sym_name [30] = { /* 60 bytes */
 	/* --- (10) --- --- --- Terminals
 	 */
-	216, 226, 227, 229, 235, 236, 237, 293, 305, 308,
+	216, 226, 227, 229, 235, 236, 237, 293, 306, 309,
 
-	/* --- (17) --- --- --- Structure
+	/* --- (20) --- --- --- Structure
 	 */
-	337, 336, 246, 279, 312, 315, 217, 295, 299, 297, 319, 321, 306, 309, 326, 327,
-	270
+	340, 339, 246, 279, 313, 316, 217, 296, 300, 298, 320, 324, 323, 322, 307, 310,
+	294, 329, 330, 270
     };
 
-    static marpatcl_rtc_sym mindt_parser_c_g1_rule_name [27] = { /* 54 bytes */
-	337, 336, 336, 246, 246, 279, 279, 279, 279, 312, 315, 315, 315, 217, 295, 299,
-	297, 297, 297, 319, 321, 321, 306, 309, 326, 327, 270
+    static marpatcl_rtc_sym mindt_parser_c_g1_rule_name [32] = { /* 64 bytes */
+	340, 339, 339, 246, 246, 279, 279, 279, 279, 313, 316, 316, 316, 217, 296, 300,
+	298, 298, 298, 320, 324, 324, 323, 322, 322, 322, 307, 310, 294, 329, 330, 270
     };
 
-    static marpatcl_rtc_sym mindt_parser_c_g1_rule_lhs [27] = { /* 54 bytes */
+    static marpatcl_rtc_sym mindt_parser_c_g1_rule_lhs [32] = { /* 64 bytes */
 	10, 11, 11, 12, 12, 13, 13, 13, 13, 14, 15, 15, 15, 16, 17, 18,
-	19, 19, 19, 20, 21, 21, 22, 23, 24, 25, 26
+	19, 19, 19, 20, 21, 21, 22, 23, 23, 23, 24, 25, 26, 27, 28, 29
     };
 
-    static marpatcl_rtc_sym mindt_parser_c_g1_rule_definitions [75] = { /* 150 bytes */
+    static marpatcl_rtc_sym mindt_parser_c_g1_rule_definitions [89] = { /* 178 bytes */
 	MARPATCL_RCMD_SETUP (4),
-	MARPATCL_RCMD_QUN   (10), 11,             /* <words>         ::= <word> * */
-	MARPATCL_RCMD_PRIO  (1), 11, 12,          /* <word>          ::= <g_text> */
-	MARPATCL_RCMD_PRIS  (1)    , 13,          /*                 |   <markup> */
-	MARPATCL_RCMD_PRIO  (1), 12, 8,           /* <g_text>        ::= <Simple> */
-	MARPATCL_RCMD_PRIS  (1)    , 7,           /*                 |   <Quote> */
-	MARPATCL_RCMD_PRIO  (1), 13, 14,          /* <markup>        ::= <strong> */
-	MARPATCL_RCMD_PRIS  (1)    , 24,          /*                 |   <vdef> */
-	MARPATCL_RCMD_PRIS  (1)    , 25,          /*                 |   <vref> */
-	MARPATCL_RCMD_PRIS  (1)    , 26,          /*                 |   <include> */
-	MARPATCL_RCMD_PRIO  (4), 14, 3, 4, 15, 1, /* <strong>        ::= <Cl> <CStrong> <tclword> <CDone> */
-	MARPATCL_RCMD_PRIO  (1), 15, 16,          /* <tclword>       ::= <braced> */
-	MARPATCL_RCMD_PRIS  (1)    , 17,          /*                 |   <quoted> */
-	MARPATCL_RCMD_PRIS  (1)    , 20,          /*                 |   <unquoted> */
-	MARPATCL_RCMD_PRIO  (1), 16, 0,           /* <braced>        ::= <Braced> */
-	MARPATCL_RCMD_PRIO  (3), 17, 7, 18, 7,    /* <quoted>        ::= <Quote> <quoted_elems> <Quote> */
-	MARPATCL_RCMD_QUN   (18), 19,             /* <quoted_elems>  ::= <quoted_elem> * */
-	MARPATCL_RCMD_PRIO  (1), 19, 22,          /* <quoted_elem>   ::= <simple> */
-	MARPATCL_RCMD_PRIS  (1)    , 23,          /*                 |   <space> */
-	MARPATCL_RCMD_PRIS  (1)    , 13,          /*                 |   <markup> */
-	MARPATCL_RCMD_QUP   (20), 21,             /* <unquoted>      ::= <unquoted_elem> + */
-	MARPATCL_RCMD_PRIO  (1), 21, 22,          /* <unquoted_elem> ::= <simple> */
-	MARPATCL_RCMD_PRIS  (1)    , 13,          /*                 |   <markup> */
-	MARPATCL_RCMD_PRIO  (1), 22, 8,           /* <simple>        ::= <Simple> */
-	MARPATCL_RCMD_PRIO  (1), 23, 9,           /* <space>         ::= <Space> */
-	MARPATCL_RCMD_PRIO  (1), 24, 5,           /* <vdef>          ::= <CVdef> */
-	MARPATCL_RCMD_PRIO  (1), 25, 6,           /* <vref>          ::= <CVref> */
-	MARPATCL_RCMD_PRIO  (1), 26, 2,           /* <include>       ::= <CInclude> */
+	MARPATCL_RCMD_QUN   (10), 11,             /* <words>           ::= <word> * */
+	MARPATCL_RCMD_PRIO  (1), 11, 12,          /* <word>            ::= <g_text> */
+	MARPATCL_RCMD_PRIS  (1)    , 13,          /*                   |   <markup> */
+	MARPATCL_RCMD_PRIO  (1), 12, 24,          /* <g_text>          ::= <simple> */
+	MARPATCL_RCMD_PRIS  (1)    , 26,          /*                   |   <quote> */
+	MARPATCL_RCMD_PRIO  (1), 13, 14,          /* <markup>          ::= <strong> */
+	MARPATCL_RCMD_PRIS  (1)    , 27,          /*                   |   <vdef> */
+	MARPATCL_RCMD_PRIS  (1)    , 28,          /*                   |   <vref> */
+	MARPATCL_RCMD_PRIS  (1)    , 29,          /*                   |   <include> */
+	MARPATCL_RCMD_PRIO  (4), 14, 3, 4, 15, 1, /* <strong>          ::= <Cl> <CStrong> <tclword> <CDone> */
+	MARPATCL_RCMD_PRIO  (1), 15, 16,          /* <tclword>         ::= <braced> */
+	MARPATCL_RCMD_PRIS  (1)    , 17,          /*                   |   <quoted> */
+	MARPATCL_RCMD_PRIS  (1)    , 20,          /*                   |   <unquoted> */
+	MARPATCL_RCMD_PRIO  (1), 16, 0,           /* <braced>          ::= <Braced> */
+	MARPATCL_RCMD_PRIO  (3), 17, 7, 18, 7,    /* <quoted>          ::= <Quote> <quoted_elems> <Quote> */
+	MARPATCL_RCMD_QUN   (18), 19,             /* <quoted_elems>    ::= <quoted_elem> * */
+	MARPATCL_RCMD_PRIO  (1), 19, 24,          /* <quoted_elem>     ::= <simple> */
+	MARPATCL_RCMD_PRIS  (1)    , 25,          /*                   |   <space> */
+	MARPATCL_RCMD_PRIS  (1)    , 13,          /*                   |   <markup> */
+	MARPATCL_RCMD_PRIO  (2), 20, 21, 22,      /* <unquoted>        ::= <unquoted_leader> <unquoted_elems> */
+	MARPATCL_RCMD_PRIO  (1), 21, 24,          /* <unquoted_leader> ::= <simple> */
+	MARPATCL_RCMD_PRIS  (1)    , 13,          /*                   |   <markup> */
+	MARPATCL_RCMD_QUN   (22), 23,             /* <unquoted_elems>  ::= <unquoted_elem> * */
+	MARPATCL_RCMD_PRIO  (1), 23, 24,          /* <unquoted_elem>   ::= <simple> */
+	MARPATCL_RCMD_PRIS  (1)    , 13,          /*                   |   <markup> */
+	MARPATCL_RCMD_PRIS  (1)    , 26,          /*                   |   <quote> */
+	MARPATCL_RCMD_PRIO  (1), 24, 8,           /* <simple>          ::= <Simple> */
+	MARPATCL_RCMD_PRIO  (1), 25, 9,           /* <space>           ::= <Space> */
+	MARPATCL_RCMD_PRIO  (1), 26, 7,           /* <quote>           ::= <Quote> */
+	MARPATCL_RCMD_PRIO  (1), 27, 5,           /* <vdef>            ::= <CVdef> */
+	MARPATCL_RCMD_PRIO  (1), 28, 6,           /* <vref>            ::= <CVref> */
+	MARPATCL_RCMD_PRIO  (1), 29, 2,           /* <include>         ::= <CInclude> */
 	MARPATCL_RCMD_DONE  (10)
     };
 
     static marpatcl_rtc_rules mindt_parser_c_g1 = { /* 48 */
 	/* .sname   */  &mindt_parser_c_pool,
-	/* .symbols */  { 27, mindt_parser_c_g1_sym_name },
-	/* .rules   */  { 27, mindt_parser_c_g1_rule_name },
-	/* .lhs     */  { 27, mindt_parser_c_g1_rule_lhs },
+	/* .symbols */  { 30, mindt_parser_c_g1_sym_name },
+	/* .rules   */  { 32, mindt_parser_c_g1_rule_name },
+	/* .lhs     */  { 32, mindt_parser_c_g1_rule_lhs },
 	/* .rcode   */  mindt_parser_c_g1_rule_definitions,
 	/* .events  */  0
     };
@@ -778,20 +786,20 @@ critcl::ccode {
 	2, MARPATCL_SV_RULE_NAME, MARPATCL_SV_VALUE
     };
 
-    static marpatcl_rtc_sym mindt_parser_c_g1masking [35] = { /* 70 bytes */
+    static marpatcl_rtc_sym mindt_parser_c_g1masking [40] = { /* 80 bytes */
 	/* --- (1) --- --- --- Tag
 	 */
 	MARPATCL_S_PER,
 
-	/* --- (27) --- --- --- Mask Offsets
+	/* --- (32) --- --- --- Mask Offsets
 	 */
-	 0,  0,  0,  0,  0,  0,  0,  0,  0, 30,  0,  0,  0,  0, 27,  0,
-	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+	 0,  0,  0,  0,  0,  0,  0,  0,  0, 35,  0,  0,  0,  0, 32,  0,
+	 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 
 	/* --- (3) --- --- --- Mask Data
 	 */
-	/* 27 */ 2, 0, 2,
-	/* 30 */ 3, 0, 1, 3
+	/* 32 */ 2, 0, 2,
+	/* 35 */ 3, 0, 1, 3
     };
 
     /*
@@ -806,13 +814,13 @@ critcl::ccode {
 	/* .lexemes    */  10,
 	/* .discards   */  1,
 	/* .l_symbols  */  343,
-	/* .g_symbols  */  27,
+	/* .g_symbols  */  30,
 	/* .always     */  { 1, mindt_parser_c_always },
 	/* .l0         */  &mindt_parser_c_l0,
 	/* .g1         */  &mindt_parser_c_g1,
 	/* .l0semantic */  { 3, mindt_parser_c_l0semantics },
 	/* .g1semantic */  { 4, mindt_parser_c_g1semantics },
-	/* .g1mask     */  { 35, mindt_parser_c_g1masking }
+	/* .g1mask     */  { 40, mindt_parser_c_g1masking }
     };
     /* --- end of generated data structures --- */
 }

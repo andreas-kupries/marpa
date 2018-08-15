@@ -21,36 +21,45 @@ words
         @62 20 {'[vset g\"h \173i [j] k\175]'}
   word
     g_text
-      @84 2 '1.'
+      simple
+        @84 2 '1.'
   word
     markup
       vref
         @87 8 {'[vset a]'}
   word
     g_text
-      @96 2 '2.'
+      simple
+        @96 2 '2.'
   word
     markup
       vref
         @99 8 {'[vset b]'}
   word
     g_text
-      @108 2 '3.'
+      simple
+        @108 2 '3.'
   word
     markup
       vref
         @111 12 {'[vset \"c d\"]'}
   word
     g_text
-      @124 2 '4.'
+      simple
+        @124 2 '4.'
   word
     markup
       vref
         @127 12 {'[vset \173e f\175]'}
   word
     g_text
-      @140 2 '5.'
+      simple
+        @140 2 '5.'
   word
     markup
       vref
         @143 10 {'[vset g\"h]'}
+  word
+    markup
+      vdef
+        @155 11 {'[vset z y\"]'}
