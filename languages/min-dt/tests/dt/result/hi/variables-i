@@ -1,0 +1,53 @@
+words
+  word
+    g_text
+      simple
+        @84 2 '1.'
+  word
+    g_text
+      simple
+        @8 1 'b'
+  word
+    g_text
+      simple
+        @96 2 '2.'
+  word
+    g_text
+      simple
+        @20 4 {'c d'}
+  word
+    g_text
+      simple
+        @108 2 '3.'
+  word
+    g_text
+      simple
+        @39 1 'e'
+  word
+    g_text
+      simple
+        @41 1 'f'
+  word
+    g_text
+      simple
+        @124 2 '4.'
+  word
+    g_text
+      simple
+        @57 1 'g'
+  word
+    g_text
+      quote
+        @58 1 {'\"'}
+  word
+    g_text
+      simple
+        @59 1 'h'
+  word
+    g_text
+      simple
+        @140 2 '5.'
+  word
+    g_text
+      simple
+        @73 7 {'i [j] k'}

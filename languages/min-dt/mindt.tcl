@@ -51,19 +51,20 @@ debug define mindt/parser
 oo::class create mindt::parser {
     #superclass marpa::multi-stop
 
-    constructor {parser} {
+    constructor {parser sfparser} {
 	debug.mindt/parser {[debug caller] | }
-	#marpa::import $parser PAR
+	marpa::import $sfparser SF
 	marpa::multi-stop create PAR $parser
 	PAR on-event [self namespace]::my ProcessSpecialForms
-	set label *primary*
-	set var   {}
+	set label   *primary*
+	set var     {}
 	return
     }
 
     destructor {
 	debug.mindt/parser {[debug caller] | }
 	PAR destroy
+	SF  destroy
 	return
     }
 
@@ -82,42 +83,172 @@ oo::class create mindt::parser {
 
 	set s [PAR match start]
 	set l [PAR match length]
-	set v [string range [PAR match value] 1 end-1]
-	# v :: Outer brackets [] stripped
+	set v [PAR match value]
 
-	# Use a separate parser to get the internal structure of the
-	# separate form. Then transform and resolve all the inner
-	# pieces before applying the outer form to the system state.
+	debug.mindt/parser {[debug caller 1] | [${s}:$l] = ($v)}
+puts "ZZZ\t\[${s}:$l] = ($v)"
+	set vast [SF process $v]
 
-	
-	# Event handling below may create alternatives.
-	#foreach e $enames { my Process$e $s $l $v }
-	#puts XA\t$s,$l\t($v)
-	my {*}$v
+	debug.mindt/parser {[debug caller 1] | ast = $vast}
+
+	my {*}$vast -- 1 $s $l
 	return
     }
 
-    method vset {name {value {}}} {
-	puts =V=\t([info level 0])
-	puts =V=\t|$name|
-	puts =V=\t|$value|
-    }
-    
-    method include {path} {
-	puts =I=\t([info level 0])
-    }
-    
-    method ProcessVdef {start len value} {
-	puts VD\t[info level 0]
+    method var_def {children -- top start length} {
+	# children = (varname value)
+	debug.mindt/parser {[debug caller] | }
+
+	lassign $children varname value
+	# varname = ast
+	# value   = terminal (start, length, text)
+	set varname [my {*}$varname -- 0 $start $length]
+	lassign $value vs vl vtext
+
+	incr vs $start
+
+	if {[my Braced $vtext]} {
+	    # Braced value. Store with braces stripped, adjust range,
+	    # mark as Simple for toplevel references.
+	    incr vs
+	    incr vl -2
+	    set spec [list $vs $vl 1 [my Strip $vtext]]
+	} elseif {[my Quoted $vtext]} {
+	    # Quoted value. Store with quotes stripped, for use in
+	    # nested references, adjust range. Mark as non-simple.
+	    incr vs
+	    incr vl -2
+	    set spec [list $vs $vl 0 [my Strip $vtext]]
+	} else {
+	    # Plain value. Store unchanged. Mark as non-simple.
+	    set spec [list $vs $vl 0 $vtext]
+	}
+
+	# Remember mapping
+	dict set var $varname $spec
+	return ""
     }
 
-    method ProcessVref {start len value} {
-	puts VU\t[info level 0]
+    method Braced {x} { string match "\{*\}" $x }
+    method Quoted {x} { string match "\"*\"" $x }
+    method Strip  {x} { string range $x 1 end-1 }
+
+    method var_ref {children -- top start length} {
+	# children = (varname)
+	debug.mindt/parser {[debug caller] | }
+
+	lassign $children varname
+	# varname = ast
+	set varname [my {*}$varname -- 0 $start $length]
+	lassign [dict get $var $varname] vs vl simple vtext
+	
+	if {$top} {
+	    # Top level references go directly into the engine, with
+	    # action dependent on if the value is simple or not.
+	    
+	    if {$simple} {
+		# Return directly as a lexeme in place of vref
+		PAR match alternate Simple [list $vs $vl $vtext]
+	    } else {
+		# The value is not simple. Insertion means re-scanning.
+		# Redirect the IO system to its start, and set up a return
+		# to here when done.
+		set here [PAR match location]
+		incr vl $vs
+		PAR match from     $vs
+		PAR match mark-add ${varname}:$here $vl @from $here
+	    }
+	} else {
+	    # Nested reference simply returns content to caller for
+	    # direct use in constructing variable names or paths.
+	    return $vtext
+	}
     }
 
-    method ProcessInclude {start len value} {
-	puts I\t[info level 0]
+    method include {children -- top start length} {
+	# children = (path)
+	debug.mindt/parser {[debug caller] | }
+
+	lassign $children path
+	# path = ast
+	set path [my {*}$path -- 0 $start $length]
+
+puts INC\t($path)
+
+	# here = match location
+	# resolve path
+	# size = ...
+	# off = extend-file ...
+	# match from off, limit size,
+	# action = return to <here>
+	return
     }
+
+    # # ## ### ##### ######## ##### ### ## # #
+
+    method braced {children -- top start length} {
+	# children = (terminal)
+	debug.mindt/parser {[debug caller] | }
+	return [my Strip [lindex $children 0 2]]
+    }
+    
+    method q_list {children -- top start length} {
+	# children = ...
+	debug.mindt/parser {[debug caller] | }
+	return [join [lmap child $children {
+	    my {*}$child -- 0 $start $length
+	}] {}]
+    }
+    
+    method simple {children -- top start length} {
+	# children = (terminal)
+	debug.mindt/parser {[debug caller] | }
+	return [lindex $children 0 2]
+    }
+
+    method space {children -- top start length} {
+	# children = (terminal)
+	debug.mindt/parser {[debug caller] | }
+	return [lindex $children 0 2]
+    }
+
+    method unquot {children -- top start length} {
+	# children = (lead tail)
+	debug.mindt/parser {[debug caller] | }
+	lassign $children lead tail
+	append r [my {*}$lead -- 0 $start $length]
+	if {![llength $tail]} { return $r }
+	append r [my {*}$tail -- 0 $start $length]
+	return $r
+    }
+
+    method uq_list {children -- top start length} {
+	# children = ...
+	debug.mindt/parser {[debug caller] | }
+	return [join [lmap child $children {
+	    my {*}$child -- 0 $start $length
+	}] {}]
+    }
+
+    method quote {children -- top start length} {
+	# children = (terminal)
+	debug.mindt/parser {[debug caller] | }
+	return "\""
+    }
+
+    # Various symbols do not appear in the AST due to use of ::first
+    # in sf.slif
+    ##
+    # - form
+    # - vars
+    # - varname
+    # - path
+    # - value
+    # - recurse
+    # - quoted
+    # - q_elem
+    # - uq_lead
+    # - uq_elem
 
     # State information
     # - var   :: dict (name :: string -> content :: *1)

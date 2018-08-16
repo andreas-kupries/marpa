@@ -7,7 +7,7 @@
 # (c) 2018 Grammar mindt::parser::c 1 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "mindt::parser::c".
-##	Generated On Tue Aug 14 19:24:32 PDT 2018
+##	Generated On Wed Aug 15 21:14:01 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 ##
@@ -475,9 +475,9 @@ critcl::ccode {
 
     static marpatcl_rtc_event_spec mindt_parser_c_events [3] = {
     // sym, type, active
-	{ 2, marpatcl_rtc_event_after, 1 }, // CInclude: Include
-	{ 5, marpatcl_rtc_event_after, 1 }, // CVdef: Vdef
-	{ 6, marpatcl_rtc_event_after, 1 }, // CVref: Vref
+	{ 2, marpatcl_rtc_event_after, 1 }, // CInclude: macro
+	{ 5, marpatcl_rtc_event_after, 1 }, // CVdef: macro
+	{ 6, marpatcl_rtc_event_after, 1 }, // CVref: macro
     };
 
     /*
@@ -829,9 +829,9 @@ critcl::ccode {
 ## Class exposing the grammar engine.
 
 critcl::literals::def mindt_parser_c_event {
-    u0 "Include"
-    u1 "Vdef"
-    u2 "Vref"
+    u0 "macro"
+    u1 "macro"
+    u2 "macro"
 } +list
 
 critcl::class def mindt::parser::c {

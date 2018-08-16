@@ -88,9 +88,12 @@ CVdef		~ VAR_DEF
 CVref		~ VAR_REF
 CInclude	~ INCLUDE
 
-:lexeme		~ CVdef		pause => after	event => Vdef
-:lexeme		~ CVref		pause => after	event => Vref
-:lexeme		~ CInclude	pause => after	event => Include
+:lexeme		~ CVdef		pause => after	event => macro
+:lexeme		~ CVref		pause => after	event => macro
+:lexeme		~ CInclude	pause => after	event => macro
+
+# Idea: Set the lexemes to `latm 0` to make them always acceptable,
+# then remove them from the G1.
 
 Braced		~ BRACED
 Simple		~ SIMPLE

@@ -1,0 +1,33 @@
+words
+  word
+    g_text
+      simple
+        @32 2 '1.'
+  word
+    g_text
+      simple
+        @8 1 'b'
+  word
+    g_text
+      simple
+        @43 2 '2.'
+  word
+    g_text
+      simple
+        @28 1 'x'
+  word
+    g_text
+      simple
+        @56 2 '3.'
+  word
+    g_text
+      simple
+        @28 1 'x'
+  word
+    g_text
+      simple
+        @76 2 '4.'
+  word
+    g_text
+      simple
+        @28 1 'x'

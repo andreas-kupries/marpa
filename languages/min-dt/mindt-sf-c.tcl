@@ -7,8 +7,8 @@
 # (c) 2018 Grammar mindt::parser::sf::c 1 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "mindt::parser::sf::c".
-##	Generated On Wed Aug 15 16:45:46 PDT 2018
-##		  By andreask@ten
+##	Generated On Wed Aug 15 21:14:04 PDT 2018
+##		  By aku@hephaistos
 ##		 Via marpa-gen
 ##
 #* Space taken: 5800 bytes

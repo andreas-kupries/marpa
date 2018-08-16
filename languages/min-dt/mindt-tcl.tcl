@@ -7,7 +7,7 @@
 # (c) 2018 Grammar mindt::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "mindt::parser::tcl".
-##	Generated On Tue Aug 14 19:24:33 PDT 2018
+##	Generated On Wed Aug 15 21:14:02 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 
@@ -257,13 +257,13 @@ oo::class create mindt::parser::tcl {
 	# event per type with each symbol, for a maximum of three.
 	return {
 	    CInclude {
-	        after {Include on}
+	        after {macro on}
 	    }
 	    CVdef {
-	        after {Vdef on}
+	        after {macro on}
 	    }
 	    CVref {
-	        after {Vref on}
+	        after {macro on}
 	    }
 	}
     }
