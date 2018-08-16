@@ -103,10 +103,10 @@ typedef marpatcl_rtc_sv_p (*marpatcl_rtc_sv_cmd) (int               action,
  * (conversions, etc).
  */
 
-typedef void (*marpatcl_rtc_event_cmd) (void*                  clientdata,
-                                        marpatcl_rtc_eventtype type,
-                                        int                    nevents,
-                                        int*                   eventids);
+typedef int (*marpatcl_rtc_event_cmd) (void*                  clientdata,
+				       marpatcl_rtc_eventtype type,
+				       int                    nevents,
+				       int*                   eventids);
 
 /*
  * - - -- --- ----- -------- ------------- ---------------------

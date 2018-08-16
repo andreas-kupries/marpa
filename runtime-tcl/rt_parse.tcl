@@ -112,6 +112,7 @@ oo::class create marpa::engine::tcl::parse {
 	set chan [open $path r]
 	# Drive the pipeline from the channel.
 	IN read $chan {*}$options
+	PARSE reset
 	return $myresult
     }
 
@@ -120,6 +121,7 @@ oo::class create marpa::engine::tcl::parse {
 	set myresult {}
 	# Drive the pipeline from the string
 	IN enter $string {*}[my Options $args]
+	PARSE reset
 	return $myresult
     }
 

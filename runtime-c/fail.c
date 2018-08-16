@@ -58,6 +58,13 @@ marpatcl_rtc_failed (marpatcl_rtc_p p)
     TRACE_RETURN ("%d", FAIL.fail);
 }
 
+const char*
+marpatcl_rtc_fail_origin (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE_RETURN ("%s", FAIL.origin);
+}
+
 void
 marpatcl_rtc_fail_syscheck (marpatcl_rtc_p p, Marpa_Grammar g, int res, const char* label)
 {

@@ -209,6 +209,7 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int ma
 	    IN.cstop     = -2;
 	    marpatcl_rtc_symset_clear (EVENTS);
 	    POST_EVENT (marpatcl_rtc_event_stop);
+	    if (!evok) break;
 	    continue;
 	}
 

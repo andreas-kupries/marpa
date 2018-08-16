@@ -81,9 +81,13 @@ typedef struct marpatcl_rtc {
     TRACE ("PE %s %d -> (%p, cd %p)", #type, EVENTS->n, p->event, p->ecdata); \
     LEX.m_event = type;							\
     LEX.m_clearfirst = 1;						\
-    p->event (p->ecdata, type, EVENTS->n, EVENTS->dense);		\
-    LEX.m_event = marpatcl_rtc_eventtype_LAST
+    int evok = p->event (p->ecdata, type, EVENTS->n, EVENTS->dense);	\
+    LEX.m_event = marpatcl_rtc_eventtype_LAST;				\
+    if (!evok) { marpatcl_rtc_failit (p, "event"); }
 
+// See sem_tcl.c `marpatcl_rtc_sv_complete` (%%) for the location checking
+// against this failure origin.
+    
 #endif
 
 /*

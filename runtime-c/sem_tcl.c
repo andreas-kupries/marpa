@@ -106,7 +106,7 @@ marpatcl_rtc_eh_setup (marpatcl_ehandlers* e,
     TRACE_TAG_RETURN_VOID (eh);
 }
 
-void
+int
 marpatcl_rtc_eh_report (void*                  cdata,
 			marpatcl_rtc_eventtype type,
 			int                    c,
@@ -116,9 +116,8 @@ marpatcl_rtc_eh_report (void*                  cdata,
     marpatcl_ehandlers_p e = (marpatcl_ehandlers_p) cdata;
 
     if (!e->event[0]) {
-	TRACE_TAG (eh, "PE ignored, no Tcl callback", 0);
-	TRACE_TAG_RETURN_VOID (eh);
-	TRACE_RETURN_VOID;
+	TRACE_TAG        (eh, "PE ignored, no Tcl callback", 0);
+	TRACE_TAG_RETURN (eh, "(ok) %d", 1);
     }
 
     TRACE_TAG (eh, "PE taken, posting to Tcl", 0);
@@ -130,10 +129,10 @@ marpatcl_rtc_eh_report (void*                  cdata,
     }
     TAKE (events);
 
-    critcl_callback_invoke (e->event [type], 1, &events);
+    int res = critcl_callback_invoke (e->event [type], 1, &events);
 
     RELE (events);
-    TRACE_TAG_RETURN_VOID (eh);
+    TRACE_TAG_RETURN (eh, "(ok) %d", res == TCL_OK);
 }
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -180,6 +179,7 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, marpatcl_rtc_p p
 
     if (!marpatcl_rtc_failed (p)) {
 	Tcl_Obj* r;
+	marpatcl_rtc_reset (p);
 	TRACE ("SV-AS-TCL (sv*) %p", sv);
 	r = marpatcl_rtc_sv_astcl (ip, sv);
 	if (r) {
@@ -190,7 +190,15 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, marpatcl_rtc_p p
 	/* Assumes that an error message was left in ip */
     } else {
 	TRACE ("FAIL", 0);
-	make_err (ip, p);
+	// See rtc_int.h `POST_EVENT` (%%) for where this origin is set into
+	// the failure record.
+	if (strcmp (marpatcl_rtc_fail_origin (p), "event") != 0) {
+	    // Generate parsing error record only if the failure was from the
+	    // engine itself. For events we assume that the Tcl interp already
+	    // contains the necessary message.
+	    make_err (ip, p);
+	}
+	marpatcl_rtc_reset (p);
     }
     TRACE_RETURN ("ERROR", TCL_ERROR);
 }

@@ -59,6 +59,8 @@ int               marpatcl_rtc_enter_more (marpatcl_rtc_p       p,
 marpatcl_rtc_sv_p marpatcl_rtc_get_sv  (marpatcl_rtc_p p);
 /* marpatcl_rtc_failed - see fail.h */
 
+void              marpatcl_rtc_reset (marpatcl_rtc_p p);
+
 void marpatcl_rtc_gather_events (marpatcl_rtc_p         p,       // TRACE-only data
 				 marpatcl_rtc_events*   decls,   // Search this database ...
 				 marpatcl_rtc_eventtype type,    // ... for this type of events ...

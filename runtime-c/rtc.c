@@ -99,6 +99,17 @@ marpatcl_rtc_get_sv (marpatcl_rtc_p p)
     TRACE_RETURN ("(sv*) %p", 0 /*TODO*/);
 }
 
+
+void
+marpatcl_rtc_reset (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+
+    marpatcl_rtc_parser_reset (p);
+
+    TRACE_RETURN_VOID;
+}
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API

@@ -436,6 +436,7 @@ oo::class create marpa::lexer {
 
 	#  Note that the flush leaves us with a just-started
 	# recognizer, which we have to remove again.
+
 	if {$myrecce ne {}} {
 	    debug.marpa/lexer {[debug caller] | RECCE kill 1 [namespace which -command RECCE]}
 	    RECCE destroy
@@ -497,6 +498,13 @@ oo::class create marpa::lexer {
 	return
     }
 
+    method reset {} {
+	debug.marpa/lexer {[debug caller] | }
+	RECCE destroy
+	set myrecce {}
+	return
+    }
+    
     method PEFill {found sv} {
 	debug.marpa/lexer {[debug caller] | }
 	set prehandler [lmap f $found {

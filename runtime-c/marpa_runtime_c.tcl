@@ -174,7 +174,7 @@ critcl::api function void marpatcl_rtc_eh_setup {
     int                  c
     Tcl_Obj*const*       v
 }
-critcl::api function void marpatcl_rtc_eh_report {
+critcl::api function int marpatcl_rtc_eh_report {
     void*                  cdata
     marpatcl_rtc_eventtype type
     int                    c

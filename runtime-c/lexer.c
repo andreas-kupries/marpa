@@ -370,6 +370,19 @@ marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep)
     TRACE_RETURN_VOID;
 }
 
+void
+marpatcl_rtc_lexer_reset (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+
+    if (LEX.recce) {
+	marpa_r_unref (LEX.recce);
+	LEX.recce = 0;
+    }
+
+    TRACE_RETURN_VOID;
+}
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * Internal
@@ -612,6 +625,7 @@ lex_complete (marpatcl_rtc_p p)
 	// __ATTENTION__ The event handler function may move in the input.
 	if (lex_events (p, marpatcl_rtc_event_discard, DISCARDS)) {
 	    POST_EVENT (marpatcl_rtc_event_discard);
+	    if (!evok) { TRACE_RETURN ("%d", 0); }
 	}
     restart_after_discard:
 	TRACE ("(rtc*) %p restart", p);
@@ -629,8 +643,10 @@ lex_complete (marpatcl_rtc_p p)
 	if (lex_events (p, marpatcl_rtc_event_before, FOUND)) {
 	    marpatcl_rtc_inbound_moveto (p, LEX.cstart-1);
 	    POST_EVENT (marpatcl_rtc_event_before);
+	    if (!evok) { TRACE_RETURN ("%d", 0); }
 	} else if (lex_events (p, marpatcl_rtc_event_after, FOUND)) {
 	    POST_EVENT (marpatcl_rtc_event_after);
+	    if (!evok) { TRACE_RETURN ("%d", 0); }
 	}
 
 	if (!marpatcl_rtc_symset_size(FOUND)) {
