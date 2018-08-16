@@ -1,0 +1,9 @@
+words
+  word
+    g_text
+      simple
+        @26 5 'lorem'
+  word
+    g_text
+      simple
+        @42 5 'ipsum'

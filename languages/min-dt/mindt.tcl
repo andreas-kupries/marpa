@@ -40,24 +40,24 @@ package require TclOO
 package require debug           ;# Tracing
 package require debug::caller   ;# Tracing
 package require marpa::util	;# marpa::import
+package require marpa::multi-stop
 
 # # ## ### ##### ######## #############
 
 debug define mindt/parser
 #debug prefix mindt/parser {[debug caller] | }
+#debug on mindt/parser
 
 # # ## ### ##### ######## #############
 
 oo::class create mindt::parser {
-    #superclass marpa::multi-stop
-
     constructor {parser sfparser} {
 	debug.mindt/parser {[debug caller] | }
 	marpa::import $sfparser SF
 	marpa::multi-stop create PAR $parser
 	PAR on-event [self namespace]::my ProcessSpecialForms
-	set label   *primary*
-	set var     {}
+	set mypath [file join [pwd] __fake__]
+	set myvar  {}
 	return
     }
 
@@ -68,13 +68,56 @@ oo::class create mindt::parser {
 	return
     }
 
-    forward process  PAR process
-    # TODO: wrap as method to rewrite parse errors based on
+    # TODO: rewrite parse errors based on location to show proper
+    # line/col/path information.
 
-    if 0 {method process {string args} {
-	debug.mindt/parser {[debug caller 0] | }
-	PAR process $string {*}$args
-    }}
+    method process {string args} {
+	debug.mindt/parser {[debug caller 1] | }
+	PAR process $string {*}[my Options $args]
+    }
+
+    method process-file {path args} {
+	debug.mindt/parser {[debug caller] | }
+	# Note, the user is able to override the default path
+	# information through the option `path`.
+	set mypath $path
+	PAR process-file $path {*}[my Options $args]
+    }
+
+    method Options {words} {
+	debug.mindt/parser {[debug caller] | }
+	# PAR supported options in `words` are
+	# - `from`
+	# - `to`
+	# - `limit`
+	# This code adds support for option
+	# - `path`
+	# Used for resolution of relative include paths.
+	set new {}
+	foreach {option value} $words {
+	    if {$option eq "path"} {
+		set mypath [file normalize $value]
+		debug.mindt/parser {[debug caller] | mypath = $mypath }
+		continue
+	    }
+	    lappend new $option $value
+	}
+
+	debug.mindt/parser {[debug caller] | => ($new) }
+	return $new
+    }
+
+    method Resolve {path} {
+	debug.mindt/parser {[debug caller] | }
+	set basedir [file dirname $mypath]
+	foreach base [list $basedir [pwd]] {
+	    set full [file join $base $path]
+	    if {![file exists $full]} continue
+	    return $full
+	}
+	return -code error \
+	    "File `$path` not found, searching in `$basedir` and `[pwd]`"
+    }
 
     method ProcessSpecialForms {__ type enames} {
 	debug.mindt/parser {[debug caller 1] | }
@@ -90,11 +133,17 @@ oo::class create mindt::parser {
 
 	debug.mindt/parser {[debug caller 1] | ast = $vast}
 
+	# Treat AST nodes as deeply-nested command structure.
+	# Each node is responsible for handling its children.
+	# Which are provided as the first argument, a list of nodes.
 	my {*}$vast -- 1 $s $l
 	return
     }
 
     method var_def {children -- top start length} {
+	# Variable definition.
+	# Extends `myvar` with a mapping from variable name to value.
+
 	# children = (varname value)
 	debug.mindt/parser {[debug caller] | }
 
@@ -124,7 +173,7 @@ oo::class create mindt::parser {
 	}
 
 	# Remember mapping
-	dict set var $varname $spec
+	dict set myvar $varname $spec
 	return ""
     }
 
@@ -133,13 +182,18 @@ oo::class create mindt::parser {
     method Strip  {x} { string range $x 1 end-1 }
 
     method var_ref {children -- top start length} {
+	# Variable reference/use
+	# Retrieves the value associated with the variable name from
+	# `myvar` and either returns it to the caller (inner
+	# references) or into the parser (toplevel use).
+
 	# children = (varname)
 	debug.mindt/parser {[debug caller] | }
 
 	lassign $children varname
 	# varname = ast
 	set varname [my {*}$varname -- 0 $start $length]
-	lassign [dict get $var $varname] vs vl simple vtext
+	lassign [dict get $myvar $varname] vs vl simple vtext
 
 	if {$top} {
 	    # Top level references go directly into the engine, with
@@ -165,6 +219,10 @@ oo::class create mindt::parser {
     }
 
     method include {children -- top start length} {
+	# File inclusion. Resolves the path name, then directs the
+	# parser to read from the file, returning to the current
+	# location when the included file ends.
+
 	# children = (path)
 	debug.mindt/parser {[debug caller] | }
 
@@ -172,14 +230,42 @@ oo::class create mindt::parser {
 	# path = ast
 	set path [my {*}$path -- 0 $start $length]
 
-puts INC\t($path)
+	# Resolve to absolute path, using current path as context,
+	# then use it to extend the input stream, if not in a
+	# recursion.
 
-	# here = match location
-	# resolve path
-	# size = ...
-	# off = extend-file ...
-	# match from off, limit size,
-	# action = return to <here>
+	set full [my Resolve $path]
+
+	if {[PAR match mark-exists $full]} {
+	    return -code error \
+		"Detected recursive include of file `$full`, aborting."
+	}
+
+	# Extend input and set up the return when reaching the new
+	# secondary's end.
+
+	set  here  [PAR match location]
+	set  start [PAR extend-file $full]
+	set  stop  [file size $full] ;# end relative to start of new file itself
+	incr stop $start             ;# end relative to entire extended input
+
+	PAR match mark-add $full $stop {*}[mymethod ReturnTo $here $mypath]
+
+	# Start reading from the included file, also using it as the
+	# new path resolution context
+
+	set mypath $full
+	PAR match from $start
+	return
+    }
+
+    method ReturnTo {location path __ mark} {
+	debug.mindt/parser {[debug caller] | }
+	# Restore the origin location and path context when reaching
+	# the end of an included file.
+
+	set mypath     $path
+	PAR match from $location
 	return
     }
 
@@ -254,11 +340,13 @@ puts INC\t($path)
     #  content :: list/2,3 (start :: int, length :: int, ?value :: string?)
     # - label :: string
 
-    # var   : mapping from variable nmes to content (location, actual
-    #         value for braced literals
-    # label : previous label of the input stream (include nesting)
+    # myvar   : mapping from variable nmes to content (location, actual
+    #           value for braced literals
+    # mypath  : Path for the file representing the currently active input stream.
+    #           Set initially, on includes, and on returns from includes.
+    #           The stack of paths is implied in the actions for file markers.
 
-    variable var label
+    variable myvar mypath
 }
 
 # # ## ### ##### ######## #############

@@ -141,12 +141,15 @@ foreach level {
 	    set code     ok
 	}
 
+	set pathclause {}
+	if {$level eq "hi"} { lappend pathclause path $infile }
+
 	# - --   -----        -------------
 	# For rt-c activate `TRACE` tag `enter` in `inbound.c` and
 	# then use the rebuilt runtime.
     
 	test [tnp]-process-2.${kd}.${l}---${level}-${id} "[$level] :: process $id" -body {
-	    ast-format [PARSE process $input]
+	    ast-format [PARSE process $input {*}$pathclause]
 	}   -setup   setup-$level \
 	    -cleanup cleanup \
 	    -returnCodes $code \

@@ -4,6 +4,6 @@ words
       simple
         @0 5 'lorem'
   word
-    g_text
-      simple
-        @23 5 'ipsum'
+    markup
+      include
+        @6 16 {'[include _ipsum]'}

@@ -15,7 +15,6 @@
 
 package require Tcl 8.5
 package require TclOO		;# Implies Tcl 8.5 requirement.
-package require oo::util	;# mymethod
 package require debug
 package require debug::caller
 package require marpa::util	;# marpa::import
@@ -100,7 +99,7 @@ oo::class create marpa::multi-stop::mgr {
     method oe {args} {
 	debug.marpa/multi-stop {}
 	# Place our interceptor between parser and user's handler.
-	PAR on-event {*}[mymethod EVENT $args]
+	PAR on-event [self namespace]::my EVENT $args
 	return
     }
 
@@ -135,6 +134,7 @@ oo::class create marpa::multi-stop::mgr {
     # - mark-add      name pos ?cmd...? | Replaces `to`, `limit`
     # - mark-cancel   name              | Replaces `dont-stop`
     # - marks         ?pattern?         | New
+    # - mark-exists   name              | New
     # - mark-location name              | New, semi-replaces `stop`
     # - mark-active                     | Is `stop` under a different name
 
@@ -211,6 +211,11 @@ oo::class create marpa::multi-stop::mgr {
 	return [dict get $mypos $name]
     }
 
+    method mark-exists {name} {
+	debug.marpa/multi-stop {}
+	return [dict exists $mypos $name]
+    }
+
     forward mark-active PAR match stop
 
     method Cancel {name ra} {
@@ -269,8 +274,8 @@ oo::class create marpa::multi-stop::mgr {
 	    # ?? - recreate mark ?
 	    #    - other
 	    switch -exact -- [lindex $cmd 0] {
-		@from  { lassign $cmd __ pos   ; PAR match from  $pos   ; continue }
-		@from+ { lassign $cmd __ delta ; PAR match from+ $delta ; continue }
+		@from  { lassign $cmd __ pos   ; PAR match from  $pos            ; continue }
+		@from+ { lassign $cmd __ delta ; PAR match from+ $delta          ; continue }
 		@eof   {                         PAR match from [PAR match last] ; continue }
 	    }
 	    uplevel 1 [list {*}$cmd $myshell $name]

@@ -14,7 +14,7 @@ words
   word
     g_text
       simple
-        @20 4 {'c d'}
+        @20 3 {'c d'}
   word
     g_text
       simple
