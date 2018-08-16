@@ -128,7 +128,7 @@ oo::class create mindt::parser {
 	set l [PAR match length]
 	set v [PAR match value]
 
-	debug.mindt/parser {[debug caller 1] | [${s}:$l] = ($v)}
+	debug.mindt/parser {[debug caller 1] | <${s}:${l}> = ($v)}
 	set vast [SF process $v]
 
 	debug.mindt/parser {[debug caller 1] | ast = $vast}
@@ -137,7 +137,13 @@ oo::class create mindt::parser {
 	# Each node is responsible for handling its children.
 	# Which are provided as the first argument, a list of nodes.
 	my {*}$vast -- 1 $s $l
+	#my X {*}$vast -- 1 $s $l
 	return
+    }
+
+    method X {args} {
+	puts [info level 0]
+	my {*}$args
     }
 
     method var_def {children -- top start length} {
@@ -248,6 +254,7 @@ oo::class create mindt::parser {
 	set  start [PAR extend-file $full]
 	set  stop  [file size $full] ;# end relative to start of new file itself
 	incr stop $start             ;# end relative to entire extended input
+	incr stop -1                 ;# last character
 
 	PAR match mark-add $full $stop {*}[mymethod ReturnTo $here $mypath]
 

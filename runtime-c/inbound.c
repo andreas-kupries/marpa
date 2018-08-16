@@ -11,6 +11,7 @@
 
 TRACE_OFF;
 TRACE_TAG_OFF (enter);
+TRACE_TAG_OFF (utf);
 
 #ifdef CRITCL_TRACER
 static void
@@ -42,6 +43,7 @@ marpatcl_rtc_inbound_init (marpatcl_rtc_p p)
     TRACE_FUNC ("((rtc*) %p)", p);
 
     IN.bytes     = 0;
+    IN.owned     = 0;
     IN.location  = -1;
     IN.clocation = -1;
     IN.cstop     = -1;
@@ -55,6 +57,11 @@ void
 marpatcl_rtc_inbound_free (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
+
+    if (IN.owned) {
+	FREE (IN.bytes);
+    }
+
     // nothing to do
     TRACE_RETURN_VOID;
 }
@@ -165,7 +172,8 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int ma
 	max = strlen (bytes);
     }
 
-    IN.bytes = (char*) bytes;
+    IN.bytes = (char*) bytes; // Copying the pointer means we do not own it.
+    IN.owned = 0;             // Relevant to `enter_more`.
     IN.size  = max;
     IN.csize = -max; // Negative value indicates information in byte waiting
                      // for conversion into actual character location. We
@@ -205,6 +213,13 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int ma
 	    if (IN.location == max) break;
 	    continue;
 	}
+
+	// TODO - check against IN.size as well, and force an `io/overrun`
+	// 	  failure when hitting that. This can currently happen for
+	// 	  extended input, as processing it will not trigger EOF, and
+	// 	  when the stop marker is set wrong it will happily continue
+	// 	  beyond the end.
+	ASSERT(0,"TODO");
 
 	int prevbloc = IN.location;
 	int prevcloc = IN.clocation;
@@ -248,12 +263,26 @@ marpatcl_rtc_inbound_enter_more (marpatcl_rtc_p p,
 
     int            offset   = IN.size + 1;
     int            newsize  = offset + max;
-    unsigned char* newbytes = REALLOC (IN.bytes, unsigned char, newsize);
-    ASSERT (newbytes, "Failed to expand memory for input");
+    unsigned char* newbytes;
+    if (IN.owned) {
+	// We own the memory for IN.bytes, thus we are allowed to directly
+	// expand the area, nothing can trip over that.
+	newbytes = REALLOC (IN.bytes, unsigned char, newsize);
+	ASSERT (newbytes, "Failed to expand memory for input");
+    } else {
+	// The memory for IN.bytes belongs to the outside. Cannot simply
+	// realloc, may pull the rug out from under somebody. Allocate in the
+	// new size and do all the copying.
+	newbytes = NALLOC (unsigned char, newsize);
+	ASSERT (newbytes, "Failed to expand memory for copy of input");
+	memcpy (newbytes, IN.bytes, IN.size * sizeof (unsigned char));
+    }
 
+    // Separator for the previous stream, and copy new data in.
     newbytes [offset-1] = '\0';
     memcpy (newbytes + offset, bytes, max * sizeof (unsigned char));
 
+    IN.owned = 1; // We own the memory now, regardless of its previous state.
     IN.bytes = newbytes;
     IN.size  = newsize;
 
@@ -280,6 +309,8 @@ marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
     // Extract byte to process
     unsigned char ch = IN.bytes [IN.location];
 
+    TRACE_TAG (utf, "eyes: %d \\%3o @ %d", ch, ch, IN.location);
+
     // Possibly step to the next character location as well
 #define SINGLE(c) (((c) & 0x80) == 0x00) // 0b1000,0000 : 0b0000,0000
 #define TRAIL(c)  (((c) & 0xC0) == 0x80) // 0b1100,0000 : 0b1000,0000
@@ -293,11 +324,13 @@ marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
     marpatcl_rtc_clindex_update (p, k)
 
     if (SINGLE (ch)) {
+	TRACE_TAG (utf, "/single", 0);
 	// A single stands for itself, no trailers expected, no lead
 	IN.trailer = 0;
 	IN.header  = 0;
 	MOVE (1);
     } else if (TRAIL (ch)) {
+	TRACE_TAG (utf, "/trailer %d", IN.trailer);
 	// A trailer should come after a lead-in.
 	if (IN.trailer > 0) {
 	    // A proper trailer extends the header, and reduces how much more
@@ -314,6 +347,7 @@ marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
 	    MOVE (1);
 	}
     } else if (LEAD2 (ch)) {
+	TRACE_TAG (utf, "/lead2 T%d", IN.trailer);
 	if (IN.trailer > 0) {
 	    // Unexpected begin of a character, previous incomplete.
 	    // The previous bytes all stand for themselves now.
@@ -324,6 +358,7 @@ marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
 	IN.header  = 1;
 
     } else if (LEAD3 (ch)) {
+	TRACE_TAG (utf, "/lead3 T%d", IN.trailer);
 	if (IN.trailer > 0) {
 	    // Unexpected begin of a character, previous incomplete.
 	    // The previous bytes all stand for themselves now.
@@ -334,6 +369,7 @@ marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
 	IN.header  = 1;
 
     } else if (LEAD4 (ch)) {
+	TRACE_TAG (utf, "/lead4 T%d", IN.trailer);
 	if (IN.trailer > 0) {
 	    // Unexpected begin of a character, previous incomplete.
 	    // The previous bytes all stand for themselves now.
@@ -344,7 +380,7 @@ marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
 	IN.header  = 1;
 
     } else {
-	ASSERT (0,"");
+	ASSERT (0, "step failure on bad non-utf byte");
     }
 
     TRACE_RETURN ("=> %d", ch);
