@@ -70,7 +70,7 @@ oo::class create mindt::parser {
 
     forward process  PAR process
     # TODO: wrap as method to rewrite parse errors based on
-    
+
     if 0 {method process {string args} {
 	debug.mindt/parser {[debug caller 0] | }
 	PAR process $string {*}$args
@@ -86,7 +86,6 @@ oo::class create mindt::parser {
 	set v [PAR match value]
 
 	debug.mindt/parser {[debug caller 1] | [${s}:$l] = ($v)}
-puts "ZZZ\t\[${s}:$l] = ($v)"
 	set vast [SF process $v]
 
 	debug.mindt/parser {[debug caller 1] | ast = $vast}
@@ -141,11 +140,11 @@ puts "ZZZ\t\[${s}:$l] = ($v)"
 	# varname = ast
 	set varname [my {*}$varname -- 0 $start $length]
 	lassign [dict get $var $varname] vs vl simple vtext
-	
+
 	if {$top} {
 	    # Top level references go directly into the engine, with
 	    # action dependent on if the value is simple or not.
-	    
+
 	    if {$simple} {
 		# Return directly as a lexeme in place of vref
 		PAR match alternate Simple [list $vs $vl $vtext]
@@ -191,7 +190,7 @@ puts INC\t($path)
 	debug.mindt/parser {[debug caller] | }
 	return [my Strip [lindex $children 0 2]]
     }
-    
+
     method q_list {children -- top start length} {
 	# children = ...
 	debug.mindt/parser {[debug caller] | }
@@ -199,7 +198,7 @@ puts INC\t($path)
 	    my {*}$child -- 0 $start $length
 	}] {}]
     }
-    
+
     method simple {children -- top start length} {
 	# children = (terminal)
 	debug.mindt/parser {[debug caller] | }

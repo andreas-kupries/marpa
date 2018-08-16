@@ -87,7 +87,7 @@ typedef struct marpatcl_rtc {
 
 // See sem_tcl.c `marpatcl_rtc_sv_complete` (%%) for the location checking
 // against this failure origin.
-    
+
 #endif
 
 /*

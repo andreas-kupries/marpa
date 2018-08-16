@@ -504,7 +504,7 @@ oo::class create marpa::lexer {
 	set myrecce {}
 	return
     }
-    
+
     method PEFill {found sv} {
 	debug.marpa/lexer {[debug caller] | }
 	set prehandler [lmap f $found {

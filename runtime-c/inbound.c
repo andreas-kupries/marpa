@@ -59,6 +59,17 @@ marpatcl_rtc_inbound_free (marpatcl_rtc_p p)
     TRACE_RETURN_VOID;
 }
 
+void
+marpatcl_rtc_inbound_reset (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+
+    marpatcl_rtc_inbound_free (p);
+    marpatcl_rtc_inbound_init (p);
+
+    TRACE_RETURN_VOID;
+}
+
 int
 marpatcl_rtc_inbound_location (marpatcl_rtc_p p)
 {

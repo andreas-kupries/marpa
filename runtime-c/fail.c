@@ -37,6 +37,17 @@ marpatcl_rtc_fail_free (marpatcl_rtc_p p)
 }
 
 void
+marpatcl_rtc_fail_reset (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+
+    marpatcl_rtc_fail_free (p);
+    marpatcl_rtc_fail_init (p);
+
+    TRACE_RETURN_VOID;
+}
+
+void
 marpatcl_rtc_failit (marpatcl_rtc_p p, const char* origin)
 {
     TRACE_FUNC ("((rtc*) %p, origin '%s')", p, origin ? origin : "<<null>>");

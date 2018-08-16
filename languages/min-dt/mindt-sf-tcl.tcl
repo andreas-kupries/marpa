@@ -104,7 +104,7 @@ oo::class create mindt::parser::sf::tcl {
 	debug.mindt/parser/sf/tcl
 	# Discarded symbols (whitespace)
 	return {
-	    
+
 	}
     }
 

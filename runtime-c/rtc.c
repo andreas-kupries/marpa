@@ -105,7 +105,14 @@ marpatcl_rtc_reset (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
 
-    marpatcl_rtc_parser_reset (p);
+    marpatcl_rtc_fail_reset    (p);
+    marpatcl_rtc_store_reset   (p);
+    marpatcl_rtc_inbound_reset (p);
+    marpatcl_rtc_clindex_reset (p);
+    marpatcl_rtc_gate_reset    (p);
+
+    marpatcl_rtc_parser_reset  (p);
+    // marpatcl_rtc_lexer_reset   (p);
 
     TRACE_RETURN_VOID;
 }

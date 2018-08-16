@@ -53,9 +53,26 @@ marpatcl_rtc_clindex_free (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
 
-    marpatcl_rtc_stack_destroy (CL);
-    marpatcl_rtc_stack_destroy (BL);
+    marpatcl_rtc_stack_destroy     (CL);
+    marpatcl_rtc_stack_destroy     (BL);
     marpatcl_rtc_bytestack_destroy (BS);
+
+    TRACE_RETURN_VOID;
+}
+
+void
+marpatcl_rtc_clindex_reset (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+
+    // Maximals
+    MC = -1;
+    MB = -1;
+    ML = 0;
+
+    marpatcl_rtc_stack_clear     (CL);
+    marpatcl_rtc_stack_clear     (BL);
+    marpatcl_rtc_bytestack_clear (BS);
 
     TRACE_RETURN_VOID;
 }

@@ -48,6 +48,7 @@ typedef struct marpatcl_rtc_fail {
 void        marpatcl_rtc_fail_init     (marpatcl_rtc_p p);
 void        marpatcl_rtc_fail_free     (marpatcl_rtc_p p);
 void        marpatcl_rtc_failit        (marpatcl_rtc_p p, const char* origin);
+void        marpatcl_rtc_fail_reset    (marpatcl_rtc_p p);
 int         marpatcl_rtc_failed        (marpatcl_rtc_p p);
 const char* marpatcl_rtc_fail_origin   (marpatcl_rtc_p p);
 void        marpatcl_rtc_fail_syscheck (marpatcl_rtc_p p,
