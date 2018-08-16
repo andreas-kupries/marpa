@@ -154,7 +154,7 @@ oo::class create marpa::multi-stop::mgr {
 
     method RA {args} {
 	debug.marpa/multi-stop {}
-	set res [uplevel 1 $args]
+	set res [{*}$args]
 	my RecomputeActive
 	return $res
     }
