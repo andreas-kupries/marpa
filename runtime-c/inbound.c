@@ -12,6 +12,9 @@
 TRACE_OFF;
 TRACE_TAG_OFF (enter);
 TRACE_TAG_OFF (utf);
+TRACE_TAG_ON  (locations);
+
+#define NAME(sym) marpatcl_rtc_spec_symname (SPEC->l0, sym, 0)
 
 #ifdef CRITCL_TRACER
 static void
@@ -29,6 +32,28 @@ print_input (const unsigned char* bytes, int n)
 	    TRACE_TAG (enter, "[%8d] = %c (%3d, %3u)", k, *c, *c, (unsigned char) *c);
 	}
     }
+}
+
+static void
+print_input_l (marpatcl_rtc_p p)
+{
+    //unsigned char s = '((';
+    const unsigned char* c;
+    int k;
+    TRACE_TAG_HEADER (locations, 1);
+    TRACE_TAG_ADD    (locations, "%p LOC ((", p);
+    for (k = 0, c = IN.bytes; k < IN.size; k++, c++) {
+	if (*c < 32) {
+	    // Control character, explicit octal output.
+	    TRACE_TAG_ADD (locations, "\\%03o", *c);
+	} else {
+	    // Use symbol names, should be the character itself, or escaped thing.
+	    TRACE_TAG_ADD (locations, "%s", NAME (*c));
+	}
+	//s = ',';
+    }
+    TRACE_TAG_ADD    (locations, "))", 0);
+    TRACE_TAG_CLOSER (locations);
 }
 #endif
 
@@ -162,8 +187,6 @@ marpatcl_rtc_inbound_stoploc (marpatcl_rtc_p p)
 void
 marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int max, int from, int to)
 {
-#define NAME(sym) marpatcl_rtc_spec_symname (SPEC->l0, sym, 0)
-
     unsigned char ch;
     TRACE_FUNC ("(rtc %p bytes %p, n %d, [%d...%d])", p, bytes, max, from, to);
     TRACE_TAG_DO (enter, print_input (bytes, max));
@@ -202,15 +225,30 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int ma
     //     the outer code into the proper contionals of the inner loop,
     //     leaving a single loop handling all the things.
 
+    TRACE_TAG (locations, "%p LOC _ __ ___ _____ ________ _____________ START", p);
+    TRACE_RUN (int last = -1 );
+
     while (1) {
+	TRACE_TAG_DO (locations, if (IN.size != last) { last = IN.size; print_input_l (p); });
+
+	TRACE_TAG_HEADER (locations, 1);
+	TRACE_TAG_ADD    (locations, "%p LOC [[M:%6d E:%6d S:%6d -- B%6d C%6d]]",
+			  p, max, IN.size, IN.cstop, IN.location, IN.clocation);
+
 	if (IN.location == max) {
+	    TRACE_TAG_ADD (locations, " EO1", 0);
 	    // Trigger end of data processing in the post-processors.
 	    // (Ad 4) Note that this may rewind the input to an earlier
 	    // place, forcing re-processing of some of the last
 	    // characters.
 	    marpatcl_rtc_gate_eof (p);
 
-	    if (IN.location == max) break;
+	    if (IN.location == max) {
+		TRACE_TAG_ADD (locations, " !EO1", 0);
+		break;
+	    }
+	    TRACE_TAG_ADD    (locations, " /", 0);
+	    TRACE_TAG_CLOSER (locations);
 	    continue;
 	}
 
@@ -219,15 +257,17 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int ma
 	// 	  extended input, as processing it will not trigger EOF, and
 	// 	  when the stop marker is set wrong it will happily continue
 	// 	  beyond the end.
-	ASSERT(0,"TODO");
+	//ASSERT(0,"TODO");
 
 	int prevbloc = IN.location;
 	int prevcloc = IN.clocation;
 
 	ch = marpatcl_rtc_inbound_step (p);
 	TRACE ("byte %3d @ char %d ~ byte %d = <%s>", ch, IN.clocation, IN.location, NAME(ch));
+	TRACE_TAG_ADD (locations, " ++ [[%6d %6d ~ %3d <%s>]]", IN.clocation, IN.location, ch, NAME(ch));
 
 	if (IN.clocation == IN.cstop) {
+	    TRACE_TAG_ADD (locations, " STOP", 0);
 	    // Stop triggered.
 	    // Bounce, clear stop marker, post event, restart from bounce
 	    IN.location  = prevbloc;
@@ -236,8 +276,12 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int ma
 	    marpatcl_rtc_symset_clear (EVENTS);
 	    POST_EVENT (marpatcl_rtc_event_stop);
 	    if (!evok) break;
+	    TRACE_TAG_ADD    (locations, " & CONT /", 0);
+	    TRACE_TAG_CLOSER (locations);
 	    continue;
 	}
+
+	TRACE_TAG_ADD (locations, " G", 0);
 
 	marpatcl_rtc_gate_enter (p, ch);
 	if (FAIL.fail) break;
@@ -245,7 +289,12 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int ma
 	// via methods moveto, moveby, and rewind. Examples of use:
 	// - Rewind after reading behind the current lexeme
 	// - Rewind for parse events.
-    }
+	TRACE_TAG_CLOSER (locations);
+    } /* while */
+    TRACE_TAG_ADD    (locations, " / F:%d", FAIL.fail);
+    TRACE_TAG_CLOSER (locations);
+
+    TRACE_TAG (locations, "%p LOC _ __ ___ _____ ________ _____________ DONE", p);
 
     TRACE ("Failed/o = %d @ %d max %d", FAIL.fail, IN.location, max);
     TRACE_RETURN_VOID;
