@@ -485,7 +485,7 @@ marpatcl_rtc_pe_range (Tcl_Interp*    interp,
     }
 
     int f =  0; int i;
-    int t = -1;
+    int t = -2;
     int l = -1;
 
     for (i = 0; i < objc; i+=2) {
@@ -523,7 +523,7 @@ marpatcl_rtc_pe_range (Tcl_Interp*    interp,
 				  Tcl_GetString (value), "\"", NULL);
 		return 0;
 	    }
-	    t = -1;
+	    t = -2;
 	    continue;
 	}
 	Tcl_AppendResult (interp, "Unknown option \"", option,

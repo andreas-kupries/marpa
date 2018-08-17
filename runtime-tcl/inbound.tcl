@@ -100,7 +100,7 @@ oo::class create marpa::inbound {
 				# the input, currently set to just
 				# before the first character (of
 				# nothing).
-	set mystoplocation -1 ; # Where to stop the engine, nowhere.
+	set mystoplocation -2 ; # Where to stop the engine, nowhere.
 
 	# Attach ourselves to the postprocessor, as its input
 	Forward input: [self]
@@ -156,7 +156,7 @@ oo::class create marpa::inbound {
 
     method dont-stop {} {
 	debug.marpa/inbound {[debug caller] | }
-	set mystoplocation -1
+	set mystoplocation -2
 	return
     }
 
@@ -181,7 +181,7 @@ oo::class create marpa::inbound {
 	return [my enter-more [read $chan]]
     }
 
-    method enter {string {from -1} {to -1}} {
+    method enter {string {from -1} {to -2}} {
 	debug.marpa/inbound {[debug caller 1] | }
 
 	set mytext         [split $string {}]
@@ -228,16 +228,15 @@ oo::class create marpa::inbound {
 		debug.marpa/inbound {[debug caller 1] | DO _______________________________________ /DONE}
 		return
 	    }
-	    incr mylocation
 
 	    if {$mylocation == $mystoplocation} {
 		# Stop triggered.
-		# Bounce, clear stop marker, post event, restart
-		incr mylocation -1
-		set mystoplocation -1
+		# Clear stop marker, post event, continue via fall-through
+		set mystoplocation -2
 		Forward signal-stop ;# notify gate
-		continue
 	    }
+
+	    incr mylocation
 
 	    set ch [lindex $mytext $mylocation]
 

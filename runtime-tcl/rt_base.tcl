@@ -68,13 +68,13 @@ oo::class create marpa::engine::tcl::base {
 	    my E "Last option has no value" {WRONG ARGS}
 	}
 	set from   0 ;# int >= 0 (location)
-	set to    -1 ;# int >= 0 (location)
+	set to    -2 ;# int >= 0 (location)
 	set limit -1 ;# int >  0
 	foreach {key value} $words {
 	    switch -exact -- $key {
 		from  { my Location $value ; set from  $value		     }
 		to    { my Location $value ; set to    $value ; set limit -1 }
-		limit { my PosInt   $value ; set limit $value ; set to    -1 }
+		limit { my PosInt   $value ; set limit $value ; set to    -2 }
 		default {
 		    my E "Unknown option \"$key\", expected one of from, limit, or to" {BAD OPTION}
 		}

@@ -71,7 +71,7 @@ marpatcl_rtc_inbound_init (marpatcl_rtc_p p)
     IN.owned     = 0;
     IN.location  = -1;
     IN.clocation = -1;
-    IN.cstop     = -1;
+    IN.cstop     = -2;
     IN.trailer   = 0;
     IN.header    = 0;
 
@@ -151,7 +151,7 @@ marpatcl_rtc_inbound_no_stop (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p", p);
 
-    IN.cstop = -1;
+    IN.cstop = -2;
 
     TRACE_RETURN_VOID;
 }
@@ -252,6 +252,17 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int ma
 	    continue;
 	}
 
+	if (IN.clocation == IN.cstop) {
+	    TRACE_TAG_ADD (locations, " STOP", 0);
+	    // Stop triggered (after last character, just before new).
+	    // Clear stop marker, post event, continue (via fall through)
+	    IN.cstop     = -2;
+	    marpatcl_rtc_symset_clear (EVENTS);
+	    POST_EVENT (marpatcl_rtc_event_stop);
+	    if (!evok) break;
+	    TRACE_TAG_ADD (locations, " & CONT /", 0);
+	}
+
 	// TODO - check against IN.size as well, and force an `io/overrun`
 	// 	  failure when hitting that. This can currently happen for
 	// 	  extended input, as processing it will not trigger EOF, and
@@ -259,29 +270,11 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int ma
 	// 	  beyond the end.
 	//ASSERT(0,"TODO");
 
-	int prevbloc = IN.location;
-	int prevcloc = IN.clocation;
-
 	ch = marpatcl_rtc_inbound_step (p);
 	TRACE ("byte %3d @ char %d ~ byte %d = <%s>", ch, IN.clocation, IN.location, NAME(ch));
 	TRACE_TAG_ADD (locations, " ++ [[%6d %6d ~ %3d <%s>]]", IN.clocation, IN.location, ch, NAME(ch));
 
-	if (IN.clocation == IN.cstop) {
-	    TRACE_TAG_ADD (locations, " STOP", 0);
-	    // Stop triggered.
-	    // Bounce, clear stop marker, post event, restart from bounce
-	    IN.location  = prevbloc;
-	    IN.clocation = prevcloc;
-	    IN.cstop     = -2;
-	    marpatcl_rtc_symset_clear (EVENTS);
-	    POST_EVENT (marpatcl_rtc_event_stop);
-	    if (!evok) break;
-	    TRACE_TAG_ADD    (locations, " & CONT /", 0);
-	    TRACE_TAG_CLOSER (locations);
-	    continue;
-	}
-
-	TRACE_TAG_ADD (locations, " G", 0);
+	TRACE_TAG_ADD (locations, " gate", 0);
 
 	marpatcl_rtc_gate_enter (p, ch);
 	if (FAIL.fail) break;
