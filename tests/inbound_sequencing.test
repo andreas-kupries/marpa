@@ -133,7 +133,7 @@ test marpa-inbound-sequencing-2.1.2 {enter something, with stop, results, state 
 	... $args @ [IN @] [IN location] [IN stop]
     } [log GATE]]
 } -body {
-    list [IN enter FOO -1 1] [IN location] [IN stop] [IN @] [logged]
+    list [IN enter FOO -1 0] [IN location] [IN stop] [IN @] [logged]
 } -cleanup {
     IN destroy
 } -result {{} 3 {} done {
@@ -155,8 +155,8 @@ test marpa-inbound-sequencing-2.1.2 {enter something, with stop, results, state 
 testcases j {cmd code result} {
     {enter fox}		error	{Unable to process input after start}
     {read @}		error	{Unable to process input after start}
-    {enter-more bar}	ok	{4 running}
-    {read-more @}	ok	{4 running}
+    {enter-more bar}	ok	{3 running}
+    {read-more @}	ok	{3 running}
     location		ok	{1 running}
     stop		ok	{{} running}
     dont-stop		ok	{{} running}
@@ -172,7 +172,7 @@ testcases j {cmd code result} {
 	    set ::res [list [IN {*}[string map [list @ $::chan] $::cmd]] [IN @]]
 	} [log GATE]]
     } -body {
-	IN enter foo -1 1
+	IN enter foo -1 0
 	set ::res
     } -cleanup {
 	IN destroy
@@ -229,7 +229,7 @@ test marpa-inbound-sequencing-3.1.2 {read something, with stop, results, state c
 	... $args @ [IN @] [IN location] [IN stop]
     } [log GATE]]
 } -body {
-    list [IN read $chan -1 1] [IN location] [IN stop] [IN @] [logged]
+    list [IN read $chan -1 0] [IN location] [IN stop] [IN @] [logged]
 } -cleanup {
     IN destroy
     close $chan
@@ -253,8 +253,8 @@ test marpa-inbound-sequencing-3.1.2 {read something, with stop, results, state c
 testcases j {cmd code result} {
     {enter fox}		error	{Unable to process input after start}
     {read @}		error	{Unable to process input after start}
-    {enter-more bar}	ok	{4 running}
-    {read-more @}	ok	{4 running}
+    {enter-more bar}	ok	{3 running}
+    {read-more @}	ok	{3 running}
     location		ok	{1 running}
     stop		ok	{{} running}
     dont-stop		ok	{{} running}
@@ -271,7 +271,7 @@ testcases j {cmd code result} {
 	    set ::res [list [IN {*}[string map [list @ $::chan] $::cmd]] [IN @]]
 	} [log GATE]]
     } -body {
-	IN read $in -1 1
+	IN read $in -1 0
 	set ::res
     } -cleanup {
 	IN destroy
