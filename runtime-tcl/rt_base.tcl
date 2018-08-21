@@ -24,7 +24,6 @@ oo::class create marpa::engine::tcl::base {
 
     constructor {} {
 	debug.marpa/engine/tcl/base {}
-
 	set myeventprefix {}
 	return
     }
@@ -34,8 +33,7 @@ oo::class create marpa::engine::tcl::base {
 
     variable myeventprefix
     # myeventprefix :: list (word...)
-
-    # myeventprefix - Callback command to handle parse events
+    # Callback command to handle parse events
 
     # # ## ### ##### ######## #############
     ## Public API
@@ -56,7 +54,6 @@ oo::class create marpa::engine::tcl::base {
 	    debug.marpa/engine/tcl/parse { Ignored }
 	    return
 	}
-	# XXX try ? ignore errors ?
 	debug.marpa/engine/tcl/parse { Invoke }
 	uplevel #0 [linsert $args 0 {*}$myeventprefix [self]]
 	return
@@ -66,6 +63,10 @@ oo::class create marpa::engine::tcl::base {
     ## Option processing for engine process(-file) methods
 
     method Options {words} {
+	# Input: External `from F`, output internal F' = F - 1, default  0 external
+	# Input: External `to S`,   output internal S' = S - 1, default -1 external
+	# See also gate.tcl, method `location` etc.
+
 	debug.marpa/engine/tcl/base {}
 	if {[llength $words] % 2 == 1} {
 	    my E "Last option has no value" {WRONG ARGS}
@@ -79,16 +80,21 @@ oo::class create marpa::engine::tcl::base {
 		to    { my Location $value ; set to    $value ; set limit -1 }
 		limit { my PosInt   $value ; set limit $value ; set to    -1 }
 		default {
-		    my E "Unknown option \"$key\", expected one of from, limit, or to" {BAD OPTION}
+		    my E "Unknown option \"$key\", expected one of from, limit, or to" \
+			{BAD OPTION}
 		}
 	    }
 	}
 
+	# from, to - external form until here.
+	# Translate to the internal forms.
 	if {$limit > 0} {
 	    set to [expr {$from + $limit}]
 	}
 
 	incr from -1
+	incr to   -1
+
 	return [list $from $to]
     }
 

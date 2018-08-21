@@ -36,7 +36,7 @@ package require Tcl 8.5 ;# apply, lassign, ...
 # Meta require     debug
 # Meta require     debug::caller
 # Meta subject     marpa
-# Meta summary     Utiliy commands
+# Meta summary     Utility commands
 # @@ Meta End
 
 # # ## ### ##### ######## #############

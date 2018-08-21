@@ -76,7 +76,7 @@ extern void marpatcl_rtc_eh_clear (marpatcl_ehandlers_p e);
 extern void marpatcl_rtc_eh_setup (marpatcl_ehandlers_p e,
 				   int                  c,
 				   Tcl_Obj* const*      v);
-extern void marpatcl_rtc_eh_report (void*                  cdata,
+extern int  marpatcl_rtc_eh_report (void*                  cdata,
 				    marpatcl_rtc_eventtype type,
 				    int                    c,
 				    int*                   ids);

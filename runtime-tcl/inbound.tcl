@@ -65,6 +65,8 @@ oo::class create marpa::inbound {
     variable mystoplocation ; # Trigger location for stop events
     variable mytext         ; # Physical input stream
     			      # (list! of characters)
+    variable mymax          ; # Location triggering EOF
+    variable mysentinel     ; # Location triggering overrun
 
     # API:
     #  1 cons       (postprocessor)    - Create, link
@@ -99,7 +101,9 @@ oo::class create marpa::inbound {
 				# the input, currently set to just
 				# before the first character (of
 				# nothing).
-	set mystoplocation -1 ; # Where to stop the engine, nowhere.
+	set mystoplocation -2 ; # Where to stop the engine, nowhere.
+	set mysentinel     -1
+	set mymax          -1
 
 	# Attach ourselves to the postprocessor, as its input
 	Forward input: [self]
@@ -111,14 +115,18 @@ oo::class create marpa::inbound {
     # # -- --- ----- -------- -------------
     ## Public API
 
+    method last {} {
+	debug.marpa/inbound {[debug caller] | ==> $mymax}
+	return $mymax
+    }
+
     method location {} {
 	debug.marpa/inbound {[debug caller] | ==> $mylocation}
-	return [expr {$mylocation + 1}]
+	return $mylocation
     }
 
     method from {pos args} {
 	debug.marpa/inbound {[debug caller] | }
-	incr pos -1
 	set mylocation $pos
 	foreach delta $args { incr mylocation $delta }
 	return
@@ -138,7 +146,7 @@ oo::class create marpa::inbound {
 
     method stop {} {
 	debug.marpa/inbound {[debug caller] | }
-	if {$mystoplocation < 0} { return {} }
+	if {$mystoplocation < -1} { return {} }
 	return $mystoplocation
     }
 
@@ -150,7 +158,7 @@ oo::class create marpa::inbound {
 
     method dont-stop {} {
 	debug.marpa/inbound {[debug caller] | }
-	set mystoplocation -1
+	set mystoplocation -2
 	return
     }
 
@@ -158,12 +166,11 @@ oo::class create marpa::inbound {
 	# assert delta > 0
 	debug.marpa/inbound {[debug caller] | }
 	set  mystoplocation $mylocation
-	incr mystoplocation
 	incr mystoplocation $delta
 	return
     }
 
-    method read {chan {from -1} {to -1}} {
+    method read {chan {from -1} {to -2}} {
 	debug.marpa/inbound {[debug caller] | }
 	# Read entire channel into memory for processing
 	my enter [read $chan] $from $to
@@ -175,7 +182,7 @@ oo::class create marpa::inbound {
 	return [my enter-more [read $chan]]
     }
 
-    method enter {string {from -1} {to -1}} {
+    method enter {string {from -1} {to -2}} {
 	debug.marpa/inbound {[debug caller 1] | }
 
 	set mytext         [split $string {}]
@@ -184,6 +191,21 @@ oo::class create marpa::inbound {
 
 	set  max [llength $mytext]
 	incr max -1
+	set  mysentinel $max
+	set  mymax      $max
+
+	# Example input, with secondary data (15 chars)
+	#             0 1 2 3 4 5 6 7 8 9 A B C  D E
+	# text     = {a l p h a n u m e r i c \0 u m}
+	# max      = 11 --------------------^
+	# sentinel = 14 ---------------------------^
+	#
+	# max = Trigger EOF when this (@11) is the previous processed
+	#       character.
+	#
+	# sentinel = Trigger overrun when this (@14) is the previous
+	#            processed character and engine was not stopped
+	#            by EOF or stop marker.
 
 	debug.marpa/inbound {[debug caller 1] | DO _______________________________________ /START}
 
@@ -204,6 +226,17 @@ oo::class create marpa::inbound {
 	#     things.
 
 	while {1} {
+	    if {$mylocation == $mystoplocation} {
+		debug.marpa/inbound {[debug caller 1] | STOP $mylocation}
+		# Stop triggered.
+		# Clear stop marker, post event, continue from the top
+		set mystoplocation -2
+		Forward signal-stop ;# notify gate
+
+		debug.marpa/inbound {[debug caller 1] | RESUME $mylocation}
+		continue
+	    }
+
 	    if {$mylocation == $max} {
 		# Trigger end of data processing in the post-processors.
 		# (Ad 4) Note that this may rewind the input to an
@@ -221,16 +254,13 @@ oo::class create marpa::inbound {
 		debug.marpa/inbound {[debug caller 1] | DO _______________________________________ /DONE}
 		return
 	    }
-	    incr mylocation
 
-	    if {$mylocation == $mystoplocation} {
-		# Stop triggered.
-		# Bounce, clear stop marker, post event, restart
-		incr mylocation -1
-		set mystoplocation -1
-		Forward signal-stop ;# notify gate
-		continue
+	    if {$mylocation == $mysentinel} {
+		Forward signal-overrun
+		return -code error "Input overrun after $mysentinel"
 	    }
+
+	    incr mylocation
 
 	    set ch [lindex $mytext $mylocation]
 
@@ -254,8 +284,10 @@ oo::class create marpa::inbound {
     method enter-more {string} {
 	debug.marpa/inbound {[debug caller 1] | }
 	set start [llength $mytext]
-	incr start ;# ----v point past the \0
+	#   \-----------\ point @ separator, resume after
 	lappend mytext \0 {*}[split $string {}]
+	set  mysentinel [llength $mytext]
+	incr mysentinel -1
 	# Notes
 	# - The {*} will put the entire string on the Tcl stack before
 	#   it becomes part of the input buffer.
@@ -263,9 +295,9 @@ oo::class create marpa::inbound {
 	#   by `enter` to detect the end of the primary input.
 	# - The new input will only be processed by moving explictly
 	#   into its region. Processing it will not trigger EOI.
-	# - The \0 separator ensures that positioning to the start of
-	#   the first of the secondary inputs without triggering the
-	#   eof condition in `enter` when we move to it.
+	# - The \0 separator ensures that positioning the cursor to
+	#   just before the first of the secondary inputs will not
+	#   trigger the EOF condition in `enter`.
 	return $start
     }
 
@@ -323,7 +355,7 @@ oo::class create marpa::inbound::sequencer {
     # # -- --- ----- -------- -------------
     ## Checked API methods
 
-    method enter {string {from -1} {to -1}} {
+    method enter {string {from -1} {to -2}} {
 	my __Init
 	my __Fail running ! "Unable to process input after start" START
 	my __Fail done    ! "Unable to process input after EOF" EOF

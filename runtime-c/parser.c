@@ -136,6 +136,26 @@ marpatcl_rtc_parser_eof (marpatcl_rtc_p p)
     TRACE_RETURN_VOID;
 }
 
+void
+marpatcl_rtc_parser_reset (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+
+    if (PAR.recce) marpa_r_unref (PAR.recce);
+
+    PAR.recce = marpa_r_new (PAR.g);
+    TRACE ("new (recce) %p, (grammar) %p", PAR.recce, PAR.g);
+
+    int res = marpa_r_start_input (PAR.recce);
+    marpatcl_rtc_fail_syscheck (p, PAR.g, res, "g1 start_input");
+    marpatcl_rtc_parser_events (p);
+
+    marpatcl_rtc_lexer_reset (p);
+    marpatcl_rtc_lexer_acceptable (p, 0);
+
+    TRACE_RETURN_VOID;
+}
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * Internal

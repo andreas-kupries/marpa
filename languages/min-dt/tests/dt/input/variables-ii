@@ -1,0 +1,7 @@
+[vset a b]
+[vset b {c d}]
+[vset {c d} "e f"]
+[vset "e f" g"h]
+[vset g"h {i [j] k}]
+
+[vset [vset [vset [vset [vset a]]]]]
