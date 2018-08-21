@@ -67,6 +67,11 @@ void marpatcl_rtc_gather_events (marpatcl_rtc_p         p,       // TRACE-only d
 				 marpatcl_rtc_symset*   symbols, // ... associated with these symbols ...
 				 marpatcl_rtc_symset*   result); // ... and record the found here.
 
+int marpatcl_rtc_raise_event (marpatcl_rtc_p p, int event_type);
+//  1 - ok
+//  0 - failed
+// -1 - ignored, no callback available.
+
 #endif
 
 /*

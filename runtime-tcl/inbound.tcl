@@ -122,7 +122,7 @@ oo::class create marpa::inbound {
 
     method location {} {
 	debug.marpa/inbound {[debug caller] | ==> $mylocation}
-	return [expr {$mylocation + 1}]
+	return $mylocation
     }
 
     method from {pos args} {
@@ -226,6 +226,17 @@ oo::class create marpa::inbound {
 	#     things.
 
 	while {1} {
+	    if {$mylocation == $mystoplocation} {
+		debug.marpa/inbound {[debug caller 1] | STOP $mylocation}
+		# Stop triggered.
+		# Clear stop marker, post event, continue from the top
+		set mystoplocation -2
+		Forward signal-stop ;# notify gate
+
+		debug.marpa/inbound {[debug caller 1] | RESUME $mylocation}
+		continue
+	    }
+
 	    if {$mylocation == $max} {
 		# Trigger end of data processing in the post-processors.
 		# (Ad 4) Note that this may rewind the input to an
@@ -242,13 +253,6 @@ oo::class create marpa::inbound {
 		my EOF ;# Sequencing hook
 		debug.marpa/inbound {[debug caller 1] | DO _______________________________________ /DONE}
 		return
-	    }
-
-	    if {$mylocation == $mystoplocation} {
-		# Stop triggered.
-		# Clear stop marker, post event, continue via fall-through
-		set mystoplocation -2
-		Forward signal-stop ;# notify gate
 	    }
 
 	    if {$mylocation == $mysentinel} {

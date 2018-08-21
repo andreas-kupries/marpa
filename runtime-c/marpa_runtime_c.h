@@ -25,6 +25,7 @@
 
 typedef enum {
     marpatcl_rtc_event_stop,      // io event
+    marpatcl_rtc_event_over,      // io event
     //
     marpatcl_rtc_event_before,    // lexer/lexeme events
     marpatcl_rtc_event_after,     // .

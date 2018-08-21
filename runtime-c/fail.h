@@ -55,6 +55,9 @@ void        marpatcl_rtc_fail_syscheck (marpatcl_rtc_p p,
 					Marpa_Grammar g,
 					int res, const char* label);
 
+void        marpatcl_rtc_fail_event  (marpatcl_rtc_p p);
+void        marpatcl_rtc_fail_ioover (marpatcl_rtc_p p);
+
 #endif
 
 /*

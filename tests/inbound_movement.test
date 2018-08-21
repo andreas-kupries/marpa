@@ -68,7 +68,7 @@ test marpa-inbound-movement-1.0 {move and stitch} -setup {
   GATE R {enter { } 3} = {}
   STOP C signal-stop
   signal-stop #1
-  signal-stop @13 !43
+  signal-stop @12 !43
   STOP R signal-stop = {}
   GATE C {enter q 13}
   GATE R {enter q 13} = {}
@@ -134,7 +134,7 @@ test marpa-inbound-movement-1.0 {move and stitch} -setup {
   GATE R {enter { } 43} = {}
   STOP C signal-stop
   signal-stop #2
-  signal-stop @4 !
+  signal-stop @3 !
   STOP R signal-stop = {}
   GATE C {enter l 4}
   GATE R {enter l 4} = {}

@@ -12,7 +12,7 @@
 TRACE_OFF;
 TRACE_TAG_OFF (enter);
 TRACE_TAG_OFF (utf);
-TRACE_TAG_ON  (locations);
+TRACE_TAG_OFF (locations);
 
 #define NAME(sym) marpatcl_rtc_spec_symname (SPEC->l0, sym, 0)
 
@@ -68,6 +68,8 @@ marpatcl_rtc_inbound_init (marpatcl_rtc_p p)
     TRACE_FUNC ("((rtc*) %p)", p);
 
     IN.bytes     = 0;
+    IN.size      = 0;
+    IN.csize     = 0;
     IN.owned     = 0;
     IN.location  = -1;
     IN.clocation = -1;
@@ -106,7 +108,7 @@ int
 marpatcl_rtc_inbound_location (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
-    TRACE_RETURN ("%d", IN.clocation + 1);
+    TRACE_RETURN ("%d", IN.clocation);
 }
 
 int
@@ -127,7 +129,7 @@ marpatcl_rtc_inbound_moveto (marpatcl_rtc_p p, int cpos)
 {
     TRACE_FUNC ("((rtc*) %p, pos = %d)", p, cpos);
 
-    IN.clocation = cpos - 1;
+    IN.clocation = cpos;
     IN.location  = marpatcl_rtc_clindex_find (p, IN.clocation);
 
     TRACE ("((rtc*) %p, now pos = %d ~ %d)", p, IN.clocation, IN.location);
@@ -172,7 +174,7 @@ marpatcl_rtc_inbound_set_limit (marpatcl_rtc_p p, int limit)
     // ASSERT limit > 0 == critcl pos.int TODO
     TRACE_FUNC ("((rtc*) %p, limit = %d)", p, limit);
 
-    IN.cstop = IN.clocation + 1 + limit;
+    IN.cstop = IN.clocation + limit;
 
     TRACE_RETURN_VOID;
 }
@@ -235,6 +237,21 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int ma
 	TRACE_TAG_ADD    (locations, "%p LOC [[M:%6d E:%6d S:%6d -- B%6d C%6d]]",
 			  p, max, IN.size, IN.cstop, IN.location, IN.clocation);
 
+	if (IN.clocation == IN.cstop) {
+	    TRACE_TAG_ADD (locations, " STOP", 0);
+	    // Stop triggered (after last character, just before new).
+	    // Clear stop marker, post event, continue (via fall through)
+	    IN.cstop     = -2;
+	    marpatcl_rtc_symset_clear (EVENTS);
+	    POST_EVENT (marpatcl_rtc_event_stop);
+	    if (evok == 0) break;
+	    //  1 - ok,      resume processing
+	    // -1 - ignored, resume as well
+	    TRACE_TAG_ADD    (locations, " & CONT /", 0);
+	    TRACE_TAG_CLOSER (locations);
+	    continue;
+	}
+
 	if (IN.location == max) {
 	    TRACE_TAG_ADD (locations, " EO1", 0);
 	    // Trigger end of data processing in the post-processors.
@@ -252,23 +269,19 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int ma
 	    continue;
 	}
 
-	if (IN.clocation == IN.cstop) {
-	    TRACE_TAG_ADD (locations, " STOP", 0);
-	    // Stop triggered (after last character, just before new).
-	    // Clear stop marker, post event, continue (via fall through)
-	    IN.cstop     = -2;
-	    marpatcl_rtc_symset_clear (EVENTS);
-	    POST_EVENT (marpatcl_rtc_event_stop);
-	    if (!evok) break;
-	    TRACE_TAG_ADD (locations, " & CONT /", 0);
-	}
+	if (IN.location == (IN.size-1)) {
+	    // Reached end of physical input stream, if extended. That means
+	    // that the user failed to set a stop marker which would have
+	    // stopped us before here.
 
-	// TODO - check against IN.size as well, and force an `io/overrun`
-	// 	  failure when hitting that. This can currently happen for
-	// 	  extended input, as processing it will not trigger EOF, and
-	// 	  when the stop marker is set wrong it will happily continue
-	// 	  beyond the end.
-	//ASSERT(0,"TODO");
+	    marpatcl_rtc_symset_clear (EVENTS);
+	    POST_EVENT (marpatcl_rtc_event_over);
+	    if (evok == 0) break;
+	    //  1 - ok,      abort
+	    // -1 - ignored, abort
+	    marpatcl_rtc_fail_ioover (p);
+	    break;
+	}
 
 	ch = marpatcl_rtc_inbound_step (p);
 	TRACE ("byte %3d @ char %d ~ byte %d = <%s>", ch, IN.clocation, IN.location, NAME(ch));
@@ -303,8 +316,8 @@ marpatcl_rtc_inbound_enter_more (marpatcl_rtc_p p,
 	max = strlen (bytes);
     }
 
-    int            offset   = IN.size + 1;
-    int            newsize  = offset + max;
+    int            offset   = IN.size;
+    int            newsize  = offset + 1 + max;
     unsigned char* newbytes;
     if (IN.owned) {
 	// We own the memory for IN.bytes, thus we are allowed to directly
@@ -321,8 +334,8 @@ marpatcl_rtc_inbound_enter_more (marpatcl_rtc_p p,
     }
 
     // Separator for the previous stream, and copy new data in.
-    newbytes [offset-1] = '\0';
-    memcpy (newbytes + offset, bytes, max * sizeof (unsigned char));
+    newbytes [offset] = '\0';
+    memcpy (newbytes + offset + 1, bytes, max * sizeof (unsigned char));
 
     IN.owned = 1; // We own the memory now, regardless of its previous state.
     IN.bytes = newbytes;

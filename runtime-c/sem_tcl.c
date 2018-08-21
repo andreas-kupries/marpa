@@ -190,12 +190,13 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, marpatcl_rtc_p p
 	/* Assumes that an error message was left in ip */
     } else {
 	TRACE ("FAIL", 0);
-	// See rtc_int.h `POST_EVENT` (%%) for where this origin is set into
-	// the failure record.
+	// See rtc.c `raise_event` for where this origin is set into the
+	// failure record.
 	if (strcmp (marpatcl_rtc_fail_origin (p), "event") != 0) {
 	    // Generate parsing error record only if the failure was from the
-	    // engine itself. For events we assume that the Tcl interp already
-	    // contains the necessary message.
+	    // engine itself, including IO overrun. For parse event failure
+	    // we assume that the Tcl interp already contains the necessary
+	    // message.
 	    make_err (ip, p);
 	}
 	marpatcl_rtc_reset (p);
@@ -479,13 +480,17 @@ marpatcl_rtc_pe_range (Tcl_Interp*    interp,
 		       int*           from,
 		       int*           to)
 {
+    // from, to - external forms.
+    // output are internal forms.
+    // See also `runtime-tcl/rt_base.tcl`, method `Options`.
+
     if ((objc % 2) == 1) {
 	Tcl_AppendResult (interp, "Last option has no value", NULL);
 	return 0;
     }
 
     int f =  0; int i;
-    int t = -2;
+    int t = -1;
     int l = -1;
 
     for (i = 0; i < objc; i+=2) {
@@ -523,7 +528,7 @@ marpatcl_rtc_pe_range (Tcl_Interp*    interp,
 				  Tcl_GetString (value), "\"", NULL);
 		return 0;
 	    }
-	    t = -2;
+	    t = -1;
 	    continue;
 	}
 	Tcl_AppendResult (interp, "Unknown option \"", option,
@@ -536,8 +541,8 @@ marpatcl_rtc_pe_range (Tcl_Interp*    interp,
 	t = f + l;
     }
 
-    *from = f; // No (--). Handled by inbound_enter (call to inbound_moveto).
-    *to   = t;
+    *from = f - 1;
+    *to   = t - 1;
     return 1;
 }
 

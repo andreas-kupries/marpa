@@ -184,6 +184,10 @@ oo::class create marpa::lexer {
 	my Post stop {}
     }
 
+    method signal-overrun {} {
+	my Post overrun {}
+    }
+
     # # -- --- ----- -------- -------------
     ## Public API
 
@@ -731,8 +735,8 @@ oo::class create marpa::lexer {
 	    set events [my events? before $ef]
 	    if {[llength $events]} {
 		set prehandler [my PEFill $found $sv]
-		# Move input location to just before start of lexeme
-		Gate from [MSTATE start] -1
+		# Move input location to start of lexeme
+		Gate from [MSTATE start]
 		my Post before $events
 	    } else {
 		set events [my events? after $ef]

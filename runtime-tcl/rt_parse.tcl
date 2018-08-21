@@ -128,14 +128,15 @@ oo::class create marpa::engine::tcl::parse {
     method extend-file {path} {
 	debug.marpa/engine/tcl/parse {}
 	set chan [open $path r]
-	set off [IN read-more $chan]
+	set  start [IN read-more $chan]
+	incr start
 	close $chan
-	return $off
+	return $start
     }
 
     method extend {string} {
 	debug.marpa/engine/tcl/parse {}
-	return [IN enter-more $string]
+	return [expr {[IN enter-more $string]+1}]
     }
 
     # # ## ### ##### ######## #############

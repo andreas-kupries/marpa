@@ -86,7 +86,7 @@ marpatcl_rtc_enter_more (marpatcl_rtc_p p, const unsigned char* bytes, int n)
 
     int offset = marpatcl_rtc_inbound_enter_more (p, bytes, n);
 
-    TRACE_RETURN ("(offset) %d", offset);
+    TRACE_RETURN ("(offset) %d", offset + 1);
 }
 
 marpatcl_rtc_sv_p
@@ -180,6 +180,28 @@ marpatcl_rtc_gather_events (marpatcl_rtc_p         p,       // TRACE-only data
     }
 
     TRACE_RETURN_VOID;
+}
+
+int
+marpatcl_rtc_raise_event (marpatcl_rtc_p p, int event_type)
+{
+    TRACE_FUNC ("((rtc*) %p, ev %d, #%d --> (%p, cd %p))",
+		p, event_type, EVENTS->n, p->event, p->ecdata);
+
+    if (!p->event) {
+	TRACE_RETURN ("(ignored) %d", -1);
+    }
+
+    LEX.m_event = event_type;
+    LEX.m_clearfirst = 1;
+
+    int evok = p->event (p->ecdata, event_type, EVENTS->n, EVENTS->dense);
+
+    LEX.m_event = marpatcl_rtc_eventtype_LAST;
+
+    if (!evok) { marpatcl_rtc_fail_event (p); }
+
+    TRACE_RETURN ("(ok) %d", evok);
 }
 
 /*

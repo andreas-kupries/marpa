@@ -61,7 +61,7 @@ test marpa-inbound-sequencing-1.0 {constructor, initial state} -setup {
     list [IN location] [IN stop] [IN @] [logged]
 } -cleanup {
     IN destroy
-} -result {0 {} ready {
+} -result {-1 {} ready {
   GATE C {input: ::IN}
   GATE R {input: ::IN} = {}
 }}
@@ -71,7 +71,7 @@ testcases j {cmd code result} {
     {read @}		ok	{{} done}
     {enter-more bar}	error	{Unable to extend input before start}
     {read-more @}	error	{Unable to extend input before start}
-    location		ok	{0 ready}
+    location		ok	{-1 ready}
     stop		ok	{{} ready}
     dont-stop		error	{Unable to clear stop location before start}
     {from 0}		error	{Unable to set current location before start}
@@ -102,7 +102,7 @@ test marpa-inbound-sequencing-2.1.0 {enter nothing, results, state changes, exte
     list [IN enter {}] [IN location] [IN stop] [IN @] [logged]
 } -cleanup {
     IN destroy
-} -result {{} 0 {} done {
+} -result {{} -1 {} done {
   GATE C {input: ::IN}
   GATE R {input: ::IN} = {}
   GATE C eof
@@ -115,7 +115,7 @@ test marpa-inbound-sequencing-2.1.1 {enter something, results, state changes, ex
     list [IN enter FOO] [IN location] [IN stop] [IN @] [logged]
 } -cleanup {
     IN destroy
-} -result {{} 3 {} done {
+} -result {{} 2 {} done {
   GATE C {input: ::IN}
   GATE R {input: ::IN} = {}
   GATE C {enter F 0}
@@ -136,13 +136,13 @@ test marpa-inbound-sequencing-2.1.2 {enter something, with stop, results, state 
     list [IN enter FOO -1 0] [IN location] [IN stop] [IN @] [logged]
 } -cleanup {
     IN destroy
-} -result {{} 3 {} done {
+} -result {{} 2 {} done {
   GATE C {input: ::IN}
   GATE R {input: ::IN} = {}
   GATE C {enter F 0}
   GATE R {enter F 0} = {}
   STOP C signal-stop
-  signal-stop @ running 1 {}
+  signal-stop @ running 0 {}
   STOP R signal-stop = {}
   GATE C {enter O 1}
   GATE R {enter O 1} = {}
@@ -157,13 +157,13 @@ testcases j {cmd code result} {
     {read @}		error	{Unable to process input after start}
     {enter-more bar}	ok	{3 running}
     {read-more @}	ok	{3 running}
-    location		ok	{1 running}
+    location		ok	{0 running}
     stop		ok	{{} running}
     dont-stop		ok	{{} running}
     {from 0}		ok	{{} running}
     {relative 0}	ok	{{} running}
     {rewind 0}		ok	{{} running}
-    {to 0}		ok	{{} running}
+    {to -1}		ok	{{} running}
     {limit -1}		ok	{{} running}
 } {
     test marpa-inbound-sequencing-2.2.$j "constructor, after call, ${code}: $cmd" -setup {
@@ -194,7 +194,7 @@ test marpa-inbound-sequencing-3.1.0 {read nothing, results, state changes, exter
     IN destroy
     close $chan
     unset chan
-} -result {{} 0 {} done {
+} -result {{} -1 {} done {
   GATE C {input: ::IN}
   GATE R {input: ::IN} = {}
   GATE C eof
@@ -210,7 +210,7 @@ test marpa-inbound-sequencing-3.1.1 {read something, results, state changes, ext
     IN destroy
     close $chan
     unset chan
-} -result {{} 3 {} done {
+} -result {{} 2 {} done {
   GATE C {input: ::IN}
   GATE R {input: ::IN} = {}
   GATE C {enter F 0}
@@ -234,13 +234,13 @@ test marpa-inbound-sequencing-3.1.2 {read something, with stop, results, state c
     IN destroy
     close $chan
     unset chan
-} -result {{} 3 {} done {
+} -result {{} 2 {} done {
   GATE C {input: ::IN}
   GATE R {input: ::IN} = {}
   GATE C {enter F 0}
   GATE R {enter F 0} = {}
   STOP C signal-stop
-  signal-stop @ running 1 {}
+  signal-stop @ running 0 {}
   STOP R signal-stop = {}
   GATE C {enter O 1}
   GATE R {enter O 1} = {}
@@ -255,13 +255,13 @@ testcases j {cmd code result} {
     {read @}		error	{Unable to process input after start}
     {enter-more bar}	ok	{3 running}
     {read-more @}	ok	{3 running}
-    location		ok	{1 running}
+    location		ok	{0 running}
     stop		ok	{{} running}
     dont-stop		ok	{{} running}
     {from 0}		ok	{{} running}
     {relative 0}	ok	{{} running}
     {rewind 0}		ok	{{} running}
-    {to 0}		ok	{{} running}
+    {to -1}		ok	{{} running}
     {limit -1}		ok	{{} running}
 } {
     test marpa-inbound-sequencing-3.2.$j "constructor, after call, ${code}: $cmd" -setup {
@@ -290,7 +290,7 @@ testcases j {cmd code result} {
     {read @}		error	{Unable to process input after EOF}
     {enter-more bar}	error	{Unable to extend input after EOF}
     {read-more @}	error	{Unable to extend input after EOF}
-    location		ok	{3 done}
+    location		ok	{2 done}
     stop		ok	{{} done}
     dont-stop		error	{Unable to clear stop location after EOF}
     {from 0}		error	{Unable to set current location after EOF}
@@ -321,7 +321,7 @@ testcases j {cmd code result} {
     {read @}		error	{Unable to process input after EOF}
     {enter-more bar}	error	{Unable to extend input after EOF}
     {read-more @}	error	{Unable to extend input after EOF}
-    location		ok	{3 done}
+    location		ok	{2 done}
     stop		ok	{{} done}
     dont-stop		error	{Unable to clear stop location after EOF}
     {from 0}		error	{Unable to set current location after EOF}
