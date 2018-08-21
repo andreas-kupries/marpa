@@ -45,20 +45,32 @@ marpatcl_rtc_p    marpatcl_rtc_cons    (marpatcl_rtc_spec*      g,
                                         marpatcl_rtc_event_cmd  e,
 					void*                   ecdata);
 void              marpatcl_rtc_destroy (marpatcl_rtc_p p);
+
 void              marpatcl_rtc_enter   (marpatcl_rtc_p       p,
 					const unsigned char* bytes,
 					int                  n,
 					int                  from,
 					int                  to);
-void              marpatcl_rtc_eof     (marpatcl_rtc_p p);
+
+int               marpatcl_rtc_enter_more (marpatcl_rtc_p       p,
+					   const unsigned char* bytes,
+					   int                  n);
+
 marpatcl_rtc_sv_p marpatcl_rtc_get_sv  (marpatcl_rtc_p p);
 /* marpatcl_rtc_failed - see fail.h */
+
+void              marpatcl_rtc_reset (marpatcl_rtc_p p);
 
 void marpatcl_rtc_gather_events (marpatcl_rtc_p         p,       // TRACE-only data
 				 marpatcl_rtc_events*   decls,   // Search this database ...
 				 marpatcl_rtc_eventtype type,    // ... for this type of events ...
 				 marpatcl_rtc_symset*   symbols, // ... associated with these symbols ...
 				 marpatcl_rtc_symset*   result); // ... and record the found here.
+
+int marpatcl_rtc_raise_event (marpatcl_rtc_p p, int event_type);
+//  1 - ok
+//  0 - failed
+// -1 - ignored, no callback available.
 
 #endif
 

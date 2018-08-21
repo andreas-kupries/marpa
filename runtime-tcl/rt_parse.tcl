@@ -72,6 +72,7 @@ oo::class create marpa::engine::tcl::parse {
 
 	# TODO: Actual user semantics
 	# TODO: tracing/reporting/red-ruby-slippers
+	next
 	return
     }
 
@@ -111,7 +112,7 @@ oo::class create marpa::engine::tcl::parse {
 	set chan [open $path r]
 	# Drive the pipeline from the channel.
 	IN read $chan {*}$options
-	IN eof
+	PARSE reset
 	return $myresult
     }
 
@@ -120,8 +121,22 @@ oo::class create marpa::engine::tcl::parse {
 	set myresult {}
 	# Drive the pipeline from the string
 	IN enter $string {*}[my Options $args]
-	IN eof
+	PARSE reset
 	return $myresult
+    }
+
+    method extend-file {path} {
+	debug.marpa/engine/tcl/parse {}
+	set chan [open $path r]
+	set  start [IN read-more $chan]
+	incr start
+	close $chan
+	return $start
+    }
+
+    method extend {string} {
+	debug.marpa/engine/tcl/parse {}
+	return [expr {[IN enter-more $string]+1}]
     }
 
     # # ## ### ##### ######## #############

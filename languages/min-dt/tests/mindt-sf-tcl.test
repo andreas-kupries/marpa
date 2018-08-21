@@ -1,0 +1,22 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2018-present Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## rt-tcl + sf.slif
+##
+
+##
+## Test min-dt SF parser on top of RT-Tcl.
+## 
+
+# # ## ### ##### ######## ############# #####################
+## API to the sf core
+
+proc rt {} { return tcl }
+
+# # ## ### ##### ######## ############# #####################
+##
+
+kt source common/sf-core.testsuite
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

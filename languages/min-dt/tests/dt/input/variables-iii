@@ -1,0 +1,7 @@
+[vset a b]
+[vset b_[vset a] x]
+
+1.[vset a]
+2.[vset b_b]
+3.[vset b_[vset a]]
+4.[vset [vset a]_b]

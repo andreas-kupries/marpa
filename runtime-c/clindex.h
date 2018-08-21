@@ -25,6 +25,17 @@ typedef struct marpatcl_rtc_clindex {
     int                      max_blen; // Associated byte length of the character
 } marpatcl_rtc_clindex;
 
+/* Compute byte offset B from character offset C
+ *
+ *	b = bloc[i] + blen[i] * (c - cloc[i]),
+ *		where i = max k for cloc[k] < c
+ *
+ * Compute character offset C from byte offset C
+ *
+ *	c = cloc[i] + (b - bloc[i]) / blen[i],
+ *		where i = max k for bloc[k] < b
+ */
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API - lifecycle, accessors, mutators
@@ -39,6 +50,8 @@ void marpatcl_rtc_clindex_init   (marpatcl_rtc_p p);
 void marpatcl_rtc_clindex_free   (marpatcl_rtc_p p);
 void marpatcl_rtc_clindex_update (marpatcl_rtc_p p, int blen);
 int  marpatcl_rtc_clindex_find   (marpatcl_rtc_p p, int cloc);
+int  marpatcl_rtc_clindex_find_c (marpatcl_rtc_p p, int bloc);
+void marpatcl_rtc_clindex_reset  (marpatcl_rtc_p p);
 
 #endif
 

@@ -1,0 +1,9 @@
+words
+  word
+    g_text
+      simple
+        @0 5 'lorem'
+  word
+    markup
+      include
+        @5 16 {'[include _ipsum]'}

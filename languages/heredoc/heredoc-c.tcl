@@ -725,14 +725,14 @@ critcl::class def heredoc::parser::c {
 	marpatcl_rtc_enter (instance->state, buf, got, from, to);
 	Tcl_DecrRefCount (ebuf);
 
-	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
+	return marpatcl_rtc_sv_complete (ip, instance->result, instance->state);
     }
 
     method process proc {Tcl_Interp* ip pstring string object args} ok {
 	int from, to;
 	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
 	marpatcl_rtc_enter (instance->state, string.s, string.len, from, to);
-	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
+	return marpatcl_rtc_sv_complete (ip, instance->result, instance->state);
     }
 
     support {

@@ -750,12 +750,12 @@ critcl::class def json::parser::c {
 	Tcl_DecrRefCount (cbuf);
 
 	(void) Tcl_Close (ip, in);
-	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
+	return marpatcl_rtc_sv_complete (ip, instance->result, instance->state);
     }
 
     method process proc {Tcl_Interp* ip pstring string} ok {
 	marpatcl_rtc_enter (instance->state, string.s, string.len, 0, -1);
-	return marpatcl_rtc_sv_complete (ip, &instance->result, instance->state);
+	return marpatcl_rtc_sv_complete (ip, instance->result, instance->state);
     }
 
     support {

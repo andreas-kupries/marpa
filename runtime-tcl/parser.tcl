@@ -257,6 +257,24 @@ oo::class create marpa::parser {
 	    INTERNAL ILLEGAL RETURN $context
     }
 
+    method reset {} {
+	debug.marpa/parser {}
+	set ::errorInfo {}
+	catch { RECCE destroy }
+
+	GRAMMAR recognizer create RECCE [mymethod Events]
+	# NOTE 1: The engine_debug:progress-reports makes use of this fixed name.
+	# NOTE 2: Shared between lexer and parser, forces the same for parser.
+	# TODO MAYBE: accessor method for use by debug to separate this.
+	debug.marpa/parser {RECCE = [namespace which -command RECCE]}
+
+	RECCE start-input
+
+	Lexer reset
+	Lexer acceptable [RECCE expected-terminals]
+	return
+    }
+
     # # -- --- ----- -------- -------------
     ## Rule support
 

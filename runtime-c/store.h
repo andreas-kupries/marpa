@@ -34,9 +34,10 @@ typedef struct marpatcl_rtc_store {
  * get   - get value from store, by id
  */
 
-void              marpatcl_rtc_store_init (marpatcl_rtc_p p);
-void              marpatcl_rtc_store_free (marpatcl_rtc_p p);
-int               marpatcl_rtc_store_add  (marpatcl_rtc_p p, marpatcl_rtc_sv_p sv);
+void              marpatcl_rtc_store_init  (marpatcl_rtc_p p);
+void              marpatcl_rtc_store_free  (marpatcl_rtc_p p);
+void              marpatcl_rtc_store_reset (marpatcl_rtc_p p);
+int               marpatcl_rtc_store_add   (marpatcl_rtc_p p, marpatcl_rtc_sv_p sv);
 marpatcl_rtc_sv_p marpatcl_rtc_store_get  (marpatcl_rtc_p p, int at);
 
 #endif

@@ -106,7 +106,7 @@ marpatcl_rtc_eh_setup (marpatcl_ehandlers* e,
     TRACE_TAG_RETURN_VOID (eh);
 }
 
-void
+int
 marpatcl_rtc_eh_report (void*                  cdata,
 			marpatcl_rtc_eventtype type,
 			int                    c,
@@ -116,9 +116,8 @@ marpatcl_rtc_eh_report (void*                  cdata,
     marpatcl_ehandlers_p e = (marpatcl_ehandlers_p) cdata;
 
     if (!e->event[0]) {
-	TRACE_TAG (eh, "PE ignored, no Tcl callback", 0);
-	TRACE_TAG_RETURN_VOID (eh);
-	TRACE_RETURN_VOID;
+	TRACE_TAG        (eh, "PE ignored, no Tcl callback", 0);
+	TRACE_TAG_RETURN (eh, "(ok) %d", 1);
     }
 
     TRACE_TAG (eh, "PE taken, posting to Tcl", 0);
@@ -130,10 +129,10 @@ marpatcl_rtc_eh_report (void*                  cdata,
     }
     TAKE (events);
 
-    critcl_callback_invoke (e->event [type], 1, &events);
+    int res = critcl_callback_invoke (e->event [type], 1, &events);
 
     RELE (events);
-    TRACE_TAG_RETURN_VOID (eh);
+    TRACE_TAG_RETURN (eh, "(ok) %d", res == TCL_OK);
 }
 /*
  * - - -- --- ----- -------- ------------- ---------------------
@@ -141,24 +140,52 @@ marpatcl_rtc_eh_report (void*                  cdata,
  */
 
 int
-marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p p)
+marpatcl_rtc_fget  (Tcl_Interp* ip, marpatcl_rtc_p p,
+		    Tcl_Obj* path, Tcl_Obj** buf)
 {
-    /* This function is called with a pointer to where the SV will be
-     * stored. This is necesssary because at the time of the call the SV is
-     * not known yet. It is only after the call to 'marpatcl_rtc_eof' below
-     * that the SV will be known and stored at the referenced location.
-     */
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, (obj*) %p = '%s')",
+		ip, p, path, Tcl_GetString (path));
 
+    int got;
+    Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
+
+    if (!in) {
+	TRACE_RETURN ("ERROR", TCL_ERROR);
+    }
+    Tcl_SetChannelBufferSize (in, 4096);
+    Tcl_SetChannelOption (ip, in, "-translation", "binary");
+    Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
+    // TODO: abort on failed set-channel-option
+
+    Tcl_Obj* cbuf = Tcl_NewObj();
+    Tcl_Obj* ebuf = Tcl_NewObj();
+    while (!Tcl_Eof(in)) {
+	got = Tcl_ReadChars (in, cbuf, 4096, 0);
+	if (got < 0) {
+	    Tcl_DecrRefCount (cbuf);
+	    Tcl_DecrRefCount (ebuf);
+	    TRACE_RETURN ("ERROR", TCL_ERROR);
+	}
+	if (!got) continue; /* Pass the buck to next Tcl_Eof */
+	Tcl_AppendObjToObj (ebuf, cbuf);
+    }
+    Tcl_DecrRefCount (cbuf);
+    (void) Tcl_Close (ip, in);
+    *buf = ebuf;
+
+    TRACE_RETURN ("OK", TCL_OK);
+}
+
+int
+marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, marpatcl_rtc_p p)
+{
     TRACE_FUNC ("(Interp*) %p, (sv*) %p, (rtc*) %p", ip, sv, p);
 
     if (!marpatcl_rtc_failed (p)) {
-	TRACE ("EOF", 0);
-	marpatcl_rtc_eof (p);
-    }
-    if (!marpatcl_rtc_failed (p)) {
 	Tcl_Obj* r;
+	marpatcl_rtc_reset (p);
 	TRACE ("SV-AS-TCL (sv*) %p", sv);
-	r = marpatcl_rtc_sv_astcl (ip, *sv);
+	r = marpatcl_rtc_sv_astcl (ip, sv);
 	if (r) {
 	    TRACE ("SV OK (Tcl_Obj*) %p (rc %d)", r, r->refCount);
 	    Tcl_SetObjResult (ip, r);
@@ -167,7 +194,16 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p* sv, marpatcl_rtc_p 
 	/* Assumes that an error message was left in ip */
     } else {
 	TRACE ("FAIL", 0);
-	make_err (ip, p);
+	// See rtc.c `raise_event` for where this origin is set into the
+	// failure record.
+	if (strcmp (marpatcl_rtc_fail_origin (p), "event") != 0) {
+	    // Generate parsing error record only if the failure was from the
+	    // engine itself, including IO overrun. For parse event failure
+	    // we assume that the Tcl interp already contains the necessary
+	    // message.
+	    make_err (ip, p);
+	}
+	marpatcl_rtc_reset (p);
     }
     TRACE_RETURN ("ERROR", TCL_ERROR);
 }
@@ -448,6 +484,10 @@ marpatcl_rtc_pe_range (Tcl_Interp*    interp,
 		       int*           from,
 		       int*           to)
 {
+    // from, to - external forms.
+    // output are internal forms.
+    // See also `runtime-tcl/rt_base.tcl`, method `Options`.
+
     if ((objc % 2) == 1) {
 	Tcl_AppendResult (interp, "Last option has no value", NULL);
 	return 0;
@@ -505,8 +545,8 @@ marpatcl_rtc_pe_range (Tcl_Interp*    interp,
 	t = f + l;
     }
 
-    *from = f; // No (--). Handled by inbound_enter (call to inbound_moveto).
-    *to   = t;
+    *from = f - 1;
+    *to   = t - 1;
     return 1;
 }
 

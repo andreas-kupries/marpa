@@ -1,0 +1,53 @@
+words
+  word
+    g_text
+      simple
+        @0 5 'lorem'
+  word
+    g_text
+      simple
+        @6 5 'ipsum'
+  word
+    g_text
+      simple
+        @12 7 'dolores'
+  word
+    g_text
+      simple
+        @20 3 'mea'
+  word
+    g_text
+      simple
+        @24 5 'culpa'
+  word
+    g_text
+      simple
+        @30 3 'see'
+  word
+    g_text
+      quote
+        @34 1 {'\"'}
+  word
+    g_text
+      simple
+        @35 3 'the'
+  word
+    g_text
+      simple
+        @39 5 'quick'
+  word
+    g_text
+      simple
+        @45 5 'brown'
+  word
+    g_text
+      simple
+        @51 3 'fox'
+  word
+    g_text
+      simple
+        @55 3 '...'
+  word
+    g_text
+      quote
+        @58 1 {'\"'}

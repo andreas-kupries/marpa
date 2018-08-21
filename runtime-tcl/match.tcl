@@ -43,6 +43,7 @@ oo::class create marpa::lexer::ped {
     # Access to input location: accessor & modifiers
 
     method location  {} { my Access * Gate location  }
+    method last      {} { my Access * Gate last      }
 
     method from  {pos args} {
 	my Location $pos
@@ -50,9 +51,8 @@ oo::class create marpa::lexer::ped {
 	my Access sdba Gate from $pos
     }
 
-    method from+ {delta} { my Int $delta ; my Access sdba Gate relative $delta }
-
-    method stop      {}      {                      my Access *    Gate stop      }
+    method from+     {delta} { my Int      $delta ; my Access sdba Gate relative $delta }
+    method stop      {}      {                      my Access *    Gate stop         }
     method to        {pos}   { my Location $pos   ; my Access sdba Gate to    $pos   }
     method limit     {limit} { my Posint   $limit ; my Access sdba Gate limit $limit }
     method dont-stop {}      {                      my Access sdba Gate dont-stop }

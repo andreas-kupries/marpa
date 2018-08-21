@@ -205,9 +205,10 @@ unset max
 
 # # ## ### ##### ######## ############# #####################
 
-proc STOP {max p type enames} {
+proc STOP {length p type enames} {
     lappend ::msg $p $type [$p match location]
-    $p match from $max
+    # Resume processing after the last character => EOF, stop engine
+    $p match from $length
     return
 }
 
