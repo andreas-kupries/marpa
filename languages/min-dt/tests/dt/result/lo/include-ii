@@ -1,0 +1,9 @@
+words
+  word
+    markup
+      vdef
+        @0 12 {'[vset a sum]'}
+  word
+    markup
+      include
+        @13 21 {'[include _ip[vset a]]'}

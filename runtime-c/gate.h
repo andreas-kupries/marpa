@@ -46,7 +46,7 @@ void marpatcl_rtc_gate_enter      (marpatcl_rtc_p p, unsigned char ch); /* locat
 void marpatcl_rtc_gate_eof        (marpatcl_rtc_p p);
 void marpatcl_rtc_gate_acceptable (marpatcl_rtc_p p);
 void marpatcl_rtc_gate_redo       (marpatcl_rtc_p p, int n);
-/* TODO: get-context, extend-context */
+void marpatcl_rtc_gate_reset      (marpatcl_rtc_p p);
 
 #endif
 

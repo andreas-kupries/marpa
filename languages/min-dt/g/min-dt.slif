@@ -1,0 +1,260 @@
+# # ## ### ##### ######## ############# #####################
+## (C) 2018-present Andreas Kupries
+
+# Specifies the grammar of a small doctools related language.
+
+# Just a single regular command, and the three supported special
+# forms of doctools: `vset`, `include`, and `comment`.
+
+# This is used to trial what parse events and other support is needed
+# in TclMarpa to implement the special forms.
+
+# # ## ### ##### ######## ############# #####################
+
+:start	 ::= words
+
+:default ::= action => [name,values]
+
+lexeme default =
+	action => [start,length,value]
+       	latm   => 1
+
+# # ## ### ##### ######## ############# #####################
+##
+# Notes on symbol names
+# - all lower case  -- G1 symbol
+# - ALL UPPER CASE  -- L0 symbol, may not appear in G1 rules
+# - CamelCase       -- L0 lexeme, use in G1 rules, not in L0 rules
+
+# # ## ### ##### ######## ############# #####################
+## G1 structure
+
+words	::= word *	# series of words with no further structure
+word	::= g_text	# beyond being a mix of text and markup (commands)
+	|   markup
+	
+g_text	::= simple
+	|   quote
+
+markup	::= strong
+	|   vdef
+	|   vref
+	|   include
+
+# # ## ### ##### ######## ############# #####################
+
+strong		::= (Cl CStrong) tclword (CDone)
+
+tclword		::= braced
+		|   quoted
+		|   unquoted
+
+braced		::= Braced
+
+quoted		::= (Quote) quoted_elems (Quote)
+quoted_elems	::= quoted_elem *
+quoted_elem	::= simple
+		|   space
+		|   markup
+
+unquoted	::= unquoted_leader unquoted_elems
+unquoted_leader	::= simple
+		|   markup
+unquoted_elems	::= unquoted_elem *
+unquoted_elem	::= simple
+		|   markup
+		|   quote
+
+simple		::= Simple
+space		::= Space
+quote		::= Quote
+
+# # ## ### ##### ######## ############# #####################
+## G1 special forms - never seen, either discarded, or replaced by its contents
+
+vdef		::= CVdef
+vref		::= CVref
+include		::= CInclude
+
+# # ## ### ##### ######## ############# #####################
+## L0 lexemes == G1 terminals
+
+CStrong		~ C_STRONG
+
+Cl		~ CL
+CDone		~ CR
+
+CVdef		~ VAR_DEF
+CVref		~ VAR_REF
+CInclude	~ INCLUDE
+
+:lexeme		~ CVdef		pause => after	event => macro
+:lexeme		~ CVref		pause => after	event => macro
+:lexeme		~ CInclude	pause => after	event => macro
+
+# Idea: Set the lexemes to `latm 0` to make them always acceptable,
+# then remove them from the G1.
+
+Braced		~ BRACED
+Simple		~ SIMPLE
+Space		~ SPACE1
+
+Quote		~ QUOTE
+
+:discard	~ Whitespace
+Whitespace	~ WHITE1
+
+# # ## ### ##### ######## ############# #####################
+## L0 internal
+
+## Notes
+## Escaped characters used	(TODO: Consider extending SLIF with named escapes for them)
+##
+## \133 = '['	\bracketl
+## \135 = ']'	\bracketr
+
+# # ## ### ##### ######## ############# #####################
+## general text
+
+# Was found that it can be modeled as Simple|Quote
+# Where `simple` is all but quote, command intro/end, any space
+#
+# That is good very good because it means that `Simple` is likely a
+# good candidate symbol to use for braced vset replacement text,
+# usable in both the `g_text` context, and in markup command argument
+# `tclword` context.
+
+# # ## ### ##### ######## ############# #####################
+## command names
+
+C_STRONG	~ 'strong'
+
+# # ## ### ##### ######## ############# #####################
+## special form: variable declaration
+#
+#	[vset varname value]	Discard, retain sideeffect
+#
+# - Reusing the WORD definition for the comment.
+#   When braced any embedded markup command is irrelevant, i.e. not
+#   expanded.  When (un)quoted we only need it to properly nest. We do
+#   not have to syntax check that it is a proper command, proper
+#   number of arguments and the like. That can all be defered to when
+#   the saved value is actually used, i.e. inserted somewhere. And at
+#   that point the regular lexing does the job.
+
+VAR_DEF		~ CL WHITE0 'vset' WHITE1 WORD WHITE1 WORD WHITE0 CR
+
+CL		~ '['
+CR		~ ']'
+
+# # ## ### ##### ######## ############# #####################
+## special form: variable reference/use
+#
+#	[vset varname]	Discard, retain sideeffect
+#
+# - For a braced value replace with symbol `Simple` having that value.
+#   For anything else fully discard and direct the IO stage to re-feed
+#   the value into the lexer.
+
+VAR_REF		~ CL WHITE0 'vset' WHITE1 WORD WHITE0 CR
+
+# # ## ### ##### ######## ############# #####################
+## special form: include
+#
+#	[include path]	Discard, load file, and direct IO stage
+#		 	to feed the new stream into the lexer
+#
+# - The WORD technically allows any type of nested command.  We will
+#   have to test in the event handler how complicated it will be to
+#   simply run this through a subst to resolve the everything.  Pretty
+#   sure that we will need a safe interp which has only the commands
+#   of interest.
+
+INCLUDE		~ CL WHITE0 'include' WHITE1 WORD WHITE0 CR
+
+# # ## ### ##### ######## ############# #####################
+## special form: comment
+#
+#	[comment text]	Discard, see WHITE
+#
+# - Quoting of the text does not matter. Embedded markup is fully
+#   ignored.
+
+COMMENT		~ CL WHITE0 'comment' WHITE1 WORD WHITE0 CR
+
+# # ## ### ##### ######## ############# #####################
+## Tcl word syntax for the special forms.
+
+WORD		~ BRACED
+		| QUOTED
+		| UNQUOTED
+
+## Brace quoted	`{...}`
+## - No substitutions
+## - \-escaped braces are not counted
+## - Regular braces are counted, i.e. describe nested/embedded braced words
+
+BRACED		~ BL BRACED_ELEMS BR
+BL		~ '{'
+BR		~ '}'
+
+BRACED_ELEMS	~ BRACED_ELEM *
+BRACED_ELEM	~ ANY_UNBRACED
+		| BRACED
+		| BRACE_ESCAPED
+ANY_UNBRACED	~ [^{}]
+BRACE_ESCAPED	~ '\\{'
+		| '\\}'
+
+# (double) Quoted	`"..."`
+# - Text may contain all forms of whitespace
+# - Command substitutions `[...]` are allowed
+
+QUOTED		~ QUOTE QUOTED_ELEMS QUOTE
+QUOTE		~ '"'
+QUOTED_ELEMS	~ QUOTED_ELEM *
+QUOTED_ELEM	~ SIMPLE
+		| SPACE1
+		| COMMAND
+
+SIMPLE		~ NO_CFS_QUOTE +
+
+# unquoted	`...`
+# - Text cannot contain any forms of whitespace
+# - Command substitutions `[...]` are allowed
+
+UNQUOTED	~ UNQUOTED_ELEM +
+UNQUOTED_ELEM	~ NO_CFS1
+		| COMMAND
+
+COMMAND		~ CL WHITE0 WORDS1 WHITE0 CR
+WORDS1		~ WORD +
+	separator => WHITE1
+
+NO_CFS1		~ NO_CMD_FMT_SPACE +
+
+NO_CMD_FMT_SPACE~ [^\133\135\n\r\t\f\v ]
+NO_CFS_QUOTE	~ [^\133\135\n\r\t\f\v "]
+
+# # ## ### ##### ######## ############# #####################
+## other forms of white space
+
+WHITE1		~ WHITE +
+WHITE0		~ WHITE *
+
+WHITE		~ SPACE1
+	    	| COMMENT
+	    	| CONTINUATION
+
+SPACE1		~ SPACE +
+SPACE0		~ SPACE *
+
+# simplified space to keep the engine small
+#SPACE		~ [[:space:]]
+SPACE		~ [\n\r\t\v\f ]
+
+CONTINUATION	~ SPACE0 '\134' NEWLINE SPACE0
+NEWLINE		~ [\r\n]
+		| '\r\n'
+
+# # ## ### ##### ######## ############# #####################

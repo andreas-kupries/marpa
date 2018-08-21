@@ -39,6 +39,18 @@ marpatcl_rtc_store_free (marpatcl_rtc_p p)
     TRACE_RETURN_VOID;
 }
 
+void
+marpatcl_rtc_store_reset (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+
+    marpatcl_rtc_sva_clear (&STOR.content);
+    // Push a dummy value to ensure that all true SVs get ids starting from 1.
+    marpatcl_rtc_sva_push  (&STOR.content, NULL);
+
+    TRACE_RETURN_VOID;
+}
+
 int
 marpatcl_rtc_store_add (marpatcl_rtc_p p, marpatcl_rtc_sv_p sv)
 {

@@ -51,6 +51,7 @@ void marpatcl_rtc_clindex_free   (marpatcl_rtc_p p);
 void marpatcl_rtc_clindex_update (marpatcl_rtc_p p, int blen);
 int  marpatcl_rtc_clindex_find   (marpatcl_rtc_p p, int cloc);
 int  marpatcl_rtc_clindex_find_c (marpatcl_rtc_p p, int bloc);
+void marpatcl_rtc_clindex_reset  (marpatcl_rtc_p p);
 
 #endif
 

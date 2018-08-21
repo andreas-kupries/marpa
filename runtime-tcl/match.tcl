@@ -51,8 +51,7 @@ oo::class create marpa::lexer::ped {
 	my Access sdba Gate from $pos
     }
 
-    method from+ {delta} { my Int $delta ; my Access sdba Gate relative $delta }
-
+    method from+     {delta} { my Int      $delta ; my Access sdba Gate relative $delta }
     method stop      {}      {                      my Access *    Gate stop         }
     method to        {pos}   { my Location $pos   ; my Access sdba Gate to    $pos   }
     method limit     {limit} { my Posint   $limit ; my Access sdba Gate limit $limit }

@@ -15,7 +15,6 @@
 
 package require Tcl 8.5
 package require TclOO		;# Implies Tcl 8.5 requirement.
-package require oo::util	;# mymethod
 package require debug
 package require debug::caller
 package require marpa::util	;# marpa::import
@@ -36,8 +35,8 @@ debug prefix marpa/multi-stop {[debug caller] | }
 # Meta description management into place. The adapter takes ownership
 # Meta description of the parser it wraps. Destruction of the adapter
 # Meta description destroys the parser as well.
-# Meta description 
-# Meta description 
+# Meta description
+# Meta description
 # Meta location    http:/core.tcl.tk/akupries/marpa
 # Meta platform    tcl
 # Meta require     {Tcl 8.5}
@@ -63,7 +62,7 @@ oo::class create marpa::multi-stop {
 	return
     }
 
-    destructor {} {
+    destructor {
 	debug.marpa/multi-stop {}
 	PAR destroy
 	MGR destroy
@@ -77,7 +76,7 @@ oo::class create marpa::multi-stop {
     forward extend-file  PAR extend-file
 
     forward on-event     MGR oe
-    forwatd match        MGR
+    forward match        MGR
 }
 
 # # ## ### ##### ######## #############
@@ -100,12 +99,12 @@ oo::class create marpa::multi-stop::mgr {
     method oe {args} {
 	debug.marpa/multi-stop {}
 	# Place our interceptor between parser and user's handler.
-	PAR on-event {*}[mymethod EVENT $args]
+	PAR on-event [self namespace]::my EVENT $args
 	return
     }
 
     # State
-    variable myname mypos myindex myaction
+    variable myname mypos myindex myaction myshell
     # myname   :: dict (pos ::int     -> list (name :: string))
     # mypos    :: dict (name ::string -> pos :: int)
     # myaction :: dict (name ::string -> list (word :: string))
@@ -135,26 +134,27 @@ oo::class create marpa::multi-stop::mgr {
     # - mark-add      name pos ?cmd...? | Replaces `to`, `limit`
     # - mark-cancel   name              | Replaces `dont-stop`
     # - marks         ?pattern?         | New
+    # - mark-exists   name              | New
     # - mark-location name              | New, semi-replaces `stop`
     # - mark-active                     | Is `stop` under a different name
 
-    forward location        PAR location
+    forward location        PAR match location
     #
-    forward from      my RA PAR from
-    forward from+     my RA PAR from+
+    forward from      my RA PAR match from
+    forward from+     my RA PAR match from+
     #
-    forward symbols         PAR symbols
-    forward sv              PAR sv        
-    forward start           PAR start     
-    forward length          PAR length    
-    forward value           PAR value     
-    forward alternate       PAR alternate 
-    forward clear           PAR clear     
-    forward view            PAR view
+    forward symbols         PAR match symbols
+    forward sv              PAR match sv
+    forward start           PAR match start
+    forward length          PAR match length
+    forward value           PAR match value
+    forward alternate       PAR match alternate
+    forward clear           PAR match clear
+    forward view            PAR match view
 
     method RA {args} {
 	debug.marpa/multi-stop {}
-	set res [uplevel 1 $args]
+	set res [{*}$args]
 	my RecomputeActive
 	return $res
     }
@@ -209,6 +209,11 @@ oo::class create marpa::multi-stop::mgr {
     method mark-location {name} {
 	debug.marpa/multi-stop {}
 	return [dict get $mypos $name]
+    }
+
+    method mark-exists {name} {
+	debug.marpa/multi-stop {}
+	return [dict exists $mypos $name]
     }
 
     forward mark-active PAR match stop
@@ -269,8 +274,8 @@ oo::class create marpa::multi-stop::mgr {
 	    # ?? - recreate mark ?
 	    #    - other
 	    switch -exact -- [lindex $cmd 0] {
-		@from  { lassign $cmd __ pos   ; PAR match from  $pos   ; continue }
-		@from+ { lassign $cmd __ delta ; PAR match from+ $delta ; continue }
+		@from  { lassign $cmd __ pos   ; PAR match from  $pos            ; continue }
+		@from+ { lassign $cmd __ delta ; PAR match from+ $delta          ; continue }
 		@eof   {                         PAR match from [PAR match last] ; continue }
 	    }
 	    uplevel 1 [list {*}$cmd $myshell $name]

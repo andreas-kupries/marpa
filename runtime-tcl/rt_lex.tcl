@@ -61,6 +61,8 @@ oo::class create marpa::engine::tcl::lex {
 	LEX discard [my Discards]
 	LEX events  [my Events]
 
+	next
+
 	# Initial acceptability
 	LEX acceptable $mylex
 	return

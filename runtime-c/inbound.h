@@ -17,6 +17,9 @@
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * Structures
+ *
+ * (%%) We expect UTF-8 characters to consist of at most 4 bytes.
+ *      No need for a full int (4/8 bytes memory).
  */
 
 typedef struct marpatcl_rtc_inbound {
@@ -26,8 +29,10 @@ typedef struct marpatcl_rtc_inbound {
     int            location;  /* Index of the current byte in input (byte offset) */
     int            clocation; /* Same, as character offset */
     int            cstop;     /* Location to stop processing at */
-    int            trailer;   /* Number of bytes in the expected trailer */
-    int            header;    /* Number of bytes in a header so far */
+    unsigned char  trailer;   /* (%%) Number of bytes in the expected trailer */
+    unsigned char  header;    /* (%%) Number of bytes in a header so far */
+    unsigned char  owned;     /* true  -> .bytes is owned by this structure,
+			       * false -> .bytes belongs to the outside */
 } marpatcl_rtc_inbound;
 
 /*
@@ -44,6 +49,7 @@ typedef struct marpatcl_rtc_inbound {
 
 void marpatcl_rtc_inbound_init      (marpatcl_rtc_p p);
 void marpatcl_rtc_inbound_free      (marpatcl_rtc_p p);
+void marpatcl_rtc_inbound_reset     (marpatcl_rtc_p p);
 int  marpatcl_rtc_inbound_location  (marpatcl_rtc_p p);
 int  marpatcl_rtc_inbound_last      (marpatcl_rtc_p p);
 void marpatcl_rtc_inbound_enter     (marpatcl_rtc_p p,

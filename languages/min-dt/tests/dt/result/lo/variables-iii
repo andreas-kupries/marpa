@@ -1,0 +1,41 @@
+words
+  word
+    markup
+      vdef
+        @0 10 {'[vset a b]'}
+  word
+    markup
+      vdef
+        @11 19 {'[vset b_[vset a] x]'}
+  word
+    g_text
+      simple
+        @32 2 '1.'
+  word
+    markup
+      vref
+        @34 8 {'[vset a]'}
+  word
+    g_text
+      simple
+        @43 2 '2.'
+  word
+    markup
+      vref
+        @45 10 {'[vset b_b]'}
+  word
+    g_text
+      simple
+        @56 2 '3.'
+  word
+    markup
+      vref
+        @58 17 {'[vset b_[vset a]]'}
+  word
+    g_text
+      simple
+        @76 2 '4.'
+  word
+    markup
+      vref
+        @78 17 {'[vset [vset a]_b]'}

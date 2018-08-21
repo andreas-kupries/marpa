@@ -1,0 +1,10 @@
+var_def
+  q_list
+    var_ref
+      unquot
+        simple
+          @13 1 'a'
+        @{} {} ''
+    simple
+      @15 1 'b'
+  @18 9 {'x[vset y]'}

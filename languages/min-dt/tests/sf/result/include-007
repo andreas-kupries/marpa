@@ -1,0 +1,10 @@
+include
+  q_list
+    var_def
+      unquot
+        simple
+          @16 1 'a'
+        @{} {} ''
+      @18 1 'b'
+    simple
+      @20 1 'c'
