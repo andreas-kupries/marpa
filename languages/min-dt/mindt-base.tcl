@@ -5,13 +5,13 @@
 #                                    http://core.tcl.tk/akupries/
 ##
 
-# mini doctools adapter providing the parse event handling to complete
-# the processing of the special forms. Derived from the multistop
-# helper for easier handling of the multiple stop points which will be
-# introduced by nested includes.
+# mini doctools base class providing the parse event handling to
+# complete the processing of the special forms. Derived from the
+# multistop helper for easier handling of the multiple stop points
+# which will be introduced by nested includes.
 
 # @@ Meta Begin
-# Package mindt::parser 1
+# Package mindt::base 1
 # Meta author      {Andreas Kupries}
 # Meta category    Parser
 # Meta description A minimal MINDT parser.
@@ -30,7 +30,7 @@
 
 # # ## ### ##### ######## #############
 
-package provide mindt::parser 1
+package provide mindt::base 1
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -44,15 +44,16 @@ package require marpa::multi-stop
 
 # # ## ### ##### ######## #############
 
-debug define mindt/parser
-#debug prefix mindt/parser {[debug caller] | }
-#debug on mindt/parser
+debug define mindt/base
+#debug prefix mindt/base {[debug caller] | }
+#debug on mindt/base
 
 # # ## ### ##### ######## #############
 
-oo::class create mindt::parser {
+oo::class create mindt::base {
+
     constructor {parser sfparser} {
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 	marpa::import $sfparser SF
 	marpa::multi-stop create PAR $parser
 	PAR on-event [self namespace]::my ProcessSpecialForms
@@ -62,7 +63,7 @@ oo::class create mindt::parser {
     }
 
     destructor {
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 	PAR destroy
 	SF  destroy
 	return
@@ -72,12 +73,12 @@ oo::class create mindt::parser {
     # line/col/path information.
 
     method process {string args} {
-	debug.mindt/parser {[debug caller 1] | }
+	debug.mindt/base {[debug caller 1] | }
 	PAR process $string {*}[my Options $args]
     }
 
     method process-file {path args} {
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 	# Note, the user is able to override the default path
 	# information through the option `path`.
 	set mypath $path
@@ -85,7 +86,7 @@ oo::class create mindt::parser {
     }
 
     method Options {words} {
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 	# PAR supported options in `words` are
 	# - `from`
 	# - `to`
@@ -97,18 +98,18 @@ oo::class create mindt::parser {
 	foreach {option value} $words {
 	    if {$option eq "path"} {
 		set mypath [file normalize $value]
-		debug.mindt/parser {[debug caller] | mypath = $mypath }
+		debug.mindt/base {[debug caller] | mypath = $mypath }
 		continue
 	    }
 	    lappend new $option $value
 	}
 
-	debug.mindt/parser {[debug caller] | => ($new) }
+	debug.mindt/base {[debug caller] | => ($new) }
 	return $new
     }
 
     method Resolve {path} {
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 	set basedir [file dirname $mypath]
 	foreach base [list $basedir [pwd]] {
 	    set full [file join $base $path]
@@ -120,7 +121,7 @@ oo::class create mindt::parser {
     }
 
     method ProcessSpecialForms {__ type enames} {
-	debug.mindt/parser {[debug caller 1] | }
+	debug.mindt/base {[debug caller 1] | }
 	# Discard matched lexeme
 	PAR match clear
 
@@ -128,10 +129,10 @@ oo::class create mindt::parser {
 	set l [PAR match length]
 	set v [PAR match value]
 
-	debug.mindt/parser {[debug caller 1] | <${s}:${l}> = ($v)}
+	debug.mindt/base {[debug caller 1] | <${s}:${l}> = ($v)}
 	set vast [SF process $v]
 
-	debug.mindt/parser {[debug caller 1] | ast = $vast}
+	debug.mindt/base {[debug caller 1] | ast = $vast}
 
 	# Treat AST nodes as deeply-nested command structure.
 	# Each node is responsible for handling its children.
@@ -151,7 +152,7 @@ oo::class create mindt::parser {
 	# Extends `myvar` with a mapping from variable name to value.
 
 	# children = (varname value)
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 
 	lassign $children varname value
 	# varname = ast
@@ -194,7 +195,7 @@ oo::class create mindt::parser {
 	# references) or into the parser (toplevel use).
 
 	# children = (varname)
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 
 	lassign $children varname
 	# varname = ast
@@ -230,7 +231,7 @@ oo::class create mindt::parser {
 	# location when the included file ends.
 
 	# children = (path)
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 
 	lassign $children path
 	# path = ast
@@ -267,7 +268,7 @@ oo::class create mindt::parser {
     }
 
     method ReturnTo {location path __ mark} {
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 	# Restore the origin location and path context when reaching
 	# the end of an included file.
 
@@ -280,13 +281,13 @@ oo::class create mindt::parser {
 
     method braced {children -- top start length} {
 	# children = (terminal)
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 	return [my Strip [lindex $children 0 2]]
     }
 
     method q_list {children -- top start length} {
 	# children = ...
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 	return [join [lmap child $children {
 	    my {*}$child -- 0 $start $length
 	}] {}]
@@ -294,19 +295,19 @@ oo::class create mindt::parser {
 
     method simple {children -- top start length} {
 	# children = (terminal)
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 	return [lindex $children 0 2]
     }
 
     method space {children -- top start length} {
 	# children = (terminal)
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 	return [lindex $children 0 2]
     }
 
     method unquot {children -- top start length} {
 	# children = (lead tail)
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 	lassign $children lead tail
 	append r [my {*}$lead -- 0 $start $length]
 	if {![llength $tail]} { return $r }
@@ -316,7 +317,7 @@ oo::class create mindt::parser {
 
     method uq_list {children -- top start length} {
 	# children = ...
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 	return [join [lmap child $children {
 	    my {*}$child -- 0 $start $length
 	}] {}]
@@ -324,7 +325,7 @@ oo::class create mindt::parser {
 
     method quote {children -- top start length} {
 	# children = (terminal)
-	debug.mindt/parser {[debug caller] | }
+	debug.mindt/base {[debug caller] | }
 	return "\""
     }
 
@@ -343,9 +344,9 @@ oo::class create mindt::parser {
     # - uq_elem
 
     # State information
-    # - var   :: dict (name :: string -> content :: *1)
-    #  content :: list/2,3 (start :: int, length :: int, ?value :: string?)
-    # - label :: string
+    # - var     :: dict (name :: string -> content :: *1)
+    #   content :: list/2,3 (start :: int, length :: int, ?value :: string?)
+    # - label   :: string
 
     # myvar   : mapping from variable nmes to content (location, actual
     #           value for braced literals

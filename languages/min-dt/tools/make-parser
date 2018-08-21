@@ -33,6 +33,6 @@ gp() {
 mkdir L 2>/dev/null
 
 (
-    gp $dt '' mindt
+    gp $dt ''   mindt-lang
     gp $sf sf:: mindt-sf
 ) 2>&1 | tee L/X.make

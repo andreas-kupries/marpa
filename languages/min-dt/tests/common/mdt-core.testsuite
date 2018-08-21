@@ -12,8 +12,13 @@
 # * rt          :: Name of the runtime (`c` or `tcl`)
 #
 ## Derived from these are
-# * cl  :: Name of the parser class
+# * lo  :: Name of the basic parser class
+# * hi  :: Name of the full parser class
 # * tnp :: Prefix for test case name
+
+# Note:
+# low  - Basic parser for the language, special forms unhandled, excised
+# high - Full parser for the language, with events handling the special forms
 
 # # ## ### ##### ######## ############# #####################
 
@@ -34,12 +39,11 @@ kt require support marpa::multi-stop
 ## Local shorthands
 
 proc tnp      {} { return lang-mindt-rt_[rt]  }
-proc hi       {} { return mindt::parser }
-proc lo       {} { return [hi]::[rt] }
-proc sf       {} { return [hi]::sf::[rt] }
+proc lo       {} { return mindt::parser::[rt] }
+proc hi       {} { return mindt::[rt] }
 proc setup-lo {} { [lo] create PARSE }
-proc setup-hi {} { mindt::parser create PARSE [[lo] new] [[sf] new] }
-proc cleanup {} { PARSE destroy }
+proc setup-hi {} { [hi]   create PARSE }
+proc cleanup  {} { PARSE destroy }
 
 # # ## ### ##### ######## ############# #####################
 ## No method sequence checking for the parser.
@@ -54,9 +58,10 @@ kt source support/textutils.tcl
 # # ## ### ##### ######## ############# #####################
 ## (xx)
 
-kt local testing mindt::parser
-kt local support [sf]
-kt local support [lo]
+kt local testing mindt::base
+kt local testing mindt::[rt]
+kt local testing mindt::parser::[rt]
+kt local testing mindt::parser::sf::[rt]
 
 # # ## ### ##### ######## ############# #####################
 ##  1 constructor/0
@@ -65,7 +70,7 @@ kt local support [lo]
 # # ## ### ##### ######## ############# #####################
 ## low constructor - wrong args, initial state, calls
 
-test [tnp]-constructor-1.1 "[lo] :: constructor, wrong args, too many" -body {
+test [tnp]-constructor-1.0 "[lo] :: constructor, wrong args, too many" -body {
     [lo] new X
 }   -returnCodes error \
     -result "wrong # args: should be \"[lo] new\""
@@ -73,20 +78,10 @@ test [tnp]-constructor-1.1 "[lo] :: constructor, wrong args, too many" -body {
 # # ## ### ##### ######## ############# #####################
 ## high constructor - wrong args, initial state, calls
 
-test [tnp]-constructor-2.0.0 "[hi] :: constructor, wrong args, not enough" -body {
-    [hi] new
+test [tnp]-constructor-2.0 "[hi] :: constructor, wrong args, too many" -body {
+    [hi] new X
 }   -returnCodes error \
-    -result "wrong # args: should be \"[hi] new parser sfparser\""
-
-test [tnp]-constructor-2.0.1 "[hi] :: constructor, wrong args, not enough" -body {
-    [hi] new PARSER
-}   -returnCodes error \
-    -result "wrong # args: should be \"[hi] new parser sfparser\""
-
-test [tnp]-constructor-2.0.2 "[hi] :: constructor, wrong args, too many" -body {
-    [hi] new PARSER SFPARSER X
-}   -returnCodes error \
-    -result "wrong # args: should be \"[hi] new parser sfparser\""
+    -result "wrong # args: should be \"[hi] new\""
 
 # # ## ### ##### ######## ############# #####################
 ## testing low and high
@@ -100,7 +95,7 @@ foreach level {
     # # ## ### ##### ######## ############# #####################
     ## process - argument checking
 
-    test [tnp]-process-1.0.$l "[$level] :: process, wrong args, not enough" -body {
+    test [tnp]-process-1.1.$l "[$level] :: process, wrong args, not enough" -body {
 	PARSE process
     }   -setup   setup-$level \
 	-cleanup cleanup \
