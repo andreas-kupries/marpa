@@ -1,0 +1,74 @@
+manpage
+  m_manpage_begin
+    simple
+      @15 4 'TEST'
+    simple
+      @20 1 'z'
+    simple
+      @22 11 '3.14.15.926'
+  @{} {} ''
+  body
+    paragraphs
+      paragraph
+        space
+          @48 1 {'\n'}
+    sections
+      section
+        m_section
+          simple
+            @58 1 '1'
+        paragraphs
+          paragraph
+            simplex
+              @60 3 {'\nA\n'}
+      section
+        m_section
+          simple
+            @72 1 '2'
+        paragraphs
+          paragraph
+            simplex
+              @74 3 {'\nB\n'}
+        subsections
+          subsection
+            m_subsection
+              simple
+                @89 3 '2.1'
+            paragraphs
+              paragraph
+                simplex
+                  @93 5 {'\nB-a\n'}
+          subsection
+            m_subsection
+              simple
+                @110 3 '2.2'
+            paragraphs
+              paragraph
+                simplex
+                  @114 5 {'\nB-b\n'}
+      section
+        m_section
+          simple
+            @128 1 '3'
+        paragraphs
+          paragraph
+            simplex
+              @130 4 {'\nC\n\n'}
+          p_separator
+          paragraph
+            simplex
+              @140 4 {'\nAt '}
+            m_sectref
+              simple
+                @153 1 '1'
+            simplex
+              @155 2 {'.\n'}
+          p_separator
+          paragraph
+            simplex
+              @163 4 {'\nAt '}
+            m_sectref
+              simple
+                @176 13 '__undefined__'
+            simplex
+              @190 2 {'.\n'}

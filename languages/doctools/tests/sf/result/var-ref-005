@@ -1,0 +1,11 @@
+var_ref
+  unquot
+    var_def
+      unquot
+        simple
+          @12 1 'a'
+        @{} {} ''
+      @14 1 'b'
+    uq_list
+      simple
+        @16 1 'c'

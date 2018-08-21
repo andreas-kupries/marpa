@@ -19,16 +19,15 @@
 # # ## ### ##### ######## ############# #####################
 ## Local configuration (restrictions for debug)
 
-set skipfiles 0
+set skipfiles 1
 if 0 {
     rename constraints constraints.rt
     proc constraints {id} {
-	if {![dict exists {
+	if 0 {if {![dict exists {
 	} $id]} {
 	    return knownBug
-	}
-	return {}
-	#constraints.rt $id
+	}}
+	constraints.rt $id
     }
 }
 
@@ -104,7 +103,7 @@ test [tnp]-process-file-1.0 "[cl] :: process-file, wrong args, not enough" -body
 # # ## ### ##### ######## ############# #####################
 ## Will-accept inputs
 
-lappend will_accept {*}[lsort -uniq [glob -nocomplain -directory [td]/input/ok *]]
+lappend will_accept {*}[lsort -uniq [glob -nocomplain -directory [td]/dt/input/ok *]]
 
 set max [llength $will_accept]
 set fmt %0[string length $max]d
@@ -118,16 +117,15 @@ foreach infile $will_accept {
     set id       [file rootname [file tail $infile]]
     set cat      [file tail [file dirname $infile]]
     set input    [fgetc $infile [coding]]
-    set exfile   [td]/result/$cat/$id
+    set exfile   [td]/dt/result/$cat/$id
     set expected {}
     catch { set expected [string trim [fget $exfile]] }
 
     # - --   -----        -------------
+    # For rt-c activate `TRACE` tag `enter` in `inbound.c` and use the
+    # rebuilt runtime.
     
     test [tnp]-process-2.${kd}---ok-${id} "[cl] :: ok process $id" -body {
-	# For rt-c activate `TRACE` tag `enter` in `inbound.c` and use
-	# the rebuilt runtime.
-
 	catch {
 	    ast-format [PARSE process $input]
 	} msg
@@ -155,7 +153,7 @@ foreach infile $will_accept {
 ## - must reject
 ## - may reject
 
-lappend will_reject {*}[lsort -uniq [glob -nocomplain -directory [td]/input/fail *]]
+lappend will_reject {*}[lsort -uniq [glob -nocomplain -directory [td]/input/dt/fail *]]
 
 set max [llength $will_reject]
 set fmt %0[string length $max]d
@@ -171,16 +169,15 @@ foreach infile $will_reject {
     set input    [fgetc $infile [coding]]
     set expected {}
     catch {
-	set exfile [locate [td]/result/$cat [rt]/$id $id]
+	set exfile [locate [td]/dt/result/$cat [rt]/$id $id]
 	set expected [fget $exfile]
     }
 
     # - --   -----        -------------
+    # For rt-c activate `TRACE` tag `enter` in `inbound.c` and use the
+    # rebuilt runtime.
     
     test [tnp]-process-4.${kd}---fail-${id} "[cl] :: process fail $id ([coding])" -body {
-	# For rt-c activate `TRACE` tag `enter` in `inbound.c` and use
-	# the rebuilt runtime.
-    
 	PARSE process $input
     } -setup setup -cleanup {
 	cleanup

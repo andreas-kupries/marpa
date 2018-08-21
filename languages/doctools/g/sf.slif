@@ -1,0 +1,187 @@
+# # ## ### ##### ######## ############# #####################
+## (C) 2018-present Andreas Kupries
+
+# Grammar for the inner structure of the special forms.
+
+# This replicates (most of) the structure specified in min-dt.slif at
+# L0, now however in G1.
+
+# The main parts moved to G1 are the arguments where the inner
+# structure, i.e. nested commands is relevant to the system. These are
+# the variable names and include paths. The value argument is not
+# replicated into G1, because its structure is either never
+# interpreted (braced `{...}`), or not relevant to the form itself
+# (quoted and unquoted)
+
+# # ## ### ##### ######## ############# #####################
+
+:default ::= action => [name,values]
+
+lexeme default =
+	action => [start,length,value]
+       	latm   => 1
+
+# # ## ### ##### ######## ############# #####################
+## G1
+
+:start	::= form
+
+form	::= vars	action => ::first
+	|   include	action => ::first
+
+vars	::= var_def	action => ::first
+	|   var_ref	action => ::first
+
+var_def	::= (Start White Vset White) varname (White) value (White Stop)
+	|   (Start White Vset White) varname (White) value (	  Stop)
+	|   (Start 	 Vset White) varname (White) value (White Stop)
+	|   (Start	 Vset White) varname (White) value (	  Stop)
+
+var_ref	::= (Start White Vset White) varname (White Stop)
+	|   (Start White Vset White) varname (      Stop)
+	|   (Start 	 Vset White) varname (White Stop)
+	|   (Start	 Vset White) varname (      Stop)
+
+include	::= (Start White Include White) path (White Stop)
+	|   (Start White Include White) path (      Stop)
+	|   (Start 	 Include White) path (White Stop)
+	|   (Start	 Include White) path (      Stop)
+
+varname	::= recurse	action => ::first
+path	::= recurse	action => ::first
+value	::= Word	action => ::first
+
+recurse	::= braced	action => ::first
+	|   quoted	action => ::first
+	|   unquot	action => ::first
+
+quoted	::= (Quote) q_list (Quote)	action => ::first
+q_list	::= q_elem *
+q_elem	::= simple			action => ::first
+	|   space			action => ::first
+	|   vars			action => ::first
+
+unquot	::= uq_lead uq_list
+uq_lead	::= simple	action => ::first
+	|   vars	action => ::first
+uq_list	::= uq_elem *
+uq_elem	::= uq_lead	action => ::first
+	|   quote	action => ::first
+
+braced	::= Braced
+simple	::= Simple
+quote	::= Quote
+space	::= Space
+
+# # ## ### ##### ######## ############# #####################
+## Lexeme / Terminals
+
+Start	~ CL
+Stop	~ CR
+
+Vset	~ VSET
+Include	~ INCLUDE
+
+Simple	~ SIMPLE
+Space	~ SPACE1
+Braced	~ BRACED
+Word	~ WORD
+Quote	~ QUOTE
+
+White	~ WHITE1
+
+# # ## ### ##### ######## ############# #####################
+## L1
+
+VSET	~ 'vset'   
+INCLUDE	~ 'include'
+
+# # ## ### ##### ######## ############# #####################
+## Tcl word syntax for the value argument of variable definitions
+
+WORD		~ BRACED
+		| QUOTED
+		| UNQUOTED
+
+## Brace quoted	`{...}`
+## - No substitutions
+## - \-escaped braces are not counted
+## - Regular braces are counted, i.e. describe nested/embedded braced words
+
+BRACED		~ BL BRACED_ELEMS BR
+BL		~ '{'
+BR		~ '}'
+
+BRACED_ELEMS	~ BRACED_ELEM *
+BRACED_ELEM	~ ANY_UNBRACED
+		| BRACED
+		| BRACE_ESCAPED
+ANY_UNBRACED	~ [^{}]
+BRACE_ESCAPED	~ '\\{'
+		| '\\}'
+
+# (double) Quoted	`"..."`
+# - Text may contain all forms of whitespace
+# - Command substitutions `[...]` are allowed
+
+QUOTED		~ QUOTE QUOTED_ELEMS QUOTE
+QUOTE		~ '"'
+QUOTED_ELEMS	~ QUOTED_ELEM *
+QUOTED_ELEM	~ SIMPLE
+		| SPACE1
+		| COMMAND
+
+SIMPLE		~ NO_CFS_QUOTE +
+
+# unquoted	`...`
+# - Text cannot contain any forms of whitespace
+# - Command substitutions `[...]` are allowed
+
+UNQUOTED	~ UNQUOTED_ELEM +
+UNQUOTED_ELEM	~ NO_CFS1
+		| COMMAND
+
+COMMAND		~ CL WHITE0 WORDS1 WHITE0 CR
+WORDS1		~ WORD +
+	separator => WHITE1
+
+CL		~ '['
+CR		~ ']'
+
+NO_CFS1		~ NO_CMD_FMT_SPACE +
+
+NO_CMD_FMT_SPACE~ [^\133\135\n\r\t\f\v ]
+NO_CFS_QUOTE	~ [^\133\135\n\r\t\f\v "]
+
+# # ## ### ##### ######## ############# #####################
+## other forms of white space
+
+WHITE1		~ WHITE +
+WHITE0		~ WHITE *
+
+WHITE		~ SPACE1
+	    	| COMMENT
+	    	| CONTINUATION
+
+SPACE1		~ SPACE +
+SPACE0		~ SPACE *
+
+# simplified space to keep the engine small
+#SPACE		~ [[:space:]]
+SPACE		~ [\n\r\t\v\f ]
+
+CONTINUATION	~ SPACE0 '\134' NEWLINE SPACE0
+NEWLINE		~ [\r\n]
+		| '\r\n'
+
+# # ## ### ##### ######## ############# #####################
+## special form: comment
+#
+#	[comment text]	Discard, see WHITE
+#
+# - Quoting of the text does not matter. Embedded markup is fully
+#   ignored.
+
+COMMENT		~ CL WHITE0 'comment' WHITE1 WORD WHITE0 CR
+
+# # ## ### ##### ######## ############# #####################
