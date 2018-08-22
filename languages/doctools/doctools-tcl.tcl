@@ -36,7 +36,10 @@ package require Tcl 8.5
 package require TclOO
 package require debug           ;# Tracing
 package require debug::caller   ;# Tracing
+
 package require doctools::base
+package require	doctools::parser::tcl
+package require	doctools::parser::sf::tcl
 
 # # ## ### ##### ######## #############
 
