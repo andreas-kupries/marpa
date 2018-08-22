@@ -2,3 +2,4 @@
 # -*- tcl -*-
 kettle tcl
 kettle critcl3
+kettle tclapp bin/dt

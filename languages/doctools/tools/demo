@@ -1,0 +1,66 @@
+#!/bin/bash
+#set -x
+
+clear
+echo _______________________________ configuration
+here="$(pwd)"                   ; echo here__: $here
+self="$0"                       ; echo self__: $self
+bindir="$(dirname "${self}")"   ; echo bindir: $bindir
+topdir="$(dirname "${bindir}")" ; echo topdir: $topdir
+
+echo _______________________________ cleanup temps
+find . -name "*~" -print
+find . -name "*~" -exec rm "{}" \;
+rm -rf OUT
+echo
+
+echo continue to grammar...
+read __
+
+clear
+echo
+echo _______________________________ setup
+(
+    less $topdir/g/doctools.slif
+    
+    echo _______________________________ make parser packages
+    cd $topdir
+    $here/$bindir/make-parser
+
+    echo _______________________________ install parsers, local
+    ./build.tcl install \
+		--prefix      $here/OUT \
+		--include-dir $HOME/opt/ActiveTcl/include
+)
+echo
+echo continue to C parser sources...
+read __
+
+less $topdir/doctools-lang-c.tcl
+
+clear
+echo _______________________________ run mini-processor over input
+echo
+dtfile="${topdir}/examples/aes.man"
+#dtfile="${topdir}/examples/array.man"
+
+echo doctools file: $dtfile
+echo _______________________________ ..
+cat $dtfile
+echo _______________________________ //
+echo
+echo continue to dt...
+read __
+
+clear
+echo
+$here/OUT/bin/dt $dtfile > AST
+
+echo
+echo continue to ast...
+read __
+
+less AST
+
+echo
+exit

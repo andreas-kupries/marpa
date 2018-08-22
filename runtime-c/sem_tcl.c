@@ -563,7 +563,7 @@ marpatcl_rtc_sv_astcl (Tcl_Interp* ip, marpatcl_rtc_sv_p sv)
     if (!sv) {
 	TRACE_RETURN ("(Tcl_Obj*) %p", null);
     }
-    
+
     TAKE (null);
     svres = astcl_do (ip, sv, null);
     ASSERT (svres != null, "bad sv conversion");

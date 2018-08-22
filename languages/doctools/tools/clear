@@ -1,0 +1,16 @@
+#!/bin/bash
+
+clear;echo
+
+drop() {
+    fname=$1
+    rm ${fname}-c.tcl
+    rm ${fname}-tcl.tcl
+}
+
+mkdir L 2>/dev/null
+
+(
+    drop doctools-lang
+    drop doctools-sf
+) 2>&1 | tee L/X.drop
