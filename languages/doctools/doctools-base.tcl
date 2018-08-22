@@ -266,7 +266,7 @@ oo::class create doctools::base {
 	incr stop $start             ;# end relative to entire extended input
 	incr stop -1                 ;# last character
 
-	PAR match mark-add $full $stop {*}[mymethod ReturnTo $here $mypath]
+	PAR match mark-add $full $stop [self namespace]::my ReturnTo $here $mypath
 
 	# Start reading from the included file, also using it as the
 	# new path resolution context
