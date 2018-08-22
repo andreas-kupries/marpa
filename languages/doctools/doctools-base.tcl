@@ -81,7 +81,7 @@ oo::class create doctools::base {
 	debug.doctools/base {[debug caller] | }
 	# Note, the user is able to override the default path
 	# information through the option `path`.
-	set mypath $path
+	set mypath [my N $path]
 	PAR process-file $path {*}[my Options $args]
     }
 
@@ -97,7 +97,7 @@ oo::class create doctools::base {
 	set new {}
 	foreach {option value} $words {
 	    if {$option eq "path"} {
-		set mypath [file normalize $value]
+		set mypath [my N $value]
 		debug.doctools/base {[debug caller] | mypath = $mypath }
 		continue
 	    }
@@ -114,12 +114,19 @@ oo::class create doctools::base {
 	foreach base [list $basedir [pwd]] {
 	    set full [file join $base $path]
 	    if {![file exists $full]} continue
-	    return $full
+	    return [my N $full]
 	}
 	return -code error \
 	    "File `$path` not found, searching in `$basedir` and `[pwd]`"
     }
 
+    method N {path} {
+	debug.doctools/base {[debug caller] | }
+	set path [file dirname [file normalize [file join $path ...]]]
+	debug.doctools/base {[debug caller] | norm = $path}
+	return $path
+    }
+    
     method ProcessSpecialForms {__ type enames} {
 	debug.doctools/base {[debug caller 1] | }
 	# Discard matched lexeme
@@ -139,6 +146,8 @@ oo::class create doctools::base {
 	# Which are provided as the first argument, a list of nodes.
 	my {*}$vast -- 1 $s $l
 	#my X {*}$vast -- 1 $s $l
+
+	debug.doctools/base {[debug caller 1] | /done}
 	return
     }
 
