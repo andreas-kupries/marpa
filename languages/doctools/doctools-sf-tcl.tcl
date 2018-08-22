@@ -7,8 +7,8 @@
 # (c) 2018 Grammar doctools::parser::sf::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "doctools::parser::sf::tcl".
-##	Generated On Tue Aug 21 16:39:05 PDT 2018
-##		  By andreask@ten
+##	Generated On Tue Aug 21 21:36:10 PDT 2018
+##		  By aku@hephaistos
 ##		 Via marpa-gen
 
 package provide doctools::parser::sf::tcl 1
@@ -136,7 +136,6 @@ oo::class create doctools::parser::sf::tcl {
 	    CR
 	    INCLUDE
 	    NEWLINE
-	    NO_CFS1
 	    NO_CFS_QUOTE
 	    NO_CMD_FMT_SPACE
 	    QUOTE
@@ -185,15 +184,14 @@ oo::class create doctools::parser::sf::tcl {
 	    {Include := INCLUDE}
 	    {NEWLINE := {@CLS:<\n\r>}}
 	    {NEWLINE := {@STR:<\r\n>}}
-	    {NO_CFS1 + NO_CMD_FMT_SPACE}
 	    {NO_CFS_QUOTE := {@^CLS:<\t-\r\40\42\133\135>}}
 	    {NO_CMD_FMT_SPACE := {@^CLS:<\t-\r\40\133\135>}}
 	    {Quote := QUOTE}
 	    {QUOTE := {@CHR:<\42>}}
 	    {QUOTED := QUOTE QUOTED_ELEMS QUOTE}
 	    {QUOTED_ELEM := COMMAND}
-	    {QUOTED_ELEM := SIMPLE}
-	    {QUOTED_ELEM := SPACE1}
+	    {QUOTED_ELEM := NO_CFS_QUOTE}
+	    {QUOTED_ELEM := SPACE}
 	    {QUOTED_ELEMS * QUOTED_ELEM}
 	    {SIMPLE + NO_CFS_QUOTE}
 	    {Simple := SIMPLE}
@@ -205,12 +203,12 @@ oo::class create doctools::parser::sf::tcl {
 	    {Stop := CR}
 	    {UNQUOTED + UNQUOTED_ELEM}
 	    {UNQUOTED_ELEM := COMMAND}
-	    {UNQUOTED_ELEM := NO_CFS1}
+	    {UNQUOTED_ELEM := NO_CMD_FMT_SPACE}
 	    {VSET := @STR:<vset>}
 	    {Vset := VSET}
 	    {WHITE := COMMENT}
 	    {WHITE := CONTINUATION}
-	    {WHITE := SPACE1}
+	    {WHITE := SPACE}
 	    {White := WHITE1}
 	    {WHITE0 * WHITE}
 	    {WHITE1 + WHITE}

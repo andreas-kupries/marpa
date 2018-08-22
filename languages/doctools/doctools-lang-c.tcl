@@ -7,20 +7,20 @@
 # (c) 2018 Grammar doctools::parser::c 1 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "doctools::parser::c".
-##	Generated On Tue Aug 21 16:38:59 PDT 2018
-##		  By andreask@ten
+##	Generated On Tue Aug 21 21:36:02 PDT 2018
+##		  By aku@hephaistos
 ##		 Via marpa-gen
 ##
-#* Space taken: 14942 bytes
+#* Space taken: 14924 bytes
 ##
 #* Statistics
 #* L0
-#* - #Symbols:   591
+#* - #Symbols:   590
 #* - #Lexemes:   72
 #* - #Discards:  1
 #* - #Always:    1
-#* - #Rule Insn: 380 (+2: setup, start-sym)
-#* - #Rules:     780 (>= insn, brange)
+#* - #Rule Insn: 379 (+2: setup, start-sym)
+#* - #Rules:     779 (>= insn, brange)
 #* G1
 #* - #Symbols:   184
 #* - #Rule Insn: 190 (+2: setup, start-sym)
@@ -63,12 +63,12 @@ critcl::api import critcl::callback  1
 
 critcl::ccode {
     /*
-    ** Shared string pool (1250 bytes lengths over 625 entries)
-    **                    (1250 bytes offsets -----^)
-    **                    (4512 bytes character content)
+    ** Shared string pool (1248 bytes lengths over 624 entries)
+    **                    (1248 bytes offsets -----^)
+    **                    (4504 bytes character content)
     */
 
-    static marpatcl_rtc_size doctools_parser_c_pool_length [625] = { /* 1250 bytes */
+    static marpatcl_rtc_size doctools_parser_c_pool_length [624] = { /* 1248 bytes */
 	 1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
 	 1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  9,  5,  5,  8,
 	 6,  9, 10, 11, 11, 11, 11, 11, 11,  6, 21, 18, 10,  7,  7,  8,
@@ -101,17 +101,16 @@ critcl::ccode {
 	 6, 10,  4, 16, 16, 16, 17, 17, 16, 16, 10, 15, 13,  8,  9, 11,
 	 5,  9,  8,  9,  6,  4,  9,  9,  9, 13, 10,  8, 12,  8,  6, 11,
 	14,  6,  5,  7,  5,  8,  7, 13, 11,  6,  6,  7,  1,  1,  9,  9,
-	 9,  9,  9,  7,  7,  7,  8,  7,  2,  7, 12, 16,  1,  1,  3,  7,
-	13,  6, 11,  7,  1,  1, 11,  7,  4,  9, 10,  1,  1,  5,  5,  5,
-	 6,  6, 11, 11, 12, 12,  1,  1,  2,  7,  1,  1,  7,  8,  7, 16,
-	 8,  6,  6,  6,  7,  7,  7,  7,  5,  5,  5,  6,  6,  6, 10, 11,
-	 6,  1,  1,  7,  8,  4,  9, 13, 12, 13,  9,  4,  1,  1,  8,  8,
-	13, 13, 14, 15,  3,  5,  1,  1,  3,  7,  7,  4,  4,  4,  1,  1,
-	 5,  6,  6, 10,  6,  4,  4,  6,  1,  1,  4,  1,  1,  1,  1,  1,
-	 1
+	 9,  9,  9,  7,  7,  7,  8,  7,  2, 12, 16,  1,  1,  3,  7, 13,
+	 6, 11,  7,  1,  1, 11,  7,  4,  9, 10,  1,  1,  5,  5,  5,  6,
+	 6, 11, 11, 12, 12,  1,  1,  2,  7,  1,  1,  7,  8,  7, 16,  8,
+	 6,  6,  6,  7,  7,  7,  7,  5,  5,  5,  6,  6,  6, 10, 11,  6,
+	 1,  1,  7,  8,  4,  9, 13, 12, 13,  9,  4,  1,  1,  8,  8, 13,
+	13, 14, 15,  3,  5,  1,  1,  3,  7,  7,  4,  4,  4,  1,  1,  5,
+	 6,  6, 10,  6,  4,  4,  6,  1,  1,  4,  1,  1,  1,  1,  1,  1
     };
 
-    static marpatcl_rtc_size doctools_parser_c_pool_offset [625] = { /* 1250 bytes */
+    static marpatcl_rtc_size doctools_parser_c_pool_offset [624] = { /* 1248 bytes */
 	   0,    2,    4,    6,    8,   10,   12,   14,   16,   18,   20,   22,   24,   26,   28,   30,
 	  32,   34,   36,   38,   40,   42,   44,   46,   48,   50,   52,   54,   56,   66,   72,   78,
 	  87,   94,  104,  115,  127,  139,  151,  163,  175,  187,  194,  216,  235,  246,  254,  262,
@@ -144,17 +143,16 @@ critcl::ccode {
 	3214, 3221, 3232, 3237, 3254, 3271, 3288, 3306, 3324, 3341, 3358, 3369, 3385, 3399, 3408, 3418,
 	3430, 3436, 3446, 3455, 3465, 3472, 3477, 3487, 3497, 3507, 3521, 3532, 3541, 3554, 3563, 3570,
 	3582, 3597, 3604, 3610, 3618, 3624, 3633, 3641, 3655, 3667, 3674, 3681, 3689, 3691, 3693, 3703,
-	3713, 3723, 3733, 3743, 3751, 3759, 3767, 3776, 3784, 3787, 3795, 3808, 3825, 3827, 3829, 3833,
-	3841, 3855, 3862, 3874, 3882, 3884, 3886, 3898, 3906, 3911, 3921, 3932, 3934, 3936, 3942, 3948,
-	3954, 3961, 3968, 3980, 3992, 4005, 4018, 4020, 4022, 4025, 4033, 4035, 4037, 4045, 4054, 4062,
-	4079, 4088, 4095, 4102, 4109, 4117, 4125, 4133, 4141, 4147, 4153, 4159, 4166, 4173, 4180, 4191,
-	4203, 4210, 4212, 4214, 4222, 4231, 4236, 4246, 4260, 4273, 4287, 4297, 4302, 4304, 4306, 4315,
-	4324, 4338, 4352, 4367, 4383, 4387, 4393, 4395, 4397, 4401, 4409, 4417, 4422, 4427, 4432, 4434,
-	4436, 4442, 4449, 4456, 4467, 4474, 4479, 4484, 4491, 4493, 4495, 4500, 4502, 4504, 4506, 4508,
-	4510
+	3713, 3723, 3733, 3743, 3751, 3759, 3767, 3776, 3784, 3787, 3800, 3817, 3819, 3821, 3825, 3833,
+	3847, 3854, 3866, 3874, 3876, 3878, 3890, 3898, 3903, 3913, 3924, 3926, 3928, 3934, 3940, 3946,
+	3953, 3960, 3972, 3984, 3997, 4010, 4012, 4014, 4017, 4025, 4027, 4029, 4037, 4046, 4054, 4071,
+	4080, 4087, 4094, 4101, 4109, 4117, 4125, 4133, 4139, 4145, 4151, 4158, 4165, 4172, 4183, 4195,
+	4202, 4204, 4206, 4214, 4223, 4228, 4238, 4252, 4265, 4279, 4289, 4294, 4296, 4298, 4307, 4316,
+	4330, 4344, 4359, 4375, 4379, 4385, 4387, 4389, 4393, 4401, 4409, 4414, 4419, 4424, 4426, 4428,
+	4434, 4441, 4448, 4459, 4466, 4471, 4476, 4483, 4485, 4487, 4492, 4494, 4496, 4498, 4500, 4502
     };
 
-    static marpatcl_rtc_string doctools_parser_c_pool = { /* 24 + 4512 bytes */
+    static marpatcl_rtc_string doctools_parser_c_pool = { /* 24 + 4504 bytes */
 	doctools_parser_c_pool_length,
 	doctools_parser_c_pool_offset,
 	/*   0 */ "!\0"
@@ -678,114 +676,113 @@ critcl::ccode {
 	/* 518 */ "NBSPACE1\0"
 	/* 519 */ "NEWLINE\0"
 	/* 520 */ "nl\0"
-	/* 521 */ "NO_CFS1\0"
-	/* 522 */ "NO_CFS_QUOTE\0"
-	/* 523 */ "NO_CMD_FMT_SPACE\0"
-	/* 524 */ "O\0"
-	/* 525 */ "o\0"
-	/* 526 */ "opt\0"
-	/* 527 */ "opt_def\0"
-	/* 528 */ "opt_list_elem\0"
-	/* 529 */ "option\0"
-	/* 530 */ "option_list\0"
-	/* 531 */ "options\0"
-	/* 532 */ "P\0"
-	/* 533 */ "p\0"
-	/* 534 */ "p_separator\0"
-	/* 535 */ "package\0"
-	/* 536 */ "para\0"
-	/* 537 */ "paragraph\0"
-	/* 538 */ "paragraphs\0"
-	/* 539 */ "Q\0"
-	/* 540 */ "q\0"
-	/* 541 */ "QUOTE\0"
-	/* 542 */ "Quote\0"
-	/* 543 */ "quote\0"
-	/* 544 */ "QUOTED\0"
-	/* 545 */ "quoted\0"
-	/* 546 */ "QUOTED_ELEM\0"
-	/* 547 */ "quoted_elem\0"
-	/* 548 */ "QUOTED_ELEMS\0"
-	/* 549 */ "quoted_elems\0"
-	/* 550 */ "R\0"
-	/* 551 */ "r\0"
-	/* 552 */ "rb\0"
-	/* 553 */ "require\0"
-	/* 554 */ "S\0"
-	/* 555 */ "s\0"
-	/* 556 */ "section\0"
-	/* 557 */ "sections\0"
-	/* 558 */ "sectref\0"
-	/* 559 */ "sectref-external\0"
-	/* 560 */ "see_also\0"
-	/* 561 */ "SIMPLE\0"
-	/* 562 */ "Simple\0"
-	/* 563 */ "simple\0"
-	/* 564 */ "SIMPLEN\0"
-	/* 565 */ "SIMPLEX\0"
-	/* 566 */ "Simplex\0"
-	/* 567 */ "simplex\0"
-	/* 568 */ "SPACE\0"
-	/* 569 */ "Space\0"
-	/* 570 */ "space\0"
-	/* 571 */ "SPACE0\0"
-	/* 572 */ "SPACE1\0"
-	/* 573 */ "strong\0"
-	/* 574 */ "subsection\0"
-	/* 575 */ "subsections\0"
-	/* 576 */ "syscmd\0"
-	/* 577 */ "T\0"
-	/* 578 */ "t\0"
-	/* 579 */ "tclword\0"
-	/* 580 */ "tclwords\0"
-	/* 581 */ "term\0"
-	/* 582 */ "titledesc\0"
-	/* 583 */ "tko_list_elem\0"
-	/* 584 */ "tkoption_def\0"
-	/* 585 */ "tkoption_list\0"
-	/* 586 */ "tkoptions\0"
-	/* 587 */ "type\0"
-	/* 588 */ "U\0"
-	/* 589 */ "u\0"
-	/* 590 */ "UNQUOTED\0"
-	/* 591 */ "unquoted\0"
-	/* 592 */ "UNQUOTED_ELEM\0"
-	/* 593 */ "unquoted_elem\0"
-	/* 594 */ "unquoted_elems\0"
-	/* 595 */ "unquoted_leader\0"
-	/* 596 */ "uri\0"
-	/* 597 */ "usage\0"
-	/* 598 */ "V\0"
-	/* 599 */ "v\0"
-	/* 600 */ "var\0"
-	/* 601 */ "VAR_DEF\0"
-	/* 602 */ "VAR_REF\0"
-	/* 603 */ "vdef\0"
-	/* 604 */ "vref\0"
-	/* 605 */ "vset\0"
-	/* 606 */ "W\0"
-	/* 607 */ "w\0"
-	/* 608 */ "WHITE\0"
-	/* 609 */ "WHITE0\0"
-	/* 610 */ "WHITE1\0"
-	/* 611 */ "Whitespace\0"
-	/* 612 */ "widget\0"
-	/* 613 */ "WORD\0"
-	/* 614 */ "word\0"
-	/* 615 */ "WORDS1\0"
-	/* 616 */ "X\0"
-	/* 617 */ "x\0"
-	/* 618 */ "xref\0"
-	/* 619 */ "Y\0"
-	/* 620 */ "y\0"
-	/* 621 */ "Z\0"
-	/* 622 */ "z\0"
-	/* 623 */ "|\0"
-	/* 624 */ "~\0"
+	/* 521 */ "NO_CFS_QUOTE\0"
+	/* 522 */ "NO_CMD_FMT_SPACE\0"
+	/* 523 */ "O\0"
+	/* 524 */ "o\0"
+	/* 525 */ "opt\0"
+	/* 526 */ "opt_def\0"
+	/* 527 */ "opt_list_elem\0"
+	/* 528 */ "option\0"
+	/* 529 */ "option_list\0"
+	/* 530 */ "options\0"
+	/* 531 */ "P\0"
+	/* 532 */ "p\0"
+	/* 533 */ "p_separator\0"
+	/* 534 */ "package\0"
+	/* 535 */ "para\0"
+	/* 536 */ "paragraph\0"
+	/* 537 */ "paragraphs\0"
+	/* 538 */ "Q\0"
+	/* 539 */ "q\0"
+	/* 540 */ "QUOTE\0"
+	/* 541 */ "Quote\0"
+	/* 542 */ "quote\0"
+	/* 543 */ "QUOTED\0"
+	/* 544 */ "quoted\0"
+	/* 545 */ "QUOTED_ELEM\0"
+	/* 546 */ "quoted_elem\0"
+	/* 547 */ "QUOTED_ELEMS\0"
+	/* 548 */ "quoted_elems\0"
+	/* 549 */ "R\0"
+	/* 550 */ "r\0"
+	/* 551 */ "rb\0"
+	/* 552 */ "require\0"
+	/* 553 */ "S\0"
+	/* 554 */ "s\0"
+	/* 555 */ "section\0"
+	/* 556 */ "sections\0"
+	/* 557 */ "sectref\0"
+	/* 558 */ "sectref-external\0"
+	/* 559 */ "see_also\0"
+	/* 560 */ "SIMPLE\0"
+	/* 561 */ "Simple\0"
+	/* 562 */ "simple\0"
+	/* 563 */ "SIMPLEN\0"
+	/* 564 */ "SIMPLEX\0"
+	/* 565 */ "Simplex\0"
+	/* 566 */ "simplex\0"
+	/* 567 */ "SPACE\0"
+	/* 568 */ "Space\0"
+	/* 569 */ "space\0"
+	/* 570 */ "SPACE0\0"
+	/* 571 */ "SPACE1\0"
+	/* 572 */ "strong\0"
+	/* 573 */ "subsection\0"
+	/* 574 */ "subsections\0"
+	/* 575 */ "syscmd\0"
+	/* 576 */ "T\0"
+	/* 577 */ "t\0"
+	/* 578 */ "tclword\0"
+	/* 579 */ "tclwords\0"
+	/* 580 */ "term\0"
+	/* 581 */ "titledesc\0"
+	/* 582 */ "tko_list_elem\0"
+	/* 583 */ "tkoption_def\0"
+	/* 584 */ "tkoption_list\0"
+	/* 585 */ "tkoptions\0"
+	/* 586 */ "type\0"
+	/* 587 */ "U\0"
+	/* 588 */ "u\0"
+	/* 589 */ "UNQUOTED\0"
+	/* 590 */ "unquoted\0"
+	/* 591 */ "UNQUOTED_ELEM\0"
+	/* 592 */ "unquoted_elem\0"
+	/* 593 */ "unquoted_elems\0"
+	/* 594 */ "unquoted_leader\0"
+	/* 595 */ "uri\0"
+	/* 596 */ "usage\0"
+	/* 597 */ "V\0"
+	/* 598 */ "v\0"
+	/* 599 */ "var\0"
+	/* 600 */ "VAR_DEF\0"
+	/* 601 */ "VAR_REF\0"
+	/* 602 */ "vdef\0"
+	/* 603 */ "vref\0"
+	/* 604 */ "vset\0"
+	/* 605 */ "W\0"
+	/* 606 */ "w\0"
+	/* 607 */ "WHITE\0"
+	/* 608 */ "WHITE0\0"
+	/* 609 */ "WHITE1\0"
+	/* 610 */ "Whitespace\0"
+	/* 611 */ "widget\0"
+	/* 612 */ "WORD\0"
+	/* 613 */ "word\0"
+	/* 614 */ "WORDS1\0"
+	/* 615 */ "X\0"
+	/* 616 */ "x\0"
+	/* 617 */ "xref\0"
+	/* 618 */ "Y\0"
+	/* 619 */ "y\0"
+	/* 620 */ "Z\0"
+	/* 621 */ "z\0"
+	/* 622 */ "|\0"
+	/* 623 */ "~\0"
     };
 
     static marpatcl_rtc_event_spec doctools_parser_c_events [3] = {
-    // sym, type, active
+       // sym, type, active
 	{ 22, marpatcl_rtc_event_after, 1 }, // CInclude: macro
 	{ 56, marpatcl_rtc_event_after, 1 }, // CVdef: macro
 	{ 57, marpatcl_rtc_event_after, 1 }, // CVref: macro
@@ -795,17 +792,17 @@ critcl::ccode {
     ** L0 structures
     */
 
-    static marpatcl_rtc_sym doctools_parser_c_l0_sym_name [591] = { /* 1182 bytes */
+    static marpatcl_rtc_sym doctools_parser_c_l0_sym_name [590] = { /* 1180 bytes */
 	/* --- (256) --- --- --- Characters
 	 */
 	393,  49,  50,  51,  52,  53,  54,  55,  56, 204, 201,  57,  58, 202,  59,  60,
 	 61,  62,  63,  64,  65,  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,
 	 77,   0,  78,   1,   2,   3,   4,   5,  79,  80,   6,   7,   8,   9,  10,  11,
 	 12,  13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  81,  23,  24,  25,  26,
-	 27, 208, 216, 233, 360, 368, 380, 384, 387, 391, 418, 420, 423, 443, 508, 524,
-	532, 539, 550, 554, 577, 588, 598, 606, 616, 619, 621,  82,  83,  86, 205, 206,
-	207, 209, 217, 234, 361, 369, 381, 385, 388, 392, 419, 421, 424, 444, 509, 525,
-	533, 540, 551, 555, 578, 589, 599, 607, 617, 620, 622,  87, 623,  88, 624,  89,
+	 27, 208, 216, 233, 360, 368, 380, 384, 387, 391, 418, 420, 423, 443, 508, 523,
+	531, 538, 549, 553, 576, 587, 597, 605, 615, 618, 620,  82,  83,  86, 205, 206,
+	207, 209, 217, 234, 361, 369, 381, 385, 388, 392, 419, 421, 424, 444, 509, 524,
+	532, 539, 550, 554, 577, 588, 598, 606, 616, 619, 621,  87, 622,  88, 623,  89,
 	 90,  91,  92,  93,  94,  95,  96,  97,  98,  99, 100, 101, 102, 103, 104, 105,
 	106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121,
 	122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137,
@@ -821,11 +818,11 @@ critcl::ccode {
 	303, 304, 305, 306, 307, 308, 309, 310, 311, 313, 315, 316, 317, 318, 319, 323,
 	324, 325, 326, 334, 335, 336, 338, 339, 341, 342, 343, 344, 345, 346, 347, 348,
 	349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 432, 434, 435, 436, 440,
-	441, 442, 513, 516, 542, 562, 566, 569,
+	441, 442, 513, 516, 541, 561, 565, 568,
 
 	/* --- (1) --- --- --- ACS: Discard
 	 */
-	611,
+	610,
 
 	/* --- (72) --- --- --- Lexeme
 	 */
@@ -833,29 +830,29 @@ critcl::ccode {
 	303, 304, 305, 306, 307, 308, 309, 310, 311, 313, 315, 316, 317, 318, 319, 323,
 	324, 325, 326, 334, 335, 336, 338, 339, 341, 342, 343, 344, 345, 346, 347, 348,
 	349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 432, 434, 435, 436, 440,
-	441, 442, 513, 516, 542, 562, 566, 569,
+	441, 442, 513, 516, 541, 561, 565, 568,
 
 	/* --- (1) --- --- --- Discard
 	 */
-	611,
+	610,
 
-	/* --- (189) --- --- --- Internal
+	/* --- (188) --- --- --- Internal
 	 */
 	 34,  42,  43,  32,  37,  41,  44,  46,  84,  85, 203, 211, 212, 215, 287, 290,
 	314, 320, 321, 329, 331, 332, 337, 362, 366, 367, 370, 371, 374, 375, 376, 378,
 	382, 383, 411, 413, 414, 417, 422, 433, 438, 439, 503, 504, 506, 507, 510, 520,
-	526, 527, 529, 531, 535, 536, 552, 553, 556, 559, 558, 560, 573, 574, 576, 581,
-	582, 584, 586, 587, 596, 597, 600, 605, 612, 210, 218, 220, 221, 222, 225, 226,
+	525, 526, 528, 530, 534, 535, 551, 552, 555, 558, 557, 559, 572, 573, 575, 580,
+	581, 583, 585, 586, 595, 596, 599, 604, 611, 210, 218, 220, 221, 222, 225, 226,
 	227, 228, 230, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247,
 	248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263,
 	264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279,
 	280, 281, 282, 283, 284, 285, 286, 312, 327, 330, 333, 340, 412, 425, 426, 427,
-	428, 429, 430, 431, 511, 512, 515, 518, 519, 521, 522, 523, 541, 544, 546, 548,
-	561, 564, 565, 568, 571, 572, 590, 592, 601, 602, 608, 609, 610, 613, 615,  29,
-	 30,  31,  33,  35,  45,  36,  38,  39,  40,  47,  48, 229,  28
+	428, 429, 430, 431, 511, 512, 515, 518, 519, 521, 522, 540, 543, 545, 547, 560,
+	563, 564, 567, 570, 571, 589, 591, 600, 601, 607, 608, 609, 612, 614,  29,  30,
+	 31,  33,  35,  45,  36,  38,  39,  40,  47,  48, 229,  28
     };
 
-    static marpatcl_rtc_sym doctools_parser_c_l0_rule_definitions [1506] = { /* 3012 bytes */
+    static marpatcl_rtc_sym doctools_parser_c_l0_rule_definitions [1504] = { /* 3008 bytes */
 	MARPATCL_RCMD_SETUP (16),
 	MARPATCL_RCMD_PRIO  (1), 329, 479,                                                                          /* <Braced>                      ::= <BRACED> */
 	MARPATCL_RCMD_PRIO  (1), 330, 484,                                                                          /* <Breaker>                     ::= <BREAKER> */
@@ -913,8 +910,8 @@ critcl::ccode {
 	MARPATCL_RCMD_PRIO  (1), 382, 533,                                                                          /* <CUri>                        ::= <C_URI> */
 	MARPATCL_RCMD_PRIO  (1), 383, 534,                                                                          /* <CUsage>                      ::= <C_USAGE> */
 	MARPATCL_RCMD_PRIO  (1), 384, 535,                                                                          /* <CVar>                        ::= <C_VAR> */
-	MARPATCL_RCMD_PRIO  (1), 385, 570,                                                                          /* <CVdef>                       ::= <VAR_DEF> */
-	MARPATCL_RCMD_PRIO  (1), 386, 571,                                                                          /* <CVref>                       ::= <VAR_REF> */
+	MARPATCL_RCMD_PRIO  (1), 385, 569,                                                                          /* <CVdef>                       ::= <VAR_DEF> */
+	MARPATCL_RCMD_PRIO  (1), 386, 570,                                                                          /* <CVref>                       ::= <VAR_REF> */
 	MARPATCL_RCMD_PRIO  (1), 387, 536,                                                                          /* <CWidget>                     ::= <C_WIDGET> */
 	MARPATCL_RCMD_PRIO  (1), 388, 543,                                                                          /* <LArg>                        ::= <L_ARG> */
 	MARPATCL_RCMD_PRIO  (1), 389, 544,                                                                          /* <LCmd>                        ::= <L_CMD> */
@@ -925,47 +922,47 @@ critcl::ccode {
 	MARPATCL_RCMD_PRIO  (1), 394, 549,                                                                          /* <LTkopt>                      ::= <L_TKOPT> */
 	MARPATCL_RCMD_PRIO  (1), 395, 551,                                                                          /* <NbSimplex>                   ::= <NBSIMPLEX> */
 	MARPATCL_RCMD_PRIO  (1), 396, 552,                                                                          /* <Nbspace>                     ::= <NBSPACE> */
-	MARPATCL_RCMD_PRIO  (1), 397, 558,                                                                          /* <Quote>                       ::= <QUOTE> */
-	MARPATCL_RCMD_PRIO  (1), 398, 562,                                                                          /* <Simple>                      ::= <SIMPLE> */
-	MARPATCL_RCMD_PRIO  (1), 399, 564,                                                                          /* <Simplex>                     ::= <SIMPLEX> */
-	MARPATCL_RCMD_PRIO  (1), 400, 567,                                                                          /* <Space>                       ::= <SPACE1> */
-	MARPATCL_RCMD_PRIO  (1), 401, 574,                                                                          /* <Whitespace>                  ::= <WHITE1> */
+	MARPATCL_RCMD_PRIO  (1), 397, 557,                                                                          /* <Quote>                       ::= <QUOTE> */
+	MARPATCL_RCMD_PRIO  (1), 398, 561,                                                                          /* <Simple>                      ::= <SIMPLE> */
+	MARPATCL_RCMD_PRIO  (1), 399, 563,                                                                          /* <Simplex>                     ::= <SIMPLEX> */
+	MARPATCL_RCMD_PRIO  (1), 400, 566,                                                                          /* <Space>                       ::= <SPACE1> */
+	MARPATCL_RCMD_PRIO  (1), 401, 573,                                                                          /* <Whitespace>                  ::= <WHITE1> */
 	MARPATCL_RCMD_PRIO  (2), 402, 192, 128,                                                                     /* <@^CLS:<\173\175>>            ::= <@BYTE:<\u00c0>> <@BYTE:<\200>> */
 	MARPATCL_RCMD_PRIS  (1)     , 405,                                                                          /*                               |   <@BRAN:<\1z>> */
 	MARPATCL_RCMD_PRIS  (1)     , 124,                                                                          /*                               |   <@BYTE:<|>> */
-	MARPATCL_RCMD_PRIS  (1)     , 588,                                                                          /*                               |   <@BRAN:<~\177>> */
-	MARPATCL_RCMD_PRIS  (2)     , 585, 581,                                                                     /*                               |   <@BRAN:<\u00c2\u00df>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (3)     , 224, 406, 581,                                                                /*                               |   <@BYTE:<\u00e0>> <@BRAN:<\u00a0\u00bf>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (3)     , 586, 581, 581,                                                                /*                               |   <@BRAN:<\u00e1\u00ef>> <@BRAN:<\200\u00bf>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (6)     , 237, 583, 581, 237, 584, 581,                                                 /*                               |   <@BYTE:<\u00ed>> <@BRAN:<\u00a0\u00af>> <@BRAN:<\200\u00bf>> <@BYTE:<\u00ed>> <@BRAN:<\u00b0\u00bf>> <@BRAN:<\200\u00bf>> */
+	MARPATCL_RCMD_PRIS  (1)     , 587,                                                                          /*                               |   <@BRAN:<~\177>> */
+	MARPATCL_RCMD_PRIS  (2)     , 584, 580,                                                                     /*                               |   <@BRAN:<\u00c2\u00df>> <@BRAN:<\200\u00bf>> */
+	MARPATCL_RCMD_PRIS  (3)     , 224, 406, 580,                                                                /*                               |   <@BYTE:<\u00e0>> <@BRAN:<\u00a0\u00bf>> <@BRAN:<\200\u00bf>> */
+	MARPATCL_RCMD_PRIS  (3)     , 585, 580, 580,                                                                /*                               |   <@BRAN:<\u00e1\u00ef>> <@BRAN:<\200\u00bf>> <@BRAN:<\200\u00bf>> */
+	MARPATCL_RCMD_PRIS  (6)     , 237, 582, 580, 237, 583, 580,                                                 /*                               |   <@BYTE:<\u00ed>> <@BRAN:<\u00a0\u00af>> <@BRAN:<\200\u00bf>> <@BYTE:<\u00ed>> <@BRAN:<\u00b0\u00bf>> <@BRAN:<\200\u00bf>> */
 	MARPATCL_RCMD_PRIO  (2), 403, 192, 128,                                                                     /* <@^CLS:<\t-\r\40\42\133\135>> ::= <@BYTE:<\u00c0>> <@BYTE:<\200>> */
-	MARPATCL_RCMD_PRIS  (1)     , 579,                                                                          /*                               |   <@BRAN:<\1\10>> */
-	MARPATCL_RCMD_PRIS  (1)     , 580,                                                                          /*                               |   <@BRAN:<\16\37>> */
+	MARPATCL_RCMD_PRIS  (1)     , 578,                                                                          /*                               |   <@BRAN:<\1\10>> */
+	MARPATCL_RCMD_PRIS  (1)     , 579,                                                                          /*                               |   <@BRAN:<\16\37>> */
 	MARPATCL_RCMD_PRIS  (1)     , 33,                                                                           /*                               |   <@BYTE:<!>> */
-	MARPATCL_RCMD_PRIS  (1)     , 578,                                                                          /*                               |   <@BRAN:<#Z>> */
+	MARPATCL_RCMD_PRIS  (1)     , 577,                                                                          /*                               |   <@BRAN:<#Z>> */
 	MARPATCL_RCMD_PRIS  (1)     , 92,                                                                           /*                               |   <@BYTE:<\134>> */
-	MARPATCL_RCMD_PRIS  (1)     , 587,                                                                          /*                               |   <@BRAN:<^\177>> */
-	MARPATCL_RCMD_PRIS  (2)     , 585, 581,                                                                     /*                               |   <@BRAN:<\u00c2\u00df>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (3)     , 224, 406, 581,                                                                /*                               |   <@BYTE:<\u00e0>> <@BRAN:<\u00a0\u00bf>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (3)     , 586, 581, 581,                                                                /*                               |   <@BRAN:<\u00e1\u00ef>> <@BRAN:<\200\u00bf>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (6)     , 237, 583, 581, 237, 584, 581,                                                 /*                               |   <@BYTE:<\u00ed>> <@BRAN:<\u00a0\u00af>> <@BRAN:<\200\u00bf>> <@BYTE:<\u00ed>> <@BRAN:<\u00b0\u00bf>> <@BRAN:<\200\u00bf>> */
+	MARPATCL_RCMD_PRIS  (1)     , 586,                                                                          /*                               |   <@BRAN:<^\177>> */
+	MARPATCL_RCMD_PRIS  (2)     , 584, 580,                                                                     /*                               |   <@BRAN:<\u00c2\u00df>> <@BRAN:<\200\u00bf>> */
+	MARPATCL_RCMD_PRIS  (3)     , 224, 406, 580,                                                                /*                               |   <@BYTE:<\u00e0>> <@BRAN:<\u00a0\u00bf>> <@BRAN:<\200\u00bf>> */
+	MARPATCL_RCMD_PRIS  (3)     , 585, 580, 580,                                                                /*                               |   <@BRAN:<\u00e1\u00ef>> <@BRAN:<\200\u00bf>> <@BRAN:<\200\u00bf>> */
+	MARPATCL_RCMD_PRIS  (6)     , 237, 582, 580, 237, 583, 580,                                                 /*                               |   <@BYTE:<\u00ed>> <@BRAN:<\u00a0\u00af>> <@BRAN:<\200\u00bf>> <@BYTE:<\u00ed>> <@BRAN:<\u00b0\u00bf>> <@BRAN:<\200\u00bf>> */
 	MARPATCL_RCMD_PRIO  (2), 404, 192, 128,                                                                     /* <@^CLS:<\t-\r\40\133\135>>    ::= <@BYTE:<\u00c0>> <@BYTE:<\200>> */
-	MARPATCL_RCMD_PRIS  (1)     , 579,                                                                          /*                               |   <@BRAN:<\1\10>> */
-	MARPATCL_RCMD_PRIS  (1)     , 580,                                                                          /*                               |   <@BRAN:<\16\37>> */
-	MARPATCL_RCMD_PRIS  (1)     , 577,                                                                          /*                               |   <@BRAN:<!Z>> */
+	MARPATCL_RCMD_PRIS  (1)     , 578,                                                                          /*                               |   <@BRAN:<\1\10>> */
+	MARPATCL_RCMD_PRIS  (1)     , 579,                                                                          /*                               |   <@BRAN:<\16\37>> */
+	MARPATCL_RCMD_PRIS  (1)     , 576,                                                                          /*                               |   <@BRAN:<!Z>> */
 	MARPATCL_RCMD_PRIS  (1)     , 92,                                                                           /*                               |   <@BYTE:<\134>> */
-	MARPATCL_RCMD_PRIS  (1)     , 587,                                                                          /*                               |   <@BRAN:<^\177>> */
-	MARPATCL_RCMD_PRIS  (2)     , 585, 581,                                                                     /*                               |   <@BRAN:<\u00c2\u00df>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (3)     , 224, 406, 581,                                                                /*                               |   <@BYTE:<\u00e0>> <@BRAN:<\u00a0\u00bf>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (3)     , 586, 581, 581,                                                                /*                               |   <@BRAN:<\u00e1\u00ef>> <@BRAN:<\200\u00bf>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (6)     , 237, 583, 581, 237, 584, 581,                                                 /*                               |   <@BYTE:<\u00ed>> <@BRAN:<\u00a0\u00af>> <@BRAN:<\200\u00bf>> <@BYTE:<\u00ed>> <@BRAN:<\u00b0\u00bf>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIO  (1), 405, 579,                                                                          /* <@BRAN:<\1z>>                 ::= <@BRAN:<\1\10>> */
+	MARPATCL_RCMD_PRIS  (1)     , 586,                                                                          /*                               |   <@BRAN:<^\177>> */
+	MARPATCL_RCMD_PRIS  (2)     , 584, 580,                                                                     /*                               |   <@BRAN:<\u00c2\u00df>> <@BRAN:<\200\u00bf>> */
+	MARPATCL_RCMD_PRIS  (3)     , 224, 406, 580,                                                                /*                               |   <@BYTE:<\u00e0>> <@BRAN:<\u00a0\u00bf>> <@BRAN:<\200\u00bf>> */
+	MARPATCL_RCMD_PRIS  (3)     , 585, 580, 580,                                                                /*                               |   <@BRAN:<\u00e1\u00ef>> <@BRAN:<\200\u00bf>> <@BRAN:<\200\u00bf>> */
+	MARPATCL_RCMD_PRIS  (6)     , 237, 582, 580, 237, 583, 580,                                                 /*                               |   <@BYTE:<\u00ed>> <@BRAN:<\u00a0\u00af>> <@BRAN:<\200\u00bf>> <@BYTE:<\u00ed>> <@BRAN:<\u00b0\u00bf>> <@BRAN:<\200\u00bf>> */
+	MARPATCL_RCMD_PRIO  (1), 405, 578,                                                                          /* <@BRAN:<\1z>>                 ::= <@BRAN:<\1\10>> */
 	MARPATCL_RCMD_PRIS  (1)     , 482,                                                                          /*                               |   <BRAN<d9-d122>> */
-	MARPATCL_RCMD_PRIO  (1), 406, 583,                                                                          /* <@BRAN:<\u00a0\u00bf>>        ::= <@BRAN:<\u00a0\u00af>> */
-	MARPATCL_RCMD_PRIS  (1)     , 584,                                                                          /*                               |   <@BRAN:<\u00b0\u00bf>> */
+	MARPATCL_RCMD_PRIO  (1), 406, 582,                                                                          /* <@BRAN:<\u00a0\u00bf>>        ::= <@BRAN:<\u00a0\u00af>> */
+	MARPATCL_RCMD_PRIS  (1)     , 583,                                                                          /*                               |   <@BRAN:<\u00b0\u00bf>> */
 	MARPATCL_RCMD_PRIO  (1), 407, 10,                                                                           /* <@CLS:<\n\r>>                 ::= <@BYTE:<\n>> */
 	MARPATCL_RCMD_PRIS  (1)     , 13,                                                                           /*                               |   <@BYTE:<\r>> */
-	MARPATCL_RCMD_PRIO  (1), 408, 582,                                                                          /* <@CLS:<\t-\r\40>>             ::= <@BRAN:<\t\r>> */
+	MARPATCL_RCMD_PRIO  (1), 408, 581,                                                                          /* <@CLS:<\t-\r\40>>             ::= <@BRAN:<\t\r>> */
 	MARPATCL_RCMD_PRIS  (1)     , 32,                                                                           /*                               |   <@BYTE:<\40>> */
 	MARPATCL_RCMD_PRIO  (1), 409, 9,                                                                            /* <@CLS:<\t\40>>                ::= <@BYTE:<\t>> */
 	MARPATCL_RCMD_PRIS  (1)     , 32,                                                                           /*                               |   <@BYTE:<\40>> */
@@ -1044,11 +1041,11 @@ critcl::ccode {
 	MARPATCL_RCMD_PRIS  (1)     , 479,                                                                          /*                               |   <BRACED> */
 	MARPATCL_RCMD_PRIS  (1)     , 478,                                                                          /*                               |   <BRACE_ESCAPED> */
 	MARPATCL_RCMD_QUN   (481), 480,                                                                             /* <BRACED_ELEMS>                ::= <BRACED_ELEM> * */
-	MARPATCL_RCMD_PRIO  (1), 482, 582,                                                                          /* <BRAN<d9-d122>>               ::= <@BRAN:<\t\r>> */
+	MARPATCL_RCMD_PRIO  (1), 482, 581,                                                                          /* <BRAN<d9-d122>>               ::= <@BRAN:<\t\r>> */
 	MARPATCL_RCMD_PRIS  (1)     , 483,                                                                          /*                               |   <BRAN<d14-d122>> */
-	MARPATCL_RCMD_PRIO  (1), 483, 580,                                                                          /* <BRAN<d14-d122>>              ::= <@BRAN:<\16\37>> */
-	MARPATCL_RCMD_PRIS  (1)     , 589,                                                                          /*                               |   <BRAN<d32-d122>> */
-	MARPATCL_RCMD_PRIO  (2), 484, 554, 567,                                                                     /* <BREAKER>                     ::= <NEWLINE> <SPACE1> */
+	MARPATCL_RCMD_PRIO  (1), 483, 579,                                                                          /* <BRAN<d14-d122>>              ::= <@BRAN:<\16\37>> */
+	MARPATCL_RCMD_PRIS  (1)     , 588,                                                                          /*                               |   <BRAN<d32-d122>> */
+	MARPATCL_RCMD_PRIO  (2), 484, 554, 566,                                                                     /* <BREAKER>                     ::= <NEWLINE> <SPACE1> */
 	MARPATCL_RCMD_PRIO  (1), 485, 413,                                                                          /* <C_ARG>                       ::= <@STR:<arg>> */
 	MARPATCL_RCMD_PRIO  (1), 486, 414,                                                                          /* <C_ARGDEF>                    ::= <@STR:<arg_def>> */
 	MARPATCL_RCMD_PRIO  (1), 487, 416,                                                                          /* <C_CALL>                      ::= <@STR:<call>> */
@@ -1102,11 +1099,11 @@ critcl::ccode {
 	MARPATCL_RCMD_PRIO  (1), 535, 472,                                                                          /* <C_VAR>                       ::= <@STR:<var>> */
 	MARPATCL_RCMD_PRIO  (1), 536, 474,                                                                          /* <C_WIDGET>                    ::= <@STR:<widget>> */
 	MARPATCL_RCMD_PRIO  (1), 537, 91,                                                                           /* <CL>                          ::= <@CHR:<\133>> */
-	MARPATCL_RCMD_PRIO  (5), 538, 537, 573, 576, 573, 541,                                                      /* <COMMAND>                     ::= <CL> <WHITE0> <WORDS1> <WHITE0> <CR> */
-	MARPATCL_RCMD_PRIO  (7), 539, 537, 573, 422, 574, 575, 573, 541,                                            /* <COMMENT>                     ::= <CL> <WHITE0> <@STR:<comment>> <WHITE1> <WORD> <WHITE0> <CR> */
-	MARPATCL_RCMD_PRIO  (4), 540, 566, 92, 554, 566,                                                            /* <CONTINUATION>                ::= <SPACE0> <@BYTE:<\134>> <NEWLINE> <SPACE0> */
+	MARPATCL_RCMD_PRIO  (5), 538, 537, 572, 575, 572, 541,                                                      /* <COMMAND>                     ::= <CL> <WHITE0> <WORDS1> <WHITE0> <CR> */
+	MARPATCL_RCMD_PRIO  (7), 539, 537, 572, 422, 573, 574, 572, 541,                                            /* <COMMENT>                     ::= <CL> <WHITE0> <@STR:<comment>> <WHITE1> <WORD> <WHITE0> <CR> */
+	MARPATCL_RCMD_PRIO  (4), 540, 565, 92, 554, 565,                                                            /* <CONTINUATION>                ::= <SPACE0> <@BYTE:<\134>> <NEWLINE> <SPACE0> */
 	MARPATCL_RCMD_PRIO  (1), 541, 93,                                                                           /* <CR>                          ::= <@CHR:<\135>> */
-	MARPATCL_RCMD_PRIO  (7), 542, 537, 573, 437, 574, 575, 573, 541,                                            /* <INCLUDE>                     ::= <CL> <WHITE0> <@STR:<include>> <WHITE1> <WORD> <WHITE0> <CR> */
+	MARPATCL_RCMD_PRIO  (7), 542, 537, 572, 437, 573, 574, 572, 541,                                            /* <INCLUDE>                     ::= <CL> <WHITE0> <@STR:<include>> <WHITE1> <WORD> <WHITE0> <CR> */
 	MARPATCL_RCMD_PRIO  (1), 543, 415,                                                                          /* <L_ARG>                       ::= <@STR:<arguments>> */
 	MARPATCL_RCMD_PRIO  (1), 544, 421,                                                                          /* <L_CMD>                       ::= <@STR:<commands>> */
 	MARPATCL_RCMD_PRIO  (1), 545, 426,                                                                          /* <L_DEF>                       ::= <@STR:<definitions>> */
@@ -1114,57 +1111,56 @@ critcl::ccode {
 	MARPATCL_RCMD_PRIO  (1), 547, 439,                                                                          /* <L_ITEM>                      ::= <@STR:<itemized>> */
 	MARPATCL_RCMD_PRIO  (1), 548, 453,                                                                          /* <L_OPT>                       ::= <@STR:<options>> */
 	MARPATCL_RCMD_PRIO  (1), 549, 468,                                                                          /* <L_TKOPT>                     ::= <@STR:<tkoptions>> */
-	MARPATCL_RCMD_QUPS  (550), 562, MARPATCL_RCMD_SEP (553),                                                    /* <NBSIMPLEN>                   ::= <SIMPLE> + (<NBSPACE1>) */
+	MARPATCL_RCMD_QUPS  (550), 561, MARPATCL_RCMD_SEP (553),                                                    /* <NBSIMPLEN>                   ::= <SIMPLE> + (<NBSPACE1>) */
 	MARPATCL_RCMD_PRIO  (1), 551, 550,                                                                          /* <NBSIMPLEX>                   ::= <NBSIMPLEN> */
 	MARPATCL_RCMD_PRIS  (2)     , 553, 550,                                                                     /*                               |   <NBSPACE1> <NBSIMPLEN> */
 	MARPATCL_RCMD_PRIO  (1), 552, 409,                                                                          /* <NBSPACE>                     ::= <@CLS:<\t\40>> */
 	MARPATCL_RCMD_QUP   (553), 552,                                                                             /* <NBSPACE1>                    ::= <NBSPACE> + */
 	MARPATCL_RCMD_PRIO  (1), 554, 407,                                                                          /* <NEWLINE>                     ::= <@CLS:<\n\r>> */
 	MARPATCL_RCMD_PRIS  (1)     , 412,                                                                          /*                               |   <@STR:<\r\n>> */
-	MARPATCL_RCMD_QUP   (555), 557,                                                                             /* <NO_CFS1>                     ::= <NO_CMD_FMT_SPACE> + */
-	MARPATCL_RCMD_PRIO  (1), 556, 403,                                                                          /* <NO_CFS_QUOTE>                ::= <@^CLS:<\t-\r\40\42\133\135>> */
-	MARPATCL_RCMD_PRIO  (1), 557, 404,                                                                          /* <NO_CMD_FMT_SPACE>            ::= <@^CLS:<\t-\r\40\133\135>> */
-	MARPATCL_RCMD_PRIO  (1), 558, 34,                                                                           /* <QUOTE>                       ::= <@CHR:<\42>> */
-	MARPATCL_RCMD_PRIO  (3), 559, 558, 561, 558,                                                                /* <QUOTED>                      ::= <QUOTE> <QUOTED_ELEMS> <QUOTE> */
-	MARPATCL_RCMD_PRIO  (1), 560, 562,                                                                          /* <QUOTED_ELEM>                 ::= <SIMPLE> */
-	MARPATCL_RCMD_PRIS  (1)     , 567,                                                                          /*                               |   <SPACE1> */
+	MARPATCL_RCMD_PRIO  (1), 555, 403,                                                                          /* <NO_CFS_QUOTE>                ::= <@^CLS:<\t-\r\40\42\133\135>> */
+	MARPATCL_RCMD_PRIO  (1), 556, 404,                                                                          /* <NO_CMD_FMT_SPACE>            ::= <@^CLS:<\t-\r\40\133\135>> */
+	MARPATCL_RCMD_PRIO  (1), 557, 34,                                                                           /* <QUOTE>                       ::= <@CHR:<\42>> */
+	MARPATCL_RCMD_PRIO  (3), 558, 557, 560, 557,                                                                /* <QUOTED>                      ::= <QUOTE> <QUOTED_ELEMS> <QUOTE> */
+	MARPATCL_RCMD_PRIO  (1), 559, 555,                                                                          /* <QUOTED_ELEM>                 ::= <NO_CFS_QUOTE> */
+	MARPATCL_RCMD_PRIS  (1)     , 564,                                                                          /*                               |   <SPACE> */
 	MARPATCL_RCMD_PRIS  (1)     , 538,                                                                          /*                               |   <COMMAND> */
-	MARPATCL_RCMD_QUN   (561), 560,                                                                             /* <QUOTED_ELEMS>                ::= <QUOTED_ELEM> * */
-	MARPATCL_RCMD_QUP   (562), 556,                                                                             /* <SIMPLE>                      ::= <NO_CFS_QUOTE> + */
-	MARPATCL_RCMD_QUPS  (563), 562, MARPATCL_RCMD_SEP (567),                                                    /* <SIMPLEN>                     ::= <SIMPLE> + (<SPACE1>) */
-	MARPATCL_RCMD_PRIO  (1), 564, 563,                                                                          /* <SIMPLEX>                     ::= <SIMPLEN> */
-	MARPATCL_RCMD_PRIS  (2)     , 567, 563,                                                                     /*                               |   <SPACE1> <SIMPLEN> */
-	MARPATCL_RCMD_PRIO  (1), 565, 408,                                                                          /* <SPACE>                       ::= <@CLS:<\t-\r\40>> */
-	MARPATCL_RCMD_QUN   (566), 565,                                                                             /* <SPACE0>                      ::= <SPACE> * */
-	MARPATCL_RCMD_QUP   (567), 565,                                                                             /* <SPACE1>                      ::= <SPACE> + */
-	MARPATCL_RCMD_QUP   (568), 569,                                                                             /* <UNQUOTED>                    ::= <UNQUOTED_ELEM> + */
-	MARPATCL_RCMD_PRIO  (1), 569, 555,                                                                          /* <UNQUOTED_ELEM>               ::= <NO_CFS1> */
+	MARPATCL_RCMD_QUN   (560), 559,                                                                             /* <QUOTED_ELEMS>                ::= <QUOTED_ELEM> * */
+	MARPATCL_RCMD_QUP   (561), 555,                                                                             /* <SIMPLE>                      ::= <NO_CFS_QUOTE> + */
+	MARPATCL_RCMD_QUPS  (562), 561, MARPATCL_RCMD_SEP (566),                                                    /* <SIMPLEN>                     ::= <SIMPLE> + (<SPACE1>) */
+	MARPATCL_RCMD_PRIO  (1), 563, 562,                                                                          /* <SIMPLEX>                     ::= <SIMPLEN> */
+	MARPATCL_RCMD_PRIS  (2)     , 566, 562,                                                                     /*                               |   <SPACE1> <SIMPLEN> */
+	MARPATCL_RCMD_PRIO  (1), 564, 408,                                                                          /* <SPACE>                       ::= <@CLS:<\t-\r\40>> */
+	MARPATCL_RCMD_QUN   (565), 564,                                                                             /* <SPACE0>                      ::= <SPACE> * */
+	MARPATCL_RCMD_QUP   (566), 564,                                                                             /* <SPACE1>                      ::= <SPACE> + */
+	MARPATCL_RCMD_QUP   (567), 568,                                                                             /* <UNQUOTED>                    ::= <UNQUOTED_ELEM> + */
+	MARPATCL_RCMD_PRIO  (1), 568, 556,                                                                          /* <UNQUOTED_ELEM>               ::= <NO_CMD_FMT_SPACE> */
 	MARPATCL_RCMD_PRIS  (1)     , 538,                                                                          /*                               |   <COMMAND> */
-	MARPATCL_RCMD_PRIO  (9), 570, 537, 573, 473, 574, 575, 574, 575, 573, 541,                                  /* <VAR_DEF>                     ::= <CL> <WHITE0> <@STR:<vset>> <WHITE1> <WORD> <WHITE1> <WORD> <WHITE0> <CR> */
-	MARPATCL_RCMD_PRIO  (7), 571, 537, 573, 473, 574, 575, 573, 541,                                            /* <VAR_REF>                     ::= <CL> <WHITE0> <@STR:<vset>> <WHITE1> <WORD> <WHITE0> <CR> */
-	MARPATCL_RCMD_PRIO  (1), 572, 567,                                                                          /* <WHITE>                       ::= <SPACE1> */
+	MARPATCL_RCMD_PRIO  (9), 569, 537, 572, 473, 573, 574, 573, 574, 572, 541,                                  /* <VAR_DEF>                     ::= <CL> <WHITE0> <@STR:<vset>> <WHITE1> <WORD> <WHITE1> <WORD> <WHITE0> <CR> */
+	MARPATCL_RCMD_PRIO  (7), 570, 537, 572, 473, 573, 574, 572, 541,                                            /* <VAR_REF>                     ::= <CL> <WHITE0> <@STR:<vset>> <WHITE1> <WORD> <WHITE0> <CR> */
+	MARPATCL_RCMD_PRIO  (1), 571, 564,                                                                          /* <WHITE>                       ::= <SPACE> */
 	MARPATCL_RCMD_PRIS  (1)     , 539,                                                                          /*                               |   <COMMENT> */
 	MARPATCL_RCMD_PRIS  (1)     , 540,                                                                          /*                               |   <CONTINUATION> */
-	MARPATCL_RCMD_QUN   (573), 572,                                                                             /* <WHITE0>                      ::= <WHITE> * */
-	MARPATCL_RCMD_QUP   (574), 572,                                                                             /* <WHITE1>                      ::= <WHITE> + */
-	MARPATCL_RCMD_PRIO  (1), 575, 479,                                                                          /* <WORD>                        ::= <BRACED> */
-	MARPATCL_RCMD_PRIS  (1)     , 559,                                                                          /*                               |   <QUOTED> */
-	MARPATCL_RCMD_PRIS  (1)     , 568,                                                                          /*                               |   <UNQUOTED> */
-	MARPATCL_RCMD_QUPS  (576), 575, MARPATCL_RCMD_SEP (574),                                                    /* <WORDS1>                      ::= <WORD> + (<WHITE1>) */
-	MARPATCL_RCMD_BRAN  (577), MARPATCL_RCMD_BOXR ( 33, 90),                                                    /* <@BRAN:<!Z>>                  brange (33 - 90) */
-	MARPATCL_RCMD_BRAN  (578), MARPATCL_RCMD_BOXR ( 35, 90),                                                    /* <@BRAN:<#Z>>                  brange (35 - 90) */
-	MARPATCL_RCMD_BRAN  (579), MARPATCL_RCMD_BOXR (  1,  8),                                                    /* <@BRAN:<\1\10>>               brange (1 - 8) */
-	MARPATCL_RCMD_BRAN  (580), MARPATCL_RCMD_BOXR ( 14, 31),                                                    /* <@BRAN:<\16\37>>              brange (14 - 31) */
-	MARPATCL_RCMD_BRAN  (581), MARPATCL_RCMD_BOXR (128,191),                                                    /* <@BRAN:<\200\u00bf>>          brange (128 - 191) */
-	MARPATCL_RCMD_BRAN  (582), MARPATCL_RCMD_BOXR (  9, 13),                                                    /* <@BRAN:<\t\r>>                brange (9 - 13) */
-	MARPATCL_RCMD_BRAN  (583), MARPATCL_RCMD_BOXR (160,175),                                                    /* <@BRAN:<\u00a0\u00af>>        brange (160 - 175) */
-	MARPATCL_RCMD_BRAN  (584), MARPATCL_RCMD_BOXR (176,191),                                                    /* <@BRAN:<\u00b0\u00bf>>        brange (176 - 191) */
-	MARPATCL_RCMD_BRAN  (585), MARPATCL_RCMD_BOXR (194,223),                                                    /* <@BRAN:<\u00c2\u00df>>        brange (194 - 223) */
-	MARPATCL_RCMD_BRAN  (586), MARPATCL_RCMD_BOXR (225,239),                                                    /* <@BRAN:<\u00e1\u00ef>>        brange (225 - 239) */
-	MARPATCL_RCMD_BRAN  (587), MARPATCL_RCMD_BOXR ( 94,127),                                                    /* <@BRAN:<^\177>>               brange (94 - 127) */
-	MARPATCL_RCMD_BRAN  (588), MARPATCL_RCMD_BOXR (126,127),                                                    /* <@BRAN:<~\177>>               brange (126 - 127) */
-	MARPATCL_RCMD_BRAN  (589), MARPATCL_RCMD_BOXR ( 32,122),                                                    /* <BRAN<d32-d122>>              brange (32 - 122) */
-	MARPATCL_RCMD_PRIO  (2), 590, 256, 329,                                                                     /* <@L0:START>                   ::= <@ACS:Braced> <Braced> */
+	MARPATCL_RCMD_QUN   (572), 571,                                                                             /* <WHITE0>                      ::= <WHITE> * */
+	MARPATCL_RCMD_QUP   (573), 571,                                                                             /* <WHITE1>                      ::= <WHITE> + */
+	MARPATCL_RCMD_PRIO  (1), 574, 479,                                                                          /* <WORD>                        ::= <BRACED> */
+	MARPATCL_RCMD_PRIS  (1)     , 558,                                                                          /*                               |   <QUOTED> */
+	MARPATCL_RCMD_PRIS  (1)     , 567,                                                                          /*                               |   <UNQUOTED> */
+	MARPATCL_RCMD_QUPS  (575), 574, MARPATCL_RCMD_SEP (573),                                                    /* <WORDS1>                      ::= <WORD> + (<WHITE1>) */
+	MARPATCL_RCMD_BRAN  (576), MARPATCL_RCMD_BOXR ( 33, 90),                                                    /* <@BRAN:<!Z>>                  brange (33 - 90) */
+	MARPATCL_RCMD_BRAN  (577), MARPATCL_RCMD_BOXR ( 35, 90),                                                    /* <@BRAN:<#Z>>                  brange (35 - 90) */
+	MARPATCL_RCMD_BRAN  (578), MARPATCL_RCMD_BOXR (  1,  8),                                                    /* <@BRAN:<\1\10>>               brange (1 - 8) */
+	MARPATCL_RCMD_BRAN  (579), MARPATCL_RCMD_BOXR ( 14, 31),                                                    /* <@BRAN:<\16\37>>              brange (14 - 31) */
+	MARPATCL_RCMD_BRAN  (580), MARPATCL_RCMD_BOXR (128,191),                                                    /* <@BRAN:<\200\u00bf>>          brange (128 - 191) */
+	MARPATCL_RCMD_BRAN  (581), MARPATCL_RCMD_BOXR (  9, 13),                                                    /* <@BRAN:<\t\r>>                brange (9 - 13) */
+	MARPATCL_RCMD_BRAN  (582), MARPATCL_RCMD_BOXR (160,175),                                                    /* <@BRAN:<\u00a0\u00af>>        brange (160 - 175) */
+	MARPATCL_RCMD_BRAN  (583), MARPATCL_RCMD_BOXR (176,191),                                                    /* <@BRAN:<\u00b0\u00bf>>        brange (176 - 191) */
+	MARPATCL_RCMD_BRAN  (584), MARPATCL_RCMD_BOXR (194,223),                                                    /* <@BRAN:<\u00c2\u00df>>        brange (194 - 223) */
+	MARPATCL_RCMD_BRAN  (585), MARPATCL_RCMD_BOXR (225,239),                                                    /* <@BRAN:<\u00e1\u00ef>>        brange (225 - 239) */
+	MARPATCL_RCMD_BRAN  (586), MARPATCL_RCMD_BOXR ( 94,127),                                                    /* <@BRAN:<^\177>>               brange (94 - 127) */
+	MARPATCL_RCMD_BRAN  (587), MARPATCL_RCMD_BOXR (126,127),                                                    /* <@BRAN:<~\177>>               brange (126 - 127) */
+	MARPATCL_RCMD_BRAN  (588), MARPATCL_RCMD_BOXR ( 32,122),                                                    /* <BRAN<d32-d122>>              brange (32 - 122) */
+	MARPATCL_RCMD_PRIO  (2), 589, 256, 329,                                                                     /* <@L0:START>                   ::= <@ACS:Braced> <Braced> */
 	MARPATCL_RCMD_PRIS  (2)     , 257, 330,                                                                     /*                               |   <@ACS:Breaker> <Breaker> */
 	MARPATCL_RCMD_PRIS  (2)     , 258, 331,                                                                     /*                               |   <@ACS:CArg> <CArg> */
 	MARPATCL_RCMD_PRIS  (2)     , 259, 332,                                                                     /*                               |   <@ACS:CArgDef> <CArgDef> */
@@ -1237,82 +1233,28 @@ critcl::ccode {
 	MARPATCL_RCMD_PRIS  (2)     , 326, 399,                                                                     /*                               |   <@ACS:Simplex> <Simplex> */
 	MARPATCL_RCMD_PRIS  (2)     , 327, 400,                                                                     /*                               |   <@ACS:Space> <Space> */
 	MARPATCL_RCMD_PRIS  (2)     , 328, 401,                                                                     /*                               |   <@ACS:Whitespace> <Whitespace> */
-	MARPATCL_RCMD_DONE  (590)
+	MARPATCL_RCMD_DONE  (589)
     };
 
     static const char* doctools_parser_c_l0idmap_sym [72] = {
-	"Braced",
-	"Breaker",
-	"CArg",
-	"CArgDef",
-	"CCall",
-	"CCategory",
-	"CClass",
-	"CCmd",
-	"CCmdDef",
-	"CConst",
-	"CCopyright",
-	"CDef",
-	"CDescription",
-	"CDone",
-	"CEmph",
-	"CEnum",
-	"CExample",
-	"CExampleBegin",
-	"CExampleEnd",
-	"CFile",
-	"CFun",
-	"CImage",
-	"CInclude",
-	"CItem",
-	"CKeywords",
-	"Cl",
-	"CLb",
-	"CListBegin",
-	"CListEnd",
-	"CManpageBegin",
-	"CManpageEnd",
-	"CMethod",
-	"CModdesc",
-	"CNamespace",
-	"CNl",
-	"COpt",
-	"COptDef",
-	"COption",
-	"CPackage",
-	"CPara",
-	"CRb",
-	"CRequire",
-	"CSection",
-	"CSectref",
-	"CSectrefExt",
-	"CSeeAlso",
-	"CStrong",
-	"CSubsection",
-	"CSysCmd",
-	"CTerm",
-	"CTitledesc",
-	"CTkoptDef",
-	"CType",
-	"CUri",
-	"CUsage",
-	"CVar",
-	"CVdef",
-	"CVref",
-	"CWidget",
-	"LArg",
-	"LCmd",
-	"LDef",
-	"LEnum",
-	"LItem",
-	"LOpt",
-	"LTkopt",
-	"NbSimplex",
-	"Nbspace",
-	"Quote",
-	"Simple",
-	"Simplex",
-	"Space"
+	"Braced",        "Breaker",       "CArg",          "CArgDef",
+	"CCall",         "CCategory",     "CClass",        "CCmd",
+	"CCmdDef",       "CConst",        "CCopyright",    "CDef",
+	"CDescription",  "CDone",         "CEmph",         "CEnum",
+	"CExample",      "CExampleBegin", "CExampleEnd",   "CFile",
+	"CFun",          "CImage",        "CInclude",      "CItem",
+	"CKeywords",     "Cl",            "CLb",           "CListBegin",
+	"CListEnd",      "CManpageBegin", "CManpageEnd",   "CMethod",
+	"CModdesc",      "CNamespace",    "CNl",           "COpt",
+	"COptDef",       "COption",       "CPackage",      "CPara",
+	"CRb",           "CRequire",      "CSection",      "CSectref",
+	"CSectrefExt",   "CSeeAlso",      "CStrong",       "CSubsection",
+	"CSysCmd",       "CTerm",         "CTitledesc",    "CTkoptDef",
+	"CType",         "CUri",          "CUsage",        "CVar",
+	"CVdef",         "CVref",         "CWidget",       "LArg",
+	"LCmd",          "LDef",          "LEnum",         "LItem",
+	"LOpt",          "LTkopt",        "NbSimplex",     "Nbspace",
+	"Quote",         "Simple",        "Simplex",       "Space"
     };
 
     static marpatcl_rtc_sym doctools_parser_c_l0idmap_id [72] = {
@@ -1337,7 +1279,7 @@ critcl::ccode {
 
     static marpatcl_rtc_rules doctools_parser_c_l0 = { /* 48 */
 	/* .sname   */  &doctools_parser_c_pool,
-	/* .symbols */  { 591, doctools_parser_c_l0_sym_name },
+	/* .symbols */  { 590, doctools_parser_c_l0_sym_name },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
 	/* .rcode   */  doctools_parser_c_l0_rule_definitions,
@@ -1359,38 +1301,38 @@ critcl::ccode {
 	303, 304, 305, 306, 307, 308, 309, 310, 311, 313, 315, 316, 317, 318, 319, 323,
 	324, 325, 326, 334, 335, 336, 338, 339, 341, 342, 343, 344, 345, 346, 347, 348,
 	349, 350, 351, 352, 353, 354, 355, 356, 357, 358, 359, 432, 434, 435, 436, 440,
-	441, 442, 513, 516, 542, 562, 566, 569,
+	441, 442, 513, 516, 541, 561, 565, 568,
 
 	/* --- (112) --- --- --- Structure
 	 */
-	502, 366, 364, 390, 389, 618, 219, 557, 556, 575, 574, 538, 534, 537, 614, 386,
-	505, 375, 379, 377, 517, 232, 437, 214, 328, 365, 372, 415, 530, 585, 213, 322,
-	363, 373, 416, 528, 583, 445, 446, 447, 448, 449, 450, 451, 452, 453, 454, 455,
+	502, 366, 364, 390, 389, 617, 219, 556, 555, 574, 573, 537, 533, 536, 613, 386,
+	505, 375, 379, 377, 517, 232, 437, 214, 328, 365, 372, 415, 529, 584, 213, 322,
+	363, 373, 416, 527, 582, 445, 446, 447, 448, 449, 450, 451, 452, 453, 454, 455,
 	456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471,
 	472, 473, 474, 475, 476, 477, 478, 479, 480, 482, 481, 483, 484, 485, 486, 487,
-	488, 489, 490, 491, 492, 493, 494, 495, 496, 497, 498, 499, 500, 501, 580, 579,
-	224, 545, 549, 547, 591, 595, 594, 593, 563, 567, 514, 570, 543, 603, 604, 413
+	488, 489, 490, 491, 492, 493, 494, 495, 496, 497, 498, 499, 500, 501, 579, 578,
+	224, 544, 548, 546, 590, 594, 593, 592, 562, 566, 514, 569, 542, 602, 603, 413
     };
 
     static marpatcl_rtc_sym doctools_parser_c_g1_rule_name [190] = { /* 380 bytes */
-	502, 366, 364, 364, 390, 389, 389, 389, 389, 389, 389, 618, 618, 618, 219, 219,
-	219, 219, 557, 556, 556, 556, 556, 575, 574, 574, 538, 534, 534, 537, 614, 614,
-	614, 614, 614, 614, 614, 614, 386, 386, 386, 505, 505, 505, 505, 505, 505, 505,
+	502, 366, 364, 364, 390, 389, 389, 389, 389, 389, 389, 617, 617, 617, 219, 219,
+	219, 219, 556, 555, 555, 555, 555, 574, 573, 573, 537, 533, 533, 536, 613, 613,
+	613, 613, 613, 613, 613, 386, 386, 386, 505, 505, 505, 505, 505, 505, 505, 505,
 	505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505,
 	505, 505, 375, 375, 379, 377, 377, 377, 377, 377, 377, 377, 517, 232, 437, 437,
-	437, 437, 437, 437, 437, 214, 328, 365, 372, 415, 530, 585, 213, 322, 363, 363,
-	373, 416, 528, 583, 445, 446, 446, 447, 448, 449, 450, 451, 452, 453, 454, 455,
+	437, 437, 437, 437, 437, 214, 328, 365, 372, 415, 529, 584, 213, 322, 363, 363,
+	373, 416, 527, 582, 445, 446, 446, 447, 448, 449, 450, 451, 452, 453, 454, 455,
 	456, 457, 458, 459, 460, 461, 462, 463, 463, 464, 465, 466, 467, 468, 469, 470,
 	471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 482, 481, 481, 483, 484, 484,
 	485, 486, 486, 487, 488, 488, 489, 490, 491, 492, 493, 494, 495, 496, 497, 498,
-	498, 499, 500, 501, 580, 579, 579, 579, 224, 545, 549, 547, 547, 547, 591, 591,
-	595, 595, 594, 593, 593, 593, 563, 567, 514, 570, 543, 603, 604, 413
+	498, 499, 500, 501, 579, 578, 578, 578, 224, 544, 548, 546, 546, 546, 590, 590,
+	594, 594, 593, 592, 592, 592, 562, 566, 514, 569, 542, 602, 603, 413
     };
 
     static marpatcl_rtc_sym doctools_parser_c_g1_rule_lhs [190] = { /* 380 bytes */
 	 72,  73,  74,  74,  75,  76,  76,  76,  76,  76,  76,  77,  77,  77,  78,  78,
 	 78,  78,  79,  80,  80,  80,  80,  81,  82,  82,  83,  84,  84,  85,  86,  86,
-	 86,  86,  86,  86,  86,  86,  87,  87,  87,  88,  88,  88,  88,  88,  88,  88,
+	 86,  86,  86,  86,  86,  87,  87,  87,  88,  88,  88,  88,  88,  88,  88,  88,
 	 88,  88,  88,  88,  88,  88,  88,  88,  88,  88,  88,  88,  88,  88,  88,  88,
 	 88,  88,  89,  89,  90,  91,  91,  91,  91,  91,  91,  91,  92,  93,  94,  94,
 	 94,  94,  94,  94,  94,  95,  96,  97,  98,  99, 100, 101, 102, 103, 104, 104,
@@ -1437,7 +1379,6 @@ critcl::ccode {
 	MARPATCL_RCMD_PRIO  (1), 86, 74,                                     /* <word>              ::= <definition> */
 	MARPATCL_RCMD_PRIS  (1)    , 94,                                     /*                     |   <list> */
 	MARPATCL_RCMD_PRIS  (1)    , 89,                                     /*                     |   <example> */
-	MARPATCL_RCMD_PRIS  (1)    , 182,                                    /*                     |   <vref> */
 	MARPATCL_RCMD_PRIS  (1)    , 88,                                     /*                     |   <markup> */
 	MARPATCL_RCMD_PRIS  (1)    , 77,                                     /*                     |   <xref> */
 	MARPATCL_RCMD_PRIS  (1)    , 87,                                     /*                     |   <g_text> */
@@ -1470,6 +1411,7 @@ critcl::ccode {
 	MARPATCL_RCMD_PRIS  (1)    , 165,                                    /*                     |   <m_widget> */
 	MARPATCL_RCMD_PRIS  (1)    , 127,                                    /*                     |   <m_image> */
 	MARPATCL_RCMD_PRIS  (1)    , 153,                                    /*                     |   <m_sectref_ext> */
+	MARPATCL_RCMD_PRIS  (1)    , 182,                                    /*                     |   <vref> */
 	MARPATCL_RCMD_PRIO  (1), 89, 122,                                    /* <example>           ::= <m_example> */
 	MARPATCL_RCMD_PRIS  (3)    , 123, 90, 124,                           /*                     |   <m_example_begin> <example_text> <m_example_end> */
 	MARPATCL_RCMD_QUP   (90), 91,                                        /* <example_text>      ::= <example_element> + */
@@ -1628,8 +1570,8 @@ critcl::ccode {
 
 	/* --- (2) --- --- --- Semantics Data
 	 */
-	        /* 190 */ 1, MARPATCL_SV_A_FIRST,
-	          /* 192 */ 2, MARPATCL_SV_RULE_NAME,     MARPATCL_SV_VALUE
+	/* 190 */ 1, MARPATCL_SV_A_FIRST,
+	/* 192 */ 2, MARPATCL_SV_RULE_NAME, MARPATCL_SV_VALUE
     };
 
     static marpatcl_rtc_sym doctools_parser_c_g1masking [231] = { /* 462 bytes */
@@ -1676,7 +1618,7 @@ critcl::ccode {
     static marpatcl_rtc_spec doctools_parser_c_spec = { /* 72 */
 	/* .lexemes    */  72,
 	/* .discards   */  1,
-	/* .l_symbols  */  591,
+	/* .l_symbols  */  590,
 	/* .g_symbols  */  184,
 	/* .always     */  { 1, doctools_parser_c_always },
 	/* .l0         */  &doctools_parser_c_l0,

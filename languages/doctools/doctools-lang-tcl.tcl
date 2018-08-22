@@ -7,8 +7,8 @@
 # (c) 2018 Grammar doctools::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "doctools::parser::tcl".
-##	Generated On Tue Aug 21 16:39:03 PDT 2018
-##		  By andreask@ten
+##	Generated On Tue Aug 21 21:36:07 PDT 2018
+##		  By aku@hephaistos
 ##		 Via marpa-gen
 
 package provide doctools::parser::tcl 1
@@ -337,7 +337,6 @@ oo::class create doctools::parser::tcl {
 	    NBSPACE
 	    NBSPACE1
 	    NEWLINE
-	    NO_CFS1
 	    NO_CFS_QUOTE
 	    NO_CMD_FMT_SPACE
 	    QUOTE
@@ -580,15 +579,14 @@ oo::class create doctools::parser::tcl {
 	    {NBSPACE1 + NBSPACE}
 	    {NEWLINE := {@CLS:<\n\r>}}
 	    {NEWLINE := {@STR:<\r\n>}}
-	    {NO_CFS1 + NO_CMD_FMT_SPACE}
 	    {NO_CFS_QUOTE := {@^CLS:<\t-\r\40\42\133\135>}}
 	    {NO_CMD_FMT_SPACE := {@^CLS:<\t-\r\40\133\135>}}
 	    {Quote := QUOTE}
 	    {QUOTE := {@CHR:<\42>}}
 	    {QUOTED := QUOTE QUOTED_ELEMS QUOTE}
 	    {QUOTED_ELEM := COMMAND}
-	    {QUOTED_ELEM := SIMPLE}
-	    {QUOTED_ELEM := SPACE1}
+	    {QUOTED_ELEM := NO_CFS_QUOTE}
+	    {QUOTED_ELEM := SPACE}
 	    {QUOTED_ELEMS * QUOTED_ELEM}
 	    {SIMPLE + NO_CFS_QUOTE}
 	    {Simple := SIMPLE}
@@ -602,12 +600,12 @@ oo::class create doctools::parser::tcl {
 	    {SPACE1 + SPACE}
 	    {UNQUOTED + UNQUOTED_ELEM}
 	    {UNQUOTED_ELEM := COMMAND}
-	    {UNQUOTED_ELEM := NO_CFS1}
+	    {UNQUOTED_ELEM := NO_CMD_FMT_SPACE}
 	    {VAR_DEF := CL WHITE0 @STR:<vset> WHITE1 WORD WHITE1 WORD WHITE0 CR}
 	    {VAR_REF := CL WHITE0 @STR:<vset> WHITE1 WORD WHITE0 CR}
 	    {WHITE := COMMENT}
 	    {WHITE := CONTINUATION}
-	    {WHITE := SPACE1}
+	    {WHITE := SPACE}
 	    {WHITE0 * WHITE}
 	    {WHITE1 + WHITE}
 	    {Whitespace := WHITE1}
@@ -923,6 +921,7 @@ oo::class create doctools::parser::tcl {
 	    {markup := m_usage}
 	    {markup := m_var}
 	    {markup := m_widget}
+	    {markup := vref}
 	    {__ :A {name values}}
 	    {nbsimplex := NbSimplex}
 	    {nbspace := Nbspace}
@@ -982,7 +981,6 @@ oo::class create doctools::parser::tcl {
 	    {word := list}
 	    {word := markup}
 	    {word := simplex}
-	    {word := vref}
 	    {word := xref}
 	    {xref := m_category}
 	    {xref := m_keywords}

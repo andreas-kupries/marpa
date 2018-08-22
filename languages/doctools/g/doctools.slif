@@ -93,7 +93,6 @@ paragraph	::= word +
 word		::= definition		action => ::first
 		|   list		action => ::first
 		|   example		action => ::first
-		|   vref		action => ::first
 		|   markup		action => ::first
 		|   xref		action => ::first
 		|   g_text		action => ::first
@@ -128,6 +127,7 @@ markup		::= m_arg		action => ::first
 		|   m_widget		action => ::first
 		|   m_image		action => ::first
 		|   m_sectref_ext	action => ::first
+		|   vref		action => ::first
 
 example		::= m_example						action => ::first
 		|   ( m_example_begin ) example_text ( m_example_end )	action => ::first
@@ -546,8 +546,8 @@ BRACE_ESCAPED	~ '\\{'
 QUOTED		~ QUOTE QUOTED_ELEMS QUOTE
 QUOTE		~ '"'
 QUOTED_ELEMS	~ QUOTED_ELEM *
-QUOTED_ELEM	~ SIMPLE
-		| SPACE1
+QUOTED_ELEM	~ NO_CFS_QUOTE
+		| SPACE
 		| COMMAND
 
 SIMPLE		~ NO_CFS_QUOTE +
@@ -568,14 +568,12 @@ NBSIMPLEN	~ SIMPLE + separator => NBSPACE1
 # - Command substitutions `[...]` are allowed
 
 UNQUOTED	~ UNQUOTED_ELEM +
-UNQUOTED_ELEM	~ NO_CFS1
+UNQUOTED_ELEM	~ NO_CMD_FMT_SPACE
 		| COMMAND
 
 COMMAND		~ CL WHITE0 WORDS1 WHITE0 CR
 WORDS1		~ WORD +
 	separator => WHITE1
-
-NO_CFS1		~ NO_CMD_FMT_SPACE +
 
 NO_CMD_FMT_SPACE~ [^\133\135\n\r\t\f\v ]
 NO_CFS_QUOTE	~ [^\133\135\n\r\t\f\v "]
@@ -586,7 +584,7 @@ NO_CFS_QUOTE	~ [^\133\135\n\r\t\f\v "]
 WHITE1		~ WHITE +
 WHITE0		~ WHITE *
 
-WHITE		~ SPACE1
+WHITE		~ SPACE
 	    	| COMMENT
 	    	| CONTINUATION
 
