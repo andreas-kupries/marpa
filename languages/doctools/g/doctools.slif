@@ -34,7 +34,6 @@ lexeme default =
 manpage		::= ( definitions )
 		    m_manpage_begin
 		    headers
-		    ( m_description )
 		    body
 		    ( m_manpage_end )
 
@@ -66,20 +65,24 @@ xref		::= m_keywords		action => ::first
 # are able to handle this, but not the builtin quantified/sequence
 # rules.
 
-body		::=
-body		::=	paragraphs
-		|	paragraphs sections
-		|		   sections
+body		::=	( m_description ) 
+		|	( m_description )	     		 sections
+		|	( m_description )	     subsections
+		|	( m_description )	     subsections sections
+		|	( m_description ) paragraphs
+		|	( m_description ) paragraphs		 sections
+		|	( m_description ) paragraphs subsections
+		|	( m_description ) paragraphs subsections sections
 
 sections	::= section +
-section		::= m_section paragraphs
-		|   m_section paragraphs subsections
+section		::= m_section
 		|   m_section 		 subsections
-		|   m_section
+		|   m_section paragraphs
+		|   m_section paragraphs subsections
 
 subsections	::= subsection +
-subsection	::= m_subsection paragraphs
-		|   m_subsection
+subsection	::= m_subsection
+		|   m_subsection paragraphs
 
 paragraphs	::= paragraph +
 		    separator => p_separator
@@ -101,6 +104,7 @@ g_text		::= simplex		action => ::first
 		|   simple		action => ::first
 		|   space		action => ::first
 		|   quote		action => ::first
+		|   bracel		action => ::first
 
 markup		::= m_arg		action => ::first
 		|   m_class		action => ::first
@@ -110,6 +114,7 @@ markup		::= m_arg		action => ::first
 		|   m_file		action => ::first
 		|   m_fun		action => ::first
 		|   m_lb		action => ::first
+		|   m_manpage		action => ::first
 		|   m_method		action => ::first
 		|   m_namespace		action => ::first
 		|   m_opt		action => ::first
@@ -212,6 +217,7 @@ m_list_begin_tko	::= ( Cl CListBegin Space LTkopt			  CDone )
 m_list_end		::= ( Cl CListEnd   					  CDone )
 m_manpage_begin		::= ( Cl CManpageBegin	Space )	tclword (Space) tclword (Space) tclword	( CDone )
 m_manpage_end		::= ( Cl CManpageEnd   					  CDone )
+m_manpage  		::= ( Cl CManpage 	Space )	tclword     		( CDone )
 m_method  		::= ( Cl CMethod 	Space )	tclword     		( CDone )
 m_moddesc		::= ( Cl CModdesc	Space )	tclword			( CDone )
 m_namespace 		::= ( Cl CNamespace	Space )	tclword			( CDone )
@@ -263,15 +269,17 @@ quoted_elem	::= simple	action => ::first
 		|   markup	action => ::first
 		|   escaped	action => ::first
 
-unquoted	::= unquoted_leader unquoted_elems
-		|   unquoted_leader			action => ::first
-unquoted_leader	::= simple				action => ::first
+unquoted	::= unquoted_lead unquoted_elems
+		|   unquoted_lead			action => ::first
+
+unquoted_lead	::= simple				action => ::first
 		|   markup				action => ::first
 		|   escaped				action => ::first
 
 unquoted_elems	::= unquoted_elem +
-unquoted_elem	::= unquoted_leader			action => ::first
+unquoted_elem	::= unquoted_lead			action => ::first
 		|   quote				action => ::first
+		|   bracel
 
 escaped		::= Escaped
 simple		::= Simple
@@ -279,6 +287,7 @@ simplex		::= Simplex
 nbsimplex	::= Nbsimplex
 space		::= Space
 quote		::= Quote
+bracel		::= Bracel
 
 # # ## ### ##### ######## ############# #####################
 ## G1 special forms - never seen, either discarded, or replaced by its contents
@@ -314,8 +323,9 @@ CKeywords	~ C_KEYWORDS
 CLb		~ C_LB		
 CListBegin	~ C_LIST_BEGIN	
 CListEnd	~ C_LIST_END	
+CManpage	~ C_MANPAGE
 CManpageBegin	~ C_MANPAGE_BEGIN
-CManpageEnd	~ C_MANPAGE_END	
+CManpageEnd	~ C_MANPAGE_END
 CMethod		~ C_METHOD	
 CModdesc	~ C_MODDESC	
 CNamespace	~ C_NAMESPACE	
@@ -373,8 +383,8 @@ Space		~ SPACE1
 Nbspace		~ NBSPACE
 Breaker		~ BREAKER
 Escaped		~ ESCAPED
-
 Quote		~ QUOTE
+Bracel		~ BL
 
 :discard	~ Whitespace
 Whitespace	~ WHITE1
@@ -426,6 +436,7 @@ C_KEYWORDS	~ 'keywords'
 C_LB		~ 'lb'
 C_LIST_BEGIN	~ 'list_begin'
 C_LIST_END	~ 'list_end'
+C_MANPAGE	~ 'manpage'
 C_MANPAGE_BEGIN	~ 'manpage_begin'
 C_MANPAGE_END	~ 'manpage_end'
 C_METHOD	~ 'method'
@@ -550,16 +561,18 @@ BRACE_ESCAPED	~ '\\{'
 QUOTED		~ QUOTE QUOTED_ELEMS QUOTE
 QUOTE		~ '"'
 QUOTED_ELEMS	~ QUOTED_ELEM *
-QUOTED_ELEM	~ NO_CFS_QUOTE
+QUOTED_ELEM	~ SIMPLE_CHAR
 		| SPACE
 		| COMMAND
 		| ESCAPED
 
 ESCAPED		~ '\\'
 		| '\\['
+		| '\\"'
 		| '\\]'
 
-SIMPLE		~ NO_CFS_QUOTE +
+SIMPLE		~ SIMPLE_CHAR +
+SIMPLE_CHAR	~ [^\133\134\135\n\r\t\f\v "{]
 
 # simplex - longer general text, series of simple connected by spaces.
 # The nb* variant does not allow linebreaks in the connecting spaces.
@@ -572,8 +585,8 @@ SIMPLEX		~        SIMPLE SPACE1 SIMPLEN
 
 SIMPLEN		~ SIMPLE + separator => SPACE1
 
-NBSIMPLEX	~ NBSIMPLEN
-		| NBSPACE1 NBSIMPLEN
+NBSIMPLEX	~        SIMPLE NBSPACE1 NBSIMPLEN
+		| SPACE1 SIMPLE NBSPACE1 NBSIMPLEN
 NBSIMPLEN	~ SIMPLE + separator => NBSPACE1
 
 # unquoted	`...`
@@ -585,16 +598,14 @@ UNQUOTED	~ UNQUOTED_LEAD
 UNQUOTED_ELEMS	~ UNQUOTED_ELEM +
 UNQUOTED_ELEM	~ UNQUOTED_LEAD
 		| QUOTE
-UNQUOTED_LEAD	~ NO_CMD_FMT_SPACE
+		| BL
+UNQUOTED_LEAD	~ SIMPLE_CHAR
 		| COMMAND
 		| ESCAPED
 
 COMMAND		~ CL WHITE0 WORDS1 WHITE0 CR
 WORDS1		~ WORD +
 	separator => WHITE1
-
-NO_CMD_FMT_SPACE~ [^\133-\135\n\r\t\f\v ]
-NO_CFS_QUOTE	~ [^\133-\135\n\r\t\f\v "]
 
 # # ## ### ##### ######## ############# #####################
 ## other forms of white space

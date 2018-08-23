@@ -255,8 +255,16 @@ oo::class create doctools::base {
 	# recursion.
 
 	set full [my Resolve $path]
-	debug.doctools/base/include {@inc #[file size $full] $full}
+	set sz   [file size $full]
+	debug.doctools/base/include {@inc #$sz $full}
 
+	# Shortcircuit inclusion of empty file.
+	# Nothing needs to be done.
+	if {!$sz} {
+	    debug.doctools/base/include {@ret =[PAR match location] $mypath}
+	    return
+	}
+	
 	if {[PAR match mark-exists $full]} {
 	    return -code error \
 		"Detected recursive include of file `$full`, aborting."
@@ -267,9 +275,12 @@ oo::class create doctools::base {
 
 	set  here  [PAR match location]
 	set  start [PAR extend-file $full]
-	set  stop  [file size $full] ;# end relative to start of new file itself
-	incr stop $start             ;# end relative to entire extended input
-	incr stop -1                 ;# last character
+
+	debug.doctools/base/include {@inc @$start}
+	
+	set  stop $sz    ;# end relative to start of new file itself
+	incr stop $start ;# end relative to entire extended input
+	incr stop -1     ;# last character
 
 	PAR match mark-add $full $stop [self namespace]::my ReturnTo $here $mypath
 

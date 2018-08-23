@@ -69,8 +69,10 @@ uq_lead	::= simple	action => ::first
 uq_list	::= uq_elem *
 uq_elem	::= uq_lead	action => ::first
 	|   quote	action => ::first
+	|   bracel	action => ::first
 
 braced	::= Braced
+bracel	::= Bracel
 simple	::= Simple
 quote	::= Quote
 space	::= Space
@@ -88,6 +90,7 @@ Include	~ INCLUDE
 Simple	~ SIMPLE
 Space	~ SPACE1
 Braced	~ BRACED
+Bracel	~ BL
 Word	~ WORD
 Quote	~ QUOTE
 Escaped	~ ESCAPED
@@ -131,16 +134,18 @@ BRACE_ESCAPED	~ '\\{'
 QUOTED		~ QUOTE QUOTED_ELEMS QUOTE
 QUOTE		~ '"'
 QUOTED_ELEMS	~ QUOTED_ELEM *
-QUOTED_ELEM	~ NO_CFS_QUOTE
+QUOTED_ELEM	~ SIMPLE_CHAR
 		| SPACE
 		| COMMAND
 		| ESCAPED
 
 ESCAPED		~ '\\'
 		| '\\['
+		| '\\"'
 		| '\\]'
 
-SIMPLE		~ NO_CFS_QUOTE +
+SIMPLE		~ SIMPLE_CHAR +
+SIMPLE_CHAR	~ [^\133\134\135\n\r\t\f\v "{]
 
 # unquoted	`...`
 # - Text cannot contain any forms of whitespace
@@ -151,7 +156,8 @@ UNQUOTED	~ UNQUOTED_LEAD
 UNQUOTED_ELEMS	~ UNQUOTED_ELEM +
 UNQUOTED_ELEM	~ UNQUOTED_LEAD
 		| QUOTE
-UNQUOTED_LEAD	~ NO_CMD_FMT_SPACE
+		| BL
+UNQUOTED_LEAD	~ SIMPLE_CHAR
 		| COMMAND
 		| ESCAPED
 
@@ -161,9 +167,6 @@ WORDS1		~ WORD +
 
 CL		~ '['
 CR		~ ']'
-
-NO_CMD_FMT_SPACE~ [^\133-\135\n\r\t\f\v ]
-NO_CFS_QUOTE	~ [^\133-\135\n\r\t\f\v "]
 
 # # ## ### ##### ######## ############# #####################
 ## other forms of white space

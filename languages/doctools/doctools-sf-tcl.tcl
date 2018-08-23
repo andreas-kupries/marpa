@@ -7,8 +7,8 @@
 # (c) 2018 Grammar doctools::parser::sf::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "doctools::parser::sf::tcl".
-##	Generated On Wed Aug 22 16:53:02 PDT 2018
-##		  By andreask@ten
+##	Generated On Wed Aug 22 23:46:03 PDT 2018
+##		  By aku@hephaistos
 ##		 Via marpa-gen
 
 package provide doctools::parser::sf::tcl 1
@@ -73,13 +73,12 @@ oo::class create doctools::parser::sf::tcl {
 	debug.doctools/parser/sf/tcl
 	# Literals: The character classes in use
 	return {
-	    {@^CLS:<\173\175>.BMP}               {[^\173\175]}
-	    {@^CLS:<\t-\r\40\42\133-\135>.BMP}   {[^\t-\r\40\42\133-\135]}
-	    {@^CLS:<\t-\r\40\133-\135>.BMP}      {[^\t-\r\40\133-\135]}
-	    {@CLS:<\n\r>}                        {[\n\r]}
-	    {@CLS:<\t-\r\40>}                    {[\t-\r\40]}
-	    {@RAN:<\ud800\udbff>}                {[\ud800-\udbff]}
-	    {@RAN:<\udc00\udfff>}                {[\udc00-\udfff]}
+	    {@^CLS:<\173\175>.BMP}                   {[^\173\175]}
+	    {@^CLS:<\t-\r\40\42\133-\135\173>.BMP}   {[^\t-\r\40\42\133-\135\173]}
+	    {@CLS:<\n\r>}                            {[\n\r]}
+	    {@CLS:<\t-\r\40>}                        {[\t-\r\40]}
+	    {@RAN:<\ud800\udbff>}                    {[\ud800-\udbff]}
+	    {@RAN:<\udc00\udfff>}                    {[\udc00-\udfff]}
 	}
     }
 
@@ -88,6 +87,7 @@ oo::class create doctools::parser::sf::tcl {
 	# Lexer API: Lexeme symbols (Cannot be terminal). G1 terminals
 	return {
 	    Braced    1
+	    Bracel    1
 	    Escaped   1
 	    Include   1
 	    Quote     1
@@ -114,9 +114,9 @@ oo::class create doctools::parser::sf::tcl {
 	debug.doctools/parser/sf/tcl
 	return {
 	    {@^CLS:<\173\175>}
-	    {@^CLS:<\t-\r\40\42\133-\135>}
-	    {@^CLS:<\t-\r\40\133-\135>}
+	    {@^CLS:<\t-\r\40\42\133-\135\173>}
 	    {@CLS:<\u10000-\u10ffff>.SMP}
+	    {@STR:<\134\42>}
 	    {@STR:<\134\133>}
 	    {@STR:<\134\135>}
 	    {@STR:<\134\173>}
@@ -140,13 +140,12 @@ oo::class create doctools::parser::sf::tcl {
 	    ESCAPED
 	    INCLUDE
 	    NEWLINE
-	    NO_CFS_QUOTE
-	    NO_CMD_FMT_SPACE
 	    QUOTE
 	    QUOTED
 	    QUOTED_ELEM
 	    QUOTED_ELEMS
 	    SIMPLE
+	    SIMPLE_CHAR
 	    SPACE
 	    SPACE0
 	    SPACE1
@@ -181,6 +180,7 @@ oo::class create doctools::parser::sf::tcl {
 	    {BRACED_ELEM := BRACE_ESCAPED}
 	    {BRACED_ELEM := BRACED}
 	    {BRACED_ELEMS * BRACED_ELEM}
+	    {Bracel := BL}
 	    {CL := {@CHR:<\133>}}
 	    {COMMAND := CL WHITE0 WORDS1 WHITE0 CR}
 	    {COMMENT := CL WHITE0 @STR:<comment> WHITE1 WORD WHITE0 CR}
@@ -188,24 +188,24 @@ oo::class create doctools::parser::sf::tcl {
 	    {CR := {@CHR:<\135>}}
 	    {Escaped := ESCAPED}
 	    {ESCAPED := {@CHR:<\134>}}
+	    {ESCAPED := {@STR:<\134\42>}}
 	    {ESCAPED := {@STR:<\134\133>}}
 	    {ESCAPED := {@STR:<\134\135>}}
 	    {INCLUDE := @STR:<include>}
 	    {Include := INCLUDE}
 	    {NEWLINE := {@CLS:<\n\r>}}
 	    {NEWLINE := {@STR:<\r\n>}}
-	    {NO_CFS_QUOTE := {@^CLS:<\t-\r\40\42\133-\135>}}
-	    {NO_CMD_FMT_SPACE := {@^CLS:<\t-\r\40\133-\135>}}
 	    {Quote := QUOTE}
 	    {QUOTE := {@CHR:<\42>}}
 	    {QUOTED := QUOTE QUOTED_ELEMS QUOTE}
 	    {QUOTED_ELEM := COMMAND}
 	    {QUOTED_ELEM := ESCAPED}
-	    {QUOTED_ELEM := NO_CFS_QUOTE}
+	    {QUOTED_ELEM := SIMPLE_CHAR}
 	    {QUOTED_ELEM := SPACE}
 	    {QUOTED_ELEMS * QUOTED_ELEM}
-	    {SIMPLE + NO_CFS_QUOTE}
+	    {SIMPLE + SIMPLE_CHAR}
 	    {Simple := SIMPLE}
+	    {SIMPLE_CHAR := {@^CLS:<\t-\r\40\42\133-\135\173>}}
 	    {Space := SPACE1}
 	    {SPACE := {@CLS:<\t-\r\40>}}
 	    {SPACE0 * SPACE}
@@ -214,12 +214,13 @@ oo::class create doctools::parser::sf::tcl {
 	    {Stop := CR}
 	    {UNQUOTED := UNQUOTED_LEAD}
 	    {UNQUOTED := UNQUOTED_LEAD UNQUOTED_ELEMS}
+	    {UNQUOTED_ELEM := BL}
 	    {UNQUOTED_ELEM := QUOTE}
 	    {UNQUOTED_ELEM := UNQUOTED_LEAD}
 	    {UNQUOTED_ELEMS + UNQUOTED_ELEM}
 	    {UNQUOTED_LEAD := COMMAND}
 	    {UNQUOTED_LEAD := ESCAPED}
-	    {UNQUOTED_LEAD := NO_CMD_FMT_SPACE}
+	    {UNQUOTED_LEAD := SIMPLE_CHAR}
 	    {VSET := @STR:<vset>}
 	    {Vset := VSET}
 	    {WHITE := COMMENT}
@@ -235,11 +236,10 @@ oo::class create doctools::parser::sf::tcl {
 	    {WORDS1 + WORD WHITE1 0}
 	    {{@^CLS:<\173\175>} := {@^CLS:<\173\175>.BMP}}
 	    {{@^CLS:<\173\175>} := {@CLS:<\u10000-\u10ffff>.SMP}}
-	    {{@^CLS:<\t-\r\40\42\133-\135>} := {@^CLS:<\t-\r\40\42\133-\135>.BMP}}
-	    {{@^CLS:<\t-\r\40\42\133-\135>} := {@CLS:<\u10000-\u10ffff>.SMP}}
-	    {{@^CLS:<\t-\r\40\133-\135>} := {@^CLS:<\t-\r\40\133-\135>.BMP}}
-	    {{@^CLS:<\t-\r\40\133-\135>} := {@CLS:<\u10000-\u10ffff>.SMP}}
+	    {{@^CLS:<\t-\r\40\42\133-\135\173>} := {@^CLS:<\t-\r\40\42\133-\135\173>.BMP}}
+	    {{@^CLS:<\t-\r\40\42\133-\135\173>} := {@CLS:<\u10000-\u10ffff>.SMP}}
 	    {{@CLS:<\u10000-\u10ffff>.SMP} := {@RAN:<\ud800\udbff>} {@RAN:<\udc00\udfff>}}
+	    {{@STR:<\134\42>} := {@CHR:<\134>} {@CHR:<\42>}}
 	    {{@STR:<\134\133>} := {@CHR:<\134>} {@CHR:<\133>}}
 	    {{@STR:<\134\135>} := {@CHR:<\134>} {@CHR:<\135>}}
 	    {{@STR:<\134\173>} := {@CHR:<\134>} {@CHR:<\173>}}
@@ -269,6 +269,7 @@ oo::class create doctools::parser::sf::tcl {
 	debug.doctools/parser/sf/tcl
 	return {
 	    braced
+	    bracel
 	    escaped
 	    form
 	    include
@@ -298,6 +299,7 @@ oo::class create doctools::parser::sf::tcl {
 	return {
 	    {__ :A {name values}}
 	    {braced := Braced}
+	    {bracel := Bracel}
 	    {escaped := Escaped}
 	    {__ :A Afirst}
 	    {form := include}
@@ -326,6 +328,7 @@ oo::class create doctools::parser::sf::tcl {
 	    {space := Space}
 	    {unquot := uq_lead uq_list}
 	    {__ :A Afirst}
+	    {uq_elem := bracel}
 	    {uq_elem := quote}
 	    {uq_elem := uq_lead}
 	    {uq_lead := escaped}

@@ -7,8 +7,8 @@
 # (c) 2018 Grammar doctools::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "doctools::parser::tcl".
-##	Generated On Wed Aug 22 16:52:59 PDT 2018
-##		  By andreask@ten
+##	Generated On Wed Aug 22 23:45:59 PDT 2018
+##		  By aku@hephaistos
 ##		 Via marpa-gen
 
 package provide doctools::parser::tcl 1
@@ -88,14 +88,13 @@ oo::class create doctools::parser::tcl {
 	debug.doctools/parser/tcl
 	# Literals: The character classes in use
 	return {
-	    {@^CLS:<\173\175>.BMP}               {[^\173\175]}
-	    {@^CLS:<\t-\r\40\42\133-\135>.BMP}   {[^\t-\r\40\42\133-\135]}
-	    {@^CLS:<\t-\r\40\133-\135>.BMP}      {[^\t-\r\40\133-\135]}
-	    {@CLS:<\n\r>}                        {[\n\r]}
-	    {@CLS:<\t-\r\40>}                    {[\t-\r\40]}
-	    {@CLS:<\t\40>}                       {[\t\40]}
-	    {@RAN:<\ud800\udbff>}                {[\ud800-\udbff]}
-	    {@RAN:<\udc00\udfff>}                {[\udc00-\udfff]}
+	    {@^CLS:<\173\175>.BMP}                   {[^\173\175]}
+	    {@^CLS:<\t-\r\40\42\133-\135\173>.BMP}   {[^\t-\r\40\42\133-\135\173]}
+	    {@CLS:<\n\r>}                            {[\n\r]}
+	    {@CLS:<\t-\r\40>}                        {[\t-\r\40]}
+	    {@CLS:<\t\40>}                           {[\t\40]}
+	    {@RAN:<\ud800\udbff>}                    {[\ud800-\udbff]}
+	    {@RAN:<\udc00\udfff>}                    {[\udc00-\udfff]}
 	}
     }
 
@@ -104,6 +103,7 @@ oo::class create doctools::parser::tcl {
 	# Lexer API: Lexeme symbols (Cannot be terminal). G1 terminals
 	return {
 	    Braced          1
+	    Bracel          1
 	    Breaker         1
 	    CArg            1
 	    CArgDef         1
@@ -132,6 +132,7 @@ oo::class create doctools::parser::tcl {
 	    CLb             1
 	    CListBegin      1
 	    CListEnd        1
+	    CManpage        1
 	    CManpageBegin   1
 	    CManpageEnd     1
 	    CMethod         1
@@ -192,9 +193,9 @@ oo::class create doctools::parser::tcl {
 	debug.doctools/parser/tcl
 	return {
 	    {@^CLS:<\173\175>}
-	    {@^CLS:<\t-\r\40\42\133-\135>}
-	    {@^CLS:<\t-\r\40\133-\135>}
+	    {@^CLS:<\t-\r\40\42\133-\135\173>}
 	    {@CLS:<\u10000-\u10ffff>.SMP}
+	    {@STR:<\134\42>}
 	    {@STR:<\134\133>}
 	    {@STR:<\134\135>}
 	    {@STR:<\134\173>}
@@ -231,6 +232,7 @@ oo::class create doctools::parser::tcl {
 	    @STR:<lb>
 	    @STR:<list_begin>
 	    @STR:<list_end>
+	    @STR:<manpage>
 	    @STR:<manpage_begin>
 	    @STR:<manpage_end>
 	    @STR:<method>
@@ -294,6 +296,7 @@ oo::class create doctools::parser::tcl {
 	    C_LB
 	    C_LIST_BEGIN
 	    C_LIST_END
+	    C_MANPAGE
 	    C_MANPAGE_BEGIN
 	    C_MANPAGE_END
 	    C_METHOD
@@ -341,13 +344,12 @@ oo::class create doctools::parser::tcl {
 	    NBSPACE
 	    NBSPACE1
 	    NEWLINE
-	    NO_CFS_QUOTE
-	    NO_CMD_FMT_SPACE
 	    QUOTE
 	    QUOTED
 	    QUOTED_ELEM
 	    QUOTED_ELEMS
 	    SIMPLE
+	    SIMPLE_CHAR
 	    SIMPLEN
 	    SIMPLEX
 	    SPACE
@@ -403,6 +405,7 @@ oo::class create doctools::parser::tcl {
 	    {@STR:<lb> := @CHR:<l> @CHR:<b>}
 	    {@STR:<list_begin> := @CHR:<l> @CHR:<i> @CHR:<s> @CHR:<t> @CHR:<_> @CHR:<b> @CHR:<e> @CHR:<g> @CHR:<i> @CHR:<n>}
 	    {@STR:<list_end> := @CHR:<l> @CHR:<i> @CHR:<s> @CHR:<t> @CHR:<_> @CHR:<e> @CHR:<n> @CHR:<d>}
+	    {@STR:<manpage> := @CHR:<m> @CHR:<a> @CHR:<n> @CHR:<p> @CHR:<a> @CHR:<g> @CHR:<e>}
 	    {@STR:<manpage_begin> := @CHR:<m> @CHR:<a> @CHR:<n> @CHR:<p> @CHR:<a> @CHR:<g> @CHR:<e> @CHR:<_> @CHR:<b> @CHR:<e> @CHR:<g> @CHR:<i> @CHR:<n>}
 	    {@STR:<manpage_end> := @CHR:<m> @CHR:<a> @CHR:<n> @CHR:<p> @CHR:<a> @CHR:<g> @CHR:<e> @CHR:<_> @CHR:<e> @CHR:<n> @CHR:<d>}
 	    {@STR:<method> := @CHR:<m> @CHR:<e> @CHR:<t> @CHR:<h> @CHR:<o> @CHR:<d>}
@@ -445,6 +448,7 @@ oo::class create doctools::parser::tcl {
 	    {BRACED_ELEM := BRACE_ESCAPED}
 	    {BRACED_ELEM := BRACED}
 	    {BRACED_ELEMS * BRACED_ELEM}
+	    {Bracel := BL}
 	    {Breaker := BREAKER}
 	    {BREAKER := NEWLINE SPACE1}
 	    {C_ARG := @STR:<arg>}
@@ -471,6 +475,7 @@ oo::class create doctools::parser::tcl {
 	    {C_LB := @STR:<lb>}
 	    {C_LIST_BEGIN := @STR:<list_begin>}
 	    {C_LIST_END := @STR:<list_end>}
+	    {C_MANPAGE := @STR:<manpage>}
 	    {C_MANPAGE_BEGIN := @STR:<manpage_begin>}
 	    {C_MANPAGE_END := @STR:<manpage_end>}
 	    {C_METHOD := @STR:<method>}
@@ -527,6 +532,7 @@ oo::class create doctools::parser::tcl {
 	    {CLb := C_LB}
 	    {CListBegin := C_LIST_BEGIN}
 	    {CListEnd := C_LIST_END}
+	    {CManpage := C_MANPAGE}
 	    {CManpageBegin := C_MANPAGE_BEGIN}
 	    {CManpageEnd := C_MANPAGE_END}
 	    {CMethod := C_METHOD}
@@ -563,6 +569,7 @@ oo::class create doctools::parser::tcl {
 	    {CWidget := C_WIDGET}
 	    {Escaped := ESCAPED}
 	    {ESCAPED := {@CHR:<\134>}}
+	    {ESCAPED := {@STR:<\134\42>}}
 	    {ESCAPED := {@STR:<\134\133>}}
 	    {ESCAPED := {@STR:<\134\135>}}
 	    {INCLUDE := CL WHITE0 @STR:<include> WHITE1 WORD WHITE0 CR}
@@ -581,26 +588,25 @@ oo::class create doctools::parser::tcl {
 	    {LOpt := L_OPT}
 	    {LTkopt := L_TKOPT}
 	    {NBSIMPLEN + SIMPLE NBSPACE1 0}
-	    {NBSIMPLEX := NBSIMPLEN}
 	    {Nbsimplex := NBSIMPLEX}
-	    {NBSIMPLEX := NBSPACE1 NBSIMPLEN}
+	    {NBSIMPLEX := SIMPLE NBSPACE1 NBSIMPLEN}
+	    {NBSIMPLEX := SPACE1 SIMPLE NBSPACE1 NBSIMPLEN}
 	    {Nbspace := NBSPACE}
 	    {NBSPACE := {@CLS:<\t\40>}}
 	    {NBSPACE1 + NBSPACE}
 	    {NEWLINE := {@CLS:<\n\r>}}
 	    {NEWLINE := {@STR:<\r\n>}}
-	    {NO_CFS_QUOTE := {@^CLS:<\t-\r\40\42\133-\135>}}
-	    {NO_CMD_FMT_SPACE := {@^CLS:<\t-\r\40\133-\135>}}
 	    {Quote := QUOTE}
 	    {QUOTE := {@CHR:<\42>}}
 	    {QUOTED := QUOTE QUOTED_ELEMS QUOTE}
 	    {QUOTED_ELEM := COMMAND}
 	    {QUOTED_ELEM := ESCAPED}
-	    {QUOTED_ELEM := NO_CFS_QUOTE}
+	    {QUOTED_ELEM := SIMPLE_CHAR}
 	    {QUOTED_ELEM := SPACE}
 	    {QUOTED_ELEMS * QUOTED_ELEM}
-	    {SIMPLE + NO_CFS_QUOTE}
+	    {SIMPLE + SIMPLE_CHAR}
 	    {Simple := SIMPLE}
+	    {SIMPLE_CHAR := {@^CLS:<\t-\r\40\42\133-\135\173>}}
 	    {SIMPLEN + SIMPLE SPACE1 0}
 	    {SIMPLEX := SIMPLE SPACE1 SIMPLEN}
 	    {Simplex := SIMPLEX}
@@ -611,12 +617,13 @@ oo::class create doctools::parser::tcl {
 	    {SPACE1 + SPACE}
 	    {UNQUOTED := UNQUOTED_LEAD}
 	    {UNQUOTED := UNQUOTED_LEAD UNQUOTED_ELEMS}
+	    {UNQUOTED_ELEM := BL}
 	    {UNQUOTED_ELEM := QUOTE}
 	    {UNQUOTED_ELEM := UNQUOTED_LEAD}
 	    {UNQUOTED_ELEMS + UNQUOTED_ELEM}
 	    {UNQUOTED_LEAD := COMMAND}
 	    {UNQUOTED_LEAD := ESCAPED}
-	    {UNQUOTED_LEAD := NO_CMD_FMT_SPACE}
+	    {UNQUOTED_LEAD := SIMPLE_CHAR}
 	    {VAR_DEF := CL WHITE0 @STR:<vset> WHITE1 WORD WHITE1 WORD WHITE0 CR}
 	    {VAR_REF := CL WHITE0 @STR:<vset> WHITE1 WORD WHITE0 CR}
 	    {WHITE := COMMENT}
@@ -631,11 +638,10 @@ oo::class create doctools::parser::tcl {
 	    {WORDS1 + WORD WHITE1 0}
 	    {{@^CLS:<\173\175>} := {@^CLS:<\173\175>.BMP}}
 	    {{@^CLS:<\173\175>} := {@CLS:<\u10000-\u10ffff>.SMP}}
-	    {{@^CLS:<\t-\r\40\42\133-\135>} := {@^CLS:<\t-\r\40\42\133-\135>.BMP}}
-	    {{@^CLS:<\t-\r\40\42\133-\135>} := {@CLS:<\u10000-\u10ffff>.SMP}}
-	    {{@^CLS:<\t-\r\40\133-\135>} := {@^CLS:<\t-\r\40\133-\135>.BMP}}
-	    {{@^CLS:<\t-\r\40\133-\135>} := {@CLS:<\u10000-\u10ffff>.SMP}}
+	    {{@^CLS:<\t-\r\40\42\133-\135\173>} := {@^CLS:<\t-\r\40\42\133-\135\173>.BMP}}
+	    {{@^CLS:<\t-\r\40\42\133-\135\173>} := {@CLS:<\u10000-\u10ffff>.SMP}}
 	    {{@CLS:<\u10000-\u10ffff>.SMP} := {@RAN:<\ud800\udbff>} {@RAN:<\udc00\udfff>}}
+	    {{@STR:<\134\42>} := {@CHR:<\134>} {@CHR:<\42>}}
 	    {{@STR:<\134\133>} := {@CHR:<\134>} {@CHR:<\133>}}
 	    {{@STR:<\134\135>} := {@CHR:<\134>} {@CHR:<\135>}}
 	    {{@STR:<\134\173>} := {@CHR:<\134>} {@CHR:<\173>}}
@@ -678,6 +684,7 @@ oo::class create doctools::parser::tcl {
 	    argument_list
 	    body
 	    braced
+	    bracel
 	    breaker
 	    cmd_list_elem
 	    command_list
@@ -728,6 +735,7 @@ oo::class create doctools::parser::tcl {
 	    m_list_begin_opt
 	    m_list_begin_tko
 	    m_list_end
+	    m_manpage
 	    m_manpage_begin
 	    m_manpage_end
 	    m_method
@@ -782,7 +790,7 @@ oo::class create doctools::parser::tcl {
 	    unquoted
 	    unquoted_elem
 	    unquoted_elems
-	    unquoted_leader
+	    unquoted_lead
 	    vdef
 	    vref
 	    word
@@ -797,11 +805,16 @@ oo::class create doctools::parser::tcl {
 	    {__ :A {name values}}
 	    {arg_list_elem := m_arg_def paragraphs}
 	    {argument_list + arg_list_elem}
-	    {body := paragraphs}
-	    {body := sections}
-	    {body := paragraphs sections}
-	    {body :=}
+	    {body :M 0 m_description}
+	    {body :M 0 m_description paragraphs sections}
+	    {body :M 0 m_description paragraphs subsections sections}
+	    {body :M 0 m_description paragraphs subsections}
+	    {body :M 0 m_description paragraphs}
+	    {body :M 0 m_description sections}
+	    {body :M 0 m_description subsections sections}
+	    {body :M 0 m_description subsections}
 	    {braced := Braced}
+	    {bracel := Bracel}
 	    {breaker := Breaker}
 	    {cmd_list_elem := m_cmd_def paragraphs}
 	    {command_list + cmd_list_elem}
@@ -827,6 +840,7 @@ oo::class create doctools::parser::tcl {
 	    {__ :A {name values}}
 	    {example_text + example_element}
 	    {__ :A Afirst}
+	    {g_text := bracel}
 	    {g_text := quote}
 	    {g_text := simple}
 	    {g_text := simplex}
@@ -883,6 +897,7 @@ oo::class create doctools::parser::tcl {
 	    {m_list_begin_opt :M {0 1 2 3 4} Cl CListBegin Space LOpt CDone}
 	    {m_list_begin_tko :M {0 1 2 3 4} Cl CListBegin Space LTkopt CDone}
 	    {m_list_end :M {0 1 2} Cl CListEnd CDone}
+	    {m_manpage :M {0 1 2 4} Cl CManpage Space tclword CDone}
 	    {m_manpage_begin :M {0 1 2 4 6 8} Cl CManpageBegin Space tclword Space tclword Space tclword CDone}
 	    {m_manpage_end :M {0 1 2} Cl CManpageEnd CDone}
 	    {m_method :M {0 1 2 4} Cl CMethod Space tclword CDone}
@@ -915,7 +930,7 @@ oo::class create doctools::parser::tcl {
 	    {m_usage :M {0 1 2 4} Cl CUsage Space tclwords CDone}
 	    {m_var :M {0 1 2 4} Cl CVar Space tclword CDone}
 	    {m_widget :M {0 1 2 4} Cl CWidget Space tclword CDone}
-	    {manpage :M {0 3 5} definitions m_manpage_begin headers m_description body m_manpage_end}
+	    {manpage :M {0 4} definitions m_manpage_begin headers body m_manpage_end}
 	    {__ :A Afirst}
 	    {markup := m_arg}
 	    {markup := m_class}
@@ -926,6 +941,7 @@ oo::class create doctools::parser::tcl {
 	    {markup := m_fun}
 	    {markup := m_image}
 	    {markup := m_lb}
+	    {markup := m_manpage}
 	    {markup := m_method}
 	    {markup := m_namespace}
 	    {markup := m_opt}
@@ -981,18 +997,19 @@ oo::class create doctools::parser::tcl {
 	    {tko_list_elem := m_tkoption_def paragraphs}
 	    {tkoption_list + tko_list_elem}
 	    {__ :A Afirst}
-	    {unquoted := unquoted_leader}
+	    {unquoted := unquoted_lead}
 	    {__ :A {name values}}
-	    {unquoted := unquoted_leader unquoted_elems}
+	    {unquoted := unquoted_lead unquoted_elems}
+	    {unquoted_elem := bracel}
 	    {__ :A Afirst}
 	    {unquoted_elem := quote}
-	    {unquoted_elem := unquoted_leader}
+	    {unquoted_elem := unquoted_lead}
 	    {__ :A {name values}}
 	    {unquoted_elems + unquoted_elem}
 	    {__ :A Afirst}
-	    {unquoted_leader := escaped}
-	    {unquoted_leader := markup}
-	    {unquoted_leader := simple}
+	    {unquoted_lead := escaped}
+	    {unquoted_lead := markup}
+	    {unquoted_lead := simple}
 	    {__ :A {name values}}
 	    {vdef := CVdef}
 	    {vref := CVref}

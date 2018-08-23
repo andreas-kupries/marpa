@@ -56,7 +56,10 @@ proc cmdline {} {
     while {[string match -* [set o [lindex $argv 0]]]} {
 	switch -exact -- $o {
 	    "--help" { usage ; exit }
-	    "-v"     { set timing 1 }
+	    "-t"     {
+		set timing 1
+		set argv   [lrange $argv 1 end]
+	    }
 	    "-o" {
 		set outdir [lindex $argv 1]
 		set argv   [lrange $argv 2 end]
@@ -112,27 +115,31 @@ proc ingest {args} {
    
     #puts [package ifneeded debug [package present debug]]
     #exit    
-    #debug on marpa/lexer
-    debug on marpa/lexer/stream
-    #debug on marpa/lexer/progress
-    #debug on marpa/lexer/forest
-    #debug on marpa/lexer/forest/save
-    #debug on marpa/lexer/forest/limit
-    #debug on marpa/parser
     #debug on marpa/inbound
     #debug on marpa/gate
-    #debug on marpa/parser/report
+    #debug on marpa/lexer
+    #debug on marpa/lexer/forest
+    #debug on marpa/lexer/forest/limit
+    #debug on marpa/lexer/forest/save
+    #debug on marpa/lexer/progress
+    #debug on marpa/lexer/stream
+    #debug on marpa/parser
+    #debug on marpa/parser/forest/limit
     #debug on marpa/parser/forest/save
-    debug on marpa/parser/forest/limit
+    #debug on marpa/parser/report
     #debug on marpa/parser/stream
     #debug on marpa/engine/tcl/parse
     #debug on doctools/base
     #debug on doctools/base/include
     #puts [join [info loaded] \n]
 
-    [pclass] create PARSE
+    set remake 1
 
     foreach path $args {
+	if {$remake} {
+	    catch { PARSE destroy }
+	    [pclass] create PARSE
+	}
 	if {$path eq "-"} {
 	    set path     [file join [pwd] fake]
 	    set doctools [read stdin]
@@ -145,7 +152,7 @@ proc ingest {args} {
 	}
 
 	if {[catch {
-	    Time "Processing $label ($sz bytes) ..." $sz {
+	    Time $label $sz {
 		set ast [PARSE process $doctools path $path]
 	    }
 	    set result [ast-format $ast]
@@ -168,6 +175,9 @@ proc ingest {args} {
 		#puts stderr <<$result>>
 	    }
 	    note "FAIL: $path [lindex [split $msg \n] 0]"
+
+	    # Kill any bad state in the engine and start fresh with the next.
+	    set remake 1
 	}
 
 	if {$outdir ne {}} {
@@ -187,7 +197,7 @@ proc ingest {args} {
 
 proc Time {label sz script} {
     global timing
-    note \n$label
+    note "\nProcessing $label ($sz bytes) ..."
     set start  [clock milliseconds]
 
     # Look into time-limiting this to recognize inputs triggering
@@ -202,7 +212,7 @@ proc Time {label sz script} {
 	set speed  [expr {$sz/$sec}]
 
 	append msg "Processing done in [F $sec] seconds"
-	append msg " (@ [F $speed] bytes/sec)"
+	append msg " (@ [F $speed] bytes/sec): #$sz = $label"
 	note $msg
     }
     return
