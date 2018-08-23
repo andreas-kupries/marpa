@@ -7,8 +7,8 @@
 # (c) 2018 Grammar doctools::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "doctools::parser::tcl".
-##	Generated On Tue Aug 21 21:36:07 PDT 2018
-##		  By aku@hephaistos
+##	Generated On Wed Aug 22 16:52:59 PDT 2018
+##		  By andreask@ten
 ##		 Via marpa-gen
 
 package provide doctools::parser::tcl 1
@@ -88,14 +88,14 @@ oo::class create doctools::parser::tcl {
 	debug.doctools/parser/tcl
 	# Literals: The character classes in use
 	return {
-	    {@^CLS:<\173\175>.BMP}              {[^\173\175]}
-	    {@^CLS:<\t-\r\40\42\133\135>.BMP}   {[^\t-\r\40\42\133\135]}
-	    {@^CLS:<\t-\r\40\133\135>.BMP}      {[^\t-\r\40\133\135]}
-	    {@CLS:<\n\r>}                       {[\n\r]}
-	    {@CLS:<\t-\r\40>}                   {[\t-\r\40]}
-	    {@CLS:<\t\40>}                      {[\t\40]}
-	    {@RAN:<\ud800\udbff>}               {[\ud800-\udbff]}
-	    {@RAN:<\udc00\udfff>}               {[\udc00-\udfff]}
+	    {@^CLS:<\173\175>.BMP}               {[^\173\175]}
+	    {@^CLS:<\t-\r\40\42\133-\135>.BMP}   {[^\t-\r\40\42\133-\135]}
+	    {@^CLS:<\t-\r\40\133-\135>.BMP}      {[^\t-\r\40\133-\135]}
+	    {@CLS:<\n\r>}                        {[\n\r]}
+	    {@CLS:<\t-\r\40>}                    {[\t-\r\40]}
+	    {@CLS:<\t\40>}                       {[\t\40]}
+	    {@RAN:<\ud800\udbff>}                {[\ud800-\udbff]}
+	    {@RAN:<\udc00\udfff>}                {[\udc00-\udfff]}
 	}
     }
 
@@ -162,6 +162,7 @@ oo::class create doctools::parser::tcl {
 	    CVdef           1
 	    CVref           1
 	    CWidget         1
+	    Escaped         1
 	    LArg            1
 	    LCmd            1
 	    LDef            1
@@ -169,7 +170,7 @@ oo::class create doctools::parser::tcl {
 	    LItem           1
 	    LOpt            1
 	    LTkopt          1
-	    NbSimplex       1
+	    Nbsimplex       1
 	    Nbspace         1
 	    Quote           1
 	    Simple          1
@@ -191,9 +192,11 @@ oo::class create doctools::parser::tcl {
 	debug.doctools/parser/tcl
 	return {
 	    {@^CLS:<\173\175>}
-	    {@^CLS:<\t-\r\40\42\133\135>}
-	    {@^CLS:<\t-\r\40\133\135>}
+	    {@^CLS:<\t-\r\40\42\133-\135>}
+	    {@^CLS:<\t-\r\40\133-\135>}
 	    {@CLS:<\u10000-\u10ffff>.SMP}
+	    {@STR:<\134\133>}
+	    {@STR:<\134\135>}
 	    {@STR:<\134\173>}
 	    {@STR:<\134\175>}
 	    {@STR:<\r\n>}
@@ -324,6 +327,7 @@ oo::class create doctools::parser::tcl {
 	    COMMENT
 	    CONTINUATION
 	    CR
+	    ESCAPED
 	    INCLUDE
 	    L_ARG
 	    L_CMD
@@ -351,6 +355,8 @@ oo::class create doctools::parser::tcl {
 	    SPACE1
 	    UNQUOTED
 	    UNQUOTED_ELEM
+	    UNQUOTED_ELEMS
+	    UNQUOTED_LEAD
 	    VAR_DEF
 	    VAR_REF
 	    WHITE
@@ -555,6 +561,10 @@ oo::class create doctools::parser::tcl {
 	    {CVdef := VAR_DEF}
 	    {CVref := VAR_REF}
 	    {CWidget := C_WIDGET}
+	    {Escaped := ESCAPED}
+	    {ESCAPED := {@CHR:<\134>}}
+	    {ESCAPED := {@STR:<\134\133>}}
+	    {ESCAPED := {@STR:<\134\135>}}
 	    {INCLUDE := CL WHITE0 @STR:<include> WHITE1 WORD WHITE0 CR}
 	    {L_ARG := @STR:<arguments>}
 	    {L_CMD := @STR:<commands>}
@@ -572,35 +582,41 @@ oo::class create doctools::parser::tcl {
 	    {LTkopt := L_TKOPT}
 	    {NBSIMPLEN + SIMPLE NBSPACE1 0}
 	    {NBSIMPLEX := NBSIMPLEN}
-	    {NbSimplex := NBSIMPLEX}
+	    {Nbsimplex := NBSIMPLEX}
 	    {NBSIMPLEX := NBSPACE1 NBSIMPLEN}
 	    {Nbspace := NBSPACE}
 	    {NBSPACE := {@CLS:<\t\40>}}
 	    {NBSPACE1 + NBSPACE}
 	    {NEWLINE := {@CLS:<\n\r>}}
 	    {NEWLINE := {@STR:<\r\n>}}
-	    {NO_CFS_QUOTE := {@^CLS:<\t-\r\40\42\133\135>}}
-	    {NO_CMD_FMT_SPACE := {@^CLS:<\t-\r\40\133\135>}}
+	    {NO_CFS_QUOTE := {@^CLS:<\t-\r\40\42\133-\135>}}
+	    {NO_CMD_FMT_SPACE := {@^CLS:<\t-\r\40\133-\135>}}
 	    {Quote := QUOTE}
 	    {QUOTE := {@CHR:<\42>}}
 	    {QUOTED := QUOTE QUOTED_ELEMS QUOTE}
 	    {QUOTED_ELEM := COMMAND}
+	    {QUOTED_ELEM := ESCAPED}
 	    {QUOTED_ELEM := NO_CFS_QUOTE}
 	    {QUOTED_ELEM := SPACE}
 	    {QUOTED_ELEMS * QUOTED_ELEM}
 	    {SIMPLE + NO_CFS_QUOTE}
 	    {Simple := SIMPLE}
 	    {SIMPLEN + SIMPLE SPACE1 0}
-	    {SIMPLEX := SIMPLEN}
+	    {SIMPLEX := SIMPLE SPACE1 SIMPLEN}
 	    {Simplex := SIMPLEX}
-	    {SIMPLEX := SPACE1 SIMPLEN}
+	    {SIMPLEX := SPACE1 SIMPLE SPACE1 SIMPLEN}
 	    {Space := SPACE1}
 	    {SPACE := {@CLS:<\t-\r\40>}}
 	    {SPACE0 * SPACE}
 	    {SPACE1 + SPACE}
-	    {UNQUOTED + UNQUOTED_ELEM}
-	    {UNQUOTED_ELEM := COMMAND}
-	    {UNQUOTED_ELEM := NO_CMD_FMT_SPACE}
+	    {UNQUOTED := UNQUOTED_LEAD}
+	    {UNQUOTED := UNQUOTED_LEAD UNQUOTED_ELEMS}
+	    {UNQUOTED_ELEM := QUOTE}
+	    {UNQUOTED_ELEM := UNQUOTED_LEAD}
+	    {UNQUOTED_ELEMS + UNQUOTED_ELEM}
+	    {UNQUOTED_LEAD := COMMAND}
+	    {UNQUOTED_LEAD := ESCAPED}
+	    {UNQUOTED_LEAD := NO_CMD_FMT_SPACE}
 	    {VAR_DEF := CL WHITE0 @STR:<vset> WHITE1 WORD WHITE1 WORD WHITE0 CR}
 	    {VAR_REF := CL WHITE0 @STR:<vset> WHITE1 WORD WHITE0 CR}
 	    {WHITE := COMMENT}
@@ -615,11 +631,13 @@ oo::class create doctools::parser::tcl {
 	    {WORDS1 + WORD WHITE1 0}
 	    {{@^CLS:<\173\175>} := {@^CLS:<\173\175>.BMP}}
 	    {{@^CLS:<\173\175>} := {@CLS:<\u10000-\u10ffff>.SMP}}
-	    {{@^CLS:<\t-\r\40\42\133\135>} := {@^CLS:<\t-\r\40\42\133\135>.BMP}}
-	    {{@^CLS:<\t-\r\40\42\133\135>} := {@CLS:<\u10000-\u10ffff>.SMP}}
-	    {{@^CLS:<\t-\r\40\133\135>} := {@^CLS:<\t-\r\40\133\135>.BMP}}
-	    {{@^CLS:<\t-\r\40\133\135>} := {@CLS:<\u10000-\u10ffff>.SMP}}
+	    {{@^CLS:<\t-\r\40\42\133-\135>} := {@^CLS:<\t-\r\40\42\133-\135>.BMP}}
+	    {{@^CLS:<\t-\r\40\42\133-\135>} := {@CLS:<\u10000-\u10ffff>.SMP}}
+	    {{@^CLS:<\t-\r\40\133-\135>} := {@^CLS:<\t-\r\40\133-\135>.BMP}}
+	    {{@^CLS:<\t-\r\40\133-\135>} := {@CLS:<\u10000-\u10ffff>.SMP}}
 	    {{@CLS:<\u10000-\u10ffff>.SMP} := {@RAN:<\ud800\udbff>} {@RAN:<\udc00\udfff>}}
+	    {{@STR:<\134\133>} := {@CHR:<\134>} {@CHR:<\133>}}
+	    {{@STR:<\134\135>} := {@CHR:<\134>} {@CHR:<\135>}}
 	    {{@STR:<\134\173>} := {@CHR:<\134>} {@CHR:<\173>}}
 	    {{@STR:<\134\175>} := {@CHR:<\134>} {@CHR:<\175>}}
 	    {{@STR:<\r\n>} := {@CHR:<\r>} {@CHR:<\n>}}
@@ -669,6 +687,7 @@ oo::class create doctools::parser::tcl {
 	    definitions
 	    enum_list
 	    enum_list_elem
+	    escaped
 	    example
 	    example_element
 	    example_text
@@ -794,6 +813,7 @@ oo::class create doctools::parser::tcl {
 	    {definitions * definition}
 	    {enum_list + enum_list_elem}
 	    {enum_list_elem :M 0 m_enum paragraphs}
+	    {escaped := Escaped}
 	    {__ :A Afirst}
 	    {example := m_example}
 	    {example :M {0 2} m_example_begin example_text m_example_end}
@@ -809,6 +829,7 @@ oo::class create doctools::parser::tcl {
 	    {__ :A Afirst}
 	    {g_text := quote}
 	    {g_text := simple}
+	    {g_text := simplex}
 	    {g_text := space}
 	    {header := definition}
 	    {header := m_copyright}
@@ -923,7 +944,7 @@ oo::class create doctools::parser::tcl {
 	    {markup := m_widget}
 	    {markup := vref}
 	    {__ :A {name values}}
-	    {nbsimplex := NbSimplex}
+	    {nbsimplex := Nbsimplex}
 	    {nbspace := Nbspace}
 	    {opt_list_elem := m_opt_def paragraphs}
 	    {option_list + opt_list_elem}
@@ -934,6 +955,7 @@ oo::class create doctools::parser::tcl {
 	    {quote := Quote}
 	    {quoted :M {0 2} Quote quoted_elems Quote}
 	    {__ :A Afirst}
+	    {quoted_elem := escaped}
 	    {quoted_elem := markup}
 	    {quoted_elem := simple}
 	    {quoted_elem := space}
@@ -963,12 +985,12 @@ oo::class create doctools::parser::tcl {
 	    {__ :A {name values}}
 	    {unquoted := unquoted_leader unquoted_elems}
 	    {__ :A Afirst}
-	    {unquoted_elem := markup}
 	    {unquoted_elem := quote}
-	    {unquoted_elem := simple}
+	    {unquoted_elem := unquoted_leader}
 	    {__ :A {name values}}
 	    {unquoted_elems + unquoted_elem}
 	    {__ :A Afirst}
+	    {unquoted_leader := escaped}
 	    {unquoted_leader := markup}
 	    {unquoted_leader := simple}
 	    {__ :A {name values}}
@@ -980,7 +1002,6 @@ oo::class create doctools::parser::tcl {
 	    {word := g_text}
 	    {word := list}
 	    {word := markup}
-	    {word := simplex}
 	    {word := xref}
 	    {xref := m_category}
 	    {xref := m_keywords}

@@ -96,11 +96,11 @@ word		::= definition		action => ::first
 		|   markup		action => ::first
 		|   xref		action => ::first
 		|   g_text		action => ::first
-		|   simplex		action => ::first
 
-g_text		::= simple		action => ::first
-		|   quote		action => ::first
+g_text		::= simplex		action => ::first
+		|   simple		action => ::first
 		|   space		action => ::first
+		|   quote		action => ::first
 
 markup		::= m_arg		action => ::first
 		|   m_class		action => ::first
@@ -261,19 +261,22 @@ quoted_elems	::= quoted_elem *
 quoted_elem	::= simple	action => ::first
 		|   space	action => ::first
 		|   markup	action => ::first
+		|   escaped	action => ::first
 
 unquoted	::= unquoted_leader unquoted_elems
 		|   unquoted_leader			action => ::first
 unquoted_leader	::= simple				action => ::first
 		|   markup				action => ::first
+		|   escaped				action => ::first
+
 unquoted_elems	::= unquoted_elem +
-unquoted_elem	::= simple				action => ::first
-		|   markup				action => ::first
+unquoted_elem	::= unquoted_leader			action => ::first
 		|   quote				action => ::first
 
+escaped		::= Escaped
 simple		::= Simple
 simplex		::= Simplex
-nbsimplex	::= NbSimplex
+nbsimplex	::= Nbsimplex
 space		::= Space
 quote		::= Quote
 
@@ -365,10 +368,11 @@ CInclude	~ INCLUDE
 Braced		~ BRACED
 Simple		~ SIMPLE
 Simplex		~ SIMPLEX
-NbSimplex	~ NBSIMPLEX
+Nbsimplex	~ NBSIMPLEX
 Space		~ SPACE1
 Nbspace		~ NBSPACE
 Breaker		~ BREAKER
+Escaped		~ ESCAPED
 
 Quote		~ QUOTE
 
@@ -549,14 +553,23 @@ QUOTED_ELEMS	~ QUOTED_ELEM *
 QUOTED_ELEM	~ NO_CFS_QUOTE
 		| SPACE
 		| COMMAND
+		| ESCAPED
+
+ESCAPED		~ '\\'
+		| '\\['
+		| '\\]'
 
 SIMPLE		~ NO_CFS_QUOTE +
 
 # simplex - longer general text, series of simple connected by spaces.
-# nb* variant does not allow linebreaks in the connecting spaces.
+# The nb* variant does not allow linebreaks in the connecting spaces.
+#
+# NOTE: simplex has to be strictly longer than simple to avoid
+# 	ambiguity in G1 where both are accepted (-> g_text).
 
-SIMPLEX		~ SIMPLEN
-		| SPACE1 SIMPLEN
+SIMPLEX		~        SIMPLE SPACE1 SIMPLEN
+		| SPACE1 SIMPLE SPACE1 SIMPLEN
+
 SIMPLEN		~ SIMPLE + separator => SPACE1
 
 NBSIMPLEX	~ NBSIMPLEN
@@ -567,16 +580,21 @@ NBSIMPLEN	~ SIMPLE + separator => NBSPACE1
 # - Text cannot contain any forms of whitespace
 # - Command substitutions `[...]` are allowed
 
-UNQUOTED	~ UNQUOTED_ELEM +
-UNQUOTED_ELEM	~ NO_CMD_FMT_SPACE
+UNQUOTED	~ UNQUOTED_LEAD
+		| UNQUOTED_LEAD UNQUOTED_ELEMS
+UNQUOTED_ELEMS	~ UNQUOTED_ELEM +
+UNQUOTED_ELEM	~ UNQUOTED_LEAD
+		| QUOTE
+UNQUOTED_LEAD	~ NO_CMD_FMT_SPACE
 		| COMMAND
+		| ESCAPED
 
 COMMAND		~ CL WHITE0 WORDS1 WHITE0 CR
 WORDS1		~ WORD +
 	separator => WHITE1
 
-NO_CMD_FMT_SPACE~ [^\133\135\n\r\t\f\v ]
-NO_CFS_QUOTE	~ [^\133\135\n\r\t\f\v "]
+NO_CMD_FMT_SPACE~ [^\133-\135\n\r\t\f\v ]
+NO_CFS_QUOTE	~ [^\133-\135\n\r\t\f\v "]
 
 # # ## ### ##### ######## ############# #####################
 ## other forms of white space

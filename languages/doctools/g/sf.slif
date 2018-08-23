@@ -60,10 +60,12 @@ q_list	::= q_elem *
 q_elem	::= simple			action => ::first
 	|   space			action => ::first
 	|   vars			action => ::first
+	|   escaped			action => ::first
 
 unquot	::= uq_lead uq_list
 uq_lead	::= simple	action => ::first
 	|   vars	action => ::first
+	|   escaped	action => ::first
 uq_list	::= uq_elem *
 uq_elem	::= uq_lead	action => ::first
 	|   quote	action => ::first
@@ -72,6 +74,7 @@ braced	::= Braced
 simple	::= Simple
 quote	::= Quote
 space	::= Space
+escaped	::= Escaped
 
 # # ## ### ##### ######## ############# #####################
 ## Lexeme / Terminals
@@ -87,6 +90,7 @@ Space	~ SPACE1
 Braced	~ BRACED
 Word	~ WORD
 Quote	~ QUOTE
+Escaped	~ ESCAPED
 
 White	~ WHITE1
 
@@ -130,6 +134,11 @@ QUOTED_ELEMS	~ QUOTED_ELEM *
 QUOTED_ELEM	~ NO_CFS_QUOTE
 		| SPACE
 		| COMMAND
+		| ESCAPED
+
+ESCAPED		~ '\\'
+		| '\\['
+		| '\\]'
 
 SIMPLE		~ NO_CFS_QUOTE +
 
@@ -137,9 +146,14 @@ SIMPLE		~ NO_CFS_QUOTE +
 # - Text cannot contain any forms of whitespace
 # - Command substitutions `[...]` are allowed
 
-UNQUOTED	~ UNQUOTED_ELEM +
-UNQUOTED_ELEM	~ NO_CMD_FMT_SPACE
+UNQUOTED	~ UNQUOTED_LEAD
+		| UNQUOTED_LEAD UNQUOTED_ELEMS
+UNQUOTED_ELEMS	~ UNQUOTED_ELEM +
+UNQUOTED_ELEM	~ UNQUOTED_LEAD
+		| QUOTE
+UNQUOTED_LEAD	~ NO_CMD_FMT_SPACE
 		| COMMAND
+		| ESCAPED
 
 COMMAND		~ CL WHITE0 WORDS1 WHITE0 CR
 WORDS1		~ WORD +
@@ -148,8 +162,8 @@ WORDS1		~ WORD +
 CL		~ '['
 CR		~ ']'
 
-NO_CMD_FMT_SPACE~ [^\133\135\n\r\t\f\v ]
-NO_CFS_QUOTE	~ [^\133\135\n\r\t\f\v "]
+NO_CMD_FMT_SPACE~ [^\133-\135\n\r\t\f\v ]
+NO_CFS_QUOTE	~ [^\133-\135\n\r\t\f\v "]
 
 # # ## ### ##### ######## ############# #####################
 ## other forms of white space

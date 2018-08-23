@@ -53,6 +53,8 @@ debug define marpa/lexer/forest
 #debug prefix marpa/lexer/forest {[debug caller] | }
 debug define marpa/lexer/forest/save
 #debug prefix marpa/lexer/forest/save {[debug caller] | }
+debug define marpa/lexer/forest/limit
+#debug prefix marpa/lexer/forest/limit {[debug caller] | }
 debug define marpa/lexer/events
 #debug prefix marpa/lexer/events {[debug caller] | }
 
@@ -141,6 +143,9 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | }
 	debug.marpa/lexer/report {[marpa DX {Activate progress reports...} {
 	    oo::objdefine [self] mixin marpa::engine::debug
+	}]}
+	debug.marpa/lexer/forest/limit {[marpa DX {Limit saved forest reports...} {
+	    debug on marpa/lexer/forest/save
 	}]}
 	debug.marpa/lexer/forest/save {[marpa DX {Activate saved forest reports...} {
 	    debug on marpa/lexer/forest
@@ -809,6 +814,7 @@ oo::class create marpa::lexer {
 	    debug.marpa/lexer/forest {__________________________________________ Tree [incr fcounter] ([llength [lindex $forest end]])}
 	    debug.marpa/lexer/forest {[my parse-tree [lindex $forest end]]}
 	    debug.marpa/lexer/forest/save {[upvar 1 latest latest][my dump-parse-tree "TL.@[MSTATE start]+${latest}.$fcounter" [lindex $forest end]]}
+	    debug.marpa/lexer/forest/limit {STOP!![if {$fcounter > 200} { exit }]}
 	}]} {}
 	FOREST destroy
 	return $forest

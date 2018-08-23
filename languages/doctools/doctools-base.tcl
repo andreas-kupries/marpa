@@ -48,6 +48,10 @@ debug define doctools/base
 #debug prefix doctools/base {[debug caller] | }
 #debug on doctools/base
 
+debug define doctools/base/include
+#debug prefix doctools/base/include {}
+#debug on doctools/base/include
+
 # # ## ### ##### ######## #############
 
 oo::class create doctools::base {
@@ -251,6 +255,7 @@ oo::class create doctools::base {
 	# recursion.
 
 	set full [my Resolve $path]
+	debug.doctools/base/include {@inc #[file size $full] $full}
 
 	if {[PAR match mark-exists $full]} {
 	    return -code error \
@@ -280,6 +285,7 @@ oo::class create doctools::base {
 	debug.doctools/base {[debug caller] | }
 	# Restore the origin location and path context when reaching
 	# the end of an included file.
+	debug.doctools/base/include {@ret @$location $path}
 
 	set mypath     $path
 	PAR match from $location
