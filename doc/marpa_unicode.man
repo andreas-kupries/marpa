@@ -1,0 +1,173 @@
+[comment {-*- tcl -*- doctools manpage}]
+[manpage_begin marpatcl_sources n 1]
+[include include/module.inc]
+
+[keywords unicode utf-8 cesu-8 mutf-8 {character classes}]
+[keywords {case folding} {code point} surrogate]
+[keywords {class negation} {class complement}]
+[keywords {class normalization} {class canonicalisation}]
+[keywords bmp {basic multi-lingual plane}]
+[keywords {supplemental multi-lingual planes}]
+
+[titledesc "[vset t:pkg.marpa-unicode]"]
+[description]
+[include include/welcome.inc]
+[include include/audience_internal.inc]
+
+[vset p   marpa::unicode]
+[vset pd  [vset p]::data]
+[vset pdc [vset pd]::cc]
+
+[section API]
+[comment {
+
+## - 2char        - Convert uni(code)point to sequence of points in the BMP
+## - 2utf         - Convert uni(code)point to sequence of bytes
+## - 2asbr        - Convert unicode class to utf8 asbr
+## - asbr-format  - Convert the result of 2asbr into a human-readable form.
+## - 2assr        - Convert unicode class to ASSR
+## - assr-format  - Convert the result of 2assr into a human-readable form.
+## - norm-class   - normalize a series of ranges and code points (i.e. a
+##                  char class).
+## - negate-class - Negate a series of ranges and code points (i.e. a
+##                  char class). I.e. compute the complement over the
+##                  unicode range.
+## - point        - Convert Tcl character to uni(code)point
+## - unfold       - Convert a set of uni(code)points to a set containing all
+##                  case-equivalent uni(code)points
+## - fold/c       - Convert a list of uni(code)points to a list of the primary
+##                  case-equivalent uni(code)points.
+## - max          - Return the number of supported codepoints.
+
+## - data cc have
+## - data cc have-tcl
+## - data cc tcl-names
+## - data cc names
+## - data cc ranges
+
+## - data range
+## - data fold   \ see unifold.tcl (Critcl glue)
+## - data fold/c /
+
+}]
+
+
+[list_begin definitions]
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::2asbr] [arg scr]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::2assr] [arg scr]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::2char] [arg codepoint]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::2utf] [arg codepoint] [opt [arg flags]]]
+
+mutf, cesu, tcl
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::asbr-format]	[arg asbr] [opt [arg compact]]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::assr-format]	[arg assr] [opt [arg compact]]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::bmp]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pd]::fold/c] [arg codepoint]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pd]::fold] [arg codepoint]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::fold/c] [arg codes]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::max]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::negate-class] [arg scr] [opt [arg smp]]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::norm-class] [arg scr]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::point] [arg character]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::smp]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::unfold] [arg codes]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pdc]::have-tcl] [arg ccname]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pdc]::have] [arg ccname]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pdc]::names]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pdc]::ranges] [arg ccname]]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pdc]::tcl-names]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[list_end]
+
+[section Datastructures]
+
+[subsection {Set of Codepoint (Ranges) - SCR} scr]
+
+A [term {set of codepoint (ranges)}] (short for set of codepoints and
+codepoint ranges, abbreviated to [term SCR]) is the main data
+structure used to represent unicode character classes of any kind,
+named or not.
+
+[para] It is a Tcl list whose elements are a mix of codepoints and
+codepoint ranges.
+
+[para] The codepoints are represented by integer numbers in the range
+[const 0]...[cmd [vset p]::max]. Numbers outside of that range are not
+codepoints and a list containing such is not a valid SCR.
+
+[para] The ranges are represented by 2-element lists (pairs) of
+codepoints, the start and the end of the range, inclusive. Beyond
+having to be valid codepoints the start must not be greater than the
+end of the range. Such a pair is not a valid range, and a list
+containing such is not a valid SCR.
+
+[para] A [term normalized] SCR is defined as an SCR which contains no
+duplicate elements, no overlapping/adjacent ranges, and all elements
+are sorted in integer ascending order by their start point.
+
+[strong Note]: That previous sentence above talks only about ranges
+does not exclude the codepoints. For normalization and other purposes
+codepoints can simply be treated as ranges of size 1, where start and
+end points are identical.
+
+[subsection {Alternatives of Sequences of Byte-Ranges - ASBR} asbr]
+
+A set of [term {alternatives of sequences of byte-ranges}]
+(abbreviated to [term ASBR]) is an alternative (sic!) representation
+of character classes.
+
+Making use of the fact that the UTF-8 encoding of unicode codepoints
+maps each codepoint to a sequence of bytes ... XXX
+
+
+
+Alternatives of Sequences of Byte-Ranges
+
+[subsection ASSR assr]
+
+Alternatives of Sequences of Surrogate-Ranges
+
+[include include/feedback.inc]
+[manpage_end]
