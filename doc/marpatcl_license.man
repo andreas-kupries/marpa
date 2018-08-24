@@ -1,14 +1,12 @@
 [comment {-*- tcl -*- doctools manpage}]
 [manpage_begin marpatcl_license n 1]
 [include include/module.inc]
-[titledesc {Marpa/Tcl - License}]
+[titledesc "[vset t:license]"]
 [description]
 [include include/welcome.inc]
+[include include/audience_general.inc]
 
-[section Audience]
-
-This document is targeted at all users of Marpa/Tcl, so that they may
-know their rights and duties/responsibilities.
+So that they may know their rights and duties/responsibilities.
 
 [section {The Short Of It}]
 
