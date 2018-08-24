@@ -282,7 +282,8 @@ oo::class create doctools::base {
 	incr stop $start ;# end relative to entire extended input
 	incr stop -1     ;# last character
 
-	PAR match mark-add $full $stop [self namespace]::my ReturnTo $here $mypath
+	PAR match mark-add $full $stop \
+	    [self namespace]::my ReturnTo $here $mypath $stop
 
 	# Start reading from the included file, also using it as the
 	# new path resolution context
@@ -292,10 +293,23 @@ oo::class create doctools::base {
 	return
     }
 
-    method ReturnTo {location path __ mark} {
+    method ReturnTo {location path stoplocation __ mark} {
 	debug.doctools/base {[debug caller] | }
-	# Restore the origin location and path context when reaching
-	# the end of an included file.
+	debug.doctools/base/include {@___ @$stoplocation $mark -- $location $path}
+	
+	# This stop location is a lexeme barrier, like EOF. Check if
+	# we managed to traverse.
+	if {[PAR match barrier]} {
+	    # No, we got bounced, restore the stop location for the
+	    # next attempt at it.
+	    debug.doctools/base/include {@eof @$stoplocation $mark}
+	    PAR match mark-add $mark $stoplocation \
+		[self namespace]::my ReturnTo $location $path $stoplocation
+	    return
+	}
+
+	# Barrier traversed. Restore the origin location and path
+	# context, then continue
 	debug.doctools/base/include {@ret @$location $path}
 
 	set mypath     $path

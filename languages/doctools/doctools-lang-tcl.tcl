@@ -7,7 +7,7 @@
 # (c) 2018 Grammar doctools::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "doctools::parser::tcl".
-##	Generated On Wed Aug 22 23:45:59 PDT 2018
+##	Generated On Thu Aug 23 23:02:46 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 
@@ -125,7 +125,7 @@ oo::class create doctools::parser::tcl {
 	    CFile           1
 	    CFun            1
 	    CImage          1
-	    CInclude        1
+	    CInclude        0
 	    CItem           1
 	    CKeywords       1
 	    Cl              1
@@ -160,8 +160,8 @@ oo::class create doctools::parser::tcl {
 	    CUri            1
 	    CUsage          1
 	    CVar            1
-	    CVdef           1
-	    CVref           1
+	    CVdef           0
+	    CVref           0
 	    CWidget         1
 	    Escaped         1
 	    LArg            1
@@ -576,6 +576,7 @@ oo::class create doctools::parser::tcl {
 	    {L_ARG := @STR:<arguments>}
 	    {L_CMD := @STR:<commands>}
 	    {L_DEF := @STR:<definitions>}
+	    {L_ENUM := @STR:<enum>}
 	    {L_ENUM := @STR:<enumerated>}
 	    {L_ITEM := @STR:<itemized>}
 	    {L_OPT := @STR:<options>}
@@ -599,6 +600,7 @@ oo::class create doctools::parser::tcl {
 	    {Quote := QUOTE}
 	    {QUOTE := {@CHR:<\42>}}
 	    {QUOTED := QUOTE QUOTED_ELEMS QUOTE}
+	    {QUOTED_ELEM := BL}
 	    {QUOTED_ELEM := COMMAND}
 	    {QUOTED_ELEM := ESCAPED}
 	    {QUOTED_ELEM := SIMPLE_CHAR}
@@ -665,13 +667,13 @@ oo::class create doctools::parser::tcl {
 	# event per type with each symbol, for a maximum of three.
 	return {
 	    CInclude {
-	        after {macro on}
+	        after {special on}
 	    }
 	    CVdef {
-	        after {macro on}
+	        after {special on}
 	    }
 	    CVref {
-	        after {macro on}
+	        after {special on}
 	    }
 	}
     }
@@ -689,9 +691,7 @@ oo::class create doctools::parser::tcl {
 	    cmd_list_elem
 	    command_list
 	    def_list_elem
-	    definition
 	    definition_list
-	    definitions
 	    enum_list
 	    enum_list_elem
 	    escaped
@@ -701,7 +701,6 @@ oo::class create doctools::parser::tcl {
 	    g_text
 	    header
 	    headers
-	    include
 	    item_list
 	    item_list_elem
 	    list
@@ -791,8 +790,6 @@ oo::class create doctools::parser::tcl {
 	    unquoted_elem
 	    unquoted_elems
 	    unquoted_lead
-	    vdef
-	    vref
 	    word
 	    xref
 	}
@@ -820,18 +817,15 @@ oo::class create doctools::parser::tcl {
 	    {command_list + cmd_list_elem}
 	    {def_list_elem := m_call paragraphs}
 	    {def_list_elem := m_def paragraphs}
-	    {definition := include}
-	    {definition := vdef}
 	    {definition_list + def_list_elem}
-	    {definitions * definition}
 	    {enum_list + enum_list_elem}
 	    {enum_list_elem :M 0 m_enum paragraphs}
 	    {escaped := Escaped}
 	    {__ :A Afirst}
 	    {example := m_example}
 	    {example :M {0 2} m_example_begin example_text m_example_end}
+	    {example_element := bracel}
 	    {example_element := breaker}
-	    {example_element := definition}
 	    {example_element := markup}
 	    {example_element := nbsimplex}
 	    {example_element := nbspace}
@@ -845,7 +839,6 @@ oo::class create doctools::parser::tcl {
 	    {g_text := simple}
 	    {g_text := simplex}
 	    {g_text := space}
-	    {header := definition}
 	    {header := m_copyright}
 	    {header := m_moddesc}
 	    {header := m_require}
@@ -853,7 +846,6 @@ oo::class create doctools::parser::tcl {
 	    {header := xref}
 	    {__ :A {name values}}
 	    {headers * header}
-	    {include := CInclude}
 	    {item_list + item_list_elem}
 	    {item_list_elem :M 0 m_item paragraphs}
 	    {__ :A Afirst}
@@ -930,7 +922,7 @@ oo::class create doctools::parser::tcl {
 	    {m_usage :M {0 1 2 4} Cl CUsage Space tclwords CDone}
 	    {m_var :M {0 1 2 4} Cl CVar Space tclword CDone}
 	    {m_widget :M {0 1 2 4} Cl CWidget Space tclword CDone}
-	    {manpage :M {0 4} definitions m_manpage_begin headers body m_manpage_end}
+	    {manpage :M 3 m_manpage_begin headers body m_manpage_end}
 	    {__ :A Afirst}
 	    {markup := m_arg}
 	    {markup := m_class}
@@ -958,7 +950,6 @@ oo::class create doctools::parser::tcl {
 	    {markup := m_usage}
 	    {markup := m_var}
 	    {markup := m_widget}
-	    {markup := vref}
 	    {__ :A {name values}}
 	    {nbsimplex := Nbsimplex}
 	    {nbspace := Nbspace}
@@ -971,6 +962,7 @@ oo::class create doctools::parser::tcl {
 	    {quote := Quote}
 	    {quoted :M {0 2} Quote quoted_elems Quote}
 	    {__ :A Afirst}
+	    {quoted_elem := bracel}
 	    {quoted_elem := escaped}
 	    {quoted_elem := markup}
 	    {quoted_elem := simple}
@@ -1000,8 +992,8 @@ oo::class create doctools::parser::tcl {
 	    {unquoted := unquoted_lead}
 	    {__ :A {name values}}
 	    {unquoted := unquoted_lead unquoted_elems}
-	    {unquoted_elem := bracel}
 	    {__ :A Afirst}
+	    {unquoted_elem := bracel}
 	    {unquoted_elem := quote}
 	    {unquoted_elem := unquoted_lead}
 	    {__ :A {name values}}
@@ -1010,11 +1002,6 @@ oo::class create doctools::parser::tcl {
 	    {unquoted_lead := escaped}
 	    {unquoted_lead := markup}
 	    {unquoted_lead := simple}
-	    {__ :A {name values}}
-	    {vdef := CVdef}
-	    {vref := CVref}
-	    {__ :A Afirst}
-	    {word := definition}
 	    {word := example}
 	    {word := g_text}
 	    {word := list}

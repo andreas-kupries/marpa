@@ -27,26 +27,16 @@ lexeme default =
 # # ## ### ##### ######## ############# #####################
 ## Structure I - Document structure
 
-# For the special forms see
-# = definitions - var definition, include
-# = word        - var reference
-
-manpage		::= ( definitions )
-		    m_manpage_begin
+manpage		::= m_manpage_begin
 		    headers
 		    body
 		    ( m_manpage_end )
-
-definitions	::= definition *
-definition	::= include
-		|   vdef
 
 headers		::= header *
 header		::= m_titledesc		action => ::first
 		|   m_moddesc		action => ::first
 		|   m_copyright		action => ::first
 		|   m_require		action => ::first
-		|   definition		action => ::first
 		|   xref		action => ::first
 
 xref		::= m_keywords		action => ::first
@@ -93,8 +83,7 @@ p_separator	::= ( m_para )
 
 paragraph	::= word +
 
-word		::= definition		action => ::first
-		|   list		action => ::first
+word		::= list		action => ::first
 		|   example		action => ::first
 		|   markup		action => ::first
 		|   xref		action => ::first
@@ -132,19 +121,18 @@ markup		::= m_arg		action => ::first
 		|   m_widget		action => ::first
 		|   m_image		action => ::first
 		|   m_sectref_ext	action => ::first
-		|   vref		action => ::first
 
 example		::= m_example						action => ::first
 		|   ( m_example_begin ) example_text ( m_example_end )	action => ::first
 
 example_text	::= example_element +
-example_element	::= definition		action => ::first
-		|   markup		action => ::first
+example_element	::= markup		action => ::first
 		|   simple		action => ::first
 		|   nbsimplex		action => ::first
 		|   quote		action => ::first
 		|   nbspace		action => ::first
 		|   breaker		action => ::first
+		|   bracel		action => ::first
 
 nbspace		::= Nbspace
 breaker		::= Breaker
@@ -238,6 +226,7 @@ m_sectref_ext 		::= ( Cl CSectrefExt	Space )	tclword 		( CDone )
 m_see_also		::= ( Cl CSeeAlso	Space )	tclwords		( CDone )
 m_strong    		::= ( Cl CStrong	Space )	tclword			( CDone )
 m_subsection		::= ( Cl CSubsection	Space )	tclword			( CDone )
+			|   ( Cl CSubsection	Space )	tclword (Space) tclword	( CDone )
 m_syscmd		::= ( Cl CSysCmd	Space )	tclword			( CDone )
 m_term	  		::= ( Cl CTerm		Space )	tclword			( CDone )
 m_titledesc		::= ( Cl CTitledesc	Space )	tclword			( CDone )
@@ -268,6 +257,7 @@ quoted_elem	::= simple	action => ::first
 		|   space	action => ::first
 		|   markup	action => ::first
 		|   escaped	action => ::first
+		|   bracel	action => ::first
 
 unquoted	::= unquoted_lead unquoted_elems
 		|   unquoted_lead			action => ::first
@@ -279,7 +269,7 @@ unquoted_lead	::= simple				action => ::first
 unquoted_elems	::= unquoted_elem +
 unquoted_elem	::= unquoted_lead			action => ::first
 		|   quote				action => ::first
-		|   bracel
+		|   bracel				action => ::first
 
 escaped		::= Escaped
 simple		::= Simple
@@ -288,13 +278,6 @@ nbsimplex	::= Nbsimplex
 space		::= Space
 quote		::= Quote
 bracel		::= Bracel
-
-# # ## ### ##### ######## ############# #####################
-## G1 special forms - never seen, either discarded, or replaced by its contents
-
-vdef		::= CVdef
-vref		::= CVref
-include		::= CInclude
 
 # # ## ### ##### ######## ############# #####################
 ## L0 lexemes == G1 terminals
@@ -368,9 +351,9 @@ CVdef		~ VAR_DEF
 CVref		~ VAR_REF
 CInclude	~ INCLUDE
 
-:lexeme		~ CVdef		pause => after	event => macro
-:lexeme		~ CVref		pause => after	event => macro
-:lexeme		~ CInclude	pause => after	event => macro
+:lexeme		~ CVdef		pause => after	event => special  latm => 0
+:lexeme		~ CVref		pause => after	event => special  latm => 0
+:lexeme		~ CInclude	pause => after	event => special  latm => 0
 
 # Idea: Set the lexemes to `latm 0` to make them always acceptable,
 # then remove them from the G1.
@@ -472,7 +455,7 @@ C_WIDGET	~ 'widget'
 L_ARG	~ 'arguments'
 L_CMD	~ 'commands'
 L_DEF	~ 'definitions'
-L_ENUM	~ 'enumerated'
+L_ENUM	~ 'enumerated'	| 'enum'
 L_ITEM	~ 'itemized'
 L_OPT	~ 'options'
 L_TKOPT	~ 'tkoptions'
@@ -565,6 +548,7 @@ QUOTED_ELEM	~ SIMPLE_CHAR
 		| SPACE
 		| COMMAND
 		| ESCAPED
+		| BL
 
 ESCAPED		~ '\\'
 		| '\\['

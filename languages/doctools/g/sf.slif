@@ -138,6 +138,7 @@ QUOTED_ELEM	~ SIMPLE_CHAR
 		| SPACE
 		| COMMAND
 		| ESCAPED
+		| BL
 
 ESCAPED		~ '\\'
 		| '\\['

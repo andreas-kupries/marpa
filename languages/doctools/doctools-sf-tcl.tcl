@@ -7,7 +7,7 @@
 # (c) 2018 Grammar doctools::parser::sf::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "doctools::parser::sf::tcl".
-##	Generated On Wed Aug 22 23:46:03 PDT 2018
+##	Generated On Thu Aug 23 23:02:49 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 
@@ -198,6 +198,7 @@ oo::class create doctools::parser::sf::tcl {
 	    {Quote := QUOTE}
 	    {QUOTE := {@CHR:<\42>}}
 	    {QUOTED := QUOTE QUOTED_ELEMS QUOTE}
+	    {QUOTED_ELEM := BL}
 	    {QUOTED_ELEM := COMMAND}
 	    {QUOTED_ELEM := ESCAPED}
 	    {QUOTED_ELEM := SIMPLE_CHAR}

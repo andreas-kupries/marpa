@@ -7,11 +7,11 @@
 # (c) 2018 Grammar doctools::parser::sf::c 1 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "doctools::parser::sf::c".
-##	Generated On Wed Aug 22 23:46:01 PDT 2018
+##	Generated On Thu Aug 23 23:02:48 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 ##
-#* Space taken: 5993 bytes
+#* Space taken: 5997 bytes
 ##
 #* Statistics
 #* L0
@@ -19,8 +19,8 @@
 #* - #Lexemes:   12
 #* - #Discards:  0
 #* - #Always:    0
-#* - #Rule Insn: 130 (+2: setup, start-sym)
-#* - #Rules:     471 (>= insn, brange)
+#* - #Rule Insn: 131 (+2: setup, start-sym)
+#* - #Rules:     472 (>= insn, brange)
 #* G1
 #* - #Symbols:   34
 #* - #Rule Insn: 42 (+2: setup, start-sym)
@@ -519,7 +519,7 @@ critcl::ccode {
 	 28
     };
 
-    static marpatcl_rtc_sym doctools_parser_sf_c_l0_rule_definitions [391] = { /* 782 bytes */
+    static marpatcl_rtc_sym doctools_parser_sf_c_l0_rule_definitions [393] = { /* 786 bytes */
 	MARPATCL_RCMD_SETUP (7),
 	MARPATCL_RCMD_PRIO  (1), 268, 299,                               /* <Braced>                           ::= <BRACED> */
 	MARPATCL_RCMD_PRIO  (1), 269, 296,                               /* <Bracel>                           ::= <BL> */
@@ -601,6 +601,7 @@ critcl::ccode {
 	MARPATCL_RCMD_PRIS  (1)     , 318,                               /*                                    |   <SPACE> */
 	MARPATCL_RCMD_PRIS  (1)     , 305,                               /*                                    |   <COMMAND> */
 	MARPATCL_RCMD_PRIS  (1)     , 309,                               /*                                    |   <ESCAPED> */
+	MARPATCL_RCMD_PRIS  (1)     , 296,                               /*                                    |   <BL> */
 	MARPATCL_RCMD_QUN   (315), 314,                                  /* <QUOTED_ELEMS>                     ::= <QUOTED_ELEM> * */
 	MARPATCL_RCMD_QUP   (316), 317,                                  /* <SIMPLE>                           ::= <SIMPLE_CHAR> + */
 	MARPATCL_RCMD_PRIO  (1), 317, 281,                               /* <SIMPLE_CHAR>                      ::= <@^CLS:<\t-\r\40\42\133-\135\173>> */

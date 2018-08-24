@@ -41,6 +41,21 @@ package require fileutil
 package require marpa::util ;# for AST formatting.
 package require debug
 
+
+set copy $argv
+while {[llength $copy]} {
+    set copy [lassign $copy first]
+    if {$first ne "--debug"} continue
+    set copy [lassign $copy tag]
+    debug on $tag
+}
+
+if {[info exists env(DT_DEBUG)]} {
+    foreach tag [split $env(DT_DEBUG) ,] {
+	debug on [string trim $tag]
+    }
+}
+
 proc main {} {
     ingest {*}[cmdline]
     return
