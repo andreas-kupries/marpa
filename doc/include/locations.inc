@@ -10,3 +10,5 @@
 [vset marpa.lib   [uri http://jeffreykegler.github.io/Marpa-web-site/libmarpa.html]]
 [vset marpa.doc	  [uri https://metacpan.org/pod/distribution/Marpa-R2/pod/Marpa_R2.pod {upstream documentation}]]
 
+[vset mutf8.doc   [uri https://en.wikipedia.org/wiki/UTF-8#Modified_UTF-8 {Modified UTF-8}]]
+[vset cesu8.doc   [uri https://en.wikipedia.org/wiki/UTF-8#CESU-8 {CESU-8}]]

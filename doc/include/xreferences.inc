@@ -23,3 +23,5 @@
 [vset xr:rtt       [term "[vset p.name] - Runtime/Tcl"]]
 [vset xr:rtc       [term "[vset p.name] - Runtime/C"]]
 [vset xr:uni       [term "[vset p.name] - Unicode Data & Utilities"]]
+
+[vset t:pkg.marpa-unicode "[vset p.name] - marpa::unicode"]
