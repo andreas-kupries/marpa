@@ -1,6 +1,6 @@
 '\"
 '\" Generated from file 'marpatcl_slif\&.man' by tcllib/doctools with format 'nroff'
-'\" Copyright (c) 2015-2018 Andreas Kupries
+'\" Copyright (c) 2015-present Andreas Kupries
 '\" Copyright (c) 2018-present Documentation, Andreas Kupries
 '\"
 .TH "marpatcl_slif" n 0\&.2 doc "Marpa/Tcl, a binding to libmarpa"
@@ -279,20 +279,20 @@ marpatcl_slif \- Marpa/Tcl - The SLIF grammar specification language
 Welcome to Marpa/Tcl, a Tcl binding to the "\fIlibmarpa\fR" parsing
 engine\&.
 .PP
-Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR,
-if you have not done so already, to get an overview of the whole system\&.
+Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR, if you have not done
+so already\&. It provides an overview of the whole system\&.
 .SH AUDIENCE
-This document is targeted at users intending to write grammar
-specification with SLIF\&.
+This document is targeted at users of Marpa/Tcl with the goal of
+creating parser packages\&.
+An important part of that is writing a grammar specification with
+SLIF\&.
 .SH SPECIFICATION
 The name \fISLIF\fR stands for \fIScanner-Less InterFace\fR\&.
 Both name and the majority of its specification are taken from
-\fIMarpa::R2\fR [https://jeffreykegler\&.github\&.io/Marpa-web-site/], the Perl binding to \fBlibmarpa\fR
-this work is inspired by\&.
+\fIMarpa::R2\fR [https://jeffreykegler\&.github\&.io/Marpa-web-site/], the Perl binding to \fBlibmarpa\fR this work is
+inspired by\&.
 .PP
-Please see the
-\fIupstream documentation\fR [https://metacpan\&.org/pod/distribution/Marpa-R2/pod/Marpa_R2\&.pod]
-while we are writing our own\&.
+Please use the \fIupstream documentation\fR [https://metacpan\&.org/pod/distribution/Marpa-R2/pod/Marpa_R2\&.pod] while we are writing our own\&.
 .PP
 The main differences to the upstream language currently known are
 .IP [1]
@@ -300,22 +300,22 @@ The removal of the \fBbless\fR adverb\&.
 .IP [2]
 The details of the character class syntax have been aligned
 with \fITcl\fR\&.
-For example negative named posix classes have been
-removed\&. The same can be achived by using a regular negation
+.sp
+For example negative named posix classes have been removed\&.
+The same effect can be achieved by using a regular negation
 outside of the posix class reference\&.
 .PP
 .SH "BUGS, IDEAS, FEEDBACK"
 This document, and the package it describes, will undoubtedly contain
 bugs and other problems\&.
-Please report such at the
-\fIMarpa/Tcl Tracker\fR [https://core\&.tcl\&.tk/akupries/marpatcl]\&.
-Please also report any ideas for enhancements you may have for either
-package and/or documentation\&.
+Please report such at the \fIMarpa/Tcl Tracker\fR [https://core\&.tcl-lang\&.org/akupries/marpatcl]\&.
+Please report any ideas for enhancements you may have for either
+package and/or documentation as well\&.
 .SH KEYWORDS
-aycock, character classes, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
+aycock, character classes, context free grammar, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
 .SH COPYRIGHT
 .nf
-Copyright (c) 2015-2018 Andreas Kupries
+Copyright (c) 2015-present Andreas Kupries
 Copyright (c) 2018-present Documentation, Andreas Kupries
 
 .fi

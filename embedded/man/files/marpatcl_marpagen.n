@@ -1,6 +1,6 @@
 '\"
-'\" Generated from file 'marpatcl\&.man' by tcllib/doctools with format 'nroff'
-'\" Copyright (c) 2015-2018 Andreas Kupries
+'\" Generated from file 'marpatcl_marpagen\&.man' by tcllib/doctools with format 'nroff'
+'\" Copyright (c) 2015-present Andreas Kupries
 '\" Copyright (c) 2018-present Documentation, Andreas Kupries
 '\"
 .TH "marpatcl_marpagen" n 0\&.2 doc "Marpa/Tcl, a binding to libmarpa"
@@ -275,7 +275,7 @@ Database Class:	\\fB\\$3\\fR
 .SH NAME
 marpatcl_marpagen \- Marpa/Tcl - The Generator Application
 .SH SYNOPSIS
-\fBmarpa-gen\fR ?options\&.\&.\&.? ?--? \fIgrammar-file\fR ?\fIoutput\fR?
+\fBmarpa-gen\fR ?\fIoptions\&.\&.\&.\fR? ?--? \fIgrammar-file\fR ?\fIoutput\fR?
 .sp
 .BE
 .SH DESCRIPTION
@@ -283,20 +283,20 @@ marpatcl_marpagen \- Marpa/Tcl - The Generator Application
 Welcome to Marpa/Tcl, a Tcl binding to the "\fIlibmarpa\fR" parsing
 engine\&.
 .PP
-Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR,
-if you have not done so already, to get an overview of the whole system\&.
+Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR, if you have not done
+so already\&. It provides an overview of the whole system\&.
 .SH AUDIENCE
-This document is targeted at users intending to create parser packages
-with Marpa/Tcl\&.
+This document is targeted at users of Marpa/Tcl with the goal of
+creating parser packages\&.
 .SH MARPA-GEN
 \fBmarpa-gen\fR is the generator application used to read a SLIF
 grammar definition and create various forms of output, including
 packages implementing parsers and lexers for the grammar\&.
 .PP
 To make effective use of it is recommended to also read
-\fIMarpa/Tcl - The SLIF grammar specification language\fR
+\fIMarpa/Tcl - The SLIF grammar specification language\fR\&.
 .TP
-\fBmarpa-gen\fR ?options\&.\&.\&.? ?--? \fIgrammar-file\fR ?\fIoutput\fR?
+\fBmarpa-gen\fR ?\fIoptions\&.\&.\&.\fR? ?--? \fIgrammar-file\fR ?\fIoutput\fR?
 In its most basic form the generator command is invoked with the path
 to a \fIgrammar-file\fR, printing the result to \fBstdout\fR\&.
 If a second path to \fIoutput\fR is specified the result is saved into
@@ -393,15 +393,14 @@ start with dash (\fB-\fR)\&.
 .SH "BUGS, IDEAS, FEEDBACK"
 This document, and the package it describes, will undoubtedly contain
 bugs and other problems\&.
-Please report such at the
-\fIMarpa/Tcl Tracker\fR [https://core\&.tcl\&.tk/akupries/marpatcl]\&.
-Please also report any ideas for enhancements you may have for either
-package and/or documentation\&.
+Please report such at the \fIMarpa/Tcl Tracker\fR [https://core\&.tcl-lang\&.org/akupries/marpatcl]\&.
+Please report any ideas for enhancements you may have for either
+package and/or documentation as well\&.
 .SH KEYWORDS
-aycock, character classes, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
+aycock, character classes, context free grammar, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
 .SH COPYRIGHT
 .nf
-Copyright (c) 2015-2018 Andreas Kupries
+Copyright (c) 2015-present Andreas Kupries
 Copyright (c) 2018-present Documentation, Andreas Kupries
 
 .fi

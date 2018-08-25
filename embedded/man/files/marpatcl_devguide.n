@@ -1,6 +1,6 @@
 '\"
 '\" Generated from file 'marpatcl_devguide\&.man' by tcllib/doctools with format 'nroff'
-'\" Copyright (c) 2015-2018 Andreas Kupries
+'\" Copyright (c) 2015-present Andreas Kupries
 '\" Copyright (c) 2018-present Documentation, Andreas Kupries
 '\"
 .TH "marpatcl_devguide" n 1 doc "Marpa/Tcl, a binding to libmarpa"
@@ -279,8 +279,8 @@ marpatcl_devguide \- Marpa/Tcl - The Developer's Guide
 Welcome to Marpa/Tcl, a Tcl binding to the "\fIlibmarpa\fR" parsing
 engine\&.
 .PP
-Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR,
-if you have not done so already, to get an overview of the whole system\&.
+Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR, if you have not done
+so already\&. It provides an overview of the whole system\&.
 .SH AUDIENCE
 This document is a guide targeted at all developers working on the
 internals of Marpa/Tcl, i\&.e\&. maintainers fixing bugs, developers
@@ -339,8 +339,7 @@ formats\&.
 SLIF
 The packages supporting the SLIF language for grammar specifications\&.
 This is a very close sibling to the SLIF language used by
-\fIMarpa::R2\fR [https://jeffreykegler\&.github\&.io/Marpa-web-site/], the current stable version of the Perl
-binding\&.
+\fIMarpa::R2\fR [https://jeffreykegler\&.github\&.io/Marpa-web-site/], the current stable version of the Perl binding\&.
 .sp
 It can be further divided into groups for parsing SLIF, the
 semantics for translating a parse into a container, a container for
@@ -403,16 +402,17 @@ the construction of multi-byte characters\&.
 "\fItools/unidata\&.tcl\fR"
 This helper reads the unicode tables stored in directory
 "\fIunidata/\fR" and generates a mix of Tcl and C data
-structures for use within Marpa/Tcl\&. The integration point is
-package \fBmarpa::unicode\fR (directory "\fIunicode/\fR")\&.
+structures for use within Marpa/Tcl\&.
+The integration point is package \fBmarpa::unicode\fR
+(directory "\fIunicode/\fR")\&.
 .TP
 "\fIgenerated/\fR"
 The directory where "\fItools/unidata\&.tcl\fR" places the
 generated files\&.
 .TP
 "\fIunidata/\fR"
-The directory where "\fItools/unidata\&.tcl\fR" reads the
-unicode tables from\&.
+The directory where "\fItools/unidata\&.tcl\fR" reads the unicode
+tables from\&.
 .TP
 "\fIbootstrap/\fR"
 This directory contains the specifications for SLIF and
@@ -428,9 +428,9 @@ SLIF specification of the Literal grammar\&.
 "\fIbootstrap/remeta\fR"
 .TP
 "\fIbootstrap/remeta-tcl\fR"
-Regenerate the SLIF and literal parsers from their grammars\&.
-The first variant generates C-based parsers, the other
-Tcl-based parsers\&.
+These helper applications regenerate the SLIF and literal
+parsers from their grammars\&.  The first variant generates
+C-based parsers, the other Tcl-based parsers\&.
 .RE
 .TP
 Documentation
@@ -451,8 +451,39 @@ part of the fossil repository, i\&.e\&. embedded into it\&. This
 enables fossil to access and display these files when serving
 the repositories' web interface\&.  The "Command Reference" link
 at
-\fIhttp://core\&.tcl-lang\&.org/akupries/marpa\fR
+\fIhttps://core\&.tcl-lang\&.org/akupries/marpa\fR
 is, for example, accessing the generated HTML\&.
+.RE
+.TP
+Examples
+.RS
+.TP
+"\fIlanguages/\fR"
+This directory contains several worked examples of SLIF
+grammars for various languages, parsers generated for them,
+and the infrastructure to build and test them\&.
+.sp
+Each example resides in its own subdirectory, named after the
+language it implements a parser for\&.
+.sp
+We currently have examples for
+.RS
+.IP [1]
+\fIJSON\fR [http://json\&.org]
+.IP [2]
+(Tcllib) doctools
+.IP [3]
+heredoc
+.IP [4]
+min-dt
+.RE
+.sp
+\fIHeredoc\fR is a general demonstration how `here` documents
+can be implemented using stop markers and post-lexeme events\&.
+.sp
+\fImin-dt\fR is a reduced form of \fIdoctools\fR, used to
+work out the general shape of vset and include processing via
+stop markers and lexeme events
 .RE
 .TP
 Package Code, General structure
@@ -602,15 +633,14 @@ The entrypoint is "\fIpkg_entry\&.tcl\fR"\&.
 .SH "BUGS, IDEAS, FEEDBACK"
 This document, and the package it describes, will undoubtedly contain
 bugs and other problems\&.
-Please report such at the
-\fIMarpa/Tcl Tracker\fR [https://core\&.tcl\&.tk/akupries/marpatcl]\&.
-Please also report any ideas for enhancements you may have for either
-package and/or documentation\&.
+Please report such at the \fIMarpa/Tcl Tracker\fR [https://core\&.tcl-lang\&.org/akupries/marpatcl]\&.
+Please report any ideas for enhancements you may have for either
+package and/or documentation as well\&.
 .SH KEYWORDS
-aycock, character classes, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
+aycock, character classes, context free grammar, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
 .SH COPYRIGHT
 .nf
-Copyright (c) 2015-2018 Andreas Kupries
+Copyright (c) 2015-present Andreas Kupries
 Copyright (c) 2018-present Documentation, Andreas Kupries
 
 .fi

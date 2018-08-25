@@ -1,6 +1,6 @@
 '\"
 '\" Generated from file 'marpatcl_installer\&.man' by tcllib/doctools with format 'nroff'
-'\" Copyright (c) 2015-2018 Andreas Kupries
+'\" Copyright (c) 2015-present Andreas Kupries
 '\" Copyright (c) 2018-present Documentation, Andreas Kupries
 '\"
 .TH "marpatcl_install_guide" n 1 doc "Marpa/Tcl, a binding to libmarpa"
@@ -279,24 +279,23 @@ marpatcl_install_guide \- Marpa/Tcl - The Installer's Guide
 Welcome to Marpa/Tcl, a Tcl binding to the "\fIlibmarpa\fR" parsing
 engine\&.
 .PP
-Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR,
-if you have not done so already, to get an overview of the whole system\&.
+Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR, if you have not done
+so already\&. It provides an overview of the whole system\&.
 .SH AUDIENCE
-This documented is targeted at anyone wishing to build MarpaTcl's
-packages and application, for either themselves, or others\&.
+This document is targeted at users of Marpa/Tcl with the goal of
+building its packages and applications for distribution, or their own
+use\&.
+.SH NOTES
+Please read \fIMarpa/Tcl - How To Get The Sources\fR first, if that was not done already\&. Here
+we assume that the sources are already available in a directory of
+your choice\&.
 .PP
-Please read \fIMarpa/Tcl - How To Get The Sources\fR first, if that
-was not done already\&. Here we assume that the sources are already
-available in a directory of your choice\&.
-.PP
-For developers building Marpa/Tcl with the intent to extend or modify
-the packages and application we additionally provide
-.IP [1]
-\fIMarpa/Tcl - The Developer's Guide\fR\&.
-.PP
-.PP
+Developers building Marpa/Tcl with the intent of extending or
+modifying the packages and application should read \fIMarpa/Tcl - The Developer's Guide\fR as
+well\&.
 .SH REQUISITES
-Before Marpa/Tcl can be build and used a number of requisites must be installed\&.
+A number of requisites must be installed before building and using
+Marpa/Tcl is possible\&.
 These are:
 .IP [1]
 Jeffrey Kegler's \fBlibmarpa\fR library\&.
@@ -314,25 +313,26 @@ For details see \fBTcllib\fR\&.
 The \fBkettle\fR application (Build tool) for \fBTcl\fR\&.
 For details see \fBKettle\fR\&.
 .PP
-This list assumes that the machine where Marpa/Tcl is to be installed
-is essentially clean\&. Of course, if parts of the dependencies listed
-below are already installed the associated steps can be skipped\&. It is
-still recommended to read their sections though, to validate that the
-dependencies they talk about are indeed installed\&.
+This list assumes that the machine where Marpa/Tcl is to be
+installed is essentially clean\&. Of course, if parts of the
+dependencies listed below are already installed the associated steps
+can be skipped\&. It is still recommended to read their sections though,
+to validate that the dependencies they talk about are indeed
+installed\&.
 .SS LIBMARPA
 This C library is the foundation of Marpa/Tcl, providing the parser
 engine we bind to\&.
 .PP
-The instructions for its installation, including the retrieval of its
-sources, can be found at
-\fIhttp://jeffreykegler\&.github\&.io/Marpa-web-site/libmarpa\&.html\fR\&.
+The instructions for its installation, including the retrieval
+of its sources, can be found at \fIhttp://jeffreykegler\&.github\&.io/Marpa-web-site/libmarpa\&.html\fR\&.
 .PP
-As we are only interested in the library itself installation of the
-\fBMarpa::R2\fR Perl binding is not necessary\&. Marpa/Tcl also
-comes with its own testsuite\&.
+As we are only interested in the library itself installation of
+the \fBMarpa::R2\fR Perl binding is not necessary\&. Marpa/Tcl
+also comes with its own testsuite\&.
 .PP
-Regarding packages for the various Linux distributions which would
-make installation more convenient, I have currently only found/seen:
+Regarding packages for the various Linux distributions which
+would make installation more convenient, I have currently only
+found/seen:
 .TP
 Ubuntu
 \fBlibmarpa-r2-perl\fR is the Perl binding I mentioned
@@ -352,16 +352,14 @@ This may be a Tcl installation provided by your operating
 system distribution, from a distribution-independent vendor, or built
 by yourself\&.
 .PP
-Myself, I used \fIActiveState's\fR [http://www\&.activestate\&.com]
-ActiveTcl 8\&.5 distribution during development of the binding, as I am
-most familiar with it\&.
+Myself, I used \fIActiveState\fR [http://www\&.activestate\&.com]'s ActiveTcl 8\&.5 distribution
+during development of the binding, as I am most familiar with it\&.
 .PP
 \fI(Disclosure: I, Andreas Kupries, worked for ActiveState, and maintained ActiveTcl and TclDevKit for them)\&.\fR
 .PP
-This distribution can be found at
-\fIhttp://www\&.activestate\&.com/activetcl\fR\&. Retrieve the archive of
-ActiveTcl 8\&.5 for your platform and install it as directed by
-ActiveState\&.
+This distribution can be found at \fIhttp://www\&.activestate\&.com/activetcl\fR\&. Retrieve the
+archive of ActiveTcl 8\&.5 for your platform and install it as directed
+by ActiveState\&.
 .PP
 Assuming that ActiveTcl got installed I usually run the command
 .CS
@@ -376,8 +374,8 @@ of packages\&. This ensures that the dependencies for \fBCriTcl\fR,
 and Marpa/Tcl are all present, and more\&.
 .PP
 If that is not your liking you have to read the sections for
-\fBCriTcl\fR, and Marpa/Tcl to determine the exact set of packages
-required, and install only these using
+\fBCriTcl\fR, and Marpa/Tcl to determine the exact set of
+packages required, and install only these using
 .CS
 
 
@@ -386,47 +384,23 @@ required, and install only these using
 .CE
 .PP
 Both \fBteacup\fR commands above assume that ActiveState's
-TEApot repository at \fIhttp://teapot\&.activestate\&.com\fR is in the
-list of repositories accessible to \fBteacup\fR\&. This is automatically
-ensured for the ActiveTcl distribution\&. Others may have to run
+TEApot repository at \fIhttp://teapot\&.activestate\&.com\fR is in the list of repositories
+accessible to \fBteacup\fR\&. This is automatically ensured for the
+ActiveTcl distribution\&. Others may have to run
 .CS
 
 
-    teacup archive add http://teapot\&.activestate\&.com
+    teacup archive add \fIhttp://teapot\&.activestate\&.com\fR
 
 .CE
 to make this happen\&.
 .PP
-For those wishing to build Tcl on their own, their sources can
-be found at
+For those wishing to build Tcl on their own, its sources can be
+found at
 .TP
 Tcl
 \fIhttp://core\&.tcl\&.tk/tcl/\fR
 .PP
-.SS CRITCL
-To build Marpa/Tcl the tool \fBcritcl\fR is required\&.
-.PP
-Marpa/Tcl's build system (based on \fBKettle\fR) accepts it
-either as an application found in the PATH (be it starkit or
-starpack), or as a Tcl package available to the \fBtclsh\fR used to
-run their build & installation processes\&.
-.PP
-Marpa/Tcl requires version 3 or higher\&.
-.PP
-The github repository providing releases of version 3 and
-higher, and the associated sources, can be found at
-\fIhttp://andreas-kupries\&.github\&.com/critcl\fR\&.
-.PP
-Any branch of the repository can be used (if not using the
-prebuild starkit or starpack), although the use of the stable branch
-\fImaster\fR is recommended\&.
-.PP
-At the above url is also an explanation on how to build and
-install CriTcl, including a list of its dependencies\&.
-.PP
-Its instructions will not be repeated here\&. If there are
-problems with their directions please file a bug against the critcl
-project, and not Marpa/Tcl\&.
 .SS TCLLIB
 To use Marpa/Tcl a few packages found in the bundle Tcllib are
 required\&. These packages are:
@@ -455,20 +429,19 @@ be installed via
 .CE
 .PP
 The \fBteacup\fR command above assumes that ActiveState's
-TEApot repository at \fIhttp://teapot\&.activestate\&.com\fR is in the
-list of repositories accessible to \fBteacup\fR\&. This is automatically
-ensured for the ActiveTcl distribution\&. Others may have to run
+TEApot repository at \fIhttp://teapot\&.activestate\&.com\fR is in the list of repositories
+accessible to \fBteacup\fR\&. This is automatically ensured for the
+ActiveTcl distribution\&. Others may have to run
 .CS
 
 
-    teacup archive add http://teapot\&.activestate\&.com
+teacup archive add \fIhttp://teapot\&.activestate\&.com\fR
 
 .CE
 to make this happen\&.
 .PP
 Now, for those wishing to install the packages from source, the
-fossil repository for the bundle can be found at
-\fIhttps://core\&.tcl\&.tk/tcllib\fR\&.
+fossil repository for the bundle can be found at \fIhttps://core\&.tcl\&.tk/tcllib/\fR\&.
 .PP
 Releases of Tcllib can be found there as well, or
 \fBfossil\fR can be used to check out specific revisions\&.
@@ -477,20 +450,43 @@ Tcllib comes with its own installation instructions\&.  These
 will not be repeated here\&. If there are problems with its directions
 please file a bug against the Tcllib project at the above url, and not
 Marpa/Tcl\&.
+.SS CRITCL
+To build Marpa/Tcl the tool \fBcritcl\fR is required\&.
+.PP
+Marpa/Tcl's build system (based on \fBKettle\fR)
+accepts it either as an application found in the PATH (be it script,
+starkit or starpack), or as a Tcl package available to the
+\fBtclsh\fR used to run their build & installation processes\&.
+.PP
+Marpa/Tcl requires version 3 or higher\&.
+.PP
+Releases of version 3 and higher, and the associated sources,
+can be found at \fIhttp://andreas-kupries\&.github\&.com/critcl\fR\&.
+.PP
+Any branch of the repository can be used (if not using the
+prebuild starkit or starpack), although the use of the stable branch
+\fImaster\fR is recommended\&.
+.PP
+At the above url is also an explanation on how to build and
+install CriTcl, including a list of its dependencies\&.
+.PP
+Its instructions will not be repeated here\&. If there are
+problems with their directions please file a bug against the critcl
+project, and not Marpa/Tcl\&.
 .SS KETTLE
 To build Marpa/Tcl the tool \fBkettle\fR is required\&.
 .PP
-Marpa/Tcl's build system requires it as an application found in
-the PATH\&.
+Marpa/Tcl's build system requires it as an application
+found in the \fBPATH\fR\&.
 .PP
 Marpa/Tcl requires version 1 or higher\&.
 .PP
-The fossil repository providing releases of this tool (and its
-associated package) can be found at
-\fIhttp://core\&.tcl\&.tk/akupries/kettle\fR\&.
+Releases of this tool (and its associated package) can be found
+at \fIhttp://core\&.tcl\&.tk/akupries/kettle\fR\&. This is a fossil repository\&.
 .PP
-A mirror of the repository can be found at
-\fIhttps://chiselapp\&.com/user/andreas_kupries/repository/Kettle\fR\&.
+A mirror of the above repository can be found at
+\fIhttps://chiselapp\&.com/user/andreas_kupries/repository/Kettle\fR\&.  Note that this mirror is also a conversion from
+Fossil to Git\&.
 .PP
 Use of either releases or of the head of the main branch is
 recommended\&. Usage of branches is strongly discouraged as these are
@@ -505,8 +501,8 @@ problems with their directions please file a bug against the Kettle
 project, and not Marpa/Tcl\&.
 .SH "BUILD & INSTALLATION INSTRUCTIONS"
 .SS "BUILD & INSTALLATION (UNIX)"
-This section describes the actions required to install Marpa/Tcl on
-Unix systems (Linux, BSD, and related, including OS X)\&.
+This section describes the actions required to install Marpa/Tcl
+on Unix systems (Linux, BSD, and related, including OS X)\&.
 If you have to install Marpa/Tcl on a Windows machine see section
 \fBBuild & Installation (Windows)\fR instead\&.
 .PP
@@ -518,8 +514,8 @@ To install Marpa/Tcl simply run
 
 .CE
 where "\fI/path/to/tclsh8\&.5\fR" is the tclsh of your Tcl installation,
-and "\fI/path/to/marpatcl\fR" the location of the Marpa/Tcl sources on
-your system\&.
+and "\fI/path/to/marpatcl\fR" the location of the Marpa/Tcl sources
+on your system\&.
 .PP
 This builds all packages and then places them in a directory where the
 \fBtclsh8\&.5\fR will find them\&.
@@ -539,10 +535,10 @@ like
 
 .CE
 .SS "BUILD & INSTALLATION (WINDOWS)"
-This section describes the actions required to install Marpa/Tcl on
-Windows(tm) systems\&.
-If you have to install Marpa/Tcl on a Unix machine (Linux, BSD, and
-related, including OS X) see section
+This section describes the actions required to install Marpa/Tcl
+on Windows(tm) systems\&.
+If you have to install Marpa/Tcl on a Unix machine (Linux, BSD,
+and related, including OS X) see section
 \fBBuild & Installation (Unix)\fR instead\&.
 .PP
 To install Marpa/Tcl simply run
@@ -554,8 +550,8 @@ To install Marpa/Tcl simply run
 .CE
 where "\fI/path/to/tclsh8\&.5\fR" is the tclsh of your Tcl installation,
 "\fI/path/to/kettle\fR" is the installed \fBkettle\fR application,
-and "\fI/path/to/marpatcl\fR" the location of the Marpa/Tcl sources on
-your system\&.
+and "\fI/path/to/marpatcl\fR" the location of the Marpa/Tcl sources
+on your system\&.
 .PP
 This builds all packages and then places them in a directory where the
 \fBtclsh8\&.5\fR will find them\&.
@@ -585,15 +581,14 @@ like
 .SH "BUGS, IDEAS, FEEDBACK"
 This document, and the package it describes, will undoubtedly contain
 bugs and other problems\&.
-Please report such at the
-\fIMarpa/Tcl Tracker\fR [https://core\&.tcl\&.tk/akupries/marpatcl]\&.
-Please also report any ideas for enhancements you may have for either
-package and/or documentation\&.
+Please report such at the \fIMarpa/Tcl Tracker\fR [https://core\&.tcl-lang\&.org/akupries/marpatcl]\&.
+Please report any ideas for enhancements you may have for either
+package and/or documentation as well\&.
 .SH KEYWORDS
-aycock, character classes, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
+aycock, character classes, context free grammar, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
 .SH COPYRIGHT
 .nf
-Copyright (c) 2015-2018 Andreas Kupries
+Copyright (c) 2015-present Andreas Kupries
 Copyright (c) 2018-present Documentation, Andreas Kupries
 
 .fi

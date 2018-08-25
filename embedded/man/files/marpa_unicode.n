@@ -1,0 +1,849 @@
+'\"
+'\" Generated from file 'marpa_unicode\&.man' by tcllib/doctools with format 'nroff'
+'\" Copyright (c) 2015-present Andreas Kupries
+'\" Copyright (c) 2018-present Documentation, Andreas Kupries
+'\"
+.TH "marpa_unicode" n 1 doc "Marpa/Tcl, a binding to libmarpa"
+.\" The -*- nroff -*- definitions below are for supplemental macros used
+.\" in Tcl/Tk manual entries.
+.\"
+.\" .AP type name in/out ?indent?
+.\"	Start paragraph describing an argument to a library procedure.
+.\"	type is type of argument (int, etc.), in/out is either "in", "out",
+.\"	or "in/out" to describe whether procedure reads or modifies arg,
+.\"	and indent is equivalent to second arg of .IP (shouldn't ever be
+.\"	needed;  use .AS below instead)
+.\"
+.\" .AS ?type? ?name?
+.\"	Give maximum sizes of arguments for setting tab stops.  Type and
+.\"	name are examples of largest possible arguments that will be passed
+.\"	to .AP later.  If args are omitted, default tab stops are used.
+.\"
+.\" .BS
+.\"	Start box enclosure.  From here until next .BE, everything will be
+.\"	enclosed in one large box.
+.\"
+.\" .BE
+.\"	End of box enclosure.
+.\"
+.\" .CS
+.\"	Begin code excerpt.
+.\"
+.\" .CE
+.\"	End code excerpt.
+.\"
+.\" .VS ?version? ?br?
+.\"	Begin vertical sidebar, for use in marking newly-changed parts
+.\"	of man pages.  The first argument is ignored and used for recording
+.\"	the version when the .VS was added, so that the sidebars can be
+.\"	found and removed when they reach a certain age.  If another argument
+.\"	is present, then a line break is forced before starting the sidebar.
+.\"
+.\" .VE
+.\"	End of vertical sidebar.
+.\"
+.\" .DS
+.\"	Begin an indented unfilled display.
+.\"
+.\" .DE
+.\"	End of indented unfilled display.
+.\"
+.\" .SO ?manpage?
+.\"	Start of list of standard options for a Tk widget. The manpage
+.\"	argument defines where to look up the standard options; if
+.\"	omitted, defaults to "options". The options follow on successive
+.\"	lines, in three columns separated by tabs.
+.\"
+.\" .SE
+.\"	End of list of standard options for a Tk widget.
+.\"
+.\" .OP cmdName dbName dbClass
+.\"	Start of description of a specific option.  cmdName gives the
+.\"	option's name as specified in the class command, dbName gives
+.\"	the option's name in the option database, and dbClass gives
+.\"	the option's class in the option database.
+.\"
+.\" .UL arg1 arg2
+.\"	Print arg1 underlined, then print arg2 normally.
+.\"
+.\" .QW arg1 ?arg2?
+.\"	Print arg1 in quotes, then arg2 normally (for trailing punctuation).
+.\"
+.\" .PQ arg1 ?arg2?
+.\"	Print an open parenthesis, arg1 in quotes, then arg2 normally
+.\"	(for trailing punctuation) and then a closing parenthesis.
+.\"
+.\"	# Set up traps and other miscellaneous stuff for Tcl/Tk man pages.
+.if t .wh -1.3i ^B
+.nr ^l \n(.l
+.ad b
+.\"	# Start an argument description
+.de AP
+.ie !"\\$4"" .TP \\$4
+.el \{\
+.   ie !"\\$2"" .TP \\n()Cu
+.   el          .TP 15
+.\}
+.ta \\n()Au \\n()Bu
+.ie !"\\$3"" \{\
+\&\\$1 \\fI\\$2\\fP (\\$3)
+.\".b
+.\}
+.el \{\
+.br
+.ie !"\\$2"" \{\
+\&\\$1	\\fI\\$2\\fP
+.\}
+.el \{\
+\&\\fI\\$1\\fP
+.\}
+.\}
+..
+.\"	# define tabbing values for .AP
+.de AS
+.nr )A 10n
+.if !"\\$1"" .nr )A \\w'\\$1'u+3n
+.nr )B \\n()Au+15n
+.\"
+.if !"\\$2"" .nr )B \\w'\\$2'u+\\n()Au+3n
+.nr )C \\n()Bu+\\w'(in/out)'u+2n
+..
+.AS Tcl_Interp Tcl_CreateInterp in/out
+.\"	# BS - start boxed text
+.\"	# ^y = starting y location
+.\"	# ^b = 1
+.de BS
+.br
+.mk ^y
+.nr ^b 1u
+.if n .nf
+.if n .ti 0
+.if n \l'\\n(.lu\(ul'
+.if n .fi
+..
+.\"	# BE - end boxed text (draw box now)
+.de BE
+.nf
+.ti 0
+.mk ^t
+.ie n \l'\\n(^lu\(ul'
+.el \{\
+.\"	Draw four-sided box normally, but don't draw top of
+.\"	box if the box started on an earlier page.
+.ie !\\n(^b-1 \{\
+\h'-1.5n'\L'|\\n(^yu-1v'\l'\\n(^lu+3n\(ul'\L'\\n(^tu+1v-\\n(^yu'\l'|0u-1.5n\(ul'
+.\}
+.el \}\
+\h'-1.5n'\L'|\\n(^yu-1v'\h'\\n(^lu+3n'\L'\\n(^tu+1v-\\n(^yu'\l'|0u-1.5n\(ul'
+.\}
+.\}
+.fi
+.br
+.nr ^b 0
+..
+.\"	# VS - start vertical sidebar
+.\"	# ^Y = starting y location
+.\"	# ^v = 1 (for troff;  for nroff this doesn't matter)
+.de VS
+.if !"\\$2"" .br
+.mk ^Y
+.ie n 'mc \s12\(br\s0
+.el .nr ^v 1u
+..
+.\"	# VE - end of vertical sidebar
+.de VE
+.ie n 'mc
+.el \{\
+.ev 2
+.nf
+.ti 0
+.mk ^t
+\h'|\\n(^lu+3n'\L'|\\n(^Yu-1v\(bv'\v'\\n(^tu+1v-\\n(^Yu'\h'-|\\n(^lu+3n'
+.sp -1
+.fi
+.ev
+.\}
+.nr ^v 0
+..
+.\"	# Special macro to handle page bottom:  finish off current
+.\"	# box/sidebar if in box/sidebar mode, then invoked standard
+.\"	# page bottom macro.
+.de ^B
+.ev 2
+'ti 0
+'nf
+.mk ^t
+.if \\n(^b \{\
+.\"	Draw three-sided box if this is the box's first page,
+.\"	draw two sides but no top otherwise.
+.ie !\\n(^b-1 \h'-1.5n'\L'|\\n(^yu-1v'\l'\\n(^lu+3n\(ul'\L'\\n(^tu+1v-\\n(^yu'\h'|0u'\c
+.el \h'-1.5n'\L'|\\n(^yu-1v'\h'\\n(^lu+3n'\L'\\n(^tu+1v-\\n(^yu'\h'|0u'\c
+.\}
+.if \\n(^v \{\
+.nr ^x \\n(^tu+1v-\\n(^Yu
+\kx\h'-\\nxu'\h'|\\n(^lu+3n'\ky\L'-\\n(^xu'\v'\\n(^xu'\h'|0u'\c
+.\}
+.bp
+'fi
+.ev
+.if \\n(^b \{\
+.mk ^y
+.nr ^b 2
+.\}
+.if \\n(^v \{\
+.mk ^Y
+.\}
+..
+.\"	# DS - begin display
+.de DS
+.RS
+.nf
+.sp
+..
+.\"	# DE - end display
+.de DE
+.fi
+.RE
+.sp
+..
+.\"	# SO - start of list of standard options
+.de SO
+'ie '\\$1'' .ds So \\fBoptions\\fR
+'el .ds So \\fB\\$1\\fR
+.SH "STANDARD OPTIONS"
+.LP
+.nf
+.ta 5.5c 11c
+.ft B
+..
+.\"	# SE - end of list of standard options
+.de SE
+.fi
+.ft R
+.LP
+See the \\*(So manual entry for details on the standard options.
+..
+.\"	# OP - start of full description for a single option
+.de OP
+.LP
+.nf
+.ta 4c
+Command-Line Name:	\\fB\\$1\\fR
+Database Name:	\\fB\\$2\\fR
+Database Class:	\\fB\\$3\\fR
+.fi
+.IP
+..
+.\"	# CS - begin code excerpt
+.de CS
+.RS
+.nf
+.ta .25i .5i .75i 1i
+..
+.\"	# CE - end code excerpt
+.de CE
+.fi
+.RE
+..
+.\"	# UL - underline word
+.de UL
+\\$1\l'|0\(ul'\\$2
+..
+.\"	# QW - apply quotation marks to word
+.de QW
+.ie '\\*(lq'"' ``\\$1''\\$2
+.\"" fix emacs highlighting
+.el \\*(lq\\$1\\*(rq\\$2
+..
+.\"	# PQ - apply parens and quotation marks to word
+.de PQ
+.ie '\\*(lq'"' (``\\$1''\\$2)\\$3
+.\"" fix emacs highlighting
+.el (\\*(lq\\$1\\*(rq\\$2)\\$3
+..
+.\"	# QR - quoted range
+.de QR
+.ie '\\*(lq'"' ``\\$1''\\-``\\$2''\\$3
+.\"" fix emacs highlighting
+.el \\*(lq\\$1\\*(rq\\-\\*(lq\\$2\\*(rq\\$3
+..
+.\"	# MT - "empty" string
+.de MT
+.QW ""
+..
+.BS
+.SH NAME
+marpa_unicode \- Marpa/Tcl - marpa::unicode
+.SH SYNOPSIS
+\fBmarpa::unicode::2asbr\fR \fIscr\fR
+.sp
+\fBmarpa::unicode::2assr\fR \fIscr\fR
+.sp
+\fBmarpa::unicode::2char\fR \fIcodepoint\fR
+.sp
+\fBmarpa::unicode::2utf\fR \fIcodepoint\fR ?\fIflags\fR?
+.sp
+\fBmarpa::unicode::asbr-format\fR \fIasbr\fR ?\fIcompact\fR?
+.sp
+\fBmarpa::unicode::assr-format\fR \fIassr\fR ?\fIcompact\fR?
+.sp
+\fBmarpa::unicode::bmp\fR
+.sp
+\fBmarpa::unicode::data::fold/c\fR \fIcodepoint\fR
+.sp
+\fBmarpa::unicode::data::fold\fR \fIcodepoint\fR
+.sp
+\fBmarpa::unicode::fold/c\fR \fIcodes\fR
+.sp
+\fBmarpa::unicode::max\fR
+.sp
+\fBmarpa::unicode::negate-class\fR \fIscr\fR ?\fIsmp\fR?
+.sp
+\fBmarpa::unicode::norm-class\fR \fIscr\fR
+.sp
+\fBmarpa::unicode::point\fR \fIcharacter\fR
+.sp
+\fBmarpa::unicode::smp\fR
+.sp
+\fBmarpa::unicode::unfold\fR \fIscr\fR
+.sp
+\fBmarpa::unicode::data::cc::have-tcl\fR \fIccname\fR
+.sp
+\fBmarpa::unicode::data::cc::have\fR \fIccname\fR
+.sp
+\fBmarpa::unicode::data::cc::names\fR
+.sp
+\fBmarpa::unicode::data::cc::ranges\fR \fIccname\fR
+.sp
+\fBmarpa::unicode::data::cc::tcl-names\fR
+.sp
+.BE
+.SH DESCRIPTION
+.PP
+Welcome to Marpa/Tcl, a Tcl binding to the "\fIlibmarpa\fR" parsing
+engine\&.
+.PP
+Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR, if you have not done
+so already\&. It provides an overview of the whole system\&.
+.SH AUDIENCE
+This document describes a mainly internal package of Marpa/Tcl\&.
+.PP
+The package commands provide access to information about
+unicode characters useful to parsers, and parser generators,
+i\&.e\&. case folding classes, named character classes, etc\&.
+\fINote for reading\fR: Unknown terms and shorthands are
+explained in the \fBGlossary\fR\&.
+.SH API
+.TP
+\fBmarpa::unicode::2asbr\fR \fIscr\fR
+This command takes a \fBcharacter class\fR represented by an \fBSCR\fR and
+returns the equivalent \fBASBR\fR representation\&.
+.sp
+An error will be thrown if the input is not a valid \fBSCR\fR\&.
+.TP
+\fBmarpa::unicode::2assr\fR \fIscr\fR
+This command takes a \fBcharacter class\fR represented by an \fBSCR\fR and
+returns the equivalent \fBASSR\fR representation\&.
+.sp
+An error will be thrown if the input is not a valid \fBSCR\fR\&.
+.TP
+\fBmarpa::unicode::2char\fR \fIcodepoint\fR
+This command takes a possible unicode \fIcodepoint\fR and returns a
+list of codepoints in the \fIBMP\fR representing it\&.
+.sp
+The returned list will contain only the argument itself if the
+codepoint is in the \fIBMP\fR\&. For a codepoint in the \fISMP\fR
+however the list will contain the two surrogates representing that
+codepoint\&.
+.sp
+An error will be thrown if the argument is not a valid
+codepoint\&.
+.CS
+
+
+% \fBmarpa::unicode::2char\fR 65
+65
+
+% \fBmarpa::unicode::2char\fR [\fBmarpa::unicode::smp\fR]
+55296 56320
+
+.CE
+.TP
+\fBmarpa::unicode::2utf\fR \fIcodepoint\fR ?\fIflags\fR?
+This command takes a possible unicode \fIcodepoint\fR and returns a
+list of integers in the range [\fB0\fR\&.\&.\&.\fB255\fR]
+representing the UTF-8 encoding of that codepoint\&.
+.sp
+The exact details of this conversion are controlled by the list
+of optional \fIflags\fR given to the command\&. See the list below for
+the details\&.
+.sp
+An error will be thrown if the input value is not a valid
+codepoint\&.
+.RS
+.TP
+(no flags)
+The conversion returns the standard UTF-8 encoding for all codepoints\&.
+The returned list has a length between 1 and 4\&.
+.TP
+cesu
+Codepoints in the \fISMP\fR are internally converted to the two
+surrogates representing them, and the result is the concatenation of
+the surrogates' UTF-8 encodings\&.
+All other codepoints, i\&.e\&. those in the \fIBMP\fR, are converted
+normally\&.
+The returned list has a length between 1 and 3, or 6\&.
+This is called the \fICESU-8\fR [https://en\&.wikipedia\&.org/wiki/UTF-8#CESU-8] encoding\&.
+.TP
+mutf
+The codepoint \fB0\fR is converted as \fB0xC0 0x80\fR\&.
+All other codepoints are converted normally\&.
+This is called the \fIModified UTF-8\fR [https://en\&.wikipedia\&.org/wiki/UTF-8#Modified_UTF-8] encoding, often abbreviated to
+\fIMUTF-8\fR\&.
+.TP
+mutf cesu
+Both \fIMUTF-8\fR and \fICESU-8\fR are applied, as specified in the
+previous items\&.
+This is the encoding Tcl uses internally for its strings\&.
+.TP
+tcl
+This is a shorthand for \fBmutf cesu\fR\&.
+.RE
+.CS
+
+
+% \fBmarpa::unicode::2utf\fR 0 ;# "\\0"
+0
+
+% \fBmarpa::unicode::2utf\fR 0 \fBmutf\fR
+192 128
+
+% \fBmarpa::unicode::2utf\fR 65 ;# "A"
+65
+
+% \fBmarpa::unicode::2utf\fR [\fBmarpa::unicode::bmp\fR] ;# "\\uFFFF"
+239 191 191
+
+% \fBmarpa::unicode::2utf\fR [\fBmarpa::unicode::smp\fR] ;# "\\U0010000"
+240 144 128 128
+
+% \fBmarpa::unicode::2utf\fR [\fBmarpa::unicode::smp\fR] \fBcesu\fR
+237 160 128 237 176 128
+# 55296\&.\&.\&.\&. # 56320\&.\&.\&.\&.
+
+% \fBmarpa::unicode::2utf\fR 55296 ;# "\\uD800"
+237 160 128
+
+% \fBmarpa::unicode::2utf\fR 56320 ;# "\\uDC00"
+237 176 128
+
+.CE
+.TP
+\fBmarpa::unicode::asbr-format\fR \fIasbr\fR ?\fIcompact\fR?
+This command takes a \fBcharacter class\fR represented by an \fBASBR\fR and
+returns a multi-line string containing a human-readable form of the
+same\&.
+.sp
+If the boolean argument \fIcompact\fR is either not specified
+or false one-element ranges will be padded with spaces to vertically
+align the ranges across alternatives\&.
+.CS
+
+
+% \fBmarpa::unicode::asbr-format\fR {
+    {{192 192} {128 128}}
+    {{1 16}} {{33 45}}
+}
+[c0]   [80]
+|[01-10]
+|[21-2d]
+
+.CE
+.TP
+\fBmarpa::unicode::assr-format\fR \fIassr\fR ?\fIcompact\fR?
+This command takes a \fBcharacter class\fR represented by an \fBASSR\fR and
+returns a multi-line string containing a human-readable form of the
+same\&.
+.sp
+If the bolean argument \fIcompact\fR is either not specified or
+false one-element ranges will be padded with spaces to vertically
+align the ranges across alternatives\&.
+.CS
+
+
+% \fBmarpa::unicode::assr-format\fR {
+    {{0 65535}}
+    {{55296 56319} {56320 57343}}
+}
+ [0000-ffff]
+|[d800-dbff][dc00-dfff]
+
+.CE
+.TP
+\fBmarpa::unicode::bmp\fR
+This command returns the highest codepoint still in the \fIBMP\fR\&.
+.TP
+\fBmarpa::unicode::data::fold/c\fR \fIcodepoint\fR
+This command takes a unicode codepoint and returns its
+\fIprimary case\fR\&.
+.sp
+An error will be thrown if the argument is not a valid
+codepoint\&.
+.CS
+
+
+% \fBmarpa::unicode::data::fold/c\fR 97 ;# "a"
+65                           ;# "A"
+
+% \fBmarpa::unicode::data::fold/c\fR 65 ;# "A"
+65                           ;# "A"
+
+.CE
+.TP
+\fBmarpa::unicode::data::fold\fR \fIcodepoint\fR
+This command takes a unicode codepoint and returns its \fICES\fR\&.
+.sp
+An error will be thrown if the argument is not a valid
+codepoint\&.
+.CS
+
+
+% \fBmarpa::unicode::data::fold\fR 97 ;# "a"
+65 97                      ;# "A" "a"
+
+% \fBmarpa::unicode::data::fold\fR 65 ;# "A"
+65 97                      ;# "A" "a"
+
+.CE
+.TP
+\fBmarpa::unicode::fold/c\fR \fIcodes\fR
+This command takes a list of unicode codepoints and returns a list of
+their \fIprimary cases\fR\&. The mapping from argument to result is
+1:1\&.
+.sp
+\fINote\fR that both argument and result are a limited form
+of \fBSCR\fR, i\&.e\&. one which does not contain codepoint ranges\&.
+.sp
+An error will be thrown if the argument contains invalid
+codepoints\&.
+.CS
+
+
+% \fBmarpa::unicode::fold/c\fR {97 66} ;# "aB"
+65 66                            ;# "AB"
+
+.CE
+.TP
+\fBmarpa::unicode::max\fR
+This command returns the highest codepoint supported by Unicode\&.
+.TP
+\fBmarpa::unicode::negate-class\fR \fIscr\fR ?\fIsmp\fR?
+This command takes a \fBcharacter class\fR represented by an \fBSCR\fR and
+returns its normalized complement\&.
+.sp
+If the optional flag \fIsmp\fR is specified and \fBtrue\fR
+the argument is assumed to be fully in the \fISMP\fR, and the
+resulting complement will be limited to the SMP as well\&.
+The result of applying SMP mode to classes reaching into the BMP is
+\fIundefined\fR\&.
+.sp
+An error will be thrown if the input is not a valid \fBSCR\fR\&.
+.CS
+
+
+% \fBmarpa::unicode::negate-class\fR {}
+{0 1114111}
+
+% \fBmarpa::unicode::negate-class\fR {{0 65535}}
+{65536 1114111}
+
+% \fBmarpa::unicode::negate-class\fR {{0 1114111}}
+{}
+
+% \fBmarpa::unicode::negate-class\fR 0
+{1 1114111}
+
+% \fBmarpa::unicode::negate-class\fR 1
+0 {2 1114111}
+
+.CE
+.TP
+\fBmarpa::unicode::norm-class\fR \fIscr\fR
+This command takes a \fBcharacter class\fR represented by an \fBSCR\fR and
+returns the equivalent normalized \fBSCR\fR\&. If the argument was
+already normalized the result will be identical to it\&.
+.sp
+An error will be thrown if the input is not a valid \fBSCR\fR\&.
+.CS
+
+
+% \fBmarpa::unicode::norm-class\fR {}
+
+% \fBmarpa::unicode::norm-class\fR {1 2 3 4}
+{{1 4}}
+
+% marpa unicode norm-class {{10 20} {0 15}}
+{0 20}
+
+% marpa unicode norm-class {10 4 3 20 0}
+0 {3 4} 10 20
+
+.CE
+.TP
+\fBmarpa::unicode::point\fR \fIcharacter\fR
+This command takes a Tcl character and returns the integer value of
+its unicode codepoint\&.
+If a multi-character string is provided to the command the result will
+be the conversion of the first character in that string\&.
+.CS
+
+
+% \fBmarpa::unicode::point\fR \\0
+0
+
+% \fBmarpa::unicode::point\fR A
+65
+
+% \fBmarpa::unicode::point\fR Apple
+65
+
+.CE
+.TP
+\fBmarpa::unicode::smp\fR
+This command returns the first codepoint in the \fISMP\fR\&.
+.TP
+\fBmarpa::unicode::unfold\fR \fIscr\fR
+This command takes a \fBcharacter class\fR represented by an \fBSCR\fR and
+returns its case-expanded form\&. The result is normalized\&.
+.sp
+An error will be thrown if the argument is not valid
+\fBSCR\fR\&.
+.CS
+
+
+% \fBmarpa::unicode::unfold\fR {66 99}
+{66 67} {98 99}
+
+.CE
+.TP
+\fBmarpa::unicode::data::cc::have-tcl\fR \fIccname\fR
+This command takes the possible name of a unicode \fBcharacter class\fR and
+returns a boolean flag indicating if this class is directly supported
+by Tcl (\fBtrue\fR), or not (\fBfalse\fR)\&.
+.CS
+
+
+% \fBmarpa::unicode::data::cc::have-tcl\fR arabic
+0
+
+% \fBmarpa::unicode::data::cc::have-tcl\fR xdigit
+1
+
+.CE
+.TP
+\fBmarpa::unicode::data::cc::have\fR \fIccname\fR
+This command takes the possible name of a unicode \fBcharacter class\fR and
+returns a boolean flag indicating if this is known unicode character
+class (\fBtrue\fR), or not (\fBfalse\fR)\&.
+.CS
+
+
+% \fBmarpa::unicode::data::cc::have\fR arabic
+1
+
+% \fBmarpa::unicode::data::cc::have\fR foo
+0
+
+% \fBmarpa::unicode::data::cc::have\fR xdigit
+1
+
+.CE
+.TP
+\fBmarpa::unicode::data::cc::names\fR
+This command returns a list containing the names of the known unicode
+\fBcharacter classs\fR\&.
+.sp
+\fINote\fR that the package not only knows the standard
+named unicode \fBcharacter classs\fR, but for any such \fBC\fR also "\fBC\fR:bmp"
+and "\fBC\fR:smp", which are \fBC\fR intersected (i\&.e\&. limited) to
+\fIBMP\fR and \fISMP\fR respectively\&.
+.TP
+\fBmarpa::unicode::data::cc::ranges\fR \fIccname\fR
+This command takes the name of a unicode \fBcharacter class\fR and returns the
+\fBSCR\fR representing that class\&. The result is normalized\&.
+.sp
+An error is thrown if the argument is not a known unicode
+\fBcharacter class\fR\&.
+.sp
+As an extension the command further accepts names of the form
+\fB%foo\fR where \fBfoo\fR is a known unicode \fBcharacter class\fR\&.
+In these cases the result is the normalized \fBSCR\fR of the
+specified \fBcharacter class\fR, after \fIcase expansion\fR\&.
+.CS
+
+
+% \fBmarpa::unicode::data::cc::ranges\fR adlam
+{0x1E900 0x1E94A} {0x1E950 0x1E959} {0x1E95E 0x1E95F}
+
+.CE
+.TP
+\fBmarpa::unicode::data::cc::tcl-names\fR
+This command returns a list containing the names of the character
+classes directly supported by Tcl itself (via \fBstring is\fR)\&.
+.PP
+.SH DATASTRUCTURES
+.SS "CHARACTER CLASS - CC"
+Character classes (abbreviated \fICC\fR) are simply sets of unicode
+codepoints\&.
+.PP
+The most trivial representation would be as a list of these
+codepoints\&. Given the space such would need for larger classes this
+package uses a number of more compressed representations, starting
+with \fBSCR\fR (horizontal compression of ranges) to \fBASBR\fR
+and \fBASSR\fR (vertical compression of ranges in aligned
+byte/codepoint positions of the element representations)\&.
+.PP
+Beyond the operations on such unnamed character classes just
+represented by values this package also knows a number of named
+character classes, the definition of which are extracted from the
+Unicode standard\&.
+These classes represent various categories of codepoints on the one
+hand, like \fBalpha\fR, \fBblank\fR, \fBcontrol\fR, etc\&., and
+the known unicode \fIscripts\fR on the other, like \fBarabic\fR,
+\fBbraille\fR, \fBcanadian_aboriginal\fR, etc\&.
+.SS "SET OF CODEPOINT (RANGES) - SCR"
+A \fIset of codepoint (ranges)\fR (short for set of codepoints and
+codepoint ranges, abbreviated to \fISCR\fR) is the main data
+structure used to represent unicode \fBcharacter classs\fR of any kind, named or
+not\&.
+.PP
+It is a Tcl list whose elements are a mix of codepoints and
+codepoint ranges\&.
+.PP
+The codepoints are represented by integer numbers in the range
+[\fB0\fR\&.\&.\&.\fBmarpa::unicode::max\fR]\&. Numbers outside of that range
+are not codepoints and a list containing such is not a valid
+\fISCR\fR\&.
+.PP
+The ranges are represented by 2-element lists (pairs) of
+codepoints, the start and the end of the range, inclusive\&. Beyond
+having to be valid codepoints the start must not be greater than the
+end of the range\&. Such a pair is not a valid range, and a list
+containing such is not a valid \fISCR\fR\&.
+.PP
+A \fInormalized\fR \fISCR\fR is defined as an \fISCR\fR
+which contains no duplicate elements, no overlapping/adjacent ranges,
+and all elements are sorted in integer ascending order by their start
+point\&.
+\fINote\fR: That previous sentence above talks only about ranges
+does not exclude the codepoints\&. For normalization and other purposes
+codepoints can simply be treated as ranges of size 1, where start and
+end points are identical\&.
+.SS "ALTERNATIVES OF SEQUENCES OF BYTE-RANGES - ASBR"
+A set of \fIalternatives of sequences of byte-ranges\fR
+(abbreviated to \fIASBR\fR) is an alternative (sic!) and (usually)
+more compact representation of \fBcharacter classs\fR\&.
+.PP
+This is the go-to representation of \fBcharacter classs\fR for the
+byte-oriented engine provided by \fBmarpa::runtime::c\fR, as it
+can be directly mapped to the grammar rules for such\&.
+.PP
+It makes use of the fact that the UTF-8 encoding of unicode
+codepoints maps each codepoint to a sequence of bytes, and then
+compresses the resulting "alternatives of byte sequences" by merging
+adjacent alternatives differing in a single position into a new
+alternative where the differing bytes become a single byte range (this
+is where "adjacent" is critical)\&.
+.PP
+Such a compression can be done very efficiently (in time and
+space) by generating the alternatives in sorted order and then
+comparing the newly generated against the last processed\&.
+.SS "ALTERNATIVES OF SEQUENCES OF SURROGATE-RANGES - ASSR"
+A set of \fIalternatives of sequences of surrogate-ranges\fR
+(abbreviated to \fIASSR\fR) is an alternative (sic!) and (usually)
+more compact representation of \fBcharacter classs\fR\&.
+.PP
+The basic principle of structure and generation is the same as
+for \fBASBR\fR\&. In contrast however the elements of the alternatives
+are codepoints limited to the \fIBMP\fR, with \fISMP\fR characters
+in the argument represented as pairs of surrogates before compression\&.
+.PP
+This is the go-to representation of \fBcharacter classs\fR for the
+character-oriented engine provided by \fBmarpa::runtime::tcl\fR,
+due to its Tcl-imposed limitation to the BMP, as it can be directly
+mapped to the grammar rules for such\&.
+.SH GLOSSARY
+.TP
+Unicode
+The main references needed are
+\fIhttps://en\&.wikipedia\&.org/wiki/Unicode\fR
+and	\fIhttps://en\&.wikipedia\&.org/wiki/UTF-8\fR\&.
+.TP
+BMP
+The \fIBasic Multi-lingual Plane\fR of unicode\&.
+.sp
+The BMP runs from codepoint \fB0\fR to codepoint
+\fBmarpa::unicode::bmp\fR, inclusive\&.
+.sp
+Characters in the BMP can be encoded by UTF-8 into a sequence
+of at least one to most three bytes\&.
+.TP
+SMP
+The \fISupplemental Multi-lingual Planes\fR of unicode\&.
+Starting just after the BMP they cover the remainder of unicode\&.
+.sp
+The SMP runs from codepoint \fBmarpa::unicode::smp\fR to
+\fBmarpa::unicode::max\fR, inclusive\&.
+.sp
+Characters in the SMP can be encoded by UTF-8 into a sequence
+of 4 bytes\&. For systems limited to the BMP (like Tcl) characters can
+also encoded as a pair of BMP \fIsurrogate\fR characters\&. This allows
+encoding them in six bytes of a pseudo UTF-8 encoding\&. This is called
+\fICESU-8\fR [https://en\&.wikipedia\&.org/wiki/UTF-8#CESU-8] coding\&.  (See also the description of the flags for
+\fBmarpa::unicode::2utf\fR)\&.
+.TP
+CES
+Shorthand for \fIcase-equivalent set\fR\&.
+.TP
+case-equivalent set
+Each unicode codepoint \fBC\fR is associated with a set of codepoints
+representing the different cases of the same character\&.
+These are the \fIcase-equivalent\fR codepoints of \fBC\fR\&.
+\fBC\fR itself is of course a member of this set\&.
+.sp
+As an example, the \fICES\fR of 97 is {65, 97}\&. More human
+readable, the character "A" has variants "a" and "A", lower- and
+upper-case\&.
+.sp
+As a second example, codepoint 38, i\&.e\&. "&", is a codepoint
+whose CES contains only itself\&.
+.sp
+\fINote\fR that a CES is a \fBcharacter class\fR\&.
+.TP
+primary case
+For each each unicode codepoint the smallest-numbered codepoint in its
+\fICES\fR is called this\&.
+.TP
+case expansion
+This is the process of replacing all codepoints of a larger structure
+with its CES\&.
+.sp
+A string of characters becomes a sequence of \fBcharacter classs\fR,
+making it case-independent\&.
+.sp
+A \fBcharacter class\fR becomes a possibly larger \fBcharacter class\fR\&.
+.PP
+.SH "BUGS, IDEAS, FEEDBACK"
+This document, and the package it describes, will undoubtedly contain
+bugs and other problems\&.
+Please report such at the \fIMarpa/Tcl Tracker\fR [https://core\&.tcl-lang\&.org/akupries/marpatcl]\&.
+Please report any ideas for enhancements you may have for either
+package and/or documentation as well\&.
+.SH KEYWORDS
+aycock, basic multi-lingual plane, bmp, case expansion, cesu-8, character classes, class canonicalisation, class complement, class negation, class normalization, code point, context free grammar, document processing, earley, horspool, joop leo, lexing, libmarpa, mutf-8, nigel horspool, parsing, primary case, regex, smp, supplemental multi-lingual planes, surrogate, table parsing, unicode, utf-8
+.SH COPYRIGHT
+.nf
+Copyright (c) 2015-present Andreas Kupries
+Copyright (c) 2018-present Documentation, Andreas Kupries
+
+.fi
