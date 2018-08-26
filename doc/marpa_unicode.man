@@ -17,7 +17,7 @@
 [strong {Note for reading}]: Unknown terms and shorthands are
 explained in the [sectref gloss].
 
-[vset p   marpa::unicode]
+[vset p   [vset pns]::unicode]
 [vset pd  [vset p]::data]
 [vset pdc [vset pd]::cc]
 

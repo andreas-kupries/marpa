@@ -276,6 +276,9 @@ doc
 \fBmarpa_unicode\fR
 \fIfiles/marpa_unicode\&.n\fR: Marpa/Tcl - marpa::unicode
 .TP
+\fBmarpa_util\fR
+\fIfiles/marpa_util\&.n\fR: Marpa/Tcl - marpa::util
+.TP
 \fBmarpatcl_changes\fR
 \fIfiles/marpatcl_changes\&.n\fR: Marpa/Tcl - Changes
 .TP

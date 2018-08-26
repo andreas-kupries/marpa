@@ -2,7 +2,7 @@
 [vset repo.alias   [uri https://core.tcl.tk/akupries/marpa]]
 [vset repo.chisel  [uri https://chiselapp.com/user/andreas_kupries/repository/marpa/index]]
 [vset repo.github  [uri https://github.com/andreas-kupries/marpa]]
-[vset tracker      [uri https://core.tcl-lang.org/akupries/marpatcl {Marpa/Tcl Tracker}]]
+[vset tracker      [uri https://core.tcl-lang.org/akupries/marpa {Marpa/Tcl Tracker}]]
 
 [vset fossil.scm  [uri http://www.fossil-scm.org {Fossil SCM}]]
 [vset fossil.bin  [uri http://www.fossil-scm.org/download.html {download page}]]

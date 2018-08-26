@@ -25,3 +25,4 @@
 [vset xr:uni       [term "[vset p.name] - Unicode Data & Utilities"]]
 
 [vset t:pkg.marpa-unicode "[vset p.name] - marpa::unicode"]
+[vset t:pkg.marpa-util    "[vset p.name] - marpa::util"]

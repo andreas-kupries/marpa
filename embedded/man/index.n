@@ -278,6 +278,9 @@ aycock
 \fBfiles/marpa_unicode\&.n\fR
 marpa_unicode
 .TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -331,6 +334,9 @@ character classes
 .TP
 \fBfiles/marpa_unicode\&.n\fR
 marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
@@ -392,6 +398,9 @@ context free grammar
 \fBfiles/marpa_unicode\&.n\fR
 marpa_unicode
 .TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -421,6 +430,9 @@ document processing
 .TP
 \fBfiles/marpa_unicode\&.n\fR
 marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
@@ -452,6 +464,9 @@ earley
 \fBfiles/marpa_unicode\&.n\fR
 marpa_unicode
 .TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -481,6 +496,9 @@ horspool
 .TP
 \fBfiles/marpa_unicode\&.n\fR
 marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
@@ -512,6 +530,9 @@ joop leo
 \fBfiles/marpa_unicode\&.n\fR
 marpa_unicode
 .TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -542,6 +563,9 @@ lexing
 \fBfiles/marpa_unicode\&.n\fR
 marpa_unicode
 .TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -571,6 +595,9 @@ libmarpa
 .TP
 \fBfiles/marpa_unicode\&.n\fR
 marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
@@ -608,6 +635,9 @@ nigel horspool
 \fBfiles/marpa_unicode\&.n\fR
 marpa_unicode
 .TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -637,6 +667,9 @@ parsing
 .TP
 \fBfiles/marpa_unicode\&.n\fR
 marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
@@ -673,6 +706,9 @@ regex
 .TP
 \fBfiles/marpa_unicode\&.n\fR
 marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
@@ -721,6 +757,9 @@ table parsing
 .TP
 \fBfiles/marpa_unicode\&.n\fR
 marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes

@@ -836,7 +836,7 @@ A \fBcharacter class\fR becomes a possibly larger \fBcharacter class\fR\&.
 .SH "BUGS, IDEAS, FEEDBACK"
 This document, and the package it describes, will undoubtedly contain
 bugs and other problems\&.
-Please report such at the \fIMarpa/Tcl Tracker\fR [https://core\&.tcl-lang\&.org/akupries/marpatcl]\&.
+Please report such at the \fIMarpa/Tcl Tracker\fR [https://core\&.tcl-lang\&.org/akupries/marpa]\&.
 Please report any ideas for enhancements you may have for either
 package and/or documentation as well\&.
 .SH KEYWORDS
