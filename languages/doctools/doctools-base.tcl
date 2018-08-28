@@ -280,7 +280,7 @@ oo::class create doctools::base {
 	
 	set  stop $sz    ;# end relative to start of new file itself
 	incr stop $start ;# end relative to entire extended input
-	incr stop -1     ;# last character
+	#incr stop -1    ;# last character
 
 	PAR match mark-add $full $stop \
 	    [self namespace]::my ReturnTo $here $mypath $stop

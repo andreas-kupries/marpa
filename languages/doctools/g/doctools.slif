@@ -76,7 +76,6 @@ subsection	::= m_subsection
 
 paragraphs	::= paragraph +
 		    separator => p_separator
-		    proper => 1
 
 p_separator	::= ( m_para )
 		|   ( m_para p_separator )
@@ -94,6 +93,7 @@ g_text		::= simplex		action => ::first
 		|   space		action => ::first
 		|   quote		action => ::first
 		|   bracel		action => ::first
+		|   backslash		action => ::first
 
 markup		::= m_arg		action => ::first
 		|   m_class		action => ::first
@@ -133,6 +133,7 @@ example_element	::= markup		action => ::first
 		|   nbspace		action => ::first
 		|   breaker		action => ::first
 		|   bracel		action => ::first
+		|   backslash		action => ::first
 
 nbspace		::= Nbspace
 breaker		::= Breaker
@@ -160,90 +161,98 @@ option_list   	::= opt_list_elem +
 tkoption_list 	::= tko_list_elem +
 
 arg_list_elem   ::= m_arg_def	paragraphs
+		|   m_arg_def
 cmd_list_elem   ::= m_cmd_def	paragraphs
+		|   m_cmd_def
 def_list_elem   ::= m_def	paragraphs
 		|   m_call	paragraphs
+		|   m_def
+		|   m_call
 enum_list_elem  ::= ( m_enum )	paragraphs
+		|   ( m_enum )
 item_list_elem  ::= ( m_item )	paragraphs
+		|   ( m_item )
 opt_list_elem   ::= m_opt_def	paragraphs
+		|   m_opt_def
 tko_list_elem   ::= m_tkoption_def paragraphs
+		|   m_tkoption_def
 
 # # ## ### ##### ######## ############# #####################
 ## Structure II - Command definitions
 
-m_arg     		::= ( Cl CArg		Space )	tclword		  			( CDone )
-m_arg_def		::= ( Cl CArgDef	Space )	tclword (Space) tclword			( CDone )
-			|   ( Cl CArgDef 	Space )	tclword (Space) tclword (Space) tclword	( CDone )
-m_call			::= ( Cl CCall 		Space )	tclwords	      			( CDone )
-m_category		::= ( Cl CCategory 	Space )	tclword 	  			( CDone )
-m_class 		::= ( Cl CClass 	Space )	tclword 	  			( CDone )
-m_cmd     		::= ( Cl CCmd 		Space )	tclword					( CDone )
-m_cmd_def		::= ( Cl CCmdDef 	Space )	tclword			( CDone )
-m_const     		::= ( Cl CConst 	Space )	tclword			( CDone )
-m_copyright		::= ( Cl CCopyright 	Space )	tclword			( CDone )
-m_def			::= ( Cl CDef 		Space )	tclword			( CDone )
-m_description		::= ( Cl CDescription					  CDone )
-m_emph   		::= ( Cl CEmph 		Space )	tclword			( CDone )
-m_enum			::= ( Cl CEnum 						  CDone )
-m_example		::= ( Cl CExample 	Space )	tclword			( CDone )
-m_example_begin		::= ( Cl CExampleBegin					  CDone )
-m_example_end		::= ( Cl CExampleEnd					  CDone )
-m_file			::= ( Cl CFile 		Space )	tclword			( CDone )
-m_fun     		::= ( Cl CFun 		Space )	tclword			( CDone )
-m_image			::= ( Cl CImage 	Space )	tclword      		( CDone )
-			|   ( Cl CImage 	Space )	tclword (Space) tclword	( CDone )
-m_item			::= ( Cl CItem						  CDone )
-m_keywords		::= ( Cl CKeywords 	Space )	tclwords   		( CDone )
-m_lb    		::= ( Cl CLb	   					  CDone )
-m_list_begin_arg	::= ( Cl CListBegin Space LArg				  CDone )
-m_list_begin_cmd	::= ( Cl CListBegin Space LCmd				  CDone )
-m_list_begin_def	::= ( Cl CListBegin Space LDef				  CDone )
-m_list_begin_enum	::= ( Cl CListBegin Space LEnum				  CDone )
-m_list_begin_item	::= ( Cl CListBegin Space LItem				  CDone )
-m_list_begin_opt	::= ( Cl CListBegin Space LOpt				  CDone )
-m_list_begin_tko	::= ( Cl CListBegin Space LTkopt			  CDone )
-m_list_end		::= ( Cl CListEnd   					  CDone )
-m_manpage_begin		::= ( Cl CManpageBegin	Space )	tclword (Space) tclword (Space) tclword	( CDone )
-m_manpage_end		::= ( Cl CManpageEnd   					  CDone )
-m_manpage  		::= ( Cl CManpage 	Space )	tclword     		( CDone )
-m_method  		::= ( Cl CMethod 	Space )	tclword     		( CDone )
-m_moddesc		::= ( Cl CModdesc	Space )	tclword			( CDone )
-m_namespace 		::= ( Cl CNamespace	Space )	tclword			( CDone )
-m_opt   		::= ( Cl COpt		Space )	tclword			( CDone )
-m_option		::= ( Cl COption	Space )	tclword			( CDone )
-m_opt_def		::= ( Cl COptDef	Space )	tclword			( CDone )
-			|   ( Cl COptDef	Space )	tclword (Space) tclword	( CDone )
-m_package 		::= ( Cl CPackage	Space )	tclword 		( CDone )
-m_para			::= ( Cl CNl 	  					  CDone )
-			|   ( Cl CPara						  CDone )
-m_rb   			::= ( Cl CRb						  CDone )
-m_require		::= ( Cl CRequire	Space )	tclword			( CDone )
-			|   ( Cl CRequire	Space )	tclword (Space) tclword	( CDone )
-m_section		::= ( Cl CSection	Space )	tclword 		( CDone )
-m_sectref 		::= ( Cl CSectref	Space )	tclword 		( CDone )
-			|   ( Cl CSectref	Space )	tclword (Space) tclword	( CDone )
-m_sectref_ext 		::= ( Cl CSectrefExt	Space )	tclword 		( CDone )
-m_see_also		::= ( Cl CSeeAlso	Space )	tclwords		( CDone )
-m_strong    		::= ( Cl CStrong	Space )	tclword			( CDone )
-m_subsection		::= ( Cl CSubsection	Space )	tclword			( CDone )
-			|   ( Cl CSubsection	Space )	tclword (Space) tclword	( CDone )
-m_syscmd		::= ( Cl CSysCmd	Space )	tclword			( CDone )
-m_term	  		::= ( Cl CTerm		Space )	tclword			( CDone )
-m_titledesc		::= ( Cl CTitledesc	Space )	tclword			( CDone )
-m_tkoption_def		::= ( Cl CTkoptDef	Space )	tclword (Space) tclword (Space) tclword	( CDone )
-m_type    		::= ( Cl CType		Space )	tclword			( CDone )
-m_uri   		::= ( Cl CUri		Space )	tclword			( CDone )
-			|   ( Cl CUri		Space )	tclword (Space) tclword	( CDone )
-m_usage   		::= ( Cl CUsage		Space )	tclwords		( CDone )
-m_var       		::= ( Cl CVar		Space )	tclword 		( CDone )
-m_widget		::= ( Cl CWidget	Space )	tclword			( CDone )
+m_arg     		::= ( Cl CArg		Wspace )	tclword		  				( CDone )
+m_arg_def		::= ( Cl CArgDef	Wspace )	tclword (Wspace) tclword			( CDone )
+			|   ( Cl CArgDef 	Wspace )	tclword (Wspace) tclword (Wspace) tclword	( CDone )
+m_call			::= ( Cl CCall 		Wspace )	tclwords	      				( CDone )
+m_category		::= ( Cl CCategory 	Wspace )	tclword 	  				( CDone )
+m_class 		::= ( Cl CClass 	Wspace )	tclword 	  				( CDone )
+m_cmd     		::= ( Cl CCmd 		Wspace )	tclword						( CDone )
+m_cmd_def		::= ( Cl CCmdDef 	Wspace )	tclword						( CDone )
+m_const     		::= ( Cl CConst 	Wspace )	tclword						( CDone )
+m_copyright		::= ( Cl CCopyright 	Wspace )	tclword						( CDone )
+m_def			::= ( Cl CDef 		Wspace )	tclword						( CDone )
+m_description		::= ( Cl CDescription					  	  	  		  CDone )
+m_emph   		::= ( Cl CEmph 		Wspace )	tclword						( CDone )
+m_enum			::= ( Cl CEnum 						  	  	  		  CDone )
+m_example		::= ( Cl CExample 	Wspace )	tclword						( CDone )
+m_example_begin		::= ( Cl CExampleBegin					  	  	  		  CDone )
+m_example_end		::= ( Cl CExampleEnd					  	  	  		  CDone )
+m_file			::= ( Cl CFile 		Wspace )	tclword						( CDone )
+m_fun     		::= ( Cl CFun 		Wspace )	tclword						( CDone )
+m_image			::= ( Cl CImage 	Wspace )	tclword      					( CDone )
+			|   ( Cl CImage 	Wspace )	tclword (Wspace) tclword			( CDone )
+m_item			::= ( Cl CItem						  		  		  CDone )
+m_keywords		::= ( Cl CKeywords 	Wspace )	tclwords					( CDone )
+m_lb    		::= ( Cl CLb	   					  		  		  CDone )
+m_list_begin_arg	::= ( Cl CListBegin Wspace LArg				  		  		  CDone )
+m_list_begin_cmd	::= ( Cl CListBegin Wspace LCmd				  		  		  CDone )
+m_list_begin_def	::= ( Cl CListBegin Wspace LDef				  		  		  CDone )
+m_list_begin_enum	::= ( Cl CListBegin Wspace LEnum				  	  		  CDone )
+m_list_begin_item	::= ( Cl CListBegin Wspace LItem				  	  		  CDone )
+m_list_begin_opt	::= ( Cl CListBegin Wspace LOpt				  		  		  CDone )
+m_list_begin_tko	::= ( Cl CListBegin Wspace LTkopt			  		  		  CDone )
+m_list_end		::= ( Cl CListEnd   					  		  		  CDone )
+m_manpage_begin		::= ( Cl CManpageBegin	Wspace )	tclword (Wspace) tclword (Wspace) tclword	( CDone )
+m_manpage_end		::= ( Cl CManpageEnd   					  	  	  		  CDone )
+m_manpage  		::= ( Cl CManpage 	Wspace )	tclword						( CDone )
+m_method  		::= ( Cl CMethod 	Wspace )	tclword     					( CDone )
+m_moddesc		::= ( Cl CModdesc	Wspace )	tclword						( CDone )
+m_namespace 		::= ( Cl CNamespace	Wspace )	tclword						( CDone )
+m_opt   		::= ( Cl COpt		Wspace )	tclword						( CDone )
+m_option		::= ( Cl COption	Wspace )	tclword						( CDone )
+m_opt_def		::= ( Cl COptDef	Wspace )	tclword						( CDone )
+			|   ( Cl COptDef	Wspace )	tclword (Wspace) tclword			( CDone )
+m_package 		::= ( Cl CPackage	Wspace )	tclword 					( CDone )
+m_para			::= ( Cl CNl 	  					  				  CDone )
+			|   ( Cl CPara						  				  CDone )
+m_rb   			::= ( Cl CRb						  				  CDone )
+m_require		::= ( Cl CRequire	Wspace )	tclword						( CDone )
+			|   ( Cl CRequire	Wspace )	tclword (Wspace) tclword			( CDone )
+m_section		::= ( Cl CSection	Wspace )	tclword 					( CDone )
+			|   ( Cl CSection	Wspace )	tclword (Wspace) tclword			( CDone )
+m_sectref 		::= ( Cl CSectref	Wspace )	tclword 					( CDone )
+			|   ( Cl CSectref	Wspace )	tclword (Wspace) tclword			( CDone )
+m_sectref_ext 		::= ( Cl CSectrefExt	Wspace )	tclword 					( CDone )
+m_see_also		::= ( Cl CSeeAlso	Wspace )	tclwords					( CDone )
+m_strong    		::= ( Cl CStrong	Wspace )	tclword						( CDone )
+m_subsection		::= ( Cl CSubsection	Wspace )	tclword						( CDone )
+			|   ( Cl CSubsection	Wspace )	tclword (Wspace) tclword			( CDone )
+m_syscmd		::= ( Cl CSysCmd	Wspace )	tclword						( CDone )
+m_term	  		::= ( Cl CTerm		Wspace )	tclword						( CDone )
+m_titledesc		::= ( Cl CTitledesc	Wspace )	tclword						( CDone )
+m_tkoption_def		::= ( Cl CTkoptDef	Wspace )	tclword (Wspace) tclword (Wspace) tclword	( CDone )
+m_type    		::= ( Cl CType		Wspace )	tclword			 	  		( CDone )
+m_uri   		::= ( Cl CUri		Wspace )	tclword						( CDone )
+			|   ( Cl CUri		Wspace )	tclword (Wspace) tclword			( CDone )
+m_usage   		::= ( Cl CUsage		Wspace )	tclwords					( CDone )
+m_var       		::= ( Cl CVar		Wspace )	tclword 					( CDone )
+m_widget		::= ( Cl CWidget	Wspace )	tclword						( CDone )
 
 # # ## ### ##### ######## ############# #####################
 # Structure III - Command argument structure - Tcl words
 
 tclwords    	::= tclword +
-	separator => space
-	proper => 1
+	separator => wspace
 
 tclword		::= braced	action => ::first
 		|   quoted	action => ::first
@@ -276,8 +285,10 @@ simple		::= Simple
 simplex		::= Simplex
 nbsimplex	::= Nbsimplex
 space		::= Space
+wspace		::= Wspace
 quote		::= Quote
 bracel		::= Bracel
+backslash	::= Backslash
 
 # # ## ### ##### ######## ############# #####################
 ## L0 lexemes == G1 terminals
@@ -362,12 +373,14 @@ Braced		~ BRACED
 Simple		~ SIMPLE
 Simplex		~ SIMPLEX
 Nbsimplex	~ NBSIMPLEX
+Wspace		~ WHITE1
 Space		~ SPACE1
 Nbspace		~ NBSPACE
 Breaker		~ BREAKER
 Escaped		~ ESCAPED
 Quote		~ QUOTE
 Bracel		~ BL
+Backslash	~ BS
 
 :discard	~ Whitespace
 Whitespace	~ WHITE1
@@ -452,7 +465,7 @@ C_WIDGET	~ 'widget'
 # # ## ### ##### ######## ############# #####################
 ## list types
 
-L_ARG	~ 'arguments'
+L_ARG	~ 'arguments'	| 'args'
 L_CMD	~ 'commands'
 L_DEF	~ 'definitions'
 L_ENUM	~ 'enumerated'	| 'enum'
@@ -529,6 +542,8 @@ BRACED		~ BL BRACED_ELEMS BR
 BL		~ '{'
 BR		~ '}'
 
+BS		~ '\\'
+
 BRACED_ELEMS	~ BRACED_ELEM *
 BRACED_ELEM	~ ANY_UNBRACED
 		| BRACED
@@ -551,6 +566,7 @@ QUOTED_ELEM	~ SIMPLE_CHAR
 		| BL
 
 ESCAPED		~ '\\'
+		| '\\\\'
 		| '\\['
 		| '\\"'
 		| '\\]'

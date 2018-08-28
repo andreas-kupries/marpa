@@ -7,7 +7,7 @@
 # (c) 2018 Grammar doctools::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "doctools::parser::tcl".
-##	Generated On Thu Aug 23 23:02:46 PDT 2018
+##	Generated On Mon Aug 27 21:07:08 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 
@@ -102,6 +102,7 @@ oo::class create doctools::parser::tcl {
 	debug.doctools/parser/tcl
 	# Lexer API: Lexeme symbols (Cannot be terminal). G1 terminals
 	return {
+	    Backslash       1
 	    Braced          1
 	    Bracel          1
 	    Breaker         1
@@ -177,6 +178,7 @@ oo::class create doctools::parser::tcl {
 	    Simple          1
 	    Simplex         1
 	    Space           1
+	    Wspace          1
 	}
     }
 
@@ -197,12 +199,14 @@ oo::class create doctools::parser::tcl {
 	    {@CLS:<\u10000-\u10ffff>.SMP}
 	    {@STR:<\134\42>}
 	    {@STR:<\134\133>}
+	    {@STR:<\134\134>}
 	    {@STR:<\134\135>}
 	    {@STR:<\134\173>}
 	    {@STR:<\134\175>}
 	    {@STR:<\r\n>}
 	    @STR:<arg>
 	    @STR:<arg_def>
+	    @STR:<args>
 	    @STR:<arguments>
 	    @STR:<call>
 	    @STR:<category>
@@ -272,6 +276,7 @@ oo::class create doctools::parser::tcl {
 	    BRACED_ELEM
 	    BRACED_ELEMS
 	    BREAKER
+	    BS
 	    C_ARG
 	    C_ARGDEF
 	    C_CALL
@@ -376,6 +381,7 @@ oo::class create doctools::parser::tcl {
 	return {
 	    {@STR:<arg> := @CHR:<a> @CHR:<r> @CHR:<g>}
 	    {@STR:<arg_def> := @CHR:<a> @CHR:<r> @CHR:<g> @CHR:<_> @CHR:<d> @CHR:<e> @CHR:<f>}
+	    {@STR:<args> := @CHR:<a> @CHR:<r> @CHR:<g> @CHR:<s>}
 	    {@STR:<arguments> := @CHR:<a> @CHR:<r> @CHR:<g> @CHR:<u> @CHR:<m> @CHR:<e> @CHR:<n> @CHR:<t> @CHR:<s>}
 	    {@STR:<call> := @CHR:<c> @CHR:<a> @CHR:<l> @CHR:<l>}
 	    {@STR:<category> := @CHR:<c> @CHR:<a> @CHR:<t> @CHR:<e> @CHR:<g> @CHR:<o> @CHR:<r> @CHR:<y>}
@@ -438,6 +444,7 @@ oo::class create doctools::parser::tcl {
 	    {@STR:<vset> := @CHR:<v> @CHR:<s> @CHR:<e> @CHR:<t>}
 	    {@STR:<widget> := @CHR:<w> @CHR:<i> @CHR:<d> @CHR:<g> @CHR:<e> @CHR:<t>}
 	    {ANY_UNBRACED := {@^CLS:<\173\175>}}
+	    {Backslash := BS}
 	    {BL := {@CHR:<\173>}}
 	    {BR := {@CHR:<\175>}}
 	    {BRACE_ESCAPED := {@STR:<\134\173>}}
@@ -451,6 +458,7 @@ oo::class create doctools::parser::tcl {
 	    {Bracel := BL}
 	    {Breaker := BREAKER}
 	    {BREAKER := NEWLINE SPACE1}
+	    {BS := {@CHR:<\134>}}
 	    {C_ARG := @STR:<arg>}
 	    {C_ARGDEF := @STR:<arg_def>}
 	    {C_CALL := @STR:<call>}
@@ -571,8 +579,10 @@ oo::class create doctools::parser::tcl {
 	    {ESCAPED := {@CHR:<\134>}}
 	    {ESCAPED := {@STR:<\134\42>}}
 	    {ESCAPED := {@STR:<\134\133>}}
+	    {ESCAPED := {@STR:<\134\134>}}
 	    {ESCAPED := {@STR:<\134\135>}}
 	    {INCLUDE := CL WHITE0 @STR:<include> WHITE1 WORD WHITE0 CR}
+	    {L_ARG := @STR:<args>}
 	    {L_ARG := @STR:<arguments>}
 	    {L_CMD := @STR:<commands>}
 	    {L_DEF := @STR:<definitions>}
@@ -638,6 +648,7 @@ oo::class create doctools::parser::tcl {
 	    {WORD := QUOTED}
 	    {WORD := UNQUOTED}
 	    {WORDS1 + WORD WHITE1 0}
+	    {Wspace := WHITE1}
 	    {{@^CLS:<\173\175>} := {@^CLS:<\173\175>.BMP}}
 	    {{@^CLS:<\173\175>} := {@CLS:<\u10000-\u10ffff>.SMP}}
 	    {{@^CLS:<\t-\r\40\42\133-\135\173>} := {@^CLS:<\t-\r\40\42\133-\135\173>.BMP}}
@@ -645,6 +656,7 @@ oo::class create doctools::parser::tcl {
 	    {{@CLS:<\u10000-\u10ffff>.SMP} := {@RAN:<\ud800\udbff>} {@RAN:<\udc00\udfff>}}
 	    {{@STR:<\134\42>} := {@CHR:<\134>} {@CHR:<\42>}}
 	    {{@STR:<\134\133>} := {@CHR:<\134>} {@CHR:<\133>}}
+	    {{@STR:<\134\134>} := {@CHR:<\134>} {@CHR:<\134>}}
 	    {{@STR:<\134\135>} := {@CHR:<\134>} {@CHR:<\135>}}
 	    {{@STR:<\134\173>} := {@CHR:<\134>} {@CHR:<\173>}}
 	    {{@STR:<\134\175>} := {@CHR:<\134>} {@CHR:<\175>}}
@@ -684,6 +696,7 @@ oo::class create doctools::parser::tcl {
 	return {
 	    arg_list_elem
 	    argument_list
+	    backslash
 	    body
 	    braced
 	    bracel
@@ -791,6 +804,7 @@ oo::class create doctools::parser::tcl {
 	    unquoted_elems
 	    unquoted_lead
 	    word
+	    wspace
 	    xref
 	}
     }
@@ -800,8 +814,10 @@ oo::class create doctools::parser::tcl {
 	debug.doctools/parser/tcl
 	return {
 	    {__ :A {name values}}
+	    {arg_list_elem := m_arg_def}
 	    {arg_list_elem := m_arg_def paragraphs}
 	    {argument_list + arg_list_elem}
+	    {backslash := Backslash}
 	    {body :M 0 m_description}
 	    {body :M 0 m_description paragraphs sections}
 	    {body :M 0 m_description paragraphs subsections sections}
@@ -813,17 +829,22 @@ oo::class create doctools::parser::tcl {
 	    {braced := Braced}
 	    {bracel := Bracel}
 	    {breaker := Breaker}
+	    {cmd_list_elem := m_cmd_def}
 	    {cmd_list_elem := m_cmd_def paragraphs}
 	    {command_list + cmd_list_elem}
+	    {def_list_elem := m_call}
+	    {def_list_elem := m_def}
 	    {def_list_elem := m_call paragraphs}
 	    {def_list_elem := m_def paragraphs}
 	    {definition_list + def_list_elem}
 	    {enum_list + enum_list_elem}
+	    {enum_list_elem :M 0 m_enum}
 	    {enum_list_elem :M 0 m_enum paragraphs}
 	    {escaped := Escaped}
 	    {__ :A Afirst}
 	    {example := m_example}
 	    {example :M {0 2} m_example_begin example_text m_example_end}
+	    {example_element := backslash}
 	    {example_element := bracel}
 	    {example_element := breaker}
 	    {example_element := markup}
@@ -834,6 +855,7 @@ oo::class create doctools::parser::tcl {
 	    {__ :A {name values}}
 	    {example_text + example_element}
 	    {__ :A Afirst}
+	    {g_text := backslash}
 	    {g_text := bracel}
 	    {g_text := quote}
 	    {g_text := simple}
@@ -847,6 +869,7 @@ oo::class create doctools::parser::tcl {
 	    {__ :A {name values}}
 	    {headers * header}
 	    {item_list + item_list_elem}
+	    {item_list_elem :M 0 m_item}
 	    {item_list_elem :M 0 m_item paragraphs}
 	    {__ :A Afirst}
 	    {list :M {0 2} m_list_begin_arg argument_list m_list_end}
@@ -857,71 +880,73 @@ oo::class create doctools::parser::tcl {
 	    {list :M {0 2} m_list_begin_opt option_list m_list_end}
 	    {list :M {0 2} m_list_begin_tko tkoption_list m_list_end}
 	    {__ :A {name values}}
-	    {m_arg :M {0 1 2 4} Cl CArg Space tclword CDone}
-	    {m_arg_def :M {0 1 2 4 6} Cl CArgDef Space tclword Space tclword CDone}
-	    {m_arg_def :M {0 1 2 4 6 8} Cl CArgDef Space tclword Space tclword Space tclword CDone}
-	    {m_call :M {0 1 2 4} Cl CCall Space tclwords CDone}
-	    {m_category :M {0 1 2 4} Cl CCategory Space tclword CDone}
-	    {m_class :M {0 1 2 4} Cl CClass Space tclword CDone}
-	    {m_cmd :M {0 1 2 4} Cl CCmd Space tclword CDone}
-	    {m_cmd_def :M {0 1 2 4} Cl CCmdDef Space tclword CDone}
-	    {m_const :M {0 1 2 4} Cl CConst Space tclword CDone}
-	    {m_copyright :M {0 1 2 4} Cl CCopyright Space tclword CDone}
-	    {m_def :M {0 1 2 4} Cl CDef Space tclword CDone}
+	    {m_arg :M {0 1 2 4} Cl CArg Wspace tclword CDone}
+	    {m_arg_def :M {0 1 2 4 6} Cl CArgDef Wspace tclword Wspace tclword CDone}
+	    {m_arg_def :M {0 1 2 4 6 8} Cl CArgDef Wspace tclword Wspace tclword Wspace tclword CDone}
+	    {m_call :M {0 1 2 4} Cl CCall Wspace tclwords CDone}
+	    {m_category :M {0 1 2 4} Cl CCategory Wspace tclword CDone}
+	    {m_class :M {0 1 2 4} Cl CClass Wspace tclword CDone}
+	    {m_cmd :M {0 1 2 4} Cl CCmd Wspace tclword CDone}
+	    {m_cmd_def :M {0 1 2 4} Cl CCmdDef Wspace tclword CDone}
+	    {m_const :M {0 1 2 4} Cl CConst Wspace tclword CDone}
+	    {m_copyright :M {0 1 2 4} Cl CCopyright Wspace tclword CDone}
+	    {m_def :M {0 1 2 4} Cl CDef Wspace tclword CDone}
 	    {m_description :M {0 1 2} Cl CDescription CDone}
-	    {m_emph :M {0 1 2 4} Cl CEmph Space tclword CDone}
+	    {m_emph :M {0 1 2 4} Cl CEmph Wspace tclword CDone}
 	    {m_enum :M {0 1 2} Cl CEnum CDone}
-	    {m_example :M {0 1 2 4} Cl CExample Space tclword CDone}
+	    {m_example :M {0 1 2 4} Cl CExample Wspace tclword CDone}
 	    {m_example_begin :M {0 1 2} Cl CExampleBegin CDone}
 	    {m_example_end :M {0 1 2} Cl CExampleEnd CDone}
-	    {m_file :M {0 1 2 4} Cl CFile Space tclword CDone}
-	    {m_fun :M {0 1 2 4} Cl CFun Space tclword CDone}
-	    {m_image :M {0 1 2 4} Cl CImage Space tclword CDone}
-	    {m_image :M {0 1 2 4 6} Cl CImage Space tclword Space tclword CDone}
+	    {m_file :M {0 1 2 4} Cl CFile Wspace tclword CDone}
+	    {m_fun :M {0 1 2 4} Cl CFun Wspace tclword CDone}
+	    {m_image :M {0 1 2 4} Cl CImage Wspace tclword CDone}
+	    {m_image :M {0 1 2 4 6} Cl CImage Wspace tclword Wspace tclword CDone}
 	    {m_item :M {0 1 2} Cl CItem CDone}
-	    {m_keywords :M {0 1 2 4} Cl CKeywords Space tclwords CDone}
+	    {m_keywords :M {0 1 2 4} Cl CKeywords Wspace tclwords CDone}
 	    {m_lb :M {0 1 2} Cl CLb CDone}
-	    {m_list_begin_arg :M {0 1 2 3 4} Cl CListBegin Space LArg CDone}
-	    {m_list_begin_cmd :M {0 1 2 3 4} Cl CListBegin Space LCmd CDone}
-	    {m_list_begin_def :M {0 1 2 3 4} Cl CListBegin Space LDef CDone}
-	    {m_list_begin_enum :M {0 1 2 3 4} Cl CListBegin Space LEnum CDone}
-	    {m_list_begin_item :M {0 1 2 3 4} Cl CListBegin Space LItem CDone}
-	    {m_list_begin_opt :M {0 1 2 3 4} Cl CListBegin Space LOpt CDone}
-	    {m_list_begin_tko :M {0 1 2 3 4} Cl CListBegin Space LTkopt CDone}
+	    {m_list_begin_arg :M {0 1 2 3 4} Cl CListBegin Wspace LArg CDone}
+	    {m_list_begin_cmd :M {0 1 2 3 4} Cl CListBegin Wspace LCmd CDone}
+	    {m_list_begin_def :M {0 1 2 3 4} Cl CListBegin Wspace LDef CDone}
+	    {m_list_begin_enum :M {0 1 2 3 4} Cl CListBegin Wspace LEnum CDone}
+	    {m_list_begin_item :M {0 1 2 3 4} Cl CListBegin Wspace LItem CDone}
+	    {m_list_begin_opt :M {0 1 2 3 4} Cl CListBegin Wspace LOpt CDone}
+	    {m_list_begin_tko :M {0 1 2 3 4} Cl CListBegin Wspace LTkopt CDone}
 	    {m_list_end :M {0 1 2} Cl CListEnd CDone}
-	    {m_manpage :M {0 1 2 4} Cl CManpage Space tclword CDone}
-	    {m_manpage_begin :M {0 1 2 4 6 8} Cl CManpageBegin Space tclword Space tclword Space tclword CDone}
+	    {m_manpage :M {0 1 2 4} Cl CManpage Wspace tclword CDone}
+	    {m_manpage_begin :M {0 1 2 4 6 8} Cl CManpageBegin Wspace tclword Wspace tclword Wspace tclword CDone}
 	    {m_manpage_end :M {0 1 2} Cl CManpageEnd CDone}
-	    {m_method :M {0 1 2 4} Cl CMethod Space tclword CDone}
-	    {m_moddesc :M {0 1 2 4} Cl CModdesc Space tclword CDone}
-	    {m_namespace :M {0 1 2 4} Cl CNamespace Space tclword CDone}
-	    {m_opt :M {0 1 2 4} Cl COpt Space tclword CDone}
-	    {m_opt_def :M {0 1 2 4} Cl COptDef Space tclword CDone}
-	    {m_opt_def :M {0 1 2 4 6} Cl COptDef Space tclword Space tclword CDone}
-	    {m_option :M {0 1 2 4} Cl COption Space tclword CDone}
-	    {m_package :M {0 1 2 4} Cl CPackage Space tclword CDone}
+	    {m_method :M {0 1 2 4} Cl CMethod Wspace tclword CDone}
+	    {m_moddesc :M {0 1 2 4} Cl CModdesc Wspace tclword CDone}
+	    {m_namespace :M {0 1 2 4} Cl CNamespace Wspace tclword CDone}
+	    {m_opt :M {0 1 2 4} Cl COpt Wspace tclword CDone}
+	    {m_opt_def :M {0 1 2 4} Cl COptDef Wspace tclword CDone}
+	    {m_opt_def :M {0 1 2 4 6} Cl COptDef Wspace tclword Wspace tclword CDone}
+	    {m_option :M {0 1 2 4} Cl COption Wspace tclword CDone}
+	    {m_package :M {0 1 2 4} Cl CPackage Wspace tclword CDone}
 	    {m_para :M {0 1 2} Cl CNl CDone}
 	    {m_para :M {0 1 2} Cl CPara CDone}
 	    {m_rb :M {0 1 2} Cl CRb CDone}
-	    {m_require :M {0 1 2 4} Cl CRequire Space tclword CDone}
-	    {m_require :M {0 1 2 4 6} Cl CRequire Space tclword Space tclword CDone}
-	    {m_section :M {0 1 2 4} Cl CSection Space tclword CDone}
-	    {m_sectref :M {0 1 2 4} Cl CSectref Space tclword CDone}
-	    {m_sectref :M {0 1 2 4 6} Cl CSectref Space tclword Space tclword CDone}
-	    {m_sectref_ext :M {0 1 2 4} Cl CSectrefExt Space tclword CDone}
-	    {m_see_also :M {0 1 2 4} Cl CSeeAlso Space tclwords CDone}
-	    {m_strong :M {0 1 2 4} Cl CStrong Space tclword CDone}
-	    {m_subsection :M {0 1 2 4} Cl CSubsection Space tclword CDone}
-	    {m_syscmd :M {0 1 2 4} Cl CSysCmd Space tclword CDone}
-	    {m_term :M {0 1 2 4} Cl CTerm Space tclword CDone}
-	    {m_titledesc :M {0 1 2 4} Cl CTitledesc Space tclword CDone}
-	    {m_tkoption_def :M {0 1 2 4 6 8} Cl CTkoptDef Space tclword Space tclword Space tclword CDone}
-	    {m_type :M {0 1 2 4} Cl CType Space tclword CDone}
-	    {m_uri :M {0 1 2 4} Cl CUri Space tclword CDone}
-	    {m_uri :M {0 1 2 4 6} Cl CUri Space tclword Space tclword CDone}
-	    {m_usage :M {0 1 2 4} Cl CUsage Space tclwords CDone}
-	    {m_var :M {0 1 2 4} Cl CVar Space tclword CDone}
-	    {m_widget :M {0 1 2 4} Cl CWidget Space tclword CDone}
+	    {m_require :M {0 1 2 4} Cl CRequire Wspace tclword CDone}
+	    {m_require :M {0 1 2 4 6} Cl CRequire Wspace tclword Wspace tclword CDone}
+	    {m_section :M {0 1 2 4} Cl CSection Wspace tclword CDone}
+	    {m_section :M {0 1 2 4 6} Cl CSection Wspace tclword Wspace tclword CDone}
+	    {m_sectref :M {0 1 2 4} Cl CSectref Wspace tclword CDone}
+	    {m_sectref :M {0 1 2 4 6} Cl CSectref Wspace tclword Wspace tclword CDone}
+	    {m_sectref_ext :M {0 1 2 4} Cl CSectrefExt Wspace tclword CDone}
+	    {m_see_also :M {0 1 2 4} Cl CSeeAlso Wspace tclwords CDone}
+	    {m_strong :M {0 1 2 4} Cl CStrong Wspace tclword CDone}
+	    {m_subsection :M {0 1 2 4} Cl CSubsection Wspace tclword CDone}
+	    {m_subsection :M {0 1 2 4 6} Cl CSubsection Wspace tclword Wspace tclword CDone}
+	    {m_syscmd :M {0 1 2 4} Cl CSysCmd Wspace tclword CDone}
+	    {m_term :M {0 1 2 4} Cl CTerm Wspace tclword CDone}
+	    {m_titledesc :M {0 1 2 4} Cl CTitledesc Wspace tclword CDone}
+	    {m_tkoption_def :M {0 1 2 4 6 8} Cl CTkoptDef Wspace tclword Wspace tclword Wspace tclword CDone}
+	    {m_type :M {0 1 2 4} Cl CType Wspace tclword CDone}
+	    {m_uri :M {0 1 2 4} Cl CUri Wspace tclword CDone}
+	    {m_uri :M {0 1 2 4 6} Cl CUri Wspace tclword Wspace tclword CDone}
+	    {m_usage :M {0 1 2 4} Cl CUsage Wspace tclwords CDone}
+	    {m_var :M {0 1 2 4} Cl CVar Wspace tclword CDone}
+	    {m_widget :M {0 1 2 4} Cl CWidget Wspace tclword CDone}
 	    {manpage :M 3 m_manpage_begin headers body m_manpage_end}
 	    {__ :A Afirst}
 	    {markup := m_arg}
@@ -953,12 +978,13 @@ oo::class create doctools::parser::tcl {
 	    {__ :A {name values}}
 	    {nbsimplex := Nbsimplex}
 	    {nbspace := Nbspace}
+	    {opt_list_elem := m_opt_def}
 	    {opt_list_elem := m_opt_def paragraphs}
 	    {option_list + opt_list_elem}
 	    {p_separator :M 0 m_para}
 	    {p_separator :M {0 1} m_para p_separator}
 	    {paragraph + word}
-	    {paragraphs + paragraph p_separator 1}
+	    {paragraphs + paragraph p_separator 0}
 	    {quote := Quote}
 	    {quoted :M {0 2} Quote quoted_elems Quote}
 	    {__ :A Afirst}
@@ -985,7 +1011,8 @@ oo::class create doctools::parser::tcl {
 	    {tclword := quoted}
 	    {tclword := unquoted}
 	    {__ :A {name values}}
-	    {tclwords + tclword space 1}
+	    {tclwords + tclword wspace 0}
+	    {tko_list_elem := m_tkoption_def}
 	    {tko_list_elem := m_tkoption_def paragraphs}
 	    {tkoption_list + tko_list_elem}
 	    {__ :A Afirst}
@@ -1007,6 +1034,9 @@ oo::class create doctools::parser::tcl {
 	    {word := list}
 	    {word := markup}
 	    {word := xref}
+	    {__ :A {name values}}
+	    {wspace := Wspace}
+	    {__ :A Afirst}
 	    {xref := m_category}
 	    {xref := m_keywords}
 	    {xref := m_see_also}
