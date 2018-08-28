@@ -41,6 +41,7 @@ typedef struct marpatcl_rtc {
     void*                   rcdata;  /* ... and its client data */
     marpatcl_rtc_event_cmd  event;   /* Dispatcher for parse events ... */
     void*                   ecdata;  /* ... and its client data */
+    int                     done;    /* Flag to force reset on reuse */
 
     /* Rule information for progress reports. Indexed by rule, returns the PC
      * of the spec bytecode instruction for the rule. From this lhs and rhs
