@@ -7,6 +7,14 @@
 
 if {[llength $argv] != 6} {
     puts stderr "Usage: $argv0 top prefix format name grammar result"
+
+    # - top     : tests/ directory
+    # - prefix  : --prefix for local packages, etc.
+    # - format  : Type of parser to create (cparse, tparse, ...)
+    # - name    : Name of parser package
+    # - grammar : Path to grammar file
+    # - result  : Path to result file
+
     exit 1
 }
 
@@ -34,8 +42,8 @@ lappend argv -T $format -V 1 -N $name -A Testsuite -- $grammar $result
 
 # Inject post-processing for RTC-based results. The results shall
 # always be a requireable package. In slightly different locations.
-# That however the caller can easily adapt to. The main point is
-# to have all of the generation and compilation in a child-process,
+# That however the caller can easily adapt to. The main point is to
+# have done all of the generation and compilation in a child-process,
 # limiting the memory requirements of the test process.
 
 proc post {} {
