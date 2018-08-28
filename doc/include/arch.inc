@@ -19,8 +19,7 @@ formats.
 
 The packages supporting the SLIF language for grammar specifications.
 This is a very close sibling to the SLIF language used by
-[include include/upstream.inc], the current stable version of the Perl
-binding.
+[vset marpa.r2], the current stable version of the Perl binding.
 
 [para] It can be further divided into groups for parsing SLIF, the
 semantics for translating a parse into a container, a container for
@@ -63,10 +62,10 @@ The package dependencies are a bit large, and will be shown
 per-section, in the documentation of each section.
 
 [list_begin enum]
-[enum] [term {Marpa/Tcl - Application}].
-[enum] [term {Marpa/Tcl - SLIF}].
-[enum] [term {Marpa/Tcl - Generation}].
-[enum] [term {Marpa/Tcl - Runtime/Tcl}].
-[enum] [term {Marpa/Tcl - Runtime/C}].
-[enum] [term {Marpa/Tcl - Unicode Data & Utilities}].
+[enum] [vset xr:app].
+[enum] [vset xr:slif].
+[enum] [vset xr:gen].
+[enum] [vset xr:rtt].
+[enum] [vset xr:rtc].
+[enum] [vset xr:uni].
 [list_end]

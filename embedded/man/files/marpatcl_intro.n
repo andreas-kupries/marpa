@@ -1,6 +1,6 @@
 '\"
 '\" Generated from file 'marpatcl_intro\&.man' by tcllib/doctools with format 'nroff'
-'\" Copyright (c) 2015-2018 Andreas Kupries
+'\" Copyright (c) 2015-present Andreas Kupries
 '\" Copyright (c) 2018-present Documentation, Andreas Kupries
 '\"
 .TH "marpatcl_introduction" n 1 doc "Marpa/Tcl, a binding to libmarpa"
@@ -279,14 +279,14 @@ marpatcl_introduction \- Marpa/Tcl - Introduction to Marpa/Tcl
 Welcome to Marpa/Tcl, a Tcl binding to the "\fIlibmarpa\fR" parsing
 engine\&.
 .PP
-Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR,
-if you have not done so already, to get an overview of the whole system\&.
+Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR, if you have not done
+so already\&. It provides an overview of the whole system\&.
 .SH AUDIENCE
-This documented is targeted at all users of Marpa/Tcl\&.
+This document is targeted at all users of Marpa/Tcl\&.
 .PP
-Depending on the specific goals of the reader references to additional
-documents containing more information to help with these goals are
-provided\&.
+The remainder of this document contains references to additional
+documents containing more information, dependent on the goals of the
+user\&.
 .SH "USER, CREATING PARSER PACKAGES"
 As a user intending to create one or more parsers with Marpa/Tcl an
 installation is needed\&.  If a pre-made set of binary packages is not
@@ -319,15 +319,14 @@ the relevant documents are
 .SH "BUGS, IDEAS, FEEDBACK"
 This document, and the package it describes, will undoubtedly contain
 bugs and other problems\&.
-Please report such at the
-\fIMarpa/Tcl Tracker\fR [https://core\&.tcl\&.tk/akupries/marpatcl]\&.
-Please also report any ideas for enhancements you may have for either
-package and/or documentation\&.
+Please report such at the \fIMarpa/Tcl Tracker\fR [https://core\&.tcl-lang\&.org/akupries/marpa]\&.
+Please report any ideas for enhancements you may have for either
+package and/or documentation as well\&.
 .SH KEYWORDS
-aycock, character classes, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
+aycock, character classes, context free grammar, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
 .SH COPYRIGHT
 .nf
-Copyright (c) 2015-2018 Andreas Kupries
+Copyright (c) 2015-present Andreas Kupries
 Copyright (c) 2018-present Documentation, Andreas Kupries
 
 .fi

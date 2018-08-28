@@ -1,23 +1,27 @@
 [subsection {Build & Installation (Unix)}]
+[comment {
+    Expected variables
+    - p.name : Name of the project dependent on Tcl.
+}]
 
-This section describes the actions required to install Marpa/Tcl on
-Unix systems (Linux, BSD, and related, including OS X).
+This section describes the actions required to install [vset p.name]
+on Unix systems (Linux, BSD, and related, including OS X).
 
-If you have to install Marpa/Tcl on a Windows machine see section
+If you have to install [vset p.name] on a Windows machine see section
 [sectref {Build & Installation (Windows)}] instead.
 
-[para] To install Marpa/Tcl simply run
+[para] To install [vset p.name] simply run
 
 [example {
     /path/to/tclsh8.5 /path/to/marpatcl/build.tcl install
 }]
 
 where [file /path/to/tclsh8.5] is the tclsh of your Tcl installation,
-and [file /path/to/marpatcl] the location of the Marpa/Tcl sources on
-your system.
+and [file /path/to/marpatcl] the location of the [vset p.name] sources
+on your system.
 
 [comment { -- Check dependency on working directory!
-	-- -- Can we do this inside and outside the Marpa/Tcl sources ?
+	-- -- Can we do this inside and outside the [vset p.name] sources ?
 }]
 
 [para]

@@ -18,8 +18,10 @@
 
 	This helper reads the unicode tables stored in directory
 	[file unidata/] and generates a mix of Tcl and C data
-	structures for use within Marpa/Tcl. The integration point is
-	package [package marpa::unicode] (directory [file unicode/]).
+	structures for use within [vset p.name].
+
+	The integration point is package [package marpa::unicode]
+	(directory [file unicode/]).
 
 [def [file generated/]]
 
@@ -28,8 +30,8 @@
 
 [def [file unidata/]]
 
-	The directory where [file tools/unidata.tcl] reads the
-	unicode tables from.
+	The directory where [file tools/unidata.tcl] reads the unicode
+	tables from.
 
 [def [file bootstrap/]]
 
@@ -48,9 +50,9 @@
 [def [file bootstrap/remeta]]
 [def [file bootstrap/remeta-tcl]]
 
-	Regenerate the SLIF and literal parsers from their grammars.
-	The first variant generates C-based parsers, the other
-	Tcl-based parsers.
+	These helper applications regenerate the SLIF and literal
+	parsers from their grammars.  The first variant generates
+	C-based parsers, the other Tcl-based parsers.
 
 [list_end]
 
@@ -76,9 +78,40 @@
 	the repositories' web interface.  The "Command Reference" link
 	at
 
-		[uri http://core.tcl-lang.org/akupries/marpa]
+	[vset repo.main]
 
 	is, for example, accessing the generated HTML.
+
+[list_end]
+
+[comment =====================================================================]
+[def Examples]
+
+[list_begin definitions]
+[def [file languages/]]
+
+	This directory contains several worked examples of SLIF
+	grammars for various languages, parsers generated for them,
+	and the infrastructure to build and test them.
+
+[para]	Each example resides in its own subdirectory, named after the
+	language it implements a parser for.
+
+[para]	We currently have examples for
+
+	[list_begin enumerated]
+	[enum] [uri http://json.org JSON]
+	[enum] (Tcllib) doctools
+	[enum] heredoc
+	[enum] min-dt
+	[list_end]
+
+[para]	[term Heredoc] is a general demonstration how `here` documents
+	can be implemented using stop markers and post-lexeme events.
+
+[para]	[term min-dt] is a reduced form of [term doctools], used to
+	work out the general shape of vset and include processing via
+	stop markers and lexeme events
 
 [list_end]
 
@@ -228,5 +261,4 @@
 	The entrypoint is [file pkg_entry.tcl].
 
 [list_end]
-
 [list_end]

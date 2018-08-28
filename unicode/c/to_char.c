@@ -3,8 +3,8 @@
  *                               http://core.tcl.tk/akupries/
  * This code is BSD-licensed.
  *
- * Recording of unicodepoints to utf-8 sequences of bytes. Two flags
- * control the handling of \0, and of characters outside the BMP.
+ * Conversion of unicodepoints to utf-8 sequences of bytes. Two flags control
+ * the handling of \0, and of characters outside the BMP.
  */
 
 #include <unidata.h>

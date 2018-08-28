@@ -1,7 +1,7 @@
 [comment {-*- tcl -*- doctools manpage}]
 [manpage_begin marpatcl_sources n 1]
 [include include/module.inc]
-[titledesc {Marpa/Tcl - How To Get The Sources}]
+[titledesc "[vset t:getsrc]"]
 [description]
 [include include/welcome.inc]
 
@@ -14,8 +14,8 @@ and modify them.
 [para] For these builders and developers we additionally provide
 
 [list_begin enum]
-[enum] [term {Marpa/Tcl - The Installer's Guide}].
-[enum] [term {Marpa/Tcl - The Developer's Guide}].
+[enum] [vset xr:iguide].
+[enum] [vset xr:dguide].
 [list_end]
 
 respectively.
@@ -23,11 +23,11 @@ respectively.
 [section {Source Location}]
 
 The official repository for Marpa/Tcl can be found at
-[uri https://core.tcl-lang.org/akupries/marpa], also known as
-[uri https://core.tcl.tk/akupries/marpa].
+[vset repo.main], also known as [vset repo.alias].
 
-A mirror is
-[uri https://chiselapp.com/user/andreas_kupries/repository/marpa]
+We have two mirrors, one at [vset repo.chisel], the other at
+[vset repo.github]. Note that the latter is also a conversion from
+Fossil to Git.
 
 [section Retrieval]
 
@@ -46,20 +46,18 @@ a copy of this revision in the format of your choice.
 [section {Source Code Management}]
 
 For the curious (or a developer-to-be), the sources are managed by the
-[uri http://www.fossil-scm.org {Fossil SCM}].
+[vset fossil.scm].
 
 Binaries for popular platforms can be found directly at its
-[uri http://www.fossil-scm.org/download.html {download page}].
+[vset fossil.bin].
 
 [para]
 
 With that tool available the full history can be retrieved via:
 
-[example {
-    fossil clone \
-	https://core.tcl-lang.org/akupries/marpa \
-        source.fossil
-}]
+[example_begin]
+fossil clone [vset repo.main] source.fossil
+[example_end]
 
 followed by
 

@@ -1,10 +1,8 @@
-
 [comment { XXX --- Within the marpa/tcl source directory run it as
 
-[section {Playing with Marpa/Tcl}]
+[section "Playing with [vset p.name]"]
 
-For a demonstration of Marpa/Tcl's current abilities see ... XXX.
-
+For a demonstration of [vset p.name]'s current abilities see ... XXX.
 
 [example {
     tclsh8.5 demos.tcl
