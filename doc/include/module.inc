@@ -1,6 +1,8 @@
 [comment {--- Standard header for all manpages in this module --}]
 [comment {--- Project variables referencable in all documents ---}]
+
 [vset p.name Marpa/Tcl]
+[vset pns    marpa]
 
 [include locations.inc]
 [include xreferences.inc]

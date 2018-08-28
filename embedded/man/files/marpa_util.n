@@ -1,0 +1,564 @@
+'\"
+'\" Generated from file 'marpa_util\&.man' by tcllib/doctools with format 'nroff'
+'\" Copyright (c) 2015-present Andreas Kupries
+'\" Copyright (c) 2018-present Documentation, Andreas Kupries
+'\"
+.TH "marpa_util" n 1 doc "Marpa/Tcl, a binding to libmarpa"
+.\" The -*- nroff -*- definitions below are for supplemental macros used
+.\" in Tcl/Tk manual entries.
+.\"
+.\" .AP type name in/out ?indent?
+.\"	Start paragraph describing an argument to a library procedure.
+.\"	type is type of argument (int, etc.), in/out is either "in", "out",
+.\"	or "in/out" to describe whether procedure reads or modifies arg,
+.\"	and indent is equivalent to second arg of .IP (shouldn't ever be
+.\"	needed;  use .AS below instead)
+.\"
+.\" .AS ?type? ?name?
+.\"	Give maximum sizes of arguments for setting tab stops.  Type and
+.\"	name are examples of largest possible arguments that will be passed
+.\"	to .AP later.  If args are omitted, default tab stops are used.
+.\"
+.\" .BS
+.\"	Start box enclosure.  From here until next .BE, everything will be
+.\"	enclosed in one large box.
+.\"
+.\" .BE
+.\"	End of box enclosure.
+.\"
+.\" .CS
+.\"	Begin code excerpt.
+.\"
+.\" .CE
+.\"	End code excerpt.
+.\"
+.\" .VS ?version? ?br?
+.\"	Begin vertical sidebar, for use in marking newly-changed parts
+.\"	of man pages.  The first argument is ignored and used for recording
+.\"	the version when the .VS was added, so that the sidebars can be
+.\"	found and removed when they reach a certain age.  If another argument
+.\"	is present, then a line break is forced before starting the sidebar.
+.\"
+.\" .VE
+.\"	End of vertical sidebar.
+.\"
+.\" .DS
+.\"	Begin an indented unfilled display.
+.\"
+.\" .DE
+.\"	End of indented unfilled display.
+.\"
+.\" .SO ?manpage?
+.\"	Start of list of standard options for a Tk widget. The manpage
+.\"	argument defines where to look up the standard options; if
+.\"	omitted, defaults to "options". The options follow on successive
+.\"	lines, in three columns separated by tabs.
+.\"
+.\" .SE
+.\"	End of list of standard options for a Tk widget.
+.\"
+.\" .OP cmdName dbName dbClass
+.\"	Start of description of a specific option.  cmdName gives the
+.\"	option's name as specified in the class command, dbName gives
+.\"	the option's name in the option database, and dbClass gives
+.\"	the option's class in the option database.
+.\"
+.\" .UL arg1 arg2
+.\"	Print arg1 underlined, then print arg2 normally.
+.\"
+.\" .QW arg1 ?arg2?
+.\"	Print arg1 in quotes, then arg2 normally (for trailing punctuation).
+.\"
+.\" .PQ arg1 ?arg2?
+.\"	Print an open parenthesis, arg1 in quotes, then arg2 normally
+.\"	(for trailing punctuation) and then a closing parenthesis.
+.\"
+.\"	# Set up traps and other miscellaneous stuff for Tcl/Tk man pages.
+.if t .wh -1.3i ^B
+.nr ^l \n(.l
+.ad b
+.\"	# Start an argument description
+.de AP
+.ie !"\\$4"" .TP \\$4
+.el \{\
+.   ie !"\\$2"" .TP \\n()Cu
+.   el          .TP 15
+.\}
+.ta \\n()Au \\n()Bu
+.ie !"\\$3"" \{\
+\&\\$1 \\fI\\$2\\fP (\\$3)
+.\".b
+.\}
+.el \{\
+.br
+.ie !"\\$2"" \{\
+\&\\$1	\\fI\\$2\\fP
+.\}
+.el \{\
+\&\\fI\\$1\\fP
+.\}
+.\}
+..
+.\"	# define tabbing values for .AP
+.de AS
+.nr )A 10n
+.if !"\\$1"" .nr )A \\w'\\$1'u+3n
+.nr )B \\n()Au+15n
+.\"
+.if !"\\$2"" .nr )B \\w'\\$2'u+\\n()Au+3n
+.nr )C \\n()Bu+\\w'(in/out)'u+2n
+..
+.AS Tcl_Interp Tcl_CreateInterp in/out
+.\"	# BS - start boxed text
+.\"	# ^y = starting y location
+.\"	# ^b = 1
+.de BS
+.br
+.mk ^y
+.nr ^b 1u
+.if n .nf
+.if n .ti 0
+.if n \l'\\n(.lu\(ul'
+.if n .fi
+..
+.\"	# BE - end boxed text (draw box now)
+.de BE
+.nf
+.ti 0
+.mk ^t
+.ie n \l'\\n(^lu\(ul'
+.el \{\
+.\"	Draw four-sided box normally, but don't draw top of
+.\"	box if the box started on an earlier page.
+.ie !\\n(^b-1 \{\
+\h'-1.5n'\L'|\\n(^yu-1v'\l'\\n(^lu+3n\(ul'\L'\\n(^tu+1v-\\n(^yu'\l'|0u-1.5n\(ul'
+.\}
+.el \}\
+\h'-1.5n'\L'|\\n(^yu-1v'\h'\\n(^lu+3n'\L'\\n(^tu+1v-\\n(^yu'\l'|0u-1.5n\(ul'
+.\}
+.\}
+.fi
+.br
+.nr ^b 0
+..
+.\"	# VS - start vertical sidebar
+.\"	# ^Y = starting y location
+.\"	# ^v = 1 (for troff;  for nroff this doesn't matter)
+.de VS
+.if !"\\$2"" .br
+.mk ^Y
+.ie n 'mc \s12\(br\s0
+.el .nr ^v 1u
+..
+.\"	# VE - end of vertical sidebar
+.de VE
+.ie n 'mc
+.el \{\
+.ev 2
+.nf
+.ti 0
+.mk ^t
+\h'|\\n(^lu+3n'\L'|\\n(^Yu-1v\(bv'\v'\\n(^tu+1v-\\n(^Yu'\h'-|\\n(^lu+3n'
+.sp -1
+.fi
+.ev
+.\}
+.nr ^v 0
+..
+.\"	# Special macro to handle page bottom:  finish off current
+.\"	# box/sidebar if in box/sidebar mode, then invoked standard
+.\"	# page bottom macro.
+.de ^B
+.ev 2
+'ti 0
+'nf
+.mk ^t
+.if \\n(^b \{\
+.\"	Draw three-sided box if this is the box's first page,
+.\"	draw two sides but no top otherwise.
+.ie !\\n(^b-1 \h'-1.5n'\L'|\\n(^yu-1v'\l'\\n(^lu+3n\(ul'\L'\\n(^tu+1v-\\n(^yu'\h'|0u'\c
+.el \h'-1.5n'\L'|\\n(^yu-1v'\h'\\n(^lu+3n'\L'\\n(^tu+1v-\\n(^yu'\h'|0u'\c
+.\}
+.if \\n(^v \{\
+.nr ^x \\n(^tu+1v-\\n(^Yu
+\kx\h'-\\nxu'\h'|\\n(^lu+3n'\ky\L'-\\n(^xu'\v'\\n(^xu'\h'|0u'\c
+.\}
+.bp
+'fi
+.ev
+.if \\n(^b \{\
+.mk ^y
+.nr ^b 2
+.\}
+.if \\n(^v \{\
+.mk ^Y
+.\}
+..
+.\"	# DS - begin display
+.de DS
+.RS
+.nf
+.sp
+..
+.\"	# DE - end display
+.de DE
+.fi
+.RE
+.sp
+..
+.\"	# SO - start of list of standard options
+.de SO
+'ie '\\$1'' .ds So \\fBoptions\\fR
+'el .ds So \\fB\\$1\\fR
+.SH "STANDARD OPTIONS"
+.LP
+.nf
+.ta 5.5c 11c
+.ft B
+..
+.\"	# SE - end of list of standard options
+.de SE
+.fi
+.ft R
+.LP
+See the \\*(So manual entry for details on the standard options.
+..
+.\"	# OP - start of full description for a single option
+.de OP
+.LP
+.nf
+.ta 4c
+Command-Line Name:	\\fB\\$1\\fR
+Database Name:	\\fB\\$2\\fR
+Database Class:	\\fB\\$3\\fR
+.fi
+.IP
+..
+.\"	# CS - begin code excerpt
+.de CS
+.RS
+.nf
+.ta .25i .5i .75i 1i
+..
+.\"	# CE - end code excerpt
+.de CE
+.fi
+.RE
+..
+.\"	# UL - underline word
+.de UL
+\\$1\l'|0\(ul'\\$2
+..
+.\"	# QW - apply quotation marks to word
+.de QW
+.ie '\\*(lq'"' ``\\$1''\\$2
+.\"" fix emacs highlighting
+.el \\*(lq\\$1\\*(rq\\$2
+..
+.\"	# PQ - apply parens and quotation marks to word
+.de PQ
+.ie '\\*(lq'"' (``\\$1''\\$2)\\$3
+.\"" fix emacs highlighting
+.el (\\*(lq\\$1\\*(rq\\$2)\\$3
+..
+.\"	# QR - quoted range
+.de QR
+.ie '\\*(lq'"' ``\\$1''\\-``\\$2''\\$3
+.\"" fix emacs highlighting
+.el \\*(lq\\$1\\*(rq\\-\\*(lq\\$2\\*(rq\\$3
+..
+.\"	# MT - "empty" string
+.de MT
+.QW ""
+..
+.BS
+.SH NAME
+marpa_util \- Marpa/Tcl - marpa::util
+.SH SYNOPSIS
+\fBmarpa::A\fR \fIkey\fR \fIvalue\fR
+.sp
+\fBmarpa::C\fR \fIkey\fR
+.sp
+\fBmarpa::C*\fR \fIkey\fR
+.sp
+\fBmarpa::dict-move\fR \fIdstvarname\fR \fIkey\fR \fIsrcvarname\fR
+.sp
+\fBmarpa::D\fR \fIscript\fR
+.sp
+\fBmarpa::DX\fR \fIlabel\fR \fIscript\fR
+.sp
+\fBmarpa::E\fR \fIlabel\fR ?\fIword\&.\&.\&.\fR?
+.sp
+\fBE\fR \fImsg\fR ?\fIword\&.\&.\&.\fR?
+.sp
+\fBmarpa::EP\fR \fIlabel\fR \fIprefix\fR ?\fIword\&.\&.\&.\fR?
+.sp
+\fBmarpa::X\fR \fImsg\fR ?\fIword\&.\&.\&.\fR?
+.sp
+\fBmarpa::import\fR \fIcmd\fR ?\fIdst\fR? ?\fIup\fR?
+.sp
+\fBmarpa::fqn\fR \fIcmdvarname\fR ?\fIup\fR?
+.sp
+\fBmarpa::asset*\fR \fIpath\fR
+.sp
+\fBmarpa::asset\fR \fIpath\fR
+.sp
+\fBmarpa::location::merge\fR \fIatom\fR ?\fI\&.\&.\&.\fR?
+.sp
+\fBmarpa::location::merge2\fR \fIa\fR \fIb\fR
+.sp
+\fBmarpa::location::show\fR \fIatom\fR
+.sp
+\fBmarpa::location::atom\fR \fIposition\fR \fIstring\fR
+.sp
+\fBmarpa::location::null\fR
+.sp
+\fBmarpa::location::null?\fR \fIatom\fR
+.sp
+\fBmarpa::location::null*\fR ?\fI\&.\&.\&.\fR?
+.sp
+\fBmarpa::filter\fR \fIvalues\fR \fImask\fR
+.sp
+\fBmarpa::K\fR \fIx\fR \fIy\fR
+.sp
+.BE
+.SH DESCRIPTION
+.PP
+Welcome to Marpa/Tcl, a Tcl binding to the "\fIlibmarpa\fR" parsing
+engine\&.
+.PP
+Please read the document \fIMarpa/Tcl - Introduction to Marpa/Tcl\fR, if you have not done
+so already\&. It provides an overview of the whole system\&.
+.SH AUDIENCE
+This document describes a mainly internal package of Marpa/Tcl\&.
+.PP
+The package commands provide access to information about
+unicode characters useful to parsers, and parser generators,
+i\&.e\&. case folding classes, named character classes, etc\&.
+.SH API
+.SS "INCREMENTAL ASSEMBLY OF DICTIONARIES"
+.TP
+\fBmarpa::A\fR \fIkey\fR \fIvalue\fR
+This command sets the \fIkey\fR of dictionary variable \fBtmp\fR to
+\fIvalue\fR\&. The variable resides in the caller's scope\&.
+.sp
+The result of the command is the empty string\&.
+.TP
+\fBmarpa::C\fR \fIkey\fR
+This command sets the \fIkey\fR of dictionary variable \fBspec\fR to
+the contents of dictionary variable \fBtmp\fR\&. After the assignment
+\fBtmp\fR is unset\&. Both variables reside in the caller's scope\&.
+.sp
+The result of the command is the empty string\&.
+.TP
+\fBmarpa::C*\fR \fIkey\fR
+This command sets the \fIkey\fR of dictionary variable \fBspec\fR to
+the empty string\&. The variable resides in the caller's scope\&.
+.sp
+The result of the command is the empty string\&.
+.TP
+\fBmarpa::dict-move\fR \fIdstvarname\fR \fIkey\fR \fIsrcvarname\fR
+This command sets the \fIkey\fR of the dictionary variable named by
+\fIdstvarname\fR to the contents of the dictionary variable named by
+\fIsrcvarname\fR\&. After the assignment the source variable is unset\&.
+Both variables reside in the caller's scope\&.
+.sp
+The result of the command is the empty string\&.
+.PP
+.SS "CUSTOM SUPPORT FOR NARRATIVE TRACING"
+The commands of this section are for use within the message of
+\fBdebug\fR commands\&. Both enable the execution of side effects
+specific to the active narrative tracing tag\&.
+.TP
+\fBmarpa::D\fR \fIscript\fR
+This command runs the \fIscript\fR in the context of the caller of the
+debug command whose message it is part of\&. This enables the activation
+of side effect specific to and in support of the active tag associated
+with that debug command\&.
+.sp
+The result of the command is the empty string\&.
+.TP
+\fBmarpa::DX\fR \fIlabel\fR \fIscript\fR
+This is command is like \fBmarpa::D\fR, except that it returns
+\fIlabel\fR as its result, leaving a trace of itself in the debug
+output\&.
+.PP
+.SS "GENERATION OF ERRORS FROM TCLOO CLASSES"
+The commands of this section are for use within TclOO class definition
+scripts and methods, to simplify the generation of customized errors\&.
+.TP
+\fBmarpa::E\fR \fIlabel\fR ?\fIword\&.\&.\&.\fR?
+This command has to be run in TclOO class definition scripts\&.  It
+arranges for the creation of a method \fBE\fR in that class which
+simplifies the raising of custom errors\&.
+.sp
+The \fIlabel\fR is used as the tag for narrative tracing of
+\fBE\fR's invokations\&. The following \fIword\fRs, if specified, are
+used to extend the base error of \fBMARPA\fR with class-specific
+information\&.
+.sp
+The result of the command is the empty string\&.
+The new method \fBE\fR has the following signature and behaviour:
+.RS
+.TP
+\fBE\fR \fImsg\fR ?\fIword\&.\&.\&.\fR?
+This method raises a Tcl error with error message \fImsg\fR, and an
+error code consisting of the word \fBMARPA\fR, followed by the words
+specified with \fBmarpa::E\fR] when creating the method, and then
+the \fIword\fRs given to itself\&.
+.RE
+.TP
+\fBmarpa::EP\fR \fIlabel\fR \fIprefix\fR ?\fIword\&.\&.\&.\fR?
+This is command is like \fBmarpa::E\fR, except that the created
+method \fBE\fR is configured to place the \fIprefix\fR in front of
+the messages it is invoked with\&.
+.sp
+The result of the command is the empty string\&.
+.TP
+\fBmarpa::X\fR \fImsg\fR ?\fIword\&.\&.\&.\fR?
+This command raises a Tcl error with error message \fImsg\fR, and an
+error code consisting of the word \fBMARPA\fR followed by the
+\fIword\fRs it was given\&.
+.PP
+.SS "IMPORTING COMMANDS INTO NAMESPACES"
+.TP
+\fBmarpa::import\fR \fIcmd\fR ?\fIdst\fR? ?\fIup\fR?
+This command imports the command \fIcmd\fR into the namespace of the
+caller's scope, for easy access\&.
+By default the tail of the qualified command name is used as the name
+the command will be accessible though\&. Specify a non-empty \fIdst\fR
+if a different name is wanted\&. By default \fIcmd\fR is resolved to its
+fully qualified name in the caller's caller\&. Specify the \fIup\fR
+level if a different scope has to be used\&.
+.sp
+The result of the command is the empty string\&.
+.TP
+\fBmarpa::fqn\fR \fIcmdvarname\fR ?\fIup\fR?
+This command resolves the command stored in the named variable
+\fIcmdvarname\fR to its fully-qualified name and returns that as its
+result\&.
+The named variable resides in the caller's scope\&.
+By default the command is resolved to its fully qualified name in the
+caller's caller\&. Specify the \fIup\fR level if a different scope has
+to be used\&.
+.PP
+.SS "ASSET MANAGEMENT"
+The command in this section are the management of assets attached to
+the end of Tcl script files, after a separating Ctrl-Z character,
+i\&.e\&. unicode codepoint 26, "\\x1a"\&.
+.PP
+The standard use of these commands is to invoke them with the
+result of [\fBinfo script\fR] to extract any assets attached
+to the script file the currently running procedure came from\&.
+.TP
+\fBmarpa::asset*\fR \fIpath\fR
+This command assumes that the file pointed to by \fIpath\fR contains
+one or more assets attached to it, separated by "\\x1a" from the main
+file and each each other\&.
+It reads these assets and then returns a list containing them, in
+their order of attachment\&.
+.sp
+Invoking this command for the same \fIpath\fR multiple times
+will read the assets only once into memory, on the first call\&. All
+further calls are served from an internal cache\&.
+.TP
+\fBmarpa::asset\fR \fIpath\fR
+This command is like \fBmarpa::asset*\fR, except that it assumes
+that only a single asset is attached to the referenced file and
+returns that asset directly, without wrapping it into a list\&.
+.sp
+Invoking this command on a file which has multiple assets
+attached means that the returned result will contain the "\\x1A"
+characters separating these assets from each other\&.
+.PP
+.SS "LOCATION MANAGEMENT"
+Location atoms are triples (3-element lists) containing a start
+location, end location, and string\&. The start and end specify a range,
+with the two ends included in it\&.
+.PP
+The \fInull location\fR is represented by the triple whose
+elements are all the empty string\&.
+.TP
+\fBmarpa::location::merge\fR \fIatom\fR ?\fI\&.\&.\&.\fR?
+This command takes one or more location atoms and returns a new
+location atom which merges together\&. If only a single atom is
+specified then that atom is returned unchanged\&.
+.sp
+The merging is performed by taking the first \fIatom\fR and
+repeatedly merging the other atoms to it, via \fBmarpa::location::merge2\fR\&.
+.TP
+\fBmarpa::location::merge2\fR \fIa\fR \fIb\fR
+This command takes two atoms and returns their merge\&.
+The rules of merging are
+.RS
+.IP [1]
+If any of the argument atoms is the null location the other is
+returned unchanged\&.
+.IP [2]
+An error is thrown if the end-location of \fIa\fR is not
+exactly adjacent to the start location of \fIb\fR\&.
+.IP [3]
+The result contains the start location of \fIa\fR, the end
+location of \fIb\fR and the string concatening the strings of
+.RE
+.TP
+\fBmarpa::location::show\fR \fIatom\fR
+This command reformats the location for human readability and returns
+the result\&. The only change is quoting the string element as a C
+string, i\&.e\&. wrapping into single-quotes and characters special to C
+are backslash-escaped, either named, or as octals\&.
+.TP
+\fBmarpa::location::atom\fR \fIposition\fR \fIstring\fR
+.sp
+This command returns a location where both start and end are
+\fIposition\fR, and the string is \fIstring\fR\&.
+.TP
+\fBmarpa::location::null\fR
+.sp
+This command returns the null location\&.
+.TP
+\fBmarpa::location::null?\fR \fIatom\fR
+.sp
+This command tests if the argument represents the null location
+and returns \fBtrue\fR if so, and \fBfalse\fR otherwise\&.
+.TP
+\fBmarpa::location::null*\fR ?\fI\&.\&.\&.\fR?
+.sp
+This command returns the null location while ignore all of its
+arguments\&.
+.PP
+.SS "GENERAL UTILITIES"
+.TP
+\fBmarpa::filter\fR \fIvalues\fR \fImask\fR
+This command takes list \fIvalues\fR, removes the elements referenced
+by the indices in the list \fImask\fR, and returns the filtered
+result\&.
+.sp
+\fINote\fR that the command assumes that \fImask\fR contains
+the indices in decreasing order
+Invoking the command with \fImask\fR unsorted or sorfted in increasing
+order will yield undefined results\&.
+.TP
+\fBmarpa::K\fR \fIx\fR \fIy\fR
+This command returns \fIx\fR as its result\&. It ignores \fIy\fR\&.
+In respect it is like a K-combinator\&.
+.sp
+The side effects \fIy\fR may have in caller's scope are of
+course executed before K executes\&. Like, for example, unsetting the
+variable providing \fIx\fR, thus decrementing the reference count of
+\fIx\fR\&.
+.PP
+.SH "BUGS, IDEAS, FEEDBACK"
+This document, and the package it describes, will undoubtedly contain
+bugs and other problems\&.
+Please report such at the \fIMarpa/Tcl Tracker\fR [https://core\&.tcl-lang\&.org/akupries/marpa]\&.
+Please report any ideas for enhancements you may have for either
+package and/or documentation as well\&.
+.SH KEYWORDS
+aycock, character classes, context free grammar, document processing, earley, horspool, joop leo, lexing, libmarpa, nigel horspool, parsing, regex, table parsing
+.SH COPYRIGHT
+.nf
+Copyright (c) 2015-present Andreas Kupries
+Copyright (c) 2018-present Documentation, Andreas Kupries
+
+.fi

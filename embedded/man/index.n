@@ -275,6 +275,12 @@ doc
 aycock
 .RS
 .TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -290,7 +296,7 @@ marpatcl_introduction
 \fBfiles/marpatcl_license\&.n\fR
 marpatcl_license
 .TP
-\fBfiles/marpatcl\&.n\fR
+\fBfiles/marpatcl_marpagen\&.n\fR
 marpatcl_marpagen
 .TP
 \fBfiles/marpatcl_slif\&.n\fR
@@ -299,8 +305,38 @@ marpatcl_slif
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
 .RE
+basic multi-lingual plane
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.RE
+bmp
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.RE
+case expansion
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.RE
+cesu-8
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.RE
 character classes
 .RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
@@ -317,7 +353,70 @@ marpatcl_introduction
 \fBfiles/marpatcl_license\&.n\fR
 marpatcl_license
 .TP
-\fBfiles/marpatcl\&.n\fR
+\fBfiles/marpatcl_marpagen\&.n\fR
+marpatcl_marpagen
+.TP
+\fBfiles/marpatcl_slif\&.n\fR
+marpatcl_slif
+.TP
+\fBfiles/marpatcl_sources\&.n\fR
+marpatcl_sources
+.RE
+class canonicalisation
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.RE
+class complement
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.RE
+class negation
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.RE
+class normalization
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.RE
+code point
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.RE
+context free grammar
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
+\fBfiles/marpatcl_changes\&.n\fR
+marpatcl_changes
+.TP
+\fBfiles/marpatcl_devguide\&.n\fR
+marpatcl_devguide
+.TP
+\fBfiles/marpatcl_installer\&.n\fR
+marpatcl_install_guide
+.TP
+\fBfiles/marpatcl_intro\&.n\fR
+marpatcl_introduction
+.TP
+\fBfiles/marpatcl_license\&.n\fR
+marpatcl_license
+.TP
+\fBfiles/marpatcl_marpagen\&.n\fR
 marpatcl_marpagen
 .TP
 \fBfiles/marpatcl_slif\&.n\fR
@@ -329,6 +428,12 @@ marpatcl_sources
 document processing
 .RS
 .TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -344,7 +449,7 @@ marpatcl_introduction
 \fBfiles/marpatcl_license\&.n\fR
 marpatcl_license
 .TP
-\fBfiles/marpatcl\&.n\fR
+\fBfiles/marpatcl_marpagen\&.n\fR
 marpatcl_marpagen
 .TP
 \fBfiles/marpatcl_slif\&.n\fR
@@ -356,6 +461,12 @@ marpatcl_sources
 earley
 .RS
 .TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -371,7 +482,7 @@ marpatcl_introduction
 \fBfiles/marpatcl_license\&.n\fR
 marpatcl_license
 .TP
-\fBfiles/marpatcl\&.n\fR
+\fBfiles/marpatcl_marpagen\&.n\fR
 marpatcl_marpagen
 .TP
 \fBfiles/marpatcl_slif\&.n\fR
@@ -383,6 +494,12 @@ marpatcl_sources
 horspool
 .RS
 .TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -398,7 +515,7 @@ marpatcl_introduction
 \fBfiles/marpatcl_license\&.n\fR
 marpatcl_license
 .TP
-\fBfiles/marpatcl\&.n\fR
+\fBfiles/marpatcl_marpagen\&.n\fR
 marpatcl_marpagen
 .TP
 \fBfiles/marpatcl_slif\&.n\fR
@@ -410,6 +527,12 @@ marpatcl_sources
 joop leo
 .RS
 .TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -425,7 +548,7 @@ marpatcl_introduction
 \fBfiles/marpatcl_license\&.n\fR
 marpatcl_license
 .TP
-\fBfiles/marpatcl\&.n\fR
+\fBfiles/marpatcl_marpagen\&.n\fR
 marpatcl_marpagen
 .TP
 \fBfiles/marpatcl_slif\&.n\fR
@@ -437,6 +560,12 @@ marpatcl_sources
 lexing
 .RS
 .TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -452,7 +581,7 @@ marpatcl_introduction
 \fBfiles/marpatcl_license\&.n\fR
 marpatcl_license
 .TP
-\fBfiles/marpatcl\&.n\fR
+\fBfiles/marpatcl_marpagen\&.n\fR
 marpatcl_marpagen
 .TP
 \fBfiles/marpatcl_slif\&.n\fR
@@ -464,6 +593,12 @@ marpatcl_sources
 libmarpa
 .RS
 .TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -479,7 +614,7 @@ marpatcl_introduction
 \fBfiles/marpatcl_license\&.n\fR
 marpatcl_license
 .TP
-\fBfiles/marpatcl\&.n\fR
+\fBfiles/marpatcl_marpagen\&.n\fR
 marpatcl_marpagen
 .TP
 \fBfiles/marpatcl_slif\&.n\fR
@@ -488,8 +623,20 @@ marpatcl_slif
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
 .RE
+mutf-8
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.RE
 nigel horspool
 .RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
@@ -506,7 +653,7 @@ marpatcl_introduction
 \fBfiles/marpatcl_license\&.n\fR
 marpatcl_license
 .TP
-\fBfiles/marpatcl\&.n\fR
+\fBfiles/marpatcl_marpagen\&.n\fR
 marpatcl_marpagen
 .TP
 \fBfiles/marpatcl_slif\&.n\fR
@@ -518,6 +665,12 @@ marpatcl_sources
 parsing
 .RS
 .TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -533,7 +686,7 @@ marpatcl_introduction
 \fBfiles/marpatcl_license\&.n\fR
 marpatcl_license
 .TP
-\fBfiles/marpatcl\&.n\fR
+\fBfiles/marpatcl_marpagen\&.n\fR
 marpatcl_marpagen
 .TP
 \fBfiles/marpatcl_slif\&.n\fR
@@ -541,10 +694,22 @@ marpatcl_slif
 .TP
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
+.RE
+primary case
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
 .RE
 regex
 .RS
 .TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
+.TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
 .TP
@@ -560,7 +725,7 @@ marpatcl_introduction
 \fBfiles/marpatcl_license\&.n\fR
 marpatcl_license
 .TP
-\fBfiles/marpatcl\&.n\fR
+\fBfiles/marpatcl_marpagen\&.n\fR
 marpatcl_marpagen
 .TP
 \fBfiles/marpatcl_slif\&.n\fR
@@ -569,8 +734,32 @@ marpatcl_slif
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
 .RE
+smp
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.RE
+supplemental multi-lingual planes
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.RE
+surrogate
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.RE
 table parsing
 .RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.TP
+\fBfiles/marpa_util\&.n\fR
+marpa_util
 .TP
 \fBfiles/marpatcl_changes\&.n\fR
 marpatcl_changes
@@ -587,7 +776,7 @@ marpatcl_introduction
 \fBfiles/marpatcl_license\&.n\fR
 marpatcl_license
 .TP
-\fBfiles/marpatcl\&.n\fR
+\fBfiles/marpatcl_marpagen\&.n\fR
 marpatcl_marpagen
 .TP
 \fBfiles/marpatcl_slif\&.n\fR
@@ -595,4 +784,16 @@ marpatcl_slif
 .TP
 \fBfiles/marpatcl_sources\&.n\fR
 marpatcl_sources
+.RE
+unicode
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
+.RE
+utf-8
+.RS
+.TP
+\fBfiles/marpa_unicode\&.n\fR
+marpa_unicode
 .RE

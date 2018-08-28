@@ -1,0 +1,575 @@
+
+<!DOCTYPE html><html><head>
+<title>marpa_unicode - Marpa/Tcl, a binding to libmarpa</title>
+<style type="text/css"><!--
+    HTML {
+	background: 	#FFFFFF;
+	color: 		black;
+    }
+    BODY {
+	background: 	#FFFFFF;
+	color:	 	black;
+    }
+    DIV.doctools {
+	margin-left:	10%;
+	margin-right:	10%;
+    }
+    DIV.doctools H1,DIV.doctools H2 {
+	margin-left:	-5%;
+    }
+    H1, H2, H3, H4 {
+	margin-top: 	1em;
+	font-family:	sans-serif;
+	font-size:	large;
+	color:		#005A9C;
+	background: 	transparent;
+	text-align:		left;
+    }
+    H1.doctools_title {
+	text-align: center;
+    }
+    UL,OL {
+	margin-right: 0em;
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+    }
+    UL LI {
+	list-style: disc;
+    }
+    OL LI {
+	list-style: decimal;
+    }
+    DT {
+	padding-top: 	1ex;
+    }
+    UL.doctools_toc,UL.doctools_toc UL, UL.doctools_toc UL UL {
+	font:		normal 12pt/14pt sans-serif;
+	list-style:	none;
+    }
+    LI.doctools_section, LI.doctools_subsection {
+	list-style: 	none;
+	margin-left: 	0em;
+	text-indent:	0em;
+	padding: 	0em;
+    }
+    PRE {
+	display: 	block;
+	font-family:	monospace;
+	white-space:	pre;
+	margin:		0%;
+	padding-top:	0.5ex;
+	padding-bottom:	0.5ex;
+	padding-left:	1ex;
+	padding-right:	1ex;
+	width:		100%;
+    }
+    PRE.doctools_example {
+	color: 		black;
+	background: 	#f5dcb3;
+	border:		1px solid black;
+    }
+    UL.doctools_requirements LI, UL.doctools_syntax LI {
+	list-style: 	none;
+	margin-left: 	0em;
+	text-indent:	0em;
+	padding:	0em;
+    }
+    DIV.doctools_synopsis {
+	color: 		black;
+	background: 	#80ffff;
+	border:		1px solid black;
+	font-family:	serif;
+	margin-top: 	1em;
+	margin-bottom: 	1em;
+    }
+    UL.doctools_syntax {
+	margin-top: 	1em;
+	border-top:	1px solid black;
+    }
+    UL.doctools_requirements {
+	margin-bottom: 	1em;
+	border-bottom:	1px solid black;
+    }
+--></style>
+</head>
+<!-- Generated from file 'marpa_unicode.man' by tcllib/doctools with format 'html'
+   -->
+<!-- Copyright &amp;copy; 2015-present Andreas Kupries   -- Copyright &amp;copy; 2018-present Documentation, Andreas Kupries
+   -->
+<!-- marpa_unicode.n
+   -->
+<body><hr> [
+   <a href="../../../../../../home">Home</a>
+| <a href="../../toc.html">Main Table Of Contents</a>
+| <a href="../toc.html">Table Of Contents</a>
+| <a href="../../index.html">Keyword Index</a>
+ ] <hr>
+<div class="doctools">
+<h1 class="doctools_title">marpa_unicode(n) 1 doc &quot;Marpa/Tcl, a binding to libmarpa&quot;</h1>
+<div id="name" class="doctools_section"><h2><a name="name">Name</a></h2>
+<p>marpa_unicode - Marpa/Tcl - marpa::unicode</p>
+</div>
+<div id="toc" class="doctools_section"><h2><a name="toc">Table Of Contents</a></h2>
+<ul class="doctools_toc">
+<li class="doctools_section"><a href="#toc">Table Of Contents</a></li>
+<li class="doctools_section"><a href="#synopsis">Synopsis</a></li>
+<li class="doctools_section"><a href="#section1">Description</a></li>
+<li class="doctools_section"><a href="#section2">Audience</a></li>
+<li class="doctools_section"><a href="#section3">API</a></li>
+<li class="doctools_section"><a href="#section4">Datastructures</a>
+<ul>
+<li class="doctools_subsection"><a href="#subsection1">character Class - CC</a></li>
+<li class="doctools_subsection"><a href="#subsection2">Set of Codepoint (Ranges) - SCR</a></li>
+<li class="doctools_subsection"><a href="#subsection3">Alternatives of Sequences of Byte-Ranges - ASBR</a></li>
+<li class="doctools_subsection"><a href="#subsection4">Alternatives of Sequences of Surrogate-Ranges - ASSR</a></li>
+</ul>
+</li>
+<li class="doctools_section"><a href="#section5">Glossary</a></li>
+<li class="doctools_section"><a href="#section6">Bugs, Ideas, Feedback</a></li>
+<li class="doctools_section"><a href="#keywords">Keywords</a></li>
+<li class="doctools_section"><a href="#copyright">Copyright</a></li>
+</ul>
+</div>
+<div id="synopsis" class="doctools_section"><h2><a name="synopsis">Synopsis</a></h2>
+<div class="doctools_synopsis">
+<ul class="doctools_syntax">
+<li><a href="#1"><b class="cmd">marpa::unicode::2asbr</b> <i class="arg">scr</i></a></li>
+<li><a href="#2"><b class="cmd">marpa::unicode::2assr</b> <i class="arg">scr</i></a></li>
+<li><a href="#3"><b class="cmd">marpa::unicode::2char</b> <i class="arg">codepoint</i></a></li>
+<li><a href="#4"><b class="cmd">marpa::unicode::2utf</b> <i class="arg">codepoint</i> <span class="opt">?<i class="arg">flags</i>?</span></a></li>
+<li><a href="#5"><b class="cmd">marpa::unicode::asbr-format</b> <i class="arg">asbr</i> <span class="opt">?<i class="arg">compact</i>?</span></a></li>
+<li><a href="#6"><b class="cmd">marpa::unicode::assr-format</b> <i class="arg">assr</i> <span class="opt">?<i class="arg">compact</i>?</span></a></li>
+<li><a href="#7"><b class="cmd">marpa::unicode::bmp</b></a></li>
+<li><a href="#8"><b class="cmd">marpa::unicode::data::fold/c</b> <i class="arg">codepoint</i></a></li>
+<li><a href="#9"><b class="cmd">marpa::unicode::data::fold</b> <i class="arg">codepoint</i></a></li>
+<li><a href="#10"><b class="cmd">marpa::unicode::fold/c</b> <i class="arg">codes</i></a></li>
+<li><a href="#11"><b class="cmd">marpa::unicode::max</b></a></li>
+<li><a href="#12"><b class="cmd">marpa::unicode::negate-class</b> <i class="arg">scr</i> <span class="opt">?<i class="arg">smp</i>?</span></a></li>
+<li><a href="#13"><b class="cmd">marpa::unicode::norm-class</b> <i class="arg">scr</i></a></li>
+<li><a href="#14"><b class="cmd">marpa::unicode::point</b> <i class="arg">character</i></a></li>
+<li><a href="#15"><b class="cmd">marpa::unicode::smp</b></a></li>
+<li><a href="#16"><b class="cmd">marpa::unicode::unfold</b> <i class="arg">scr</i></a></li>
+<li><a href="#17"><b class="cmd">marpa::unicode::data::cc::have-tcl</b> <i class="arg">ccname</i></a></li>
+<li><a href="#18"><b class="cmd">marpa::unicode::data::cc::have</b> <i class="arg">ccname</i></a></li>
+<li><a href="#19"><b class="cmd">marpa::unicode::data::cc::names</b></a></li>
+<li><a href="#20"><b class="cmd">marpa::unicode::data::cc::ranges</b> <i class="arg">ccname</i></a></li>
+<li><a href="#21"><b class="cmd">marpa::unicode::data::cc::tcl-names</b></a></li>
+</ul>
+</div>
+</div>
+<div id="section1" class="doctools_section"><h2><a name="section1">Description</a></h2>
+<p>Welcome to Marpa/Tcl, a Tcl binding to the &quot;<b class="file">libmarpa</b>&quot; parsing
+engine.</p>
+<p>Please read the document <i class="term"><a href="marpatcl_intro.html">Marpa/Tcl - Introduction to Marpa/Tcl</a></i>, if you have not done
+so already. It provides an overview of the whole system.</p>
+</div>
+<div id="section2" class="doctools_section"><h2><a name="section2">Audience</a></h2>
+<p>This document describes a mainly internal package of Marpa/Tcl.</p>
+<p>The package commands provide access to information about
+       unicode characters useful to parsers, and parser generators,
+       i.e. case folding classes, named character classes, etc.
+<em>Note for reading</em>: Unknown terms and shorthands are
+explained in the <span class="sectref"><a href="#section5">Glossary</a></span>.</p>
+</div>
+<div id="section3" class="doctools_section"><h2><a name="section3">API</a></h2>
+<dl class="doctools_definitions">
+<dt><a name="1"><b class="cmd">marpa::unicode::2asbr</b> <i class="arg">scr</i></a></dt>
+<dd><p>This command takes a <span class="sectref"><a href="#subsection1">character class</a></span> represented by an <span class="sectref"><a href="#subsection2">SCR</a></span> and
+returns the equivalent <span class="sectref"><a href="#subsection3">ASBR</a></span> representation.</p>
+<p>An error will be thrown if the input is not a valid <span class="sectref"><a href="#subsection2">SCR</a></span>.</p></dd>
+<dt><a name="2"><b class="cmd">marpa::unicode::2assr</b> <i class="arg">scr</i></a></dt>
+<dd><p>This command takes a <span class="sectref"><a href="#subsection1">character class</a></span> represented by an <span class="sectref"><a href="#subsection2">SCR</a></span> and
+returns the equivalent <span class="sectref"><a href="#subsection4">ASSR</a></span> representation.</p>
+<p>An error will be thrown if the input is not a valid <span class="sectref"><a href="#subsection2">SCR</a></span>.</p></dd>
+<dt><a name="3"><b class="cmd">marpa::unicode::2char</b> <i class="arg">codepoint</i></a></dt>
+<dd><p>This command takes a possible unicode <i class="arg">codepoint</i> and returns a
+list of codepoints in the <i class="term"><a href="../../index.html#key17">BMP</a></i> representing it.</p>
+<p>The returned list will contain only the argument itself if the
+codepoint is in the <i class="term"><a href="../../index.html#key17">BMP</a></i>. For a codepoint in the <i class="term"><a href="../../index.html#key18">SMP</a></i>
+however the list will contain the two surrogates representing that
+codepoint.</p>
+<p>An error will be thrown if the argument is not a valid
+codepoint.</p>
+<pre class="doctools_example">
+% <b class="cmd">marpa::unicode::2char</b> 65
+65
+% <b class="cmd">marpa::unicode::2char</b> [<b class="cmd">marpa::unicode::smp</b>]
+55296 56320
+</pre>
+</dd>
+<dt><a name="4"><b class="cmd">marpa::unicode::2utf</b> <i class="arg">codepoint</i> <span class="opt">?<i class="arg">flags</i>?</span></a></dt>
+<dd><p>This command takes a possible unicode <i class="arg">codepoint</i> and returns a
+list of integers in the range [<b class="const">0</b>...<b class="const">255</b>]
+representing the UTF-8 encoding of that codepoint.</p>
+<p>The exact details of this conversion are controlled by the list
+of optional <i class="arg">flags</i> given to the command. See the list below for
+the details.</p>
+<p>An error will be thrown if the input value is not a valid
+codepoint.</p>
+<dl class="doctools_definitions">
+<dt>(no flags)</dt>
+<dd><p>The conversion returns the standard UTF-8 encoding for all codepoints.
+The returned list has a length between 1 and 4.</p></dd>
+<dt>cesu</dt>
+<dd><p>Codepoints in the <i class="term"><a href="../../index.html#key18">SMP</a></i> are internally converted to the two
+surrogates representing them, and the result is the concatenation of
+the surrogates' UTF-8 encodings.
+All other codepoints, i.e. those in the <i class="term"><a href="../../index.html#key17">BMP</a></i>, are converted
+normally.
+The returned list has a length between 1 and 3, or 6.
+This is called the <a href="https://en.wikipedia.org/wiki/UTF-8#CESU-8">CESU-8</a> encoding.</p></dd>
+<dt>mutf</dt>
+<dd><p>The codepoint <b class="const">0</b> is converted as <b class="const">0xC0 0x80</b>.
+All other codepoints are converted normally.
+This is called the <a href="https://en.wikipedia.org/wiki/UTF-8#Modified_UTF-8">Modified UTF-8</a> encoding, often abbreviated to
+<i class="term"><a href="../../index.html#key14">MUTF-8</a></i>.</p></dd>
+<dt>mutf cesu</dt>
+<dd><p>Both <i class="term"><a href="../../index.html#key14">MUTF-8</a></i> and <i class="term"><a href="../../index.html#key26">CESU-8</a></i> are applied, as specified in the
+previous items.
+This is the encoding Tcl uses internally for its strings.</p></dd>
+<dt>tcl</dt>
+<dd><p>This is a shorthand for <b class="const">mutf cesu</b>.</p></dd>
+</dl>
+<pre class="doctools_example">
+% <b class="cmd">marpa::unicode::2utf</b> 0 ;# &quot;\0&quot;
+0
+% <b class="cmd">marpa::unicode::2utf</b> 0 <b class="const">mutf</b>
+192 128
+% <b class="cmd">marpa::unicode::2utf</b> 65 ;# &quot;A&quot;
+65
+% <b class="cmd">marpa::unicode::2utf</b> [<b class="cmd">marpa::unicode::bmp</b>] ;# &quot;\uFFFF&quot;
+239 191 191
+% <b class="cmd">marpa::unicode::2utf</b> [<b class="cmd">marpa::unicode::smp</b>] ;# &quot;\U0010000&quot;
+240 144 128 128
+% <b class="cmd">marpa::unicode::2utf</b> [<b class="cmd">marpa::unicode::smp</b>] <b class="const">cesu</b>
+237 160 128 237 176 128
+# 55296.... # 56320....
+% <b class="cmd">marpa::unicode::2utf</b> 55296 ;# &quot;\uD800&quot;
+237 160 128
+% <b class="cmd">marpa::unicode::2utf</b> 56320 ;# &quot;\uDC00&quot;
+237 176 128
+</pre>
+</dd>
+<dt><a name="5"><b class="cmd">marpa::unicode::asbr-format</b> <i class="arg">asbr</i> <span class="opt">?<i class="arg">compact</i>?</span></a></dt>
+<dd><p>This command takes a <span class="sectref"><a href="#subsection1">character class</a></span> represented by an <span class="sectref"><a href="#subsection3">ASBR</a></span> and
+returns a multi-line string containing a human-readable form of the
+same.</p>
+<p>If the boolean argument <i class="arg">compact</i> is either not specified
+or false one-element ranges will be padded with spaces to vertically
+align the ranges across alternatives.</p>
+<pre class="doctools_example">
+% <b class="cmd">marpa::unicode::asbr-format</b> {
+    {{192 192} {128 128}}
+    {{1 16}} {{33 45}}
+}
+[c0]   [80]
+|[01-10]
+|[21-2d]
+</pre>
+</dd>
+<dt><a name="6"><b class="cmd">marpa::unicode::assr-format</b> <i class="arg">assr</i> <span class="opt">?<i class="arg">compact</i>?</span></a></dt>
+<dd><p>This command takes a <span class="sectref"><a href="#subsection1">character class</a></span> represented by an <span class="sectref"><a href="#subsection4">ASSR</a></span> and
+returns a multi-line string containing a human-readable form of the
+same.</p>
+<p>If the bolean argument <i class="arg">compact</i> is either not specified or
+false one-element ranges will be padded with spaces to vertically
+align the ranges across alternatives.</p>
+<pre class="doctools_example">
+% <b class="cmd">marpa::unicode::assr-format</b> {
+    {{0 65535}}
+    {{55296 56319} {56320 57343}}
+}
+ [0000-ffff]
+|[d800-dbff][dc00-dfff]
+</pre>
+</dd>
+<dt><a name="7"><b class="cmd">marpa::unicode::bmp</b></a></dt>
+<dd><p>This command returns the highest codepoint still in the <i class="term"><a href="../../index.html#key17">BMP</a></i>.</p></dd>
+<dt><a name="8"><b class="cmd">marpa::unicode::data::fold/c</b> <i class="arg">codepoint</i></a></dt>
+<dd><p>This command takes a unicode codepoint and returns its
+<i class="term"><a href="../../index.html#key19">primary case</a></i>.</p>
+<p>An error will be thrown if the argument is not a valid
+codepoint.</p>
+<pre class="doctools_example">
+% <b class="cmd">marpa::unicode::data::fold/c</b> 97 ;# &quot;a&quot;
+65                           ;# &quot;A&quot;
+% <b class="cmd">marpa::unicode::data::fold/c</b> 65 ;# &quot;A&quot;
+65                           ;# &quot;A&quot;
+</pre>
+</dd>
+<dt><a name="9"><b class="cmd">marpa::unicode::data::fold</b> <i class="arg">codepoint</i></a></dt>
+<dd><p>This command takes a unicode codepoint and returns its <i class="term">CES</i>.</p>
+<p>An error will be thrown if the argument is not a valid
+codepoint.</p>
+<pre class="doctools_example">
+% <b class="cmd">marpa::unicode::data::fold</b> 97 ;# &quot;a&quot;
+65 97                      ;# &quot;A&quot; &quot;a&quot;
+% <b class="cmd">marpa::unicode::data::fold</b> 65 ;# &quot;A&quot;
+65 97                      ;# &quot;A&quot; &quot;a&quot;
+</pre>
+</dd>
+<dt><a name="10"><b class="cmd">marpa::unicode::fold/c</b> <i class="arg">codes</i></a></dt>
+<dd><p>This command takes a list of unicode codepoints and returns a list of
+their <i class="term">primary cases</i>. The mapping from argument to result is
+1:1.</p>
+<p><em>Note</em> that both argument and result are a limited form
+of <span class="sectref"><a href="#subsection2">SCR</a></span>, i.e. one which does not contain codepoint ranges.</p>
+<p>An error will be thrown if the argument contains invalid
+codepoints.</p>
+<pre class="doctools_example">
+% <b class="cmd">marpa::unicode::fold/c</b> {97 66} ;# &quot;aB&quot;
+65 66                            ;# &quot;AB&quot;
+</pre>
+</dd>
+<dt><a name="11"><b class="cmd">marpa::unicode::max</b></a></dt>
+<dd><p>This command returns the highest codepoint supported by Unicode.</p></dd>
+<dt><a name="12"><b class="cmd">marpa::unicode::negate-class</b> <i class="arg">scr</i> <span class="opt">?<i class="arg">smp</i>?</span></a></dt>
+<dd><p>This command takes a <span class="sectref"><a href="#subsection1">character class</a></span> represented by an <span class="sectref"><a href="#subsection2">SCR</a></span> and
+returns its normalized complement.</p>
+<p>If the optional flag <i class="arg">smp</i> is specified and <b class="const">true</b>
+the argument is assumed to be fully in the <i class="term"><a href="../../index.html#key18">SMP</a></i>, and the
+resulting complement will be limited to the SMP as well.
+The result of applying SMP mode to classes reaching into the BMP is
+<em>undefined</em>.</p>
+<p>An error will be thrown if the input is not a valid <span class="sectref"><a href="#subsection2">SCR</a></span>.</p>
+<pre class="doctools_example">
+% <b class="cmd">marpa::unicode::negate-class</b> {}
+{0 1114111}
+% <b class="cmd">marpa::unicode::negate-class</b> {{0 65535}}
+{65536 1114111}
+% <b class="cmd">marpa::unicode::negate-class</b> {{0 1114111}}
+{}
+% <b class="cmd">marpa::unicode::negate-class</b> 0
+{1 1114111}
+% <b class="cmd">marpa::unicode::negate-class</b> 1
+0 {2 1114111}
+</pre>
+</dd>
+<dt><a name="13"><b class="cmd">marpa::unicode::norm-class</b> <i class="arg">scr</i></a></dt>
+<dd><p>This command takes a <span class="sectref"><a href="#subsection1">character class</a></span> represented by an <span class="sectref"><a href="#subsection2">SCR</a></span> and
+returns the equivalent normalized <span class="sectref"><a href="#subsection2">SCR</a></span>. If the argument was
+already normalized the result will be identical to it.</p>
+<p>An error will be thrown if the input is not a valid <span class="sectref"><a href="#subsection2">SCR</a></span>.</p>
+<pre class="doctools_example">
+% <b class="cmd">marpa::unicode::norm-class</b> {}
+% <b class="cmd">marpa::unicode::norm-class</b> {1 2 3 4}
+{{1 4}}
+% marpa unicode norm-class {{10 20} {0 15}}
+{0 20}
+% marpa unicode norm-class {10 4 3 20 0}
+0 {3 4} 10 20
+</pre>
+</dd>
+<dt><a name="14"><b class="cmd">marpa::unicode::point</b> <i class="arg">character</i></a></dt>
+<dd><p>This command takes a Tcl character and returns the integer value of
+its unicode codepoint.
+If a multi-character string is provided to the command the result will
+be the conversion of the first character in that string.</p>
+<pre class="doctools_example">
+% <b class="cmd">marpa::unicode::point</b> \0
+0
+% <b class="cmd">marpa::unicode::point</b> A
+65
+% <b class="cmd">marpa::unicode::point</b> Apple
+65
+</pre>
+</dd>
+<dt><a name="15"><b class="cmd">marpa::unicode::smp</b></a></dt>
+<dd><p>This command returns the first codepoint in the <i class="term"><a href="../../index.html#key18">SMP</a></i>.</p></dd>
+<dt><a name="16"><b class="cmd">marpa::unicode::unfold</b> <i class="arg">scr</i></a></dt>
+<dd><p>This command takes a <span class="sectref"><a href="#subsection1">character class</a></span> represented by an <span class="sectref"><a href="#subsection2">SCR</a></span> and
+returns its case-expanded form. The result is normalized.</p>
+<p>An error will be thrown if the argument is not valid
+<span class="sectref"><a href="#subsection2">SCR</a></span>.</p>
+<pre class="doctools_example">
+% <b class="cmd">marpa::unicode::unfold</b> {66 99}
+{66 67} {98 99}
+</pre>
+</dd>
+<dt><a name="17"><b class="cmd">marpa::unicode::data::cc::have-tcl</b> <i class="arg">ccname</i></a></dt>
+<dd><p>This command takes the possible name of a unicode <span class="sectref"><a href="#subsection1">character class</a></span> and
+returns a boolean flag indicating if this class is directly supported
+by Tcl (<b class="const">true</b>), or not (<b class="const">false</b>).</p>
+<pre class="doctools_example">
+% <b class="cmd">marpa::unicode::data::cc::have-tcl</b> arabic
+0
+% <b class="cmd">marpa::unicode::data::cc::have-tcl</b> xdigit
+1
+</pre>
+</dd>
+<dt><a name="18"><b class="cmd">marpa::unicode::data::cc::have</b> <i class="arg">ccname</i></a></dt>
+<dd><p>This command takes the possible name of a unicode <span class="sectref"><a href="#subsection1">character class</a></span> and
+returns a boolean flag indicating if this is known unicode character
+class (<b class="const">true</b>), or not (<b class="const">false</b>).</p>
+<pre class="doctools_example">
+% <b class="cmd">marpa::unicode::data::cc::have</b> arabic
+1
+% <b class="cmd">marpa::unicode::data::cc::have</b> foo
+0
+% <b class="cmd">marpa::unicode::data::cc::have</b> xdigit
+1
+</pre>
+</dd>
+<dt><a name="19"><b class="cmd">marpa::unicode::data::cc::names</b></a></dt>
+<dd><p>This command returns a list containing the names of the known unicode
+<span class="sectref"><a href="#subsection1">character classs</a></span>.</p>
+<p><em>Note</em> that the package not only knows the standard
+named unicode <span class="sectref"><a href="#subsection1">character classs</a></span>, but for any such <b class="variable">C</b> also &quot;<b class="variable">C</b>:bmp&quot;
+and &quot;<b class="variable">C</b>:smp&quot;, which are <b class="variable">C</b> intersected (i.e. limited) to
+<i class="term"><a href="../../index.html#key17">BMP</a></i> and <i class="term"><a href="../../index.html#key18">SMP</a></i> respectively.</p></dd>
+<dt><a name="20"><b class="cmd">marpa::unicode::data::cc::ranges</b> <i class="arg">ccname</i></a></dt>
+<dd><p>This command takes the name of a unicode <span class="sectref"><a href="#subsection1">character class</a></span> and returns the
+<span class="sectref"><a href="#subsection2">SCR</a></span> representing that class. The result is normalized.</p>
+<p>An error is thrown if the argument is not a known unicode
+<span class="sectref"><a href="#subsection1">character class</a></span>.</p>
+<p>As an extension the command further accepts names of the form
+<b class="const">%foo</b> where <b class="const">foo</b> is a known unicode <span class="sectref"><a href="#subsection1">character class</a></span>.
+In these cases the result is the normalized <span class="sectref"><a href="#subsection2">SCR</a></span> of the
+specified <span class="sectref"><a href="#subsection1">character class</a></span>, after <i class="term"><a href="../../index.html#key20">case expansion</a></i>.</p>
+<pre class="doctools_example">
+% <b class="cmd">marpa::unicode::data::cc::ranges</b> adlam
+{0x1E900 0x1E94A} {0x1E950 0x1E959} {0x1E95E 0x1E95F}
+</pre>
+</dd>
+<dt><a name="21"><b class="cmd">marpa::unicode::data::cc::tcl-names</b></a></dt>
+<dd><p>This command returns a list containing the names of the character
+classes directly supported by Tcl itself (via <b class="cmd">string is</b>).</p></dd>
+</dl>
+</div>
+<div id="section4" class="doctools_section"><h2><a name="section4">Datastructures</a></h2>
+<div id="subsection1" class="doctools_subsection"><h3><a name="subsection1">character Class - CC</a></h3>
+<p>Character classes (abbreviated <i class="term">CC</i>) are simply sets of unicode
+codepoints.</p>
+<p>The most trivial representation would be as a list of these
+codepoints. Given the space such would need for larger classes this
+package uses a number of more compressed representations, starting
+with <span class="sectref"><a href="#subsection2">SCR</a></span> (horizontal compression of ranges) to <span class="sectref"><a href="#subsection3">ASBR</a></span>
+and <span class="sectref"><a href="#subsection4">ASSR</a></span> (vertical compression of ranges in aligned
+byte/codepoint positions of the element representations).</p>
+<p>Beyond the operations on such unnamed character classes just
+represented by values this package also knows a number of named
+character classes, the definition of which are extracted from the
+Unicode standard.
+These classes represent various categories of codepoints on the one
+hand, like <b class="const">alpha</b>, <b class="const">blank</b>, <b class="const">control</b>, etc., and
+the known unicode <i class="term">scripts</i> on the other, like <b class="const">arabic</b>,
+<b class="const">braille</b>, <b class="const">canadian_aboriginal</b>, etc.</p>
+</div>
+<div id="subsection2" class="doctools_subsection"><h3><a name="subsection2">Set of Codepoint (Ranges) - SCR</a></h3>
+<p>A <i class="term">set of codepoint (ranges)</i> (short for set of codepoints and
+codepoint ranges, abbreviated to <i class="term">SCR</i>) is the main data
+structure used to represent unicode <span class="sectref"><a href="#subsection1">character classs</a></span> of any kind, named or
+not.</p>
+<p>It is a Tcl list whose elements are a mix of codepoints and
+codepoint ranges.</p>
+<p>The codepoints are represented by integer numbers in the range
+[<b class="const">0</b>...<b class="cmd">marpa::unicode::max</b>]. Numbers outside of that range
+are not codepoints and a list containing such is not a valid
+<i class="term">SCR</i>.</p>
+<p>The ranges are represented by 2-element lists (pairs) of
+codepoints, the start and the end of the range, inclusive. Beyond
+having to be valid codepoints the start must not be greater than the
+end of the range. Such a pair is not a valid range, and a list
+containing such is not a valid <i class="term">SCR</i>.</p>
+<p>A <i class="term">normalized</i> <i class="term">SCR</i> is defined as an <i class="term">SCR</i>
+which contains no duplicate elements, no overlapping/adjacent ranges,
+and all elements are sorted in integer ascending order by their start
+point.
+<em>Note</em>: That previous sentence above talks only about ranges
+does not exclude the codepoints. For normalization and other purposes
+codepoints can simply be treated as ranges of size 1, where start and
+end points are identical.</p>
+</div>
+<div id="subsection3" class="doctools_subsection"><h3><a name="subsection3">Alternatives of Sequences of Byte-Ranges - ASBR</a></h3>
+<p>A set of <i class="term">alternatives of sequences of byte-ranges</i>
+(abbreviated to <i class="term">ASBR</i>) is an alternative (sic!) and (usually)
+more compact representation of <span class="sectref"><a href="#subsection1">character classs</a></span>.</p>
+<p>This is the go-to representation of <span class="sectref"><a href="#subsection1">character classs</a></span> for the
+byte-oriented engine provided by <b class="package">marpa::runtime::c</b>, as it
+can be directly mapped to the grammar rules for such.</p>
+<p>It makes use of the fact that the UTF-8 encoding of unicode
+codepoints maps each codepoint to a sequence of bytes, and then
+compresses the resulting &quot;alternatives of byte sequences&quot; by merging
+adjacent alternatives differing in a single position into a new
+alternative where the differing bytes become a single byte range (this
+is where &quot;adjacent&quot; is critical).</p>
+<p>Such a compression can be done very efficiently (in time and
+space) by generating the alternatives in sorted order and then
+comparing the newly generated against the last processed.</p>
+</div>
+<div id="subsection4" class="doctools_subsection"><h3><a name="subsection4">Alternatives of Sequences of Surrogate-Ranges - ASSR</a></h3>
+<p>A set of <i class="term">alternatives of sequences of surrogate-ranges</i>
+(abbreviated to <i class="term">ASSR</i>) is an alternative (sic!) and (usually)
+more compact representation of <span class="sectref"><a href="#subsection1">character classs</a></span>.</p>
+<p>The basic principle of structure and generation is the same as
+for <span class="sectref"><a href="#subsection3">ASBR</a></span>. In contrast however the elements of the alternatives
+are codepoints limited to the <i class="term"><a href="../../index.html#key17">BMP</a></i>, with <i class="term"><a href="../../index.html#key18">SMP</a></i> characters
+in the argument represented as pairs of surrogates before compression.</p>
+<p>This is the go-to representation of <span class="sectref"><a href="#subsection1">character classs</a></span> for the
+character-oriented engine provided by <b class="package">marpa::runtime::tcl</b>,
+due to its Tcl-imposed limitation to the BMP, as it can be directly
+mapped to the grammar rules for such.</p>
+</div>
+</div>
+<div id="section5" class="doctools_section"><h2><a name="section5">Glossary</a></h2>
+<dl class="doctools_definitions">
+<dt>Unicode</dt>
+<dd><p>The main references needed are
+	<a href="https://en.wikipedia.org/wiki/Unicode">https://en.wikipedia.org/wiki/Unicode</a>
+and	<a href="https://en.wikipedia.org/wiki/UTF-8">https://en.wikipedia.org/wiki/UTF-8</a>.</p></dd>
+<dt>BMP</dt>
+<dd><p>The <i class="term"><a href="../../index.html#key27">Basic Multi-lingual Plane</a></i> of unicode.</p>
+<p>The BMP runs from codepoint <b class="const">0</b> to codepoint
+<b class="cmd">marpa::unicode::bmp</b>, inclusive.</p>
+<p>Characters in the BMP can be encoded by UTF-8 into a sequence
+of at least one to most three bytes.</p></dd>
+<dt>SMP</dt>
+<dd><p>The <i class="term"><a href="../../index.html#key13">Supplemental Multi-lingual Planes</a></i> of unicode.
+Starting just after the BMP they cover the remainder of unicode.</p>
+<p>The SMP runs from codepoint <b class="cmd">marpa::unicode::smp</b> to
+<b class="cmd">marpa::unicode::max</b>, inclusive.</p>
+<p>Characters in the SMP can be encoded by UTF-8 into a sequence
+of 4 bytes. For systems limited to the BMP (like Tcl) characters can
+also encoded as a pair of BMP <i class="term"><a href="../../index.html#key22">surrogate</a></i> characters. This allows
+encoding them in six bytes of a pseudo UTF-8 encoding. This is called
+<a href="https://en.wikipedia.org/wiki/UTF-8#CESU-8">CESU-8</a> coding.  (See also the description of the flags for
+<b class="cmd">marpa::unicode::2utf</b>).</p></dd>
+<dt>CES</dt>
+<dd><p>Shorthand for <i class="term">case-equivalent set</i>.</p></dd>
+<dt>case-equivalent set</dt>
+<dd><p>Each unicode codepoint <b class="variable">C</b> is associated with a set of codepoints
+representing the different cases of the same character.
+These are the <i class="term">case-equivalent</i> codepoints of <b class="variable">C</b>.
+<b class="variable">C</b> itself is of course a member of this set.</p>
+<p>As an example, the <i class="term">CES</i> of 97 is {65, 97}. More human
+readable, the character &quot;A&quot; has variants &quot;a&quot; and &quot;A&quot;, lower- and
+upper-case.</p>
+<p>As a second example, codepoint 38, i.e. &quot;&amp;&quot;, is a codepoint
+whose CES contains only itself.</p>
+<p><em>Note</em> that a CES is a <span class="sectref"><a href="#subsection1">character class</a></span>.</p></dd>
+<dt>primary case</dt>
+<dd><p>For each each unicode codepoint the smallest-numbered codepoint in its
+<i class="term">CES</i> is called this.</p></dd>
+<dt>case expansion</dt>
+<dd><p>This is the process of replacing all codepoints of a larger structure
+with its CES.</p>
+<p>A string of characters becomes a sequence of <span class="sectref"><a href="#subsection1">character classs</a></span>,
+making it case-independent.</p>
+<p>A <span class="sectref"><a href="#subsection1">character class</a></span> becomes a possibly larger <span class="sectref"><a href="#subsection1">character class</a></span>.</p></dd>
+</dl>
+</div>
+<div id="section6" class="doctools_section"><h2><a name="section6">Bugs, Ideas, Feedback</a></h2>
+<p>This document, and the package it describes, will undoubtedly contain
+bugs and other problems.
+Please report such at the <a href="https://core.tcl-lang.org/akupries/marpa">Marpa/Tcl Tracker</a>.
+Please report any ideas for enhancements you may have for either
+package and/or documentation as well.</p>
+</div>
+<div id="keywords" class="doctools_section"><h2><a name="keywords">Keywords</a></h2>
+<p><a href="../../index.html#key2">aycock</a>, <a href="../../index.html#key27">basic multi-lingual plane</a>, <a href="../../index.html#key17">bmp</a>, <a href="../../index.html#key20">case expansion</a>, <a href="../../index.html#key26">cesu-8</a>, <a href="../../index.html#key9">character classes</a>, <a href="../../index.html#key24">class canonicalisation</a>, <a href="../../index.html#key21">class complement</a>, <a href="../../index.html#key15">class negation</a>, <a href="../../index.html#key25">class normalization</a>, <a href="../../index.html#key16">code point</a>, <a href="../../index.html#key6">context free grammar</a>, <a href="../../index.html#key11">document processing</a>, <a href="../../index.html#key1">earley</a>, <a href="../../index.html#key12">horspool</a>, <a href="../../index.html#key8">joop leo</a>, <a href="../../index.html#key7">lexing</a>, <a href="../../index.html#key0">libmarpa</a>, <a href="../../index.html#key14">mutf-8</a>, <a href="../../index.html#key5">nigel horspool</a>, <a href="../../index.html#key3">parsing</a>, <a href="../../index.html#key19">primary case</a>, <a href="../../index.html#key10">regex</a>, <a href="../../index.html#key18">smp</a>, <a href="../../index.html#key13">supplemental multi-lingual planes</a>, <a href="../../index.html#key22">surrogate</a>, <a href="../../index.html#key4">table parsing</a>, <a href="../../index.html#key28">unicode</a>, <a href="../../index.html#key23">utf-8</a></p>
+</div>
+<div id="copyright" class="doctools_section"><h2><a name="copyright">Copyright</a></h2>
+<p>Copyright &copy; 2015-present Andreas Kupries<br>
+Copyright &copy; 2018-present Documentation, Andreas Kupries</p>
+</div>
+</div></body></html>

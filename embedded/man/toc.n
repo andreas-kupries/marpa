@@ -273,6 +273,12 @@ Database Class:	\\fB\\$3\\fR
 doc
 .RS
 .TP
+\fBmarpa_unicode\fR
+\fIfiles/marpa_unicode\&.n\fR: Marpa/Tcl - marpa::unicode
+.TP
+\fBmarpa_util\fR
+\fIfiles/marpa_util\&.n\fR: Marpa/Tcl - marpa::util
+.TP
 \fBmarpatcl_changes\fR
 \fIfiles/marpatcl_changes\&.n\fR: Marpa/Tcl - Changes
 .TP
@@ -289,7 +295,7 @@ doc
 \fIfiles/marpatcl_license\&.n\fR: Marpa/Tcl - License
 .TP
 \fBmarpatcl_marpagen\fR
-\fIfiles/marpatcl\&.n\fR: Marpa/Tcl - The Generator Application
+\fIfiles/marpatcl_marpagen\&.n\fR: Marpa/Tcl - The Generator Application
 .TP
 \fBmarpatcl_slif\fR
 \fIfiles/marpatcl_slif\&.n\fR: Marpa/Tcl - The SLIF grammar specification language

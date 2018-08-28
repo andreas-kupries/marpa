@@ -33,7 +33,7 @@ namespace eval marpa {
     namespace ensemble create
 }
 namespace eval marpa::location {
-    namespace export merge merge2 show atom null null?
+    namespace export merge merge2 show atom null null? null*
     namespace ensemble create
     namespace import ::marpa::X
 }

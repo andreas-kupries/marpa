@@ -73,6 +73,7 @@ proc marpa::DX {label script} {
 proc marpa::E {label args} {
     debug.marpa/support {}
     uplevel 1 [list marpa::EP $label {} {*}$args]
+    return
 }
 
 proc marpa::EP {label prefix args} {
@@ -98,6 +99,7 @@ proc marpa::EP {label prefix args} {
 	    -errorcode [linsert $args 0 MARPA @args@] \
 	    "@prefix@${msg}"
     }]]
+    return
 }
 
 proc marpa::X {msg args} {
