@@ -46,12 +46,12 @@ proc ::gen::I {gc args} {
 
 proc gen::single-setup {gr cl} {
     setup cl $cl gr $gr
-    $cl create PARSE
+    $cl create ::PARSE
     return
 }
 
 proc gen::single-cleanup {} {
-    PARSE destroy
+    ::PARSE destroy
     cleanup
 }
 
