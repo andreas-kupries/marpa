@@ -15,6 +15,7 @@
 
 critcl::emap::def marpatcl_rtc_eventtype {
     "stop"	marpatcl_rtc_event_stop
+    "ovrerun"	marpatcl_rtc_event_over
 
     "before"    marpatcl_rtc_event_before
     "after"	marpatcl_rtc_event_after

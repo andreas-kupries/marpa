@@ -1,0 +1,24 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2018-present Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## (cparse) rtc-critcl + min-dt.slif
+##
+
+##
+## Test min-dt parser on top of RT-C.
+## 
+
+kt require support critcl   ;# compile & run
+
+# # ## ### ##### ######## ############# #####################
+## API to the min-dt core
+
+proc rt {} { return c }
+
+# # ## ### ##### ######## ############# #####################
+##
+
+kt source common/mdt-core.testsuite
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests

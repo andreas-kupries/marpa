@@ -87,7 +87,12 @@ critcl::class def marpa::runtime::c::pedesc {
 
     method location proc {Tcl_Interp* ip} object0 {
 	M_PERMIT;
-	return INT (marpatcl_rtc_inbound_location (instance->state));
+	return INT (marpatcl_rtc_inbound_location (instance->state) + 1);
+    }
+
+    method last proc {Tcl_Interp* ip} object0 {
+	M_PERMIT;
+	return INT (marpatcl_rtc_inbound_last (instance->state) + 1);
     }
 
     method from proc {Tcl_Interp* ip location pos int args} object0 {
@@ -96,7 +101,7 @@ critcl::class def marpa::runtime::c::pedesc {
 
 	int k;
 	for (k = 0; k < args.c; k++) { pos += args.v [k]; }
-	marpatcl_rtc_inbound_moveto (instance->state, pos);
+	marpatcl_rtc_inbound_moveto (instance->state, pos - 1);
 	NIL;
     }
 
@@ -110,14 +115,14 @@ critcl::class def marpa::runtime::c::pedesc {
     method stop proc {Tcl_Interp* ip} object0 {
 	M_PERMIT;
 	int pos = marpatcl_rtc_inbound_stoploc (instance->state);
-	if (pos < 0) NIL;
-	return INT (pos);
+	if (pos < -1) NIL;
+	return INT (pos + 1);
     }
 
     method to proc {Tcl_Interp* ip location pos} object0 {
 	M_PERMIT;
 	M_SDBA_EV;
-	marpatcl_rtc_inbound_set_stop (instance->state, pos);
+	marpatcl_rtc_inbound_set_stop (instance->state, pos - 1);
 	NIL;
     }
 
@@ -209,7 +214,7 @@ critcl::class def marpa::runtime::c::pedesc {
 	}
 
 	ADD ("value = ((%s))", marpatcl_rtc_lexer_pe_get_lexeme_value (instance->state));
-	ADD ("@location = %d", marpatcl_rtc_inbound_location (instance->state));
+	ADD ("@location = %d", marpatcl_rtc_inbound_location (instance->state) + 1);
 
 	return list;
     error:

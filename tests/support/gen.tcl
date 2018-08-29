@@ -44,6 +44,17 @@ proc ::gen::I {gc args} {
     #GC {*}$args
 }
 
+proc gen::single-setup {gr cl} {
+    setup cl $cl gr $gr
+    $cl create ::PARSE
+    return
+}
+
+proc gen::single-cleanup {} {
+    ::PARSE destroy
+    cleanup
+}
+
 proc ::gen::setup {args} {
     variable export
     variable load

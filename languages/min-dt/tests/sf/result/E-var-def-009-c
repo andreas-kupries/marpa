@@ -1,0 +1,38 @@
+Parsing failed in gate. Stopped at offset 8 after reading 'i'. Expected any character in [\t\n\13\14\r\40\133\134v] while looking for any of (Vset, White).
+L0 Report:
+______ P7     @1-1 <Vset>         -->  . <VSET>
+______ P8     @1-1 <White>        -->  . <WHITE1>
+______ P45    @1-1 <[\t-\r\40]>   -->  . <[\t-\r]>
+______ P46    @1-1 <[\t-\r\40]>   -->  . <\40>
+______ P52    @1-1 <vset>         -->  . <v> <s> <e> <t>
+______ P67    @1-1 <CL>           -->  . <\133>
+______ P69    @1-1 <COMMENT>      -->  . <CL> <WHITE0> <comment> <WHITE1> <WORD> <WHITE0> <CR>
+______ P70    @1-1 <CONTINUATION> -->  . <SPACE0> <\134> <NEWLINE> <SPACE0>
+______ P85    @1-1 <SPACE>        -->  . <[\t-\r\40]>
+______ P86    @1-1 <SPACE0>       -->  . <SPACE>
+______ P87    @1-1 <SPACE1>       -->  . <SPACE>
+______ P91    @1-1 <VSET>         -->  . <vset>
+______ P92    @1-1 <WHITE>        -->  . <SPACE1>
+______ P93    @1-1 <WHITE>        -->  . <COMMENT>
+______ P94    @1-1 <WHITE>        -->  . <CONTINUATION>
+______ P96    @1-1 <WHITE1>       -->  . <WHITE>
+______ P305   @1-1 <[\t-\r]>      -->  . <\t>
+______ P306   @1-1 <[\t-\r]>      -->  . <\n>
+______ P307   @1-1 <[\t-\r]>      -->  . <\13>
+______ P308   @1-1 <[\t-\r]>      -->  . <\14>
+______ P309   @1-1 <[\t-\r]>      -->  . <\r>
+______ R70:1  @1-1 <CONTINUATION> -->  <SPACE0> . <\134> <NEWLINE> <SPACE0>
+______ R521:1 @0-1 <@L0:START>    -->  <Vset> . <Vset>
+______ R522:1 @0-1 <@L0:START>    -->  <White> . <White>
+
+Mismatch:
+'i' => (105) ni
+    9: '\t'
+   10: '\n'
+   11: '\13'
+   12: '\14'
+   13: '\r'
+   32: '\40'
+   91: '\133'
+   92: '\134'
+  118: 'v'

@@ -159,15 +159,44 @@ oo::class create marpa::gate {
 	return
     }
 
-    foreach m {location from rewind relative stop to limit dont-stop} {
-	# TODO: Check which are actually required.
-	# Access to input location, accessor & modifiers
-	forward $m  Input $m
-    } ; unset m
-
     method signal-stop {} {
 	Forward signal-stop ;# notify lexer
     }
+
+    method signal-overrun {} {
+	Forward signal-overrun ;# notify lexer
+    }
+
+    # # -- --- ----- -------- -------------
+    ## Conversion from the user-visible locations to the internal
+    ## locations used by the engine.
+
+    # External cursor F : Index of character to process next, range  0...size
+    # Internal cursor F': Index of character processed last,  range -1...size-1
+    # Translation:    F' = F  - 1
+    #                 F  = F' + 1
+
+    method location {}         { return [expr {[Input location] + 1}] }
+    method from     {pos args} { Input from $pos -1 {*}$args }
+
+    forward i-from   Input from ;# pass through for internal locations
+    forward rewind   Input rewind
+    forward relative Input relative
+    forward last     Input last
+
+    # External stop location S : Index of character to stop before, range  0...size
+    # Internal stop location S': Index of character to stop after,  range -1...size-1
+    # Translation:           S' = S  - 1
+    #                        S  = S' + 1
+
+    method stop {} {
+	set n [Input stop]
+	return [expr {($n eq "") ? "" : ($n + 1)}]
+    }
+    method to   {pos} { incr pos -1 ; Input to $pos }
+
+    forward dont-stop Input dont-stop
+    forward limit     Input limit
 
     # # -- --- ----- -------- -------------
     ## Public API

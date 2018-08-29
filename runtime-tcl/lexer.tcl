@@ -184,6 +184,10 @@ oo::class create marpa::lexer {
 	my Post stop {}
     }
 
+    method signal-overrun {} {
+	my Post overrun {}
+    }
+
     # # -- --- ----- -------- -------------
     ## Public API
 
@@ -436,6 +440,7 @@ oo::class create marpa::lexer {
 
 	#  Note that the flush leaves us with a just-started
 	# recognizer, which we have to remove again.
+
 	if {$myrecce ne {}} {
 	    debug.marpa/lexer {[debug caller] | RECCE kill 1 [namespace which -command RECCE]}
 	    RECCE destroy
@@ -494,6 +499,13 @@ oo::class create marpa::lexer {
 	# Push the set of now acceptable lexer symbols down into the
 	# gate instance
 	Gate acceptable [RECCE expected-terminals]
+	return
+    }
+
+    method reset {} {
+	debug.marpa/lexer {[debug caller] | }
+	RECCE destroy
+	set myrecce {}
 	return
     }
 
@@ -723,8 +735,8 @@ oo::class create marpa::lexer {
 	    set events [my events? before $ef]
 	    if {[llength $events]} {
 		set prehandler [my PEFill $found $sv]
-		# Move input location to just before start of lexeme
-		Gate from [MSTATE start] -1
+		# Move input location to start of lexeme
+		Gate from [MSTATE start]
 		my Post before $events
 	    } else {
 		set events [my events? after $ef]

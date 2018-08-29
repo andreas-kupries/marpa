@@ -67,6 +67,7 @@ void  marpatcl_rtc_lexer_enter      (marpatcl_rtc_p p, int ch); /* IN.location i
 void  marpatcl_rtc_lexer_flush      (marpatcl_rtc_p p);         /* IN.location implied */
 void  marpatcl_rtc_lexer_eof        (marpatcl_rtc_p p);
 void  marpatcl_rtc_lexer_acceptable (marpatcl_rtc_p p, int keep);
+void  marpatcl_rtc_lexer_reset      (marpatcl_rtc_p p);
 
 
 /*

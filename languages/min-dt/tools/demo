@@ -1,0 +1,65 @@
+#!/bin/bash
+#set -x
+
+clear
+echo _______________________________ configuration
+here="$(pwd)"                   ; echo here__: $here
+self="$0"                       ; echo self__: $self
+bindir="$(dirname "${self}")"   ; echo bindir: $bindir
+topdir="$(dirname "${bindir}")" ; echo topdir: $topdir
+
+echo _______________________________ cleanup temps
+find . -name "*~" -print
+find . -name "*~" -exec rm "{}" \;
+rm -rf OUT
+echo
+
+echo continue to grammar...
+read __
+
+clear
+echo
+echo _______________________________ setup
+(
+    less $topdir/g/mini-dt.slif
+    
+    echo _______________________________ make parser packages
+    cd $topdir
+    $here/$bindir/make-parser
+
+    echo _______________________________ install parsers, local
+    ./build.tcl install --prefix $here/OUT --include-dir ~/opt/ActiveTcl/include
+)
+echo
+echo continue to C parser sources...
+read __
+
+less $topdir/mini-dt-c.tcl
+
+clear
+echo _______________________________ run mini-dt processor over input
+echo
+mdtfile="${topdir}/examples/a.mdt"
+mdtfile="${topdir}/examples/b.mdt"
+mdtfile="${topdir}/examples/c.mdt"
+
+echo mini-dt file: $mdtfile
+echo _______________________________ ..
+cat $mdtfile
+echo _______________________________ //
+echo
+echo continue to hd...
+read __
+
+clear
+echo
+$here/OUT/bin/dt $mdtfile > AST
+
+echo
+echo continue to ast...
+read __
+
+less AST
+
+echo
+exit

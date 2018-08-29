@@ -1,0 +1,16 @@
+lorem [strong ipsum]
+dolores
+me culpa
+see [strong {"the}] quick brown fox ..."
+
+[strong a]
+[strong a"b]
+[strong "a b"]
+[strong {a
+b [blarg]}]
+[strong "a
+b"]
+[strong \
+a]
+
+[strong a"]

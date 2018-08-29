@@ -41,6 +41,7 @@ typedef struct marpatcl_rtc {
     void*                   rcdata;  /* ... and its client data */
     marpatcl_rtc_event_cmd  event;   /* Dispatcher for parse events ... */
     void*                   ecdata;  /* ... and its client data */
+    int                     done;    /* Flag to force reset on reuse */
 
     /* Rule information for progress reports. Indexed by rule, returns the PC
      * of the spec bytecode instruction for the rule. From this lhs and rhs
@@ -77,12 +78,12 @@ typedef struct marpatcl_rtc {
 #define EVENTS   (&LEX.events)
 #define DISCARDS (&LEX.discards)
 
-#define POST_EVENT(type)						\
-    TRACE ("PE %s %d -> (%p, cd %p)", #type, EVENTS->n, p->event, p->ecdata); \
-    LEX.m_event = type;							\
-    LEX.m_clearfirst = 1;						\
-    p->event (p->ecdata, type, EVENTS->n, EVENTS->dense);		\
-    LEX.m_event = marpatcl_rtc_eventtype_LAST
+#define POST_EVENT(type)				\
+    TRACE ("PE %s", #type);				\
+    int evok = marpatcl_rtc_raise_event (p, type);
+//  1 - ok
+//  0 - failed
+// -1 - ignored, no callback available
 
 #endif
 

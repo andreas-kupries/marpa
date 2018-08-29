@@ -1,0 +1,3 @@
+[vset a [include _ipsum]]
+lorem
+[vset a]

@@ -170,6 +170,17 @@ marpatcl_rtc_gate_redo (marpatcl_rtc_p p, int n)
     TRACE_RETURN_VOID;
 }
 
+void
+marpatcl_rtc_gate_reset (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+
+    marpatcl_rtc_gate_free (p);
+    marpatcl_rtc_gate_init (p);
+
+    TRACE_RETURN_VOID;
+}
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  */

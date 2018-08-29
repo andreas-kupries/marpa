@@ -61,6 +61,8 @@ oo::class create marpa::engine::tcl::lex {
 	LEX discard [my Discards]
 	LEX events  [my Events]
 
+	next
+
 	# Initial acceptability
 	LEX acceptable $mylex
 	return
@@ -101,7 +103,6 @@ oo::class create marpa::engine::tcl::lex {
 	set chan [open $path r]
 	# Drive the pipeline from the channel.
 	IN read $chan {*}$options
-	IN eof
 	return
     }
 
@@ -110,8 +111,20 @@ oo::class create marpa::engine::tcl::lex {
 	marpa::import $out Forward
 	# Drive the pipeline from the string
 	IN enter $string {*}[my Options $args]
-	IN eof
 	return
+    }
+
+    method extend-file {path} {
+	debug.marpa/engine/tcl/lex {}
+	set chan [open $path r]
+	set off [IN read-more $chan]
+	close $chan
+	return $off
+    }
+
+    method extend {string} {
+	debug.marpa/engine/tcl/lex {}
+	return [IN enter-more $string]
     }
 
     # # ## ### ##### ######## #############

@@ -198,6 +198,27 @@ rename cleanup {}
 finalize
 
 # # ## ### ##### ######## ############# #####################
+## Oneshot test cases not fitting into the above loop.
+## I.e. custom operation
+
+test marpa-[label]-runtime-process-3.0-multishot "[label] :: reset for multi-use" -setup {
+    # Demonstrate multiple calls. They are working due to the implicit
+    # parser reset before the next run. Without the reset the parser
+    # is in a state where it will not accept the input from the second
+    # call.
+    
+    gen single-setup [td]/grammars/runtime/multi-shot/grammar RESETTABLE
+    set msg ""
+} -body {
+    append msg	[ast-format [PARSE process "alpha"]]
+    append msg	[ast-format [PARSE process "bet"]]
+    set    msg ;# set ::errorInfo
+} -cleanup {
+    gen single-cleanup
+    unset msg
+} -result [fget [td]/grammars/runtime/multi-shot/expected]
+
+# # ## ### ##### ######## ############# #####################
 rename label      {}
 rename result     {}
 rename initialize {}

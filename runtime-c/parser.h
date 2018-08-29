@@ -38,7 +38,7 @@ void marpatcl_rtc_parser_init  (marpatcl_rtc_p p);
 void marpatcl_rtc_parser_free  (marpatcl_rtc_p p);
 void marpatcl_rtc_parser_enter (marpatcl_rtc_p p);
 void marpatcl_rtc_parser_eof   (marpatcl_rtc_p p);
-/* TODO: fail, get-context, extend-context */
+void marpatcl_rtc_parser_reset (marpatcl_rtc_p p);
 
 #endif
 

@@ -1,0 +1,8 @@
+# Grammar to demonstrate secondary input and movement control
+# No complex structure, just gather all the input
+lexeme default =    latm => 1 action => [start,length,value]
+:default ::=   	    action => [name,values]
+L ::= W +
+W ~ [a-zA-Z0-9] +
+:discard ~ space
+space ~ [ \t\f\v\r\n] +

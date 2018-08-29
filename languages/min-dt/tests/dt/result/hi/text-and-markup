@@ -1,0 +1,137 @@
+words
+  word
+    g_text
+      simple
+        @0 5 'lorem'
+  word
+    markup
+      strong
+        tclword
+          unquoted
+            unquoted_leader
+              simple
+                @14 5 'ipsum'
+            @{} {} ''
+  word
+    g_text
+      simple
+        @21 7 'dolores'
+  word
+    g_text
+      simple
+        @29 2 'me'
+  word
+    g_text
+      simple
+        @32 5 'culpa'
+  word
+    g_text
+      simple
+        @38 3 'see'
+  word
+    markup
+      strong
+        tclword
+          braced
+            @50 6 {'\173\"the\175'}
+  word
+    g_text
+      simple
+        @58 5 'quick'
+  word
+    g_text
+      simple
+        @64 5 'brown'
+  word
+    g_text
+      simple
+        @70 3 'fox'
+  word
+    g_text
+      simple
+        @74 3 '...'
+  word
+    g_text
+      quote
+        @77 1 {'\"'}
+  word
+    markup
+      strong
+        tclword
+          unquoted
+            unquoted_leader
+              simple
+                @88 1 'a'
+            @{} {} ''
+  word
+    markup
+      strong
+        tclword
+          unquoted
+            unquoted_leader
+              simple
+                @99 1 'a'
+            unquoted_elems
+              unquoted_elem
+                quote
+                  @100 1 {'\"'}
+              unquoted_elem
+                simple
+                  @101 1 'b'
+  word
+    markup
+      strong
+        tclword
+          quoted
+            quoted_elems
+              quoted_elem
+                simple
+                  @113 1 'a'
+              quoted_elem
+                space
+                  @114 1 {' '}
+              quoted_elem
+                simple
+                  @115 1 'b'
+  word
+    markup
+      strong
+        tclword
+          braced
+            @127 13 {'\173a\nb [blarg]\175'}
+  word
+    markup
+      strong
+        tclword
+          quoted
+            quoted_elems
+              quoted_elem
+                simple
+                  @151 1 'a'
+              quoted_elem
+                space
+                  @152 1 {'\n'}
+              quoted_elem
+                simple
+                  @153 1 'b'
+  word
+    markup
+      strong
+        tclword
+          unquoted
+            unquoted_leader
+              simple
+                @167 1 'a'
+            @{} {} ''
+  word
+    markup
+      strong
+        tclword
+          unquoted
+            unquoted_leader
+              simple
+                @179 1 'a'
+            unquoted_elems
+              unquoted_elem
+                quote
+                  @180 1 {'\"'}

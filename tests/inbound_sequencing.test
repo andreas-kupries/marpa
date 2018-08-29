@@ -1,0 +1,357 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2016-present Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## marpa::inbound
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+kt require support tcl::chan::string ;# string channel for 'read' method.
+
+kt local   support marpa::c
+kt local   testing marpa::runtime::tcl
+
+# # ## ### ##### ######## ############# #####################
+## Activate method sequence checking for all instances
+## Instances can dynamically activate method sequence checks too
+
+oo::define marpa::inbound mixin marpa::inbound::sequencer
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/common.tcl
+
+# # ## ### ##### ######## ############# #####################
+## [ok]  1 constructor/1 (postprocessor)
+## [ok]  2 enter/1..3    (string ?from to?)
+## [ok]  3 read/1..3     (channel ?from to?)
+## [..]  4 enter-more/1  (string)
+## [..]  5 read-more/1   (chan)
+## [..]  6 location/0    ()
+## [..]  7 stop/0        ()
+## [..]  8 dont-stop/0   ()
+## [..]  9 from/1..      (pos ...)
+## [..] 10 relative/1    (delta)
+## [..] 11 rewind/1      (delta)
+## [..] 12 to/1          (pos)
+## [..] 13 limit/1       (delta)
+##
+## Sequence = 1[23][45,8-13]*
+## Always   = [67]
+## See runtime-tcl/inbound.tcl, mark <<s>> (multiple)
+##
+#
+# state   |
+# --------+-------
+# ready   | 1.1.*
+# running | 2.2.*, 3.2.*
+# done    | 4.*, 5.*
+# --------+-------
+
+# # ## ### ##### ######## ############# #####################
+## ready sequencing - state entry, guards, exit states
+
+test marpa-inbound-sequencing-1.0 {constructor, initial state} -setup {
+    marpa::inbound create IN [log GATE]
+} -body {
+    list [IN location] [IN stop] [IN @] [logged]
+} -cleanup {
+    IN destroy
+} -result {-1 {} ready {
+  GATE C {input: ::IN}
+  GATE R {input: ::IN} = {}
+}}
+
+testcases j {cmd code result} {
+    {enter fox}		ok	{{} done}
+    {read @}		ok	{{} done}
+    {enter-more bar}	error	{Unable to extend input before start}
+    {read-more @}	error	{Unable to extend input before start}
+    location		ok	{-1 ready}
+    stop		ok	{{} ready}
+    dont-stop		error	{Unable to clear stop location before start}
+    {from 0}		error	{Unable to set current location before start}
+    {relative 0}	error	{Unable to set current location before start}
+    {rewind 0}		error	{Unable to set current location before start}
+    {to 0}		error	{Unable to set stop location before start}
+    {limit 0}		error	{Unable to set stop location before start}
+} {
+    test marpa-inbound-sequencing-1.1.$j "constructor, after call, ${code}: $cmd" -setup {
+	set chan [tcl::chan::string foo]
+	marpa::inbound create IN [log GATE]
+    } -body {
+	list [IN {*}[string map [list @ $chan] $cmd]] [IN @]
+    } -cleanup {
+	IN destroy
+	close $chan
+	unset chan
+	logged
+    } -returnCodes $code -result $result
+}
+
+# # ## ### ##### ######## ############# #####################
+## running sequencing I, state entry, guards, exit states
+
+test marpa-inbound-sequencing-2.1.0 {enter nothing, results, state changes, external calls} -setup {
+    marpa::inbound create IN [log GATE]
+} -body {
+    list [IN enter {}] [IN location] [IN stop] [IN @] [logged]
+} -cleanup {
+    IN destroy
+} -result {{} -1 {} done {
+  GATE C {input: ::IN}
+  GATE R {input: ::IN} = {}
+  GATE C eof
+  GATE R eof = {}
+}}
+
+test marpa-inbound-sequencing-2.1.1 {enter something, results, state changes, external calls} -setup {
+    marpa::inbound create IN [log GATE]
+} -body {
+    list [IN enter FOO] [IN location] [IN stop] [IN @] [logged]
+} -cleanup {
+    IN destroy
+} -result {{} 2 {} done {
+  GATE C {input: ::IN}
+  GATE R {input: ::IN} = {}
+  GATE C {enter F 0}
+  GATE R {enter F 0} = {}
+  GATE C {enter O 1}
+  GATE R {enter O 1} = {}
+  GATE C {enter O 2}
+  GATE R {enter O 2} = {}
+  GATE C eof
+  GATE R eof = {}
+}}
+
+test marpa-inbound-sequencing-2.1.2 {enter something, with stop, results, state changes, external calls} -setup {
+    marpa::inbound create IN [jack STOP signal-stop {args} {
+	... $args @ [IN @] [IN location] [IN stop]
+    } [log GATE]]
+} -body {
+    list [IN enter FOO -1 0] [IN location] [IN stop] [IN @] [logged]
+} -cleanup {
+    IN destroy
+} -result {{} 2 {} done {
+  GATE C {input: ::IN}
+  GATE R {input: ::IN} = {}
+  GATE C {enter F 0}
+  GATE R {enter F 0} = {}
+  STOP C signal-stop
+  signal-stop @ running 0 {}
+  STOP R signal-stop = {}
+  GATE C {enter O 1}
+  GATE R {enter O 1} = {}
+  GATE C {enter O 2}
+  GATE R {enter O 2} = {}
+  GATE C eof
+  GATE R eof = {}
+}}
+
+testcases j {cmd code result} {
+    {enter fox}		error	{Unable to process input after start}
+    {read @}		error	{Unable to process input after start}
+    {enter-more bar}	ok	{3 running}
+    {read-more @}	ok	{3 running}
+    location		ok	{0 running}
+    stop		ok	{{} running}
+    dont-stop		ok	{{} running}
+    {from 0}		ok	{{} running}
+    {relative 0}	ok	{{} running}
+    {rewind 0}		ok	{{} running}
+    {to -1}		ok	{{} running}
+    {limit -1}		ok	{{} running}
+} {
+    test marpa-inbound-sequencing-2.2.$j "constructor, after call, ${code}: $cmd" -setup {
+	set chan [tcl::chan::string foo]
+	marpa::inbound create IN [jack STOP signal-stop {args} {
+	    set ::res [list [IN {*}[string map [list @ $::chan] $::cmd]] [IN @]]
+	} [log GATE]]
+    } -body {
+	IN enter foo -1 0
+	set ::res
+    } -cleanup {
+	IN destroy
+	close $chan
+	unset -nocomplain chan res
+	logged
+    } -returnCodes $code -result $result
+}
+
+# # ## ### ##### ######## ############# #####################
+## running sequencing II, state entry, guards, exit states
+
+test marpa-inbound-sequencing-3.1.0 {read nothing, results, state changes, external calls} -setup {
+    set chan [tcl::chan::string {}]
+    marpa::inbound create IN [log GATE]
+} -body {
+    list [IN read $chan] [IN location] [IN stop] [IN @] [logged]
+} -cleanup {
+    IN destroy
+    close $chan
+    unset chan
+} -result {{} -1 {} done {
+  GATE C {input: ::IN}
+  GATE R {input: ::IN} = {}
+  GATE C eof
+  GATE R eof = {}
+}}
+
+test marpa-inbound-sequencing-3.1.1 {read something, results, state changes, external calls} -setup {
+    set chan [tcl::chan::string FOO]
+    marpa::inbound create IN [log GATE]
+} -body {
+    list [IN read $chan] [IN location] [IN stop] [IN @] [logged]
+} -cleanup {
+    IN destroy
+    close $chan
+    unset chan
+} -result {{} 2 {} done {
+  GATE C {input: ::IN}
+  GATE R {input: ::IN} = {}
+  GATE C {enter F 0}
+  GATE R {enter F 0} = {}
+  GATE C {enter O 1}
+  GATE R {enter O 1} = {}
+  GATE C {enter O 2}
+  GATE R {enter O 2} = {}
+  GATE C eof
+  GATE R eof = {}
+}}
+
+test marpa-inbound-sequencing-3.1.2 {read something, with stop, results, state changes, external calls} -setup {
+    set chan [tcl::chan::string FOO]
+    marpa::inbound create IN [jack STOP signal-stop {args} {
+	... $args @ [IN @] [IN location] [IN stop]
+    } [log GATE]]
+} -body {
+    list [IN read $chan -1 0] [IN location] [IN stop] [IN @] [logged]
+} -cleanup {
+    IN destroy
+    close $chan
+    unset chan
+} -result {{} 2 {} done {
+  GATE C {input: ::IN}
+  GATE R {input: ::IN} = {}
+  GATE C {enter F 0}
+  GATE R {enter F 0} = {}
+  STOP C signal-stop
+  signal-stop @ running 0 {}
+  STOP R signal-stop = {}
+  GATE C {enter O 1}
+  GATE R {enter O 1} = {}
+  GATE C {enter O 2}
+  GATE R {enter O 2} = {}
+  GATE C eof
+  GATE R eof = {}
+}}
+
+testcases j {cmd code result} {
+    {enter fox}		error	{Unable to process input after start}
+    {read @}		error	{Unable to process input after start}
+    {enter-more bar}	ok	{3 running}
+    {read-more @}	ok	{3 running}
+    location		ok	{0 running}
+    stop		ok	{{} running}
+    dont-stop		ok	{{} running}
+    {from 0}		ok	{{} running}
+    {relative 0}	ok	{{} running}
+    {rewind 0}		ok	{{} running}
+    {to -1}		ok	{{} running}
+    {limit -1}		ok	{{} running}
+} {
+    test marpa-inbound-sequencing-3.2.$j "constructor, after call, ${code}: $cmd" -setup {
+	set in [tcl::chan::string FOO]
+	set chan [tcl::chan::string foo]
+	marpa::inbound create IN [jack STOP signal-stop {args} {
+	    set ::res [list [IN {*}[string map [list @ $::chan] $::cmd]] [IN @]]
+	} [log GATE]]
+    } -body {
+	IN read $in -1 0
+	set ::res
+    } -cleanup {
+	IN destroy
+	close $chan
+	close $in
+	unset -nocomplain chan in res
+	logged
+    } -returnCodes $code -result $result
+}
+
+# # ## ### ##### ######## ############# #####################
+## done sequencing I, state entry, guards, exist states
+
+testcases j {cmd code result} {
+    {enter fox}		error	{Unable to process input after EOF}
+    {read @}		error	{Unable to process input after EOF}
+    {enter-more bar}	error	{Unable to extend input after EOF}
+    {read-more @}	error	{Unable to extend input after EOF}
+    location		ok	{2 done}
+    stop		ok	{{} done}
+    dont-stop		error	{Unable to clear stop location after EOF}
+    {from 0}		error	{Unable to set current location after EOF}
+    {relative 0}	error	{Unable to set current location after EOF}
+    {rewind 0}		error	{Unable to set current location after EOF}
+    {to 0}		error	{Unable to set stop location after EOF}
+    {limit 0}		error	{Unable to set stop location after EOF}
+} {
+    test marpa-inbound-sequencing-4.$j "enter, after call, ${code}: $cmd" -setup {
+	set chan [tcl::chan::string foo]
+	marpa::inbound create IN [log GATE]
+	IN enter foo
+    } -body {
+	list [IN {*}[string map [list @ $chan] $cmd]] [IN @]
+    } -cleanup {
+	IN destroy
+	close $chan
+	unset chan
+	logged
+    } -returnCodes $code -result $result
+}
+
+# # ## ### ##### ######## ############# #####################
+## done sequencing II, state entry, guards, exit states
+
+testcases j {cmd code result} {
+    {enter fox}		error	{Unable to process input after EOF}
+    {read @}		error	{Unable to process input after EOF}
+    {enter-more bar}	error	{Unable to extend input after EOF}
+    {read-more @}	error	{Unable to extend input after EOF}
+    location		ok	{2 done}
+    stop		ok	{{} done}
+    dont-stop		error	{Unable to clear stop location after EOF}
+    {from 0}		error	{Unable to set current location after EOF}
+    {relative 0}	error	{Unable to set current location after EOF}
+    {rewind 0}		error	{Unable to set current location after EOF}
+    {to 0}		error	{Unable to set stop location after EOF}
+    {limit 0}		error	{Unable to set stop location after EOF}
+} {
+    test marpa-inbound-sequencing-5.$j "enter, after call, ${code}: $cmd" -setup {
+	set in [tcl::chan::string bar]
+	set chan [tcl::chan::string foo]
+	marpa::inbound create IN [log GATE]
+	IN read $in
+    } -body {
+	list [IN {*}[string map [list @ $chan] $cmd]] [IN @]
+    } -cleanup {
+	IN destroy
+	close $chan
+	close $in
+	unset chan in
+	logged
+    } -returnCodes $code -result $result
+}
+
+# # ## ### ##### ######## ############# #####################
+
+## The sequencing of enter-more, read-more, and the accessors and
+## modifiers for stop marker and current location cursor are implied
+## in the testing of `running`.
+
+# # ## ### ##### ######## ############# #####################
+cleanupTests
+return

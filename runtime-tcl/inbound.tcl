@@ -20,6 +20,7 @@ package require debug::caller
 
 debug define marpa/inbound
 #debug prefix marpa/inbound {[debug caller] | }
+#debug on marpa/inbound
 
 # # ## ### ##### ######## #############
 ## Entry object for character streams.
@@ -33,49 +34,29 @@ oo::class create marpa::inbound {
 
     ## Interaction sequences
     #
-    # * Supplication of text via `enter`
+    # * Provision of text via `enter`   * Provision of text via `read`
     # ```
-    # Driver  Inbound  Postprocessor
-    # |                |
-    # +-cons--\        |
-    # |       |        |
-    # /       /        /
-    # |       |        |
-    # +-enter->        |
-    # |       |        |
-    # |       +-enter-->
-    # |       |        |
-    # /       /        /
-    # |       |        |
-    # +-eof--->        |
-    # |       +-eof---->
-    # |       |        |
-    # ```
-    #
-    # * Supplication of text via `read`
-    # ```
-    # Driver  Inbound   Postprocessor
-    # |                 |
-    # +-cons--\         |
-    # |       |         |
-    # /       /         /
-    # |       |         |
-    # +-read-->         |
-    # |       --\       |
-    # |       | enter   |
-    # |       <-/       |
-    # |       |         |
-    # |       +-enter--->
-    # |       |         |
-    # /       /         /
-    # |       |         |
-    # +-eof--->         |
-    # |       +-eof----->
-    # |       |         |
+    # Driver  Inbound  Postprocessor    Driver  Inbound   Postprocessor
+    # |                |	        |                 |
+    # +-cons--\        |	        +-cons--\         |
+    # |       |        |	        |       |         |
+    # /       /        /	        /       /         /
+    # |       |        |	        |       |         |
+    # +-enter->        |	        +-read-->         |
+    # |       |        |	        |       --\       |
+    # |       +-enter-->	        |       | enter   |
+    # |       |        |	        |       <-/       |
+    # /       /        /	        |       |         |
+    # |       |        |	        |       +-enter--->
+    # |       +-eof---->	        |       |         |
+    # |       |        |	        /       /         /
+    #    			        |       |         |
+    #				        |       +-eof----->
+    #                                   |       |         |
     # ```
     #
-    # __Note__, both `enter` and `read` can be mixed between
-    # `constructor` and `eof`.
+    # - Callbacks for stop events not shown.
+    # - `enter-more`, `read-more` usable from stop events not shown.
 
     # # -- --- ----- -------- -------------
     ## State
@@ -84,16 +65,28 @@ oo::class create marpa::inbound {
     variable mystoplocation ; # Trigger location for stop events
     variable mytext         ; # Physical input stream
     			      # (list! of characters)
+    variable mymax          ; # Location triggering EOF
+    variable mysentinel     ; # Location triggering overrun
 
     # API:
-    # 1 cons  (postprocessor) - Create, link
-    # 2 enter (string)        - Incoming characters via string
-    # 3 read  (chan)          - Incoming characters via channel
-    # 4 eof   ()              - End of input signal
-    #   location? ()          - Retrieve current location
+    #  1 cons       (postprocessor)    - Create, link
+    #  2 enter      (string ?from to?) - Incoming characters via string
+    #  3 read       (chan ?from to?)   - Incoming characters via channel
+    #  4 enter-more (string)           - Additional characters, in stop events
+    #  5 read-more  (chan)             - Ditto, via channel
+    #  6 location   ()                 - Retrieve current location
+    #  7 stop       ()
+    #  8 dont-stop  ()
+    #  9 from       (pos ...)
+    # 10 relative   (delta)
+    # 11 rewind     (delta)
+    # 12 to         (pos)
+    # 13 limit      (delta)
     ##
-    # Sequence = 1[23]*4
+    # Sequence = 1[2,3][4,5,8-13]*
     # See mark <<s>>
+    # See also `tests/inbound.test`
+    # Sequence is simplified, 6 & 7 may be used any time, independent of state
     ##
     # # -- --- ----- -------- -------------
     ## Lifecycle
@@ -103,10 +96,14 @@ oo::class create marpa::inbound {
 
 	marpa::import $postprocessor Forward
 
-	set mytext     "" ; # Input is empty
-	set mylocation -1 ; # Location of the current character in
-			    # the input, currently set to just before
-			    # the first character (of nothing).
+	set mytext         "" ; # Input is empty
+	set mylocation     -1 ; # Location of the current character in
+				# the input, currently set to just
+				# before the first character (of
+				# nothing).
+	set mystoplocation -2 ; # Where to stop the engine, nowhere.
+	set mysentinel     -1
+	set mymax          -1
 
 	# Attach ourselves to the postprocessor, as its input
 	Forward input: [self]
@@ -118,14 +115,18 @@ oo::class create marpa::inbound {
     # # -- --- ----- -------- -------------
     ## Public API
 
+    method last {} {
+	debug.marpa/inbound {[debug caller] | ==> $mymax}
+	return $mymax
+    }
+
     method location {} {
 	debug.marpa/inbound {[debug caller] | ==> $mylocation}
-	return [expr {$mylocation + 1}]
+	return $mylocation
     }
 
     method from {pos args} {
 	debug.marpa/inbound {[debug caller] | }
-	incr pos -1
 	set mylocation $pos
 	foreach delta $args { incr mylocation $delta }
 	return
@@ -145,7 +146,7 @@ oo::class create marpa::inbound {
 
     method stop {} {
 	debug.marpa/inbound {[debug caller] | }
-	if {$mystoplocation < 0} { return {} }
+	if {$mystoplocation < -1} { return {} }
 	return $mystoplocation
     }
 
@@ -157,7 +158,7 @@ oo::class create marpa::inbound {
 
     method dont-stop {} {
 	debug.marpa/inbound {[debug caller] | }
-	set mystoplocation -1
+	set mystoplocation -2
 	return
     }
 
@@ -165,56 +166,48 @@ oo::class create marpa::inbound {
 	# assert delta > 0
 	debug.marpa/inbound {[debug caller] | }
 	set  mystoplocation $mylocation
-	incr mystoplocation
 	incr mystoplocation $delta
 	return
     }
 
-    method enter {string {from -1} {to -1}} {
-	debug.marpa/inbound {[debug caller] | }
-	my Def $string
-	my Process $from $to
-	# XXX eof here
-	return
-    }
-
-    method read {chan {from -1} {to -1}} {
+    method read {chan {from -1} {to -2}} {
 	debug.marpa/inbound {[debug caller] | }
 	# Read entire channel into memory for processing
-	my Def [read $chan]
-	my Process $from $to
-	# XXX eof here
+	my enter [read $chan] $from $to
 	return
     }
 
-    method eof {} {
+    method read-more {chan} {
 	debug.marpa/inbound {[debug caller] | }
-	Forward eof
-	return
+	return [my enter-more [read $chan]]
     }
 
-    # # ## ### ##### ######## #############
-    ## Internal support functionality
+    method enter {string {from -1} {to -2}} {
+	debug.marpa/inbound {[debug caller 1] | }
 
-    method Def {string} {
-	debug.marpa/inbound {[debug caller] | }
-	set mytext     [split $string {}]
-	set mylocation -1
-	# stop before input - cannot trigger == do not stop
-	set mystoplocation -1
-	return
-    }
-
-    method Process {from to} {
-	debug.marpa/inbound {[debug caller] | }
-
+	set mytext         [split $string {}]
 	set mylocation     $from
 	set mystoplocation $to
 
 	set  max [llength $mytext]
 	incr max -1
+	set  mysentinel $max
+	set  mymax      $max
 
-	debug.marpa/inbound {[debug caller] | DO _______________________________________ /START}
+	# Example input, with secondary data (15 chars)
+	#             0 1 2 3 4 5 6 7 8 9 A B C  D E
+	# text     = {a l p h a n u m e r i c \0 u m}
+	# max      = 11 --------------------^
+	# sentinel = 14 ---------------------------^
+	#
+	# max = Trigger EOF when this (@11) is the previous processed
+	#       character.
+	#
+	# sentinel = Trigger overrun when this (@14) is the previous
+	#            processed character and engine was not stopped
+	#            by EOF or stop marker.
+
+	debug.marpa/inbound {[debug caller 1] | DO _______________________________________ /START}
 
 	# Notes on locations.
 	# [1] At the beginning of the loop `mylocation` points to the
@@ -225,54 +218,91 @@ oo::class create marpa::inbound {
 	#     to process next (i.e. one ahead), and have to compensate
 	#     on return so that the loop entry condition [1] is true
 	#     again. We actually make the translation in the location
-	#     methods of this class, see `location?` and below,
+	#     methods of this class, see `location` and below,
 	#     without actually moving.
-	# [4] The double-loop construction is present to ensure that
-	#     when the inner main processing loop hits EOF the eof
-	#     handling can bounce the engine away from EOF and
-	#     processing is restarted for the last characters.
+	# [4] The previous double loop construction was eliminated by
+	#     hoisting the outer code into the proper contionals of
+	#     the inner loop, leaving a single loop handling all the
+	#     things.
 
-	while {$mylocation < $max} {
-	    while {$mylocation < $max} {
-		incr mylocation
+	while {1} {
+	    if {$mylocation == $mystoplocation} {
+		debug.marpa/inbound {[debug caller 1] | STOP $mylocation}
+		# Stop triggered.
+		# Clear stop marker, post event, continue from the top
+		set mystoplocation -2
+		Forward signal-stop ;# notify gate
 
-		if {$mylocation == $mystoplocation} {
-		    # Stop triggered.
-		    # Bounce, clear stop marker, post event, restart
-		    incr mylocation -1
-		    set mystoplocation -1
-		    Forward signal-stop ;# notify gate
-		    continue
-		}
-
-		set ch [lindex $mytext $mylocation]
-
-		# Semantic value is character location (s.a.)
-		# And push into the pipeline
-		debug.marpa/inbound {[debug caller] | DO '[char quote cstring $ch]' ($mylocation) ______}
-		debug.marpa/inbound {[debug caller] | DO _______________________________________}
-
-		Forward enter $ch $mylocation
-		# Note, the post-processor (gate, lexer) have access to the location, via methods
-		# moveto, moveby, and rewind. Examples of use:
-		# - Rewind after reading behind the current lexeme
-		# - Rewind for parse events.
-
-		debug.marpa/inbound {[debug caller] | DO _______________________________________ /NEXT}
+		debug.marpa/inbound {[debug caller 1] | RESUME $mylocation}
+		continue
 	    }
-	    # Trigger end of data processing in the post-processors.
-	    # (Ad 4) Note that this may rewind the input to an earlier
-	    # place, forcing re-processing of some of the last
-	    # characters.
-	    debug.marpa/inbound {[debug caller] | DO _______________________________________ /EOF}
-	    Forward eof
 
-	    debug.marpa/inbound {[debug caller] | DO _______________________________________ /NEXT.EOF}
+	    if {$mylocation == $max} {
+		# Trigger end of data processing in the post-processors.
+		# (Ad 4) Note that this may rewind the input to an
+		# earlier place, forcing re-processing of some of the
+		# last characters.
+		debug.marpa/inbound {[debug caller 1] | DO _______________________________________ /EOF}
+
+		Forward eof
+
+		debug.marpa/inbound {[debug caller 1] | DO _______________________________________ /NEXT.EOF}
+
+		if {$mylocation != $max} continue
+
+		my EOF ;# Sequencing hook
+		debug.marpa/inbound {[debug caller 1] | DO _______________________________________ /DONE}
+		return
+	    }
+
+	    if {$mylocation == $mysentinel} {
+		Forward signal-overrun
+		return -code error "Input overrun after $mysentinel"
+	    }
+
+	    incr mylocation
+
+	    set ch [lindex $mytext $mylocation]
+
+	    # Semantic value is character location (s.a.)
+	    # And push into the pipeline
+	    debug.marpa/inbound {[debug caller 1] | DO '[char quote cstring $ch]' ($mylocation) ______}
+	    debug.marpa/inbound {[debug caller 1] | DO _______________________________________}
+
+	    Forward enter $ch $mylocation
+	    # Note, the post-processor (gate, lexer) have access to the location, via methods
+	    # moveto, moveby, and rewind. Examples of use:
+	    # - Rewind after reading behind the current lexeme
+	    # - Rewind for parse events.
+
+	    debug.marpa/inbound {[debug caller 1] | DO _______________________________________ /NEXT}
 	}
 
-	debug.marpa/inbound {[debug caller] | DO _______________________________________ /DONE}
-	return
+	return -code error "Should not be reached"
     }
+
+    method enter-more {string} {
+	debug.marpa/inbound {[debug caller 1] | }
+	set start [llength $mytext]
+	#   \-----------\ point @ separator, resume after
+	lappend mytext \0 {*}[split $string {}]
+	set  mysentinel [llength $mytext]
+	incr mysentinel -1
+	# Notes
+	# - The {*} will put the entire string on the Tcl stack before
+	#   it becomes part of the input buffer.
+	# - The change to `mytext` does not affect the `max` used
+	#   by `enter` to detect the end of the primary input.
+	# - The new input will only be processed by moving explictly
+	#   into its region. Processing it will not trigger EOI.
+	# - The \0 separator ensures that positioning the cursor to
+	#   just before the first of the secondary inputs will not
+	#   trigger the EOF condition in `enter`.
+	return $start
+    }
+
+    # Hook for sequencing checks
+    method EOF {} {}
 
     ##
     # # ## ### ##### ######## #############
@@ -291,51 +321,104 @@ oo::class create marpa::inbound::sequencer {
 
     # State machine for marpa::inbound
     ##
-    # Sequence = 1[23]*4      # 1: construction
-    # See mark <<s>>	      # 2: eof
-    #			      # 3: enter, read
-    # *-1-> ready -2-> done|  #
-    #       ^ |               #
-    #       \-/3              #
+    # Sequence = 1[23][56]*4  # 1: construction
+    # See mark <<s>>	      # 23: enter, read
+    #                         # 45: enter-more, read-more
+    #			      # x: EOF (internal, automatic)
     #
-    # Determin. state machine # Table re-sorted, by method _=
-    # Current  Method  New    # Current  Method  New
-    # ~~~~~~~  ~~~~~~  ~~~~~~ # ~~~~~~~  ~~~~~~  ~~~~~~
-    # -        <cons>  ready  # -        <cons>  ready
-    # ~~~~~~~  ~~~~~~  ~~~~~~ # ~~~~~~~  ~~~~~~  ~~~~~~
-    # ready    enter   /KEEP  # ready    enter   /KEEP
-    #          read    /KEEP  # done     enter   /FAIL
-    #          eof     done   # ~~~~~~~  ~~~~~~  ~~~~~~
-    # ~~~~~~~  ~~~~~~  ~~~~~~ # ready    read    /KEEP
-    # done     enter   /FAIL  # done     read    /FAIL
-    #          read    /FAIL  # ~~~~~~~  ~~~~~~  ~~~~~~
-    #          eof     /FAIL  # ready    eof     done
-    # ~~~~~~~  ~~~~~~  ~~~~~~ # done     eof     /FAIL
-    # *        *       /KEEP  # ~~~~~~~  ~~~~~~  ~~~~~~
-    # ~~~~~~~  ~~~~~~  ~~~~~~ # *        *       /KEEP
-    #                         # ~~~~~~~  ~~~~~~  ~~~~~~
+    # *-1-> ready -23-> running -x-> done|
+    #                   ^ |
+    #                   \-/45,8-13
+
+    # Determin. state machine       # Table re-sorted, by method _=
+    # Current  Method  New          # Current  Method  New
+    # ~~~~~~~  ~~~~~~  ~~~~~~~~~~~~ # ~~~~~~~  ~~~~~~  ~~~~~~~~~~~~
+    # -        <cons>  ready  	    # -        <cons>  ready
+    # ~~~~~~~  ~~~~~~  ~~~~~~~~~~~~ # ~~~~~~~  ~~~~~~  ~~~~~~~~~~~~
+    # ready    en|rd   running/done # ready    en|rd   running/done
+    #          *-more  /FAIL  	    # running  en|rd   /FAIL
+    # ~~~~~~~  ~~~~~~  ~~~~~~~~~~~~ # done     en|rd   /FAIL
+    # running  en|rd   /FAIL  	    # ~~~~~~~  ~~~~~~  ~~~~~~~~~~~~
+    #          *-more  /KEEP  	    # ready    *-more  /FAIL
+    # ~~~~~~~  ~~~~~~  ~~~~~~~~~~~~ # running  *-more  /KEEP
+    # done     en|rd   /FAIL  	    # done     *-more  /FAIL
+    #          *-more  /FAIL  	    # ~~~~~~~  ~~~~~~  ~~~~~~~~~~~~
+    # ~~~~~~~  ~~~~~~  ~~~~~~~~~~~~ # *        *       /KEEP
+    # *        *       /KEEP  	    # ~~~~~~~  ~~~~~~  ~~~~~~~~~~~~
+    # ~~~~~~~  ~~~~~~  ~~~~~~~~~~~~ #
 
     # # -- --- ----- -------- -------------
     ## Mandatory overide of virtual base class method
 
-    method __Init {} { my __States ready done }
+    method __Init {} { my __States ready running done }
 
     # # -- --- ----- -------- -------------
     ## Checked API methods
 
-    method enter {string {from -1} {to -1}} {
+    method enter {string {from -1} {to -2}} {
 	my __Init
-	my __Fail done ! "Unable to process input after EOF" EOF
+	my __Fail running ! "Unable to process input after start" START
+	my __Fail done    ! "Unable to process input after EOF" EOF
+	my __Goto running
 	next $string $from $to
     }
 
-    method read {chan {from -1} {to -1}} {
+    method enter-more {string} {
 	my __Init
-	my __Fail done ! "Unable to process input after EOF" EOF
-	next $chan $from $to
+	my __Fail ready ! "Unable to extend input before start" START
+	my __Fail done  ! "Unable to extend input after EOF" EOF
+	next $string
     }
 
-    method eof {} {
+    # read      | Invokes `enter`, which does
+    # read-more | the check and state change
+
+    # location | Allowed anywhere, anytime.
+    # stop     | No sequencing methods
+
+    method dont-stop {} {
+	my __Init
+	my __Fail ready ! "Unable to clear stop location before start" START
+	my __Fail done  ! "Unable to clear stop location after EOF" EOF
+	next
+    }
+
+    method to {pos} {
+	my __Init
+	my __Fail ready ! "Unable to set stop location before start" START
+	my __Fail done  ! "Unable to set stop location after EOF" EOF
+	next $pos
+    }
+
+    method limit {delta} {
+	my __Init
+	my __Fail ready ! "Unable to set stop location before start" START
+	my __Fail done  ! "Unable to set stop location after EOF" EOF
+	next $delta
+    }
+
+    method from {pos} {
+	my __Init
+	my __Fail ready ! "Unable to set current location before start" START
+	my __Fail done  ! "Unable to set current location after EOF" EOF
+	next $pos
+    }
+
+    method relative {delta} {
+	my __Init
+	my __Fail ready ! "Unable to set current location before start" START
+	my __Fail done  ! "Unable to set current location after EOF" EOF
+	next $delta
+    }
+
+    method rewind {delta} {
+	my __Init
+	my __Fail ready ! "Unable to set current location before start" START
+	my __Fail done  ! "Unable to set current location after EOF" EOF
+	next $delta
+    }
+
+    method EOF {} {
 	my __Init
 	my __Fail done ! "Unable to process input after EOF" EOF
 	next

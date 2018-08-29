@@ -1,0 +1,38 @@
+#!/bin/bash
+#set -x
+
+base="mindt::parser::"
+v=1
+a="Andreas Kupries"
+
+dt="g/min-dt.slif"
+sf="g/sf.slif"
+
+clear;echo
+
+gp() {
+    gr=$1
+    label=$2
+    fname=$3
+    marpa-gen \
+	-V $v \
+	-A "${a}" \
+	-T cparse-critcl \
+	-N ${base}${label}c \
+	$gr ${fname}-c.tcl
+    echo
+    marpa-gen \
+	-V $v \
+	-A "${a}" \
+	-T tparse \
+	-N ${base}${label}tcl \
+	$gr ${fname}-tcl.tcl
+    echo
+}
+
+mkdir L 2>/dev/null
+
+(
+    gp $dt ''   mindt-lang
+    gp $sf sf:: mindt-sf
+) 2>&1 | tee L/X.make
