@@ -28,6 +28,7 @@ oo::class create marpa::engine::tcl::parse {
 
     constructor {} {
 	debug.marpa/engine/tcl/parse {}
+	set mydone 0
 
 	# Build the processing pipeline, then configure the various
 	# pieces.  Object creation is in backward direction, i.e. from
@@ -100,7 +101,7 @@ oo::class create marpa::engine::tcl::parse {
     # # ## ### ##### ######## #############
     ## State
 
-    variable myresult
+    variable myresult mydone
 
     # # ## ### ##### ######## #############
     ## Public API
@@ -109,19 +110,27 @@ oo::class create marpa::engine::tcl::parse {
 	debug.marpa/engine/tcl/parse {}
 	set options [my Options $args]
 	set myresult {}
+	if {$mydone} {
+	    PARSE reset
+	    set mydone 0
+	}
 	set chan [open $path r]
 	# Drive the pipeline from the channel.
 	IN read $chan {*}$options
-	PARSE reset
+	set mydone 0
 	return $myresult
     }
 
     method process {string args} {
 	debug.marpa/engine/tcl/parse {}
 	set myresult {}
+	if {$mydone} {
+	    PARSE reset
+	    set mydone 0
+	}
 	# Drive the pipeline from the string
 	IN enter $string {*}[my Options $args]
-	PARSE reset
+	set mydone 1
 	return $myresult
     }
 

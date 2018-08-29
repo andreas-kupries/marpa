@@ -47,6 +47,7 @@ marpatcl_rtc_cons (marpatcl_rtc_spec*      g,
     else
 	marpatcl_rtc_lexer_acceptable (p, 0);
 
+    p->done = 0;
     TRACE_RETURN ("(rtc*) %p", p);
 }
 
@@ -74,7 +75,12 @@ marpatcl_rtc_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n, int fro
 {
     TRACE_FUNC ("((rtc*) %p, (char*) %p [%d], [%d...%d]))", p, bytes, n, from, to);
 
+    if (p->done) {
+	marpatcl_rtc_reset (p);
+    }
+
     marpatcl_rtc_inbound_enter (p, bytes, n, from, to);
+    p->done = 1;
 
     TRACE_RETURN_VOID;
 }
@@ -113,6 +119,7 @@ marpatcl_rtc_reset (marpatcl_rtc_p p)
 
     marpatcl_rtc_parser_reset  (p);
     // marpatcl_rtc_lexer_reset   (p);
+    p->done = 0;
 
     TRACE_RETURN_VOID;
 }

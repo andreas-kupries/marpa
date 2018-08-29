@@ -183,7 +183,6 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, marpatcl_rtc_p p
 
     if (!marpatcl_rtc_failed (p)) {
 	Tcl_Obj* r;
-	marpatcl_rtc_reset (p);
 	TRACE ("SV-AS-TCL (sv*) %p", sv);
 	r = marpatcl_rtc_sv_astcl (ip, sv);
 	if (r) {
@@ -203,7 +202,6 @@ marpatcl_rtc_sv_complete (Tcl_Interp* ip, marpatcl_rtc_sv_p sv, marpatcl_rtc_p p
 	    // message.
 	    make_err (ip, p);
 	}
-	marpatcl_rtc_reset (p);
     }
     TRACE_RETURN ("ERROR", TCL_ERROR);
 }
