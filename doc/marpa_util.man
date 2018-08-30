@@ -1,0 +1,323 @@
+[comment {-*- tcl -*- doctools manpage}]
+[manpage_begin marpa_util n 1]
+[include include/module.inc]
+
+[titledesc "[vset t:pkg.marpa-util]"]
+[description]
+[include include/welcome.inc]
+[include include/audience_internal.inc]
+
+[section API]
+[comment {
+    TODO: Document the sequencing support
+    TODO: Document the timing support
+    TODO: ...
+}]
+
+[subsection {Incremental Assembly Of Dictionaries}]
+
+[list_begin definitions]
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::A] [arg key] [arg value]]
+
+This command sets the [arg key] of dictionary variable [var tmp] to
+[arg value]. The variable resides in the caller's scope.
+
+[para] The result of the command is the empty string.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::C] [arg key]]
+
+This command sets the [arg key] of dictionary variable [var spec] to
+the contents of dictionary variable [var tmp]. After the assignment
+[var tmp] is unset. Both variables reside in the caller's scope.
+
+[para] The result of the command is the empty string.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::C*] [arg key]]
+
+This command sets the [arg key] of dictionary variable [var spec] to
+the empty string. The variable resides in the caller's scope.
+
+[para] The result of the command is the empty string.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::dict-move] [arg dstvarname] [arg key] [arg srcvarname]]
+
+This command sets the [arg key] of the dictionary variable named by
+[arg dstvarname] to the contents of the dictionary variable named by
+[arg srcvarname]. After the assignment the source variable is unset.
+Both variables reside in the caller's scope.
+
+[para] The result of the command is the empty string.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[list_end]
+
+
+[subsection {Custom Support For Narrative Tracing}]
+
+The commands of this section are for use within the message of
+[package debug] commands. Both enable the execution of side effects
+specific to the active narrative tracing tag.
+
+[list_begin definitions]
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::D] [arg script]]
+
+This command runs the [arg script] in the context of the caller of the
+debug command whose message it is part of. This enables the activation
+of side effect specific to and in support of the active tag associated
+with that debug command.
+
+[para] The result of the command is the empty string.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::DX] [arg label] [arg script]]
+
+This is command is like [cmd [vset pns]::D], except that it returns
+[arg label] as its result, leaving a trace of itself in the debug
+output.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[list_end]
+
+
+[subsection {Generation of Errors from TclOO Classes}]
+
+The commands of this section are for use within TclOO class definition
+scripts and methods, to simplify the generation of customized errors.
+
+[list_begin definitions]
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::E] [arg label] [opt [arg word...]]]
+
+This command has to be run in TclOO class definition scripts.  It
+arranges for the creation of a method [method E] in that class which
+simplifies the raising of custom errors.
+
+[para] The [arg label] is used as the tag for narrative tracing of
+[method E]'s invokations. The following [arg word]s, if specified, are
+used to extend the base error of [const MARPA] with class-specific
+information.
+
+[para] The result of the command is the empty string.
+
+The new method [method E] has the following signature and behaviour:
+
+[list_begin definitions]
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [method E] [arg msg] [opt [arg word...]]]
+
+This method raises a Tcl error with error message [arg msg], and an
+error code consisting of the word [const MARPA], followed by the words
+specified with [cmd [vset pns]::E]] when creating the method, and then
+the [arg word]s given to itself.
+
+[list_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::EP] [arg label] [arg prefix] [opt [arg word...]]]
+
+This is command is like [cmd [vset pns]::E], except that the created
+method [method E] is configured to place the [arg prefix] in front of
+the messages it is invoked with.
+
+[para] The result of the command is the empty string.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::X] [arg msg] [opt [arg word...]]]
+
+This command raises a Tcl error with error message [arg msg], and an
+error code consisting of the word [const MARPA] followed by the
+[arg word]s it was given.
+
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[list_end]
+
+
+[subsection {Importing Commands Into Namespaces}]
+
+[list_begin definitions]
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::import] [arg cmd] [opt [arg dst]] [opt [arg up]]]
+
+This command imports the command [arg cmd] into the namespace of the
+caller's scope, for easy access.
+
+By default the tail of the qualified command name is used as the name
+the command will be accessible though. Specify a non-empty [arg dst]
+if a different name is wanted. By default [arg cmd] is resolved to its
+fully qualified name in the caller's caller. Specify the [arg up]
+level if a different scope has to be used.
+
+[para] The result of the command is the empty string.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::fqn] [arg cmdvarname] [opt [arg up]]]
+
+This command resolves the command stored in the named variable
+[arg cmdvarname] to its fully-qualified name and returns that as its
+result.
+
+The named variable resides in the caller's scope.
+
+By default the command is resolved to its fully qualified name in the
+caller's caller. Specify the [arg up] level if a different scope has
+to be used.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[list_end]
+
+[subsection {Asset Management}]
+
+The command in this section are the management of assets attached to
+the end of Tcl script files, after a separating Ctrl-Z character,
+i.e. unicode codepoint 26, "\x1a".
+
+[para] The standard use of these commands is to invoke them with the
+result of [lb][cmd {info script}][rb] to extract any assets attached
+to the script file the currently running procedure came from.
+
+[list_begin definitions]
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::asset*] [arg path]]
+
+This command assumes that the file pointed to by [arg path] contains
+one or more assets attached to it, separated by "\x1a" from the main
+file and each each other.
+
+It reads these assets and then returns a list containing them, in
+their order of attachment.
+
+[para] Invoking this command for the same [arg path] multiple times
+will read the assets only once into memory, on the first call. All
+further calls are served from an internal cache.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::asset] [arg path]]
+
+This command is like [cmd [vset pns]::asset*], except that it assumes
+that only a single asset is attached to the referenced file and
+returns that asset directly, without wrapping it into a list.
+
+[para] Invoking this command on a file which has multiple assets
+attached means that the returned result will contain the "\x1A"
+characters separating these assets from each other.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[list_end]
+
+
+[subsection {Location Management}]
+
+Location atoms are triples (3-element lists) containing a start
+location, end location, and string. The start and end specify a range,
+with the two ends included in it.
+
+[para] The [term {null location}] is represented by the triple whose
+elements are all the empty string.
+
+[vset lns [vset pns]::location]
+
+[list_begin definitions]
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset lns]::merge] [arg atom] [opt [arg ...]]]
+
+This command takes one or more location atoms and returns a new
+location atom which merges together. If only a single atom is
+specified then that atom is returned unchanged.
+
+[para] The merging is performed by taking the first [arg atom] and
+repeatedly merging the other atoms to it, via [cmd [vset lns]::merge2].
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset lns]::merge2] [arg a] [arg b]]
+
+This command takes two atoms and returns their merge.
+
+The rules of merging are
+
+[list_begin enumerated]
+
+[enum]  If any of the argument atoms is the null location the other is
+	returned unchanged.
+
+[enum] 	An error is thrown if the end-location of [arg a] is not
+	exactly adjacent to the start location of [arg b].
+
+[enum]	The result contains the start location of [arg a], the end
+	location of [arg b] and the string concatening the strings of
+
+[list_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset lns]::show] [arg atom]]
+
+This command reformats the location for human readability and returns
+the result. The only change is quoting the string element as a C
+string, i.e. wrapping into single-quotes and characters special to C
+are backslash-escaped, either named, or as octals.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset lns]::atom] [arg position] [arg string]]
+
+[para] This command returns a location where both start and end are
+[arg position], and the string is [arg string].
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset lns]::null]]
+
+[para] This command returns the null location.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset lns]::null?] [arg atom]]
+
+[para] This command tests if the argument represents the null location
+and returns [const true] if so, and [const false] otherwise.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset lns]::null*] [opt [arg ...]]]
+
+[para] This command returns the null location while ignore all of its
+arguments.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[list_end]
+
+
+[subsection {General Utilities}]
+
+[list_begin definitions]
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::filter] [arg values] [arg mask]]
+
+This command takes list [arg values], removes the elements referenced
+by the indices in the list [arg mask], and returns the filtered
+result.
+
+[para] [strong Note] that the command assumes that [arg mask] contains
+the indices in decreasing order
+
+Invoking the command with [arg mask] unsorted or sorfted in increasing
+order will yield undefined results.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pns]::K] [arg x] [arg y]]
+
+This command returns [arg x] as its result. It ignores [arg y].
+In respect it is like a K-combinator.
+
+[para] The side effects [arg y] may have in caller's scope are of
+course executed before K executes. Like, for example, unsetting the
+variable providing [arg x], thus decrementing the reference count of
+[arg x].
+
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[list_end]
+
+[include include/feedback.inc]
+[manpage_end]

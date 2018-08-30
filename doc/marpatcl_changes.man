@@ -1,14 +1,10 @@
 [comment {-*- tcl -*- --- doctools ---}]
 [manpage_begin marpatcl_changes n 1]
 [include include/module.inc]
-[titledesc {Marpa/Tcl - Changes}]
+[titledesc "[vset t:changes]"]
 [description]
-[para]
 [include include/welcome.inc]
-
-[section Audience]
-
-This document is targeted at all users of Marpa/Tcl.
+[include include/audience_general.inc]
 
 [section Overview]
 

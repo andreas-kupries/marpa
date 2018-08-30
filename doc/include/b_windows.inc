@@ -1,13 +1,17 @@
 [subsection {Build & Installation (Windows)}]
+[comment {
+    Expected variables
+    - p.name : Name of the project dependent on Tcl.
+}]
 
-This section describes the actions required to install Marpa/Tcl on
-Windows(tm) systems.
+This section describes the actions required to install [vset p.name]
+on Windows(tm) systems.
 
-If you have to install Marpa/Tcl on a Unix machine (Linux, BSD, and
-related, including OS X) see section
+If you have to install [vset p.name] on a Unix machine (Linux, BSD,
+and related, including OS X) see section
 [sectref {Build & Installation (Unix)}] instead.
 
-[para] To install Marpa/Tcl simply run
+[para] To install [vset p.name] simply run
 
 [example {
     /path/to/tclsh8.5 /path/to/kettle -f /path/to/marpatcl/build.tcl install
@@ -15,17 +19,17 @@ related, including OS X) see section
 
 where [file /path/to/tclsh8.5] is the tclsh of your Tcl installation,
 [file /path/to/kettle] is the installed [syscmd kettle] application,
-and [file /path/to/marpatcl] the location of the Marpa/Tcl sources on
-your system.
+and [file /path/to/marpatcl] the location of the [vset p.name] sources
+on your system.
 
 [comment { -- Check dependency on working directory!
-	-- -- Can we do this inside and outside the Marpa/Tcl sources ?
+	-- -- Can we do this inside and outside the [vset p.name] sources ?
 }]
 
 [para]
 
 This builds all packages and then places them in a directory where the
-[cmd tclsh8.5] will find them. 
+[cmd tclsh8.5] will find them.
 
 [para] The above is written without assuming any associations from
 extensions (like [file .tcl]) to executables responsible for the files

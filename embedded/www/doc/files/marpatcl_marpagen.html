@@ -92,9 +92,9 @@
     }
 --></style>
 </head>
-<!-- Generated from file 'marpatcl.man' by tcllib/doctools with format 'html'
+<!-- Generated from file 'marpatcl_marpagen.man' by tcllib/doctools with format 'html'
    -->
-<!-- Copyright &amp;copy; 2015-2018 Andreas Kupries   -- Copyright &amp;copy; 2018 Documentation, Andreas Kupries
+<!-- Copyright &amp;copy; 2015-present Andreas Kupries   -- Copyright &amp;copy; 2018-present Documentation, Andreas Kupries
    -->
 <!-- marpatcl_marpagen.n
    -->
@@ -124,28 +124,28 @@
 <div id="synopsis" class="doctools_section"><h2><a name="synopsis">Synopsis</a></h2>
 <div class="doctools_synopsis">
 <ul class="doctools_syntax">
-<li><a href="#1"><b class="syscmd">marpa-gen</b> <span class="opt">?options...?</span> <span class="opt">?--?</span> <i class="arg">grammar-file</i> <span class="opt">?<i class="arg">output</i>?</span></a></li>
+<li><a href="#1"><b class="syscmd">marpa-gen</b> <span class="opt">?<i class="arg">options...</i>?</span> <span class="opt">?--?</span> <i class="arg">grammar-file</i> <span class="opt">?<i class="arg">output</i>?</span></a></li>
 </ul>
 </div>
 </div>
 <div id="section1" class="doctools_section"><h2><a name="section1">Description</a></h2>
 <p>Welcome to Marpa/Tcl, a Tcl binding to the &quot;<b class="file">libmarpa</b>&quot; parsing
 engine.</p>
-<p>Please read the document <i class="term"><a href="marpatcl_intro.html">Marpa/Tcl - Introduction to Marpa/Tcl</a></i>,
-if you have not done so already, to get an overview of the whole system.</p>
+<p>Please read the document <i class="term"><a href="marpatcl_intro.html">Marpa/Tcl - Introduction to Marpa/Tcl</a></i>, if you have not done
+so already. It provides an overview of the whole system.</p>
 </div>
 <div id="section2" class="doctools_section"><h2><a name="section2">Audience</a></h2>
-<p>This document is targeted at users intending to create parser packages
-with Marpa/Tcl.</p>
+<p>This document is targeted at users of Marpa/Tcl with the goal of
+creating parser packages.</p>
 </div>
 <div id="section3" class="doctools_section"><h2><a name="section3">marpa-gen</a></h2>
 <p><b class="syscmd">marpa-gen</b> is the generator application used to read a SLIF
 grammar definition and create various forms of output, including
 packages implementing parsers and lexers for the grammar.</p>
 <p>To make effective use of it is recommended to also read
-<i class="term"><a href="marpatcl_slif.html">Marpa/Tcl - The SLIF grammar specification language</a></i></p>
+<i class="term"><a href="marpatcl_slif.html">Marpa/Tcl - The SLIF grammar specification language</a></i>.</p>
 <dl class="doctools_definitions">
-<dt><a name="1"><b class="syscmd">marpa-gen</b> <span class="opt">?options...?</span> <span class="opt">?--?</span> <i class="arg">grammar-file</i> <span class="opt">?<i class="arg">output</i>?</span></a></dt>
+<dt><a name="1"><b class="syscmd">marpa-gen</b> <span class="opt">?<i class="arg">options...</i>?</span> <span class="opt">?--?</span> <i class="arg">grammar-file</i> <span class="opt">?<i class="arg">output</i>?</span></a></dt>
 <dd><p>In its most basic form the generator command is invoked with the path
 to a <i class="arg">grammar-file</i>, printing the result to <b class="const">stdout</b>.
 If a second path to <i class="arg">output</i> is specified the result is saved into
@@ -226,16 +226,15 @@ start with dash (<b class="const">-</b>).</p></dd>
 <div id="section4" class="doctools_section"><h2><a name="section4">Bugs, Ideas, Feedback</a></h2>
 <p>This document, and the package it describes, will undoubtedly contain
 bugs and other problems.
-Please report such at the
-<a href="https://core.tcl.tk/akupries/marpatcl">Marpa/Tcl Tracker</a>.
-Please also report any ideas for enhancements you may have for either
-package and/or documentation.</p>
+Please report such at the <a href="https://core.tcl-lang.org/akupries/marpa">Marpa/Tcl Tracker</a>.
+Please report any ideas for enhancements you may have for either
+package and/or documentation as well.</p>
 </div>
 <div id="keywords" class="doctools_section"><h2><a name="keywords">Keywords</a></h2>
-<p><a href="../../index.html#key2">aycock</a>, <a href="../../index.html#key9">character classes</a>, <a href="../../index.html#key10">document processing</a>, <a href="../../index.html#key1">earley</a>, <a href="../../index.html#key11">horspool</a>, <a href="../../index.html#key7">joop leo</a>, <a href="../../index.html#key6">lexing</a>, <a href="../../index.html#key0">libmarpa</a>, <a href="../../index.html#key5">nigel horspool</a>, <a href="../../index.html#key3">parsing</a>, <a href="../../index.html#key8">regex</a>, <a href="../../index.html#key4">table parsing</a></p>
+<p><a href="../../index.html#key2">aycock</a>, <a href="../../index.html#key9">character classes</a>, <a href="../../index.html#key6">context free grammar</a>, <a href="../../index.html#key11">document processing</a>, <a href="../../index.html#key1">earley</a>, <a href="../../index.html#key12">horspool</a>, <a href="../../index.html#key8">joop leo</a>, <a href="../../index.html#key7">lexing</a>, <a href="../../index.html#key0">libmarpa</a>, <a href="../../index.html#key5">nigel horspool</a>, <a href="../../index.html#key3">parsing</a>, <a href="../../index.html#key10">regex</a>, <a href="../../index.html#key4">table parsing</a></p>
 </div>
 <div id="copyright" class="doctools_section"><h2><a name="copyright">Copyright</a></h2>
-<p>Copyright &copy; 2015-2018 Andreas Kupries<br>
-Copyright &copy; 2018 Documentation, Andreas Kupries</p>
+<p>Copyright &copy; 2015-present Andreas Kupries<br>
+Copyright &copy; 2018-present Documentation, Andreas Kupries</p>
 </div>
 </div></body></html>

@@ -1,19 +1,16 @@
 [comment {-*- tcl -*- doctools manpage}]
 [manpage_begin marpatcl_introduction n 1]
 [include include/module.inc]
-[titledesc {Marpa/Tcl - Introduction to Marpa/Tcl}]
+[titledesc "[vset t:intro]"]
 [description]
 [include include/welcome.inc]
-
-[section Audience]
-
-This documented is targeted at all users of Marpa/Tcl.
+[include include/audience_general.inc]
 
 [para]
 
-Depending on the specific goals of the reader references to additional
-documents containing more information to help with these goals are
-provided.
+The remainder of this document contains references to additional
+documents containing more information, dependent on the goals of the
+user.
 
 [comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
 [section {User, creating parser packages}]
@@ -26,8 +23,8 @@ available then section [sectref {Builder and distributor}] applies.
 With the installation available the relevant documents are
 
 [list_begin enum]
-[enum] [term {Marpa/Tcl - The Generator Application}].
-[enum] [term {Marpa/Tcl - The SLIF grammar specification language}].
+[enum] [vset xr:gen:app].
+[enum] [vset xr:slif:lang].
 [list_end]
 
 [comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
@@ -37,8 +34,8 @@ As a user intending to build Marpa/Tcl from its sources the relevant
 documents are
 
 [list_begin enum]
-[enum] [term {Marpa/Tcl - How To Get The Sources}].
-[enum] [term {Marpa/Tcl - The Installer's Guide}].
+[enum] [vset xr:getsrc].
+[enum] [vset xr:iguide].
 [list_end]
 
 [comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
@@ -48,9 +45,9 @@ As a user intending to maintain Marpa/Tcl, or add functionality to it
 the relevant documents are
 
 [list_begin enum]
-[enum] [term {Marpa/Tcl - How To Get The Sources}].
-[enum] [term {Marpa/Tcl - The Installer's Guide}].
-[enum] [term {Marpa/Tcl - The Developer's Guide}].
+[enum] [vset xr:getsrc].
+[enum] [vset xr:iguide].
+[enum] [vset xr:dguide].
 [list_end]
 
 [comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]

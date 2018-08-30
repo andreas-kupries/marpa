@@ -1,36 +1,28 @@
 [comment {-*- tcl -*- doctools manpage}]
 [manpage_begin marpatcl_install_guide n 1]
 [include include/module.inc]
-[titledesc {Marpa/Tcl - The Installer's Guide}]
+[titledesc "[vset t:iguide]"]
 [description]
 [include include/welcome.inc]
+[include include/audience_builders.inc]
 
-[section Audience]
+[section Notes]
 
-This documented is targeted at anyone wishing to build MarpaTcl's
-packages and application, for either themselves, or others.
-
-[para]
-
-Please read [term {Marpa/Tcl - How To Get The Sources}] first, if that
-was not done already. Here we assume that the sources are already
-available in a directory of your choice.
+Please read [vset xr:getsrc] first, if that was not done already. Here
+we assume that the sources are already available in a directory of
+your choice.
 
 [para]
 
-For developers building Marpa/Tcl with the intent to extend or modify
-the packages and application we additionally provide
-
-[list_begin enum]
-[enum] [term {Marpa/Tcl - The Developer's Guide}].
-[list_end]
-
-[para]
+Developers building [vset p.name] with the intent of extending or
+modifying the packages and application should read [vset xr:dguide] as
+well.
 
 [comment {===================================================================}]
 [section Requisites]
 
-Before Marpa/Tcl can be build and used a number of requisites must be installed.
+A number of requisites must be installed before building and using
+[vset p.name] is possible.
 
 These are:
 
@@ -47,16 +39,17 @@ These are:
        For details see [sectref Kettle].
 [list_end]
 
-This list assumes that the machine where Marpa/Tcl is to be installed
-is essentially clean. Of course, if parts of the dependencies listed
-below are already installed the associated steps can be skipped. It is
-still recommended to read their sections though, to validate that the
-dependencies they talk about are indeed installed.
+This list assumes that the machine where [vset p.name] is to be
+installed is essentially clean. Of course, if parts of the
+dependencies listed below are already installed the associated steps
+can be skipped. It is still recommended to read their sections though,
+to validate that the dependencies they talk about are indeed
+installed.
 
 [include include/rq_libmarpa.inc]
 [include include/rq_tcl.inc]
-[include include/rq_critcl.inc]
 [include include/rq_tcllib.inc]
+[include include/rq_critcl.inc]
 [include include/rq_kettle.inc]
 
 [comment {= build instructions ==============================================}]

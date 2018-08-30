@@ -1,0 +1,371 @@
+
+<!DOCTYPE html><html><head>
+<title>marpa_util - Marpa/Tcl, a binding to libmarpa</title>
+<style type="text/css"><!--
+    HTML {
+	background: 	#FFFFFF;
+	color: 		black;
+    }
+    BODY {
+	background: 	#FFFFFF;
+	color:	 	black;
+    }
+    DIV.doctools {
+	margin-left:	10%;
+	margin-right:	10%;
+    }
+    DIV.doctools H1,DIV.doctools H2 {
+	margin-left:	-5%;
+    }
+    H1, H2, H3, H4 {
+	margin-top: 	1em;
+	font-family:	sans-serif;
+	font-size:	large;
+	color:		#005A9C;
+	background: 	transparent;
+	text-align:		left;
+    }
+    H1.doctools_title {
+	text-align: center;
+    }
+    UL,OL {
+	margin-right: 0em;
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+    }
+    UL LI {
+	list-style: disc;
+    }
+    OL LI {
+	list-style: decimal;
+    }
+    DT {
+	padding-top: 	1ex;
+    }
+    UL.doctools_toc,UL.doctools_toc UL, UL.doctools_toc UL UL {
+	font:		normal 12pt/14pt sans-serif;
+	list-style:	none;
+    }
+    LI.doctools_section, LI.doctools_subsection {
+	list-style: 	none;
+	margin-left: 	0em;
+	text-indent:	0em;
+	padding: 	0em;
+    }
+    PRE {
+	display: 	block;
+	font-family:	monospace;
+	white-space:	pre;
+	margin:		0%;
+	padding-top:	0.5ex;
+	padding-bottom:	0.5ex;
+	padding-left:	1ex;
+	padding-right:	1ex;
+	width:		100%;
+    }
+    PRE.doctools_example {
+	color: 		black;
+	background: 	#f5dcb3;
+	border:		1px solid black;
+    }
+    UL.doctools_requirements LI, UL.doctools_syntax LI {
+	list-style: 	none;
+	margin-left: 	0em;
+	text-indent:	0em;
+	padding:	0em;
+    }
+    DIV.doctools_synopsis {
+	color: 		black;
+	background: 	#80ffff;
+	border:		1px solid black;
+	font-family:	serif;
+	margin-top: 	1em;
+	margin-bottom: 	1em;
+    }
+    UL.doctools_syntax {
+	margin-top: 	1em;
+	border-top:	1px solid black;
+    }
+    UL.doctools_requirements {
+	margin-bottom: 	1em;
+	border-bottom:	1px solid black;
+    }
+--></style>
+</head>
+<!-- Generated from file 'marpa_util.man' by tcllib/doctools with format 'html'
+   -->
+<!-- Copyright &amp;copy; 2015-present Andreas Kupries   -- Copyright &amp;copy; 2018-present Documentation, Andreas Kupries
+   -->
+<!-- marpa_util.n
+   -->
+<body><hr> [
+   <a href="../../../../../../home">Home</a>
+| <a href="../../toc.html">Main Table Of Contents</a>
+| <a href="../toc.html">Table Of Contents</a>
+| <a href="../../index.html">Keyword Index</a>
+ ] <hr>
+<div class="doctools">
+<h1 class="doctools_title">marpa_util(n) 1 doc &quot;Marpa/Tcl, a binding to libmarpa&quot;</h1>
+<div id="name" class="doctools_section"><h2><a name="name">Name</a></h2>
+<p>marpa_util - Marpa/Tcl - marpa::util</p>
+</div>
+<div id="toc" class="doctools_section"><h2><a name="toc">Table Of Contents</a></h2>
+<ul class="doctools_toc">
+<li class="doctools_section"><a href="#toc">Table Of Contents</a></li>
+<li class="doctools_section"><a href="#synopsis">Synopsis</a></li>
+<li class="doctools_section"><a href="#section1">Description</a></li>
+<li class="doctools_section"><a href="#section2">Audience</a></li>
+<li class="doctools_section"><a href="#section3">API</a>
+<ul>
+<li class="doctools_subsection"><a href="#subsection1">Incremental Assembly Of Dictionaries</a></li>
+<li class="doctools_subsection"><a href="#subsection2">Custom Support For Narrative Tracing</a></li>
+<li class="doctools_subsection"><a href="#subsection3">Generation of Errors from TclOO Classes</a></li>
+<li class="doctools_subsection"><a href="#subsection4">Importing Commands Into Namespaces</a></li>
+<li class="doctools_subsection"><a href="#subsection5">Asset Management</a></li>
+<li class="doctools_subsection"><a href="#subsection6">Location Management</a></li>
+<li class="doctools_subsection"><a href="#subsection7">General Utilities</a></li>
+</ul>
+</li>
+<li class="doctools_section"><a href="#section4">Bugs, Ideas, Feedback</a></li>
+<li class="doctools_section"><a href="#keywords">Keywords</a></li>
+<li class="doctools_section"><a href="#copyright">Copyright</a></li>
+</ul>
+</div>
+<div id="synopsis" class="doctools_section"><h2><a name="synopsis">Synopsis</a></h2>
+<div class="doctools_synopsis">
+<ul class="doctools_syntax">
+<li><a href="#1"><b class="cmd">marpa::A</b> <i class="arg">key</i> <i class="arg">value</i></a></li>
+<li><a href="#2"><b class="cmd">marpa::C</b> <i class="arg">key</i></a></li>
+<li><a href="#3"><b class="cmd">marpa::C*</b> <i class="arg">key</i></a></li>
+<li><a href="#4"><b class="cmd">marpa::dict-move</b> <i class="arg">dstvarname</i> <i class="arg">key</i> <i class="arg">srcvarname</i></a></li>
+<li><a href="#5"><b class="cmd">marpa::D</b> <i class="arg">script</i></a></li>
+<li><a href="#6"><b class="cmd">marpa::DX</b> <i class="arg">label</i> <i class="arg">script</i></a></li>
+<li><a href="#7"><b class="cmd">marpa::E</b> <i class="arg">label</i> <span class="opt">?<i class="arg">word...</i>?</span></a></li>
+<li><a href="#8"><b class="method">E</b> <i class="arg">msg</i> <span class="opt">?<i class="arg">word...</i>?</span></a></li>
+<li><a href="#9"><b class="cmd">marpa::EP</b> <i class="arg">label</i> <i class="arg">prefix</i> <span class="opt">?<i class="arg">word...</i>?</span></a></li>
+<li><a href="#10"><b class="cmd">marpa::X</b> <i class="arg">msg</i> <span class="opt">?<i class="arg">word...</i>?</span></a></li>
+<li><a href="#11"><b class="cmd">marpa::import</b> <i class="arg">cmd</i> <span class="opt">?<i class="arg">dst</i>?</span> <span class="opt">?<i class="arg">up</i>?</span></a></li>
+<li><a href="#12"><b class="cmd">marpa::fqn</b> <i class="arg">cmdvarname</i> <span class="opt">?<i class="arg">up</i>?</span></a></li>
+<li><a href="#13"><b class="cmd">marpa::asset*</b> <i class="arg">path</i></a></li>
+<li><a href="#14"><b class="cmd">marpa::asset</b> <i class="arg">path</i></a></li>
+<li><a href="#15"><b class="cmd">marpa::location::merge</b> <i class="arg">atom</i> <span class="opt">?<i class="arg">...</i>?</span></a></li>
+<li><a href="#16"><b class="cmd">marpa::location::merge2</b> <i class="arg">a</i> <i class="arg">b</i></a></li>
+<li><a href="#17"><b class="cmd">marpa::location::show</b> <i class="arg">atom</i></a></li>
+<li><a href="#18"><b class="cmd">marpa::location::atom</b> <i class="arg">position</i> <i class="arg">string</i></a></li>
+<li><a href="#19"><b class="cmd">marpa::location::null</b></a></li>
+<li><a href="#20"><b class="cmd">marpa::location::null?</b> <i class="arg">atom</i></a></li>
+<li><a href="#21"><b class="cmd">marpa::location::null*</b> <span class="opt">?<i class="arg">...</i>?</span></a></li>
+<li><a href="#22"><b class="cmd">marpa::filter</b> <i class="arg">values</i> <i class="arg">mask</i></a></li>
+<li><a href="#23"><b class="cmd">marpa::K</b> <i class="arg">x</i> <i class="arg">y</i></a></li>
+</ul>
+</div>
+</div>
+<div id="section1" class="doctools_section"><h2><a name="section1">Description</a></h2>
+<p>Welcome to Marpa/Tcl, a Tcl binding to the &quot;<b class="file">libmarpa</b>&quot; parsing
+engine.</p>
+<p>Please read the document <i class="term"><a href="marpatcl_intro.html">Marpa/Tcl - Introduction to Marpa/Tcl</a></i>, if you have not done
+so already. It provides an overview of the whole system.</p>
+</div>
+<div id="section2" class="doctools_section"><h2><a name="section2">Audience</a></h2>
+<p>This document describes a mainly internal package of Marpa/Tcl.</p>
+<p>The package commands provide access to information about
+       unicode characters useful to parsers, and parser generators,
+       i.e. case folding classes, named character classes, etc.</p>
+</div>
+<div id="section3" class="doctools_section"><h2><a name="section3">API</a></h2>
+<div id="subsection1" class="doctools_subsection"><h3><a name="subsection1">Incremental Assembly Of Dictionaries</a></h3>
+<dl class="doctools_definitions">
+<dt><a name="1"><b class="cmd">marpa::A</b> <i class="arg">key</i> <i class="arg">value</i></a></dt>
+<dd><p>This command sets the <i class="arg">key</i> of dictionary variable <b class="variable">tmp</b> to
+<i class="arg">value</i>. The variable resides in the caller's scope.</p>
+<p>The result of the command is the empty string.</p></dd>
+<dt><a name="2"><b class="cmd">marpa::C</b> <i class="arg">key</i></a></dt>
+<dd><p>This command sets the <i class="arg">key</i> of dictionary variable <b class="variable">spec</b> to
+the contents of dictionary variable <b class="variable">tmp</b>. After the assignment
+<b class="variable">tmp</b> is unset. Both variables reside in the caller's scope.</p>
+<p>The result of the command is the empty string.</p></dd>
+<dt><a name="3"><b class="cmd">marpa::C*</b> <i class="arg">key</i></a></dt>
+<dd><p>This command sets the <i class="arg">key</i> of dictionary variable <b class="variable">spec</b> to
+the empty string. The variable resides in the caller's scope.</p>
+<p>The result of the command is the empty string.</p></dd>
+<dt><a name="4"><b class="cmd">marpa::dict-move</b> <i class="arg">dstvarname</i> <i class="arg">key</i> <i class="arg">srcvarname</i></a></dt>
+<dd><p>This command sets the <i class="arg">key</i> of the dictionary variable named by
+<i class="arg">dstvarname</i> to the contents of the dictionary variable named by
+<i class="arg">srcvarname</i>. After the assignment the source variable is unset.
+Both variables reside in the caller's scope.</p>
+<p>The result of the command is the empty string.</p></dd>
+</dl>
+</div>
+<div id="subsection2" class="doctools_subsection"><h3><a name="subsection2">Custom Support For Narrative Tracing</a></h3>
+<p>The commands of this section are for use within the message of
+<b class="package">debug</b> commands. Both enable the execution of side effects
+specific to the active narrative tracing tag.</p>
+<dl class="doctools_definitions">
+<dt><a name="5"><b class="cmd">marpa::D</b> <i class="arg">script</i></a></dt>
+<dd><p>This command runs the <i class="arg">script</i> in the context of the caller of the
+debug command whose message it is part of. This enables the activation
+of side effect specific to and in support of the active tag associated
+with that debug command.</p>
+<p>The result of the command is the empty string.</p></dd>
+<dt><a name="6"><b class="cmd">marpa::DX</b> <i class="arg">label</i> <i class="arg">script</i></a></dt>
+<dd><p>This is command is like <b class="cmd">marpa::D</b>, except that it returns
+<i class="arg">label</i> as its result, leaving a trace of itself in the debug
+output.</p></dd>
+</dl>
+</div>
+<div id="subsection3" class="doctools_subsection"><h3><a name="subsection3">Generation of Errors from TclOO Classes</a></h3>
+<p>The commands of this section are for use within TclOO class definition
+scripts and methods, to simplify the generation of customized errors.</p>
+<dl class="doctools_definitions">
+<dt><a name="7"><b class="cmd">marpa::E</b> <i class="arg">label</i> <span class="opt">?<i class="arg">word...</i>?</span></a></dt>
+<dd><p>This command has to be run in TclOO class definition scripts.  It
+arranges for the creation of a method <b class="method">E</b> in that class which
+simplifies the raising of custom errors.</p>
+<p>The <i class="arg">label</i> is used as the tag for narrative tracing of
+<b class="method">E</b>'s invokations. The following <i class="arg">word</i>s, if specified, are
+used to extend the base error of <b class="const">MARPA</b> with class-specific
+information.</p>
+<p>The result of the command is the empty string.
+The new method <b class="method">E</b> has the following signature and behaviour:</p>
+<dl class="doctools_definitions">
+<dt><a name="8"><b class="method">E</b> <i class="arg">msg</i> <span class="opt">?<i class="arg">word...</i>?</span></a></dt>
+<dd><p>This method raises a Tcl error with error message <i class="arg">msg</i>, and an
+error code consisting of the word <b class="const">MARPA</b>, followed by the words
+specified with <b class="cmd">marpa::E</b>] when creating the method, and then
+the <i class="arg">word</i>s given to itself.</p></dd>
+</dl></dd>
+<dt><a name="9"><b class="cmd">marpa::EP</b> <i class="arg">label</i> <i class="arg">prefix</i> <span class="opt">?<i class="arg">word...</i>?</span></a></dt>
+<dd><p>This is command is like <b class="cmd">marpa::E</b>, except that the created
+method <b class="method">E</b> is configured to place the <i class="arg">prefix</i> in front of
+the messages it is invoked with.</p>
+<p>The result of the command is the empty string.</p></dd>
+<dt><a name="10"><b class="cmd">marpa::X</b> <i class="arg">msg</i> <span class="opt">?<i class="arg">word...</i>?</span></a></dt>
+<dd><p>This command raises a Tcl error with error message <i class="arg">msg</i>, and an
+error code consisting of the word <b class="const">MARPA</b> followed by the
+<i class="arg">word</i>s it was given.</p></dd>
+</dl>
+</div>
+<div id="subsection4" class="doctools_subsection"><h3><a name="subsection4">Importing Commands Into Namespaces</a></h3>
+<dl class="doctools_definitions">
+<dt><a name="11"><b class="cmd">marpa::import</b> <i class="arg">cmd</i> <span class="opt">?<i class="arg">dst</i>?</span> <span class="opt">?<i class="arg">up</i>?</span></a></dt>
+<dd><p>This command imports the command <i class="arg">cmd</i> into the namespace of the
+caller's scope, for easy access.
+By default the tail of the qualified command name is used as the name
+the command will be accessible though. Specify a non-empty <i class="arg">dst</i>
+if a different name is wanted. By default <i class="arg">cmd</i> is resolved to its
+fully qualified name in the caller's caller. Specify the <i class="arg">up</i>
+level if a different scope has to be used.</p>
+<p>The result of the command is the empty string.</p></dd>
+<dt><a name="12"><b class="cmd">marpa::fqn</b> <i class="arg">cmdvarname</i> <span class="opt">?<i class="arg">up</i>?</span></a></dt>
+<dd><p>This command resolves the command stored in the named variable
+<i class="arg">cmdvarname</i> to its fully-qualified name and returns that as its
+result.
+The named variable resides in the caller's scope.
+By default the command is resolved to its fully qualified name in the
+caller's caller. Specify the <i class="arg">up</i> level if a different scope has
+to be used.</p></dd>
+</dl>
+</div>
+<div id="subsection5" class="doctools_subsection"><h3><a name="subsection5">Asset Management</a></h3>
+<p>The command in this section are the management of assets attached to
+the end of Tcl script files, after a separating Ctrl-Z character,
+i.e. unicode codepoint 26, &quot;\x1a&quot;.</p>
+<p>The standard use of these commands is to invoke them with the
+result of [<b class="cmd">info script</b>] to extract any assets attached
+to the script file the currently running procedure came from.</p>
+<dl class="doctools_definitions">
+<dt><a name="13"><b class="cmd">marpa::asset*</b> <i class="arg">path</i></a></dt>
+<dd><p>This command assumes that the file pointed to by <i class="arg">path</i> contains
+one or more assets attached to it, separated by &quot;\x1a&quot; from the main
+file and each each other.
+It reads these assets and then returns a list containing them, in
+their order of attachment.</p>
+<p>Invoking this command for the same <i class="arg">path</i> multiple times
+will read the assets only once into memory, on the first call. All
+further calls are served from an internal cache.</p></dd>
+<dt><a name="14"><b class="cmd">marpa::asset</b> <i class="arg">path</i></a></dt>
+<dd><p>This command is like <b class="cmd">marpa::asset*</b>, except that it assumes
+that only a single asset is attached to the referenced file and
+returns that asset directly, without wrapping it into a list.</p>
+<p>Invoking this command on a file which has multiple assets
+attached means that the returned result will contain the &quot;\x1A&quot;
+characters separating these assets from each other.</p></dd>
+</dl>
+</div>
+<div id="subsection6" class="doctools_subsection"><h3><a name="subsection6">Location Management</a></h3>
+<p>Location atoms are triples (3-element lists) containing a start
+location, end location, and string. The start and end specify a range,
+with the two ends included in it.</p>
+<p>The <i class="term">null location</i> is represented by the triple whose
+elements are all the empty string.</p>
+<dl class="doctools_definitions">
+<dt><a name="15"><b class="cmd">marpa::location::merge</b> <i class="arg">atom</i> <span class="opt">?<i class="arg">...</i>?</span></a></dt>
+<dd><p>This command takes one or more location atoms and returns a new
+location atom which merges together. If only a single atom is
+specified then that atom is returned unchanged.</p>
+<p>The merging is performed by taking the first <i class="arg">atom</i> and
+repeatedly merging the other atoms to it, via <b class="cmd">marpa::location::merge2</b>.</p></dd>
+<dt><a name="16"><b class="cmd">marpa::location::merge2</b> <i class="arg">a</i> <i class="arg">b</i></a></dt>
+<dd><p>This command takes two atoms and returns their merge.
+The rules of merging are</p>
+<ol class="doctools_enumerated">
+<li><p>If any of the argument atoms is the null location the other is
+	returned unchanged.</p></li>
+<li><p>An error is thrown if the end-location of <i class="arg">a</i> is not
+	exactly adjacent to the start location of <i class="arg">b</i>.</p></li>
+<li><p>The result contains the start location of <i class="arg">a</i>, the end
+	location of <i class="arg">b</i> and the string concatening the strings of</p></li>
+</ol></dd>
+<dt><a name="17"><b class="cmd">marpa::location::show</b> <i class="arg">atom</i></a></dt>
+<dd><p>This command reformats the location for human readability and returns
+the result. The only change is quoting the string element as a C
+string, i.e. wrapping into single-quotes and characters special to C
+are backslash-escaped, either named, or as octals.</p></dd>
+<dt><a name="18"><b class="cmd">marpa::location::atom</b> <i class="arg">position</i> <i class="arg">string</i></a></dt>
+<dd><p>This command returns a location where both start and end are
+<i class="arg">position</i>, and the string is <i class="arg">string</i>.</p></dd>
+<dt><a name="19"><b class="cmd">marpa::location::null</b></a></dt>
+<dd><p>This command returns the null location.</p></dd>
+<dt><a name="20"><b class="cmd">marpa::location::null?</b> <i class="arg">atom</i></a></dt>
+<dd><p>This command tests if the argument represents the null location
+and returns <b class="const">true</b> if so, and <b class="const">false</b> otherwise.</p></dd>
+<dt><a name="21"><b class="cmd">marpa::location::null*</b> <span class="opt">?<i class="arg">...</i>?</span></a></dt>
+<dd><p>This command returns the null location while ignore all of its
+arguments.</p></dd>
+</dl>
+</div>
+<div id="subsection7" class="doctools_subsection"><h3><a name="subsection7">General Utilities</a></h3>
+<dl class="doctools_definitions">
+<dt><a name="22"><b class="cmd">marpa::filter</b> <i class="arg">values</i> <i class="arg">mask</i></a></dt>
+<dd><p>This command takes list <i class="arg">values</i>, removes the elements referenced
+by the indices in the list <i class="arg">mask</i>, and returns the filtered
+result.</p>
+<p><em>Note</em> that the command assumes that <i class="arg">mask</i> contains
+the indices in decreasing order
+Invoking the command with <i class="arg">mask</i> unsorted or sorfted in increasing
+order will yield undefined results.</p></dd>
+<dt><a name="23"><b class="cmd">marpa::K</b> <i class="arg">x</i> <i class="arg">y</i></a></dt>
+<dd><p>This command returns <i class="arg">x</i> as its result. It ignores <i class="arg">y</i>.
+In respect it is like a K-combinator.</p>
+<p>The side effects <i class="arg">y</i> may have in caller's scope are of
+course executed before K executes. Like, for example, unsetting the
+variable providing <i class="arg">x</i>, thus decrementing the reference count of
+<i class="arg">x</i>.</p></dd>
+</dl>
+</div>
+</div>
+<div id="section4" class="doctools_section"><h2><a name="section4">Bugs, Ideas, Feedback</a></h2>
+<p>This document, and the package it describes, will undoubtedly contain
+bugs and other problems.
+Please report such at the <a href="https://core.tcl-lang.org/akupries/marpa">Marpa/Tcl Tracker</a>.
+Please report any ideas for enhancements you may have for either
+package and/or documentation as well.</p>
+</div>
+<div id="keywords" class="doctools_section"><h2><a name="keywords">Keywords</a></h2>
+<p><a href="../../index.html#key2">aycock</a>, <a href="../../index.html#key9">character classes</a>, <a href="../../index.html#key6">context free grammar</a>, <a href="../../index.html#key11">document processing</a>, <a href="../../index.html#key1">earley</a>, <a href="../../index.html#key12">horspool</a>, <a href="../../index.html#key8">joop leo</a>, <a href="../../index.html#key7">lexing</a>, <a href="../../index.html#key0">libmarpa</a>, <a href="../../index.html#key5">nigel horspool</a>, <a href="../../index.html#key3">parsing</a>, <a href="../../index.html#key10">regex</a>, <a href="../../index.html#key4">table parsing</a></p>
+</div>
+<div id="copyright" class="doctools_section"><h2><a name="copyright">Copyright</a></h2>
+<p>Copyright &copy; 2015-present Andreas Kupries<br>
+Copyright &copy; 2018-present Documentation, Andreas Kupries</p>
+</div>
+</div></body></html>

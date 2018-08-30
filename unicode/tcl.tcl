@@ -148,7 +148,6 @@ proc marpa::unicode::assr-format {assr {compact 0}} {
 ## - data cc tcl-names
 ## - data cc names
 ## - data cc ranges
-## - data range
 ## - data fold   \ see unifold.tcl (Critcl glue)
 ## - data fold/c /
 

@@ -46,10 +46,7 @@ initialize
 # # ## ### ##### ######## ############# #####################
 ##
 
-incr max
-test-grammar-files slif --> __ __ { incr max }
-set kformat %0[string length $max]d
-unset max
+set kformat %0[string length [test-grammar-file-count slif]]d
 
 foreach {lexaction joiner} {
     g1length { }
@@ -73,18 +70,15 @@ foreach {lexaction joiner} {
 	gen configure cl $cl ex $ex
 	lex-setup $lexaction
 
-	set k 0
-	test-grammar-map slif --> id slif base {
-	    incr k
+	test-grammar-map slif --> k id slif base {
 	    set result $base/lexaction_${lexaction}_${suffix}
 	    if {![file exists $result]} continue
-	    set input [fget $slif]
-	    set kd    [format $kformat $k]
 
-	    test marpa-lexer-${label}-1.0.${kd}-${lexaction} "$label, action (($lexaction))" -body {
-		LEX process-file $slif capture
-		join $TRACE $joiner
-	    }   -setup   setup \
+	    test marpa-lexer-${label}-1.0.[format $kformat $k]-${lexaction} \
+		"$label, action (($lexaction))" -body {
+		    LEX process [fget $slif] capture
+		    join $TRACE $joiner
+		} -setup setup   \
 		-cleanup cleanup \
 		-result [viewFile $result]
 	}

@@ -1,14 +1,14 @@
 [comment {-*- tcl -*- doctools manpage}]
 [manpage_begin marpatcl_devguide n 1]
 [include include/module.inc]
-[titledesc {Marpa/Tcl - The Developer's Guide}]
+[titledesc "[vset t:devguide]"]
 [description]
 [include include/welcome.inc]
 
 [section Audience]
 
 This document is a guide targeted at all developers working on the
-internals of Marpa/Tcl, i.e. maintainers fixing bugs, developers
+internals of [vset p.name], i.e. maintainers fixing bugs, developers
 adding functionality, etc.
 
 [para]
@@ -16,8 +16,8 @@ adding functionality, etc.
 Please read
 
 [list_begin enum]
-[enum] [term {Marpa/Tcl - How To Get The Sources}] and
-[enum] [term {Marpa/Tcl - The Installer's Guide}]
+[enum] [vset xr:getsrc] and
+[enum] [vset xr:iguide]
 [list_end]
 
 first, if that was not done already.
@@ -30,7 +30,7 @@ which source code management system is used, where to find it, how to
 set it up, etc.
 
 [comment @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@]
-[section {Developing for Marpa/Tcl}]
+[section "Developing for [vset p.name]"]
 
 [subsection {System Architecture}]
 [include include/arch.inc]

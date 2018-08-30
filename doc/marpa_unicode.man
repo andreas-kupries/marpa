@@ -1,0 +1,592 @@
+[comment {-*- tcl -*- doctools manpage}]
+[manpage_begin marpa_unicode n 1]
+[include include/module.inc]
+
+[keywords unicode utf-8 cesu-8 mutf-8 {character classes}]
+[keywords {case expansion} {primary case} {code point} surrogate]
+[keywords {class negation} {class complement}]
+[keywords {class normalization} {class canonicalisation}]
+[keywords bmp {basic multi-lingual plane}]
+[keywords smp {supplemental multi-lingual planes}]
+
+[titledesc "[vset t:pkg.marpa-unicode]"]
+[description]
+[include include/welcome.inc]
+[include include/audience_internal.inc]
+
+[strong {Note for reading}]: Unknown terms and shorthands are
+explained in the [sectref gloss].
+
+[vset p   [vset pns]::unicode]
+[vset pd  [vset p]::data]
+[vset pdc [vset pd]::cc]
+
+[vset ^cc   [sectref cc {character class}]]
+[vset ^ccs  [sectref cc {character classs}]]
+[vset ^scr  [sectref scr  SCR]]
+[vset ^asbr [sectref asbr ASBR]]
+[vset ^assr [sectref assr ASSR]]
+
+[section API]
+
+[list_begin definitions]
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::2asbr] [arg scr]]
+
+This command takes a [vset ^cc] represented by an [vset ^scr] and
+returns the equivalent [vset ^asbr] representation.
+
+[para] An error will be thrown if the input is not a valid [vset ^scr].
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::2assr] [arg scr]]
+
+This command takes a [vset ^cc] represented by an [vset ^scr] and
+returns the equivalent [vset ^assr] representation.
+
+[para] An error will be thrown if the input is not a valid [vset ^scr].
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::2char] [arg codepoint]]
+
+This command takes a possible unicode [arg codepoint] and returns a
+list of codepoints in the [term BMP] representing it.
+
+[para] The returned list will contain only the argument itself if the
+codepoint is in the [term BMP]. For a codepoint in the [term SMP]
+however the list will contain the two surrogates representing that
+codepoint.
+
+[para] An error will be thrown if the argument is not a valid
+codepoint.
+
+[example_begin]
+% [cmd [vset p]::2char] 65
+65
+
+% [cmd [vset p]::2char] [lb][cmd [vset p]::smp][rb]
+55296 56320
+[example_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::2utf] [arg codepoint] [opt [arg flags]]]
+
+This command takes a possible unicode [arg codepoint] and returns a
+list of integers in the range [lb][const 0]...[const 255][rb]
+representing the UTF-8 encoding of that codepoint.
+
+[para] The exact details of this conversion are controlled by the list
+of optional [arg flags] given to the command. See the list below for
+the details.
+
+[para] An error will be thrown if the input value is not a valid
+codepoint.
+
+[list_begin definitions]
+
+[def {(no flags)}]
+
+The conversion returns the standard UTF-8 encoding for all codepoints.
+The returned list has a length between 1 and 4.
+
+[def cesu]
+
+Codepoints in the [term SMP] are internally converted to the two
+surrogates representing them, and the result is the concatenation of
+the surrogates' UTF-8 encodings.
+
+All other codepoints, i.e. those in the [term BMP], are converted
+normally.
+
+The returned list has a length between 1 and 3, or 6.
+
+This is called the [vset cesu8.doc] encoding.
+
+[def mutf]
+
+The codepoint [const 0] is converted as [const {0xC0 0x80}].
+All other codepoints are converted normally.
+
+This is called the [vset mutf8.doc] encoding, often abbreviated to
+[term MUTF-8].
+
+[def {mutf cesu}]
+
+Both [term MUTF-8] and [term CESU-8] are applied, as specified in the
+previous items.
+
+This is the encoding Tcl uses internally for its strings.
+
+[def tcl]
+
+This is a shorthand for [const {mutf cesu}].
+
+[list_end]
+
+[example_begin]
+% [cmd [vset p]::2utf] 0 ;# "\0"
+0
+
+% [cmd [vset p]::2utf] 0 [const mutf]
+192 128
+
+% [cmd [vset p]::2utf] 65 ;# "A"
+65
+
+% [cmd [vset p]::2utf] [lb][cmd [vset p]::bmp][rb] ;# "\uFFFF"
+239 191 191
+
+% [cmd [vset p]::2utf] [lb][cmd [vset p]::smp][rb] ;# "\U0010000"
+240 144 128 128
+
+% [cmd [vset p]::2utf] [lb][cmd [vset p]::smp][rb] [const cesu]
+237 160 128 237 176 128
+# 55296.... # 56320....
+
+% [cmd [vset p]::2utf] 55296 ;# "\uD800"
+237 160 128
+
+% [cmd [vset p]::2utf] 56320 ;# "\uDC00"
+237 176 128
+[example_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::asbr-format] [arg asbr] [opt [arg compact]]]
+
+This command takes a [vset ^cc] represented by an [vset ^asbr] and
+returns a multi-line string containing a human-readable form of the
+same.
+
+[para] If the boolean argument [arg compact] is either not specified
+or false one-element ranges will be padded with spaces to vertically
+align the ranges across alternatives.
+
+[example_begin]
+% [cmd [vset p]::asbr-format] {
+    {{192 192} {128 128}}
+    {{1 16}} {{33 45}}
+}
+[lb]c0[rb]   [lb]80[rb]
+|[lb]01-10[rb]
+|[lb]21-2d[rb]
+[example_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::assr-format] [arg assr] [opt [arg compact]]]
+
+This command takes a [vset ^cc] represented by an [vset ^assr] and
+returns a multi-line string containing a human-readable form of the
+same.
+
+[para] If the bolean argument [arg compact] is either not specified or
+false one-element ranges will be padded with spaces to vertically
+align the ranges across alternatives.
+
+[example_begin]
+% [cmd [vset p]::assr-format] {
+    {{0 65535}}
+    {{55296 56319} {56320 57343}}
+}
+ [lb]0000-ffff[rb]
+|[lb]d800-dbff[rb][lb]dc00-dfff[rb]
+[example_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::bmp]]
+
+This command returns the highest codepoint still in the [term BMP].
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pd]::fold/c] [arg codepoint]]
+
+This command takes a unicode codepoint and returns its
+[term {primary case}].
+
+[para] An error will be thrown if the argument is not a valid
+codepoint.
+
+[example_begin]
+% [cmd [vset pd]::fold/c] 97 ;# "a"
+65                           ;# "A"
+
+% [cmd [vset pd]::fold/c] 65 ;# "A"
+65                           ;# "A"
+[example_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pd]::fold] [arg codepoint]]
+
+This command takes a unicode codepoint and returns its [term CES].
+
+[para] An error will be thrown if the argument is not a valid
+codepoint.
+
+[example_begin]
+% [cmd [vset pd]::fold] 97 ;# "a"
+65 97                      ;# "A" "a"
+
+% [cmd [vset pd]::fold] 65 ;# "A"
+65 97                      ;# "A" "a"
+[example_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::fold/c] [arg codes]]
+
+This command takes a list of unicode codepoints and returns a list of
+their [term {primary cases}]. The mapping from argument to result is
+1:1.
+
+[para] [strong Note] that both argument and result are a limited form
+of [vset ^scr], i.e. one which does not contain codepoint ranges.
+
+[para] An error will be thrown if the argument contains invalid
+codepoints.
+
+[example_begin]
+% [cmd [vset p]::fold/c] {97 66} ;# "aB"
+65 66                            ;# "AB"
+[example_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::max]]
+
+This command returns the highest codepoint supported by Unicode.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::negate-class] [arg scr] [opt [arg smp]]]
+
+This command takes a [vset ^cc] represented by an [vset ^scr] and
+returns its normalized complement.
+
+[para] If the optional flag [arg smp] is specified and [const true]
+the argument is assumed to be fully in the [term SMP], and the
+resulting complement will be limited to the SMP as well.
+
+The result of applying SMP mode to classes reaching into the BMP is
+[strong undefined].
+
+[para] An error will be thrown if the input is not a valid [vset ^scr].
+
+[example_begin]
+% [cmd [vset p]::negate-class] {}
+{0 1114111}
+
+% [cmd [vset p]::negate-class] {{0 65535}}
+{65536 1114111}
+
+% [cmd [vset p]::negate-class] {{0 1114111}}
+{}
+
+% [cmd [vset p]::negate-class] 0
+{1 1114111}
+
+% [cmd [vset p]::negate-class] 1
+0 {2 1114111}
+[example_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::norm-class] [arg scr]]
+
+This command takes a [vset ^cc] represented by an [vset ^scr] and
+returns the equivalent normalized [vset ^scr]. If the argument was
+already normalized the result will be identical to it.
+
+[para] An error will be thrown if the input is not a valid [vset ^scr].
+
+[example_begin]
+% [cmd [vset p]::norm-class] {}
+
+% [cmd [vset p]::norm-class] {1 2 3 4}
+{{1 4}}
+
+% marpa unicode norm-class {{10 20} {0 15}}
+{0 20}
+
+% marpa unicode norm-class {10 4 3 20 0}
+0 {3 4} 10 20
+[example_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::point] [arg character]]
+
+This command takes a Tcl character and returns the integer value of
+its unicode codepoint.
+
+If a multi-character string is provided to the command the result will
+be the conversion of the first character in that string.
+
+[example_begin]
+% [cmd [vset p]::point] \0
+0
+
+% [cmd [vset p]::point] A
+65
+
+% [cmd [vset p]::point] Apple
+65
+[example_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::smp]]
+
+This command returns the first codepoint in the [term SMP].
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset p]::unfold] [arg scr]]
+
+This command takes a [vset ^cc] represented by an [vset ^scr] and
+returns its case-expanded form. The result is normalized.
+
+[para] An error will be thrown if the argument is not valid
+[vset ^scr].
+
+[example_begin]
+% [cmd [vset p]::unfold] {66 99}
+{66 67} {98 99}
+[example_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pdc]::have-tcl] [arg ccname]]
+
+This command takes the possible name of a unicode [vset ^cc] and
+returns a boolean flag indicating if this class is directly supported
+by Tcl ([const true]), or not ([const false]).
+
+[example_begin]
+% [cmd [vset pdc]::have-tcl] arabic
+0
+
+% [cmd [vset pdc]::have-tcl] xdigit
+1
+[example_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pdc]::have] [arg ccname]]
+
+This command takes the possible name of a unicode [vset ^cc] and
+returns a boolean flag indicating if this is known unicode character
+class ([const true]), or not ([const false]).
+
+[example_begin]
+% [cmd [vset pdc]::have] arabic
+1
+
+% [cmd [vset pdc]::have] foo
+0
+
+% [cmd [vset pdc]::have] xdigit
+1
+[example_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pdc]::names]]
+
+This command returns a list containing the names of the known unicode
+[vset ^ccs].
+
+[para] [strong Note] that the package not only knows the standard
+named unicode [vset ^ccs], but for any such [var C] also "[var C]:bmp"
+and "[var C]:smp", which are [var C] intersected (i.e. limited) to
+[term BMP] and [term SMP] respectively.
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pdc]::ranges] [arg ccname]]
+
+This command takes the name of a unicode [vset ^cc] and returns the
+[vset ^scr] representing that class. The result is normalized.
+
+[para] An error is thrown if the argument is not a known unicode
+[vset ^cc].
+
+[para] As an extension the command further accepts names of the form
+[const %foo] where [const foo] is a known unicode [vset ^cc].
+
+In these cases the result is the normalized [vset ^scr] of the
+specified [vset ^cc], after [term {case expansion}].
+
+[example_begin]
+% [cmd [vset pdc]::ranges] adlam
+{0x1E900 0x1E94A} {0x1E950 0x1E959} {0x1E95E 0x1E95F}
+[example_end]
+
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[call [cmd [vset pdc]::tcl-names]]
+
+This command returns a list containing the names of the character
+classes directly supported by Tcl itself (via [cmd {string is}]).
+ 
+[comment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+[list_end]
+
+[section Datastructures]
+
+[subsection {character Class - CC} cc]
+
+Character classes (abbreviated [term CC]) are simply sets of unicode
+codepoints.
+
+[para] The most trivial representation would be as a list of these
+codepoints. Given the space such would need for larger classes this
+package uses a number of more compressed representations, starting
+with [vset ^scr] (horizontal compression of ranges) to [vset ^asbr]
+and [vset ^assr] (vertical compression of ranges in aligned
+byte/codepoint positions of the element representations).
+
+[para] Beyond the operations on such unnamed character classes just
+represented by values this package also knows a number of named
+character classes, the definition of which are extracted from the
+Unicode standard.
+
+These classes represent various categories of codepoints on the one
+hand, like [const alpha], [const blank], [const control], etc., and
+the known unicode [term scripts] on the other, like [const arabic],
+[const braille], [const canadian_aboriginal], etc.
+
+[subsection {Set of Codepoint (Ranges) - SCR} scr]
+
+A [term {set of codepoint (ranges)}] (short for set of codepoints and
+codepoint ranges, abbreviated to [term SCR]) is the main data
+structure used to represent unicode [vset ^ccs] of any kind, named or
+not.
+
+[para] It is a Tcl list whose elements are a mix of codepoints and
+codepoint ranges.
+
+[para] The codepoints are represented by integer numbers in the range
+[lb][const 0]...[cmd [vset p]::max][rb]. Numbers outside of that range
+are not codepoints and a list containing such is not a valid
+[term SCR].
+
+[para] The ranges are represented by 2-element lists (pairs) of
+codepoints, the start and the end of the range, inclusive. Beyond
+having to be valid codepoints the start must not be greater than the
+end of the range. Such a pair is not a valid range, and a list
+containing such is not a valid [term SCR].
+
+[para] A [term normalized] [term SCR] is defined as an [term SCR]
+which contains no duplicate elements, no overlapping/adjacent ranges,
+and all elements are sorted in integer ascending order by their start
+point.
+
+[strong Note]: That previous sentence above talks only about ranges
+does not exclude the codepoints. For normalization and other purposes
+codepoints can simply be treated as ranges of size 1, where start and
+end points are identical.
+
+[subsection {Alternatives of Sequences of Byte-Ranges - ASBR} asbr]
+
+A set of [term {alternatives of sequences of byte-ranges}]
+(abbreviated to [term ASBR]) is an alternative (sic!) and (usually)
+more compact representation of [vset ^ccs].
+
+[para] This is the go-to representation of [vset ^ccs] for the
+byte-oriented engine provided by [package marpa::runtime::c], as it
+can be directly mapped to the grammar rules for such.
+
+[para] It makes use of the fact that the UTF-8 encoding of unicode
+codepoints maps each codepoint to a sequence of bytes, and then
+compresses the resulting "alternatives of byte sequences" by merging
+adjacent alternatives differing in a single position into a new
+alternative where the differing bytes become a single byte range (this
+is where "adjacent" is critical).
+
+[para] Such a compression can be done very efficiently (in time and
+space) by generating the alternatives in sorted order and then
+comparing the newly generated against the last processed.
+
+[subsection {Alternatives of Sequences of Surrogate-Ranges - ASSR} assr]
+
+A set of [term {alternatives of sequences of surrogate-ranges}]
+(abbreviated to [term ASSR]) is an alternative (sic!) and (usually)
+more compact representation of [vset ^ccs].
+
+[para] The basic principle of structure and generation is the same as
+for [vset ^asbr]. In contrast however the elements of the alternatives
+are codepoints limited to the [term BMP], with [term SMP] characters
+in the argument represented as pairs of surrogates before compression.
+
+[comment {
+    A better name for the structure would be ASCR then.
+    (C for codepoint), or maybe ASBCR (BC = BMP codepoint).
+}]
+
+[para] This is the go-to representation of [vset ^ccs] for the
+character-oriented engine provided by [package marpa::runtime::tcl],
+due to its Tcl-imposed limitation to the BMP, as it can be directly
+mapped to the grammar rules for such.
+
+[section Glossary gloss]
+
+[list_begin definitions]
+
+[def Unicode]
+
+The main references needed are
+	[uri https://en.wikipedia.org/wiki/Unicode]
+and	[uri https://en.wikipedia.org/wiki/UTF-8].
+
+[def BMP]
+
+The [term {Basic Multi-lingual Plane}] of unicode.
+
+[para] The BMP runs from codepoint [const 0] to codepoint
+[cmd [vset p]::bmp], inclusive.
+
+[para] Characters in the BMP can be encoded by UTF-8 into a sequence
+of at least one to most three bytes.
+
+[def SMP]
+
+The [term {Supplemental Multi-lingual Planes}] of unicode.
+Starting just after the BMP they cover the remainder of unicode.
+
+[para] The SMP runs from codepoint [cmd [vset p]::smp] to
+[cmd [vset p]::max], inclusive.
+
+[para] Characters in the SMP can be encoded by UTF-8 into a sequence
+of 4 bytes. For systems limited to the BMP (like Tcl) characters can
+also encoded as a pair of BMP [term surrogate] characters. This allows
+encoding them in six bytes of a pseudo UTF-8 encoding. This is called
+[vset cesu8.doc] coding.  (See also the description of the flags for
+[cmd [vset p]::2utf]).
+
+[def CES]
+
+Shorthand for [term {case-equivalent set}].
+
+[def {case-equivalent set}]
+
+Each unicode codepoint [var C] is associated with a set of codepoints
+representing the different cases of the same character.
+
+These are the [term case-equivalent] codepoints of [var C].
+[var C] itself is of course a member of this set.
+
+[para] As an example, the [term CES] of 97 is {65, 97}. More human
+readable, the character "A" has variants "a" and "A", lower- and
+upper-case.
+
+[para] As a second example, codepoint 38, i.e. "&", is a codepoint
+whose CES contains only itself.
+
+[para] [strong Note] that a CES is a [vset ^cc].
+
+[def {primary case}]
+
+For each each unicode codepoint the smallest-numbered codepoint in its
+[term CES] is called this.
+
+[def {case expansion}]
+
+This is the process of replacing all codepoints of a larger structure
+with its CES.
+
+[para] A string of characters becomes a sequence of [vset ^ccs],
+making it case-independent.
+
+[para] A [vset ^cc] becomes a possibly larger [vset ^cc].
+
+[list_end]
+
+[include include/feedback.inc]
+[manpage_end]
