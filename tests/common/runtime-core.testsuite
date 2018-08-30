@@ -36,9 +36,6 @@ kt require support fileutil ;# cat
 # # ## ### ##### ######## ############# #####################
 ## Local shorthands
 
-proc setup   {} { [gen cget cl] create PARSE }
-proc cleanup {} { PARSE destroy }
-
 proc stash {k} {
     global rtdebug
     if {![info exists rtdebug] || !$rtdebug} return
@@ -76,123 +73,101 @@ exec [td]/grammars/setup.sh
 # # ## ### ##### ######## ############# #####################
 
 initialize
-
 # # ## ### ##### ######## ############# #####################
-## Actual processing - Id formatting prep
+## Helper command for inspection of event handling
 
-incr max
-test-grammar-files rt_example --> __ __ { incr max }
-set format %0[string length $max]d
-unset max
+proc record {p type enames args} {
+    # For testing we just record the information about the event for
+    # matching against expectations.
+    if {[catch {
+	lappend ::recording ___________________________(([info level 0]))
+	lappend ::recording {*}[$p match view]
+	# Move input so that the lexer resumes reading with the
+	# character after the lexeme.  Written as is with absolutes so
+	# that it works for all events (discard, pre-, post-lexeme) we
+	# are testing without requiring conditionals on the exact
+	# trigger location.
+	$p match from [$p match start] [$p match length]
+	lappend ::recording "@resume = [$p match location]"
+	# The input now points to the last character of the lexeme,
+	# and on resume the lexer advances to the next character to
+	# start processing from.
 
-# # ## ### ##### ######## ############# #####################
+	set symbols [$p match symbols]
+	foreach s $symbols { lappend ::recording "^sym = >>$s<<" }
 
-incr k
-test-grammar-map rt_example --> id rte base {
-    gen configure gr $rte
-    gen setup cl rte$k
+	if {$type in {after before}} {
+	    # Retrieve and return the symbols and their sem values. A
+	    # check that both directions are working.
 
-    # Debugging - Keep the generated parser and related files for
-    # post-mortem review.
-    stash $k
+	    set semvalues [$p match sv]
+	    foreach s $semvalues { lappend ::recording "^sv  = >>$s<<" }
 
-    set input  [fget [input  $base]]
-    set kd     [format $format $k]
+	    foreach v $semvalues s $symbols { $p match alternate $s $v }
 
-    if {[file exists $base/events]} {
-	# runtime example for events
-	set result [string trimright [fget $base/events]]
-
-	test marpa-[label]-runtime-process-2.${kd}---${id} "[label] :: process $id" -body {
-	    catch {
-		PARSE process $input
-		join $recording \n
-	    } msg
-	    set msg ;# set ::errorInfo
-	} -setup {
-	    set recording {}
-	    proc record {p type enames args} {
-		# For testing we just record the information about the
-		# event for matching against expectations.
-		if {[catch {
-		    lappend ::recording ___________________________(([info level 0]))
-		    lappend ::recording {*}[$p match view]
-		    # Move input so that lexer resumes reading with
-		    # the character after the lexeme.  Written as is
-		    # with absolutes so that it works for all events
-		    # (discard, pre-, post-lexeme) we are testing
-		    # without requiring conditionals
-		    $p match from [$p match start] [$p match length]
-		    lappend ::recording "@resume = [$p match location]"
-		    # The input now points to the last character of
-		    # the lexeme, and on resume the lexer advances to
-		    # the next character to start processing from.
-
-		    set symbols [$p match symbols]
-		    foreach s $symbols {
-			lappend ::recording "^sym = >>$s<<"
-		    }
-
-		    if {$type in {after before}} {
-			# Retrieve and return the symbols and their
-			# sem values. A check that both directions
-			# are working.
-
-			set semvalues [$p match sv]
-			foreach s $semvalues {
-			    lappend ::recording "^sv  = >>$s<<"
-			}
-
-			foreach v $semvalues s $symbols {
-			    $p match alternate $s $v
-			}
-
-			foreach v [$p match sv] s [$p match symbols] {
-			    lappend ::recording  ">>$s<< ~~ >>$v<<"
-			}
-		    } else {
-			# discard and non-lexeme events do not come
-			# with sem values.
-			lappend ::recording *[list [catch {
-			    $p match sv
-			} msg] $msg]
-		    }
-		}]} {
-		    lappend ::recording $::errorInfo
-		}
-		return
+	    foreach v [$p match sv] s [$p match symbols] {
+		lappend ::recording  ">>$s<< ~~ >>$v<<"
 	    }
-	    setup
-	    PARSE on-event record
-	} -cleanup {
-	    cleanup
-	    rename record {}
-	    unset msg recording
-	} -result $result
-
-    } else {
-	# runtime example for AST
-	set result [string trimright [fget [result $base]]]
-
-	test marpa-[label]-runtime-process-2.${kd}---${id} "[label] :: process $id" -body {
-	    catch {
-		ast-format [PARSE process $input]
-	    } msg
-	    set msg ;# set ::errorInfo
-	} -setup setup -cleanup {
-	    cleanup
-	    unset msg
-	} -result $result
+	} else {
+	    # discard and non-lexeme events do not come with sem
+	    # values.
+	    lappend ::recording *[list [catch { $p match sv } msg] $msg]
+	}
+    }]} {
+	lappend ::recording $::errorInfo
     }
-
-    gen cleanup
-    incr k
+    return
 }
 
 # # ## ### ##### ######## ############# #####################
-unset k base format result kd input rte
-rename setup   {}
-rename cleanup {}
+## Actual processing
+
+test-grammar-file-format ID rt_example
+
+test-grammar-map rt_example --> k id rte base {
+    if {![file exists $base/events]} continue
+
+    test marpa-[label]-runtime-process-2.[ID $k]---${id} "[label] :: process $id" -setup {
+	gen single-setup $rte rte$k
+	# Debugging - Keep the generated parser and related files for
+	# post-mortem review.
+	stash $k
+	set recording {}
+	PARSE on-event record
+    } -body {
+	catch {
+	    PARSE process [fget [input $base]]
+	    join $recording \n
+	} msg
+	set msg ;# set ::errorInfo
+    } -cleanup {
+	gen single-cleanup
+	unset msg recording
+    } -result [string trimright [fget $base/events]]
+}
+
+test-grammar-map rt_example --> k id rte base {
+    if {[file exists $base/events]} continue
+
+    test marpa-[label]-runtime-process-2.[ID $k]---${id} "[label] :: process $id" -setup {
+	gen single-setup $rte rte$k
+	# Debugging - Keep the generated parser and related files for
+	# post-mortem review.
+	stash $k
+    } -body {
+	catch {
+	    ast-format [PARSE process [fget [input $base]]]
+	} msg
+	set msg ;# set ::errorInfo
+    } -cleanup {
+	gen single-cleanup
+	unset msg
+    } -result [string trimright [fget [result $base]]]
+}
+
+# # ## ### ##### ######## ############# #####################
+rename ID      {}
+rename record  {}
 
 # # ## ### ##### ######## ############# #####################
 finalize
