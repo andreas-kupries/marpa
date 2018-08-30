@@ -198,13 +198,6 @@ test marpa-[label]-parser-process-file-1.5 "[label] :: process-file, limit, bad 
 # # ## ### ##### ######## ############# #####################
 ## process, process-file - Actual processing - Id formatting prep
 
-incr max
-test-grammar-files slif --> __ __ { incr max }
-set format %0[string length $max]d
-unset max
-
-# # ## ### ##### ######## ############# #####################
-
 proc STOP {length p type enames} {
     lappend ::msg $p $type [$p match location]
     # Resume processing after the last character => EOF, stop engine
@@ -212,9 +205,18 @@ proc STOP {length p type enames} {
     return
 }
 
-test-grammar-map slif --> id slif base {
+# # ## ### ##### ######## ############# #####################
+
+test-grammar-file-format ID slif
+
+test-grammar-map slif --> k id slif base {
     set input    [fget $slif]
     set expected [string trimright [fget [result $base]]]
+
+    # Note: We do tests only once, for the first grammar found. That
+    # is enough.  At the end of the body the loop is broken.  Using
+    # the looping construct just makes the setup simpler, i.e. finding
+    # the grammar.
 
     test marpa-[label]-parser-process-1.6.0 "[label] :: process stop/limit $id" -body {
 	PARSE on-event STOP [string length $input]
@@ -260,12 +262,10 @@ rename STOP {}
 
 # # ## ### ##### ######## ############# #####################
 
-set k 0
-incr k
-test-grammar-map slif --> id slif base {
+test-grammar-map slif --> k id slif base {
     set input    [fget $slif]
     set expected [string trimright [fget [result $base]]]
-    set kd       [format $format $k]
+    set kd       [ID $k]
 
     if {0} {
 	test marpa-[label]-parser-debug-911.${kd}---${id} "[label] :: process $id" -body {
@@ -280,7 +280,6 @@ test-grammar-map slif --> id slif base {
 	    unset msg
 	} -result $expected
 
-	incr k
 	continue
     }
 
@@ -303,12 +302,11 @@ test-grammar-map slif --> id slif base {
 	cleanup
 	unset msg
     } -result $expected
-
-    incr k
 }
 
 # # ## ### ##### ######## ############# #####################
-unset k slif base format expected kd input
+unset expected kd input
+rename ID      {}
 rename setup   {}
 rename cleanup {}
 

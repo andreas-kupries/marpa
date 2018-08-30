@@ -86,14 +86,6 @@ exec [td]/grammars/setup.sh
 initialize
 
 # # ## ### ##### ######## ############# #####################
-## Actual processing - Id formatting prep
-
-incr max
-test-grammar-files rt_example --> __ __ { incr max }
-set format %0[string length $max]d
-unset max
-
-# # ## ### ##### ######## ############# #####################
 
 # Basic access control. Syntax and arguments have to be valid to reach that check
 set access_commands {
@@ -205,21 +197,20 @@ proc record {max p type enames args} {
 
 # # ## ### ##### ######## ############# #####################
 
-set outside 1
-incr k
-test-grammar-map rt_example --> id rte base {
+test-grammar-file-format ID rt_example
+
+test-grammar-map rt_example --> k id rte base {
     if {![file exists $base/match]} continue
     # Use only match examples.
 
     gen configure gr $rte
     gen setup cl rte${k}_[label]
-
     # Debugging - Keep the generated parser and related files for
     # post-mortem review.
     stash $k
 
     set input  [fget [input $base]]
-    set kd     [format $format $k]
+    set kd     [ID $k]
 
     if {$access} {
 	# Basic access control. Reject all API calls from the
@@ -260,11 +251,9 @@ test-grammar-map rt_example --> id rte base {
 	unset j jd cmd
     }
 
-    # Record of API behaviour for specific event types (before, after, discard, stop)
+    # Record of API behaviour for specific event types (before, after, discard)
+    # The stop events are handled separately, see below.
     if {$events} {
-	# Get the expected match API behaviour
-	set result [string trimright [fget $base/match]]
-
 	test marpa-[label]-match-event-1.${kd}---${id} "[label] ::  match event $id" -body {
 	    # The forced abort through the event handler can trigger a
 	    # parse error. Which we are not interested in.
@@ -277,73 +266,7 @@ test-grammar-map rt_example --> id rte base {
 	} -cleanup {
 	    cleanup
 	    unset recording
-	} -result $result
-
-	if {[file exists $base/stop]} {
-	    # Get the expected stop API behaviour
-	    set result [string trimright [fget $base/stop]]
-
-	    test marpa-[label]-events-match-2.${kd}---${id} "[label] :: events match $id, stop" -body {
-		catch {
-		    # Force a stop event
-		    PARSE process $input to 5 ;# from 0 (default)
-		}
-		join $recording \n
-	    } -setup {
-		set recording {}
-		setup
-		PARSE on-event ::record [string length $input]
-	    } -cleanup {
-		cleanup
-		unset recording
-	    } -result $result
-	}
-
-    	if {[file exists $base/move]} {
-	    # Testing movement behaviour. This a replication of the
-	    # test in inbound_movement.test for the entire pipeline,
-	    # including parser.
-	    ##
-	    # See tests/grammars/runtime/stitch for the gramamr to
-	    # compatible to the event processing and input here.
-
-	    set result [string trimright [fget $base/move]]
-
-	    test marpa-[label]-events-stitch-3.${kd}---${id} "[label] :: events match $id, move/stitch" -body {
-		# Force a stop event
-		lappend recording [ast-format [PARSE process $msga from 0 to 4]]
-		join $recording \n
-	    } -setup {
-		set msga {the lazy dog}
-		set msgb {quick brown fox jumps over the }
-		set recording {}
-		setup
-		PARSE on-event apply {{args} {
-		    global callnum
-		    incr   callnum
-		    lappend recording [list $args #$callnum]
-		    switch -exact -- $callnum {
-			1 {
-			    # Reached stitch location. Add secondary
-			    # input, and move cursor to it. Set stop
-			    # marker for return.
-			    PARSE match from  [PARSE extend  $::msgb]
-			    PARSE match limit [string length $::msgb]
-			}
-			2 {
-			    # Reached end of secondary input.  Move
-			    # back to stitch point and continue
-			    PARSE match from 4
-			}
-		    }
-		    lappend ::recording \
-			[list $args @[PARSE match location] ![PARSE match stop]]
-		}}
-	    } -cleanup {
-		cleanup
-		unset recording callnum msga msgb
-	    } -result $result
-	}
+	} -result [string trimright [fget $base/match]]
     }
 
     gen cleanup
@@ -351,7 +274,77 @@ test-grammar-map rt_example --> id rte base {
 }
 
 # # ## ### ##### ######## ############# #####################
-unset k base format result kd input rte syntax access events access_commands invalid_commands commands
+## Oneshot test cases not fitting into the above loop.
+## I.e. custom operation
+
+# # ## ### ##### ######## ############# #####################
+## Testing stop behaviour
+
+set base [td]/grammars/discards/adverbs/event-name-standard
+
+test marpa-[label]-events-match-1.0 "[label] :: events match - stop" -setup {
+    set recording {}
+    set input [fget [input $base]]
+    gen single-setup $base/rt_example ESTOP
+    PARSE on-event ::record [string length $input]
+} -body {
+    catch {
+	# Force a stop event
+	PARSE process $input to 5 ;# from 0 (default)
+    }
+    join $recording \n
+} -cleanup {
+    gen single-cleanup
+    unset input recording base
+} -result [string trimright [fget $base/stop]]
+
+# # ## ### ##### ######## ############# #####################
+# Testing movement behaviour. This a replication of the
+# test in inbound_movement.test for the entire pipeline,
+# including parser.
+##
+# See tests/grammars/runtime/stitch for the gramamr to
+# compatible to the event processing and input here.
+
+set base [td]/grammars/runtime/stitch
+
+test marpa-[label]-events-stitch-1.0 "[label] :: events match - stop/move/stitch" -body {
+    # Force a stop event
+    lappend recording [ast-format [PARSE process $msga from 0 to 4]]
+    join $recording \n
+} -setup {
+    set msga {the lazy dog}
+    set msgb {quick brown fox jumps over the }
+    set recording {}
+    gen single-setup $base/rt_example STITCH
+    PARSE on-event apply {{args} {
+	global callnum
+	incr   callnum
+	lappend recording [list $args #$callnum]
+	switch -exact -- $callnum {
+	    1 {
+		# Reached stitch location. Add secondary
+		# input, and move cursor to it. Set stop
+		# marker for return.
+		PARSE match from  [PARSE extend  $::msgb]
+		PARSE match limit [string length $::msgb]
+	    }
+	    2 {
+		# Reached end of secondary input.  Move
+		# back to stitch point and continue
+		PARSE match from 4
+	    }
+	}
+	lappend ::recording \
+	    [list $args @[PARSE match location] ![PARSE match stop]]
+    }}
+} -cleanup {
+    gen single-cleanup
+    unset recording callnum msga msgb base
+} -result [string trimright [fget $base/move]]
+
+# # ## ### ##### ######## ############# #####################
+unset -nocomplain result input syntax access events access_commands invalid_commands commands
 rename record  {}
 rename ++      {}
 rename setup   {}

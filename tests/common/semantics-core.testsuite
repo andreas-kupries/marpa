@@ -1,5 +1,5 @@
 # -*- tcl -*-
-## (c) 2017 Andreas Kupries
+## (c) 2017-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## Execution core for testing the SLIF semantics in combination with
 ## all kinds of marpa-based parser engines.
@@ -32,19 +32,34 @@ kt require support fileutil ;# cat
 kt local* support marpa::slif::semantics
 
 # # ## ### ##### ######## ############# #####################
+## Local helper commands
 
 proc setup   {} {
     marpa::slif::semantics create SEMA [log GC] ; /trace GC
     [gen cget cl]          create PARSE
 }
+
 proc cleanup {} {
     PARSE destroy
     catch { SEMA destroy }
     # The semantics instance normally auto-destroys itself at the end
     # of "process"(file). However if the test failed this may not have
-    # happend. Thus we try to destroy such leftovers so that they may
+    # happened. Thus we try to destroy such leftovers so that they may
     # not interfere with the next test, and ignore the error thrown if
     # it was already gone.
+}
+
+proc norm-result {path} {
+    set text [fget $path]
+    if {[string match {*Parsing failed in*} $text]} {
+	# Keep indentation in expected error results
+	return [string trimright $text]
+    }
+
+    # Reformat readable result (highlighting of important parts by
+    # indentation and separation) into the actual trace coming out of
+    # the semantics.
+    return [norm-trace $path]
 }
 
 # # ## ### ##### ######## ############# #####################
@@ -114,35 +129,13 @@ test marpa-slif-semantics-process-1.1 {process, wrong args, too many} -setup {
 } -returnCodes error -result {wrong # args: should be "SEMA process ast"}
 
 # # ## ### ##### ######## ############# #####################
-## semantics + process, process-file - Actual processing - Id formatting prep
+## semantics + process, process-file - Actual processing
 
-incr max
-test-grammar-files slif --> __ __ { incr max }
-set format %0[string length $max]d
-unset max
-
-# # ## ### ##### ######## ############# #####################
-
-incr k
-test-grammar-map slif --> id slif base {
-    set input    [fget $slif]
-    set output   [result $base]
-    set kd       [format $format $k]
-    set expected [fget $output]
-
-    if {[string match {*Parsing failed in*} $expected]} {
-	# Keep indentation in expected error results
-	set expected [string trimright $expected]
-    } else {
-	# Reformat readable result (highlighting of important parts by
-	# indentation and separation) into the actual trace coming out
-	# of the semantics.
-	set expected [norm-trace $output]
-    }
-
-    test marpa-slif-semantics-process-[label]-2.${kd}---${id} "[label] :: semantics $id /trace" -body {
+test-grammar-file-format ID slif
+test-grammar-map slif --> k id slif base {
+    test marpa-slif-semantics-process-[label]-2.[ID $k]---${id} "[label] :: semantics $id /trace" -body {
 	if {[catch {
-	    SEMA process [PARSE process $input]
+	    SEMA process [PARSE process [fget $slif]]
 	} msg]} {
 	    #puts $::errorInfo
 	    log-add GC error $msg
@@ -151,13 +144,11 @@ test-grammar-map slif --> id slif base {
     } -setup setup -cleanup {
 	unset msg
 	cleanup
-    } -result $expected
-
-    incr k
+    } -result [norm-result [result $base]]
 }
 
 # # ## ### ##### ######## ############# #####################
-unset k slif base format expected kd input
+rename ID      {}
 rename setup   {}
 rename cleanup {}
 
