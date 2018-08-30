@@ -1,5 +1,5 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2017 Andreas Kupries
+## (c) 2017-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## marpa::slif::container
 
@@ -100,12 +100,12 @@ unset -nocomplain input
 test-grammar-file-format ID gcstate
 
 test-grammar-files gcstate --> k id gcstate {
-    set input [string trimright [fget $gcstate]]
+    set input [fget $gcstate]
 
     test marpa-slif-container-deserialize-1.[ID $k]---${id} "deserialize $id" -setup {
 	marpa::slif::container create GC
     } -body {
-	GC deserialize [dict get $input grammar]
+	GC deserialize [g-extract $input]
 	GC validate ;# Deserialize should create only valid
 		     # containers, if serialization is from a valid
 		     # container.
@@ -114,7 +114,7 @@ test-grammar-files gcstate --> k id gcstate {
 	# the input when serialized again.
     } -cleanup {
 	GC destroy
-    } -result $input
+    } -result [string trimright $input]
 
     unset input
 }
@@ -126,7 +126,7 @@ test-grammar-files gcstate --> k id gcstate {
 # TODO: Fix up when unicode mode becomes irrelevant
 
 test-grammar-map gcstate --> k id gcstate base {
-    set input [dict get [string trimright [fget $gcstate]] grammar]
+    set input [g-extract [fget $gcstate]]
 
     # Ignore containers without literals to reduce
     if {![dict exists $input l0 literal]} continue
@@ -159,7 +159,7 @@ unset -nocomplain input
 # TODO: Fix up when unicode mode becomes irrelevant
 
 test-grammar-map gcstate --> k id gcstate base {
-    set input [dict get [string trimright [fget $gcstate]] grammar]
+    set input [g-extract [fget $gcstate]]
 
     # Ignore containers without literals to reduce
     if {![dict exists $input l0 literal]} continue
@@ -191,10 +191,9 @@ unset -nocomplain input
 test-grammar-file-format ID prewrite
 
 test-grammar-map prewrite --> k id prewrite base {
-    test marpa-slif-container-prewrite-1.[ID $format $k]---${id} "precedence rewrite $id" -setup {
+    test marpa-slif-container-prewrite-1.[ID $k]---${id} "precedence rewrite $id" -setup {
 	marpa::slif::container create GC
-	GC deserialize [dict get [string trimright [fget [file join $base gcstate]]] grammar]
-	unset input
+	GC deserialize [g-extract [fget $base/gcstate]]
     } -body {
 	marpa::slif::precedence 2container \
 	    [marpa::slif::precedence rewrite GC] \

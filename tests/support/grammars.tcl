@@ -15,6 +15,21 @@ kt require support fileutil
 kt require support lambda
 kt local   support marpa::unicode
 
+proc g-extract {data} {
+    return [dict get [string trimright $data] grammar]
+}
+
+proc g-std-config {} {
+    marpa::gen config! version  <Version>
+    marpa::gen config! writer   <Writer>
+    marpa::gen config! year     <Year>
+    marpa::gen config! name     <Name>
+    marpa::gen config! operator <Operator>
+    marpa::gen config! tool     <Tool>
+    marpa::gen config! gentime  <GenerationTime>
+    return
+}
+
 proc test-grammar-file-format {name key} {
     set format %0[string length [test-grammar-file-count $key]]d
     proc $name {id} "format $format \$id"

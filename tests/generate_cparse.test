@@ -38,15 +38,9 @@ test-grammar-file-format ID generated_cparse
 
 test-grammar-map generated_cparse --> k id gen base {
     test marpa-gen-format-cparse-critcl-2.[ID $k]---${id} "gen cparse-critcl $id" -setup {
-	marpa::gen config! version  <Version>
-	marpa::gen config! writer   <Writer>
-	marpa::gen config! year     <Year>
-	marpa::gen config! name     <Name>
-	marpa::gen config! operator <Operator>
-	marpa::gen config! tool     <Tool>
-	marpa::gen config! gentime  <GenerationTime>
+	g-std-config
 	marpa::slif::container create GC
-	GC deserialize [dict get [string trimright [fget $base/gcstate]] grammar]
+	GC deserialize [g-extract [fget $base/gcstate]]
 	GC validate ;# Deserialize should create only valid
 		     # containers, if serialization is from a valid
 		     # container.
