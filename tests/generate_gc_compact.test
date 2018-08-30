@@ -1,5 +1,5 @@
 # -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
-## (c) 2017 Andreas Kupries
+## (c) 2017-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## marpa::gen::format::gc-compact
 
@@ -34,27 +34,13 @@ test marpa-gen-format-gc-compact-container-1.1 {container, wrong args, too many}
 
 # # ## ### ##### ######## ############# #####################
 
-set max 0
-test-grammar-files generated_gc_compact --> __ __ { incr max }
-set format %0[string length $max]d
-unset max
+test-grammar-file-format ID generated_gc_compact
 
-set k 0
-test-grammar-map generated_gc_compact --> id gen base {
-    set input    [string trimright [fget $base/gcstate]]
-    set kd       [format $format $k]
-    set expected [test-grammar-result $base generated_gc_compact]
-
-    test marpa-gen-format-gc-compact-2.${kd}---${id} "gen gc-compact $id" -setup {
-	marpa::gen config! version  <Version>
-	marpa::gen config! writer   <Writer>
-	marpa::gen config! year     <Year>
-	marpa::gen config! name     <Name>
-	marpa::gen config! operator <Operator>
-	marpa::gen config! tool     <Tool>
-	marpa::gen config! gentime  <GenerationTime>
+test-grammar-map generated_gc_compact --> k id gen base {
+    test marpa-gen-format-gc-compact-2.[ID $k]---${id} "gen gc-compact $id" -setup {
+	g-std-config
 	marpa::slif::container create GC
-	GC deserialize [dict get $input grammar]
+	GC deserialize [g-extract [fget $base/gcstate]]
 	GC validate ;# Deserialize should create only valid
 		     # containers, if serialization is from a valid
 		     # container.
@@ -63,9 +49,7 @@ test-grammar-map generated_gc_compact --> id gen base {
     } -cleanup {
 	GC destroy
 	marpa::gen config-reset
-    } -result $expected
-
-    incr k
+    } -result [test-grammar-result $base generated_gc_compact]
 }
 
 # # ## ### ##### ######## ############# #####################
