@@ -1,4 +1,8 @@
 grammar {
+    event {
+        bar on
+        foo on
+    }
     global {
         start A
         inaccessible warn
@@ -22,18 +26,6 @@ grammar {
             bar { {priority @CHR:<b> 0} }
             foo { {priority @CHR:<a> 0} }
         }
-        events {
-            bar {
-                discard {
-                    bar on
-                }
-            }
-            foo {
-                discard {
-                    foo on
-                }
-            }
-        }
         latm {
             fox 1
         }
@@ -44,6 +36,14 @@ grammar {
             @CHR:<a> { {byte 97} }
             @CHR:<b> { {byte 98} }
             @CHR:<x> { {byte 120} }
+        }
+        trigger {
+            bar {
+                discard bar
+            }
+            foo {
+                discard foo
+            }
         }
     }
 }

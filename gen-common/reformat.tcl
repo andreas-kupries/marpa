@@ -60,11 +60,15 @@ proc ::marpa::gen::FormatInto {lv serial indent step parent key} {
     switch -exact -- $parent {
 	/ {
 	    set block ""
-	    set attr  {global g1 lexeme l0}
+	    set attr  {event global g1 lexeme l0}
 	}
 	//global {
 	    set block $key
 	    set attr  {start inaccessible}
+	}
+	//event {
+	    set block $key
+	    set attr [lsort -dict [dict keys $serial]]
 	}
 	//g1 {
 	    set block $key
@@ -82,30 +86,23 @@ proc ::marpa::gen::FormatInto {lv serial indent step parent key} {
 	    set block $key
 	    set attr [lsort -dict [dict keys $serial]]
 	}
-	//l0/events - //g1/events {
+	//l0/trigger - //g1/trigger {
 	    if {![dict size $serial]} {
-		# No symbols in this collection.
-		AddLine "[list $key] \{\}"
+		# No symbols in this collection. No output.
+		#AddLine "[list $key] \{\}"
 		return
 	    }
-	    # serial :: dict (symbol -> when -> name -> state)
+	    # serial :: dict (symbol -> when -> list (name))
 	    AddLine "[list $key] \{"
 	    Indent {
 		foreach symbol [lsort -dict [dict keys $serial]] {
 		    set events [dict get $serial $symbol]
-		    # events :: dict (when -> name -> state)
+		    # events :: dict (when -> list (name))
 		    AddLine "[list $symbol] \{"
 		    Indent {
 			foreach when [lsort -dict [dict keys $events]] {
-			    set specs [dict get $events $when]
-			    # specs :: dict (name -> state)
-			    AddLine "$when \{"
-			    Indent {
-				foreach name [lsort -dict [dict keys $specs]] {
-				    AddLine "[list $name] [dict get $specs $name]"
-				}
-			    }
-			    AddLine "\}"
+			    set names [dict get $events $when]
+			    AddLine "$when [list $names]"
 			}
 		    }
 		    AddLine "\}"
@@ -174,6 +171,7 @@ proc ::marpa::gen::FormatInto {lv serial indent step parent key} {
 
     # serial = dict (... nested ...)
     # Keys:
+    # - event
     # - global
     # - g1
     # - l0
@@ -181,6 +179,7 @@ proc ::marpa::gen::FormatInto {lv serial indent step parent key} {
 
     # Sub keys to manage in the recursions
     # -(global) start, inacessible
+    # -(event)  <eventnames>
     # -(g1)     <symbols>
     # -(l0)     <symbols>
     # -(lexeme) action, bless

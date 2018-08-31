@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -43,6 +43,8 @@ oo::class create marpa::slif::container {
 
 	# TODO? semstore, used as a string pool
 	debug.marpa/slif/container {/ok}
+
+	set myevent {}
 	return
     }
 
@@ -82,6 +84,12 @@ oo::class create marpa::slif::container {
 	    if {![llength $child]} continue
 	    dict set serial $label $child
 	}
+
+	# Non-object global: declared events
+	if {[dict size $myevent]} {
+	    dict set serial event $myevent
+	}
+
 	return $serial
     }
 
@@ -104,6 +112,12 @@ oo::class create marpa::slif::container {
 	    if {![dict exists $blob $label]} continue
 	    $part deserialize [dict get $blob $label]
 	}
+
+	# Non-object global: declared events
+	if {[dict exists $blob event]} {
+	    set myevent [dict get $blob event]
+	}
+
 	return
     }
 
@@ -113,6 +127,26 @@ oo::class create marpa::slif::container {
 	G1 validate
 	L0 validate
 	GA validate
+	return
+    }
+
+    method events {} {
+	debug.marpa/slif/container {}
+	if {![dict size $myevent]} {
+	    return {}
+	}
+	return [lrange $myevent 0 end]
+	# See the note in alter.tcl for explanation of the lrange.
+    }
+
+    # # -- --- ----- -------- -------------
+    ## Semi-public API - Event database
+
+    variable myevent ;# dict (name -> bool)
+
+    method event {name state} {
+	debug.marpa/slif/container {}
+	dict set myevent $name $state
 	return
     }
 
