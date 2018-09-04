@@ -161,11 +161,18 @@ oo::class create @slif-name@ {
 
     method Events {} {
 	debug.@slif-name-tag@
-	# L0 parse event definitions (pre-, post-lexeme, discard)
-	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Map declared events to their initial activation status
+	# :: dict (event name -> active)
+	return {@events@}
+    }
+
+    method Trigger {} {
+	debug.@slif-name-tag@
+	# L0 trigger definitions (pre-, post-lexeme, discard)
+	# :: dict (symbol -> (type -> list (event name)))
 	# Due to the nature of SLIF syntax we can only associate one
 	# event per type with each symbol, for a maximum of three.
-	return {@l0-events@}
+	return {@l0-trigger@}
     }
 }
 

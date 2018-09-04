@@ -54,9 +54,7 @@ oo::class create <Name> {
     method Classes {} {
 	debug.<Name>
 	# Literals: The character classes in use
-	return {
-	    
-	}
+	return {}
     }
 
     method Lexemes {} {
@@ -101,13 +99,23 @@ oo::class create <Name> {
 
     method Events {} {
 	debug.<Name>
-	# L0 parse event definitions (pre-, post-lexeme, discard)
-	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Map declared events to their initial activation status
+	# :: dict (event name -> active)
+	return {
+	    fox     on
+	    snafu   on
+	}
+    }
+
+    method Trigger {} {
+	debug.<Name>
+	# L0 trigger definitions (pre-, post-lexeme, discard)
+	# :: dict (symbol -> (type -> list (event name)))
 	# Due to the nature of SLIF syntax we can only associate one
 	# event per type with each symbol, for a maximum of three.
 	return {
 	    C {
-	        discard {snafu on}
+	        discard   snafu
 	    }
 	}
     }
