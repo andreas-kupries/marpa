@@ -7,7 +7,7 @@
 # (c) 2018 Grammar mindt::parser::sf::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "mindt::parser::sf::tcl".
-##	Generated On Wed Aug 15 21:14:06 PDT 2018
+##	Generated On Wed Sep 05 23:19:57 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 
@@ -103,9 +103,14 @@ oo::class create mindt::parser::sf::tcl {
     method Discards {} {
 	debug.mindt/parser/sf/tcl
 	# Discarded symbols (whitespace)
-	return {
+	return {}
+    }
 
-	}
+    method Events {} {
+	debug.mindt/parser/sf/tcl
+	# Map declared events to their initial activation status
+	# :: dict (event name -> active)
+	return {}
     }
 
     method L0.Symbols {} {
@@ -239,10 +244,10 @@ oo::class create mindt::parser::sf::tcl {
 	return {start length value}
     }
 
-    method L0.Events {} {
+    method L0.Trigger {} {
 	debug.mindt/parser/sf/tcl
-	# L0 parse event definitions (pre-, post-lexeme, discard)
-	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# L0 trigger definitions (pre-, post-lexeme, discard)
+	# :: dict (symbol -> (type -> list (event name)))
 	# Due to the nature of SLIF syntax we can only associate one
 	# event per type with each symbol, for a maximum of three.
 	return {}
@@ -331,10 +336,10 @@ oo::class create mindt::parser::sf::tcl {
 	}
     }
 
-    method G1.Events {} {
+    method G1.Trigger {} {
 	debug.mindt/parser/sf/tcl
 	# G1 parse event definitions (predicted, nulled, completed)
-	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# :: dict (symbol -> (type -> list (event name)))
 	# Each symbol can have more than one event per type.
 	return {}
     }

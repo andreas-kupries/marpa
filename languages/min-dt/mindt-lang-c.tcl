@@ -7,7 +7,7 @@
 # (c) 2018 Grammar mindt::parser::c 1 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "mindt::parser::c".
-##	Generated On Wed Aug 15 21:14:01 PDT 2018
+##	Generated On Wed Sep 05 23:19:53 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 ##
@@ -473,11 +473,34 @@ critcl::ccode {
 	/* 349 */ "~\0"
     };
 
-    static marpatcl_rtc_event_spec mindt_parser_c_events [3] = {
-    // sym, type, active
-	{ 2, marpatcl_rtc_event_after, 1 }, // CInclude: macro
-	{ 5, marpatcl_rtc_event_after, 1 }, // CVdef: macro
-	{ 6, marpatcl_rtc_event_after, 1 }, // CVref: macro
+    /*
+    ** Map lexeme strings to parser symbol id (`match alternate` support).
+    */
+
+    static marpatcl_rtc_sym_lmap mindt_parser_c_lmap [10] = {
+	{ 216, 0 }, // Braced
+	{ 226, 1 }, // CDone
+	{ 227, 2 }, // CInclude
+	{ 229, 3 }, // Cl
+	{ 235, 4 }, // CStrong
+	{ 236, 5 }, // CVdef
+	{ 237, 6 }, // CVref
+	{ 293, 7 }, // Quote
+	{ 306, 8 }, // Simple
+	{ 309, 9 }, // Space
+    };
+
+    /*
+    ** Declared events, initial stati
+    */
+
+    static unsigned char mindt_parser_c_evstatus [1] = {
+	1, // macro = on
+    };
+
+    static marpatcl_rtc_event mindt_parser_c_evspec = {
+	/* .size */ 1,
+	/* .data */ mindt_parser_c_evstatus
     };
 
     /*
@@ -663,42 +686,26 @@ critcl::ccode {
 	MARPATCL_RCMD_DONE  (342)
     };
 
-    static const char* mindt_parser_c_l0idmap_sym [10] = {
-	"Braced",
-	"CDone",
-	"CInclude",
-	"Cl",
-	"CStrong",
-	"CVdef",
-	"CVref",
-	"Quote",
-	"Simple",
-	"Space"
+    marpatcl_rtc_trigger_entry mindt_parser_c_l0trigger_entry [3] = {
+	{ 2, marpatcl_rtc_event_after, 0 }, // CInclude => macro
+	{ 5, marpatcl_rtc_event_after, 0 }, // CVdef    => macro
+	{ 6, marpatcl_rtc_event_after, 0 }, // CVref    => macro
     };
 
-    static marpatcl_rtc_sym mindt_parser_c_l0idmap_id [10] = {
-	0, 1, 2, 3, 4, 5, 6, 7, 8, 9
-    };
-
-    static marpatcl_rtc_symid mindt_parser_c_l0idmap = {
-	/* .size   */ 10,
-	/* .symbol */ mindt_parser_c_l0idmap_sym,
-	/* .id     */ mindt_parser_c_l0idmap_id,
-    };
-
-    static marpatcl_rtc_events mindt_parser_c_l0events = {
-	/* .size  */ 3,
-	/* .data  */ mindt_parser_c_events,
-	/* .idmap */ &mindt_parser_c_l0idmap
+    marpatcl_rtc_trigger mindt_parser_c_l0trigger = {
+	/* .size */ 3,
+	/* .data */ mindt_parser_c_l0trigger_entry
     };
 
     static marpatcl_rtc_rules mindt_parser_c_l0 = { /* 48 */
 	/* .sname   */  &mindt_parser_c_pool,
 	/* .symbols */  { 343, mindt_parser_c_l0_sym_name },
+	/* .lmap    */  { 10, mindt_parser_c_lmap },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
 	/* .rcode   */  mindt_parser_c_l0_rule_definitions,
-	/* .events  */  &mindt_parser_c_l0events
+	/* .events  */  &mindt_parser_c_evspec,
+	/* .trigger */  &mindt_parser_c_l0trigger
     };
 
     static marpatcl_rtc_sym mindt_parser_c_l0semantics [3] = { /* 6 bytes */
@@ -770,10 +777,12 @@ critcl::ccode {
     static marpatcl_rtc_rules mindt_parser_c_g1 = { /* 48 */
 	/* .sname   */  &mindt_parser_c_pool,
 	/* .symbols */  { 30, mindt_parser_c_g1_sym_name },
+	/* .lmap    */  { 0, 0 },
 	/* .rules   */  { 32, mindt_parser_c_g1_rule_name },
 	/* .lhs     */  { 32, mindt_parser_c_g1_rule_lhs },
 	/* .rcode   */  mindt_parser_c_g1_rule_definitions,
-	/* .events  */  0
+	/* .events  */  &mindt_parser_c_evspec,
+	/* .trigger */  0
     };
 
     static marpatcl_rtc_sym mindt_parser_c_g1semantics [4] = { /* 8 bytes */
@@ -829,9 +838,7 @@ critcl::ccode {
 ## Class exposing the grammar engine.
 
 critcl::literals::def mindt_parser_c_event {
-    u0 "macro"
-    u1 "macro"
-    u2 "macro"
+    u0     "macro"
 } +list
 
 critcl::class def mindt::parser::c {

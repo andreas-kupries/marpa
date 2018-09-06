@@ -1,17 +1,17 @@
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
-# (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                     http://core.tcl.tk/akupries/
+# (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                             http://core.tcl.tk/akupries/
 ##
-# (c) 2018-present Grammar json::parser::c 1 By Andreas Kupries
+# (c) 2018 Grammar json::parser::c 1 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "json::parser::c".
-##	Generated On Tue Mar 20 20:43:56 PDT 2018
+##	Generated On Wed Sep 05 23:19:38 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via marpa-gen
 ##
-#* Space taken: 4899 bytes
+#* Space taken: 4903 bytes
 ##
 #* Statistics
 #* L0
@@ -33,6 +33,7 @@ package provide json::parser::c 1
 
 package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
+
 critcl::buildrequirement {
     package require critcl::class
     package require critcl::cutil
@@ -54,6 +55,7 @@ critcl::debug symbols
 ## Requirements
 
 critcl::api import marpa::runtime::c 0
+critcl::api import critcl::callback  1
 
 # # ## ### ##### ######## ############# #####################
 ## Static data structures declaring the grammar
@@ -430,6 +432,25 @@ critcl::ccode {
     };
 
     /*
+    ** Map lexeme strings to parser symbol id (`match alternate` support).
+    */
+
+    static marpatcl_rtc_sym_lmap json_parser_c_lmap [12] = {
+	{ 184, 0  }, // colon
+	{ 185, 1  }, // comma
+	{ 261, 2  }, // lbrace
+	{ 262, 3  }, // lbracket
+	{ 263, 4  }, // lfalse
+	{ 264, 5  }, // lnull
+	{ 265, 6  }, // lnumber
+	{ 266, 7  }, // lstring
+	{ 267, 8  }, // ltrue
+	{ 285, 9  }, // quote
+	{ 288, 10 }, // rbrace
+	{ 289, 11 }, // rbracket
+    };
+
+    /*
     ** L0 structures
     */
 
@@ -573,10 +594,12 @@ critcl::ccode {
     static marpatcl_rtc_rules json_parser_c_l0 = { /* 48 */
 	/* .sname   */  &json_parser_c_pool,
 	/* .symbols */  { 318, json_parser_c_l0_sym_name },
+	/* .lmap    */  { 12, json_parser_c_lmap },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
 	/* .rcode   */  json_parser_c_l0_rule_definitions,
-	0
+	/* .events  */  0,
+	/* .trigger */  0
     };
 
     static marpatcl_rtc_sym json_parser_c_l0semantics [3] = { /* 6 bytes */
@@ -633,10 +656,12 @@ critcl::ccode {
     static marpatcl_rtc_rules json_parser_c_g1 = { /* 48 */
 	/* .sname   */  &json_parser_c_pool,
 	/* .symbols */  { 24, json_parser_c_g1_sym_name },
+	/* .lmap    */  { 0, 0 },
 	/* .rules   */  { 18, json_parser_c_g1_rule_name },
 	/* .lhs     */  { 18, json_parser_c_g1_rule_lhs },
 	/* .rcode   */  json_parser_c_g1_rule_definitions,
-	0
+	/* .events  */  0,
+	/* .trigger */  0
     };
 
     static marpatcl_rtc_sym json_parser_c_g1semantics [4] = { /* 8 bytes */
@@ -692,6 +717,7 @@ critcl::ccode {
 ## Class exposing the grammar engine.
 
 critcl::class def json::parser::c {
+
     insvariable marpatcl_rtc_sv_p result {
 	Parse result
     } {
@@ -700,15 +726,58 @@ critcl::class def json::parser::c {
 	if (instance->result) marpatcl_rtc_sv_unref (instance->result);
     }
 
+    # Note how `rtc` is declared before `pedesc`. We need it
+    # initalized to be able to feed it into the construction of the
+    # PE descriptor facade.
     insvariable marpatcl_rtc_p state {
 	C-level engine, RTC structures.
     } {
 	instance->state = marpatcl_rtc_cons (&json_parser_c_spec,
-					     NULL /* actions - TODO FUTURE */,
+					     NULL, /* No actions */
 					     @stem@_result, (void*) instance,
-					     0, 0 );
+					     marpatcl_rtc_eh_report, (void*) &instance->ehstate );
     } {
 	marpatcl_rtc_destroy (instance->state);
+    }
+
+    insvariable marpatcl_rtc_pedesc_p pedesc {
+	Facade to the parse event descriptor structures.
+	Maintained only when we have parse events declared, i.e. possible.
+    } {
+	// Feed our RTC structure into the facade class so that its constructor has access to it.
+	marpatcl_rtc_pedesc_rtc_set (interp, instance->state);
+	instance->pedesc = marpatcl_rtc_pedesc_new (interp, 0, 0);
+	ASSERT (!marpatcl_rtc_pedesc_rtc_get (interp), "Constructor failed to take rtc structure");
+    } {
+	marpatcl_rtc_pedesc_destroy (instance->pedesc);
+    }
+
+    insvariable marpatcl_ehandlers ehstate {
+	Handler for parse events
+    } {
+	marpatcl_rtc_eh_init (&instance->ehstate, interp,
+			      (marpatcl_events_to_names) 0);
+	/* See on-event above for further setup */
+    } {
+	marpatcl_rtc_eh_clear (&instance->ehstate);
+	Tcl_DecrRefCount (instance->ehstate.self);
+	instance->ehstate.self = 0;
+    }
+
+    insvariable Tcl_Obj* name {
+	Object name, tail
+    } { /* Initialized in the post constructor */ } {
+	Tcl_DecrRefCount (instance->name);
+    }
+
+    method on-event proc {object args} void {
+	marpatcl_rtc_eh_setup (&instance->ehstate, args.c, args.v);
+    }
+
+    method match proc {Tcl_Interp* ip object args} ok {
+	/* -- Delegate to the parse event descriptor facade */
+	return marpatcl_rtc_pe_match (instance->pedesc, ip, instance->name,
+				      args.c, args.v);
     }
 
     constructor {
@@ -722,49 +791,69 @@ critcl::class def json::parser::c {
 	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
 	    goto error;
 	}
-    } {}
+    } {
+	/* Post body. Save the FQN for use in the callbacks */
+	instance->ehstate.self = fqn;
+        Tcl_IncrRefCount (fqn);
+        instance->name = Tcl_NewStringObj (Tcl_GetCommandName (interp, instance->cmd), -1);
+        Tcl_IncrRefCount (instance->name);
+    }
 
-    method process-file proc {Tcl_Interp* ip Tcl_Obj* path} ok {
-	int res, got;
-	char* buf;
-	Tcl_Obj* cbuf = Tcl_NewObj();
-	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
-	if (!in) {
+    method process-file proc {Tcl_Interp* ip object path object args} ok {
+	int from, to;
+	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
+
+	Tcl_Obj* ebuf;
+	if (marpatcl_rtc_fget (ip, instance->state, path, &ebuf) != TCL_OK) {
 	    return TCL_ERROR;
 	}
-	Tcl_SetChannelBufferSize (in, 4096);
-	Tcl_SetChannelOption (ip, in, "-translation", "binary");
-	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
-	// TODO: abort on failed set-channel-option
 
-	while (!Tcl_Eof(in)) {
-	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
-	    if (got < 0) {
-		return TCL_ERROR;
-	    }
-	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
-	    buf = Tcl_GetStringFromObj (cbuf, &got);
-	    marpatcl_rtc_enter (instance->state, buf, got, 0, -1);
-	    if (marpatcl_rtc_failed (instance->state)) break;
-	}
-	Tcl_DecrRefCount (cbuf);
 
-	(void) Tcl_Close (ip, in);
+	int got;
+	char* buf = Tcl_GetStringFromObj (ebuf, &got);
+	marpatcl_rtc_enter (instance->state, buf, got, from, to);
+	Tcl_DecrRefCount (ebuf);
+
 	return marpatcl_rtc_sv_complete (ip, instance->result, instance->state);
     }
 
-    method process proc {Tcl_Interp* ip pstring string} ok {
-	marpatcl_rtc_enter (instance->state, string.s, string.len, 0, -1);
+    method process proc {Tcl_Interp* ip pstring string object args} ok {
+	int from, to;
+	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
+	marpatcl_rtc_enter (instance->state, string.s, string.len, from, to);
 	return marpatcl_rtc_sv_complete (ip, instance->result, instance->state);
+    }
+
+    method extend proc {Tcl_Interp* ip pstring string} int {
+	return marpatcl_rtc_enter_more (instance->state, string.s, string.len);
+    }
+
+    method extend-file proc {Tcl_Interp* ip object path} ok {
+	Tcl_Obj* ebuf;
+	if (marpatcl_rtc_fget (ip, instance->state, path, &ebuf) != TCL_OK) {
+	    return TCL_ERROR;
+	}
+
+	int got;
+	char* buf = Tcl_GetStringFromObj (ebuf, &got);
+	int offset = marpatcl_rtc_enter_more (instance->state, buf, got);
+	Tcl_DecrRefCount (ebuf);
+
+	Tcl_SetObjResult (ip, Tcl_NewIntObj (offset));
+	return TCL_OK;
     }
 
     support {
-	/* Helper function capturing parse results (semantic values of the parser)
+	/*
 	** Stem:  @stem@
 	** Pkg:   @package@
 	** Class: @class@
 	** IType: @instancetype@
 	** CType: @classtype@
+	*/
+
+	/*
+	** Helper function capturing parse results (semantic values of the parser)
 	*/
 
 	static void

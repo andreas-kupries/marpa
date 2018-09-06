@@ -374,17 +374,27 @@ critcl::ccode {
 	/* 260 */ "ILLEGAL_BYTE_255\0"
     };
 
-    static marpatcl_rtc_event_spec <Name>_event_state [2] = {
-    // state
-	1, // lex
-	1, // snafu
+    /*
+    ** Map lexeme strings to parser symbol id (`match alternate` support).
+    */
+
+    static marpatcl_rtc_sym_lmap <Name>_lmap [2] = {
+	{ 3, 0 }, // B
+	{ 6, 1 }, // D
     };
 
-    static marpatcl_rtc_event_spec <Name>_events [3] = {
-    // sym, type, active
-	{   0, marpatcl_rtc_event_before , 0 }, // B: lex
-	{   1, marpatcl_rtc_event_after  , 0 }, // D: lex
-	{ 258, marpatcl_rtc_event_discard, 1 }, // C: snafu
+    /*
+    ** Declared events, initial stati
+    */
+
+    static unsigned char <Name>_evstatus [2] = {
+	1, // lex = on
+	1, // snafu = on
+    };
+
+    static marpatcl_rtc_event <Name>_evspec = {
+	/* .size */ 2,
+	/* .data */ <Name>_evstatus
     };
 
     /*
@@ -443,34 +453,26 @@ critcl::ccode {
 	MARPATCL_RCMD_DONE  (262)
     };
 
-    static const char* <Name>_l0idmap_sym [2] = {
-	"B",
-	"D"
+    marpatcl_rtc_trigger_entry <Name>_l0trigger_entry [3] = {
+	{   0, marpatcl_rtc_event_before , 0 }, // B => lex
+	{   1, marpatcl_rtc_event_after  , 0 }, // D => lex
+	{ 258, marpatcl_rtc_event_discard, 1 }, // C => snafu
     };
 
-    static marpatcl_rtc_sym <Name>_l0idmap_id [2] = {
-	0, 1
-    };
-
-    static marpatcl_rtc_symid <Name>_l0idmap = {
-	/* .size   */ 2,
-	/* .symbol */ <Name>_l0idmap_sym,
-	/* .id     */ <Name>_l0idmap_id,
-    };
-
-    static marpatcl_rtc_events <Name>_l0events = {
-	/* .size  */ 3,
-	/* .data  */ <Name>_events,
-	/* .idmap */ &<Name>_l0idmap
+    marpatcl_rtc_trigger <Name>_l0trigger = {
+	/* .size */ 3,
+	/* .data */ <Name>_l0trigger_entry
     };
 
     static marpatcl_rtc_rules <Name>_l0 = { /* 48 */
 	/* .sname   */  &<Name>_pool,
 	/* .symbols */  { 263, <Name>_l0_sym_name },
+	/* .lmap    */  { 2, <Name>_lmap },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
 	/* .rcode   */  <Name>_l0_rule_definitions,
-	/* .events  */  &<Name>_l0events
+	/* .events  */  &<Name>_evspec,
+	/* .trigger */  &<Name>_l0trigger
     };
 
     static marpatcl_rtc_sym <Name>_l0semantics [1] = { /* 2 bytes */
@@ -509,10 +511,12 @@ critcl::ccode {
     static marpatcl_rtc_rules <Name>_g1 = { /* 48 */
 	/* .sname   */  &<Name>_pool,
 	/* .symbols */  { 3, <Name>_g1_sym_name },
+	/* .lmap    */  { 0, 0 },
 	/* .rules   */  { 2, <Name>_g1_rule_name },
 	/* .lhs     */  { 2, <Name>_g1_rule_lhs },
 	/* .rcode   */  <Name>_g1_rule_definitions,
-	/* .events  */  0
+	/* .events  */  &<Name>_evspec,
+	/* .trigger */  0
     };
 
     static marpatcl_rtc_sym <Name>_g1semantics [3] = { /* 6 bytes */
@@ -562,8 +566,8 @@ critcl::ccode {
 ## Class exposing the grammar engine.
 
 critcl::literals::def <Name>_event {
-    u0 "lex"
-    u1 "snafu"
+    u0     "lex"
+    u1     "snafu"
 } +list
 
 critcl::class def <Name> {
@@ -720,4 +724,3 @@ critcl::class def <Name> {
 
 # # ## ### ##### ######## ############# #####################
 return
-
