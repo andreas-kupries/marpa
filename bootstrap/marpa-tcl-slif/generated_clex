@@ -1338,7 +1338,7 @@ critcl::ccode {
     ** Map lexeme strings to parser symbol id (`match alternate` support).
     */
 
-    static const marpatcl_rtc_sym_lmap <Name>_lmap [67] = {
+    static marpatcl_rtc_sym_lmap <Name>_lmap [67] = {
 	{ 6   , 0  }, // @LEX:@CHR:<*>
 	{ 7   , 1  }, // @LEX:@CHR:<+>
 	{ 8   , 2  }, // @LEX:@CHR:<,>
