@@ -55,6 +55,10 @@ exec [td]/grammars/setup.sh
 
 initialize
 
+if {[string match *rtc* [label]] && [args-map]} {
+    proc args x { string map {... {?args...?}} $x }
+}
+
 # # ## ### ##### ######## ############# #####################
 # Memory checking
 
@@ -111,7 +115,7 @@ test marpa-[label]-parser-process-1.0 "[label] :: process, wrong args, not enoug
 }   -setup   setup \
     -cleanup cleanup \
     -returnCodes error \
-    -result {wrong # args: should be "PARSE process string ..."}
+    -result [args {wrong # args: should be "PARSE process string ..."}]
 
 test marpa-[label]-parser-process-1.1 "[label] :: process, wrong args, uneven" -body {
     PARSE process DATA X
@@ -158,7 +162,7 @@ test marpa-[label]-parser-process-file-1.0 "[label] :: process-file, wrong args,
 }   -setup   setup \
     -cleanup cleanup \
     -returnCodes error \
-    -result {wrong # args: should be "PARSE process-file path ..."}
+    -result [args {wrong # args: should be "PARSE process-file path ..."}]
 
 test marpa-[label]-parser-process-file-1.1 "[label] :: process-file, wrong args, uneven" -body {
     PARSE process-file DATA X

@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                          http://core.tcl.tk/akupries/
+# (c) 2017-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -14,6 +14,14 @@ kt require support fileutil
 ## - Remove empty lines
 ## - Remove leading whitespace (indentation)
 ## - Remove trailing whitespace
+
+proc args x { set x }
+proc foo {x args} {}
+proc args-map {} {
+    catch { ::foo } msg
+    rename ::foo {}
+    return [string match *args* $msg]
+}
 
 proc norm-trace {path} {
     rejoin [strip-empty [strip-indent [strip-comments [strip-trailing [2lines $path]]]]]

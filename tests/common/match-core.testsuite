@@ -85,6 +85,10 @@ exec [td]/grammars/setup.sh
 
 initialize
 
+if {[string match *rtc* [label]] && [args-map]} {
+    proc args x { string map {... {?args...?}} $x }
+}
+
 # # ## ### ##### ######## ############# #####################
 
 # Basic access control. Syntax and arguments have to be valid to reach that check
@@ -245,7 +249,7 @@ test-grammar-map rt_example --> k id rte base {
 		setup
 	    } -cleanup {
 		cleanup
-	    } -returnCodes error -result $result
+	    } -returnCodes error -result [args $result]
 	}
 
 	unset j jd cmd
