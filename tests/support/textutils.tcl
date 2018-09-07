@@ -44,6 +44,8 @@ proc 2lines {path} {
 
 proc fget {path} { fileutil::cat $path }
 
+proc fgetc {path enc} { fileutil::cat -encoding $enc $path }
+
 proc strip-gc-comments {lines} {
     lmap line $lines {
 	if {[string match {*GC comment*} $line]} continue

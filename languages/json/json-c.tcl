@@ -1,17 +1,17 @@
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
-# (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                     http://core.tcl.tk/akupries/
+# (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                             http://core.tcl.tk/akupries/
 ##
-# (c) 2018-present Grammar json::parser::c 1 By Andreas Kupries
+# (c) 2018 Grammar json::parser::c 0 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "json::parser::c".
-##	Generated On Tue Mar 20 20:43:56 PDT 2018
-##		  By aku@hephaistos
-##		 Via marpa-gen
+##	Generated On Fri Sep 07 15:24:32 PDT 2018
+##		  By andreask@ten
+##		 Via remeta
 ##
-#* Space taken: 4899 bytes
+#* Space taken: 4903 bytes
 ##
 #* Statistics
 #* L0
@@ -26,13 +26,14 @@
 #* - #Rule Insn: 18 (+2: setup, start-sym)
 #* - #Rules:     18 (match insn)
 
-package provide json::parser::c 1
+package provide json::parser::c 0
 
 # # ## ### ##### ######## #############
 ## Requisites
 
 package require Tcl 8.5 ;# apply, lassign, ...
 package require critcl 3.1
+
 critcl::buildrequirement {
     package require critcl::class
     package require critcl::cutil
@@ -54,6 +55,7 @@ critcl::debug symbols
 ## Requirements
 
 critcl::api import marpa::runtime::c 0
+critcl::api import critcl::callback  1
 
 # # ## ### ##### ######## ############# #####################
 ## Static data structures declaring the grammar
@@ -472,7 +474,7 @@ critcl::ccode {
 	/* --- (36) --- --- --- Internal
 	 */
 	 33,  39,  35,  43,  47,  32,  55, 198, 272, 295, 183, 188, 189, 190, 192, 195,
-	199, 204, 254, 281, 282, 304,  29,  30,  34,  36,  37,  44,  38,  40,  41,  42,
+	199, 204, 254, 281, 282, 304,  29,  30,  34,  36,  37,  38,  40,  41,  42,  44,
 	 45,  46,  31,  28
     };
 
@@ -497,12 +499,12 @@ critcl::ccode {
 	MARPATCL_RCMD_PRIO  (1), 282, 306,                          /* <@^CLS:<\0-\37\42\134>> ::= <@BRAN:<\40!>> */
 	MARPATCL_RCMD_PRIS  (1)     , 304,                          /*                         |   <@BRAN:<#\133>> */
 	MARPATCL_RCMD_PRIS  (1)     , 307,                          /*                         |   <@BRAN:<\135\177>> */
-	MARPATCL_RCMD_PRIS  (2)     , 312, 308,                     /*                         |   <@BRAN:<\u00c2\u00df>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (3)     , 224, 283, 308,                /*                         |   <@BYTE:<\u00e0>> <@BRAN:<\u00a0\u00bf>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (3)     , 313, 308, 308,                /*                         |   <@BRAN:<\u00e1\u00ef>> <@BRAN:<\200\u00bf>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (6)     , 237, 310, 308, 237, 311, 308, /*                         |   <@BYTE:<\u00ed>> <@BRAN:<\u00a0\u00af>> <@BRAN:<\200\u00bf>> <@BYTE:<\u00ed>> <@BRAN:<\u00b0\u00bf>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIO  (1), 283, 310,                          /* <@BRAN:<\u00a0\u00bf>>  ::= <@BRAN:<\u00a0\u00af>> */
-	MARPATCL_RCMD_PRIS  (1)     , 311,                          /*                         |   <@BRAN:<\u00b0\u00bf>> */
+	MARPATCL_RCMD_PRIS  (2)     , 311, 308,                     /*                         |   <@BRAN:<\302\337>> <@BRAN:<\200\277>> */
+	MARPATCL_RCMD_PRIS  (3)     , 224, 283, 308,                /*                         |   <@BYTE:<\340>> <@BRAN:<\240\277>> <@BRAN:<\200\277>> */
+	MARPATCL_RCMD_PRIS  (3)     , 312, 308, 308,                /*                         |   <@BRAN:<\341\357>> <@BRAN:<\200\277>> <@BRAN:<\200\277>> */
+	MARPATCL_RCMD_PRIS  (6)     , 237, 309, 308, 237, 310, 308, /*                         |   <@BYTE:<\355>> <@BRAN:<\240\257>> <@BRAN:<\200\277>> <@BYTE:<\355>> <@BRAN:<\260\277>> <@BRAN:<\200\277>> */
+	MARPATCL_RCMD_PRIO  (1), 283, 309,                          /* <@BRAN:<\240\277>>      ::= <@BRAN:<\240\257>> */
+	MARPATCL_RCMD_PRIS  (1)     , 310,                          /*                         |   <@BRAN:<\260\277>> */
 	MARPATCL_RCMD_PRIO  (1), 284, 34,                           /* <@CLS:<\42/\134bfnrt>>  ::= <@BYTE:<\42>> */
 	MARPATCL_RCMD_PRIS  (1)     , 47,                           /*                         |   <@BYTE:</>> */
 	MARPATCL_RCMD_PRIS  (1)     , 92,                           /*                         |   <@BYTE:<\134>> */
@@ -511,7 +513,7 @@ critcl::ccode {
 	MARPATCL_RCMD_PRIS  (1)     , 110,                          /*                         |   <@BYTE:<n>> */
 	MARPATCL_RCMD_PRIS  (1)     , 114,                          /*                         |   <@BYTE:<r>> */
 	MARPATCL_RCMD_PRIS  (1)     , 116,                          /*                         |   <@BYTE:<t>> */
-	MARPATCL_RCMD_PRIO  (1), 285, 309,                          /* <@CLS:<\t-\n\r\40>>     ::= <@BRAN:<\t\n>> */
+	MARPATCL_RCMD_PRIO  (1), 285, 313,                          /* <@CLS:<\t-\n\r\40>>     ::= <@BRAN:<\t\n>> */
 	MARPATCL_RCMD_PRIS  (1)     , 13,                           /*                         |   <@BYTE:<\r>> */
 	MARPATCL_RCMD_PRIS  (1)     , 32,                           /*                         |   <@BYTE:<\40>> */
 	MARPATCL_RCMD_PRIO  (1), 286, 69,                           /* <@CLS:<Ee>>             ::= <@BYTE:<E>> */
@@ -545,12 +547,12 @@ critcl::ccode {
 	MARPATCL_RCMD_BRAN  (305), MARPATCL_RCMD_BOXR ( 48, 57),    /* <@BRAN:<09>>            brange (48 - 57) */
 	MARPATCL_RCMD_BRAN  (306), MARPATCL_RCMD_BOXR ( 32, 33),    /* <@BRAN:<\40!>>          brange (32 - 33) */
 	MARPATCL_RCMD_BRAN  (307), MARPATCL_RCMD_BOXR ( 93,127),    /* <@BRAN:<\135\177>>      brange (93 - 127) */
-	MARPATCL_RCMD_BRAN  (308), MARPATCL_RCMD_BOXR (128,191),    /* <@BRAN:<\200\u00bf>>    brange (128 - 191) */
-	MARPATCL_RCMD_BRAN  (309), MARPATCL_RCMD_BOXR (  9, 10),    /* <@BRAN:<\t\n>>          brange (9 - 10) */
-	MARPATCL_RCMD_BRAN  (310), MARPATCL_RCMD_BOXR (160,175),    /* <@BRAN:<\u00a0\u00af>>  brange (160 - 175) */
-	MARPATCL_RCMD_BRAN  (311), MARPATCL_RCMD_BOXR (176,191),    /* <@BRAN:<\u00b0\u00bf>>  brange (176 - 191) */
-	MARPATCL_RCMD_BRAN  (312), MARPATCL_RCMD_BOXR (194,223),    /* <@BRAN:<\u00c2\u00df>>  brange (194 - 223) */
-	MARPATCL_RCMD_BRAN  (313), MARPATCL_RCMD_BOXR (225,239),    /* <@BRAN:<\u00e1\u00ef>>  brange (225 - 239) */
+	MARPATCL_RCMD_BRAN  (308), MARPATCL_RCMD_BOXR (128,191),    /* <@BRAN:<\200\277>>      brange (128 - 191) */
+	MARPATCL_RCMD_BRAN  (309), MARPATCL_RCMD_BOXR (160,175),    /* <@BRAN:<\240\257>>      brange (160 - 175) */
+	MARPATCL_RCMD_BRAN  (310), MARPATCL_RCMD_BOXR (176,191),    /* <@BRAN:<\260\277>>      brange (176 - 191) */
+	MARPATCL_RCMD_BRAN  (311), MARPATCL_RCMD_BOXR (194,223),    /* <@BRAN:<\302\337>>      brange (194 - 223) */
+	MARPATCL_RCMD_BRAN  (312), MARPATCL_RCMD_BOXR (225,239),    /* <@BRAN:<\341\357>>      brange (225 - 239) */
+	MARPATCL_RCMD_BRAN  (313), MARPATCL_RCMD_BOXR (  9, 10),    /* <@BRAN:<\t\n>>          brange (9 - 10) */
 	MARPATCL_RCMD_BRAN  (314), MARPATCL_RCMD_BOXR ( 65, 70),    /* <@BRAN:<AF>>            brange (65 - 70) */
 	MARPATCL_RCMD_BRAN  (315), MARPATCL_RCMD_BOXR ( 97,102),    /* <@BRAN:<af>>            brange (97 - 102) */
 	MARPATCL_RCMD_BRAN  (316), MARPATCL_RCMD_BOXR ( 49, 57),    /* <@RAN:<19>>             brange (49 - 57) */
@@ -576,7 +578,7 @@ critcl::ccode {
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
 	/* .rcode   */  json_parser_c_l0_rule_definitions,
-	0
+	/* .events  */  0
     };
 
     static marpatcl_rtc_sym json_parser_c_l0semantics [3] = { /* 6 bytes */
@@ -636,7 +638,7 @@ critcl::ccode {
 	/* .rules   */  { 18, json_parser_c_g1_rule_name },
 	/* .lhs     */  { 18, json_parser_c_g1_rule_lhs },
 	/* .rcode   */  json_parser_c_g1_rule_definitions,
-	0
+	/* .events  */  0
     };
 
     static marpatcl_rtc_sym json_parser_c_g1semantics [4] = { /* 8 bytes */
@@ -692,6 +694,7 @@ critcl::ccode {
 ## Class exposing the grammar engine.
 
 critcl::class def json::parser::c {
+
     insvariable marpatcl_rtc_sv_p result {
 	Parse result
     } {
@@ -700,15 +703,58 @@ critcl::class def json::parser::c {
 	if (instance->result) marpatcl_rtc_sv_unref (instance->result);
     }
 
+    # Note how `rtc` is declared before `pedesc`. We need it
+    # initalized to be able to feed it into the construction of the
+    # PE descriptor facade.
     insvariable marpatcl_rtc_p state {
 	C-level engine, RTC structures.
     } {
 	instance->state = marpatcl_rtc_cons (&json_parser_c_spec,
-					     NULL /* actions - TODO FUTURE */,
+					     NULL, /* No actions */
 					     @stem@_result, (void*) instance,
-					     0, 0 );
+					     marpatcl_rtc_eh_report, (void*) &instance->ehstate );
     } {
 	marpatcl_rtc_destroy (instance->state);
+    }
+
+    insvariable marpatcl_rtc_pedesc_p pedesc {
+	Facade to the parse event descriptor structures.
+	Maintained only when we have parse events declared, i.e. possible.
+    } {
+	// Feed our RTC structure into the facade class so that its constructor has access to it.
+	marpatcl_rtc_pedesc_rtc_set (interp, instance->state);
+	instance->pedesc = marpatcl_rtc_pedesc_new (interp, 0, 0);
+	ASSERT (!marpatcl_rtc_pedesc_rtc_get (interp), "Constructor failed to take rtc structure");
+    } {
+	marpatcl_rtc_pedesc_destroy (instance->pedesc);
+    }
+
+    insvariable marpatcl_ehandlers ehstate {
+	Handler for parse events
+    } {
+	marpatcl_rtc_eh_init (&instance->ehstate, interp,
+			      (marpatcl_events_to_names) 0);
+	/* See on-event above for further setup */
+    } {
+	marpatcl_rtc_eh_clear (&instance->ehstate);
+	Tcl_DecrRefCount (instance->ehstate.self);
+	instance->ehstate.self = 0;
+    }
+
+    insvariable Tcl_Obj* name {
+	Object name, tail
+    } { /* Initialized in the post constructor */ } {
+	Tcl_DecrRefCount (instance->name);
+    }
+
+    method on-event proc {object args} void {
+	marpatcl_rtc_eh_setup (&instance->ehstate, args.c, args.v);
+    }
+
+    method match proc {Tcl_Interp* ip object args} ok {
+	/* -- Delegate to the parse event descriptor facade */
+	return marpatcl_rtc_pe_match (instance->pedesc, ip, instance->name,
+				      args.c, args.v);
     }
 
     constructor {
@@ -722,49 +768,69 @@ critcl::class def json::parser::c {
 	    Tcl_WrongNumArgs (interp, objcskip, objv-objcskip, 0);
 	    goto error;
 	}
-    } {}
+    } {
+	/* Post body. Save the FQN for use in the callbacks */
+	instance->ehstate.self = fqn;
+        Tcl_IncrRefCount (fqn);
+        instance->name = Tcl_NewStringObj (Tcl_GetCommandName (interp, instance->cmd), -1);
+        Tcl_IncrRefCount (instance->name);
+    }
 
-    method process-file proc {Tcl_Interp* ip Tcl_Obj* path} ok {
-	int res, got;
-	char* buf;
-	Tcl_Obj* cbuf = Tcl_NewObj();
-	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
-	if (!in) {
+    method process-file proc {Tcl_Interp* ip object path object args} ok {
+	int from, to;
+	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
+
+	Tcl_Obj* ebuf;
+	if (marpatcl_rtc_fget (ip, instance->state, path, &ebuf) != TCL_OK) {
 	    return TCL_ERROR;
 	}
-	Tcl_SetChannelBufferSize (in, 4096);
-	Tcl_SetChannelOption (ip, in, "-translation", "binary");
-	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
-	// TODO: abort on failed set-channel-option
 
-	while (!Tcl_Eof(in)) {
-	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
-	    if (got < 0) {
-		return TCL_ERROR;
-	    }
-	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
-	    buf = Tcl_GetStringFromObj (cbuf, &got);
-	    marpatcl_rtc_enter (instance->state, buf, got, 0, -1);
-	    if (marpatcl_rtc_failed (instance->state)) break;
-	}
-	Tcl_DecrRefCount (cbuf);
 
-	(void) Tcl_Close (ip, in);
+	int got;
+	char* buf = Tcl_GetStringFromObj (ebuf, &got);
+	marpatcl_rtc_enter (instance->state, buf, got, from, to);
+	Tcl_DecrRefCount (ebuf);
+
 	return marpatcl_rtc_sv_complete (ip, instance->result, instance->state);
     }
 
-    method process proc {Tcl_Interp* ip pstring string} ok {
-	marpatcl_rtc_enter (instance->state, string.s, string.len, 0, -1);
+    method process proc {Tcl_Interp* ip pstring string object args} ok {
+	int from, to;
+	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
+	marpatcl_rtc_enter (instance->state, string.s, string.len, from, to);
 	return marpatcl_rtc_sv_complete (ip, instance->result, instance->state);
+    }
+
+    method extend proc {Tcl_Interp* ip pstring string} int {
+	return marpatcl_rtc_enter_more (instance->state, string.s, string.len);
+    }
+
+    method extend-file proc {Tcl_Interp* ip object path} ok {
+	Tcl_Obj* ebuf;
+	if (marpatcl_rtc_fget (ip, instance->state, path, &ebuf) != TCL_OK) {
+	    return TCL_ERROR;
+	}
+
+	int got;
+	char* buf = Tcl_GetStringFromObj (ebuf, &got);
+	int offset = marpatcl_rtc_enter_more (instance->state, buf, got);
+	Tcl_DecrRefCount (ebuf);
+
+	Tcl_SetObjResult (ip, Tcl_NewIntObj (offset));
+	return TCL_OK;
     }
 
     support {
-	/* Helper function capturing parse results (semantic values of the parser)
+	/*
 	** Stem:  @stem@
 	** Pkg:   @package@
 	** Class: @class@
 	** IType: @instancetype@
 	** CType: @classtype@
+	*/
+
+	/*
+	** Helper function capturing parse results (semantic values of the parser)
 	*/
 
 	static void

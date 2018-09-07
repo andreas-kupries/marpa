@@ -1,0 +1,4 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//
+kt::in ../languages/heredoc/tests {
+    kt::source heredoc-rtc.test
+}

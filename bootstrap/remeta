@@ -7,6 +7,10 @@
 # # ## ### ##### ######## ############# #####################
 ## Regenerate the SLIF boot parser
 ## Regenerate the LITERAL parser
+## Regenerate the example language parsers
+## - json
+## - heredoc
+## - min-dt
 
 package require Tcl 8.5
 package require marpa::slif::parser
@@ -14,6 +18,7 @@ package require marpa::slif::container
 package require marpa::slif::semantics
 package require marpa::gen
 package require marpa::gen::format::cparse-critcl
+package require marpa::gen::format::tparse
 package require fileutil
 
 #debug on util/benchmarking
@@ -23,6 +28,7 @@ if {[llength $argv] > 1} {
     puts "Results are written to:"
     puts " - DST/slif-parser/parser.tcl"
     puts " - DST/slif-literal/lparser.tcl"
+    puts " - DST/languages/*/*-{c,tcl}.tcl"
     puts ""
     exit 1
 }
@@ -30,14 +36,27 @@ if {[llength $argv] > 1} {
 # Default: Current working directory.
 if {![llength $argv]} { lappend argv [pwd] }
 
+set a  {Andreas Kupries}
+set ja {Jeffrey Kegler + Andreas Kupries}
+
 set selfdir  [file dirname [file normalize [info script]]]
+set topdir   [file dirname $selfdir]
 set meta     [file join $selfdir marpa-tcl-slif slif]
 set literals [file join $selfdir marpa-tcl-slif literals]
+
+set lang     [file join $topdir languages]
+set json     [file join $lang json    g json.slif]
+set heredoc  [file join $lang heredoc g heredoc.slif]
+set mindt    [file join $lang min-dt  g min-dt.slif]
+set mindtsf  [file join $lang min-dt  g sf.slif]
+
 set dst      [lindex $argv 0]
 
 proc F {n} { format "%.2f" $n }
 
-proc Make {name src dst authors} {
+proc Make {authors name src dst {format cparse-critcl}} {
+    file mkdir [file dirname $dst]
+
     # _ __ ___ _____ ________ _____________ _____________________
     # Process the grammar
     set sz [file size $src]
@@ -68,7 +87,7 @@ proc Make {name src dst authors} {
     marpa::gen config! name     $name
     marpa::gen config! operator $::tcl_platform(user)@[info hostname]
     marpa::gen config! tool     [file tail [info script]]
-    set parser [marpa::gen::format::cparse-critcl container GC]
+    set parser [marpa::gen::format::$format container GC]
     GC destroy
 
     # _ __ ___ _____ ________ _____________ _____________________
@@ -81,18 +100,30 @@ proc Make {name src dst authors} {
 }
 
 # _ __ ___ _____ ________ _____________ _____________________
-# Process the slif meta grammar
+# Process the slif grammars (meta & literal)
 
-file mkdir $dst/slif-parser $dst/slif-literal-parser
+Make $ja marpa::slif::parser          $meta     $dst/slif-parser/parser.tcl
+Make $a  marpa::slif::literal::parser $literals $dst/slif-literal/lparser.tcl
 
-Make marpa::slif::parser \
-    $meta \
-    $dst/slif-parser/parser.tcl \
-    {Jeffrey Kegler + Andreas Kupries}
+# _ __ ___ _____ ________ _____________ _____________________
+# Process the example json grammar
 
-Make marpa::slif::literal::parser \
-    $literals \
-    $dst/slif-literal/lparser.tcl \
-    {Andreas Kupries}
+Make $a json::parser::c   $json $dst/languages/json/json-c.tcl
+Make $a json::parser::tcl $json $dst/languages/json/json-tcl.tcl tparse
+
+# _ __ ___ _____ ________ _____________ _____________________
+# Process the example heredoc grammar
+
+Make $a heredoc::parser::c   $heredoc $dst/languages/heredoc/heredoc-c.tcl
+Make $a heredoc::parser::tcl $heredoc $dst/languages/heredoc/heredoc-tcl.tcl tparse
+
+# _ __ ___ _____ ________ _____________ _____________________
+# Process the example min-dt grammars
+
+Make $a mindt::parser::c   $mindt $dst/languages/min-dt/mindt-lang-c.tcl
+Make $a mindt::parser::tcl $mindt $dst/languages/min-dt/mindt-lang-tcl.tcl tparse
+
+Make $a mindt::parser::sf::c   $mindtsf $dst/languages/min-dt/mindt-sf-c.tcl
+Make $a mindt::parser::sf::tcl $mindtsf $dst/languages/min-dt/mindt-sf-tcl.tcl tparse
 
 exit

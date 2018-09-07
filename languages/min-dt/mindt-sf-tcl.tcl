@@ -7,11 +7,11 @@
 # (c) 2018 Grammar mindt::parser::sf::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "mindt::parser::sf::tcl".
-##	Generated On Wed Aug 15 21:14:06 PDT 2018
-##		  By aku@hephaistos
-##		 Via marpa-gen
+##	Generated On Fri Sep 07 15:24:37 PDT 2018
+##		  By andreask@ten
+##		 Via remeta
 
-package provide mindt::parser::sf::tcl 1
+package provide mindt::parser::sf::tcl 0
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -104,7 +104,7 @@ oo::class create mindt::parser::sf::tcl {
 	debug.mindt/parser/sf/tcl
 	# Discarded symbols (whitespace)
 	return {
-
+	    
 	}
     }
 

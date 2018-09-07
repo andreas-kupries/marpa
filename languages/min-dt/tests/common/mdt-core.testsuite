@@ -1,5 +1,6 @@
 # -*- tcl -*-
-## (c) 2018-present Andreas Kupries
+## (c) 2018-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                   http://core.tcl.tk/akupries/
 # # ## ### ##### ######## ############# #####################
 ## Execution core for testing the mini-doctools parser on top of
 ## different runtimes.
@@ -30,8 +31,9 @@ kt require support debug::caller
 kt require support oo::util
 kt require support TclOO
 kt require support fileutil ;# cat
-kt require support marpa::util
-kt require support marpa::multi-stop
+
+kt l-require support marpa::util
+kt l-require support marpa::multi-stop
 
 # Parser packages - See (xx)
 
@@ -51,9 +53,13 @@ proc cleanup  {} { PARSE destroy }
 
 # # ## ### ##### ######## ############# #####################
 
-kt source support/ast.tcl
-kt source support/dirs.tcl
-kt source support/textutils.tcl
+kt source ../../../tests/support/ast.tcl
+kt source ../../../tests/support/dirs.tcl
+kt source ../../../tests/support/textutils.tcl
+
+if {([rt] eq "c") && [args-map]} {
+    proc args x { string map {... {?args...?}} $x }
+}
 
 # # ## ### ##### ######## ############# #####################
 ## (xx)
@@ -100,7 +106,10 @@ foreach level {
     }   -setup   setup-$level \
 	-cleanup cleanup \
 	-returnCodes error \
-	-result {wrong # args: should be "PARSE process string ..."}
+	-result [args {wrong # args: should be "PARSE process string ..."}]
+
+    # Reset to regular for high-level interface.
+    proc args {x} { set x }
 
     # # ## ### ##### ######## ############# #####################
     ## process - Actual processing - Id formatting prep

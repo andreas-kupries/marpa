@@ -1,0 +1,4 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//
+kt::in ../languages/json/tests {
+    kt::source json-tcl.test
+}

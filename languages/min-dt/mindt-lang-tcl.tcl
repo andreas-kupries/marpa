@@ -7,11 +7,11 @@
 # (c) 2018 Grammar mindt::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "mindt::parser::tcl".
-##	Generated On Wed Aug 15 21:14:02 PDT 2018
-##		  By aku@hephaistos
-##		 Via marpa-gen
+##	Generated On Fri Sep 07 15:24:35 PDT 2018
+##		  By andreask@ten
+##		 Via remeta
 
-package provide mindt::parser::tcl 1
+package provide mindt::parser::tcl 0
 
 # # ## ### ##### ######## #############
 ## Requisites

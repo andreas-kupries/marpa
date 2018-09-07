@@ -1,0 +1,5 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//
+kt::in ../languages/min-dt/tests {
+    kt::source mindt-sf-tcl.test
+}
+

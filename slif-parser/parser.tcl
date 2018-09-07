@@ -7,8 +7,8 @@
 # (c) 2018 Grammar marpa::slif::parser 0 By Jeffrey Kegler + Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "marpa::slif::parser".
-##	Generated On Thu Sep 06 20:46:26 PDT 2018
-##		  By aku@hephaistos
+##	Generated On Fri Sep 07 15:24:29 PDT 2018
+##		  By andreask@ten
 ##		 Via remeta
 ##
 #* Space taken: 53372 bytes
