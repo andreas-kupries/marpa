@@ -569,6 +569,8 @@ proc ::marpa::gen::runtime::tcl::NegC {spec} {
 
 proc ::marpa::gen::runtime::tcl::CX {code} {
     debug.marpa/gen/runtime/tcl {}
+
+    # dash, closing bracket, control < backspace
     switch -exact -- $code {
 	1  { return "\\001" }
 	2  { return "\\002" }
@@ -584,6 +586,8 @@ proc ::marpa::gen::runtime::tcl::CX {code} {
 }
 
 proc ::marpa::gen::runtime::tcl::Char {code} {
+    # See also ::marpa::gen::format::slif::C
+    #          ::marpa::slif::literal::util::symchar
     debug.marpa/gen/runtime/tcl {}
 
     # Note: Older versions of `char` (v1.0.1 or earlier) convert all
@@ -597,8 +601,11 @@ proc ::marpa::gen::runtime::tcl::Char {code} {
     #
     # The test grammar `l0-rules/issue-cc-000` demonstrates the bogus
     # output when the next 2 lines are disabled.
-    if {$code >   127} { return \\u[format %04x $code] } ;# >ASCII, <=BMP
-    if {$code > 65535} { return \\U[format %08x $code] } ;# >BMP
+    if {$code > 65535} { return \\U[format %08x $code] } ;# SMP
+    if {$code >   255} { return \\u[format %04x $code] } ;# high BMP
+    if {$code >   127} { return \\[format %o $code] }    ;#
+
+    # TODO XXX: Divorce from `char quote tcl` ? Do our own ?
     return [char quote tcl [format %c $code]]
 }
 

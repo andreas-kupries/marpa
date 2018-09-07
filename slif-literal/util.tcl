@@ -167,14 +167,13 @@ proc ::marpa::slif::literal::util::symtype {type} {
 
 proc ::marpa::slif::literal::util::symchar {codepoint} {
     # See also ::marpa::gen::format::slif::C
+    #          ::marpa::gen::runtime::tcl::Char
     debug.marpa/slif/literal/util {}
 
-    if {$codepoint > [marpa unicode bmp]} {
-	# Beyond the BMP, \u notation
-	return \\u[format %x $codepoint]
-    }
-    # TODO XXX: handle control > 127 as \u, not octal
     # TODO XXX: Divorce from `char quote tcl` ? Do our own ?
+
+    if {$codepoint > 255} { return \\u[format %04x $codepoint] }
+    if {$codepoint > 127} { return \\[format %o $codepoint] }
     return [char quote tcl [format %c $codepoint]]
 }
 

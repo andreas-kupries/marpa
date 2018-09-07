@@ -1,8 +1,8 @@
 :start ::= A
 inaccessible is warn by default
 lexeme default = action => [values]
-A ::= @LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>
+A ::= @LEX:@STR:<\7\10\t\n\13\14\r\134a\57\377\253\u3456|>
       action => [values]
       assoc => left
-@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|> ~ '\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|'
-                                                           latm => 1
+@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\377\253\u3456|> ~ '\7\10\t\n\13\14\r\134a\57\377\253\u3456|'
+                                                       latm => 1

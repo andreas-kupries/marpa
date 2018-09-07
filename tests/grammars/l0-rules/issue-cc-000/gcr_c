@@ -24,283 +24,283 @@ grammar {
                 {priority {{@BRAN:<#\133>}} 0}
                 {priority {{@BRAN:<\135~>}} 0}
                 {priority {
-                        {@BYTE:<\u00c2>}
-                        {@BRAN:<\u00a0\u00ac>}} 0}
+                        {@BYTE:<\302>}
+                        {@BRAN:<\240\254>}} 0}
                 {priority {
-                        {@BYTE:<\u00c2>}
-                        {@BRAN:<\u00ae\u00bf>}} 0}
+                        {@BYTE:<\302>}
+                        {@BRAN:<\256\277>}} 0}
                 {priority {
-                        {@BRAN:<\u00c3\u00d7>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BRAN:<\303\327>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00d8>}
+                        {@BYTE:<\330>}
                         {@BRAN:<\206\233>}} 0}
                 {priority {
-                        {@BYTE:<\u00d8>}
-                        {@BRAN:<\235\u00bf>}} 0}
+                        {@BYTE:<\330>}
+                        {@BRAN:<\235\277>}} 0}
                 {priority {
-                        {@BRAN:<\u00d9\u00da>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BRAN:<\331\332>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00db>}
+                        {@BYTE:<\333>}
                         {@BRAN:<\200\234>}} 0}
                 {priority {
-                        {@BYTE:<\u00db>}
-                        {@BRAN:<\236\u00bf>}} 0}
+                        {@BYTE:<\333>}
+                        {@BRAN:<\236\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00dc>}
+                        {@BYTE:<\334>}
                         {@BRAN:<\200\216>}} 0}
                 {priority {
-                        {@BYTE:<\u00dc>}
-                        {@BRAN:<\220\u00bf>}} 0}
+                        {@BYTE:<\334>}
+                        {@BRAN:<\220\277>}} 0}
                 {priority {
-                        {@BRAN:<\u00dd\u00df>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BRAN:<\335\337>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00e0>}
-                        {@BRAN:<\u00a0\u00a2>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\340>}
+                        {@BRAN:<\240\242>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00e0>}
-                        {@BYTE:<\u00a3>}
-                        {@BRAN:<\200\u00a1>}} 0}
+                        {@BYTE:<\340>}
+                        {@BYTE:<\243>}
+                        {@BRAN:<\200\241>}} 0}
                 {priority {
-                        {@BYTE:<\u00e0>}
-                        {@BYTE:<\u00a3>}
-                        {@BRAN:<\u00a3\u00bf>}} 0}
+                        {@BYTE:<\340>}
+                        {@BYTE:<\243>}
+                        {@BRAN:<\243\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00e0>}
-                        {@BRAN:<\u00a4\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\340>}
+                        {@BRAN:<\244\277>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00e1>}
+                        {@BYTE:<\341>}
                         {@BRAN:<\200\237>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00e1>}
-                        {@BYTE:<\u00a0>}
+                        {@BYTE:<\341>}
+                        {@BYTE:<\240>}
                         {@BRAN:<\200\215>}} 0}
                 {priority {
-                        {@BYTE:<\u00e1>}
-                        {@BYTE:<\u00a0>}
-                        {@BRAN:<\217\u00bf>}} 0}
+                        {@BYTE:<\341>}
+                        {@BYTE:<\240>}
+                        {@BRAN:<\217\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00e1>}
-                        {@BRAN:<\u00a1\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\341>}
+                        {@BRAN:<\241\277>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\342>}
                         {@BYTE:<\200>}
                         {@BRAN:<\200\212>}} 0}
                 {priority {
-                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\342>}
                         {@BYTE:<\200>}
-                        {@BRAN:<\220\u00a9>}} 0}
+                        {@BRAN:<\220\251>}} 0}
                 {priority {
-                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\342>}
                         {@BYTE:<\200>}
-                        {@BRAN:<\u00af\u00bf>}} 0}
+                        {@BRAN:<\257\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\342>}
                         {@BYTE:<\201>}
                         {@BRAN:<\200\237>}} 0}
                 {priority {
-                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\342>}
                         {@BYTE:<\201>}
-                        {@BYTE:<\u00a5>}} 0}
+                        {@BYTE:<\245>}} 0}
                 {priority {
-                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\342>}
                         {@BYTE:<\201>}
-                        {@BRAN:<\u00b0\u00bf>}} 0}
+                        {@BRAN:<\260\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00e2>}
-                        {@BRAN:<\202\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\342>}
+                        {@BRAN:<\202\277>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BRAN:<\u00e3\u00ed>}
-                        {@BRAN:<\200\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BRAN:<\343\355>}
+                        {@BRAN:<\200\277>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ef>}
-                        {@BRAN:<\u00a4\u00ba>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\357>}
+                        {@BRAN:<\244\272>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ef>}
-                        {@BYTE:<\u00bb>}
-                        {@BRAN:<\200\u00be>}} 0}
+                        {@BYTE:<\357>}
+                        {@BYTE:<\273>}
+                        {@BRAN:<\200\276>}} 0}
                 {priority {
-                        {@BYTE:<\u00ef>}
-                        {@BRAN:<\u00bc\u00be>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\357>}
+                        {@BRAN:<\274\276>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ef>}
-                        {@BYTE:<\u00bf>}
-                        {@BRAN:<\200\u00b8>}} 0}
+                        {@BYTE:<\357>}
+                        {@BYTE:<\277>}
+                        {@BRAN:<\200\270>}} 0}
                 {priority {
-                        {@BYTE:<\u00ef>}
-                        {@BYTE:<\u00bf>}
-                        {@BRAN:<\u00bc\u00bf>}} 0}
+                        {@BYTE:<\357>}
+                        {@BYTE:<\277>}
+                        {@BRAN:<\274\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
                         {@BRAN:<\200\203>}
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\u00b0\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BRAN:<\260\277>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
                         {@BYTE:<\204>}
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\u00b0\u00b1>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BRAN:<\260\261>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
                         {@BYTE:<\204>}
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00b2>}
-                        {@BRAN:<\200\u00bc>}} 0}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\262>}
+                        {@BRAN:<\200\274>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
                         {@BYTE:<\204>}
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00b2>}
-                        {@BRAN:<\u00be\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\262>}
+                        {@BRAN:<\276\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
                         {@BYTE:<\204>}
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\u00b3\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BRAN:<\263\277>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
-                        {@BRAN:<\205\u00ae>}
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\u00b0\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
+                        {@BRAN:<\205\256>}
+                        {@BYTE:<\355>}
+                        {@BRAN:<\260\277>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
-                        {@BYTE:<\u00af>}
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\u00b0\u00b1>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
+                        {@BYTE:<\257>}
+                        {@BYTE:<\355>}
+                        {@BRAN:<\260\261>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
-                        {@BYTE:<\u00af>}
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00b2>}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
+                        {@BYTE:<\257>}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\262>}
                         {@BRAN:<\200\237>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
-                        {@BYTE:<\u00af>}
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00b2>}
-                        {@BRAN:<\u00a4\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
+                        {@BYTE:<\257>}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\262>}
+                        {@BRAN:<\244\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
-                        {@BYTE:<\u00af>}
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\u00b3\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
+                        {@BYTE:<\257>}
+                        {@BYTE:<\355>}
+                        {@BRAN:<\263\277>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
-                        {@BRAN:<\u00b0\u00b3>}
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\u00b0\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
+                        {@BRAN:<\260\263>}
+                        {@BYTE:<\355>}
+                        {@BRAN:<\260\277>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
-                        {@BYTE:<\u00b4>}
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\u00b0\u00b4>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
+                        {@BYTE:<\264>}
+                        {@BYTE:<\355>}
+                        {@BRAN:<\260\264>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
-                        {@BYTE:<\u00b4>}
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00b5>}
-                        {@BRAN:<\200\u00b2>}} 0}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
+                        {@BYTE:<\264>}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\265>}
+                        {@BRAN:<\200\262>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
-                        {@BYTE:<\u00b4>}
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00b5>}
-                        {@BRAN:<\u00bb\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
+                        {@BYTE:<\264>}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\265>}
+                        {@BRAN:<\273\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
-                        {@BYTE:<\u00b4>}
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\u00b6\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
+                        {@BYTE:<\264>}
+                        {@BYTE:<\355>}
+                        {@BRAN:<\266\277>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00a0>}
-                        {@BRAN:<\u00b5\u00bf>}
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\u00b0\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\240>}
+                        {@BRAN:<\265\277>}
+                        {@BYTE:<\355>}
+                        {@BRAN:<\260\277>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\u00a1\u00ac>}
-                        {@BRAN:<\200\u00bf>}
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\u00b0\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BRAN:<\241\254>}
+                        {@BRAN:<\200\277>}
+                        {@BYTE:<\355>}
+                        {@BRAN:<\260\277>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
+                        {@BYTE:<\355>}
                         {@BYTE:<\255>}
                         {@BYTE:<\200>}
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00b0>}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\260>}
                         {@BYTE:<\200>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
+                        {@BYTE:<\355>}
                         {@BYTE:<\255>}
                         {@BYTE:<\200>}
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00b0>}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\260>}
                         {@BRAN:<\202\237>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
+                        {@BYTE:<\355>}
                         {@BYTE:<\255>}
                         {@BYTE:<\200>}
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\u00b2\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BRAN:<\262\277>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
+                        {@BYTE:<\355>}
                         {@BYTE:<\255>}
-                        {@BRAN:<\201\u00bf>}
-                        {@BYTE:<\u00ed>}
-                        {@BRAN:<\u00b0\u00bf>}
-                        {@BRAN:<\200\u00bf>}} 0}
+                        {@BRAN:<\201\277>}
+                        {@BYTE:<\355>}
+                        {@BRAN:<\260\277>}
+                        {@BRAN:<\200\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00ae>}
-                        {@BYTE:<\u00bf>}
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00bf>}
-                        {@BRAN:<\u00be\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\256>}
+                        {@BYTE:<\277>}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\277>}
+                        {@BRAN:<\276\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00af>}
-                        {@BYTE:<\u00bf>}
-                        {@BYTE:<\u00ed>}
-                        {@BYTE:<\u00bf>}
-                        {@BRAN:<\u00be\u00bf>}} 0}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\257>}
+                        {@BYTE:<\277>}
+                        {@BYTE:<\355>}
+                        {@BYTE:<\277>}
+                        {@BRAN:<\276\277>}} 0}
             }
         }
         latm {
@@ -319,72 +319,71 @@ grammar {
             {@BRAN:<\200\216>} { {brange 128 142} }
             {@BRAN:<\200\234>} { {brange 128 156} }
             {@BRAN:<\200\237>} { {brange 128 159} }
-            {@BRAN:<\200\u00a1>} { {brange 128 161} }
-            {@BRAN:<\200\u00b2>} { {brange 128 178} }
-            {@BRAN:<\200\u00b8>} { {brange 128 184} }
-            {@BRAN:<\200\u00bc>} { {brange 128 188} }
-            {@BRAN:<\200\u00be>} { {brange 128 190} }
-            {@BRAN:<\200\u00bf>} { {brange 128 191} }
-            {@BRAN:<\201\u00bf>} { {brange 129 191} }
+            {@BRAN:<\200\241>} { {brange 128 161} }
+            {@BRAN:<\200\262>} { {brange 128 178} }
+            {@BRAN:<\200\270>} { {brange 128 184} }
+            {@BRAN:<\200\274>} { {brange 128 188} }
+            {@BRAN:<\200\276>} { {brange 128 190} }
+            {@BRAN:<\200\277>} { {brange 128 191} }
+            {@BRAN:<\201\277>} { {brange 129 191} }
             {@BRAN:<\202\237>} { {brange 130 159} }
-            {@BRAN:<\202\u00bf>} { {brange 130 191} }
-            {@BRAN:<\205\u00ae>} { {brange 133 174} }
+            {@BRAN:<\202\277>} { {brange 130 191} }
+            {@BRAN:<\205\256>} { {brange 133 174} }
             {@BRAN:<\206\233>} { {brange 134 155} }
-            {@BRAN:<\217\u00bf>} { {brange 143 191} }
-            {@BRAN:<\220\u00a9>} { {brange 144 169} }
-            {@BRAN:<\220\u00bf>} { {brange 144 191} }
-            {@BRAN:<\235\u00bf>} { {brange 157 191} }
-            {@BRAN:<\236\u00bf>} { {brange 158 191} }
-            {@BRAN:<\u00a0\u00a2>} { {brange 160 162} }
-            {@BRAN:<\u00a0\u00ac>} { {brange 160 172} }
-            {@BRAN:<\u00a1\u00ac>} { {brange 161 172} }
-            {@BRAN:<\u00a1\u00bf>} { {brange 161 191} }
-            {@BRAN:<\u00a3\u00bf>} { {brange 163 191} }
-            {@BRAN:<\u00a4\u00ba>} { {brange 164 186} }
-            {@BRAN:<\u00a4\u00bf>} { {brange 164 191} }
-            {@BRAN:<\u00ae\u00bf>} { {brange 174 191} }
-            {@BRAN:<\u00af\u00bf>} { {brange 175 191} }
-            {@BRAN:<\u00b0\u00b1>} { {brange 176 177} }
-            {@BRAN:<\u00b0\u00b3>} { {brange 176 179} }
-            {@BRAN:<\u00b0\u00b4>} { {brange 176 180} }
-            {@BRAN:<\u00b0\u00bf>} { {brange 176 191} }
-            {@BRAN:<\u00b2\u00bf>} { {brange 178 191} }
-            {@BRAN:<\u00b3\u00bf>} { {brange 179 191} }
-            {@BRAN:<\u00b5\u00bf>} { {brange 181 191} }
-            {@BRAN:<\u00b6\u00bf>} { {brange 182 191} }
-            {@BRAN:<\u00bb\u00bf>} { {brange 187 191} }
-            {@BRAN:<\u00bc\u00be>} { {brange 188 190} }
-            {@BRAN:<\u00bc\u00bf>} { {brange 188 191} }
-            {@BRAN:<\u00be\u00bf>} { {brange 190 191} }
-            {@BRAN:<\u00c3\u00d7>} { {brange 195 215} }
-            {@BRAN:<\u00d9\u00da>} { {brange 217 218} }
-            {@BRAN:<\u00dd\u00df>} { {brange 221 223} }
-            {@BRAN:<\u00e3\u00ed>} { {brange 227 237} }
+            {@BRAN:<\217\277>} { {brange 143 191} }
+            {@BRAN:<\220\251>} { {brange 144 169} }
+            {@BRAN:<\220\277>} { {brange 144 191} }
+            {@BRAN:<\235\277>} { {brange 157 191} }
+            {@BRAN:<\236\277>} { {brange 158 191} }
+            {@BRAN:<\240\242>} { {brange 160 162} }
+            {@BRAN:<\240\254>} { {brange 160 172} }
+            {@BRAN:<\241\254>} { {brange 161 172} }
+            {@BRAN:<\241\277>} { {brange 161 191} }
+            {@BRAN:<\243\277>} { {brange 163 191} }
+            {@BRAN:<\244\272>} { {brange 164 186} }
+            {@BRAN:<\244\277>} { {brange 164 191} }
+            {@BRAN:<\256\277>} { {brange 174 191} }
+            {@BRAN:<\257\277>} { {brange 175 191} }
+            {@BRAN:<\260\261>} { {brange 176 177} }
+            {@BRAN:<\260\263>} { {brange 176 179} }
+            {@BRAN:<\260\264>} { {brange 176 180} }
+            {@BRAN:<\260\277>} { {brange 176 191} }
+            {@BRAN:<\262\277>} { {brange 178 191} }
+            {@BRAN:<\263\277>} { {brange 179 191} }
+            {@BRAN:<\265\277>} { {brange 181 191} }
+            {@BRAN:<\266\277>} { {brange 182 191} }
+            {@BRAN:<\273\277>} { {brange 187 191} }
+            {@BRAN:<\274\276>} { {brange 188 190} }
+            {@BRAN:<\274\277>} { {brange 188 191} }
+            {@BRAN:<\276\277>} { {brange 190 191} }
+            {@BRAN:<\303\327>} { {brange 195 215} }
+            {@BRAN:<\331\332>} { {brange 217 218} }
+            {@BRAN:<\335\337>} { {brange 221 223} }
+            {@BRAN:<\343\355>} { {brange 227 237} }
             {@BYTE:<\200>} { {byte 128} }
             {@BYTE:<\201>} { {byte 129} }
             {@BYTE:<\204>} { {byte 132} }
+            {@BYTE:<\240>} { {byte 160} }
+            {@BYTE:<\243>} { {byte 163} }
+            {@BYTE:<\245>} { {byte 165} }
             {@BYTE:<\255>} { {byte 173} }
-            {@BYTE:<\u00a0>} { {byte 160} }
-            {@BYTE:<\u00a3>} { {byte 163} }
-            {@BYTE:<\u00a5>} { {byte 165} }
-            {@BYTE:<\u00ae>} { {byte 174} }
-            {@BYTE:<\u00af>} { {byte 175} }
-            {@BYTE:<\u00b0>} { {byte 176} }
-            {@BYTE:<\u00b2>} { {byte 178} }
-            {@BYTE:<\u00b4>} { {byte 180} }
-            {@BYTE:<\u00b5>} { {byte 181} }
-            {@BYTE:<\u00bb>} { {byte 187} }
-            {@BYTE:<\u00bf>} { {byte 191} }
-            {@BYTE:<\u00c2>} { {byte 194} }
-            {@BYTE:<\u00d8>} { {byte 216} }
-            {@BYTE:<\u00db>} { {byte 219} }
-            {@BYTE:<\u00dc>} { {byte 220} }
-            {@BYTE:<\u00e0>} { {byte 224} }
-            {@BYTE:<\u00e1>} { {byte 225} }
-            {@BYTE:<\u00e2>} { {byte 226} }
-            {@BYTE:<\u00ed>} { {byte 237} }
-            {@BYTE:<\u00ef>} { {byte 239} }
+            {@BYTE:<\256>} { {byte 174} }
+            {@BYTE:<\257>} { {byte 175} }
+            {@BYTE:<\260>} { {byte 176} }
+            {@BYTE:<\262>} { {byte 178} }
+            {@BYTE:<\264>} { {byte 180} }
+            {@BYTE:<\265>} { {byte 181} }
+            {@BYTE:<\273>} { {byte 187} }
+            {@BYTE:<\277>} { {byte 191} }
+            {@BYTE:<\302>} { {byte 194} }
+            {@BYTE:<\330>} { {byte 216} }
+            {@BYTE:<\333>} { {byte 219} }
+            {@BYTE:<\334>} { {byte 220} }
+            {@BYTE:<\340>} { {byte 224} }
+            {@BYTE:<\341>} { {byte 225} }
+            {@BYTE:<\342>} { {byte 226} }
+            {@BYTE:<\355>} { {byte 237} }
+            {@BYTE:<\357>} { {byte 239} }
         }
     }
 }
-

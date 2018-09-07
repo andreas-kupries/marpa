@@ -5,13 +5,13 @@ grammar {
     }
     g1 {
         {} {
-            A { {priority {{@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}} 0
+            A { {priority {{@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\377\253\u3456|>}} 0
                     action {array values}
                     assoc left
                     mask 0} }
         }
         terminal {
-            {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} { terminal }
+            {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\377\253\u3456|>} { terminal }
         }
     }
     lexeme {
@@ -19,7 +19,7 @@ grammar {
     }
     l0 {
         {} {
-            {@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} { {priority {
+            {@STR:<\7\10\t\n\13\14\r\134a\57\377\253\u3456|>} { {priority {
                     {@BYTE:<\7>}
                     {@BYTE:<\10>}
                     {@BYTE:<\t>}
@@ -31,20 +31,20 @@ grammar {
                     @BYTE:<a>
                     {@BYTE:<\5>}
                     @BYTE:<7>
-                    {@BYTE:<\u00c3>}
-                    {@BYTE:<\u00bf>}
-                    {@BYTE:<\u00c2>}
-                    {@BYTE:<\u00ab>}
-                    {@BYTE:<\u00e3>}
+                    {@BYTE:<\303>}
+                    {@BYTE:<\277>}
+                    {@BYTE:<\302>}
+                    {@BYTE:<\253>}
+                    {@BYTE:<\343>}
                     {@BYTE:<\221>}
                     {@BYTE:<\226>}
                     @BYTE:<|>} 0} }
         }
         latm {
-            {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} 1
+            {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\377\253\u3456|>} 1
         }
         lexeme {
-            {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>} { {priority {{@STR:<\7\10\t\n\13\14\r\134a\57\u00ff\u00ab\u3456|>}} 0} }
+            {@LEX:@STR:<\7\10\t\n\13\14\r\134a\57\377\253\u3456|>} { {priority {{@STR:<\7\10\t\n\13\14\r\134a\57\377\253\u3456|>}} 0} }
         }
         literal {
             @BYTE:<7> { {byte 55} }
@@ -56,14 +56,14 @@ grammar {
             {@BYTE:<\134>} { {byte 92} }
             {@BYTE:<\221>} { {byte 145} }
             {@BYTE:<\226>} { {byte 150} }
+            {@BYTE:<\253>} { {byte 171} }
+            {@BYTE:<\277>} { {byte 191} }
+            {@BYTE:<\302>} { {byte 194} }
+            {@BYTE:<\303>} { {byte 195} }
+            {@BYTE:<\343>} { {byte 227} }
             {@BYTE:<\n>} { {byte 10} }
             {@BYTE:<\r>} { {byte 13} }
             {@BYTE:<\t>} { {byte 9} }
-            {@BYTE:<\u00ab>} { {byte 171} }
-            {@BYTE:<\u00bf>} { {byte 191} }
-            {@BYTE:<\u00c2>} { {byte 194} }
-            {@BYTE:<\u00c3>} { {byte 195} }
-            {@BYTE:<\u00e3>} { {byte 227} }
             @BYTE:<a> { {byte 97} }
             @BYTE:<|> { {byte 124} }
         }
