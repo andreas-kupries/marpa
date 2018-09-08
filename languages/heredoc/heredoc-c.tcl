@@ -4,12 +4,12 @@
 # (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                                             http://core.tcl.tk/akupries/
 ##
-# (c) 2018 Grammar heredoc::parser::c 1 By Andreas Kupries
+# (c) 2018 Grammar heredoc::parser::c 0 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "heredoc::parser::c".
-##	Generated On Wed Aug 08 12:05:14 PDT 2018
+##	Generated On Fri Sep 07 20:57:53 PDT 2018
 ##		  By aku@hephaistos
-##		 Via marpa-gen
+##		 Via remeta
 ##
 #* Space taken: 5704 bytes
 ##
@@ -26,7 +26,7 @@
 #* - #Rule Insn: 7 (+2: setup, start-sym)
 #* - #Rules:     7 (match insn)
 
-package provide heredoc::parser::c 1
+package provide heredoc::parser::c 0
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -690,38 +690,18 @@ critcl::class def heredoc::parser::c {
         Tcl_IncrRefCount (instance->name);
     }
 
-    method process-file proc {Tcl_Interp* ip Tcl_Obj* path object args} ok {
+    method process-file proc {Tcl_Interp* ip object path object args} ok {
 	int from, to;
 	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
 
-	int res, got;
-	char* buf;
-	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
-
-	if (!in) {
+	Tcl_Obj* ebuf;
+	if (marpatcl_rtc_fget (ip, instance->state, path, &ebuf) != TCL_OK) {
 	    return TCL_ERROR;
 	}
-	Tcl_SetChannelBufferSize (in, 4096);
-	Tcl_SetChannelOption (ip, in, "-translation", "binary");
-	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
-	// TODO: abort on failed set-channel-option
 
-	Tcl_Obj* cbuf = Tcl_NewObj();
-	Tcl_Obj* ebuf = Tcl_NewObj();
-	while (!Tcl_Eof(in)) {
-	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
-	    if (got < 0) {
-		Tcl_DecrRefCount (cbuf);
-		Tcl_DecrRefCount (ebuf);
-		return TCL_ERROR;
-	    }
-	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
-	    Tcl_AppendObjToObj (ebuf, cbuf);
-	}
-	Tcl_DecrRefCount (cbuf);
-	(void) Tcl_Close (ip, in);
 
-	buf = Tcl_GetStringFromObj (ebuf, &got);
+	int got;
+	char* buf = Tcl_GetStringFromObj (ebuf, &got);
 	marpatcl_rtc_enter (instance->state, buf, got, from, to);
 	Tcl_DecrRefCount (ebuf);
 
@@ -733,6 +713,25 @@ critcl::class def heredoc::parser::c {
 	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
 	marpatcl_rtc_enter (instance->state, string.s, string.len, from, to);
 	return marpatcl_rtc_sv_complete (ip, instance->result, instance->state);
+    }
+
+    method extend proc {Tcl_Interp* ip pstring string} int {
+	return marpatcl_rtc_enter_more (instance->state, string.s, string.len);
+    }
+
+    method extend-file proc {Tcl_Interp* ip object path} ok {
+	Tcl_Obj* ebuf;
+	if (marpatcl_rtc_fget (ip, instance->state, path, &ebuf) != TCL_OK) {
+	    return TCL_ERROR;
+	}
+
+	int got;
+	char* buf = Tcl_GetStringFromObj (ebuf, &got);
+	int offset = marpatcl_rtc_enter_more (instance->state, buf, got);
+	Tcl_DecrRefCount (ebuf);
+
+	Tcl_SetObjResult (ip, Tcl_NewIntObj (offset));
+	return TCL_OK;
     }
 
     support {

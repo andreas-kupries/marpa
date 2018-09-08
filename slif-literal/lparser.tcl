@@ -7,7 +7,7 @@
 # (c) 2018 Grammar marpa::slif::literal::parser 0 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "marpa::slif::literal::parser".
-##	Generated On Thu Sep 06 20:46:28 PDT 2018
+##	Generated On Fri Sep 07 20:57:47 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via remeta
 ##

@@ -30,8 +30,9 @@ kt require support debug::caller
 kt require support oo::util
 kt require support TclOO
 kt require support fileutil ;# cat
-kt require support marpa::util
-kt require support marpa::multi-stop
+
+kt semi-local* support marpa::util
+kt semi-local* support marpa::multi-stop
 
 # Parser packages - See (xx)
 
@@ -51,9 +52,9 @@ proc cleanup  {} { PARSE destroy }
 
 # # ## ### ##### ######## ############# #####################
 
-kt source support/ast.tcl
-kt source support/dirs.tcl
-kt source support/textutils.tcl
+kt source ../../../tests/support/ast.tcl
+kt source ../../../tests/support/dirs.tcl
+kt source ../../../tests/support/textutils.tcl
 
 # # ## ### ##### ######## ############# #####################
 ## (xx)
