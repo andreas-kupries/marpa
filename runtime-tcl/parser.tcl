@@ -76,7 +76,7 @@ oo::class create marpa::parser {
     # # -- --- ----- -------- -------------
     ## Lifecycle
 
-    constructor {semstore semantics asthandler} {
+    constructor {engine semstore semantics asthandler} {
 	# Debugging and tag specific initializations
 	debug.marpa/parser        {[marpa::D { marpa::import $semstore Store }]}
 	debug.marpa/parser/stream {[marpa::D { catch { marpa::import $semstore Store } }]}
@@ -90,7 +90,7 @@ oo::class create marpa::parser {
 	    oo::objdefine [self] mixin marpa::engine::debug
 	}]}
 
-	next $asthandler
+	next $engine $asthandler
 
 	marpa::import $semantics Semantics
 	# Lexer will attach during setup.

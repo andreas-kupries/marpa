@@ -151,7 +151,7 @@ marpatcl_rtc_lexer_init (marpatcl_rtc_p p)
     // XXX - could shrink to count only lexemes and discards
     // XXX - would have to transform on enter/retrieve (offset: 256+A:L+A:D)
     marpatcl_rtc_symset_init (DISCARDS, SPEC->l_symbols);
-    marpatcl_rtc_symset_init (EVENTS,   SPEC->l0->events ? SPEC->l0->events->size : 0);
+    marpatcl_rtc_symset_init (EVENTS,   SPEC->l0->event ? SPEC->l0->event->size : 0);
 
     if (!SPEC->g1) {
 	// Lexing only mode. Initialize ACCEPT to accept everything, always.
@@ -527,7 +527,7 @@ lex_complete (marpatcl_rtc_p p)
 	    discarded ++;
 	    // Collect the discarded symbols if we have parse events to take into account.
 	    // Note that we look at the ACS symbol here, not the terminal, which is bogus.
-	    if (!SPEC->l0->events) continue;
+	    if (!SPEC->l0->event) continue;
 	    marpatcl_rtc_symset_add (DISCARDS, token);
 	    continue;
 	}
@@ -675,10 +675,10 @@ static int
 lex_events (marpatcl_rtc_p p, marpatcl_rtc_eventtype type, marpatcl_rtc_symset* symbols)
 {
     TRACE_FUNC ("(marpatcl_rtc_p) %p, event %d, (symset*) %p", p, type, symbols);
-    if (!SPEC->l0->events) {
+    if (!SPEC->l0->trigger) {
 	TRACE_RETURN ("#events = %d", 0);
     }
-    marpatcl_rtc_gather_events (p, SPEC->l0->events, type, symbols, /* --> */ EVENTS);
+    marpatcl_rtc_gather_events (SPEC->l0, type, symbols, /* --> */ EVENTS);
     TRACE_RETURN ("#events = %d", marpatcl_rtc_symset_size(EVENTS));
 }
 

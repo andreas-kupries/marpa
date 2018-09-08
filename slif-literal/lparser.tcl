@@ -7,7 +7,7 @@
 # (c) 2018 Grammar marpa::slif::literal::parser 0 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "marpa::slif::literal::parser".
-##	Generated On Tue Jul 31 20:57:49 PDT 2018
+##	Generated On Wed Sep 05 23:16:38 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via remeta
 ##
@@ -934,6 +934,40 @@ critcl::ccode {
 	/* 759 */ "z\0"
 	/* 760 */ "|\0"
 	/* 761 */ "~\0"
+    };
+
+    /*
+    ** Map lexeme strings to parser symbol id (`match alternate` support).
+    */
+
+    static marpatcl_rtc_sym_lmap marpa_slif_literal_parser_lmap [27] = {
+	{ 644, 0  }, // cc close
+	{ 647, 1  }, // cc neg open
+	{ 648, 2  }, // cc pos open
+	{ 654, 3  }, // dash
+	{ 657, 4  }, // escape
+	{ 666, 5  }, // hex1
+	{ 667, 6  }, // hex2
+	{ 668, 7  }, // hex3
+	{ 669, 8  }, // hex4
+	{ 670, 9  }, // hex5
+	{ 671, 10 }, // hex6
+	{ 672, 11 }, // hex8
+	{ 715, 12 }, // nocase tag
+	{ 716, 13 }, // not special cc char
+	{ 717, 14 }, // not special string char
+	{ 720, 15 }, // oct1
+	{ 721, 16 }, // oct2
+	{ 722, 17 }, // oct3
+	{ 729, 18 }, // posix char class name
+	{ 730, 19 }, // posix close
+	{ 731, 20 }, // posix open
+	{ 739, 21 }, // specials
+	{ 740, 22 }, // string close
+	{ 743, 23 }, // string open
+	{ 746, 24 }, // U
+	{ 747, 25 }, // u
+	{ 754, 26 }, // X
     };
 
     /*
@@ -2652,10 +2686,12 @@ critcl::ccode {
     static marpatcl_rtc_rules marpa_slif_literal_parser_l0 = { /* 48 */
 	/* .sname   */  &marpa_slif_literal_parser_pool,
 	/* .symbols */  { 772, marpa_slif_literal_parser_l0_sym_name },
+	/* .lmap    */  { 27, marpa_slif_literal_parser_lmap },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
 	/* .rcode   */  marpa_slif_literal_parser_l0_rule_definitions,
-	/* .events  */  0
+	/* .events  */  0,
+	/* .trigger */  0
     };
 
     static marpatcl_rtc_sym marpa_slif_literal_parser_l0semantics [3] = { /* 6 bytes */
@@ -2738,10 +2774,12 @@ critcl::ccode {
     static marpatcl_rtc_rules marpa_slif_literal_parser_g1 = { /* 48 */
 	/* .sname   */  &marpa_slif_literal_parser_pool,
 	/* .symbols */  { 47, marpa_slif_literal_parser_g1_sym_name },
+	/* .lmap    */  { 0, 0 },
 	/* .rules   */  { 40, marpa_slif_literal_parser_g1_rule_name },
 	/* .lhs     */  { 40, marpa_slif_literal_parser_g1_rule_lhs },
 	/* .rcode   */  marpa_slif_literal_parser_g1_rule_definitions,
-	/* .events  */  0
+	/* .events  */  0,
+	/* .trigger */  0
     };
 
     static marpatcl_rtc_sym marpa_slif_literal_parser_g1semantics [4] = { /* 8 bytes */
@@ -2882,38 +2920,18 @@ critcl::class def marpa::slif::literal::parser {
         Tcl_IncrRefCount (instance->name);
     }
 
-    method process-file proc {Tcl_Interp* ip Tcl_Obj* path object args} ok {
+    method process-file proc {Tcl_Interp* ip object path object args} ok {
 	int from, to;
 	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
 
-	int res, got;
-	char* buf;
-	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
-
-	if (!in) {
+	Tcl_Obj* ebuf;
+	if (marpatcl_rtc_fget (ip, instance->state, path, &ebuf) != TCL_OK) {
 	    return TCL_ERROR;
 	}
-	Tcl_SetChannelBufferSize (in, 4096);
-	Tcl_SetChannelOption (ip, in, "-translation", "binary");
-	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
-	// TODO: abort on failed set-channel-option
 
-	Tcl_Obj* cbuf = Tcl_NewObj();
-	Tcl_Obj* ebuf = Tcl_NewObj();
-	while (!Tcl_Eof(in)) {
-	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
-	    if (got < 0) {
-		Tcl_DecrRefCount (cbuf);
-		Tcl_DecrRefCount (ebuf);
-		return TCL_ERROR;
-	    }
-	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
-	    Tcl_AppendObjToObj (ebuf, cbuf);
-	}
-	Tcl_DecrRefCount (cbuf);
-	(void) Tcl_Close (ip, in);
 
-	buf = Tcl_GetStringFromObj (ebuf, &got);
+	int got;
+	char* buf = Tcl_GetStringFromObj (ebuf, &got);
 	marpatcl_rtc_enter (instance->state, buf, got, from, to);
 	Tcl_DecrRefCount (ebuf);
 
@@ -2925,6 +2943,25 @@ critcl::class def marpa::slif::literal::parser {
 	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
 	marpatcl_rtc_enter (instance->state, string.s, string.len, from, to);
 	return marpatcl_rtc_sv_complete (ip, instance->result, instance->state);
+    }
+
+    method extend proc {Tcl_Interp* ip pstring string} int {
+	return marpatcl_rtc_enter_more (instance->state, string.s, string.len);
+    }
+
+    method extend-file proc {Tcl_Interp* ip object path} ok {
+	Tcl_Obj* ebuf;
+	if (marpatcl_rtc_fget (ip, instance->state, path, &ebuf) != TCL_OK) {
+	    return TCL_ERROR;
+	}
+
+	int got;
+	char* buf = Tcl_GetStringFromObj (ebuf, &got);
+	int offset = marpatcl_rtc_enter_more (instance->state, buf, got);
+	Tcl_DecrRefCount (ebuf);
+
+	Tcl_SetObjResult (ip, Tcl_NewIntObj (offset));
+	return TCL_OK;
     }
 
     support {

@@ -25,57 +25,20 @@ oo::class create marpa::slif::container::grammar::g1 {
 
     marpa::E marpa/slif/container/grammar/g1 SLIF CONTAINER GRAMMAR G1
 
-    variable myevent
-
     # - -- --- ----- -------- -------------
     # Lifecycle
 
     constructor {container} {
 	debug.marpa/slif/container/grammar/g1 {}
 	next $container {
+	    completed predicted nulled
+	} {} {
 	    terminal {::marpa::slif::container::atom terminal}
 	}   ::marpa::slif::container::priority::g1 \
 	    ::marpa::slif::container::quantified::g1
 
-	set myevent {}
-
 	debug.marpa/slif/container/grammar/g1 {/ok}
 	return
-    }
-
-    # - -- --- ----- -------- -------------
-    # Public API - Inherited, override
-    # - TODO: Move to superclass, shared g1/g1 - different events however
-
-    method serialize {} {
-	debug.marpa/slif/container/grammar/g1 {}
-	set serial [next]
-
-	if {[dict size $myevent]} {
-	    dict set serial events $myevent
-	}
-
-	debug.marpa/slif/container/grammar/g1 {==> $serial}
-	return $serial
-    }
-
-    method deserialize {blob} {
-	debug.marpa/slif/container/grammar/g1 {}
-
-	if {[dict exists $blob events]} {
-	    set myevent [dict get $blob events]
-	    dict unset blob events
-	}
-
-	next $blob
-	return
-    }
-
-    method events {} {
-	debug.marpa/slif/container/grammar/g1 {}
-	if {![dict size $myevent]} { return {} }
-	return [lrange $myevent 0 end]
-	# See the note in alter.tcl for explanation of the lrange.
     }
 
     # - -- --- ----- -------- -------------
@@ -96,11 +59,7 @@ oo::class create marpa::slif::container::grammar::g1 {
 
     method event {symbol spec} {
 	debug.marpa/slif/container/grammar/g1 {}
-
-	lassign [my ValidateEvent $spec {
-	    completed predicted nulled
-	}] name state when
-	dict set myevent $symbol $when $name $state
+	my Trigger: $symbol $spec
 	return
     }
 

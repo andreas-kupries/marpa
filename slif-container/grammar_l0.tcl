@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2017 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -26,7 +26,6 @@ oo::class create marpa::slif::container::grammar::l0 {
     marpa::E marpa/slif/container/grammar/l0 SLIF CONTAINER GRAMMAR L0
 
     variable mylatm  ; # symbol -> bool
-    variable myevent ; # symbol -> (when -> (name -> state))
     variable myprio  ; # symbol -> int
 
     # - -- --- ----- -------- -------------
@@ -35,6 +34,10 @@ oo::class create marpa::slif::container::grammar::l0 {
     constructor {container} {
 	debug.marpa/slif/container/grammar/l0 {}
 	next $container {
+	    after before discard
+	} {
+	    latm priority
+	} {
 	    atom       ::marpa::slif::container::atom
 
 	    %named-class  {::marpa::slif::container::atom %named-class}
@@ -67,7 +70,6 @@ oo::class create marpa::slif::container::grammar::l0 {
 	# normalization code.
 
 	set mylatm  {}
-	set myevent {}
 	set myprio  {}
 
 	debug.marpa/slif/container/grammar/l0 {/ok}
@@ -75,55 +77,12 @@ oo::class create marpa::slif::container::grammar::l0 {
     }
 
     # - -- --- ----- -------- -------------
-    # Public API - Inherited, override
-
-    method serialize {} {
-	debug.marpa/slif/container/grammar/l0 {}
-	set serial [next]
-
-	foreach {var label} {
-	    myevent events
-	    mylatm  latm
-	    myprio  priority
-	} {
-	    # Inlined dynamic forms of the latm, event, priority methods below.
-	    if {![dict size [set $var]]} continue
-	    dict set serial $label [lrange [set $var] 0 end]
-	    # See the note in alter.tcl for explanation of the lrange.
-	}
-
-	debug.marpa/slif/container/grammar/l0 {==> $serial}
-	return $serial
-    }
-
-    method deserialize {blob} {
-	debug.marpa/slif/container/grammar/l0 {}
-
-	foreach {var label} {
-	    myevent events
-	    mylatm  latm
-	    myprio  priority
-	} {
-	    if {![dict exists $blob $label]} continue
-	    set $var [dict get $blob $label]
-	    dict unset blob $label
-	}
-
-	next $blob
-	return
-    }
+    # Public API
 
     method latm {} {
 	debug.marpa/slif/container/grammar/l0 {}
 	if {![dict size $mylatm]} { return {} }
 	return [lrange $mylatm 0 end]
-	# See the note in alter.tcl for explanation of the lrange.
-    }
-
-    method events {} {
-	debug.marpa/slif/container/grammar/l0 {}
-	if {![dict size $myevent]} { return {} }
-	return [lrange $myevent 0 end]
 	# See the note in alter.tcl for explanation of the lrange.
     }
 
@@ -167,10 +126,7 @@ oo::class create marpa::slif::container::grammar::l0 {
 		    dict set mylatm $symbol $v
 		}
 		event {
-		    lassign [my ValidateEvent $v {
-			after before discard
-		    }] name state when
-		    dict set myevent $symbol $when $name $state
+		    my Trigger: $symbol $v
 		}
 		priority {
 		    if {![string is int -strict $v]} {
@@ -191,6 +147,19 @@ oo::class create marpa::slif::container::grammar::l0 {
 
     forward discard    my Class: discard
     forward lexeme     my Class: lexeme
+
+    # # ## ### ##### ######## #############
+    ## Accessors for (de)serialize - SGH API
+    ##
+    ## S|G|H - Set|Get|Have
+
+    method S_latm     {blob} { set mylatm $blob ; return }
+    method G_latm     {}     { return $mylatm }
+    method H_latm     {}     { return [dict size $mylatm] }
+
+    method S_priority {blob} { set myprio $blob ; return }
+    method G_priority {}     { return $myprio }
+    method H_priority {}     { return [dict size $myprio] }
 
     # # ## ### ##### ######## #############
 }

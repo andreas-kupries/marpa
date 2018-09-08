@@ -1,0 +1,166 @@
+# -*- tcl -*-
+##
+# This template is BSD-licensed.
+# (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                          http://core.tcl.tk/akupries/
+##
+# (c) <Year> Grammar <Name> By <Writer>
+##
+##	`marpa::runtime::tcl`-derived Parser for grammar "<Name>".
+##	Generated On <GenerationTime>
+##		  By <Operator>
+##		 Via <Tool>
+
+package provide <Name> <Version>
+
+# # ## ### ##### ######## #############
+## Requisites
+
+package require Tcl 8.5             ;# -- Foundation
+package require TclOO               ;# -- Implies Tcl 8.5 requirement.
+package require debug               ;# Tracing
+package require debug::caller       ;# Tracing
+package require marpa::runtime::tcl ;# Engine
+
+# # ## ### ##### ######## #############
+
+debug define <Name>
+debug prefix <Name> {[debug caller] | }
+
+# # ## ### ##### ######## #############
+
+oo::class create <Name> {
+    superclass marpa::engine::tcl::parse
+
+    # Lifecycle: No constructor needed. No state.
+    # All data is embedded as literals into methods
+
+    # Declare the various things needed by the engine for its
+    # operation.  To get the information the base class will call on
+    # these methods in the proper order. The methods simply return the
+    # requested information. Their base-class implementations simply
+    # throw errors, thus preventing the construction of an incomplete
+    # parser.
+
+    method Characters {} {
+	debug.<Name>
+	# Literals: The directly referenced (allowed) characters.
+	return {
+	    @CHR:<a>   a
+	    @CHR:<c>   c
+	    @CHR:<d>   d
+	}
+    }
+
+    method Classes {} {
+	debug.<Name>
+	# Literals: The character classes in use
+	return {}
+    }
+
+    method Lexemes {} {
+	debug.<Name>
+	# Lexer API: Lexeme symbols (Cannot be terminal). G1 terminals
+	return {
+	    B   1
+	    D   1
+	}
+    }
+
+    method Discards {} {
+	debug.<Name>
+	# Discarded symbols (whitespace)
+	return {
+	    C
+	}
+    }
+
+    method Events {} {
+	debug.<Name>
+	# Map declared events to their initial activation status
+	# :: dict (event name -> active)
+	return {
+	    lex     on
+	    snafu   on
+	}
+    }
+
+    method L0.Symbols {} {
+	# Non-lexeme, non-literal symbols
+	debug.<Name>
+	return {
+	    C
+	}
+    }
+
+    method L0.Rules {} {
+	# Rules for all symbols but the literals
+	debug.<Name>
+	return {
+	    {B := @CHR:<a>}
+	    {C := @CHR:<c>}
+	    {D := @CHR:<d>}
+	}
+    }
+
+    method L0.Semantics {} {
+	debug.<Name>
+	# NOTE. This is currently limited to array semantics.
+	# NOTE. No support for command semantics in the lexer yet.
+	return {values}
+    }
+
+    method L0.Trigger {} {
+	debug.<Name>
+	# L0 trigger definitions (pre-, post-lexeme, discard)
+	# :: dict (symbol -> (type -> list (event name)))
+	# Due to the nature of SLIF syntax we can only associate one
+	# event per type with each symbol, for a maximum of three.
+	return {
+	    B {
+	        before   lex
+	    }
+	    C {
+	        discard   snafu
+	    }
+	    D {
+	        after   lex
+	    }
+	}
+    }
+
+    method G1.Symbols {} {
+	# Structural symbols
+	debug.<Name>
+	return {
+	    A
+	}
+    }
+
+    method G1.Rules {} {
+	# Structural rules, including actions, masks, and names
+	debug.<Name>
+	return {
+	    {__ :A values}
+	    {A := B}
+	    {A := D}
+	}
+    }
+
+    method G1.Trigger {} {
+	debug.<Name>
+	# G1 parse event definitions (predicted, nulled, completed)
+	# :: dict (symbol -> (type -> list (event name)))
+	# Each symbol can have more than one event per type.
+	return {}
+    }
+
+    method Start {} {
+	debug.<Name>
+	# G1 start symbol
+	return {A}
+    }
+}
+
+# # ## ### ##### ######## #############
+return
