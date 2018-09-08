@@ -1,17 +1,17 @@
 # -*- tcl -*-
 ##
 # This template is BSD-licensed.
-# (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                                     http://core.tcl.tk/akupries/
+# (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                          http://core.tcl.tk/akupries/
 ##
-# (c) 2018-present Grammar json::parser::tcl By Andreas Kupries
+# (c) 2018 Grammar json::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "json::parser::tcl".
-##	Generated On Tue Mar 13 08:05:02 PDT 2018
+##	Generated On Fri Sep 07 20:57:56 PDT 2018
 ##		  By aku@hephaistos
-##		 Via marpa-gen
+##		 Via remeta
 
-package provide json::parser::tcl 1
+package provide json::parser::tcl 0
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -194,6 +194,15 @@ oo::class create json::parser::tcl {
 	return {start length value}
     }
 
+    method L0.Events {} {
+	debug.json/parser/tcl
+	# L0 parse event definitions (pre-, post-lexeme, discard)
+	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Due to the nature of SLIF syntax we can only associate one
+	# event per type with each symbol, for a maximum of three.
+	return {}
+    }
+
     method G1.Symbols {} {
 	# Structural symbols
 	debug.json/parser/tcl
@@ -237,6 +246,14 @@ oo::class create json::parser::tcl {
 	    {value := string}
 	    {value := true}
 	}
+    }
+
+    method G1.Events {} {
+	debug.json/parser/tcl
+	# G1 parse event definitions (predicted, nulled, completed)
+	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Each symbol can have more than one event per type.
+	return {}
     }
 
     method Start {} {

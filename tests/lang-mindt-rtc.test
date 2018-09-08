@@ -1,0 +1,8 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0
+## (c) 2018-present Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+
+kt in ../languages/min-dt/tests { kt source mindt-rtc.test }
+
+# # ## ### ##### ######## ############# #####################\
+return
