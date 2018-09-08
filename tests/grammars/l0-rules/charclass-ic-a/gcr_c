@@ -23,15 +23,15 @@ grammar {
                 {priority @BRAN:<AZ> 0}
                 {priority @BRAN:<az> 0}
                 {priority {
-                        {@BYTE:<\u00c4>}
-                        {@BRAN:<\u00b0\u00b1>}} 0}
+                        {@BYTE:<\304>}
+                        {@BRAN:<\260\261>}} 0}
                 {priority {
-                        {@BYTE:<\u00c5>}
-                        {@BYTE:<\u00bf>}} 0}
+                        {@BYTE:<\305>}
+                        {@BYTE:<\277>}} 0}
                 {priority {
-                        {@BYTE:<\u00e2>}
+                        {@BYTE:<\342>}
                         {@BYTE:<\204>}
-                        {@BYTE:<\u00aa>}} 0}
+                        {@BYTE:<\252>}} 0}
             }
         }
         latm {
@@ -41,15 +41,15 @@ grammar {
             A { {priority {{@CLS:<A-Za-z\u0130-\u0131\u017f\u212a>}} 0} }
         }
         literal {
-            {@BRAN:<\u00b0\u00b1>} { {brange 176 177} }
+            {@BRAN:<\260\261>} { {brange 176 177} }
             @BRAN:<AZ> { {brange 65 90} }
             @BRAN:<az> { {brange 97 122} }
             {@BYTE:<\204>} { {byte 132} }
-            {@BYTE:<\u00aa>} { {byte 170} }
-            {@BYTE:<\u00bf>} { {byte 191} }
-            {@BYTE:<\u00c4>} { {byte 196} }
-            {@BYTE:<\u00c5>} { {byte 197} }
-            {@BYTE:<\u00e2>} { {byte 226} }
+            {@BYTE:<\252>} { {byte 170} }
+            {@BYTE:<\277>} { {byte 191} }
+            {@BYTE:<\304>} { {byte 196} }
+            {@BYTE:<\305>} { {byte 197} }
+            {@BYTE:<\342>} { {byte 226} }
         }
     }
 }

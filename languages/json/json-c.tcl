@@ -4,12 +4,12 @@
 # (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                                             http://core.tcl.tk/akupries/
 ##
-# (c) 2018 Grammar json::parser::c 1 By Andreas Kupries
+# (c) 2018 Grammar json::parser::c 0 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "json::parser::c".
-##	Generated On Wed Sep 05 23:19:38 PDT 2018
+##	Generated On Sat Sep 08 15:04:30 PDT 2018
 ##		  By aku@hephaistos
-##		 Via marpa-gen
+##		 Via remeta
 ##
 #* Space taken: 4903 bytes
 ##
@@ -26,7 +26,7 @@
 #* - #Rule Insn: 18 (+2: setup, start-sym)
 #* - #Rules:     18 (match insn)
 
-package provide json::parser::c 1
+package provide json::parser::c 0
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -493,7 +493,7 @@ critcl::ccode {
 	/* --- (36) --- --- --- Internal
 	 */
 	 33,  39,  35,  43,  47,  32,  55, 198, 272, 295, 183, 188, 189, 190, 192, 195,
-	199, 204, 254, 281, 282, 304,  29,  30,  34,  36,  37,  44,  38,  40,  41,  42,
+	199, 204, 254, 281, 282, 304,  29,  30,  34,  36,  37,  38,  40,  41,  42,  44,
 	 45,  46,  31,  28
     };
 
@@ -518,12 +518,12 @@ critcl::ccode {
 	MARPATCL_RCMD_PRIO  (1), 282, 306,                          /* <@^CLS:<\0-\37\42\134>> ::= <@BRAN:<\40!>> */
 	MARPATCL_RCMD_PRIS  (1)     , 304,                          /*                         |   <@BRAN:<#\133>> */
 	MARPATCL_RCMD_PRIS  (1)     , 307,                          /*                         |   <@BRAN:<\135\177>> */
-	MARPATCL_RCMD_PRIS  (2)     , 312, 308,                     /*                         |   <@BRAN:<\u00c2\u00df>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (3)     , 224, 283, 308,                /*                         |   <@BYTE:<\u00e0>> <@BRAN:<\u00a0\u00bf>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (3)     , 313, 308, 308,                /*                         |   <@BRAN:<\u00e1\u00ef>> <@BRAN:<\200\u00bf>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIS  (6)     , 237, 310, 308, 237, 311, 308, /*                         |   <@BYTE:<\u00ed>> <@BRAN:<\u00a0\u00af>> <@BRAN:<\200\u00bf>> <@BYTE:<\u00ed>> <@BRAN:<\u00b0\u00bf>> <@BRAN:<\200\u00bf>> */
-	MARPATCL_RCMD_PRIO  (1), 283, 310,                          /* <@BRAN:<\u00a0\u00bf>>  ::= <@BRAN:<\u00a0\u00af>> */
-	MARPATCL_RCMD_PRIS  (1)     , 311,                          /*                         |   <@BRAN:<\u00b0\u00bf>> */
+	MARPATCL_RCMD_PRIS  (2)     , 311, 308,                     /*                         |   <@BRAN:<\302\337>> <@BRAN:<\200\277>> */
+	MARPATCL_RCMD_PRIS  (3)     , 224, 283, 308,                /*                         |   <@BYTE:<\340>> <@BRAN:<\240\277>> <@BRAN:<\200\277>> */
+	MARPATCL_RCMD_PRIS  (3)     , 312, 308, 308,                /*                         |   <@BRAN:<\341\357>> <@BRAN:<\200\277>> <@BRAN:<\200\277>> */
+	MARPATCL_RCMD_PRIS  (6)     , 237, 309, 308, 237, 310, 308, /*                         |   <@BYTE:<\355>> <@BRAN:<\240\257>> <@BRAN:<\200\277>> <@BYTE:<\355>> <@BRAN:<\260\277>> <@BRAN:<\200\277>> */
+	MARPATCL_RCMD_PRIO  (1), 283, 309,                          /* <@BRAN:<\240\277>>      ::= <@BRAN:<\240\257>> */
+	MARPATCL_RCMD_PRIS  (1)     , 310,                          /*                         |   <@BRAN:<\260\277>> */
 	MARPATCL_RCMD_PRIO  (1), 284, 34,                           /* <@CLS:<\42/\134bfnrt>>  ::= <@BYTE:<\42>> */
 	MARPATCL_RCMD_PRIS  (1)     , 47,                           /*                         |   <@BYTE:</>> */
 	MARPATCL_RCMD_PRIS  (1)     , 92,                           /*                         |   <@BYTE:<\134>> */
@@ -532,7 +532,7 @@ critcl::ccode {
 	MARPATCL_RCMD_PRIS  (1)     , 110,                          /*                         |   <@BYTE:<n>> */
 	MARPATCL_RCMD_PRIS  (1)     , 114,                          /*                         |   <@BYTE:<r>> */
 	MARPATCL_RCMD_PRIS  (1)     , 116,                          /*                         |   <@BYTE:<t>> */
-	MARPATCL_RCMD_PRIO  (1), 285, 309,                          /* <@CLS:<\t-\n\r\40>>     ::= <@BRAN:<\t\n>> */
+	MARPATCL_RCMD_PRIO  (1), 285, 313,                          /* <@CLS:<\t-\n\r\40>>     ::= <@BRAN:<\t\n>> */
 	MARPATCL_RCMD_PRIS  (1)     , 13,                           /*                         |   <@BYTE:<\r>> */
 	MARPATCL_RCMD_PRIS  (1)     , 32,                           /*                         |   <@BYTE:<\40>> */
 	MARPATCL_RCMD_PRIO  (1), 286, 69,                           /* <@CLS:<Ee>>             ::= <@BYTE:<E>> */
@@ -566,12 +566,12 @@ critcl::ccode {
 	MARPATCL_RCMD_BRAN  (305), MARPATCL_RCMD_BOXR ( 48, 57),    /* <@BRAN:<09>>            brange (48 - 57) */
 	MARPATCL_RCMD_BRAN  (306), MARPATCL_RCMD_BOXR ( 32, 33),    /* <@BRAN:<\40!>>          brange (32 - 33) */
 	MARPATCL_RCMD_BRAN  (307), MARPATCL_RCMD_BOXR ( 93,127),    /* <@BRAN:<\135\177>>      brange (93 - 127) */
-	MARPATCL_RCMD_BRAN  (308), MARPATCL_RCMD_BOXR (128,191),    /* <@BRAN:<\200\u00bf>>    brange (128 - 191) */
-	MARPATCL_RCMD_BRAN  (309), MARPATCL_RCMD_BOXR (  9, 10),    /* <@BRAN:<\t\n>>          brange (9 - 10) */
-	MARPATCL_RCMD_BRAN  (310), MARPATCL_RCMD_BOXR (160,175),    /* <@BRAN:<\u00a0\u00af>>  brange (160 - 175) */
-	MARPATCL_RCMD_BRAN  (311), MARPATCL_RCMD_BOXR (176,191),    /* <@BRAN:<\u00b0\u00bf>>  brange (176 - 191) */
-	MARPATCL_RCMD_BRAN  (312), MARPATCL_RCMD_BOXR (194,223),    /* <@BRAN:<\u00c2\u00df>>  brange (194 - 223) */
-	MARPATCL_RCMD_BRAN  (313), MARPATCL_RCMD_BOXR (225,239),    /* <@BRAN:<\u00e1\u00ef>>  brange (225 - 239) */
+	MARPATCL_RCMD_BRAN  (308), MARPATCL_RCMD_BOXR (128,191),    /* <@BRAN:<\200\277>>      brange (128 - 191) */
+	MARPATCL_RCMD_BRAN  (309), MARPATCL_RCMD_BOXR (160,175),    /* <@BRAN:<\240\257>>      brange (160 - 175) */
+	MARPATCL_RCMD_BRAN  (310), MARPATCL_RCMD_BOXR (176,191),    /* <@BRAN:<\260\277>>      brange (176 - 191) */
+	MARPATCL_RCMD_BRAN  (311), MARPATCL_RCMD_BOXR (194,223),    /* <@BRAN:<\302\337>>      brange (194 - 223) */
+	MARPATCL_RCMD_BRAN  (312), MARPATCL_RCMD_BOXR (225,239),    /* <@BRAN:<\341\357>>      brange (225 - 239) */
+	MARPATCL_RCMD_BRAN  (313), MARPATCL_RCMD_BOXR (  9, 10),    /* <@BRAN:<\t\n>>          brange (9 - 10) */
 	MARPATCL_RCMD_BRAN  (314), MARPATCL_RCMD_BOXR ( 65, 70),    /* <@BRAN:<AF>>            brange (65 - 70) */
 	MARPATCL_RCMD_BRAN  (315), MARPATCL_RCMD_BOXR ( 97,102),    /* <@BRAN:<af>>            brange (97 - 102) */
 	MARPATCL_RCMD_BRAN  (316), MARPATCL_RCMD_BOXR ( 49, 57),    /* <@RAN:<19>>             brange (49 - 57) */

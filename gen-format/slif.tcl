@@ -663,14 +663,24 @@ proc ::marpa::gen::format::slif::DumpAttr {prefix attr} {
 
 proc ::marpa::gen::format::slif::C {uni} {
     # See also ::marpa::slif::literal::util::symchar
+    #          ::marpa::gen::runtime::tcl::Char
+
+    # dash, closing bracket
     switch -exact -- $uni {
 	45 { return "\\55" }
 	93 { return "\\135" }
     }
-    if {$uni > [marpa unicode bmp]} {
-	# Beyond the BMP, \u notation
-	return \\u[format %x $uni]
-    }
+
+    # Escaping non-ASCII BMP characters, and SMP.
+    # First: [:control:] has different specs between
+    # Tcl versions (Ex: \u08e2. 8.5.18 no, 8.5.19 yes)
+    # Plus order of operations in `char quote tcl`.
+
+    if {$uni > 65535} { return \\U[format %08x $uni] } ;# SMP
+    if {$uni >   255} { return \\u[format %04x $uni] } ;# high BMP
+    if {$uni >   127} { return \\[format %o $uni] }    ;#
+
+    # TODO XXX: Divorce from `char quote tcl` ? Do our own ?
     char quote tcl [format %c $uni]
 }
 

@@ -4,12 +4,12 @@
 # (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                                             http://core.tcl.tk/akupries/
 ##
-# (c) 2018 Grammar heredoc::parser::c 1 By Andreas Kupries
+# (c) 2018 Grammar heredoc::parser::c 0 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "heredoc::parser::c".
-##	Generated On Wed Sep 05 23:19:28 PDT 2018
+##	Generated On Sat Sep 08 15:04:28 PDT 2018
 ##		  By aku@hephaistos
-##		 Via marpa-gen
+##		 Via remeta
 ##
 #* Space taken: 5704 bytes
 ##
@@ -26,7 +26,7 @@
 #* - #Rule Insn: 7 (+2: setup, start-sym)
 #* - #Rules:     7 (match insn)
 
-package provide heredoc::parser::c 1
+package provide heredoc::parser::c 0
 
 # # ## ### ##### ######## #############
 ## Requisites
