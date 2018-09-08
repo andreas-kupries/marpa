@@ -1,0 +1,75 @@
+manpage
+  m_manpage_begin
+    simple
+      @15 4 'TEST'
+    simple
+      @20 1 'z'
+    simple
+      @22 11 '3.14.15.926'
+  @{} {} ''
+  body
+    paragraphs
+      paragraph
+        item_list
+          item_list_elem
+            paragraphs
+              paragraph
+                simplex
+                  @155 3 {' 1\n'}
+          item_list_elem
+            paragraphs
+              paragraph
+                simplex
+                  @164 3 {' 2\n'}
+                enum_list
+                  enum_list_elem
+                    paragraphs
+                      paragraph
+                        simplex
+                          @197 3 {' a\n'}
+                  enum_list_elem
+                    paragraphs
+                      paragraph
+                        simplex
+                          @206 3 {' b\n'}
+                        definition_list
+                          def_list_elem
+                            m_def
+                              simple
+                                @239 3 'foo'
+                            paragraphs
+                              paragraph
+                                simplex
+                                  @243 7 {' snafu\n'}
+                          def_list_elem
+                            m_def
+                              simple
+                                @255 3 'bar'
+                            paragraphs
+                              paragraph
+                                simplex
+                                  @259 6 {' barf\n'}
+                          def_list_elem
+                            m_def
+                              simple
+                                @270 3 'roo'
+                            paragraphs
+                              paragraph
+                                simplex
+                                  @274 6 {' gork\n'}
+                        simplex
+                          @290 4 {'\nbb\n'}
+                  enum_list_elem
+                    paragraphs
+                      paragraph
+                        simplex
+                          @300 3 {' a\n'}
+                simplex
+                  @313 4 {'\n22\n'}
+          item_list_elem
+            paragraphs
+              paragraph
+                simplex
+                  @323 3 {' 3\n'}
+        space
+          @336 1 {'\n'}

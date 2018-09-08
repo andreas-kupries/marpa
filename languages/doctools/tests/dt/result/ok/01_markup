@@ -1,0 +1,165 @@
+manpage
+  m_manpage_begin
+    simple
+      @15 4 'TEST'
+    simple
+      @20 1 'z'
+    simple
+      @22 11 '3.14.15.926'
+  headers
+    m_copyright
+      simple
+        @46 9 'Copyright'
+  body
+    paragraphs
+      paragraph
+        simplex
+          @70 12 {'\nArgument\t::'}
+        m_arg
+          simple
+            @87 8 'Argument'
+        simplex
+          @96 12 {'::\nClass\t\t::'}
+        m_class
+          simple
+            @115 5 'Class'
+        simplex
+          @121 14 {'::\nCommand\t\t::'}
+        m_cmd
+          simple
+            @140 7 'Command'
+        simplex
+          @148 14 {'::\nComment\t\t::'}
+        simplex
+          @179 12 {'::\nConst\t\t::'}
+        m_const
+          simple
+            @198 8 'Constant'
+        simplex
+          @207 14 {'::\nEmphasis\t::'}
+        m_emph
+          simple
+            @227 8 'Emphasis'
+        simplex
+          @236 11 {'::\nFile\t\t::'}
+        m_file
+          simple
+            @253 9 'File/Path'
+        simplex
+          @263 14 {'::\nFunction\t::'}
+        m_fun
+          simple
+            @282 8 'Function'
+        simplex
+          @291 3 {'::\n'}
+      p_separator
+      paragraph
+        space
+          @300 1 {'\n'}
+        m_lb
+        simplex
+          @305 11 {'\nMethod\t\t::'}
+        m_method
+          simple
+            @324 6 'Method'
+        simplex
+          @331 15 {'::\nNamespace\t::'}
+        m_namespace
+          simple
+            @357 9 'Namespace'
+        simplex
+          @367 14 {'::\nOptional\t::'}
+        m_opt
+          simple
+            @386 8 'Optional'
+        simplex
+          @395 13 {'::\nOption\t\t::'}
+        m_option
+          simple
+            @416 6 'Option'
+        simplex
+          @423 14 {'::\nPackage\t\t::'}
+        m_package
+          simple
+            @446 7 'Package'
+        simplex
+          @454 3 {'::\n'}
+        m_rb
+        space
+          @461 1 {'\n'}
+      p_separator
+      paragraph
+        simplex
+          @468 15 {'\nSection ref\t::'}
+        m_sectref
+          braced
+            @492 11 {'\173A section\175'}
+        simplex
+          @504 19 {'::\nSect External\t::'}
+        m_sectref_ext
+          braced
+            @541 17 {'\173Outside section\175'}
+        simplex
+          @559 13 {'::\nStrong\t\t::'}
+        m_strong
+          simple
+            @580 6 'Strong'
+        simplex
+          @587 13 {'::\nSyscmd\t\t::'}
+        m_syscmd
+          simple
+            @608 13 'SystemCommand'
+        simplex
+          @622 11 {'::\nTerm\t\t::'}
+        m_term
+          simple
+            @639 4 'Term'
+        simplex
+          @644 11 {'::\nType\t\t::'}
+        m_type
+          simple
+            @661 4 'Type'
+        simplex
+          @666 10 {'::\nUri\t\t::'}
+        m_uri
+          simple
+            @681 3 'Uri'
+        simplex
+          @685 12 {'::\nUsage\t\t::'}
+        m_usage
+          tclwords
+            simple
+              @704 1 '1'
+            space
+              @705 1 {' '}
+            simple
+              @706 1 '2'
+            space
+              @707 1 {' '}
+            simple
+              @708 1 '3'
+            space
+              @709 1 {' '}
+            simple
+              @710 1 '4'
+            space
+              @711 1 {' '}
+            simple
+              @712 3 '...'
+        simplex
+          @716 14 {'::\nVariable\t::'}
+        m_var
+          simple
+            @735 8 'Variable'
+        simplex
+          @744 13 {'::\nWidget\t\t::'}
+        m_widget
+          simple
+            @765 6 'Widget'
+        simplex
+          @772 12 {'::\nImage\t\t::'}
+        m_image
+          simple
+            @791 5 'Image'
+        simplex
+          @797 3 {'::\n'}

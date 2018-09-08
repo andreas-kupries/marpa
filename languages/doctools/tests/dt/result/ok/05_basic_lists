@@ -1,0 +1,200 @@
+manpage
+  m_manpage_begin
+    simple
+      @40 5 'BASIC'
+    simple
+      @46 1 'a'
+    simple
+      @48 1 '5'
+  @{} {} ''
+  body
+    paragraphs
+      paragraph
+        simplex
+          @64 4 {'\nOK\n'}
+      p_separator
+      paragraph
+        space
+          @74 1 {'\n'}
+        argument_list
+          arg_list_elem
+            m_arg_def
+              simple
+                @107 7 'integer'
+              simple
+                @115 10 'argument-1'
+            paragraphs
+              paragraph
+                simplex
+                  @126 14 {'\nverification\n'}
+          arg_list_elem
+            m_arg_def
+              simple
+                @149 6 'string'
+              simple
+                @156 10 'argument-2'
+              simple
+                @167 3 'out'
+            paragraphs
+              paragraph
+                simplex
+                  @171 15 {' mogrification\n'}
+        space
+          @196 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @203 1 {'\n'}
+        command_list
+          cmd_list_elem
+            m_cmd_def
+              simple
+                @235 9 'command-a'
+            paragraphs
+              paragraph
+                simplex
+                  @245 13 {' explanation\n'}
+          cmd_list_elem
+            m_cmd_def
+              simple
+                @267 9 'command-b'
+            paragraphs
+              paragraph
+                simplex
+                  @277 13 {'\nelucidation\n'}
+        space
+          @300 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @307 1 {'\n'}
+        definition_list
+          def_list_elem
+            m_def
+              simple
+                @338 4 'term'
+            paragraphs
+              paragraph
+                simplex
+                  @343 12 {' definition\n'}
+          def_list_elem
+            m_call
+              tclwords
+                simple
+                  @361 9 'a-command'
+            paragraphs
+              paragraph
+                simplex
+                  @371 10 {'\nsemantic\n'}
+        space
+          @391 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @398 1 {'\n'}
+        enum_list
+          enum_list_elem
+            paragraphs
+              paragraph
+                simplex
+                  @429 3 {'\nA\n'}
+          enum_list_elem
+            paragraphs
+              paragraph
+                simplex
+                  @438 3 {' B\n'}
+              p_separator
+              paragraph
+                simplex
+                  @447 3 {'\nC\n'}
+              p_separator
+              paragraph
+                simplex
+                  @456 3 {'\nD\n'}
+        space
+          @469 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @476 1 {'\n'}
+        item_list
+          item_list_elem
+            paragraphs
+              paragraph
+                simplex
+                  @505 3 {'\n1\n'}
+          item_list_elem
+            paragraphs
+              paragraph
+                simplex
+                  @514 3 {' 2\n'}
+              p_separator
+              paragraph
+                simplex
+                  @523 4 {'\n2a\n'}
+              p_separator
+              paragraph
+                simplex
+                  @533 4 {'\n2b\n'}
+        space
+          @547 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @554 1 {'\n'}
+        option_list
+          opt_list_elem
+            m_opt_def
+              simple
+                @585 8 'option-1'
+            paragraphs
+              paragraph
+                simplex
+                  @594 9 {' meaning\n'}
+          opt_list_elem
+            m_opt_def
+              simple
+                @612 8 'option-2'
+              simple
+                @621 5 'value'
+            paragraphs
+              paragraph
+                simplex
+                  @627 13 {'\nelaboration\n'}
+        space
+          @650 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @657 1 {'\n'}
+        tkoption_list
+          tko_list_elem
+            m_tkoption_def
+              simple
+                @695 10 'background'
+              simple
+                @706 10 'Background'
+              simple
+                @717 5 'Color'
+            paragraphs
+              paragraph
+                simplex
+                  @723 7 {' candy\n'}
+          tko_list_elem
+            m_tkoption_def
+              simple
+                @744 10 'foreground'
+              simple
+                @755 10 'Foreground'
+              simple
+                @766 5 'Color'
+            paragraphs
+              paragraph
+                simplex
+                  @772 9 {'\ncaramel\n'}
+        space
+          @791 1 {'\n'}
+      p_separator
+      paragraph
+        simplex
+          @798 4 {'\nKO\n'}

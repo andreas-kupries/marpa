@@ -877,6 +877,8 @@ proc ::marpa::gen::runtime::c::TabularArray {words {config {}}} {
 	n         16
 	from      0
 	to        end
+	align     1
+	padright  0
     }
     dict with defaults {} ; # import defaults into scope
     dict with config   {} ; # and overide with caller's settings.
@@ -894,8 +896,14 @@ proc ::marpa::gen::runtime::c::TabularArray {words {config {}}} {
     # proper alignment from that. Note, alignment is right-justified,
     # space padding to the left of each word.
 
-    set max [Width [lrange $words $from $to]]
-    set sf %${max}s
+    if {$align} {
+	set max [Width [lrange $words $from $to]]
+	if {$padright} { set max -$max }
+	set sf %${max}s
+    } else {
+	# unaligned output
+	set sf %s
+    }
 
     append result $prefix
 
@@ -985,7 +993,7 @@ proc ::marpa::gen::runtime::c::RuleC {label data nr} {
 	incr n 1 ;# adjust for length entry
 	# NOTE: At this point n >= 1.
 	#       No chunk is zero-length
-	lappend chunks [list $label from 1] $n
+	lappend chunks [list $label from 1 align 0] $n
 	incr nr $n
 	set label {}
     }
@@ -1021,6 +1029,8 @@ proc ::marpa::gen::runtime::c::Ref {name words} {
 
 proc ::marpa::gen::runtime::c::LexemeMap {symbols} {
     set symbols [lsort -dict $symbols]
+    set ids     [lmap s $symbols { G 2id $s }]
+    set qsym    [lmap s $symbols { set _ "\"$s\"" }]
 
     set lids [lmap s $symbols { G 2id $s }] ;# parser symbol id
     set sids [lmap s $symbols { P id  $s }] ;# string pool id

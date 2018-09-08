@@ -29,6 +29,8 @@ debug define marpa/parser/forest
 debug prefix marpa/parser/forest {}
 debug define marpa/parser/forest/save
 debug prefix marpa/parser/forest/save {}
+debug define marpa/parser/forest/limit
+debug prefix marpa/parser/forest/limit {}
 
 # # ## ### ##### ######## #############
 ##
@@ -83,10 +85,14 @@ oo::class create marpa::parser {
 	debug.marpa/parser/report {[marpa DX {Activate progress reports...} {
 	    oo::objdefine [self] mixin marpa::engine::debug
 	}]}
+	debug.marpa/parser/forest/limit {[marpa DX {Limit saved forest reports...} {
+	    debug on marpa/parser/forest/save
+	}]}
 	debug.marpa/parser/forest/save {[marpa DX {Activate saved forest reports...} {
 	    debug on marpa/parser/forest
 	}]}
 	debug.marpa/parser/forest {[marpa DX {Activate forest reports...} {
+	    catch { marpa::import $semstore Store }
 	    oo::objdefine [self] mixin marpa::engine::debug
 	}]}
 
@@ -164,9 +170,9 @@ oo::class create marpa::parser {
     }
 
     method enter {syms sv} {
-	debug.marpa/parser {(([my DIds $syms])) @($sv)}
+	debug.marpa/parser {(([my DIds $syms])) @($sv) <<[Store get $sv]>>}
 	debug.marpa/parser/report {[my progress-report-current]}
-	debug.marpa/parser/stream {(([my DIds $syms])) @($sv)}
+	debug.marpa/parser/stream {(([my DIds $syms])) @($sv) <<[Store get $sv]>>}
 
 	if {![llength $syms]} {
 	    # The input has no acceptable symbols waiting.
@@ -449,6 +455,7 @@ oo::class create marpa::parser {
 	    debug.marpa/parser {Tree [incr trees]}
 	    debug.marpa/parser/forest {[my parse-tree $tree]}
 	    debug.marpa/parser/forest/save {[my dump-parse-tree "TP.${latest}.[incr fcounter]" $tree]}
+	    debug.marpa/parser/forest/limit {STOP!![if {$fcounter > 200} { exit }]}
 	}]} {
 	    Forward enter [Semantics eval $tree]
 	}

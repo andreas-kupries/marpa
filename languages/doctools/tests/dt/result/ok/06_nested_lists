@@ -1,0 +1,107 @@
+manpage
+  m_manpage_begin
+    simple
+      @15 4 'TEST'
+    simple
+      @20 1 'z'
+    simple
+      @22 11 '3.14.15.926'
+  @{} {} ''
+  body
+    paragraphs
+      paragraph
+        item_list
+          item_list_elem
+            paragraphs
+              paragraph
+                simplex
+                  @479 3 {' 1 '}
+              p_separator
+              paragraph
+                simplex
+                  @488 3 {' 2 '}
+              p_separator
+              paragraph
+                simplex
+                  @497 3 {' 3\n'}
+          item_list_elem
+            paragraphs
+              paragraph
+                space
+                  @506 1 {'\n'}
+                enum_list
+                  enum_list_elem
+                    paragraphs
+                      paragraph
+                        simplex
+                          @537 3 {' a '}
+                      p_separator
+                      paragraph
+                        simplex
+                          @546 3 {' b '}
+                      p_separator
+                      paragraph
+                        simplex
+                          @555 3 {' c\n'}
+                  enum_list_elem
+                    paragraphs
+                      paragraph
+                        space
+                          @564 1 {'\n'}
+                        definition_list
+                          def_list_elem
+                            m_def
+                              simple
+                                @595 3 'foo'
+                            paragraphs
+                              paragraph
+                                simplex
+                                  @599 7 {' snafu\n'}
+                          def_list_elem
+                            m_def
+                              simple
+                                @611 3 'bar'
+                            paragraphs
+                              paragraph
+                                simplex
+                                  @615 6 {' barf\n'}
+                          def_list_elem
+                            m_def
+                              simple
+                                @626 3 'roo'
+                            paragraphs
+                              paragraph
+                                simplex
+                                  @630 6 {' gork\n'}
+                        space
+                          @646 1 {'\n'}
+                  enum_list_elem
+                    paragraphs
+                      paragraph
+                        simplex
+                          @653 3 {' a '}
+                      p_separator
+                      paragraph
+                        simplex
+                          @662 3 {' b '}
+                      p_separator
+                      paragraph
+                        simplex
+                          @671 3 {' c\n'}
+                space
+                  @684 1 {'\n'}
+          item_list_elem
+            paragraphs
+              paragraph
+                simplex
+                  @691 3 {' 4 '}
+              p_separator
+              paragraph
+                simplex
+                  @700 3 {' 5 '}
+              p_separator
+              paragraph
+                simplex
+                  @709 3 {' 6\n'}
+        space
+          @722 1 {'\n'}

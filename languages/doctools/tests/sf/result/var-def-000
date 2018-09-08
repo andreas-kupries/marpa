@@ -1,0 +1,6 @@
+var_def
+  unquot
+    simple
+      @6 1 'a'
+    @{} {} ''
+  @8 3 {'\"b\"'}

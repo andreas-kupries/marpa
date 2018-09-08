@@ -143,11 +143,14 @@ int
 marpatcl_rtc_fget  (Tcl_Interp* ip, marpatcl_rtc_p p,
 		    Tcl_Obj* path, Tcl_Obj** buf)
 {
+    TRACE_FUNC ("((Interp*) %p, (rtc*) %p, (obj*) %p = '%s')",
+		ip, p, path, Tcl_GetString (path));
+
     int got;
     Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
 
     if (!in) {
-	return TCL_ERROR;
+	TRACE_RETURN ("ERROR", TCL_ERROR);
     }
     Tcl_SetChannelBufferSize (in, 4096);
     Tcl_SetChannelOption (ip, in, "-translation", "binary");
@@ -161,7 +164,7 @@ marpatcl_rtc_fget  (Tcl_Interp* ip, marpatcl_rtc_p p,
 	if (got < 0) {
 	    Tcl_DecrRefCount (cbuf);
 	    Tcl_DecrRefCount (ebuf);
-	    return TCL_ERROR;
+	    TRACE_RETURN ("ERROR", TCL_ERROR);
 	}
 	if (!got) continue; /* Pass the buck to next Tcl_Eof */
 	Tcl_AppendObjToObj (ebuf, cbuf);
@@ -169,7 +172,8 @@ marpatcl_rtc_fget  (Tcl_Interp* ip, marpatcl_rtc_p p,
     Tcl_DecrRefCount (cbuf);
     (void) Tcl_Close (ip, in);
     *buf = ebuf;
-    return TCL_OK;
+
+    TRACE_RETURN ("OK", TCL_OK);
 }
 
 int
@@ -744,7 +748,7 @@ compare (const void* a, const void* b)
 }
 
 static void
-error_location (Tcl_DString *ds, marpatcl_rtc_p p)
+error_location (Tcl_DString *ds, marpatcl_rtc_p p, int* coffset)
 {
     ASSERT (FAIL.origin, "origin missing");
     Tcl_DStringAppend (ds, "Parsing failed in ", -1);
@@ -754,12 +758,15 @@ error_location (Tcl_DString *ds, marpatcl_rtc_p p)
     TRACE ("GATE LL %d", GATE.lastloc);
     if (GATE.lastloc < 0) {
 	Tcl_DStringAppend (ds, " No input", -1);
+	*coffset = -1;
     } else {
 	char buf [30];
 	if (GATE.lastcloc < 0) {
 	    sprintf (buf, "%d", GATE.lastloc);
+	    *coffset = GATE.lastloc;
 	} else {
 	    sprintf (buf, "%d", GATE.lastcloc);
+	    *coffset = GATE.lastcloc;
 	}
 	Tcl_DStringAppend (ds, " Stopped at offset ", -1);
 	Tcl_DStringAppend (ds, buf, -1);
@@ -768,7 +775,9 @@ error_location (Tcl_DString *ds, marpatcl_rtc_p p)
 	    sprintf (buf, "%d", IN.header);
 	    Tcl_DStringAppend (ds, " (+", -1);
 	    Tcl_DStringAppend (ds, buf, -1);
-	    Tcl_DStringAppend (ds, " byte) ", -1);
+	    Tcl_DStringAppend (ds, IN.header > 1
+			       ? " bytes) "
+			       : " byte) ", -1);
 	}
     }
 }
@@ -935,18 +944,27 @@ make_err (Tcl_Interp* ip, marpatcl_rtc_p p)
     // TODO: Maybe extend GATE to remember the bytes of a (partially) read character?
 
     Tcl_DString ds;
+    int coffset;
+    char cobuf [60];
 
     TRACE_FUNC ("((rtc*) %p)", p);
 
     Tcl_DStringInit       (&ds);
-    error_location        (&ds, p);
+    error_location        (&ds, p, &coffset);
     error_match_candidate (&ds, p);
     error_lex_accept      (&ds, p);
     error_parse_accept    (&ds, p);
     error_lex_progress    (&ds, p);
     error_lex_mismatch    (&ds, p);
 
-    Tcl_SetErrorCode  (ip, "SYNTAX", NULL);
+    // TODO. ___
+    // NOTE. The Tcl engine provides a/the full context dictionary here as
+    //       part of the error code. See if we can manage the
+    //       same. Essentially requires us to create the dictionary in
+    //       parallel to the `ds` string, and then serialize it here.
+
+    sprintf(cobuf, "%d", coffset);
+    Tcl_SetErrorCode  (ip, "MARPA", "SYNTAX", cobuf, NULL);
     Tcl_DStringResult (ip, &ds);
 
     Tcl_DStringFree (&ds);

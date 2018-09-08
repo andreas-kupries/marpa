@@ -53,6 +53,8 @@ debug define marpa/lexer/forest
 #debug prefix marpa/lexer/forest {[debug caller] | }
 debug define marpa/lexer/forest/save
 #debug prefix marpa/lexer/forest/save {[debug caller] | }
+debug define marpa/lexer/forest/limit
+#debug prefix marpa/lexer/forest/limit {[debug caller] | }
 debug define marpa/lexer/events
 #debug prefix marpa/lexer/events {[debug caller] | }
 
@@ -141,6 +143,9 @@ oo::class create marpa::lexer {
 	debug.marpa/lexer {[debug caller] | }
 	debug.marpa/lexer/report {[marpa DX {Activate progress reports...} {
 	    oo::objdefine [self] mixin marpa::engine::debug
+	}]}
+	debug.marpa/lexer/forest/limit {[marpa DX {Limit saved forest reports...} {
+	    debug on marpa/lexer/forest/save
 	}]}
 	debug.marpa/lexer/forest/save {[marpa DX {Activate saved forest reports...} {
 	    debug on marpa/lexer/forest
@@ -418,28 +423,22 @@ oo::class create marpa::lexer {
 	return
     }
 
+    method flush {} {
+	debug.marpa/lexer {[debug caller] | }
+	my Flush
+	# Just a flush, not true end of the input (include files, end
+	# of macros, and the like).
+	return
+    }
+    
     method eof {} {
 	debug.marpa/lexer {[debug caller] | }
-
-	# Flush everything pending in the local recognizer to the
-	# parser before signaling eof to the parser. Do this if and
-	# only if we actually saw something.
-	if {[MSTATE has-match]} {
-	    if {[my Complete]} {
-		debug.marpa/lexer {[debug caller] | eof bounce, retry}
-		return
-	    }
-
-	    # At this point the input may have been bounced away from
-	    # the EOF.  This is signaled by a `true` return. If that
-	    # is so we must not report to the parser yet. We will come
-	    # to this method again, after the characters were
-	    # re-processed.
-	}
+	my Flush
+	# After flushing signal eof to the parser
 
 	debug.marpa/lexer/stream {EOF}
 
-	#  Note that the flush leaves us with a just-started
+	# Note that the flush leaves us with a just-started
 	# recognizer, which we have to remove again.
 
 	if {$myrecce ne {}} {
@@ -452,6 +451,27 @@ oo::class create marpa::lexer {
 	return
     }
 
+    method Flush {} {
+	debug.marpa/lexer {[debug caller] | }
+
+	# Flush everything pending in the local recognizer to the
+	# parser. Do this if and only if we actually saw something.
+
+	if {![MSTATE has-match]} return
+
+	if {[my Complete]} {
+	    debug.marpa/lexer {[debug caller] | eof bounce, retry}
+	    return -code return
+	}
+
+	# At this point the input may have been bounced away from the
+	# EOF (or barrier).  This is signaled by a `true` return of
+	# the `Complete` above. If that is so we must not report to
+	# the parser yet. We will come to this method again, after the
+	# characters were re-processed.
+	return
+    }
+    
     method acceptable {syms} {
 	debug.marpa/lexer {[debug caller] | }
 	# This lexer method is called by the parser.
@@ -484,9 +504,14 @@ oo::class create marpa::lexer {
 		# match disciplines is injected into the runtime. We
 		# do this by always activating the ACS for LTM symbols
 		# (and discards).
-		foreach s [lsort -unique [concat $syms $myalways]] {
+		debug.marpa/lexer {syms   = $syms ([my DIds $syms])}
+		debug.marpa/lexer {always = $myalways ([my DIds $myalways])}
+		
+		foreach s [lsort -unique $syms] {
 		    lappend enter [dict get $myacs $s]
 		}
+		# The symbol ids in myalways are local ACS symbols.
+		lappend enter {*}$myalways
 		dict set myaccmemo $syms $enter
 	    }
 	    foreach s $enter {
@@ -810,6 +835,7 @@ oo::class create marpa::lexer {
 	    debug.marpa/lexer/forest {__________________________________________ Tree [incr fcounter] ([llength [lindex $forest end]])}
 	    debug.marpa/lexer/forest {[my parse-tree [lindex $forest end]]}
 	    debug.marpa/lexer/forest/save {[upvar 1 latest latest][my dump-parse-tree "TL.@[MSTATE start]+${latest}.$fcounter" [lindex $forest end]]}
+	    debug.marpa/lexer/forest/limit {STOP!![if {$fcounter > 200} { exit }]}
 	}]} {}
 	FOREST destroy
 	return $forest
@@ -823,7 +849,11 @@ oo::class create marpa::lexer {
 	# information, i.e. which were acceptable to the parser.
 	# Then forward to the parser for his take.
 
-	dict set context g1 acceptable [lsort -dict [lmap s [my 2Name [my FromParser [lsort -unique [concat $myacceptable $myalways]]]] {
+	set     tmp {}
+	lappend tmp {*}[my 2Name [my FromParser [lsort -unique $myacceptable]]]
+	lappend tmp {*}[my 2Name                [lsort -unique $myalways]]
+	
+	dict set context g1 acceptable [lsort -dict [lmap s $tmp {
 	    string map {ACS: {}} $s
 	}]]
 

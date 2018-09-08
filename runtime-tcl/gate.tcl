@@ -154,19 +154,34 @@ oo::class create marpa::gate {
     }
 
     method input: {inbound} {
-	debug.marpa/lexer {[debug caller] | }
+	debug.marpa/gate {[debug caller] | }
 	marpa::import $inbound Input
 	return
     }
 
     method signal-stop {} {
+	debug.marpa/gate {[debug caller] | }
 	Forward signal-stop ;# notify lexer
+	return
     }
 
     method signal-overrun {} {
+	debug.marpa/gate {[debug caller] | }
 	Forward signal-overrun ;# notify lexer
+	return
     }
 
+    method barrier {} {
+	debug.marpa/gate {[debug caller] | }
+	Input barrier
+    }
+
+    method flush {} {
+	debug.marpa/gate {[debug caller] | }
+	Forward flush
+	return
+    }
+    
     # # -- --- ----- -------- -------------
     ## Conversion from the user-visible locations to the internal
     ## locations used by the engine.
