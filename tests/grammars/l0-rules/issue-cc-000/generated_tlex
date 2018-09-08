@@ -60,22 +60,22 @@ oo::class create <Name> {
 	debug.<Name>
 	# Literals: The character classes in use
 	return {
-	    RAN<d56480-d56508>                                                                                                                                                       {[\udca0-\udcbc]}
-	    RAN<d56509-d56690>                                                                                                                                                       {[\udcbd-\udd72]}
-	    RAN<d56691-d57343>                                                                                                                                                       {[\udd73-\udfff]}
-	    {@^CLS:<\0-\37\42\134\177-\237\255\3000-\3005\3034\3335\3417\4342\14016\20013-\20017\20052-\20056\20140-\20144\20146-\20157\160000-\174377\177377\177771-\177773>.BMP}   {[^\0-\37\42\134\177-\u009f\u00ad\u0600-\u0605\u061c\u06dd\u070f\u08e2\u180e\u200b-\u200f\u202a-\u202e\u2060-\u2064\u2066-\u206f\ue000-\uf8ff\ufeff\ufff9-\ufffb]}
-	    {@RAN:<\ud800\ud803>}                                                                                                                                                    {[\ud800-\ud803]}
-	    {@RAN:<\ud805\ud82e>}                                                                                                                                                    {[\ud805-\ud82e]}
-	    {@RAN:<\ud830\ud833>}                                                                                                                                                    {[\ud830-\ud833]}
-	    {@RAN:<\ud835\udb3f>}                                                                                                                                                    {[\ud835-\udb3f]}
-	    {@RAN:<\udb41\udb7f>}                                                                                                                                                    {[\udb41-\udb7f]}
-	    {@RAN:<\udc00\udc9f>}                                                                                                                                                    {[\udc00-\udc9f]}
-	    {@RAN:<\udc02\udc1f>}                                                                                                                                                    {[\udc02-\udc1f]}
-	    {@RAN:<\udc80\udfff>}                                                                                                                                                    {[\udc80-\udfff]}
-	    {@RAN:<\udca4\udfff>}                                                                                                                                                    {[\udca4-\udfff]}
-	    {@RAN:<\udcbe\udfff>}                                                                                                                                                    {[\udcbe-\udfff]}
-	    {@RAN:<\udd7b\udfff>}                                                                                                                                                    {[\udd7b-\udfff]}
-	    {@RAN:<\udffe\udfff>}                                                                                                                                                    {[\udffe\udfff]}
+	    RAN<d56480-d56508>                                                                                                                                                        {[\udca0-\udcbc]}
+	    RAN<d56509-d56690>                                                                                                                                                        {[\udcbd-\udd72]}
+	    RAN<d56691-d57343>                                                                                                                                                        {[\udd73-\udfff]}
+	    {@^CLS:<\0-\37\42\134\177-\237\255\u0600-\u0605\u061c\u06dd\u070f\u08e2\u180e\u200b-\u200f\u202a-\u202e\u2060-\u2064\u2066-\u206f\ue000-\uf8ff\ufeff\ufff9-\ufffb>.BMP}   {[^\0-\37\42\134\177-\237\255\u0600-\u0605\u061c\u06dd\u070f\u08e2\u180e\u200b-\u200f\u202a-\u202e\u2060-\u2064\u2066-\u206f\ue000-\uf8ff\ufeff\ufff9-\ufffb]}
+	    {@RAN:<\ud800\ud803>}                                                                                                                                                     {[\ud800-\ud803]}
+	    {@RAN:<\ud805\ud82e>}                                                                                                                                                     {[\ud805-\ud82e]}
+	    {@RAN:<\ud830\ud833>}                                                                                                                                                     {[\ud830-\ud833]}
+	    {@RAN:<\ud835\udb3f>}                                                                                                                                                     {[\ud835-\udb3f]}
+	    {@RAN:<\udb41\udb7f>}                                                                                                                                                     {[\udb41-\udb7f]}
+	    {@RAN:<\udc00\udc9f>}                                                                                                                                                     {[\udc00-\udc9f]}
+	    {@RAN:<\udc02\udc1f>}                                                                                                                                                     {[\udc02-\udc1f]}
+	    {@RAN:<\udc80\udfff>}                                                                                                                                                     {[\udc80-\udfff]}
+	    {@RAN:<\udca4\udfff>}                                                                                                                                                     {[\udca4-\udfff]}
+	    {@RAN:<\udcbe\udfff>}                                                                                                                                                     {[\udcbe-\udfff]}
+	    {@RAN:<\udd7b\udfff>}                                                                                                                                                     {[\udd7b-\udfff]}
+	    {@RAN:<\udffe\udfff>}                                                                                                                                                     {[\udffe\udfff]}
 	}
     }
 
@@ -90,9 +90,7 @@ oo::class create <Name> {
     method Discards {} {
 	debug.<Name>
 	# Discarded symbols (whitespace)
-	return {
-	    
-	}
+	return {}
     }
 
     method Symbols {} {
@@ -112,7 +110,7 @@ oo::class create <Name> {
 	debug.<Name>
 	return {
 	    {plain := {@^CLS:<\42\134[:control:]>}}
-	    {{@^CLS:<\42\134[:control:]>} := {@^CLS:<\0-\37\42\134\177-\237\255\3000-\3005\3034\3335\3417\4342\14016\20013-\20017\20052-\20056\20140-\20144\20146-\20157\160000-\174377\177377\177771-\177773>.BMP}}
+	    {{@^CLS:<\42\134[:control:]>} := {@^CLS:<\0-\37\42\134\177-\237\255\u0600-\u0605\u061c\u06dd\u070f\u08e2\u180e\u200b-\u200f\u202a-\u202e\u2060-\u2064\u2066-\u206f\ue000-\uf8ff\ufeff\ufff9-\ufffb>.BMP}}
 	    {{@^CLS:<\42\134[:control:]>} := {@CLS:<\u10000-\u110bc\u110be-\u1bc9f\u1bca4-\u1d172\u1d17b-\ue0000\ue0002-\ue001f\ue0080-\ueffff\uffffe-\ufffff\u10fffe-\u10ffff>.SMP}}
 	    {{@CLS:<\u10000-\u110bc\u110be-\u1bc9f\u1bca4-\u1d172\u1d17b-\ue0000\ue0002-\ue001f\ue0080-\ueffff\uffffe-\ufffff\u10fffe-\u10ffff>.SMP} := {@CHR:<\ud82f>} {@RAN:<\udc00\udc9f>}}
 	    {{@CLS:<\u10000-\u110bc\u110be-\u1bc9f\u1bca4-\u1d172\u1d17b-\ue0000\ue0002-\ue001f\ue0080-\ueffff\uffffe-\ufffff\u10fffe-\u10ffff>.SMP} := {@CHR:<\ud82f>} {@RAN:<\udca4\udfff>}}
@@ -148,8 +146,15 @@ oo::class create <Name> {
 
     method Events {} {
 	debug.<Name>
-	# L0 parse event definitions (pre-, post-lexeme, discard)
-	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# Map declared events to their initial activation status
+	# :: dict (event name -> active)
+	return {}
+    }
+
+    method Trigger {} {
+	debug.<Name>
+	# L0 trigger definitions (pre-, post-lexeme, discard)
+	# :: dict (symbol -> (type -> list (event name)))
 	# Due to the nature of SLIF syntax we can only associate one
 	# event per type with each symbol, for a maximum of three.
 	return {}

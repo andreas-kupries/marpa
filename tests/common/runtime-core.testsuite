@@ -181,7 +181,7 @@ test marpa-[label]-runtime-process-3.0-multishot "[label] :: reset for multi-use
     # parser reset before the next run. Without the reset the parser
     # is in a state where it will not accept the input from the second
     # call.
-    
+
     gen single-setup [td]/grammars/runtime/multi-shot/grammar RESETTABLE
     set msg ""
 } -body {

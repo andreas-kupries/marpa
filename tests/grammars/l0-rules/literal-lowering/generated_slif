@@ -101,7 +101,7 @@ V ::= @LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f>
                                                            latm => 1
 @LEX:@RAN:<az>                                           ~ [a-z]
                                                            latm => 1
-@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f> ~ '\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f'
+@LEX:@STR:<\uffff\u10000\u1ffff\u10ffff\u10fffe\u10f60f> ~ '\uffff\U00010000\U0001ffff\U0010ffff\U0010fffe\U0010f60f'
                                                            latm => 1
 @LEX:@STR:<abc>                                          ~ 'abc'
                                                            latm => 1

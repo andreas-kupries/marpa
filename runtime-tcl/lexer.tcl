@@ -154,11 +154,11 @@ oo::class create marpa::lexer {
 	    catch { oo::objdefine [self] mixin marpa::engine::debug }
 	}]}
 
-	next $parser
+	next $engine $parser
 
 	marpa::import $semstore Store
 	# Gate will attach during setup.
-
+	
 	# Dynamic state for processing
 	set myenv  [namespace tail $engine]
 	set myacceptable {}   ;# Parser gating.
@@ -210,15 +210,16 @@ oo::class create marpa::lexer {
 	}
     }
 
-    method events {spec} {
+    method trigger {spec} {
 	debug.marpa/lexer {[debug caller] | }
-	# spec : sym -> (type -> (name -> active))
+	# spec :: dict (sym -> (type -> list (name)))
 
 	# Convert the symbols to the relevant ids, then pass down into
 	# the engine. Conversion is type dependent. Make use of the
 	# fact that we can have only one event per type for a symbol.
 	set cspec {}
 	dict for {symbol def} $spec {
+	    # def :: dict (type -> list (name))
 	    foreach type {discard before after} {
 		if {![dict exists $def $type]} continue
 		switch -exact -- $type {

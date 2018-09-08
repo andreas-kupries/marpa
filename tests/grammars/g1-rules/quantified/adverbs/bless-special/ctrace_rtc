@@ -18,11 +18,11 @@ ______ P3024   @1-1 <[:space:]>                       -->  . <\343> <\200> <\200
 ______ P3032   @1-1 <::=>                             -->  . <:> <:> <=>
 ______ P3391   @1-1 <terminated hash comment>         -->  . <#> <hash comment body> <vertical space char>
 ______ P3392   @1-1 <unterminated final hash comment> -->  . <#> <hash comment body>
-______ P3526   @1-1 <[\t-\r]>                         -->  . <\t>
-______ P3527   @1-1 <[\t-\r]>                         -->  . <\n>
-______ P3528   @1-1 <[\t-\r]>                         -->  . <\13>
-______ P3529   @1-1 <[\t-\r]>                         -->  . <\14>
-______ P3530   @1-1 <[\t-\r]>                         -->  . <\r>
+______ P3628   @1-1 <[\t-\r]>                         -->  . <\t>
+______ P3629   @1-1 <[\t-\r]>                         -->  . <\n>
+______ P3630   @1-1 <[\t-\r]>                         -->  . <\13>
+______ P3631   @1-1 <[\t-\r]>                         -->  . <\14>
+______ P3632   @1-1 <[\t-\r]>                         -->  . <\r>
 ______ R3899:1 @0-1 <@L0:START>                       -->  <op declare bnf> . <op declare bnf>
 ______ R3900:1 @0-1 <@L0:START>                       -->  <op declare match> . <op declare match>
 ______ R3910:1 @0-1 <@L0:START>                       -->  <hash comment> . <hash comment>

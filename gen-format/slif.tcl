@@ -106,16 +106,17 @@ proc ::marpa::gen::format::slif::DumpSLIF {serial} {
     # global
     #   start -- SYM
     #   inacessible -- ok|warn|error
+    # event
+    #   E-NAME -- on|off
     # g1
     #   {}
     #     SYM    -- list RULE
     #   terminal
     #     SYM    -- list RULE
-    # l0
-    #   events
+    #   trigger
     #     SYM
-    #       WHEN
-    #         E-NAME -- on|off
+    #       WHEN -- list E-NAME
+    # l0
     #   latm
     #     SYM -- bool
     #   discard
@@ -126,6 +127,9 @@ proc ::marpa::gen::format::slif::DumpSLIF {serial} {
     #     SYM    -- list RULE
     #   literal
     #     SYM    -- list RULE
+    #   trigger
+    #     SYM
+    #       WHEN -- list E-NAME
     # lexeme -- lexeme semantic action
     #
 
@@ -178,16 +182,18 @@ proc ::marpa::gen::format::slif::DumpG1Events {gc} {
 
     # G1 has completed|nulled|predicted events
 
-    if {![dict exists $gc g1 events]} return
+    if {![dict exists $gc g1 trigger]} return
 
     Section "Structural events"
-    dict for {sym events} [dict get $gc g1 events] {
-	dict for {when spec} $events {
-	    lassign $spec name state
-	    W "event [AV/name $name] = $state = $when [Sym2Name $sym]"
+    dict for {sym spec} [dict get $gc g1 trigger] {
+	# spec = dict (when -> list (name))
+	dict for {when names} $spec {
+	    foreach name $names {
+		set state [dict get $gc event $name]
+		W "event [AV/name $name] = $state = $when [Sym2Name $sym]"
+	    }
 	}
-
-	dict unset gc g1 events $sym
+	dict unset gc g1 trigger $sym
     }
     W {}
     return
@@ -202,11 +208,7 @@ proc ::marpa::gen::format::slif::RewriteDiscardEvents {gcv} {
     # move the information into a separate block for pickup by DumpDiscard.
 
     dict for {sym rules} [dict get $gc l0 discard] {
-	if {![dict exists $gc l0 events $sym discard]} continue
-
-	set event [dict get $gc l0 events $sym discard]
-	dict unset gc l0 events $sym discard
-	dict set gc dis $sym $event
+	RewriteEvents gc $sym dis discard
     }
     return
 }
@@ -220,16 +222,30 @@ proc ::marpa::gen::format::slif::RewriteLexemeEvents {gcv} {
     # move the information into a separate block for pickup by DumpLexeme.
 
     dict for {sym rules} [dict get $gc l0 lexeme] {
-	if {[dict exists $gc l0 events $sym before]} {
-	    set event [dict get $gc l0 events $sym before]
-	    dict unset gc l0 events $sym before
-	    dict set gc lex $sym [list before $event]
+	RewriteEvents gc $sym lex before 1
+	RewriteEvents gc $sym lex after  1
+    }
+    return
+}
 
-	} elseif {[dict exists $gc l0 events $sym after]} {
-	    set event [dict get $gc l0 events $sym after]
-	    dict unset gc l0 events $sym after
-	    dict set gc lex $sym [list after $event]
-	}
+proc ::marpa::gen::format::slif::RewriteEvents {gcv sym dst key {keyed 0}} {
+    debug.marpa/gen/format/slif {}
+    upvar 1 $gcv gc
+
+    if {![dict exists $gc l0 trigger $sym $key]} return
+
+    set names [dict get $gc l0 trigger $sym $key]
+    dict unset gc l0 trigger $sym $key
+    
+    foreach name $names {
+	set state [dict get $gc event $name]
+	dict set edict $name $state
+    }
+
+    if {$keyed} {
+	dict set gc $dst $sym [list $key $edict]
+    } else {
+        dict set gc $dst $sym $edict
     }
     return
 }
@@ -647,14 +663,24 @@ proc ::marpa::gen::format::slif::DumpAttr {prefix attr} {
 
 proc ::marpa::gen::format::slif::C {uni} {
     # See also ::marpa::slif::literal::util::symchar
+    #          ::marpa::gen::runtime::tcl::Char
+
+    # dash, closing bracket
     switch -exact -- $uni {
 	45 { return "\\55" }
 	93 { return "\\135" }
     }
-    if {$uni > [marpa unicode bmp]} {
-	# Beyond the BMP, \u notation
-	return \\u[format %x $uni]
-    }
+
+    # Escaping non-ASCII BMP characters, and SMP.
+    # First: [:control:] has different specs between
+    # Tcl versions (Ex: \u08e2. 8.5.18 no, 8.5.19 yes)
+    # Plus order of operations in `char quote tcl`.
+
+    if {$uni > 65535} { return \\U[format %08x $uni] } ;# SMP
+    if {$uni >   255} { return \\u[format %04x $uni] } ;# high BMP
+    if {$uni >   127} { return \\[format %o $uni] }    ;#
+
+    # TODO XXX: Divorce from `char quote tcl` ? Do our own ?
     char quote tcl [format %c $uni]
 }
 

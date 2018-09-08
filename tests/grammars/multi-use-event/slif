@@ -1,0 +1,10 @@
+A ::= B | D
+
+:lexeme ~ B	pause => before	event => lex
+:lexeme ~ D	pause => after	event => lex
+
+B ~ 'a'
+D ~ 'd'
+
+:discard ~ C event => snafu
+C ~ 'c' 

@@ -7,11 +7,11 @@
 # (c) 2018 Grammar mindt::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "mindt::parser::tcl".
-##	Generated On Wed Aug 15 21:14:02 PDT 2018
+##	Generated On Sat Sep 08 15:04:25 PDT 2018
 ##		  By aku@hephaistos
-##		 Via marpa-gen
+##		 Via remeta
 
-package provide mindt::parser::tcl 1
+package provide mindt::parser::tcl 0
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -107,6 +107,15 @@ oo::class create mindt::parser::tcl {
 	# Discarded symbols (whitespace)
 	return {
 	    Whitespace
+	}
+    }
+
+    method Events {} {
+	debug.mindt/parser/tcl
+	# Map declared events to their initial activation status
+	# :: dict (event name -> active)
+	return {
+	    macro   on
 	}
     }
 
@@ -249,21 +258,21 @@ oo::class create mindt::parser::tcl {
 	return {start length value}
     }
 
-    method L0.Events {} {
+    method L0.Trigger {} {
 	debug.mindt/parser/tcl
-	# L0 parse event definitions (pre-, post-lexeme, discard)
-	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# L0 trigger definitions (pre-, post-lexeme, discard)
+	# :: dict (symbol -> (type -> list (event name)))
 	# Due to the nature of SLIF syntax we can only associate one
 	# event per type with each symbol, for a maximum of three.
 	return {
 	    CInclude {
-	        after {macro on}
+	        after   macro
 	    }
 	    CVdef {
-	        after {macro on}
+	        after   macro
 	    }
 	    CVref {
-	        after {macro on}
+	        after   macro
 	    }
 	}
     }
@@ -335,10 +344,10 @@ oo::class create mindt::parser::tcl {
 	}
     }
 
-    method G1.Events {} {
+    method G1.Trigger {} {
 	debug.mindt/parser/tcl
 	# G1 parse event definitions (predicted, nulled, completed)
-	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# :: dict (symbol -> (type -> list (event name)))
 	# Each symbol can have more than one event per type.
 	return {}
     }

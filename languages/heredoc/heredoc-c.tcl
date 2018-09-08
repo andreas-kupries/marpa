@@ -4,12 +4,12 @@
 # (c) 2017-present Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
 #                                             http://core.tcl.tk/akupries/
 ##
-# (c) 2018 Grammar heredoc::parser::c 1 By Andreas Kupries
+# (c) 2018 Grammar heredoc::parser::c 0 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "heredoc::parser::c".
-##	Generated On Wed Aug 08 12:05:14 PDT 2018
+##	Generated On Sat Sep 08 15:04:28 PDT 2018
 ##		  By aku@hephaistos
-##		 Via marpa-gen
+##		 Via remeta
 ##
 #* Space taken: 5704 bytes
 ##
@@ -26,7 +26,7 @@
 #* - #Rule Insn: 7 (+2: setup, start-sym)
 #* - #Rules:     7 (match insn)
 
-package provide heredoc::parser::c 1
+package provide heredoc::parser::c 0
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -390,9 +390,29 @@ critcl::ccode {
 	/* 274 */ "z\0"
     };
 
-    static marpatcl_rtc_event_spec heredoc_parser_c_events [1] = {
-    // sym, type, active
-	{ 1, marpatcl_rtc_event_after, 1 }, // heredoc: heredoc
+    /*
+    ** Map lexeme strings to parser symbol id (`match alternate` support).
+    */
+
+    static marpatcl_rtc_sym_lmap heredoc_parser_c_lmap [5] = {
+	{ 20 , 0 }, // comma
+	{ 33 , 1 }, // heredoc
+	{ 35 , 2 }, // heredoc start
+	{ 255, 3 }, // say
+	{ 257, 4 }, // semicolon
+    };
+
+    /*
+    ** Declared events, initial stati
+    */
+
+    static unsigned char heredoc_parser_c_evstatus [1] = {
+	1, // heredoc = on
+    };
+
+    static marpatcl_rtc_event heredoc_parser_c_evspec = {
+	/* .size */ 1,
+	/* .data */ heredoc_parser_c_evstatus
     };
 
     /*
@@ -467,37 +487,24 @@ critcl::ccode {
 	MARPATCL_RCMD_DONE  (275)
     };
 
-    static const char* heredoc_parser_c_l0idmap_sym [5] = {
-	"comma",
-	"heredoc",
-	"heredoc start",
-	"say",
-	"semicolon"
+    marpatcl_rtc_trigger_entry heredoc_parser_c_l0trigger_entry [1] = {
+	{ 1, marpatcl_rtc_event_after, 0 }, // heredoc => heredoc
     };
 
-    static marpatcl_rtc_sym heredoc_parser_c_l0idmap_id [5] = {
-	0, 1, 2, 3, 4
-    };
-
-    static marpatcl_rtc_symid heredoc_parser_c_l0idmap = {
-	/* .size   */ 5,
-	/* .symbol */ heredoc_parser_c_l0idmap_sym,
-	/* .id     */ heredoc_parser_c_l0idmap_id,
-    };
-
-    static marpatcl_rtc_events heredoc_parser_c_l0events = {
-	/* .size  */ 1,
-	/* .data  */ heredoc_parser_c_events,
-	/* .idmap */ &heredoc_parser_c_l0idmap
+    marpatcl_rtc_trigger heredoc_parser_c_l0trigger = {
+	/* .size */ 1,
+	/* .data */ heredoc_parser_c_l0trigger_entry
     };
 
     static marpatcl_rtc_rules heredoc_parser_c_l0 = { /* 48 */
 	/* .sname   */  &heredoc_parser_c_pool,
 	/* .symbols */  { 276, heredoc_parser_c_l0_sym_name },
+	/* .lmap    */  { 5, heredoc_parser_c_lmap },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
 	/* .rcode   */  heredoc_parser_c_l0_rule_definitions,
-	/* .events  */  &heredoc_parser_c_l0events
+	/* .events  */  &heredoc_parser_c_evspec,
+	/* .trigger */  &heredoc_parser_c_l0trigger
     };
 
     static marpatcl_rtc_sym heredoc_parser_c_l0semantics [3] = { /* 6 bytes */
@@ -541,10 +548,12 @@ critcl::ccode {
     static marpatcl_rtc_rules heredoc_parser_c_g1 = { /* 48 */
 	/* .sname   */  &heredoc_parser_c_pool,
 	/* .symbols */  { 11, heredoc_parser_c_g1_sym_name },
+	/* .lmap    */  { 0, 0 },
 	/* .rules   */  { 7, heredoc_parser_c_g1_rule_name },
 	/* .lhs     */  { 7, heredoc_parser_c_g1_rule_lhs },
 	/* .rcode   */  heredoc_parser_c_g1_rule_definitions,
-	/* .events  */  0
+	/* .events  */  &heredoc_parser_c_evspec,
+	/* .trigger */  0
     };
 
     static marpatcl_rtc_sym heredoc_parser_c_g1semantics [13] = { /* 26 bytes */
@@ -604,7 +613,7 @@ critcl::ccode {
 ## Class exposing the grammar engine.
 
 critcl::literals::def heredoc_parser_c_event {
-    u0 "heredoc"
+    u0       "heredoc"
 } +list
 
 critcl::class def heredoc::parser::c {
@@ -690,38 +699,18 @@ critcl::class def heredoc::parser::c {
         Tcl_IncrRefCount (instance->name);
     }
 
-    method process-file proc {Tcl_Interp* ip Tcl_Obj* path object args} ok {
+    method process-file proc {Tcl_Interp* ip object path object args} ok {
 	int from, to;
 	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
 
-	int res, got;
-	char* buf;
-	Tcl_Channel in = Tcl_FSOpenFileChannel (ip, path, "r", 0666);
-
-	if (!in) {
+	Tcl_Obj* ebuf;
+	if (marpatcl_rtc_fget (ip, instance->state, path, &ebuf) != TCL_OK) {
 	    return TCL_ERROR;
 	}
-	Tcl_SetChannelBufferSize (in, 4096);
-	Tcl_SetChannelOption (ip, in, "-translation", "binary");
-	Tcl_SetChannelOption (ip, in, "-encoding",    "utf-8");
-	// TODO: abort on failed set-channel-option
 
-	Tcl_Obj* cbuf = Tcl_NewObj();
-	Tcl_Obj* ebuf = Tcl_NewObj();
-	while (!Tcl_Eof(in)) {
-	    got = Tcl_ReadChars (in, cbuf, 4096, 0);
-	    if (got < 0) {
-		Tcl_DecrRefCount (cbuf);
-		Tcl_DecrRefCount (ebuf);
-		return TCL_ERROR;
-	    }
-	    if (!got) continue; /* Pass the buck to next Tcl_Eof */
-	    Tcl_AppendObjToObj (ebuf, cbuf);
-	}
-	Tcl_DecrRefCount (cbuf);
-	(void) Tcl_Close (ip, in);
 
-	buf = Tcl_GetStringFromObj (ebuf, &got);
+	int got;
+	char* buf = Tcl_GetStringFromObj (ebuf, &got);
 	marpatcl_rtc_enter (instance->state, buf, got, from, to);
 	Tcl_DecrRefCount (ebuf);
 
@@ -733,6 +722,25 @@ critcl::class def heredoc::parser::c {
 	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }
 	marpatcl_rtc_enter (instance->state, string.s, string.len, from, to);
 	return marpatcl_rtc_sv_complete (ip, instance->result, instance->state);
+    }
+
+    method extend proc {Tcl_Interp* ip pstring string} int {
+	return marpatcl_rtc_enter_more (instance->state, string.s, string.len);
+    }
+
+    method extend-file proc {Tcl_Interp* ip object path} ok {
+	Tcl_Obj* ebuf;
+	if (marpatcl_rtc_fget (ip, instance->state, path, &ebuf) != TCL_OK) {
+	    return TCL_ERROR;
+	}
+
+	int got;
+	char* buf = Tcl_GetStringFromObj (ebuf, &got);
+	int offset = marpatcl_rtc_enter_more (instance->state, buf, got);
+	Tcl_DecrRefCount (ebuf);
+
+	Tcl_SetObjResult (ip, Tcl_NewIntObj (offset));
+	return TCL_OK;
     }
 
     support {

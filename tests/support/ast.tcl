@@ -5,6 +5,8 @@
 ##
 # This code is BSD-licensed.
 
+kt semi-local* support marpa::util
+
 # Test suite support.
 # # ## ### ##### ######## #############
 ## Pretty printing an AST coming out of the SLIF parser

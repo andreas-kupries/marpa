@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -27,25 +27,34 @@ oo::class create marpa::slif::container::grammar {
 
     marpa::E marpa/slif/container/grammar SLIF CONTAINER GRAMMAR
 
-    variable mysymbol ; # :: dict (symbol-name -> symbol-instance)
-    variable mysclass ; # :: dict (symbol-name -> class-name)
-    variable mytype   ; # :: dict (type-name -> factory-instance)
-    variable mycsym   ; # :: dict (class-name -> (symbol-name -> .))
+    variable mysymbol   ; # :: dict (symbol-name -> symbol-instance)
+    variable mysclass   ; # :: dict (symbol-name -> class-name)
+    variable mytype     ; # :: dict (type-name -> factory-instance)
+    variable mycsym     ; # :: dict (class-name -> (symbol-name -> .))
+    variable mytrigger  ; # :: dict (symbol -> (when -> list (eventname)))
+    variable myetypes   ; # :: list (event-type)
+    variable mysections ; # :: list (sectionname)
+    # mytrigger : Per symbol dictionary of when events can fire, and
+    #             which.
 
     # - -- --- ----- -------- -------------
     ## lifecycle
 
-    constructor {container spec p q} {
+    constructor {container etypes sections spec p q} {
 	debug.marpa/slif/container/grammar {}
 	# container = marpa::slif::container
 	marpa::import $container Container
 	lappend p [self]
 	lappend q [self]
 
-	set mysymbol {}
-	set mysclass {}
-	set mycsym   {}
-	set mytype   $spec
+	lappend sections trigger
+	set mysections $sections
+	set myetypes   $etypes
+	set mytrigger  {}
+	set mysymbol   {}
+	set mysclass   {}
+	set mycsym     {}
+	set mytype     $spec
 	dict set mytype priority   $p
 	dict set mytype quantified $q
 
@@ -140,6 +149,13 @@ oo::class create marpa::slif::container::grammar {
 	return [[dict get $mysymbol $symbol] min-precedence]
     }
 
+    method trigger {} {
+	debug.marpa/slif/container/grammar/l0 {}
+	if {![dict size $mytrigger]} { return {} }
+	return [lrange $mytrigger 0 end]
+	# See the note in alter.tcl for explanation of the lrange.
+    }
+
     # - -- --- ----- -------- -------------
     ## Fill serdes virtual abstract methods
 
@@ -153,12 +169,20 @@ oo::class create marpa::slif::container::grammar {
 
     method serialize {} {
 	debug.marpa/slif/container/grammar {}
+
 	set serial {}
 	dict for {symbol obj} $mysymbol {
 	    set class [dict get $mysclass $symbol]
 	    dict set serial $class $symbol [$obj serialize]
 	}
 	debug.marpa/slif/container/grammar {==> $serial}
+
+	foreach section $mysections {
+	    if {![my H_$section]} continue
+	    dict set serial $section [lrange [my G_$section] 0 end]
+	    # See the note in alter.tcl for explanation of the lrange.
+	}
+
 	return $serial
     }
 
@@ -166,9 +190,17 @@ oo::class create marpa::slif::container::grammar {
 	debug.marpa/slif/container/grammar {}
 	# blob       :: dict (class -> class-blob)
 	# class-blob :: dict (symbol -> (type ...)...)
-	set mysymbol {}
-	set mysclass {}
-	set mycsym   {}
+	set mysymbol  {}
+	set mysclass  {}
+	set mycsym    {}
+	set mytrigger {}
+
+	foreach section $mysections {
+	    if {![dict exists $blob $section]} continue
+	    my S_$section [dict get $blob $section]
+	    dict unset blob $section
+	}
+
 	dict for {class cdata} $blob {
 	    dict for {symbol spec} $cdata {
 		foreach def $spec {
@@ -182,6 +214,28 @@ oo::class create marpa::slif::container::grammar {
 
     # - -- --- ----- -------- -------------
     ## Semi-public API - Used by derived classes
+
+    method S_trigger {blob} { set mytrigger $blob ; return }
+    method G_trigger {}     { return $mytrigger }
+    method H_trigger {}     { return [dict size $mytrigger] }
+
+    method Trigger: {symbol spec} {
+	debug.marpa/slif/container/grammar {}
+
+	lassign [my ValidateEvent $spec $myetypes] name state when
+
+	if {[dict exists $mytrigger $symbol $when]} {
+	    set     names [dict get $mytrigger $symbol $when]
+	    lappend names $name
+	    set     names [lsort -dict -unique $names]
+	    dict set mytrigger $symbol $when $names
+	} else {
+	    dict set mytrigger $symbol $when [list $name]
+	}
+
+	Container event $name $state
+	return
+    }
 
     method Symbol: {class type symbol args} {
 	debug.marpa/slif/container/grammar {}
