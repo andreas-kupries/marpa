@@ -1,0 +1,139 @@
+# -*- tcl -*-
+## (c) 2018-present Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## Execution core for testing the mini-doctools parser on top of
+## different runtimes.
+## Configured by the caller with procedures.
+## - overall initialization and finalization
+## - parser creation and destruction
+## - AST result selection
+#
+## The procedures expected to exist are
+# * rt          :: Name of the runtime (`c` or `tcl`)
+#
+## Derived from these are
+# * cl  :: Name of the parser class
+# * tnp :: Prefix for test case name
+
+# # ## ### ##### ######## ############# #####################
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+kt require support fileutil ;# cat
+kt require support marpa::util
+
+# Parser packages - See (xx)
+
+# # ## ### ##### ######## ############# #####################
+## Local shorthands
+
+proc tnp     {} { return lang-doctoolssf-rt_[rt]  }
+proc base    {} { return doctools::parser::sf }
+proc cl      {} { return [base]::[rt] }
+proc setup   {} { [cl] create PARSE }
+proc cleanup {} { PARSE destroy }
+
+# # ## ### ##### ######## ############# #####################
+## No method sequence checking for the parser.
+## Methods can be called in any order.
+
+# # ## ### ##### ######## ############# #####################
+
+kt source support/ast.tcl
+kt source support/dirs.tcl
+kt source support/textutils.tcl
+
+# # ## ### ##### ######## ############# #####################
+## (xx)
+
+kt local support [cl]
+
+# # ## ### ##### ######## ############# #####################
+##  1 constructor/0
+##  2 process/1		(string)
+
+# # ## ### ##### ######## ############# #####################
+## constructor - wrong args, initial state, calls
+
+test [tnp]-constructor-1.1 "[cl] :: constructor, wrong args, too many" -body {
+    [cl] new X
+}   -returnCodes error \
+    -result "wrong # args: should be \"[cl] new\""
+
+# # ## ### ##### ######## ############# #####################
+## process - argument checking
+
+test [tnp]-process-1.0 "[cl] :: process, wrong args, not enough" -body {
+    PARSE process
+}   -setup   setup     \
+    -cleanup cleanup   \
+    -returnCodes error \
+    -result {wrong # args: should be "PARSE process string ..."}
+
+# # ## ### ##### ######## ############# #####################
+## process - Actual processing - Id formatting prep
+
+# # ## ### ##### ######## ############# #####################
+
+set inputs [lsort -dict [glob -directory [td]/sf/input *]]
+set max    [llength $inputs]
+set fmt    %0[string length $max]d
+
+set k -1
+foreach infile $inputs {
+    # Skip supporting data files (includes)
+    if {[string match _* [file tail $infile]]} continue
+
+    incr k
+    # - --   -----        -------------
+    set kd          [format $fmt $k]
+    set id          [file tail $infile]
+    set input       [fget $infile]
+    set exfile_ok   [td]/sf/result/$id
+    set exfile_err  [td]/sf/result/E-$id
+
+    if {[file exists $exfile_ok]} {
+	set expected [string trim [fget $exfile_ok]]
+	set code ok
+    } elseif {[file exists $exfile_err]} {
+	set expected [string trim [fget $exfile_err]]
+	set code error
+    } elseif {[file exists ${exfile_err}-[rt]]} {
+	set expected [string trim [fget ${exfile_err}-[rt]]]
+	set code error
+    } else {
+	# Fake, likely to trigger test case failure
+	set expected {}
+	set code     ok
+    }
+
+    # - --   -----        -------------
+    # For rt-c activate `TRACE` tag `enter` in `inbound.c` and then
+    # use the rebuilt runtime.
+
+    test [tnp]-process-2.${kd}---${id} "[cl] :: process $id" -body {
+	ast-format [PARSE process $input]
+    }   -setup   setup     \
+	-cleanup cleanup   \
+	-returnCodes $code \
+	-result $expected
+
+    unset kd id input exfile_ok exfile_err expected code
+}
+
+unset k inputs max fmt infile
+
+# # ## ### ##### ######## ############# #####################
+rename cleanup {}
+rename setup   {}
+rename cl      {}
+rename tnp     {}
+rename rt      {}
+
+# # ## ### ##### ######## ############# #####################
+return

@@ -7,7 +7,7 @@
 # (c) 2018 Grammar json::parser::c 0 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "json::parser::c".
-##	Generated On Fri Sep 07 20:57:55 PDT 2018
+##	Generated On Sat Sep 08 15:04:30 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via remeta
 ##
@@ -432,6 +432,25 @@ critcl::ccode {
     };
 
     /*
+    ** Map lexeme strings to parser symbol id (`match alternate` support).
+    */
+
+    static marpatcl_rtc_sym_lmap json_parser_c_lmap [12] = {
+	{ 184, 0  }, // colon
+	{ 185, 1  }, // comma
+	{ 261, 2  }, // lbrace
+	{ 262, 3  }, // lbracket
+	{ 263, 4  }, // lfalse
+	{ 264, 5  }, // lnull
+	{ 265, 6  }, // lnumber
+	{ 266, 7  }, // lstring
+	{ 267, 8  }, // ltrue
+	{ 285, 9  }, // quote
+	{ 288, 10 }, // rbrace
+	{ 289, 11 }, // rbracket
+    };
+
+    /*
     ** L0 structures
     */
 
@@ -575,10 +594,12 @@ critcl::ccode {
     static marpatcl_rtc_rules json_parser_c_l0 = { /* 48 */
 	/* .sname   */  &json_parser_c_pool,
 	/* .symbols */  { 318, json_parser_c_l0_sym_name },
+	/* .lmap    */  { 12, json_parser_c_lmap },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
 	/* .rcode   */  json_parser_c_l0_rule_definitions,
-	/* .events  */  0
+	/* .events  */  0,
+	/* .trigger */  0
     };
 
     static marpatcl_rtc_sym json_parser_c_l0semantics [3] = { /* 6 bytes */
@@ -635,10 +656,12 @@ critcl::ccode {
     static marpatcl_rtc_rules json_parser_c_g1 = { /* 48 */
 	/* .sname   */  &json_parser_c_pool,
 	/* .symbols */  { 24, json_parser_c_g1_sym_name },
+	/* .lmap    */  { 0, 0 },
 	/* .rules   */  { 18, json_parser_c_g1_rule_name },
 	/* .lhs     */  { 18, json_parser_c_g1_rule_lhs },
 	/* .rcode   */  json_parser_c_g1_rule_definitions,
-	/* .events  */  0
+	/* .events  */  0,
+	/* .trigger */  0
     };
 
     static marpatcl_rtc_sym json_parser_c_g1semantics [4] = { /* 8 bytes */

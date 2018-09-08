@@ -1,7 +1,7 @@
 # -*- tcl -*-
 ##
-# (c) 2015-2018 Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
-#                               http://core.tcl.tk/akupries/
+# (c) 2015-present Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                  http://core.tcl.tk/akupries/
 ##
 # This code is BSD-licensed.
 
@@ -48,11 +48,10 @@ oo::class create marpa::engine {
     # Map from rules (ids) to their lhs, for debugging output
     # -- TODO -- check if the data truly is debug only
 
-    variable mymap    ;# sym name     -> id:local
-    variable myrmap   ;# sym id:local -> name
-    variable myrule   ;# rule id      -> list (lhs sym id, list (rhs sym id))
-
-    variable myevents ;# symbol -> (type -> (name -> active))
+    variable mymap     ;# sym name     -> id:local
+    variable myrmap    ;# sym id:local -> name
+    variable myrule    ;# rule id      -> list (lhs sym id, list (rhs sym id))
+    variable mytrigger ;# symbol -> (type -> list (name))
 
     ##
     # API self:
@@ -64,9 +63,10 @@ oo::class create marpa::engine {
     # API postprocessor:
     #   symbols (symlist)  - Bulk allocate symbols for lexemes, chars and char classes.
 
-    constructor {postprocessor} {
+    constructor {env postprocessor} {
 	debug.marpa/engine {[debug caller] | }
 
+	marpa::import $env           Engine
 	marpa::import $postprocessor Forward
 
 	# Dynamic state for processing
@@ -81,10 +81,10 @@ oo::class create marpa::engine {
 	# to specify callbacks.
 
 	# Static configuration
-	set mymap    {}
-	set myrmap   {}
-	set myrule   {}
-	set myevents {}
+	set mymap     {}
+	set myrmap    {}
+	set myrule    {}
+	set mytrigger {}
 
 	debug.marpa/engine {[debug caller] | /ok}
 	return
@@ -94,9 +94,10 @@ oo::class create marpa::engine {
     ## Hidden methods for API methods. Subclasses integrate these into
     ## their state management
 
-    method events {spec} {
+    method trigger {spec} {
 	debug.marpa/engine {[debug caller] | }
-	set myevents $spec
+	# spec :: dict (sym -> (type -> list (name)))
+	set mytrigger $spec
 	return
     }
 
@@ -188,9 +189,10 @@ oo::class create marpa::engine {
 	debug.marpa/engine {[debug caller] | }
 	set events {}
 	foreach sym $syms {
-	    if {![dict exists $myevents $sym $type]} continue
-	    dict for {name active} [dict get $myevents $sym $type] {
-		if {!$active} continue
+	    if {![dict exists $mytrigger $sym $type]} continue
+	    set names [dict get $mytrigger $sym $type]
+	    foreach name $names {
+		if {![Engine active $name]} continue
 		lappend events $name
 	    }
 	}

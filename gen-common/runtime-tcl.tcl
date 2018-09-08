@@ -70,6 +70,7 @@ debug prefix marpa/gen/runtime/tcl {[debug caller] | }
 #
 ## Engine-specific placeholders
 #
+## @events@        --       dict (event name -> bool)
 ## @characters@    -- (lit) dict (symbol name --> character)
 ## @classes@       -- (lit) dict (symbol name --> class specification [Tcl cc regexp])
 ## @discards@      -- (l0)  list (symbol name)
@@ -77,10 +78,10 @@ debug prefix marpa/gen/runtime/tcl {[debug caller] | }
 ## @l0-symbols@    -- (l0)  list (symbol name)
 ## @l0-rules@      -- (l0)  list (rule-specification)
 ## @l0-semantics@  -- (l0)  list (array-descriptor-code)
-## @l0-events@     -- (l0)  dict (symbol name -> (type -> (event name -> boolean)))
+## @l0-trigger@    -- (l0)  dict (symbol name -> (type -> list (event name)))
 ## @g1-symbols@    -- (g1)  list (symbol name)
 ## @g1-rules@      -- (g1)  list (rule-specification) [%%]
-## @g1-events@     -- (g1)  dict (symbol name -> (type -> (event name -> boolean)))
+## @g1-trigger@    -- (g1)  dict (symbol name -> (type -> list (event name)))
 ## @start@         -- (g1)  symbol name
 ##
 ## [Ad %%] special forms declare the g1 rule semantics and names
@@ -273,17 +274,18 @@ proc ::marpa::gen::runtime::tcl::config {serial} {
     # been deconstructed into pairs of surrogate (ranges), each within
     # the BMP.
 
-    set semantics [L0Semantics $gc]      ; # map ('array -> list(semantic-code))
-    set latm      [$gc l0 latm]          ; # map (sym -> bool) (sym == lexemes)
-    set l0events  [$gc l0 events]        ; # map (sym -> (type -> (event -> bool)))
+    set semantics [L0Semantics $gc]      ; # dict ('array -> list(semantic-code))
+    set latm      [$gc l0 latm]          ; # dict (sym -> bool) (sym == lexemes)
+    set l0trigger [$gc l0 trigger]       ; # dict (sym -> (type -> list (event)))
     set lit	  [GetL0 $gc literal]    ; # list (sym)
     set l0symbols [GetL0 $gc {}]         ; # list (sym) - as is
     set discards  [GetL0 $gc discard]    ; # list (sym) - as is
     set lex       [GetL0 $gc lexeme]     ; # list (sym)
     set g1symbols [$gc g1 symbols-of {}] ; # list (sym)
-    set g1events  [$gc g1 events]        ; # map (sym -> (type -> (event -> bool)))
+    set g1trigger [$gc g1 trigger]       ; # dict (sym -> (type -> list (event)))
     set start     [$gc start?]
-
+    set events    [$gc events]           ; # dict (ename -> bool)
+    
     # We ignore g1 class 'terminal'. That is the same as the l0
     # lexemes, and the semantics made sure of that, as did the
     # container validation.
@@ -306,18 +308,20 @@ proc ::marpa::gen::runtime::tcl::config {serial} {
     # Generate the configuration for the templating engine.
 
     set     map [core-config]
-    lappend map @characters@    [FormatDict   $characters 0] ; # literal: map sym -> char
-    lappend map @classes@       [FormatDict   $classes]      ; # literal: map sym -> spec
-    lappend map @discards@      [FormatList   $discards]     ; # list (sym)
-    lappend map @lexemes@       [FormatDict   $latm 0]       ; # map (sym -> latm)
-    lappend map @l0-symbols@    [FormatList   $l0symbols]    ; # list (sym)
-    lappend map @l0-rules@      [FormatList   $l0rules]      ; # list (rule)
-    lappend map @l0-semantics@  $semantics                   ; # list (array-descriptor-code)
-    lappend map @l0-events@     [FormatEvents $l0events 0]
-    lappend map @g1-symbols@    [FormatList   $g1symbols]    ; # list (sym)
-    lappend map @g1-rules@      [FormatList   $g1rules 1 0]  ; # list (rule) [%%]
-    lappend map @g1-events@     [FormatEvents $g1events 1]
-    lappend map @start@         $start                       ; # sym
+
+    lappend map @characters@    [C [SL [FD     $characters]]]    ; # literal: dict (sym -> char)
+    lappend map @classes@       [C [SL [FD [LD $classes]]]]      ; # literal: dict (sym -> spec)
+    lappend map @discards@      [C [L [SL      $discards]]]      ; # list (sym)
+    lappend map @g1-trigger@    [C [FT         $g1trigger]]      ; # dict (sym -> (when -> list (event)))
+    lappend map @g1-rules@      [C [L          $g1rules]]        ; # list (rule) [%%]
+    lappend map @g1-symbols@    [C [L [SL      $g1symbols]]]     ; # list (sym)
+    lappend map @l0-trigger@    [C [FT         $l0trigger]]      ; # dict (sym -> (when -> list (event)))
+    lappend map @l0-rules@      [C [L [SL      $l0rules]]]       ; # list (rule)
+    lappend map @l0-semantics@  $semantics                       ; # list (array-descriptor-code)
+    lappend map @l0-symbols@    [C [L [SL      $l0symbols]]]     ; # list (sym)
+    lappend map @events@        [C [SL [FD     $events]]]        ; # dict (event -> active)
+    lappend map @lexemes@       [C [SL [FD     $latm]]]          ; # dict (sym -> latm)
+    lappend map @start@         $start                           ; # sym
 
     return $map
 }
@@ -609,80 +613,85 @@ proc ::marpa::gen::runtime::tcl::Char {code} {
     return [char quote tcl [format %c $code]]
 }
 
-proc ::marpa::gen::runtime::tcl::FormatList {words {listify 1} {sort 1}} {
+proc ::marpa::gen::runtime::tcl::FT {dict} {
     debug.marpa/gen/runtime/tcl {}
-    # The context of the list in the template is
-    # <TAB>return {@@}
-    # where @@ is the laceholder for the list.
-    # For proper formatting we have to indent, plus additional leading
-    # and trailing newlines.
-    set prefix "\n\t    "
-    if {$sort} {
-	set words [lsort -dict $words]
+    # dict = (symbol -> type -> list (event))
+    if {![dict size $dict]} {
+	return {}
     }
-    if {$listify} {
-	set words [lmap w $words { list $w }]
+    # While the input is technically a dictionary the values have a
+    # sub-structure we want to format nicely as well.
+
+    foreach sym [lsort -dict [dict keys $dict]] {
+	set spec [dict get $dict $sym]    
+	# spec = (type -> list (event))
+	lappend lines "[list $sym] \{"
+	lappend lines {*}[I {    } [SL [FD $spec]]]
+	lappend lines "\}"
     }
-    return "$prefix[join $words $prefix]\n\t"
+    return $lines
 }
 
-proc ::marpa::gen::runtime::tcl::FormatDict {dict {listify 1} {sort 1}} {
+proc ::marpa::gen::runtime::tcl::FD {dict} {
+    # Format a dictionary into a list (of lines)
     debug.marpa/gen/runtime/tcl {}
-    # The context of the dict in the template is
-    # <TAB>return {@@}
-    # where @@ is the laceholder for the list.
-    # For proper formatting we have to indent (*), plus additional
-    # leading and trailing newlines.
-    #
-    # (*) <TAB> and 4 <SPACE>
 
+    set  names [lsort -dict [dict keys $dict]]
+    set  maxl  [Max $names]
+    incr maxl 2
+
+    set lines {}
+    foreach name $names {
+	set dname [list $name]
+	set value [dict get $dict $name]
+	lappend lines [format "%-*s %s" $maxl $dname $value]
+    }
+    return $lines
+}
+
+proc ::marpa::gen::runtime::tcl::Max {words} {
     set maxl 0
-    set names [lsort -dict [dict keys $dict]]
+    set names [lsort -dict $words]
     foreach name $names {
 	set name [list $name]
 	if {[string length $name] > $maxl} {
 	    set maxl [string length $name]
 	}
     }
-    set maxl [expr {$maxl + 2}]
-    set lines {}
-    foreach name $names {
-	set dname [list $name]
-	set value [dict get $dict $name]
-	if {$listify} { set value [list $value] }
-	lappend lines [format "%-*s %s" \
-			   $maxl $dname $value]
-    }
-
-    return [FormatList $lines 0 $sort]
+    return $maxl
 }
 
-proc ::marpa::gen::runtime::tcl::FormatEvents {dict multi} {
-    # dict = (symbol -> (type -> (event -> bool)))
-    if {![dict size $dict]} {
-	return $dict
-    }
-    foreach sym [lsort -dict [dict keys $dict]] {
-	set spec [dict get $dict $sym]
-	lappend lines "[list $sym] \{"
-	foreach type [lsort -dict [dict keys $spec]] {
-	    set events [dict get $spec $type]
-	    if {$multi} {
-		# multiple events per type, show each event on its own line
-		lappend lines "    [list $type] \{"
-		foreach e [lsort -dict [dict keys $events]] {
-		    set state [dict get $events $e]
-		    lappend lines "        [list $e] $state"
-		}
-		lappend lines "    \}"
-	    } else {
-		# more compact, useful when we have only one event per type
-		lappend lines "    [list $type] \{[lrange $events 0 end]\}"
-	    }
-	}
-	lappend lines "\}"
-    }
-    return "\n\t    [join $lines "\n\t    "]\n\t"
+proc ::marpa::gen::runtime::tcl::C {lines} {
+    # The context of the list in the template is
+    # <TAB>return {@@}
+    # where @@ is the placeholder for the list.
+    # For proper formatting we have to indent the incoming lines some
+    # more, add place additional leading and trailing newlines.
+    if {![llength $lines]} { return "" }
+    set prefix "\n\t    "
+    return "$prefix[join $lines $prefix]\n\t"
+}
+
+proc ::marpa::gen::runtime::tcl::SL {words} {
+    # Sort words lexicographically
+    return [lsort -dict $words]
+}
+
+proc ::marpa::gen::runtime::tcl::LD {dict} {
+    # Listify the dict values.
+    set new {}
+    dict for {k v} $dict { lappend new $k [list $v] }
+    return $new
+}
+
+proc ::marpa::gen::runtime::tcl::L {words} {
+    # Listify the words
+    return [lmap w $words { list $w }]
+}
+
+proc ::marpa::gen::runtime::tcl::I {prefix lines} {
+    # Indent the lines
+    return [lmap line $lines { set _ $prefix$line }]
 }
 
 # # ## ### ##### ######## #############

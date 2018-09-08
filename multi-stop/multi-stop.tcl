@@ -151,7 +151,9 @@ oo::class create marpa::multi-stop::mgr {
     forward alternate       PAR match alternate
     forward clear           PAR match clear
     forward view            PAR match view
-
+    #
+    forward barrier         PAR match barrier
+    
     method RA {args} {
 	debug.marpa/multi-stop {}
 	set res [{*}$args]

@@ -1,0 +1,23 @@
+# -*- tcl -*-
+# (c) <Year> Grammar <Name> By <Writer>
+# (Gen: <Operator>, <Tool>, <GenerationTime>)
+# (c) 2017 Template - Andreas Kupries - BSD licensed
+# http://wiki.tcl.tk/andreas%20kupries
+# http://core.tcl.tk/akupries/
+package provide <Name> <Version>
+package require Tcl 8.5
+package require TclOO
+package require debug
+package require debug::caller
+package require marpa::slif::container
+debug define marpa/grammar/<Name>
+debug prefix marpa/grammar/<Name> {[debug caller] | }
+oo::class create <Name> { superclass marpa::slif::container ; constructor {} { debug.marpa/grammar/<Name> ; my deserialize {global {start A inaccessible warn} lexeme {action {array values}} g1 {{} {A {{priority B 0 action {array values} assoc left mask 0}}} terminal {B terminal} trigger {A {
+                completed fox
+            }}} l0 {discard {C {{priority @CHR:<c> 0}}} lexeme {B {{priority @CHR:<a> 0}}} literal {@CHR:<a> {{character 97}} @CHR:<c> {{character 99}}} latm {B 1} trigger {C {
+                discard snafu
+            }}} event {
+        fox on
+        snafu on
+    }}}}
+return

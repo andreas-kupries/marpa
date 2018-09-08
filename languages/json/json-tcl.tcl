@@ -7,7 +7,7 @@
 # (c) 2018 Grammar json::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "json::parser::tcl".
-##	Generated On Fri Sep 07 20:57:56 PDT 2018
+##	Generated On Sat Sep 08 15:04:31 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via remeta
 
@@ -113,6 +113,13 @@ oo::class create json::parser::tcl {
 	}
     }
 
+    method Events {} {
+	debug.json/parser/tcl
+	# Map declared events to their initial activation status
+	# :: dict (event name -> active)
+	return {}
+    }
+
     method L0.Symbols {} {
 	# Non-lexeme, non-literal symbols
 	debug.json/parser/tcl
@@ -194,10 +201,10 @@ oo::class create json::parser::tcl {
 	return {start length value}
     }
 
-    method L0.Events {} {
+    method L0.Trigger {} {
 	debug.json/parser/tcl
-	# L0 parse event definitions (pre-, post-lexeme, discard)
-	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# L0 trigger definitions (pre-, post-lexeme, discard)
+	# :: dict (symbol -> (type -> list (event name)))
 	# Due to the nature of SLIF syntax we can only associate one
 	# event per type with each symbol, for a maximum of three.
 	return {}
@@ -248,10 +255,10 @@ oo::class create json::parser::tcl {
 	}
     }
 
-    method G1.Events {} {
+    method G1.Trigger {} {
 	debug.json/parser/tcl
 	# G1 parse event definitions (predicted, nulled, completed)
-	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# :: dict (symbol -> (type -> list (event name)))
 	# Each symbol can have more than one event per type.
 	return {}
     }

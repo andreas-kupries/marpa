@@ -1,4 +1,7 @@
 grammar {
+    event {
+        snafu on
+    }
     global {
         start B
         inaccessible warn
@@ -21,13 +24,6 @@ grammar {
         discard {
             A { {priority @CHR:<a> 0} }
         }
-        events {
-            A {
-                discard {
-                    snafu on
-                }
-            }
-        }
         latm {
             C 1
         }
@@ -37,6 +33,11 @@ grammar {
         literal {
             @CHR:<a> { {byte 97} }
             @CHR:<c> { {byte 99} }
+        }
+        trigger {
+            A {
+                discard snafu
+            }
         }
     }
 }

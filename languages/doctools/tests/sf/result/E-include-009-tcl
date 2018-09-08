@@ -1,0 +1,25 @@
+Parsing failed in gate. Stopped at offset 11 after reading 'i'. Expected any character in [[[\\t-\\r\\40]\\v] while looking for any of (Vset, White).
+L0 Report:
+______ P2    @1-1 <@STR:<vset>>  --> . <@CHR:<v>> <@CHR:<s>> <@CHR:<e>> <@CHR:<t>>
+______ P14   @1-1 <CL>           --> . <@CHR:<\133>>
+______ P16   @1-1 <COMMENT>      --> . <CL> <WHITE0> <@STR:<comment>> <WHITE1> <WORD> <WHITE0> <CR>
+______ P17   @1-1 <CONTINUATION> --> . <SPACE0> <@CHR:<\134>> <NEWLINE> <SPACE0>
+______ P36   @1-1 <SPACE>        --> . <@CLS:<\t-\r\40>>
+______ P37   @1-1 <SPACE0>       --> . <SPACE>
+______ P38   @1-1 <SPACE1>       --> . <SPACE>
+______ P44   @1-1 <VSET>         --> . <@STR:<vset>>
+______ P45   @1-1 <Vset>         --> . <VSET>
+______ P46   @1-1 <WHITE>        --> . <COMMENT>
+______ P47   @1-1 <WHITE>        --> . <CONTINUATION>
+______ P48   @1-1 <WHITE>        --> . <SPACE1>
+______ P49   @1-1 <White>        --> . <WHITE1>
+______ P51   @1-1 <WHITE1>       --> . <WHITE>
+______ R17:1 @1-1 <CONTINUATION> --> <SPACE0> . <@CHR:<\134>> <NEWLINE> <SPACE0>
+______ R74:1 @0-1 <@START>       --> <ACS:Vset> . <Vset>
+______ R75:1 @0-1 <@START>       --> <ACS:White> . <White>
+Mismatch:
+'i' => (3 20 21 22) ni
+   11: 'v'
+   13: '['
+   14: '\\'
+   24: [\t-\r\40]

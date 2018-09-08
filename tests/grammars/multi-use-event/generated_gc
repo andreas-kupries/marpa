@@ -1,0 +1,103 @@
+# -*- tcl -*-
+##
+# This template is BSD-licensed.
+# (c) 2017 Template - Andreas Kupries http://wiki.tcl.tk/andreas%20kupries
+#                                     http://core.tcl.tk/akupries/
+##
+# (c) <Year> Grammar <Name> By <Writer>
+##
+##	Container for SLIF Grammar "<Name>"
+##	Generated On <GenerationTime>
+##		  By <Operator>
+##		 Via <Tool>
+##
+
+package provide <Name> <Version>
+
+# # ## ### ##### ######## #############
+## Requisites
+
+package require Tcl 8.5       ;# -- Foundation
+package require TclOO         ;# -- Implies Tcl 8.5 requirement.
+package require debug         ;# Tracing
+package require debug::caller ;#
+package require marpa::slif::container
+
+# # ## ### ##### ######## #############
+
+debug define marpa/grammar/<Name>
+debug prefix marpa/grammar/<Name> {[debug caller] | }
+
+# # ## ### ##### ######## #############
+
+oo::class create <Name> {
+    superclass marpa::slif::container
+
+    constructor {} {
+	debug.marpa/grammar/<Name>
+	my deserialize {
+	    event {
+	        lex on
+	        snafu on
+	    }
+	    global {
+	        start A
+	        inaccessible warn
+	    }
+	    g1 {
+	        {} {
+	            A {
+	                {priority B 0
+	                        action {array values}
+	                        assoc left
+	                        mask 0}
+	                {priority D 0
+	                        action {array values}
+	                        assoc left
+	                        mask 0}
+	            }
+	        }
+	        terminal {
+	            B { terminal }
+	            D { terminal }
+	        }
+	    }
+	    lexeme {
+	        action {array values}
+	    }
+	    l0 {
+	        discard {
+	            C { {priority @CHR:<c> 0} }
+	        }
+	        latm {
+	            B 1
+	            D 1
+	        }
+	        lexeme {
+	            B { {priority @CHR:<a> 0} }
+	            D { {priority @CHR:<d> 0} }
+	        }
+	        literal {
+	            @CHR:<a> { {character 97} }
+	            @CHR:<c> { {character 99} }
+	            @CHR:<d> { {character 100} }
+	        }
+	        trigger {
+	            B {
+	                before lex
+	            }
+	            C {
+	                discard snafu
+	            }
+	            D {
+	                after lex
+	            }
+	        }
+	    }
+	}
+	return
+    }
+}
+
+# # ## ### ##### ######## #############
+return

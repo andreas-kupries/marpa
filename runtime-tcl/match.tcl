@@ -71,6 +71,12 @@ oo::class create marpa::lexer::ped {
     method alternate {symbol sv} { my Access ba Store alternate $symbol $sv }
     method clear     {}          { my Access ba Store clear                 }
 
+    # Barrier check. For use by stop handlers. Treat the stop location
+    # like an eof lexemes cannot cross and the lexer may bounce off,
+    # until it reaches it at the end of the last possible lexeme.
+
+    method barrier {} {	my Access s Gate barrier }
+    
     # Debug helper method, also testsuite
     method view {} {
 	my ValidatePermissions
@@ -101,22 +107,26 @@ oo::class create marpa::lexer::ped {
     }
 
     method Access {code args} {
+	debug.marpa/lexer/match {[debug caller] | }
 	my ValidatePermissions
 	my ValidateType $code
 	return [{*}$args]
     }
 
     method ValidatePermissions {} {
+	debug.marpa/lexer/match {[debug caller] | }
 	if {[Store event] ne {}} return ; # Access permitted
 	return -code error -errorcode {MARPA MATCH PERMIT} \
 	    "Invalid access to match state, not inside event handler"
     }
 
     method ValidateType {code} {
+	debug.marpa/lexer/match {[debug caller] | }
 	# Fast handling when any event allowed
 	if {$code eq "*"} return
 	# Translate code to set of allowed events
 	lassign [dict get {
+	    s    {STOP_EVENT {stop}}
 	    ba   {BA_EVENT   {before after}}
 	    dba  {DBA_EVENT  {discard before after}}
 	    sdba {SDBA_EVENT {stop discard before after}}

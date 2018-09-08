@@ -1,4 +1,7 @@
 grammar {
+    event {
+        fox on
+    }
     global {
         start A
         inaccessible warn
@@ -21,13 +24,6 @@ grammar {
         discard {
             fox { {priority @CHR:<b> 0} }
         }
-        events {
-            fox {
-                discard {
-                    fox on
-                }
-            }
-        }
         latm {
             foo 1
         }
@@ -37,6 +33,11 @@ grammar {
         literal {
             @CHR:<a> { {character 97} }
             @CHR:<b> { {character 98} }
+        }
+        trigger {
+            fox {
+                discard fox
+            }
         }
     }
 }

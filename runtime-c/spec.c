@@ -418,23 +418,27 @@ int
 marpatcl_rtc_spec_symid (marpatcl_rtc_rules* g, const char* symname)
 {
     TRACE_FUNC ("((rules*) %p, %s)", g, symname ? symname : "<<null>>");
-    marpatcl_rtc_events* e   = g->events;
-    marpatcl_rtc_symid*  map = e->idmap;
+
+    marpatcl_rtc_size      max  = g->lmap.size - 1;
+    marpatcl_rtc_sym_lmap* map  = g->lmap.data;
+    const char*            pool = g->sname->string;
+    marpatcl_rtc_size*     off  = g->sname->offset;
 
     // Binary search for the symbol in the table, then return its id.
 
     int low, high;
-    for (low = 0, high = map->size-1; low <= high; ) {
-	int mid   = (low+high)/2;
-	const char* probe = map->symbol [mid];
+    for (low = 0, high = max; low <= high; ) {
+	int mid           = (low+high)/2;
+	int sid           = map[mid].string;
+	const char* probe = pool + off[sid];
 
 	TRACE ("probe [%d..%d] @%d = %s ~ %s", low, high, mid, probe, symname);
 
 	int delta = strcmp (probe, symname);
 
 	if (!delta) {
-	    TRACE ("%s ==> %d", symname, map->id [mid]);
-	    TRACE_RETURN ("%d", map->id [mid]);
+	    TRACE ("%s ==> %d", symname, map[mid].lexeme);
+	    TRACE_RETURN ("%d", map[mid].lexeme);
 	}
 	if (delta > 0) {
 	    high = mid-1;

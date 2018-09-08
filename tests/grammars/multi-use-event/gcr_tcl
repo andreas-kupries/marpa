@@ -1,0 +1,60 @@
+grammar {
+    event {
+        lex on
+        snafu on
+    }
+    global {
+        start A
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            A {
+                {priority B 0
+                        action {array values}
+                        assoc left
+                        mask 0}
+                {priority D 0
+                        action {array values}
+                        assoc left
+                        mask 0}
+            }
+        }
+        terminal {
+            B { terminal }
+            D { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        discard {
+            C { {priority @CHR:<c> 0} }
+        }
+        latm {
+            B 1
+            D 1
+        }
+        lexeme {
+            B { {priority @CHR:<a> 0} }
+            D { {priority @CHR:<d> 0} }
+        }
+        literal {
+            @CHR:<a> { {character 97} }
+            @CHR:<c> { {character 99} }
+            @CHR:<d> { {character 100} }
+        }
+        trigger {
+            B {
+                before lex
+            }
+            C {
+                discard snafu
+            }
+            D {
+                after lex
+            }
+        }
+    }
+}

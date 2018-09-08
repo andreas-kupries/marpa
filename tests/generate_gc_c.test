@@ -34,9 +34,9 @@ test marpa-gen-format-gc-c-container-1.1 {container, wrong args, too many} -body
 
 # # ## ### ##### ######## ############# #####################
 
-test-grammar-file-format ID generated_gc
+test-grammar-file-format ID generated_gc_c
 
-test-grammar-map generated_gc --> k id gen base {
+test-grammar-map generated_gc_c --> k id gen base {
     test marpa-gen-format-gc-c-2.[ID $k]---${id} "gen gc-c $id" -setup {
 	g-std-config
 	marpa::slif::container create GC

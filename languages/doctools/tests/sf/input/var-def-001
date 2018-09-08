@@ -1,0 +1,1 @@
+[vset "a b" {c [include a] d}]

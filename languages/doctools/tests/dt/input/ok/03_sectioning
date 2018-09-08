@@ -1,0 +1,19 @@
+[manpage_begin TEST z 3.14.15.926]
+[description]
+[section 1]
+A
+[section 2]
+B
+[subsection 2.1]
+B-a
+[subsection 2.2]
+B-b
+[section 3]
+C
+
+[para]
+At [sectref 1].
+[para]
+At [sectref __undefined__].
+[manpage_end]
+

@@ -1,0 +1,37 @@
+#!/bin/bash
+
+base="doctools::parser::"
+v=1
+a="Andreas Kupries"
+
+dt="g/doctools.slif"
+sf="g/sf.slif"
+
+clear;echo
+
+gp() {
+    gr=$1
+    label=$2
+    fname=$3
+    marpa-gen \
+	-V $v \
+	-A "${a}" \
+	-T cparse-critcl \
+	-N ${base}${label}c \
+	$gr ${fname}-c.tcl
+    echo
+    marpa-gen \
+	-V $v \
+	-A "${a}" \
+	-T tparse \
+	-N ${base}${label}tcl \
+	$gr ${fname}-tcl.tcl
+    echo
+}
+
+mkdir L 2>/dev/null
+
+(
+    gp $dt ''   doctools-lang
+    gp $sf sf:: doctools-sf
+) 2>&1 | tee L/X.make
