@@ -7,7 +7,7 @@
 # (c) 2018 Grammar mindt::parser::sf::c 0 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "mindt::parser::sf::c".
-##	Generated On Sat Sep 08 15:04:26 PDT 2018
+##	Generated On Sat Sep 08 15:32:15 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via remeta
 ##
@@ -763,8 +763,8 @@ critcl::ccode {
 
 	/* --- (2) --- --- --- Semantics Data
 	 */
-	         /* 37 */ 1, MARPATCL_SV_A_FIRST,
-	           /* 39 */ 2, MARPATCL_SV_RULE_NAME,     MARPATCL_SV_VALUE
+	/* 37 */ 1, MARPATCL_SV_A_FIRST,
+	/* 39 */ 2, MARPATCL_SV_RULE_NAME, MARPATCL_SV_VALUE
     };
 
     static marpatcl_rtc_sym mindt_parser_sf_c_g1masking [93] = { /* 186 bytes */

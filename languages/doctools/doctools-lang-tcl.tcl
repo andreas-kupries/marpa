@@ -7,11 +7,11 @@
 # (c) 2018 Grammar doctools::parser::tcl By Andreas Kupries
 ##
 ##	`marpa::runtime::tcl`-derived Parser for grammar "doctools::parser::tcl".
-##	Generated On Mon Aug 27 21:07:08 PDT 2018
+##	Generated On Sat Sep 08 15:32:29 PDT 2018
 ##		  By aku@hephaistos
-##		 Via marpa-gen
+##		 Via remeta
 
-package provide doctools::parser::tcl 1
+package provide doctools::parser::tcl 0
 
 # # ## ### ##### ######## #############
 ## Requisites
@@ -187,6 +187,15 @@ oo::class create doctools::parser::tcl {
 	# Discarded symbols (whitespace)
 	return {
 	    Whitespace
+	}
+    }
+
+    method Events {} {
+	debug.doctools/parser/tcl
+	# Map declared events to their initial activation status
+	# :: dict (event name -> active)
+	return {
+	    special   on
 	}
     }
 
@@ -671,21 +680,21 @@ oo::class create doctools::parser::tcl {
 	return {start length value}
     }
 
-    method L0.Events {} {
+    method L0.Trigger {} {
 	debug.doctools/parser/tcl
-	# L0 parse event definitions (pre-, post-lexeme, discard)
-	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# L0 trigger definitions (pre-, post-lexeme, discard)
+	# :: dict (symbol -> (type -> list (event name)))
 	# Due to the nature of SLIF syntax we can only associate one
 	# event per type with each symbol, for a maximum of three.
 	return {
 	    CInclude {
-	        after {special on}
+	        after   special
 	    }
 	    CVdef {
-	        after {special on}
+	        after   special
 	    }
 	    CVref {
-	        after {special on}
+	        after   special
 	    }
 	}
     }
@@ -1043,10 +1052,10 @@ oo::class create doctools::parser::tcl {
 	}
     }
 
-    method G1.Events {} {
+    method G1.Trigger {} {
 	debug.doctools/parser/tcl
 	# G1 parse event definitions (predicted, nulled, completed)
-	# events = dict (symbol -> (e-type -> (e-name -> boolean)))
+	# :: dict (symbol -> (type -> list (event name)))
 	# Each symbol can have more than one event per type.
 	return {}
     }

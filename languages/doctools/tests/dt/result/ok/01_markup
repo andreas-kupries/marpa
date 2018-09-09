@@ -50,8 +50,10 @@ manpage
         m_fun
           simple
             @282 8 'Function'
-        simplex
-          @291 3 {'::\n'}
+        simple
+          @291 2 '::'
+        space
+          @293 1 {'\n'}
       p_separator
       paragraph
         space
@@ -82,8 +84,10 @@ manpage
         m_package
           simple
             @446 7 'Package'
-        simplex
-          @454 3 {'::\n'}
+        simple
+          @454 2 '::'
+        space
+          @456 1 {'\n'}
         m_rb
         space
           @461 1 {'\n'}
@@ -130,19 +134,19 @@ manpage
           tclwords
             simple
               @704 1 '1'
-            space
+            wspace
               @705 1 {' '}
             simple
               @706 1 '2'
-            space
+            wspace
               @707 1 {' '}
             simple
               @708 1 '3'
-            space
+            wspace
               @709 1 {' '}
             simple
               @710 1 '4'
-            space
+            wspace
               @711 1 {' '}
             simple
               @712 3 '...'
@@ -161,5 +165,7 @@ manpage
         m_image
           simple
             @791 5 'Image'
-        simplex
-          @797 3 {'::\n'}
+        simple
+          @797 2 '::'
+        space
+          @799 1 {'\n'}

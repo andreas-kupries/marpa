@@ -14,16 +14,28 @@ manpage
           item_list_elem
             paragraphs
               paragraph
-                simplex
-                  @479 3 {' 1 '}
+                space
+                  @479 1 {' '}
+                simple
+                  @480 1 '1'
+                space
+                  @481 1 {' '}
               p_separator
               paragraph
-                simplex
-                  @488 3 {' 2 '}
+                space
+                  @488 1 {' '}
+                simple
+                  @489 1 '2'
+                space
+                  @490 1 {' '}
               p_separator
               paragraph
-                simplex
-                  @497 3 {' 3\n'}
+                space
+                  @497 1 {' '}
+                simple
+                  @498 1 '3'
+                space
+                  @499 1 {'\n'}
           item_list_elem
             paragraphs
               paragraph
@@ -33,16 +45,28 @@ manpage
                   enum_list_elem
                     paragraphs
                       paragraph
-                        simplex
-                          @537 3 {' a '}
+                        space
+                          @537 1 {' '}
+                        simple
+                          @538 1 'a'
+                        space
+                          @539 1 {' '}
                       p_separator
                       paragraph
-                        simplex
-                          @546 3 {' b '}
+                        space
+                          @546 1 {' '}
+                        simple
+                          @547 1 'b'
+                        space
+                          @548 1 {' '}
                       p_separator
                       paragraph
-                        simplex
-                          @555 3 {' c\n'}
+                        space
+                          @555 1 {' '}
+                        simple
+                          @556 1 'c'
+                        space
+                          @557 1 {'\n'}
                   enum_list_elem
                     paragraphs
                       paragraph
@@ -55,53 +79,89 @@ manpage
                                 @595 3 'foo'
                             paragraphs
                               paragraph
-                                simplex
-                                  @599 7 {' snafu\n'}
+                                space
+                                  @599 1 {' '}
+                                simple
+                                  @600 5 'snafu'
+                                space
+                                  @605 1 {'\n'}
                           def_list_elem
                             m_def
                               simple
                                 @611 3 'bar'
                             paragraphs
                               paragraph
-                                simplex
-                                  @615 6 {' barf\n'}
+                                space
+                                  @615 1 {' '}
+                                simple
+                                  @616 4 'barf'
+                                space
+                                  @620 1 {'\n'}
                           def_list_elem
                             m_def
                               simple
                                 @626 3 'roo'
                             paragraphs
                               paragraph
-                                simplex
-                                  @630 6 {' gork\n'}
+                                space
+                                  @630 1 {' '}
+                                simple
+                                  @631 4 'gork'
+                                space
+                                  @635 1 {'\n'}
                         space
                           @646 1 {'\n'}
                   enum_list_elem
                     paragraphs
                       paragraph
-                        simplex
-                          @653 3 {' a '}
+                        space
+                          @653 1 {' '}
+                        simple
+                          @654 1 'a'
+                        space
+                          @655 1 {' '}
                       p_separator
                       paragraph
-                        simplex
-                          @662 3 {' b '}
+                        space
+                          @662 1 {' '}
+                        simple
+                          @663 1 'b'
+                        space
+                          @664 1 {' '}
                       p_separator
                       paragraph
-                        simplex
-                          @671 3 {' c\n'}
+                        space
+                          @671 1 {' '}
+                        simple
+                          @672 1 'c'
+                        space
+                          @673 1 {'\n'}
                 space
                   @684 1 {'\n'}
           item_list_elem
             paragraphs
               paragraph
-                simplex
-                  @691 3 {' 4 '}
+                space
+                  @691 1 {' '}
+                simple
+                  @692 1 '4'
+                space
+                  @693 1 {' '}
               p_separator
               paragraph
-                simplex
-                  @700 3 {' 5 '}
+                space
+                  @700 1 {' '}
+                simple
+                  @701 1 '5'
+                space
+                  @702 1 {' '}
               p_separator
               paragraph
-                simplex
-                  @709 3 {' 6\n'}
+                space
+                  @709 1 {' '}
+                simple
+                  @710 1 '6'
+                space
+                  @711 1 {'\n'}
         space
           @722 1 {'\n'}

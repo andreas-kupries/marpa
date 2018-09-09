@@ -26,13 +26,13 @@ manpage
         space
           @120 1 {'\n'}
         example_text
-          breaker
-            @136 2 {'\n\t'}
           nbsimplex
-            @138 17 {'Inlined Example \\'}
-          breaker
-            @155 2 {'\n\t'}
+            @136 18 {'\n\tInlined Example '}
           nbsimplex
             @157 9 {'Next Line'}
-        simplex
-          @180 8 {'\nFERTIG\n'}
+        space
+          @180 1 {'\n'}
+        simple
+          @181 6 'FERTIG'
+        space
+          @187 1 {'\n'}

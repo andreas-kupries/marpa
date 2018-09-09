@@ -490,8 +490,8 @@ critcl::ccode {
 
 	/* --- (2) --- --- --- Semantics Data
 	 */
-	            /* 2 */ 1, MARPATCL_SV_RULE_NAME,
-	            /* 4 */ 2, MARPATCL_SV_RULE_NAME,     MARPATCL_SV_VALUE
+	/* 2 */ 1, MARPATCL_SV_RULE_NAME,
+	/* 4 */ 2, MARPATCL_SV_RULE_NAME, MARPATCL_SV_VALUE
     };
 
     static marpatcl_rtc_sym <Name>_g1masking [2] = { /* 4 bytes */

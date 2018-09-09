@@ -25,7 +25,7 @@ manpage
       tclwords
         simple
           @128 4 'KEYA'
-        space
+        wspace
           @132 1 {' '}
         simple
           @133 4 'KEYZ'
@@ -33,7 +33,7 @@ manpage
       tclwords
         simple
           @149 5 'OTHER'
-        space
+        wspace
           @154 1 {' '}
         simple
           @155 4 'ELSE'

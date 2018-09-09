@@ -3,7 +3,7 @@ return
 ## (c) 2018-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 
-kt in ../languages/min-dt/tests { kt source mindt-rtc.test }
+kt in ../languages/doctools/tests { kt source doctools-rtc.test }
 
 # # ## ### ##### ######## ############# #####################\
 return

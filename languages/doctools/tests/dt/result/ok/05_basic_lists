@@ -10,8 +10,12 @@ manpage
   body
     paragraphs
       paragraph
-        simplex
-          @64 4 {'\nOK\n'}
+        space
+          @64 1 {'\n'}
+        simple
+          @65 2 'OK'
+        space
+          @67 1 {'\n'}
       p_separator
       paragraph
         space
@@ -25,8 +29,12 @@ manpage
                 @115 10 'argument-1'
             paragraphs
               paragraph
-                simplex
-                  @126 14 {'\nverification\n'}
+                space
+                  @126 1 {'\n'}
+                simple
+                  @127 12 'verification'
+                space
+                  @139 1 {'\n'}
           arg_list_elem
             m_arg_def
               simple
@@ -37,8 +45,12 @@ manpage
                 @167 3 'out'
             paragraphs
               paragraph
-                simplex
-                  @171 15 {' mogrification\n'}
+                space
+                  @171 1 {' '}
+                simple
+                  @172 13 'mogrification'
+                space
+                  @185 1 {'\n'}
         space
           @196 1 {'\n'}
       p_separator
@@ -52,16 +64,24 @@ manpage
                 @235 9 'command-a'
             paragraphs
               paragraph
-                simplex
-                  @245 13 {' explanation\n'}
+                space
+                  @245 1 {' '}
+                simple
+                  @246 11 'explanation'
+                space
+                  @257 1 {'\n'}
           cmd_list_elem
             m_cmd_def
               simple
                 @267 9 'command-b'
             paragraphs
               paragraph
-                simplex
-                  @277 13 {'\nelucidation\n'}
+                space
+                  @277 1 {'\n'}
+                simple
+                  @278 11 'elucidation'
+                space
+                  @289 1 {'\n'}
         space
           @300 1 {'\n'}
       p_separator
@@ -75,8 +95,12 @@ manpage
                 @338 4 'term'
             paragraphs
               paragraph
-                simplex
-                  @343 12 {' definition\n'}
+                space
+                  @343 1 {' '}
+                simple
+                  @344 10 'definition'
+                space
+                  @354 1 {'\n'}
           def_list_elem
             m_call
               tclwords
@@ -84,8 +108,12 @@ manpage
                   @361 9 'a-command'
             paragraphs
               paragraph
-                simplex
-                  @371 10 {'\nsemantic\n'}
+                space
+                  @371 1 {'\n'}
+                simple
+                  @372 8 'semantic'
+                space
+                  @380 1 {'\n'}
         space
           @391 1 {'\n'}
       p_separator
@@ -96,21 +124,37 @@ manpage
           enum_list_elem
             paragraphs
               paragraph
-                simplex
-                  @429 3 {'\nA\n'}
+                space
+                  @429 1 {'\n'}
+                simple
+                  @430 1 'A'
+                space
+                  @431 1 {'\n'}
           enum_list_elem
             paragraphs
               paragraph
-                simplex
-                  @438 3 {' B\n'}
+                space
+                  @438 1 {' '}
+                simple
+                  @439 1 'B'
+                space
+                  @440 1 {'\n'}
               p_separator
               paragraph
-                simplex
-                  @447 3 {'\nC\n'}
+                space
+                  @447 1 {'\n'}
+                simple
+                  @448 1 'C'
+                space
+                  @449 1 {'\n'}
               p_separator
               paragraph
-                simplex
-                  @456 3 {'\nD\n'}
+                space
+                  @456 1 {'\n'}
+                simple
+                  @457 1 'D'
+                space
+                  @458 1 {'\n'}
         space
           @469 1 {'\n'}
       p_separator
@@ -121,21 +165,37 @@ manpage
           item_list_elem
             paragraphs
               paragraph
-                simplex
-                  @505 3 {'\n1\n'}
+                space
+                  @505 1 {'\n'}
+                simple
+                  @506 1 '1'
+                space
+                  @507 1 {'\n'}
           item_list_elem
             paragraphs
               paragraph
-                simplex
-                  @514 3 {' 2\n'}
+                space
+                  @514 1 {' '}
+                simple
+                  @515 1 '2'
+                space
+                  @516 1 {'\n'}
               p_separator
               paragraph
-                simplex
-                  @523 4 {'\n2a\n'}
+                space
+                  @523 1 {'\n'}
+                simple
+                  @524 2 '2a'
+                space
+                  @526 1 {'\n'}
               p_separator
               paragraph
-                simplex
-                  @533 4 {'\n2b\n'}
+                space
+                  @533 1 {'\n'}
+                simple
+                  @534 2 '2b'
+                space
+                  @536 1 {'\n'}
         space
           @547 1 {'\n'}
       p_separator
@@ -149,8 +209,12 @@ manpage
                 @585 8 'option-1'
             paragraphs
               paragraph
-                simplex
-                  @594 9 {' meaning\n'}
+                space
+                  @594 1 {' '}
+                simple
+                  @595 7 'meaning'
+                space
+                  @602 1 {'\n'}
           opt_list_elem
             m_opt_def
               simple
@@ -159,8 +223,12 @@ manpage
                 @621 5 'value'
             paragraphs
               paragraph
-                simplex
-                  @627 13 {'\nelaboration\n'}
+                space
+                  @627 1 {'\n'}
+                simple
+                  @628 11 'elaboration'
+                space
+                  @639 1 {'\n'}
         space
           @650 1 {'\n'}
       p_separator
@@ -178,8 +246,12 @@ manpage
                 @717 5 'Color'
             paragraphs
               paragraph
-                simplex
-                  @723 7 {' candy\n'}
+                space
+                  @723 1 {' '}
+                simple
+                  @724 5 'candy'
+                space
+                  @729 1 {'\n'}
           tko_list_elem
             m_tkoption_def
               simple
@@ -190,11 +262,17 @@ manpage
                 @766 5 'Color'
             paragraphs
               paragraph
-                simplex
-                  @772 9 {'\ncaramel\n'}
+                space
+                  @772 1 {'\n'}
+                simple
+                  @773 7 'caramel'
+                space
+                  @780 1 {'\n'}
         space
           @791 1 {'\n'}
       p_separator
       paragraph
-        simplex
-          @798 4 {'\nKO\n'}
+        space
+          @798 1 {'\n'}
+        simple
+          @799 2 'KO'

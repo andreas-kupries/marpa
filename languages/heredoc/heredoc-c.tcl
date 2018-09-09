@@ -7,7 +7,7 @@
 # (c) 2018 Grammar heredoc::parser::c 0 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "heredoc::parser::c".
-##	Generated On Sat Sep 08 15:04:28 PDT 2018
+##	Generated On Sat Sep 08 15:32:16 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via remeta
 ##
@@ -567,8 +567,8 @@ critcl::ccode {
 
 	/* --- (2) --- --- --- Semantics Data
 	 */
-	         /*  7 */ 1, MARPATCL_SV_A_FIRST,
-	           /*  9 */ 2, MARPATCL_SV_RULE_NAME,     MARPATCL_SV_VALUE
+	/*  7 */ 1, MARPATCL_SV_A_FIRST,
+	/*  9 */ 2, MARPATCL_SV_RULE_NAME, MARPATCL_SV_VALUE
     };
 
     static marpatcl_rtc_sym heredoc_parser_c_g1masking [12] = { /* 24 bytes */
