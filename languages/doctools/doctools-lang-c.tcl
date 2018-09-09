@@ -7,7 +7,7 @@
 # (c) 2018 Grammar doctools::parser::c 0 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "doctools::parser::c".
-##	Generated On Sat Sep 08 15:32:24 PDT 2018
+##	Generated On Sat Sep 08 20:35:36 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via remeta
 ##
@@ -1737,7 +1737,7 @@ critcl::ccode {
     */
 
     static marpatcl_rtc_sym doctools_parser_c_always [4] = { /* 8 bytes */
-	 77, 102, 137, 138
+	77, 24, 59, 60
     };
 
     static marpatcl_rtc_spec doctools_parser_c_spec = { /* 72 */

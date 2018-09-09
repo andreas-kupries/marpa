@@ -319,12 +319,12 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     GR start [$gc start?]
 
     set sem    [SemaCodeL [$gc lexeme-semantics? action]]
-    set always [lmap w [concat $acs_discards [LTM $lex $gc]] {
-	# Convert ACS down to terminal symbols and pseudo-terminals
-	# (latter are for the discards)
-	# NOTE: See (%%accept/always%%) in rtc/lexer.c
-	expr {[L 2id $w] - 256}
-    }]
+    set always {}
+    # Convert ACS down to terminal symbols and pseudo-terminals
+    # (latter are for the discards)
+    # NOTE: See (%%accept/always%%) in rtc/lexer.c
+    foreach w $acs_discards  { lappend always [expr {[L 2id      $w] - 256}] }
+    foreach w [LTM $lex $gc] { lappend always [expr {[L 2id @ACS:$w] - 256}] }
 
     $gc destroy
 

@@ -164,7 +164,8 @@ marpatcl_rtc_gather_events (marpatcl_rtc_rules*    decls,   // Search this datab
 		   trigger->data[k].sym, marpatcl_rtc_spec_symname (decls, trigger->data[k].sym, 0));
 
 	// Skip disabled events
-	if (!event->data [trigger->data[k].id]) {
+	int eid = trigger->data[k].id;
+	if (!event->data [eid]) {
 	    TRACE_ADD (" - not active, skipped", 0);
 	    TRACE_CLOSER;
 	    continue;
@@ -184,8 +185,8 @@ marpatcl_rtc_gather_events (marpatcl_rtc_rules*    decls,   // Search this datab
 	}
 
 	// Extend result with active event for requested and symbol
-	marpatcl_rtc_symset_add (result, k);
-	TRACE_ADD (" - taking event %d", k);
+	TRACE_ADD (" - taking event %d", eid);
+	marpatcl_rtc_symset_add (result, eid);
 	TRACE_CLOSER;
     }
 
