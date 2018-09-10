@@ -22,6 +22,7 @@ proc result {base} { locate $base r_ast_tcl r_ast ast_tcl ast }
 proc label      {} { return "engine_tcl" }
 proc initialize {} { }
 proc finalize   {} { }
+proc coding     {} { return utf-8 }
 
 # # ## ### ##### ######## ############# #####################
 ##

@@ -22,6 +22,7 @@ proc result {base} { locate $base r_ast_rtc r_ast ast_rtc ast }
 proc label      {} { return "engine_rtc" }
 proc initialize {} { }
 proc finalize   {} { }
+proc coding     {} { return binary }
 
 # # ## ### ##### ######## ############# #####################
 ##

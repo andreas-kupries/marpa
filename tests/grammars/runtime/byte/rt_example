@@ -1,0 +1,12 @@
+# Demonstration of a grammar matching non-utf bytes
+:default       ::= action => [name,values]
+lexeme default =   action => [start,length,value]
+       	       	   latm   => 1
+
+A ::= S O S
+S ::= ( high high high )
+O ::= ( low  low  low  )
+
+high ~ byte 255
+low  ~ byte 0
+
