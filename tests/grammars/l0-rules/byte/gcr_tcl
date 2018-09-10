@@ -1,0 +1,31 @@
+grammar {
+    global {
+        start Language
+        inaccessible warn
+    }
+    g1 {
+        {} {
+            Language { {priority A 0
+                    action {array values}
+                    assoc left
+                    mask 0} }
+        }
+        terminal {
+            A { terminal }
+        }
+    }
+    lexeme {
+        action {array values}
+    }
+    l0 {
+        latm {
+            A 1
+        }
+        lexeme {
+            A { {priority {{@BYTE:<\377>}} 0} }
+        }
+        literal {
+            {@BYTE:<\377>} { {character 255} }
+        }
+    }
+}

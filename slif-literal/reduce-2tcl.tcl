@@ -63,7 +63,7 @@ namespace eval ::marpa::slif::literal::reduce::2tcl {
 }
 
 namespace eval ::marpa::slif::literal::reduce::2tcl::reduce {
-    namespace export %* ^* !! cc/* string charclass character range named-class
+    namespace export %* ^* !! cc/* string charclass character byte range named-class
     namespace ensemble create
 
     namespace import ::marpa::X
@@ -171,6 +171,13 @@ proc ::marpa::slif::literal::reduce::2tcl::reduce::^charclass {state args} {
     # Complement class, then normalize and reduce further
 
     $state {*}[CC 1 $args]
+}
+
+proc ::marpa::slif::literal::reduce::2tcl::reduce::byte {state int} {
+    # A byte is in the range 0..255
+    # < 128 are ASCII, mapping exactly to characters.
+    # 128..255 ... Lets try mapping these as-they-are too.
+    $state is-a character $int
 }
 
 proc ::marpa::slif::literal::reduce::2tcl::reduce::character {state codepoint} {

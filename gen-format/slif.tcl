@@ -236,7 +236,7 @@ proc ::marpa::gen::format::slif::RewriteEvents {gcv sym dst key {keyed 0}} {
 
     set names [dict get $gc l0 trigger $sym $key]
     dict unset gc l0 trigger $sym $key
-    
+
     foreach name $names {
 	set state [dict get $gc event $name]
 	dict set edict $name $state
@@ -319,6 +319,10 @@ proc ::marpa::gen::format::slif::SlifLit {type args} {
 
 proc ::marpa::gen::format::slif::SlifLit/character {uni} {
     return '[C $uni]'
+}
+
+proc ::marpa::gen::format::slif::SlifLit/byte {int} {
+    return "byte $int"
 }
 
 proc ::marpa::gen::format::slif::SlifLit/^character {uni} {

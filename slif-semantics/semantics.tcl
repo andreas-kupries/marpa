@@ -135,6 +135,8 @@ oo::class create marpa::slif::semantics {
 	link {MERGE2  MERGE2}  ;# Merge 2 rhs sem values
 	link {HIDE    HIDE}    ;# Set mask in rhs sem value to "all hidden"
 	link {MKLIT   MKLIT}   ;# Literal handling
+	link {MKBYTE  MKBYTE}  ;# Literal handling - Specials: Byte
+	link {MKL     MKL}     ;# Literal handling - Common backend
 	link {G1Event G1Event} ;# Adverb processing for g1 parse events
 	link {E       ERR}
 	link {LOCFMT  LOCFMT}
@@ -448,9 +450,10 @@ oo::class create marpa::slif::semantics {
     method rhs/0                {children} { MERGE {*}[VALUES] } ; # OK <rhs>+
     method {rhs primary list/0} {children} { MERGE {*}[VALUES] } ; # OK <rhs>+
 
-    method {rhs primary/0} {children} { FIRST }        ; # OK <single symbol>
-    method {rhs primary/1} {children} { LEAF [MKLIT] } ; # OK <single quoted string>
-    method {rhs primary/2} {children} { FIRST }        ; # OK <parenthesized rhs primary list>
+    method {rhs primary/0} {children} { FIRST }         ; # OK <single symbol>
+    method {rhs primary/1} {children} { LEAF [MKLIT] }  ; # OK <single quoted string>
+    method {rhs primary/2} {children} { FIRST }         ; # OK <parenthesized rhs primary list>
+    method {rhs primary/3} {children} { LEAF [MKBYTE] } ; # OK <byte>
 
     method {parenthesized rhs primary list/0} {children} { HIDE [FIRST] } ; # OK <rhs primary list>
 
@@ -925,6 +928,22 @@ oo::class create marpa::slif::semantics {
 	return [list $mask $symbols]
     }
 
+    method MKBYTE {} {
+	debug.marpa/slif/semantics {[debug caller] | [AT][INDENT]}
+
+	SymCo assert usage
+	# Expect RHS
+
+	upvar 1 children children
+	lassign [lindex $children 0 1 0] start length litstring
+
+	set literal [list byte $litstring]
+	set result  [MKL $start $length $literal $litstring]
+
+	debug.marpa/slif/semantics {[UNDENT][debug caller] | [AT] ==> $result}
+	return $result
+    }
+
     method MKLIT {} {
 	debug.marpa/slif/semantics {[debug caller] | [AT][INDENT]}
 
@@ -934,7 +953,14 @@ oo::class create marpa::slif::semantics {
 	upvar 1 children children
 	lassign [lindex $children 0] start length litstring
 
-	set literal   [marpa::slif::literal parse        $litstring]
+	set literal [marpa::slif::literal parse $litstring]
+	set result  [MKL $start $length $literal $litstring]
+
+	debug.marpa/slif/semantics {[UNDENT][debug caller] | [AT] ==> $result}
+	return $result
+    }
+
+    method MKL {start length literal litstring} {
 	set litsymbol [marpa::slif::literal::util symbol $literal]
 
 	usage      add $start $length  $litsymbol
@@ -950,17 +976,14 @@ oo::class create marpa::slif::semantics {
 	dict set mycc $litsymbol $litstring
 
 	if {[SymCo layer?] eq "l0"} {
-	    set result $litsymbol
+	    return $litsymbol
 	} else {
 	    # We are in the G1 layer.
 	    # The literal cannot be used directly.
 	    # We need a lexeme around it, and an associated match rule.
 
-	    set result [my MAKE-LEXEME $litsymbol $start $length]
+	    return [my MAKE-LEXEME $litsymbol $start $length]
 	}
-
-	debug.marpa/slif/semantics {[UNDENT][debug caller] | [AT] ==> $result}
-	return $result
     }
 
     method MAKE-LEXEME {litsymbol start length} {

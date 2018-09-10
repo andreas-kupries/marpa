@@ -1,0 +1,8 @@
+:start ::= Language
+inaccessible is warn by default
+lexeme default = action => [values]
+Language ::= A
+             action => [values]
+             assoc => left
+A ~ byte 255
+    latm => 1

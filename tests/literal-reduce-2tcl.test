@@ -41,7 +41,7 @@ test marpa-slif-literal-reduce-2tcl-1.0 {reduce 2tcl, wrong args, not enough} -b
 
 test marpa-slif-literal-reduce-2tcl-1.1 {reduce 2tcl, bogus sub-command} -body {
     marpa::slif::literal::reduce::2tcl::reduce M
-} -returnCodes error -result {unknown or ambiguous subcommand "M": must be !!, %named-class, %range, %string, ^%named-class, ^character, ^charclass, ^named-class, ^range, cc/smp, character, charclass, named-class, range, or string}
+} -returnCodes error -result {unknown or ambiguous subcommand "M": must be !!, %named-class, %range, %string, ^%named-class, ^character, ^charclass, ^named-class, ^range, byte, cc/smp, character, charclass, named-class, range, or string}
 
 # # ## ### ##### ######## ############# #####################
 #proc SA {x} { set c [open 2T a] ; puts $c $x ; close $c ; return }

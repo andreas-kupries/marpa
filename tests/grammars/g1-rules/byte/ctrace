@@ -1,0 +1,25 @@
+GC comment definition A 0 1
+GC comment g1-definition A undef --> {JMP brick}
+
+	GC comment usage {@BYTE:<\377>} 11 3
+	GC comment definition {@BYTE:<\377>} 11 3
+	GC comment <literal> {@BYTE:<\377>} undef --> {JMP literal}
+	GC l0 literal {@BYTE:<\377>} byte 255
+
+	GC comment definition {@LEX:@BYTE:<\377>} 11 3
+	GC comment usage {@BYTE:<\377>} 11 3
+	GC comment l0-definition {@LEX:@BYTE:<\377>} undef --> {JMP match}
+	GC comment :lexeme {@LEX:@BYTE:<\377>} match --> {JMP lexeme make-lexeme}
+	GC l0 lexeme {@LEX:@BYTE:<\377>}
+	GC g1 terminal {@LEX:@BYTE:<\377>}
+
+	GC comment l0-usage {@BYTE:<\377>} literal --> NOP
+	GC l0 priority-rule {@LEX:@BYTE:<\377>} {{@BYTE:<\377>}} 0
+
+GC comment g1-usage {@LEX:@BYTE:<\377>} lexeme --> NOP
+GC g1 priority-rule A {{@LEX:@BYTE:<\377>}} 0 action {array values} mask 0
+GC comment Semantics completion processing
+GC start! A
+GC comment LATM fix 1
+GC l0 configure {@LEX:@BYTE:<\377>} latm 1
+GC comment DDE fix {}
