@@ -302,7 +302,7 @@ oo::class create marpa::inbound {
     }
 
     method barrier {} {
-	debug.marpa/inbound {[debug caller] | }	
+	debug.marpa/inbound {[debug caller] | }
 	# Called from match facade, stop event handling.
 	# Treat the stop as barrier like eof, and report if we got bounced.
 	# The expected reaction to a bounce is the restoration of the stop
@@ -311,7 +311,7 @@ oo::class create marpa::inbound {
 	Forward flush
 	return [expr {$mylocation < $here}]
     }
-   
+
     # Hook for sequencing checks
     method EOF {} {}
 

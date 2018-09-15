@@ -168,7 +168,7 @@ typedef struct marpatcl_rtc_symvec {
 
 typedef struct marpatcl_rtc_sym_lmap {
     marpatcl_rtc_sym string; /* String id (Pool) */
-    marpatcl_rtc_sym lexeme; /* Lexeme id (G1 terminal symbol) */ 
+    marpatcl_rtc_sym lexeme; /* Lexeme id (G1 terminal symbol) */
 } marpatcl_rtc_sym_lmap;
 
 typedef struct marpatcl_rtc_lmap {

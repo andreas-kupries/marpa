@@ -181,7 +181,7 @@ oo::class create marpa::gate {
 	Forward flush
 	return
     }
-    
+
     # # -- --- ----- -------- -------------
     ## Conversion from the user-visible locations to the internal
     ## locations used by the engine.

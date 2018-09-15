@@ -76,7 +76,7 @@ oo::class create marpa::lexer::ped {
     # until it reaches it at the end of the last possible lexeme.
 
     method barrier {} {	my Access s Gate barrier }
-    
+
     # Debug helper method, also testsuite
     method view {} {
 	my ValidatePermissions

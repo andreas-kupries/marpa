@@ -236,7 +236,7 @@ proc ::marpa::gen::format::slif::RewriteEvents {gcv sym dst key {keyed 0}} {
 
     set names [dict get $gc l0 trigger $sym $key]
     dict unset gc l0 trigger $sym $key
-    
+
     foreach name $names {
 	set state [dict get $gc event $name]
 	dict set edict $name $state

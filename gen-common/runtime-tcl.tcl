@@ -285,7 +285,7 @@ proc ::marpa::gen::runtime::tcl::config {serial} {
     set g1trigger [$gc g1 trigger]       ; # dict (sym -> (type -> list (event)))
     set start     [$gc start?]
     set events    [$gc events]           ; # dict (ename -> bool)
-    
+
     # We ignore g1 class 'terminal'. That is the same as the l0
     # lexemes, and the semantics made sure of that, as did the
     # container validation.
@@ -623,7 +623,7 @@ proc ::marpa::gen::runtime::tcl::FT {dict} {
     # sub-structure we want to format nicely as well.
 
     foreach sym [lsort -dict [dict keys $dict]] {
-	set spec [dict get $dict $sym]    
+	set spec [dict get $dict $sym]
 	# spec = (type -> list (event))
 	lappend lines "[list $sym] \{"
 	lappend lines {*}[I {    } [SL [FD $spec]]]

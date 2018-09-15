@@ -158,7 +158,7 @@ oo::class create marpa::lexer {
 
 	marpa::import $semstore Store
 	# Gate will attach during setup.
-	
+
 	# Dynamic state for processing
 	set myenv  [namespace tail $engine]
 	set myacceptable {}   ;# Parser gating.
@@ -430,7 +430,7 @@ oo::class create marpa::lexer {
 	# of macros, and the like).
 	return
     }
-    
+
     method eof {} {
 	debug.marpa/lexer {[debug caller] | }
 	my Flush
@@ -471,7 +471,7 @@ oo::class create marpa::lexer {
 	# characters were re-processed.
 	return
     }
-    
+
     method acceptable {syms} {
 	debug.marpa/lexer {[debug caller] | }
 	# This lexer method is called by the parser.
@@ -506,7 +506,7 @@ oo::class create marpa::lexer {
 		# (and discards).
 		debug.marpa/lexer {syms   = $syms ([my DIds $syms])}
 		debug.marpa/lexer {always = $myalways ([my DIds $myalways])}
-		
+
 		foreach s [lsort -unique $syms] {
 		    lappend enter [dict get $myacs $s]
 		}
@@ -852,7 +852,7 @@ oo::class create marpa::lexer {
 	set     tmp {}
 	lappend tmp {*}[my 2Name [my FromParser [lsort -unique $myacceptable]]]
 	lappend tmp {*}[my 2Name                [lsort -unique $myalways]]
-	
+
 	dict set context g1 acceptable [lsort -dict [lmap s $tmp {
 	    string map {ACS: {}} $s
 	}]]

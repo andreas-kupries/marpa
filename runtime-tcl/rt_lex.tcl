@@ -62,7 +62,7 @@ oo::class create marpa::engine::tcl::lex {
 	LEX trigger [my Trigger]
 
 	set myevent [my Events]
-	
+
 	next
 
 	# Initial acceptability
@@ -76,7 +76,7 @@ oo::class create marpa::engine::tcl::lex {
 	debug.marpa/engine/tcl/lex {}
 	return [dict get $myevent $name]
     }
-    
+
     # # ## ### ##### ######## #############
 
     forward Characters   my API Characters

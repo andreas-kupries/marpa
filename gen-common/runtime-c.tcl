@@ -434,7 +434,7 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     lappend map @lexemes-c@		[llength $lex]
     lappend map @discards-c@		[llength $discards]
     lappend map @lexemes-map@           [LexemeMap $lex]
-    
+
     incr dsz [* 2 [llength $always]]
     lappend map @always-sz@		[* 2 [llength $always]]
     lappend map @always-c@		[llength $always]
@@ -466,7 +466,7 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 	lappend map @g1-trigger@     [TriggerC g1 $g1trigger $eidmap]
 	lappend map @g1-trigger-ref@ [Ref [TStructName g1] $g1trigger]
     }
-    
+
     #incr dsz 0 ;# TODO XXX size of the event structures
 
     lappend map @space@ $dsz
@@ -1039,7 +1039,7 @@ proc ::marpa::gen::runtime::c::LexemeMap {symbols} {
     set sw [Width $sids] ; set sf %-${sw}s
 
     set fmt "\t\{ $sf, $lf \}, // %s"
-    
+
     return [join [lmap l $lids s $sids sym $symbols {
 	format $fmt $s $l $sym
     }] \n]
@@ -1080,7 +1080,7 @@ proc ::marpa::gen::runtime::c::EventPool {enames} {
     set  max [string length [lindex $enames end]]
     incr max
     set fmt %-${max}s
-    
+
     set counter -1
     lappend literals "\ncritcl::literals::def [EPoolName] \{"
     foreach name $enames {
@@ -1098,10 +1098,10 @@ proc ::marpa::gen::runtime::c::TriggerC {area trigger eidmap} {
 
     lassign [TriggerTable $trigger $eidmap] tw sw ew snw enw table
     # table = list (list (ename symbol symid cwhen evid))
-    
+
     set n [llength $table]
     if {!$n} { return {} }
-    
+
     set fmt "\t\{ %${sw}s, %-${tw}s, %-${ew}s \}, // %-${snw}s => %s"
 
     lappend decl ""
@@ -1119,14 +1119,14 @@ proc ::marpa::gen::runtime::c::TriggerC {area trigger eidmap} {
     lappend decl "\t/* .data */ [TTableName $area]"
     lappend decl "    \};"
     lappend decl ""
-    
+
     return [join $decl \n]
 }
 
 proc ::marpa::gen::runtime::c::TriggerTable {trigger eidmap} {
     # trigger = dict (symbol -> (when -> list (ename)))
     # eidmap  = dict (ename -> index)
-    
+
     if {![dict size $trigger]} { return {0 0 0 0 0 {}} }
     # Flatten
     dict for {symbol spec} $trigger {
@@ -1150,7 +1150,7 @@ proc ::marpa::gen::runtime::c::TriggerTable {trigger eidmap} {
     set ew  [Width $e]
     set snw [Width $sn]
     set enw [Width $en]
-    
+
     # Sort (Event names, then symbol names)
     set table [lsort -dict -index 0 [lsort -dict -index 1 $table]]
     return [list $tw $sw $ew $snw $enw $table]

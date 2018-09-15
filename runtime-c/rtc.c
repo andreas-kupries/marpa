@@ -137,7 +137,7 @@ marpatcl_rtc_gather_events (marpatcl_rtc_rules*    decls,   // Search this datab
 {
     marpatcl_rtc_event*   event   = decls->event;
     marpatcl_rtc_trigger* trigger = decls->trigger;
-    
+
     TRACE_RUN (const char* et = 0);
     TRACE_FUNC ("(trigger*) %p [%d], (event*) %p [%d]", trigger, trigger->size, event, event->size);
     TRACE_DO  (et = marpatcl_rtc_eventtype_decode_cstr (type));
