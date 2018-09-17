@@ -1,0 +1,12 @@
+# This grammar is used to demonstrate proper character tracking in the
+# presence of multi-byte characters. It simply splits the input into
+# characters, and reports their locations. The characters themselves
+# are not relevant. We provide them so that `ast-format` test helper
+# command is happy.
+
+lexeme default =    latm => 1 action => [start,length,value]
+:default ::=   	    action => [name,values]
+
+in ::= ch +
+ch ::= CH
+CH ~ [\0-\uFFFF]
