@@ -379,7 +379,7 @@ marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
     // Extract byte to process
     unsigned char ch = IN.bytes [IN.location];
     int len;
-    
+
     TRACE_TAG (utf, "eyes: %d \\%3o @ %d", ch, ch, IN.location);
 
     // Possibly step to the next character location as well
@@ -428,7 +428,7 @@ marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
     if (LEAD2 (ch)) { len = 2; goto step; }
     if (LEAD3 (ch)) { len = 3; goto step; }
     if (LEAD4 (ch)) { len = 4; goto step; }
-    
+
     if (TRAIL (ch)) {
 	// Found a trailer byte. The counter (set up by the lead-ins) tells us
 	// if it is part of a character proper, or not. In case of the latter
@@ -448,14 +448,14 @@ marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
     // need to panic. Lexer or gate are likely to reject it as unacceptable
     // input, making it a simple parse error. And for languages where such
     // bytes are legal a panic breaks them.
-    
+
     MOVE (1);
     TRACE_RETURN ("=> %d", ch);
 
  step:
     // Found a lead-in for a (len)-byte character. We expect len-1 trailer
     // bytes.
-    
+
     TRACE_TAG (utf, "/lead%d", len);
     if (ok_char (p, len-1)) {
 	// We found all the trailer bytes, this and the next len-1 bytes count
@@ -466,7 +466,7 @@ marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
 
     // Bad. The lead-in byte is missing its trailer, all or in part. Count it
     // as-is.
-	
+
     MOVE (1);
     TRACE_RETURN ("=> %d", ch);
 }
