@@ -17,22 +17,46 @@
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * Structures
- *
- * (%%) We expect UTF-8 characters to consist of at most 4 bytes.
- *      No need for a full int (4/8 bytes memory).
  */
 
 typedef struct marpatcl_rtc_inbound {
+    /*
+     * Physical input stream: content, size, status
+     */
+
     unsigned char* bytes;     /* Input byte string to process */
     int            size;      /* Length of the input byte string, in bytes */
-    int            csize;     /* Same, in characters. <0 indicates byte, not yet converted */
-    int            location;  /* Index of the current byte in input (byte offset) */
-    int            clocation; /* Same, as character offset */
-    int            cstop;     /* Location to stop processing at */
-    unsigned char  trailer;   /* (%%) Number of bytes in the expected trailer */
-    unsigned char  header;    /* (%%) Number of bytes in a header so far */
+    int            csize;     /* Same, in characters. Note: A value <0
+			       * indicates byte size, not yet converted to
+			       * characters */
+    int            psize;     /* Length of the primary string, in bytes */
     unsigned char  owned;     /* true  -> .bytes is owned by this structure,
 			       * false -> .bytes belongs to the outside */
+    /*
+     * IO level events - user-specified engine stop
+     */
+
+    int            cstop;     /* Location to stop processing at. Character
+			       * offset.  The engine stops and raises the
+			       * event just before processing the character at
+			       * this location.
+			       */
+    /*
+     * Dynamic IO state. Location in the stream, UTF decode support counters.
+     */
+
+    int            location;  /* Index of the current byte (byte offset) */
+    int            clocation; /* Same as above, as character offset */
+
+    unsigned char  trailer;   /* The number of trailer bytes in a character
+			       * proper. IOW the number of bytes to come where
+			       * we do not step the character location. */
+    unsigned char  clen;      /* The number of bytes in the current
+			       * character */
+
+    /* Note that there is no need to spent a full int on the counter (4/8
+     * bytes memory per) as UTF-8 characters consist of at most 4 bytes.
+     */
 } marpatcl_rtc_inbound;
 
 /*
@@ -61,6 +85,7 @@ int  marpatcl_rtc_inbound_enter_more (marpatcl_rtc_p p,
 
 void marpatcl_rtc_inbound_moveto    (marpatcl_rtc_p p, int cpos);
 void marpatcl_rtc_inbound_moveby    (marpatcl_rtc_p p, int cdelta);
+void marpatcl_rtc_inbound_move_byte (marpatcl_rtc_p p, int delta);
 
 void marpatcl_rtc_inbound_set_stop  (marpatcl_rtc_p p, int cpos);
 void marpatcl_rtc_inbound_set_limit (marpatcl_rtc_p p, int limit);

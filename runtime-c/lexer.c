@@ -234,8 +234,8 @@ marpatcl_rtc_lexer_enter (marpatcl_rtc_p p, int ch)
 #define NAME(sym) marpatcl_rtc_spec_symname (SPEC->l0, sym, 0)
 
     int res;
-    TRACE_FUNC ("((rtc*) %p, byte %3d (@ %d) <%s>)",
-		p, ch, GATE.lastloc, NAME (ch));
+    TRACE_FUNC ("((rtc*) %p, byte %3d (@ %d C %d) <%s>)",
+		p, ch, GATE.lastloc, GATE.lastcloc, NAME (ch));
     LEX_P (p);
     /* Contrary to the Tcl runtime the C engine does not get multiple symbols,
      * only one, the current byte. Because byte-ranges are coded as rules in

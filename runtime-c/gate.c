@@ -70,10 +70,9 @@ marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const unsigned char ch)
 {
 #define NAME(sym) marpatcl_rtc_spec_symname (SPEC->l0, sym, 0)
 
-    TRACE_FUNC ("((rtc*) %p, byte %3d (@ %d +%d c%d <%s>))", p, ch, IN.location, IN.header, IN.clocation, NAME (ch));
+    TRACE_FUNC ("((rtc*) %p, byte %3d (@ %d +%d c%d <%s>))", p, ch, IN.location, IN.clen - IN.trailer, IN.clocation, NAME (ch));
     TRACE_TAG (stream, "gate stream :: byte %3d (@ %d c%d <%s>)", ch, IN.location, IN.clocation, NAME (ch));
 
-    //GATE.flushed = 0;
     GATE.lastchar = ch;
     GATE.lastloc  = IN.location;
     GATE.lastcloc = IN.clocation;
@@ -85,6 +84,7 @@ marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const unsigned char ch)
 	TRACE ("((rtc*) %p), accepted", p);
 	marpatcl_rtc_lexer_enter (p, ch);
 	// See marpatcl_rtc_inbound_enter for test of failure and abort.
+	TRACE ("((rtc*) %p), flush cleared", p);
 	GATE.flushed = 0;
 	TRACE_RETURN_VOID;
     }
@@ -110,7 +110,7 @@ marpatcl_rtc_gate_enter (marpatcl_rtc_p p, const unsigned char ch)
     TRACE_ADD (" - flush", 0);
     TRACE_CLOSER;
 
-    marpatcl_rtc_inbound_moveby (p, -1);
+    marpatcl_rtc_inbound_move_byte (p, -1);
     GATE.flushed ++;
     marpatcl_rtc_lexer_flush (p);
 
@@ -159,12 +159,12 @@ marpatcl_rtc_gate_redo (marpatcl_rtc_p p, int n)
 
     if (n) {
 	/* Reset flush state. The redo implies that the flushed token did not
-	 * cover the input till the character causing the flush. That means
-	 * that we may have another token in the redone part of the input
-	 * which the current character has to flush again.
+	 * cover the input till the byte causing the flush. That means that we
+	 * may have another token in the redone part of the input which the
+	 * current byte has to flush again.
 	 */
 	GATE.flushed = 0;
-	marpatcl_rtc_inbound_moveby (p, -n);
+	marpatcl_rtc_inbound_move_byte (p, -n);
     }
 
     TRACE_RETURN_VOID;

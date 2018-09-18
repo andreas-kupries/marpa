@@ -762,7 +762,7 @@ error_location (Tcl_DString *ds, marpatcl_rtc_p p, int* coffset)
     } else {
 	char buf [30];
 	if (GATE.lastcloc < 0) {
-	    sprintf (buf, "%d", GATE.lastloc);
+	    sprintf (buf, "B%d", GATE.lastloc);
 	    *coffset = GATE.lastloc;
 	} else {
 	    sprintf (buf, "%d", GATE.lastcloc);
@@ -771,11 +771,12 @@ error_location (Tcl_DString *ds, marpatcl_rtc_p p, int* coffset)
 	Tcl_DStringAppend (ds, " Stopped at offset ", -1);
 	Tcl_DStringAppend (ds, buf, -1);
 
-	if (IN.header) {
-	    sprintf (buf, "%d", IN.header);
+	int header = IN.clen - IN.trailer - 1;
+	if (header) {
+	    sprintf (buf, "%d", header);
 	    Tcl_DStringAppend (ds, " (+", -1);
 	    Tcl_DStringAppend (ds, buf, -1);
-	    Tcl_DStringAppend (ds, IN.header > 1
+	    Tcl_DStringAppend (ds, header > 1
 			       ? " bytes) "
 			       : " byte) ", -1);
 	}
