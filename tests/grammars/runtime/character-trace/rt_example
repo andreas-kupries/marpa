@@ -9,4 +9,4 @@ lexeme default =    latm => 1 action => [start,length,value]
 
 in ::= ch +
 ch ::= CH
-CH ~ [\0-\uFFFF]
+CH ~ [\0-\u10FFFF]
