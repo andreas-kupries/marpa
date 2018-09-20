@@ -12,7 +12,6 @@
 # # ## ### ##### ######## ############# #####################
 
 :start	 ::= words
-
 :default ::= action => [name,values]
 
 lexeme default =
@@ -32,7 +31,7 @@ lexeme default =
 words	::= word *	# series of words with no further structure
 word	::= g_text	# beyond being a mix of text and markup (commands)
 	|   markup
-	
+
 g_text	::= simple
 	|   quote
 

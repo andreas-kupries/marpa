@@ -1,0 +1,635 @@
+
+## DocTools grammar for TclMarpa.
+## References:
+## - Base: https://core.tcl.tk/tcllib/doc/trunk/embedded/www/tcllib/files/
+##   - modules/doctools/doctools_lang_cmdref.html
+##   - modules/doctools/doctools_lang_faq.html
+##   - modules/doctools/doctools_lang_intro.html
+##   - modules/doctools/doctools_lang_syntax.html
+#
+## (c) 2017-present Andreas Kupries
+
+# Notes on symbol names
+# - all lower case  -- G1 symbol
+# - ALL UPPER CASE  -- L0 symbol, may not appear in G1 rules
+# - CamelCase       -- L0 lexeme, use in G1 rules, not in L0 rules
+
+# # ## ### ##### ######## ############# #####################
+## Standard configuration
+
+:start	 ::= manpage
+:default ::= action => [name,values]
+
+lexeme default =
+	action => [start,length,value]
+       	latm   => 1
+
+# # ## ### ##### ######## ############# #####################
+## Structure I - Document structure
+
+manpage		::= m_manpage_begin
+		    headers
+		    body
+		    ( m_manpage_end )
+
+headers		::= header *
+header		::= m_titledesc		action => ::first
+		|   m_moddesc		action => ::first
+		|   m_copyright		action => ::first
+		|   m_require		action => ::first
+		|   xref		action => ::first
+
+xref		::= m_keywords		action => ::first
+		|   m_see_also		action => ::first
+		|   m_category		action => ::first
+
+# Note: Using a rule like
+#
+#	body ::= section +  proper => 1 separator => m_section
+#
+# causes the error
+# 	Nullable symbol on RHS of a sequence rule
+#
+# on freezing. The cause is our rule `paragraph ::=`.  I.e. paragraph
+# is nullable, and this cascades up.  Our explicit right-recursions
+# are able to handle this, but not the builtin quantified/sequence
+# rules.
+
+body		::=	( m_description ) 
+		|	( m_description )	     		 sections
+		|	( m_description )	     subsections
+		|	( m_description )	     subsections sections
+		|	( m_description ) paragraphs
+		|	( m_description ) paragraphs		 sections
+		|	( m_description ) paragraphs subsections
+		|	( m_description ) paragraphs subsections sections
+
+sections	::= section +
+section		::= m_section
+		|   m_section 		 subsections
+		|   m_section paragraphs
+		|   m_section paragraphs subsections
+
+subsections	::= subsection +
+subsection	::= m_subsection
+		|   m_subsection paragraphs
+
+paragraphs	::= paragraph +
+		    separator => p_separator
+
+p_separator	::= ( m_para )
+		|   ( m_para p_separator )
+
+paragraph	::= word +
+
+word		::= list		action => ::first
+		|   example		action => ::first
+		|   markup		action => ::first
+		|   xref		action => ::first
+		|   g_text		action => ::first
+
+g_text		::= simplex		action => ::first
+		|   simple		action => ::first
+		|   space		action => ::first
+		|   quote		action => ::first
+		|   bracel		action => ::first
+		|   backslash		action => ::first
+
+markup		::= m_arg		action => ::first
+		|   m_class		action => ::first
+		|   m_cmd		action => ::first
+		|   m_const		action => ::first
+		|   m_emph		action => ::first
+		|   m_file		action => ::first
+		|   m_fun		action => ::first
+		|   m_lb		action => ::first
+		|   m_manpage		action => ::first
+		|   m_method		action => ::first
+		|   m_namespace		action => ::first
+		|   m_opt		action => ::first
+		|   m_option		action => ::first
+		|   m_package		action => ::first
+		|   m_rb		action => ::first
+		|   m_sectref		action => ::first
+		|   m_strong		action => ::first
+		|   m_syscmd		action => ::first
+		|   m_term		action => ::first
+		|   m_type		action => ::first
+		|   m_uri		action => ::first
+		|   m_usage		action => ::first
+		|   m_var		action => ::first
+		|   m_widget		action => ::first
+		|   m_image		action => ::first
+		|   m_sectref_ext	action => ::first
+
+example		::= m_example						action => ::first
+		|   ( m_example_begin ) example_text ( m_example_end )	action => ::first
+
+example_text	::= example_element +
+example_element	::= markup		action => ::first
+		|   simple		action => ::first
+		|   nbsimplex		action => ::first
+		|   quote		action => ::first
+		|   nbspace		action => ::first
+		|   breaker		action => ::first
+		|   bracel		action => ::first
+		|   backslash		action => ::first
+
+nbspace		::= Nbspace
+breaker		::= Breaker
+
+# NOTE: The space at the end of the breaker terminal belongs to the
+# next line. This shift can only be handled by the semantics. We
+# cannot leave it out of the breaker because that would allow a
+# continuation line to swallow a trailing backslash. That is something
+# we do not want that in an example, we want that verbatim.
+
+list		::= ( m_list_begin_arg  ) argument_list   ( m_list_end )	action => ::first
+		|   ( m_list_begin_cmd  ) command_list    ( m_list_end )	action => ::first
+		|   ( m_list_begin_def  ) definition_list ( m_list_end )	action => ::first
+		|   ( m_list_begin_enum ) enum_list       ( m_list_end )	action => ::first
+		|   ( m_list_begin_item ) item_list       ( m_list_end )	action => ::first
+		|   ( m_list_begin_opt  ) option_list     ( m_list_end )	action => ::first
+		|   ( m_list_begin_tko  ) tkoption_list   ( m_list_end )	action => ::first
+
+argument_list   ::= arg_list_elem +
+command_list   	::= cmd_list_elem +
+definition_list ::= def_list_elem +
+enum_list   	::= enum_list_elem +
+item_list   	::= item_list_elem +
+option_list   	::= opt_list_elem +
+tkoption_list 	::= tko_list_elem +
+
+arg_list_elem   ::= m_arg_def	paragraphs
+		|   m_arg_def
+cmd_list_elem   ::= m_cmd_def	paragraphs
+		|   m_cmd_def
+def_list_elem   ::= m_def	paragraphs
+		|   m_call	paragraphs
+		|   m_def
+		|   m_call
+enum_list_elem  ::= ( m_enum )	paragraphs
+		|   ( m_enum )
+item_list_elem  ::= ( m_item )	paragraphs
+		|   ( m_item )
+opt_list_elem   ::= m_opt_def	paragraphs
+		|   m_opt_def
+tko_list_elem   ::= m_tkoption_def paragraphs
+		|   m_tkoption_def
+
+# # ## ### ##### ######## ############# #####################
+## Structure II - Command definitions
+
+m_arg     		::= ( Cl CArg		Wspace )	tclword		  				( CDone )
+m_arg_def		::= ( Cl CArgDef	Wspace )	tclword (Wspace) tclword			( CDone )
+			|   ( Cl CArgDef 	Wspace )	tclword (Wspace) tclword (Wspace) tclword	( CDone )
+m_call			::= ( Cl CCall 		Wspace )	tclwords	      				( CDone )
+m_category		::= ( Cl CCategory 	Wspace )	tclword 	  				( CDone )
+m_class 		::= ( Cl CClass 	Wspace )	tclword 	  				( CDone )
+m_cmd     		::= ( Cl CCmd 		Wspace )	tclword						( CDone )
+m_cmd_def		::= ( Cl CCmdDef 	Wspace )	tclword						( CDone )
+m_const     		::= ( Cl CConst 	Wspace )	tclword						( CDone )
+m_copyright		::= ( Cl CCopyright 	Wspace )	tclword						( CDone )
+m_def			::= ( Cl CDef 		Wspace )	tclword						( CDone )
+m_description		::= ( Cl CDescription					  	  	  		  CDone )
+m_emph   		::= ( Cl CEmph 		Wspace )	tclword						( CDone )
+m_enum			::= ( Cl CEnum 						  	  	  		  CDone )
+m_example		::= ( Cl CExample 	Wspace )	tclword						( CDone )
+m_example_begin		::= ( Cl CExampleBegin					  	  	  		  CDone )
+m_example_end		::= ( Cl CExampleEnd					  	  	  		  CDone )
+m_file			::= ( Cl CFile 		Wspace )	tclword						( CDone )
+m_fun     		::= ( Cl CFun 		Wspace )	tclword						( CDone )
+m_image			::= ( Cl CImage 	Wspace )	tclword      					( CDone )
+			|   ( Cl CImage 	Wspace )	tclword (Wspace) tclword			( CDone )
+m_item			::= ( Cl CItem						  		  		  CDone )
+m_keywords		::= ( Cl CKeywords 	Wspace )	tclwords					( CDone )
+m_lb    		::= ( Cl CLb	   					  		  		  CDone )
+m_list_begin_arg	::= ( Cl CListBegin Wspace LArg				  		  		  CDone )
+m_list_begin_cmd	::= ( Cl CListBegin Wspace LCmd				  		  		  CDone )
+m_list_begin_def	::= ( Cl CListBegin Wspace LDef				  		  		  CDone )
+m_list_begin_enum	::= ( Cl CListBegin Wspace LEnum				  	  		  CDone )
+m_list_begin_item	::= ( Cl CListBegin Wspace LItem				  	  		  CDone )
+m_list_begin_opt	::= ( Cl CListBegin Wspace LOpt				  		  		  CDone )
+m_list_begin_tko	::= ( Cl CListBegin Wspace LTkopt			  		  		  CDone )
+m_list_end		::= ( Cl CListEnd   					  		  		  CDone )
+m_manpage_begin		::= ( Cl CManpageBegin	Wspace )	tclword (Wspace) tclword (Wspace) tclword	( CDone )
+m_manpage_end		::= ( Cl CManpageEnd   					  	  	  		  CDone )
+m_manpage  		::= ( Cl CManpage 	Wspace )	tclword						( CDone )
+m_method  		::= ( Cl CMethod 	Wspace )	tclword     					( CDone )
+m_moddesc		::= ( Cl CModdesc	Wspace )	tclword						( CDone )
+m_namespace 		::= ( Cl CNamespace	Wspace )	tclword						( CDone )
+m_opt   		::= ( Cl COpt		Wspace )	tclword						( CDone )
+m_option		::= ( Cl COption	Wspace )	tclword						( CDone )
+m_opt_def		::= ( Cl COptDef	Wspace )	tclword						( CDone )
+			|   ( Cl COptDef	Wspace )	tclword (Wspace) tclword			( CDone )
+m_package 		::= ( Cl CPackage	Wspace )	tclword 					( CDone )
+m_para			::= ( Cl CNl 	  					  				  CDone )
+			|   ( Cl CPara						  				  CDone )
+m_rb   			::= ( Cl CRb						  				  CDone )
+m_require		::= ( Cl CRequire	Wspace )	tclword						( CDone )
+			|   ( Cl CRequire	Wspace )	tclword (Wspace) tclword			( CDone )
+m_section		::= ( Cl CSection	Wspace )	tclword 					( CDone )
+			|   ( Cl CSection	Wspace )	tclword (Wspace) tclword			( CDone )
+m_sectref 		::= ( Cl CSectref	Wspace )	tclword 					( CDone )
+			|   ( Cl CSectref	Wspace )	tclword (Wspace) tclword			( CDone )
+m_sectref_ext 		::= ( Cl CSectrefExt	Wspace )	tclword 					( CDone )
+m_see_also		::= ( Cl CSeeAlso	Wspace )	tclwords					( CDone )
+m_strong    		::= ( Cl CStrong	Wspace )	tclword						( CDone )
+m_subsection		::= ( Cl CSubsection	Wspace )	tclword						( CDone )
+			|   ( Cl CSubsection	Wspace )	tclword (Wspace) tclword			( CDone )
+m_syscmd		::= ( Cl CSysCmd	Wspace )	tclword						( CDone )
+m_term	  		::= ( Cl CTerm		Wspace )	tclword						( CDone )
+m_titledesc		::= ( Cl CTitledesc	Wspace )	tclword						( CDone )
+m_tkoption_def		::= ( Cl CTkoptDef	Wspace )	tclword (Wspace) tclword (Wspace) tclword	( CDone )
+m_type    		::= ( Cl CType		Wspace )	tclword			 	  		( CDone )
+m_uri   		::= ( Cl CUri		Wspace )	tclword						( CDone )
+			|   ( Cl CUri		Wspace )	tclword (Wspace) tclword			( CDone )
+m_usage   		::= ( Cl CUsage		Wspace )	tclwords					( CDone )
+m_var       		::= ( Cl CVar		Wspace )	tclword 					( CDone )
+m_widget		::= ( Cl CWidget	Wspace )	tclword						( CDone )
+
+# # ## ### ##### ######## ############# #####################
+# Structure III - Command argument structure - Tcl words
+
+tclwords    	::= tclword +
+	separator => wspace
+
+tclword		::= braced	action => ::first
+		|   quoted	action => ::first
+		|   unquoted	action => ::first
+
+braced		::= Braced
+
+quoted		::= (Quote) quoted_elems (Quote)
+quoted_elems	::= quoted_elem *
+quoted_elem	::= simple	action => ::first
+		|   space	action => ::first
+		|   markup	action => ::first
+		|   escaped	action => ::first
+		|   bracel	action => ::first
+
+unquoted	::= unquoted_lead unquoted_elems
+		|   unquoted_lead			action => ::first
+
+unquoted_lead	::= simple				action => ::first
+		|   markup				action => ::first
+		|   escaped				action => ::first
+
+unquoted_elems	::= unquoted_elem +
+unquoted_elem	::= unquoted_lead			action => ::first
+		|   quote				action => ::first
+		|   bracel				action => ::first
+
+escaped		::= Escaped
+simple		::= Simple
+simplex		::= Simplex
+nbsimplex	::= Nbsimplex
+space		::= Space
+wspace		::= Wspace
+quote		::= Quote
+bracel		::= Bracel
+backslash	::= Backslash
+
+# # ## ### ##### ######## ############# #####################
+## L0 lexemes == G1 terminals
+
+CArg		~ C_ARG
+CArgDef		~ C_ARGDEF	
+CCall		~ C_CALL
+CCategory	~ C_CATEGORY	
+CClass		~ C_CLASS	
+CCmd		~ C_CMD
+CCmdDef		~ C_CMDDEF
+CConst		~ C_CONST
+CCopyright	~ C_COPYRIGHT
+CDef		~ C_DEF
+CDescription	~ C_DESCRIPTION
+CEmph		~ C_EMPH	
+CEnum		~ C_ENUM	
+CExample	~ C_EXAMPLE	
+CExampleBegin	~ C_EXAMPLE_BEGIN
+CExampleEnd	~ C_EXAMPLE_END	
+CFile		~ C_FILE	
+CFun		~ C_FUN		
+CImage		~ C_IMAGE	
+CItem		~ C_ITEM	
+CKeywords	~ C_KEYWORDS	
+CLb		~ C_LB		
+CListBegin	~ C_LIST_BEGIN	
+CListEnd	~ C_LIST_END	
+CManpage	~ C_MANPAGE
+CManpageBegin	~ C_MANPAGE_BEGIN
+CManpageEnd	~ C_MANPAGE_END
+CMethod		~ C_METHOD	
+CModdesc	~ C_MODDESC	
+CNamespace	~ C_NAMESPACE	
+CNl		~ C_NL		
+COpt		~ C_OPT		
+COptDef		~ C_OPTDEF	
+COption		~ C_OPTION	
+CPackage	~ C_PACKAGE	
+CPara		~ C_PARA	
+CRb		~ C_RB		
+CRequire	~ C_REQUIRE	
+CSection	~ C_SECTION	
+CSectref	~ C_SECTREF	
+CSectrefExt	~ C_SECTREF_EXT	
+CSeeAlso	~ C_SEEALSO	
+CStrong		~ C_STRONG	
+CSubsection	~ C_SUBSECTION	
+CSysCmd		~ C_SYSCMD	
+CTerm		~ C_TERM	
+CTitledesc	~ C_TITLEDESC	
+CTkoptDef	~ C_TKOPTIONDEF	
+CType		~ C_TYPE	
+CUri		~ C_URI		
+CUsage		~ C_USAGE	
+CVar		~ C_VAR		
+CWidget		~ C_WIDGET	
+
+LArg		~ L_ARG  
+LCmd		~ L_CMD  
+LDef		~ L_DEF  
+LEnum		~ L_ENUM 
+LItem		~ L_ITEM 
+LOpt		~ L_OPT  
+LTkopt		~ L_TKOPT
+
+Cl		~ CL
+CDone		~ CR
+
+CVdef		~ VAR_DEF
+CVref		~ VAR_REF
+CInclude	~ INCLUDE
+
+:lexeme		~ CVdef		pause => after	event => special  latm => 0
+:lexeme		~ CVref		pause => after	event => special  latm => 0
+:lexeme		~ CInclude	pause => after	event => special  latm => 0
+
+# Idea: Set the lexemes to `latm 0` to make them always acceptable,
+# then remove them from the G1.
+
+Braced		~ BRACED
+Simple		~ SIMPLE
+Simplex		~ SIMPLEX
+Nbsimplex	~ NBSIMPLEX
+Wspace		~ WHITE1
+Space		~ SPACE1
+Nbspace		~ NBSPACE
+Breaker		~ BREAKER
+Escaped		~ ESCAPED
+Quote		~ QUOTE
+Bracel		~ BL
+Backslash	~ BS
+
+:discard	~ Whitespace
+Whitespace	~ WHITE1
+
+# # ## ### ##### ######## ############# #####################
+## L0 internal
+
+## Notes
+## Escaped characters used	(TODO: Consider extending SLIF with named escapes for them)
+##
+## \133 = '['	\bracketl
+## \135 = ']'	\bracketr
+
+# # ## ### ##### ######## ############# #####################
+## general text
+
+# Was found that it can be modeled as Simple|Quote
+# Where `simple` is all but quote, command intro/end, any space
+#
+# That is good very good because it means that `Simple` is likely a
+# good candidate symbol to use for braced vset replacement text,
+# usable in both the `g_text` context, and in markup command argument
+# `tclword` context.
+
+# # ## ### ##### ######## ############# #####################
+## command names
+
+C_ARG		~ 'arg'
+C_ARGDEF	~ 'arg_def'
+C_CALL		~ 'call'
+C_CATEGORY	~ 'category'
+C_CLASS		~ 'class'
+C_CMD		~ 'cmd'
+C_CMDDEF	~ 'cmd_def'
+C_CONST		~ 'const'
+C_COPYRIGHT	~ 'copyright'
+C_DEF		~ 'def'
+C_DESCRIPTION	~ 'description'
+C_EMPH		~ 'emph'
+C_ENUM		~ 'enum'
+C_EXAMPLE	~ 'example'
+C_EXAMPLE_BEGIN	~ 'example_begin'
+C_EXAMPLE_END	~ 'example_end'
+C_FILE		~ 'file'
+C_FUN		~ 'fun'
+C_IMAGE		~ 'image'
+C_ITEM		~ 'item'
+C_KEYWORDS	~ 'keywords'
+C_LB		~ 'lb'
+C_LIST_BEGIN	~ 'list_begin'
+C_LIST_END	~ 'list_end'
+C_MANPAGE	~ 'manpage'
+C_MANPAGE_BEGIN	~ 'manpage_begin'
+C_MANPAGE_END	~ 'manpage_end'
+C_METHOD	~ 'method'
+C_MODDESC	~ 'moddesc'
+C_NAMESPACE	~ 'namespace'
+C_NL		~ 'nl'
+C_OPT		~ 'opt'
+C_OPTDEF	~ 'opt_def'
+C_OPTION	~ 'option'
+C_PACKAGE	~ 'package'
+C_PARA		~ 'para'
+C_RB		~ 'rb'
+C_REQUIRE	~ 'require'
+C_SECTION	~ 'section'
+C_SECTREF	~ 'sectref'
+C_SECTREF_EXT	~ 'sectref-external'
+C_SEEALSO	~ 'see_also'
+C_STRONG	~ 'strong'
+C_SUBSECTION	~ 'subsection'
+C_SYSCMD	~ 'syscmd'
+C_TERM		~ 'term'
+C_TITLEDESC	~ 'titledesc'
+C_TKOPTIONDEF	~ 'tkoption_def'
+C_TYPE		~ 'type'
+C_URI		~ 'uri'
+C_USAGE		~ 'usage'
+C_VAR		~ 'var'
+C_WIDGET	~ 'widget'
+
+# # ## ### ##### ######## ############# #####################
+## list types
+
+L_ARG	~ 'arguments'	| 'args'
+L_CMD	~ 'commands'
+L_DEF	~ 'definitions'
+L_ENUM	~ 'enumerated'	| 'enum'
+L_ITEM	~ 'itemized'
+L_OPT	~ 'options'
+L_TKOPT	~ 'tkoptions'
+
+# # ## ### ##### ######## ############# #####################
+## special form: variable declaration
+#
+#	[vset varname value]	Discard, retain sideeffect
+#
+# - Reusing the WORD definition for the comment.
+#   When braced any embedded markup command is irrelevant, i.e. not
+#   expanded.  When (un)quoted we only need it to properly nest. We do
+#   not have to syntax check that it is a proper command, proper
+#   number of arguments and the like. That can all be defered to when
+#   the saved value is actually used, i.e. inserted somewhere. And at
+#   that point the regular lexing does the job.
+
+VAR_DEF		~ CL WHITE0 'vset' WHITE1 WORD WHITE1 WORD WHITE0 CR
+
+CL		~ '['
+CR		~ ']'
+
+# # ## ### ##### ######## ############# #####################
+## special form: variable reference/use
+#
+#	[vset varname]	Discard, retain sideeffect
+#
+# - For a braced value replace with symbol `Simple` having that value.
+#   For anything else fully discard and direct the IO stage to re-feed
+#   the value into the lexer.
+
+VAR_REF		~ CL WHITE0 'vset' WHITE1 WORD WHITE0 CR
+
+# # ## ### ##### ######## ############# #####################
+## special form: include
+#
+#	[include path]	Discard, load file, and direct IO stage
+#		 	to feed the new stream into the lexer
+#
+# - The WORD technically allows any type of nested command.  We will
+#   have to test in the event handler how complicated it will be to
+#   simply run this through a subst to resolve the everything.  Pretty
+#   sure that we will need a safe interp which has only the commands
+#   of interest.
+
+INCLUDE		~ CL WHITE0 'include' WHITE1 WORD WHITE0 CR
+
+# # ## ### ##### ######## ############# #####################
+## special form: comment
+#
+#	[comment text]	Discard, see WHITE
+#
+# - Quoting of the text does not matter. Embedded markup is fully
+#   ignored.
+
+COMMENT		~ CL WHITE0 'comment' WHITE1 WORD WHITE0 CR
+
+# # ## ### ##### ######## ############# #####################
+## Tcl word syntax for the special forms.
+
+WORD		~ BRACED
+		| QUOTED
+		| UNQUOTED
+
+## Brace quoted	`{...}`
+## - No substitutions
+## - \-escaped braces are not counted
+## - Regular braces are counted, i.e. describe nested/embedded braced words
+
+BRACED		~ BL BRACED_ELEMS BR
+BL		~ '{'
+BR		~ '}'
+
+BS		~ '\\'
+
+BRACED_ELEMS	~ BRACED_ELEM *
+BRACED_ELEM	~ ANY_UNBRACED
+		| BRACED
+		| BRACE_ESCAPED
+ANY_UNBRACED	~ [^{}]
+BRACE_ESCAPED	~ '\\{'
+		| '\\}'
+
+# (double) Quoted	`"..."`
+# - Text may contain all forms of whitespace
+# - Command substitutions `[...]` are allowed
+
+QUOTED		~ QUOTE QUOTED_ELEMS QUOTE
+QUOTE		~ '"'
+QUOTED_ELEMS	~ QUOTED_ELEM *
+QUOTED_ELEM	~ SIMPLE_CHAR
+		| SPACE
+		| COMMAND
+		| ESCAPED
+		| BL
+
+ESCAPED		~ '\\'
+		| '\\\\'
+		| '\\['
+		| '\\"'
+		| '\\]'
+
+SIMPLE		~ SIMPLE_CHAR +
+SIMPLE_CHAR	~ [^\133\134\135\n\r\t\f\v "{]
+
+# simplex - longer general text, series of simple connected by spaces.
+# The nb* variant does not allow linebreaks in the connecting spaces.
+#
+# NOTE: simplex has to be strictly longer than simple to avoid
+# 	ambiguity in G1 where both are accepted (-> g_text).
+
+SIMPLEX		~        SIMPLE SPACE1 SIMPLEN
+		| SPACE1 SIMPLE SPACE1 SIMPLEN
+
+SIMPLEN		~ SIMPLE + separator => SPACE1
+
+NBSIMPLEX	~        SIMPLE NBSPACE1 NBSIMPLEN
+		| SPACE1 SIMPLE NBSPACE1 NBSIMPLEN
+NBSIMPLEN	~ SIMPLE + separator => NBSPACE1
+
+# unquoted	`...`
+# - Text cannot contain any forms of whitespace
+# - Command substitutions `[...]` are allowed
+
+UNQUOTED	~ UNQUOTED_LEAD
+		| UNQUOTED_LEAD UNQUOTED_ELEMS
+UNQUOTED_ELEMS	~ UNQUOTED_ELEM +
+UNQUOTED_ELEM	~ UNQUOTED_LEAD
+		| QUOTE
+		| BL
+UNQUOTED_LEAD	~ SIMPLE_CHAR
+		| COMMAND
+		| ESCAPED
+
+COMMAND		~ CL WHITE0 WORDS1 WHITE0 CR
+WORDS1		~ WORD +
+	separator => WHITE1
+
+# # ## ### ##### ######## ############# #####################
+## other forms of white space
+
+WHITE1		~ WHITE +
+WHITE0		~ WHITE *
+
+WHITE		~ SPACE
+	    	| COMMENT
+	    	| CONTINUATION
+
+NBSPACE1	~ NBSPACE +
+SPACE1		~ SPACE +
+SPACE0		~ SPACE *
+
+# simplified space to keep the engine small
+#SPACE		~ [[:space:]]
+SPACE		~ [\n\r\t\v\f ]
+NBSPACE		~ [\t ]
+
+CONTINUATION	~ SPACE0 '\134' NEWLINE SPACE0
+NEWLINE		~ [\r\n]
+		| '\r\n'
+
+BREAKER		~ NEWLINE SPACE1
+
+# # ## ### ##### ######## ############# #####################

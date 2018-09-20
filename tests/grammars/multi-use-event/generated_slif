@@ -1,0 +1,23 @@
+:start ::= A
+inaccessible is warn by default
+lexeme default = action => [values]
+A ::= B
+      action => [values]
+      assoc => left
+  |   D
+      action => [values]
+      assoc => left
+:discard ~ C
+           event => snafu = on
+C ~ 'c'
+:lexeme ~ B
+          event => lex = on
+          pause => before
+B ~ 'a'
+    latm => 1
+:lexeme ~ D
+          event => lex = on
+          pause => after
+D ~ 'd'
+    latm => 1
+

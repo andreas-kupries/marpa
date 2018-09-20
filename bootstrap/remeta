@@ -43,10 +43,13 @@ set dstl     [file join $dst languages]
 
 set topdir   [file dirname $selfdir]
 set lang     [file join $topdir languages]
-set mindt    [file join $lang min-dt  g min-dt.slif]
-set mindtsf  [file join $lang min-dt  g sf.slif]
-set heredoc  [file join $lang heredoc g heredoc.slif]
-set json     [file join $lang json    g json.slif]
+set mindt    [file join $lang min-dt   g min-dt.slif]
+set mindtsf  [file join $lang min-dt   g sf.slif]
+set heredoc  [file join $lang heredoc  g heredoc.slif]
+set json     [file join $lang json     g json.slif]
+set dt       [file join $lang doctools g doctools.slif]
+set dtsf     [file join $lang doctools g sf.slif]
+
 
 proc F {n} { format "%.2f" $n }
 
@@ -104,22 +107,39 @@ Make $ak marpa::slif::literal::parser $literals $dst/slif-literal/lparser.tcl
 # _ __ ___ _____ ________ _____________ _____________________
 # Process the example min-dt grammars, all variants
 
-Make $ak mindt::parser::c       $mindt   $dstl/min-dt/mindt-lang-c.tcl
-Make $ak mindt::parser::tcl     $mindt   $dstl/min-dt/mindt-lang-tcl.tcl tparse
+set dst $dstl/min-dt
 
-Make $ak mindt::parser::sf::c   $mindtsf $dstl/min-dt/mindt-sf-c.tcl
-Make $ak mindt::parser::sf::tcl $mindtsf $dstl/min-dt/mindt-sf-tcl.tcl tparse
+Make $ak mindt::parser::c       $mindt   $dst/mindt-lang-c.tcl
+Make $ak mindt::parser::tcl     $mindt   $dst/mindt-lang-tcl.tcl tparse
+
+Make $ak mindt::parser::sf::c   $mindtsf $dst/mindt-sf-c.tcl
+Make $ak mindt::parser::sf::tcl $mindtsf $dst/mindt-sf-tcl.tcl tparse
 
 # _ __ ___ _____ ________ _____________ _____________________
 # Process the example heredoc grammars, all variants
 
-Make $ak heredoc::parser::c   $heredoc $dstl/heredoc/heredoc-c.tcl
-Make $ak heredoc::parser::tcl $heredoc $dstl/heredoc/heredoc-tcl.tcl tparse
+set dst $dstl/heredoc
+
+Make $ak heredoc::parser::c   $heredoc $dst/heredoc-c.tcl
+Make $ak heredoc::parser::tcl $heredoc $dst/heredoc-tcl.tcl tparse
 
 # _ __ ___ _____ ________ _____________ _____________________
 # Process the example json grammars, all variants
 
-Make $ak json::parser::c   $json $dstl/json/json-c.tcl
-Make $ak json::parser::tcl $json $dstl/json/json-tcl.tcl tparse
+set dst $dstl/json
+
+Make $ak json::parser::c   $json $dst/json-c.tcl
+Make $ak json::parser::tcl $json $dst/json-tcl.tcl tparse
+
+# _ __ ___ _____ ________ _____________ _____________________
+# Process the example doctools grammars, all variants
+
+set dst $dstl/doctools
+
+Make $ak doctools::parser::c       $dt   $dst/doctools-lang-c.tcl
+Make $ak doctools::parser::tcl     $dt   $dst/doctools-lang-tcl.tcl tparse
+
+Make $ak doctools::parser::sf::c   $dtsf $dst/doctools-sf-c.tcl
+Make $ak doctools::parser::sf::tcl $dtsf $dst/doctools-sf-tcl.tcl tparse
 
 exit

@@ -1,0 +1,35 @@
+#!/bin/bash
+
+self="$0"
+bindir="$(dirname "${self}")"
+
+# cleanup
+find . -name "*~" -print
+find . -name "*~" -exec rm "{}" \;
+clear
+echo
+
+# regenerate packages from grammar
+# ( $bindir/make-parser ) 2>&1 | tee LOG-GENERATE
+
+rm -rf L/* BUILD-* tests/core
+mkdir  L 2>/dev/null
+
+#V="--valgrind 1"
+#S="--with-shell $TOOL_DIR/8.5/Install/bin/tclsh8.5"
+#^- change doctools-core marpa packages to local
+#P="--prefix $WORKSPACE/__marpa__debug__"
+
+ulimit -c unlimited
+./build.tcl test \
+    --color on \
+    --log L/X \
+    --test-include ~/opt/ActiveTcl/include \
+    $S \
+    $V \
+    $P \
+    2>&1 | tee L/X.all
+
+ulimit -c 0
+
+#./build.tcl test --log-mode full --test-include ~/opt/ActiveTcl/include 2>&1 | tee TL

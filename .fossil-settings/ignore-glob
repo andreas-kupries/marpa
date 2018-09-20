@@ -5,7 +5,7 @@ M
 W
 core*
 generated
-languages/*/BUILD-*
+languages/*/BUILD*
 languages/*/L
 scratch
 tests/core*

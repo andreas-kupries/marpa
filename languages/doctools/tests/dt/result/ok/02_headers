@@ -1,0 +1,44 @@
+manpage
+  m_manpage_begin
+    simple
+      @15 4 'TEST'
+    simple
+      @20 1 'z'
+    simple
+      @22 11 '3.14.15.926'
+  headers
+    m_moddesc
+      simple
+        @44 14 '..THE_MODULE..'
+    m_titledesc
+      simple
+        @71 13 '..THE_TITLE..'
+    m_require
+      simple
+        @95 3 'AAA'
+    m_require
+      simple
+        @109 3 'BBB'
+      simple
+        @113 3 'VVV'
+    m_keywords
+      tclwords
+        simple
+          @128 4 'KEYA'
+        wspace
+          @132 1 {' '}
+        simple
+          @133 4 'KEYZ'
+    m_see_also
+      tclwords
+        simple
+          @149 5 'OTHER'
+        wspace
+          @154 1 {' '}
+        simple
+          @155 4 'ELSE'
+  body
+    paragraphs
+      paragraph
+        space
+          @174 1 {'\n'}

@@ -1,0 +1,38 @@
+manpage
+  m_manpage_begin
+    simple
+      @15 4 'TEST'
+    simple
+      @20 1 'z'
+    simple
+      @22 11 '3.14.15.926'
+  @{} {} ''
+  body
+    paragraphs
+      paragraph
+        simplex
+          @48 14 {'\nBEGINNE HIER\n'}
+        m_example
+          braced
+            @71 34 {'\173\n\t Example Block \\\n\t More Lines\n\175'}
+        space
+          @106 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @113 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @120 1 {'\n'}
+        example_text
+          nbsimplex
+            @136 18 {'\n\tInlined Example '}
+          nbsimplex
+            @157 9 {'Next Line'}
+        space
+          @180 1 {'\n'}
+        simple
+          @181 6 'FERTIG'
+        space
+          @187 1 {'\n'}

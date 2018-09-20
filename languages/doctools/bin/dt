@@ -1,0 +1,327 @@
+#!/usr/bin/env tclsh
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+## (c) 2018-present Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## doctools utility - parse doctools into AST.
+##                    resolves variables and includes
+
+# @@ Meta Begin
+# Application dt 0.1
+# Meta author      {Andreas Kupries}
+# Meta category    Parser
+# Meta description A minimal doctools parser and dumper.
+# Meta description Prints the abstract syntax tree of
+# Meta description the doctools read from file or stdin.
+# Meta location    http:/core.tcl.tk/akupries/marpa
+# Meta platform    tcl
+# Meta require     {Tcl 8.5}
+# Meta require     doctools::c
+# Meta require     marpa::util
+# Meta require     fileutil
+# Meta subject     parsing doctools {abstract syntax tree}
+# Meta summary     A minimal doctools parser based on the Tcl binding to
+# Meta summary     Jeffrey Kegler's libmarpa.
+# @@ Meta End
+
+# Alternate: Meta require     doctools::tcl
+
+proc n {path} {
+    file dirname [file normalize [file join $path ...]]
+}
+
+lappend auto_path [file dirname [file dirname [n [info script]]]]/lib
+
+#proc rtbase {} { return c }
+proc rtbase {} { return tcl }
+proc pclass {} { return doctools::[rtbase] }
+
+package require Tcl 8.5
+package require [pclass]
+package require fileutil
+package require marpa::util ;# for AST formatting.
+package require debug
+
+
+set copy $argv
+while {[llength $copy]} {
+    set copy [lassign $copy first]
+    if {$first ne "--debug"} continue
+    set copy [lassign $copy tag]
+    debug on $tag
+}
+
+if {[info exists env(DT_DEBUG)]} {
+    foreach tag [split $env(DT_DEBUG) ,] {
+	debug on [string trim $tag]
+    }
+}
+
+proc main {} {
+    ingest {*}[cmdline]
+    return
+}
+
+proc cmdline {} {
+    global argv note outdir timing
+
+    set note      stderr
+    set outdir    {}
+    set timing    0
+
+    while {[string match -* [set o [lindex $argv 0]]]} {
+	switch -exact -- $o {
+	    "--help" { usage ; exit }
+	    "-t"     {
+		set timing 1
+		set argv   [lrange $argv 1 end]
+	    }
+	    "-o" {
+		set outdir [lindex $argv 1]
+		set argv   [lrange $argv 2 end]
+	    }
+	    default {
+		return -code error "Unknown option \"$o\", expected --help, or -o"
+	    }
+	}
+    }
+
+    set documents {}
+    while {[llength $argv]} {
+	set newargv {}
+	foreach path $argv {
+	    if {[string match @* $path]} {
+		note @expand\t$path
+		# Reference to a file of paths.
+		# Load it, resolve the paths relative to the
+		# base, and add them to the paths to inspect
+		# here (nested @... references).
+		set path [n [string range $path 1 end]]
+		foreach new [split [string trim [cat $path]] \n] {
+		    lappend newargv [resolve $path $new]
+		}
+		continue
+	    }
+	    # Regular path. Add to documents.
+	    lappend documents $path
+	}
+	note @added\t[llength $newargv]
+	set argv $newargv
+    }
+
+    # Default to stdin if there are no paths.
+    if {![llength $documents]} { lappend documents - }
+
+    return $documents
+}
+	
+proc usage {{text {}}} {
+    global argv0
+    puts stderr "Usage: $argv0 ?--help? ?-t? ?-o dir? ?/path/to/doctools ...?"
+    exit 1
+}
+
+proc ingest {args} {
+    global outdir
+    incr counter
+    # _ __ ___ _____ ________ _____________ _____________________
+    # Process doctools data (no, one, or more paths)
+    
+    # TODO: progress callbacks from the parser (call per token ...)
+   
+    #puts [package ifneeded debug [package present debug]]
+    #exit    
+    #debug on marpa/inbound
+    #debug on marpa/gate
+    #debug on marpa/lexer
+    #debug on marpa/lexer/forest
+    #debug on marpa/lexer/forest/limit
+    #debug on marpa/lexer/forest/save
+    #debug on marpa/lexer/progress
+    #debug on marpa/lexer/stream
+    #debug on marpa/parser
+    #debug on marpa/parser/forest/limit
+    #debug on marpa/parser/forest/save
+    #debug on marpa/parser/report
+    #debug on marpa/parser/stream
+    #debug on marpa/engine/tcl/parse
+    #debug on doctools/base
+    #debug on doctools/base/include
+    #puts [join [info loaded] \n]
+
+    set remake 1
+
+    foreach path $args {
+	if {$remake} {
+	    catch { PARSE destroy }
+	    [pclass] create PARSE
+	}
+	if {$path eq "-"} {
+	    set path     [file join [pwd] fake]
+	    set doctools [read stdin]
+	    set sz       [string length $doctools]
+	    set label    stdin
+	} else {
+	    set doctools [cat $path]
+	    set sz       [file size $path]
+	    set label    $path
+	}
+
+	if {[catch {
+	    Time $label $sz {
+		set ast [PARSE process $doctools path $path]
+	    }
+	    set result [ast-format $ast]
+	    note "OK:   $path"
+	} msg]} {
+	    set result $::errorInfo
+	    #puts stderr [regexp { offset (\d+) } $msg -> offset]
+	    if {[regexp { offset (\d+) } $msg -> offset]} {
+		#puts stderr $offset
+		set s $offset ; incr s -10
+		set e $offset ; incr e  10
+		set ref [string repeat - 10]^
+		if {$s < 0} {
+		    set ref [string range $ref [expr {-1*$s}] end]
+		    set s 0
+		}
+		set ex [string range $doctools $s $e]
+		#puts stderr (($ex))
+		set result "Excerpt: (($ex))\n           $ref\n$result"
+		#puts stderr <<$result>>
+	    }
+	    note "FAIL: $path [lindex [split $msg \n] 0]"
+
+	    # Kill any bad state in the engine and start fresh with the next.
+	    set remake 1
+	}
+
+	if {$outdir ne {}} {
+	    #file mkdir $outdir
+	    set fname [file join $outdir [file tail $path]]
+	    if {[file exists $fname]} { append fname -[incr counter] }
+	    wf $fname $result\n
+	    continue
+	}
+
+	puts $result
+    }
+
+    PARSE destroy
+    return
+}
+
+proc Time {label sz script} {
+    global timing
+    note "\nProcessing $label ($sz bytes) ..."
+    set start  [clock milliseconds]
+
+    # Look into time-limiting this to recognize inputs triggering
+    # ambiguity or some such. Also, debugging, tracking of file
+    # inclusion (sizes, returns).
+    uplevel 1 $script
+
+    if {$timing} {
+	set done   [clock milliseconds]
+	set millis [expr {$done-$start}]
+	set sec    [expr {double($millis)/1000}]
+	set speed  [expr {$sz/$sec}]
+
+	append msg "Processing done in [F $sec] seconds"
+	append msg " (@ [F $speed] bytes/sec): #$sz = $label"
+	note $msg
+    }
+    return
+}
+
+proc F {n} { format "%.2f" $n }
+
+proc note {text} {
+    global note
+    puts  $note $text
+    flush $note
+    return
+}
+
+proc cat {path} {
+    set c [open $path r]
+    set d [read $c]
+    close $c
+    return $d
+}
+
+proc wf {path data} {
+    set c [open $path w]
+    puts -nonewline $c $data
+    close $c
+    return
+}
+
+proc resolve {base path} {
+    set basedir [file dirname $base]
+    foreach base [list $basedir [pwd]] {
+	set full [file join $base $path]
+	if {![file exists $full]} continue
+	return [n $full]
+    }
+    return -code error \
+	"File `$path` not found, searching in `$basedir` and `[pwd]`"
+}
+
+if {![llength [info commands ::lmap]]} {
+    # http://wiki.tcl.tk/40570
+    # lmap forward compatibility
+
+    proc lmap {args} {
+        set body [lindex $args end]
+        set args [lrange $args 0 end-1]
+        set n 0
+        set pairs [list]
+        # Import all variables into local scope
+        foreach {varnames listval} $args {
+            set varlist [list]
+            foreach varname $varnames {
+                upvar 1 $varname var$n
+                lappend varlist var$n
+                incr n
+            }
+            lappend pairs $varlist $listval
+        }
+        # Run the actual operation via foreach
+        set temp [list]
+        foreach {*}$pairs {
+            lappend temp [uplevel 1 $body]
+        }
+        set temp
+    }
+}
+
+# see marpa/test/support/ast.tcl
+# maybe promote to utility command ?
+
+proc ast-format {ast {step {  }}} {
+    set lines {}
+    ast-format-acc $ast {} $step
+    return [join $lines \n]
+}
+
+proc ast-format-acc {ast indent step} {
+    upvar 1 lines lines
+
+    if {[string is integer [lindex $ast 0]]} {
+	# Terminal, Data is offset, length, and lexeme value.
+	lappend lines ${indent}@($ast);#[marpa location show $ast]
+	return
+    }
+
+    lassign $ast symbol children
+
+    lappend lines $indent$symbol
+    append indent $step
+    foreach child $children {
+	ast-format-acc $child $indent $step
+    }
+    return
+}
+
+main
+exit

@@ -70,9 +70,10 @@ proc ::gen::setup {args} {
     # the proper exporter). This engine is used, in turn, in test
     # cases.
 
-    exec >& GEN_LOG [top]/bin/i-gen \
+    exec >& ERR_LOG [top]/bin/i-gen \
 	[top] $kt::localprefix \
 	$ex $cl $gr [td]/${cl}.tcl
+    file rename ERR_LOG GEN_LOG
 
     # _ __ ___ _____ ________ _____________ _____________________
     # IV. Load and activate the new class.

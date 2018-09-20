@@ -47,24 +47,28 @@ kt source support/fake-store.tcl
 
 test marpa-parser-1.0.0 {constructor, wrong args, not enough} -body {
     marpa::parser new
-} -returnCodes error -result {wrong # args: should be "marpa::parser new semstore semantics asthandler"}
+} -returnCodes error -result {wrong # args: should be "marpa::parser new engine semstore semantics asthandler"}
 
 test marpa-parser-1.0.1 {constructor, wrong args, not enough} -body {
-    marpa::parser new STORE
-} -returnCodes error -result {wrong # args: should be "marpa::parser new semstore semantics asthandler"}
+    marpa::parser new ENGINE
+} -returnCodes error -result {wrong # args: should be "marpa::parser new engine semstore semantics asthandler"}
 
 test marpa-parser-1.0.2 {constructor, wrong args, not enough} -body {
-    marpa::parser new STORE SEM
-} -returnCodes error -result {wrong # args: should be "marpa::parser new semstore semantics asthandler"}
+    marpa::parser new ENGINE STORE
+} -returnCodes error -result {wrong # args: should be "marpa::parser new engine semstore semantics asthandler"}
 
-test marpa-parser-1.0.3 {constructor, wrong args, too many} -body {
-    marpa::parser new STORE SEM AST X
-} -returnCodes error -result {wrong # args: should be "marpa::parser new semstore semantics asthandler"}
+test marpa-parser-1.0.3 {constructor, wrong args, not enough} -body {
+    marpa::parser new ENGINE STORE SEM
+} -returnCodes error -result {wrong # args: should be "marpa::parser new engine semstore semantics asthandler"}
+
+test marpa-parser-1.0.4 {constructor, wrong args, too many} -body {
+    marpa::parser new ENGINE STORE SEM AST X
+} -returnCodes error -result {wrong # args: should be "marpa::parser new engine semstore semantics asthandler"}
 
 # No state to query ?! CHECK
 
 test marpa-parser-1.1 {constructor, sequencing} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER @
 } -cleanup {
@@ -73,14 +77,14 @@ test marpa-parser-1.1 {constructor, sequencing} -setup {
 } -result made
 
 test marpa-parser-1.2 {constructor, externals} -body {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     logged
 } -cleanup {
     PARSER destroy
 } -result {}
 
 test marpa-parser-1.3.0 {constructor, post-forbidden: enter} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER enter C V
 } -cleanup {
@@ -92,7 +96,7 @@ test marpa-parser-1.3.0 {constructor, post-forbidden: enter} -setup {
 ## gate: - wrong args, state, sequencing
 
 test marpa-parser-2.0.0 {gate:, wrong args, not enough} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER gate:
 } -cleanup {
@@ -101,7 +105,7 @@ test marpa-parser-2.0.0 {gate:, wrong args, not enough} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER gate: gate"}
 
 test marpa-parser-2.0.1 {gate:, wrong args, too many} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER gate: OBJ X
 } -cleanup {
@@ -110,7 +114,7 @@ test marpa-parser-2.0.1 {gate:, wrong args, too many} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER gate: gate"}
 
 test marpa-parser-2.1.0 {gate:, result} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER gate: [log GATE]
 } -cleanup {
@@ -119,7 +123,7 @@ test marpa-parser-2.1.0 {gate:, result} -setup {
 } -result {}
 
 test marpa-parser-2.1.1 {gate:, externals} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     logclear
 } -body {
     PARSER gate: [log GATE]
@@ -129,7 +133,7 @@ test marpa-parser-2.1.1 {gate:, externals} -setup {
 } -result {}
 
 test marpa-parser-2.1.2 {gate:, sequencing} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER gate: [log GATE]
     PARSER @
@@ -144,7 +148,7 @@ test marpa-parser-2.1.2 {gate:, sequencing} -setup {
 ## action - wrong args, state, sequencing
 
 test marpa-parser-3.0.0 {action, wrong args, not enough} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER action
 } -cleanup {
@@ -153,7 +157,7 @@ test marpa-parser-3.0.0 {action, wrong args, not enough} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER action names"}
 
 test marpa-parser-3.0.1 {action, wrong args, too many} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER action NAMES X
 } -cleanup {
@@ -162,7 +166,7 @@ test marpa-parser-3.0.1 {action, wrong args, too many} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER action names"}
 
 test marpa-parser-3.1.0 {action, result} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER action {}
 } -cleanup {
@@ -171,7 +175,7 @@ test marpa-parser-3.1.0 {action, result} -setup {
 } -result {}
 
 test marpa-parser-3.1.1 {action, externals} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     logclear
 } -body {
     PARSER action {}
@@ -181,7 +185,7 @@ test marpa-parser-3.1.1 {action, externals} -setup {
 } -result {}
 
 test marpa-parser-3.1.2 {action, sequencing, pre gate} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER action {}
     PARSER @
@@ -191,7 +195,7 @@ test marpa-parser-3.1.2 {action, sequencing, pre gate} -setup {
 } -result made
 
 test marpa-parser-3.1.3 {action, sequencing, post gate} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     PARSER gate: [log GATE]
 } -body {
     PARSER action {}
@@ -207,7 +211,7 @@ test marpa-parser-3.1.3 {action, sequencing, post gate} -setup {
 ## symbols - wrong args, state, sequencing
 
 test marpa-parser-4.0.0 {symbols, wrong args, not enough} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER symbols
 } -cleanup {
@@ -216,7 +220,7 @@ test marpa-parser-4.0.0 {symbols, wrong args, not enough} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER symbols names"}
 
 test marpa-parser-4.0.1 {symbols, wrong args, too many} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER symbols NAMES X
 } -cleanup {
@@ -225,7 +229,7 @@ test marpa-parser-4.0.1 {symbols, wrong args, too many} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER symbols names"}
 
 test marpa-parser-4.1.0 {symbols, result} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER symbols {a b}
 } -cleanup {
@@ -234,7 +238,7 @@ test marpa-parser-4.1.0 {symbols, result} -setup {
 } -result {0 1}
 
 test marpa-parser-4.1.1 {symbols, externals} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     logclear
 } -body {
     PARSER symbols {a b}
@@ -244,7 +248,7 @@ test marpa-parser-4.1.1 {symbols, externals} -setup {
 } -result {}
 
 test marpa-parser-4.1.2 {symbols, sequencing, pre gate} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER symbols {a b}
     PARSER @
@@ -254,7 +258,7 @@ test marpa-parser-4.1.2 {symbols, sequencing, pre gate} -setup {
 } -result made
 
 test marpa-parser-4.1.3 {symbols, sequencing, post gate} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     PARSER gate: [log GATE]
 } -body {
     PARSER symbols {a b}
@@ -270,7 +274,7 @@ test marpa-parser-4.1.3 {symbols, sequencing, post gate} -setup {
 ## rules - wrong args, state, sequencing
 
 test marpa-parser-5.0.0 {rules, wrong args, not enough} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER rules
 } -cleanup {
@@ -279,7 +283,7 @@ test marpa-parser-5.0.0 {rules, wrong args, not enough} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER rules rules"}
 
 test marpa-parser-5.0.1 {rules, wrong args, too many} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER rules NAMES X
 } -cleanup {
@@ -288,7 +292,7 @@ test marpa-parser-5.0.1 {rules, wrong args, too many} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER rules rules"}
 
 test marpa-parser-5.1.0 {rules, missing symbols} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     logclear
 } -body {
     PARSER rules {
@@ -303,7 +307,7 @@ test marpa-parser-5.1.0 {rules, missing symbols} -setup {
 } -returnCodes error -result {Unknown symbol "A"}
 
 test marpa-parser-5.1.1 {rules, result} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     PARSER symbols {NAME A B a b w}
     logclear
 } -body {
@@ -319,7 +323,7 @@ test marpa-parser-5.1.1 {rules, result} -setup {
 } -result {}
 
 test marpa-parser-5.1.2 {rules, externals} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     PARSER symbols {NAME A B a b w}
     logclear
 } -body {
@@ -344,7 +348,7 @@ test marpa-parser-5.1.2 {rules, externals} -setup {
 }
 
 test marpa-parser-5.1.3 {rules, sequencing, pre gate} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER rules {}
     PARSER @
@@ -354,7 +358,7 @@ test marpa-parser-5.1.3 {rules, sequencing, pre gate} -setup {
 } -result made
 
 test marpa-parser-5.1.4 {rules, sequencing, post gate} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     PARSER gate: [log GATE]
 } -body {
     PARSER rules {}
@@ -372,7 +376,7 @@ test marpa-parser-5.1.4 {rules, sequencing, post gate} -setup {
 ## parse - wrong args, state, sequencing
 
 test marpa-parser-6.0.0 {parse, wrong args, not enough} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER parse
 } -cleanup {
@@ -381,7 +385,7 @@ test marpa-parser-6.0.0 {parse, wrong args, not enough} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER parse name whitespace"}
 
 test marpa-parser-6.0.1 {parse, wrong args, not enough} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER parse NAME
 } -cleanup {
@@ -390,7 +394,7 @@ test marpa-parser-6.0.1 {parse, wrong args, not enough} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER parse name whitespace"}
 
 test marpa-parser-6.0.2 {parse, wrong args, too many} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER parse NAME WHITESPACE X
 } -cleanup {
@@ -399,7 +403,7 @@ test marpa-parser-6.0.2 {parse, wrong args, too many} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER parse name whitespace"}
 
 test marpa-parser-6.2.0 {parse, no gate} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GGBase PARSER
 } -body {
     PARSER parse NAME W
@@ -409,7 +413,7 @@ test marpa-parser-6.2.0 {parse, no gate} -setup {
 } -returnCodes error -result {Lexer missing}
 
 test marpa-parser-6.3.0 {parse, post gate, result} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GGBase PARSER W
     PARSER gate: [log GATE]
     logclear
@@ -420,7 +424,7 @@ test marpa-parser-6.3.0 {parse, post gate, result} -setup {
 } -result {}
 
 test marpa-parser-6.3.1 {parse, post gate, externals} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GGBase PARSER
     PARSER gate: [log GATE]
     logclear
@@ -437,7 +441,7 @@ test marpa-parser-6.3.1 {parse, post gate, externals} -setup {
 }
 
 test marpa-parser-6.3.2 {parse, post gate, sequencing} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GGBase PARSER
     PARSER gate: [log GATE]
 } -body {
@@ -449,7 +453,7 @@ test marpa-parser-6.3.2 {parse, post gate, sequencing} -setup {
 } -result active
 
 test marpa-parser-6.4.0 {parse, post-forbidden: gate:} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
 } -body {
     PARSER gate: [log GATE]
@@ -459,7 +463,7 @@ test marpa-parser-6.4.0 {parse, post-forbidden: gate:} -setup {
 } -returnCodes error -result {Parser is frozen}
 
 test marpa-parser-6.4.1 {parse, post-forbidden: symbols} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
 } -body {
     PARSER symbols {}
@@ -469,7 +473,7 @@ test marpa-parser-6.4.1 {parse, post-forbidden: symbols} -setup {
 } -returnCodes error -result {Parser is frozen}
 
 test marpa-parser-6.4.2 {parse, post-forbidden: action} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
 } -body {
     PARSER action {}
@@ -479,7 +483,7 @@ test marpa-parser-6.4.2 {parse, post-forbidden: action} -setup {
 } -returnCodes error -result {Parser is frozen}
 
 test marpa-parser-6.4.3 {parse, post-forbidden: rules} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
 } -body {
     PARSER rules {}
@@ -489,7 +493,7 @@ test marpa-parser-6.4.3 {parse, post-forbidden: rules} -setup {
 } -returnCodes error -result {Parser is frozen}
 
 test marpa-parser-6.4.4 {parse, post-forbidden: parse} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
 } -body {
     PARSER parse NAME {}
@@ -502,7 +506,7 @@ test marpa-parser-6.4.4 {parse, post-forbidden: parse} -setup {
 ## enter - wrong args, state, sequencing
 
 test marpa-parser-7.0.0 {enter, wrong args, not enough} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER enter
 } -cleanup {
@@ -511,7 +515,7 @@ test marpa-parser-7.0.0 {enter, wrong args, not enough} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER enter syms sv"}
 
 test marpa-parser-7.0.1 {enter, wrong args, not enough} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER enter SYMLIST
 } -cleanup {
@@ -520,7 +524,7 @@ test marpa-parser-7.0.1 {enter, wrong args, not enough} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER enter syms sv"}
 
 test marpa-parser-7.0.2 {enter, wrong args, too many} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER enter SYMLIST VALUE X
 } -cleanup {
@@ -529,7 +533,7 @@ test marpa-parser-7.0.2 {enter, wrong args, too many} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER enter syms sv"}
 
 test marpa-parser-7.1.0 {enter, incomplete, result} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     logclear
 } -body {
@@ -540,7 +544,7 @@ test marpa-parser-7.1.0 {enter, incomplete, result} -setup {
 } -result {}
 
 test marpa-parser-7.1.1 {enter, incomplete, externals} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     logclear
 } -body {
@@ -554,7 +558,7 @@ test marpa-parser-7.1.1 {enter, incomplete, externals} -setup {
 }
 
 test marpa-parser-7.1.2 {enter, incomplete, sequencing} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     logclear
 } -body {
@@ -566,7 +570,7 @@ test marpa-parser-7.1.2 {enter, incomplete, sequencing} -setup {
 } -result active
 
 test marpa-parser-7.2.0 {enter, complete, result} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
 } -body {
     PARSER enter 4 1
@@ -576,7 +580,7 @@ test marpa-parser-7.2.0 {enter, complete, result} -setup {
 } -result {}
 
 test marpa-parser-7.2.1 {enter, complete, externals} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     logclear
 } -body {
@@ -594,7 +598,7 @@ test marpa-parser-7.2.1 {enter, complete, externals} -setup {
 }
 
 test marpa-parser-7.2.2 {enter, complete, sequencing} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
 } -body {
     PARSER enter 4 1
@@ -605,7 +609,7 @@ test marpa-parser-7.2.2 {enter, complete, sequencing} -setup {
 } -result exhausted
 
 test marpa-parser-7.3.0 {enter, incomplete, post-forbidden: gate:} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 3 1
 } -body {
@@ -616,7 +620,7 @@ test marpa-parser-7.3.0 {enter, incomplete, post-forbidden: gate:} -setup {
 } -returnCodes error -result {Parser is frozen}
 
 test marpa-parser-7.3.1 {enter, incomplete, post-forbidden: symbols} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 3 1
 } -body {
@@ -627,7 +631,7 @@ test marpa-parser-7.3.1 {enter, incomplete, post-forbidden: symbols} -setup {
 } -returnCodes error -result {Parser is frozen}
 
 test marpa-parser-7.3.2 {enter, incomplete, post-forbidden: action} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 3 1
 } -body {
@@ -638,7 +642,7 @@ test marpa-parser-7.3.2 {enter, incomplete, post-forbidden: action} -setup {
 } -returnCodes error -result {Parser is frozen}
 
 test marpa-parser-7.3.3 {enter, incomplete, post-forbidden: rules} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 3 1
 } -body {
@@ -649,7 +653,7 @@ test marpa-parser-7.3.3 {enter, incomplete, post-forbidden: rules} -setup {
 } -returnCodes error -result {Parser is frozen}
 
 test marpa-parser-7.3.4 {enter, incomplete, post-forbidden: parse} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 3 1
 } -body {
@@ -660,7 +664,7 @@ test marpa-parser-7.3.4 {enter, incomplete, post-forbidden: parse} -setup {
 } -returnCodes error -result {Parser is frozen}
 
 test marpa-parser-7.4.0 {enter, complete, post-forbidden: gate:} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 4 1
 } -body {
@@ -671,7 +675,7 @@ test marpa-parser-7.4.0 {enter, complete, post-forbidden: gate:} -setup {
 } -returnCodes error -result {Parser is frozen}
 
 test marpa-parser-7.4.1 {enter, complete, post-forbidden: symbols} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 4 1
 } -body {
@@ -682,7 +686,7 @@ test marpa-parser-7.4.1 {enter, complete, post-forbidden: symbols} -setup {
 } -returnCodes error -result {Parser is frozen}
 
 test marpa-parser-7.4.2 {enter, complete, post-forbidden: action} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 4 1
 } -body {
@@ -693,7 +697,7 @@ test marpa-parser-7.4.2 {enter, complete, post-forbidden: action} -setup {
 } -returnCodes error -result {Parser is frozen}
 
 test marpa-parser-7.4.3 {enter, complete, post-forbidden: rules} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 4 1
 } -body {
@@ -704,7 +708,7 @@ test marpa-parser-7.4.3 {enter, complete, post-forbidden: rules} -setup {
 } -returnCodes error -result {Parser is frozen}
 
 test marpa-parser-7.4.4 {enter, complete, post-forbidden: parse} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 4 1
 } -body {
@@ -715,7 +719,7 @@ test marpa-parser-7.4.4 {enter, complete, post-forbidden: parse} -setup {
 } -returnCodes error -result {Parser is frozen}
 
 test marpa-parser-7.4.5 {enter, complete, post-forbidden: enter} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 4 1
 } -body {
@@ -729,7 +733,7 @@ test marpa-parser-7.4.5 {enter, complete, post-forbidden: enter} -setup {
 ## eof - wrong args, state, sequencing
 
 test marpa-parser-8.0 {eof, wrong args, too many} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER eof X
 } -cleanup {
@@ -738,7 +742,7 @@ test marpa-parser-8.0 {eof, wrong args, too many} -setup {
 } -returnCodes error -result {wrong # args: should be "PARSER eof"}
 
 test marpa-parser-8.1.0 {eof, after construction} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER eof
 } -cleanup {
@@ -747,7 +751,7 @@ test marpa-parser-8.1.0 {eof, after construction} -setup {
 } -result {}
 
 test marpa-parser-8.1.1 {eof, after construction, sequencing} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
 } -body {
     PARSER eof
     PARSER @
@@ -757,7 +761,7 @@ test marpa-parser-8.1.1 {eof, after construction, sequencing} -setup {
 } -result done
 
 test marpa-parser-8.1.2 {eof, after construction, externals} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     logclear
 } -body {
     # eof is reported to ast handler, only
@@ -770,7 +774,7 @@ test marpa-parser-8.1.2 {eof, after construction, externals} -setup {
 }}
 
 test marpa-parser-8.2.0 {eof, after gate:} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     PARSER gate: [log GATE]
 } -body {
     PARSER eof
@@ -780,7 +784,7 @@ test marpa-parser-8.2.0 {eof, after gate:} -setup {
 } -result {}
 
 test marpa-parser-8.2.1 {eof, after gate:, sequencing} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     PARSER gate: [log GATE]
 } -body {
     PARSER eof
@@ -791,7 +795,7 @@ test marpa-parser-8.2.1 {eof, after gate:, sequencing} -setup {
 } -result done
 
 test marpa-parser-8.2.2 {eof, after gate:, externals} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     PARSER gate: [log GATE]
     logclear
 } -body {
@@ -805,7 +809,7 @@ test marpa-parser-8.2.2 {eof, after gate:, externals} -setup {
 }}
 
 test marpa-parser-8.3.0 {eof, after configuration} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
 } -body {
     PARSER eof
@@ -815,7 +819,7 @@ test marpa-parser-8.3.0 {eof, after configuration} -setup {
 } -result {}
 
 test marpa-parser-8.3.1 {eof, after configuration, sequencing} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
 } -body {
     PARSER eof
@@ -826,7 +830,7 @@ test marpa-parser-8.3.1 {eof, after configuration, sequencing} -setup {
 } -result done
 
 test marpa-parser-8.3.2 {eof, after configuration, externals} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     logclear
 } -body {
@@ -844,7 +848,7 @@ test marpa-parser-8.3.2 {eof, after configuration, externals} -setup {
 }}
 
 test marpa-parser-8.4.0 {eof, active} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 3 1
 } -body {
@@ -855,7 +859,7 @@ test marpa-parser-8.4.0 {eof, active} -setup {
 } -result {}
 
 test marpa-parser-8.4.1 {eof, active, sequencing} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 3 1
 } -body {
@@ -867,7 +871,7 @@ test marpa-parser-8.4.1 {eof, active, sequencing} -setup {
 } -result done
 
 test marpa-parser-8.4.2 {eof, active, externals} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 3 1
     logclear
@@ -886,7 +890,7 @@ test marpa-parser-8.4.2 {eof, active, externals} -setup {
 }}
 
 test marpa-parser-8.5.0 {eof, when exhausted} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 4 1
 } -body {
@@ -897,7 +901,7 @@ test marpa-parser-8.5.0 {eof, when exhausted} -setup {
 } -result {}
 
 test marpa-parser-8.5.1 {eof, when exhausted, sequencing} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 4 1
 } -body {
@@ -909,7 +913,7 @@ test marpa-parser-8.5.1 {eof, when exhausted, sequencing} -setup {
 } -result done
 
 test marpa-parser-8.5.2 {eof, when exhausted, externals} -setup {
-    marpa::parser create PARSER [log STORE] [log SEM] [log AST]
+    marpa::parser create PARSER [log ENG] [log STORE] [log SEM] [log AST]
     GG PARSER
     PARSER enter 4 1
     logclear

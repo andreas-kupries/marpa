@@ -7,7 +7,7 @@
 # (c) 2018 Grammar heredoc::parser::c 0 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "heredoc::parser::c".
-##	Generated On Fri Sep 07 20:57:53 PDT 2018
+##	Generated On Sat Sep 08 15:32:16 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via remeta
 ##
@@ -390,9 +390,29 @@ critcl::ccode {
 	/* 274 */ "z\0"
     };
 
-    static marpatcl_rtc_event_spec heredoc_parser_c_events [1] = {
-    // sym, type, active
-	{ 1, marpatcl_rtc_event_after, 1 }, // heredoc: heredoc
+    /*
+    ** Map lexeme strings to parser symbol id (`match alternate` support).
+    */
+
+    static marpatcl_rtc_sym_lmap heredoc_parser_c_lmap [5] = {
+	{ 20 , 0 }, // comma
+	{ 33 , 1 }, // heredoc
+	{ 35 , 2 }, // heredoc start
+	{ 255, 3 }, // say
+	{ 257, 4 }, // semicolon
+    };
+
+    /*
+    ** Declared events, initial stati
+    */
+
+    static unsigned char heredoc_parser_c_evstatus [1] = {
+	1, // heredoc = on
+    };
+
+    static marpatcl_rtc_event heredoc_parser_c_evspec = {
+	/* .size */ 1,
+	/* .data */ heredoc_parser_c_evstatus
     };
 
     /*
@@ -467,37 +487,24 @@ critcl::ccode {
 	MARPATCL_RCMD_DONE  (275)
     };
 
-    static const char* heredoc_parser_c_l0idmap_sym [5] = {
-	"comma",
-	"heredoc",
-	"heredoc start",
-	"say",
-	"semicolon"
+    marpatcl_rtc_trigger_entry heredoc_parser_c_l0trigger_entry [1] = {
+	{ 1, marpatcl_rtc_event_after, 0 }, // heredoc => heredoc
     };
 
-    static marpatcl_rtc_sym heredoc_parser_c_l0idmap_id [5] = {
-	0, 1, 2, 3, 4
-    };
-
-    static marpatcl_rtc_symid heredoc_parser_c_l0idmap = {
-	/* .size   */ 5,
-	/* .symbol */ heredoc_parser_c_l0idmap_sym,
-	/* .id     */ heredoc_parser_c_l0idmap_id,
-    };
-
-    static marpatcl_rtc_events heredoc_parser_c_l0events = {
-	/* .size  */ 1,
-	/* .data  */ heredoc_parser_c_events,
-	/* .idmap */ &heredoc_parser_c_l0idmap
+    marpatcl_rtc_trigger heredoc_parser_c_l0trigger = {
+	/* .size */ 1,
+	/* .data */ heredoc_parser_c_l0trigger_entry
     };
 
     static marpatcl_rtc_rules heredoc_parser_c_l0 = { /* 48 */
 	/* .sname   */  &heredoc_parser_c_pool,
 	/* .symbols */  { 276, heredoc_parser_c_l0_sym_name },
+	/* .lmap    */  { 5, heredoc_parser_c_lmap },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
 	/* .rcode   */  heredoc_parser_c_l0_rule_definitions,
-	/* .events  */  &heredoc_parser_c_l0events
+	/* .events  */  &heredoc_parser_c_evspec,
+	/* .trigger */  &heredoc_parser_c_l0trigger
     };
 
     static marpatcl_rtc_sym heredoc_parser_c_l0semantics [3] = { /* 6 bytes */
@@ -541,10 +548,12 @@ critcl::ccode {
     static marpatcl_rtc_rules heredoc_parser_c_g1 = { /* 48 */
 	/* .sname   */  &heredoc_parser_c_pool,
 	/* .symbols */  { 11, heredoc_parser_c_g1_sym_name },
+	/* .lmap    */  { 0, 0 },
 	/* .rules   */  { 7, heredoc_parser_c_g1_rule_name },
 	/* .lhs     */  { 7, heredoc_parser_c_g1_rule_lhs },
 	/* .rcode   */  heredoc_parser_c_g1_rule_definitions,
-	/* .events  */  0
+	/* .events  */  &heredoc_parser_c_evspec,
+	/* .trigger */  0
     };
 
     static marpatcl_rtc_sym heredoc_parser_c_g1semantics [13] = { /* 26 bytes */
@@ -558,8 +567,8 @@ critcl::ccode {
 
 	/* --- (2) --- --- --- Semantics Data
 	 */
-	         /*  7 */ 1, MARPATCL_SV_A_FIRST,
-	           /*  9 */ 2, MARPATCL_SV_RULE_NAME,     MARPATCL_SV_VALUE
+	/*  7 */ 1, MARPATCL_SV_A_FIRST,
+	/*  9 */ 2, MARPATCL_SV_RULE_NAME, MARPATCL_SV_VALUE
     };
 
     static marpatcl_rtc_sym heredoc_parser_c_g1masking [12] = { /* 24 bytes */
@@ -604,7 +613,7 @@ critcl::ccode {
 ## Class exposing the grammar engine.
 
 critcl::literals::def heredoc_parser_c_event {
-    u0 "heredoc"
+    u0       "heredoc"
 } +list
 
 critcl::class def heredoc::parser::c {

@@ -57,6 +57,8 @@ print_input_l (marpatcl_rtc_p p)
 }
 #endif
 
+static int ok_char (marpatcl_rtc_p p, int trailers);
+
 /*
  * - - -- --- ----- -------- ------------- ---------------------
  * API
@@ -75,7 +77,7 @@ marpatcl_rtc_inbound_init (marpatcl_rtc_p p)
     IN.clocation = -1;
     IN.cstop     = -2;
     IN.trailer   = 0;
-    IN.header    = 0;
+    IN.clen      = 0;
 
     TRACE_RETURN_VOID;
 }
@@ -149,6 +151,18 @@ marpatcl_rtc_inbound_moveby (marpatcl_rtc_p p, int cdelta)
 }
 
 void
+marpatcl_rtc_inbound_move_byte (marpatcl_rtc_p p, int delta)
+{
+    TRACE_FUNC ("((rtc*) %p, byte pos %d += %d)", p, IN.location, delta);
+
+    IN.location += delta;
+    IN.clocation = marpatcl_rtc_clindex_find_c (p, IN.location);
+
+    TRACE ("((rtc*) %p, now pos = %d ~ %d)", p, IN.clocation, IN.location);
+    TRACE_RETURN_VOID;
+}
+
+void
 marpatcl_rtc_inbound_no_stop (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p", p);
@@ -199,6 +213,7 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int ma
 
     IN.bytes = (char*) bytes; // Copying the pointer means we do not own it.
     IN.owned = 0;             // Relevant to `enter_more`.
+    IN.psize = max;
     IN.size  = max;
     IN.csize = -max; // Negative value indicates information in byte waiting
                      // for conversion into actual character location. We
@@ -363,6 +378,7 @@ marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
 
     // Extract byte to process
     unsigned char ch = IN.bytes [IN.location];
+    int len;
 
     TRACE_TAG (utf, "eyes: %d \\%3o @ %d", ch, ch, IN.location);
 
@@ -372,73 +388,113 @@ marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
 #define LEAD2(c)  (((c) & 0xE0) == 0xC0) // 0b1110,0000 : 0b1100,0000
 #define LEAD3(c)  (((c) & 0xF0) == 0xE0) // 0b1111,0000 : 0b1110,0000
 #define LEAD4(c)  (((c) & 0xF8) == 0xF0) // 0b1111,1000 : 0b1111,0000
-#define MOVE_HEADER for(; IN.header; IN.header --) { MOVE (1); }
 #define MOVE(k)						\
+    IN.trailer = ((k)-1);				\
+    IN.clen = k;					\
     IN.clocation ++;					\
     TRACE ("reached %d by %d", IN.clocation, k);	\
     marpatcl_rtc_clindex_update (p, k)
 
     if (SINGLE (ch)) {
+	// Found a single. It stands for itself. There are no trailers
+	// expected.
 	TRACE_TAG (utf, "/single", 0);
-	// A single stands for itself, no trailers expected, no lead
-	IN.trailer = 0;
-	IN.header  = 0;
 	MOVE (1);
-    } else if (TRAIL (ch)) {
-	TRACE_TAG (utf, "/trailer %d", IN.trailer);
-	// A trailer should come after a lead-in.
-	if (IN.trailer > 0) {
-	    // A proper trailer extends the header, and reduces how much more
-	    // trailers to still expect.
-	    IN.trailer --;
-	    IN.header  ++;
-	    if (IN.trailer == 0) {
-		// All expected trailers found, step a character. Reset header.
-		MOVE (IN.header);
-		IN.header = 0;
-	    }
-	} else {
-	    // A standalone trailer is unexpected, and stands for itself.
-	    MOVE (1);
-	}
-    } else if (LEAD2 (ch)) {
-	TRACE_TAG (utf, "/lead2 T%d", IN.trailer);
-	if (IN.trailer > 0) {
-	    // Unexpected begin of a character, previous incomplete.
-	    // The previous bytes all stand for themselves now.
-	    MOVE_HEADER;
-	}
-	// Start of 2 byte character. Expect one trailer.
-	IN.trailer = 1;
-	IN.header  = 1;
-
-    } else if (LEAD3 (ch)) {
-	TRACE_TAG (utf, "/lead3 T%d", IN.trailer);
-	if (IN.trailer > 0) {
-	    // Unexpected begin of a character, previous incomplete.
-	    // The previous bytes all stand for themselves now.
-	    MOVE_HEADER;
-	}
-	// Start of 3 byte character. Expect 2 trailers.
-	IN.trailer = 2;
-	IN.header  = 1;
-
-    } else if (LEAD4 (ch)) {
-	TRACE_TAG (utf, "/lead4 T%d", IN.trailer);
-	if (IN.trailer > 0) {
-	    // Unexpected begin of a character, previous incomplete.
-	    // The previous bytes all stand for themselves now.
-	    MOVE_HEADER;
-	}
-	// Start of 4 byte character. Expect 3 trailers.
-	IN.trailer = 1;
-	IN.header  = 1;
-
-    } else {
-	ASSERT (0, "step failure on bad non-utf byte");
+	TRACE_RETURN ("=> %d", ch);
     }
 
+    // For multi-byte characters the processing is much more complex.
+    //
+    // - First, we have to step the character location on the first byte,
+    //   i.e. the lead-in. Not at the last byte, that is too late for correct
+    //   counting. That worked only for singles, which are both first and last.
+    //
+    // - Two, on the trailer bytes we do not step the character location.
+    //
+    // - Except, three, if there are not enough trailer bytes following the
+    //   lead-in. Then we have to step per trailer byte too, treating each
+    //   (including lead-in) as a separate character.
+    //
+    // All of this means that we have to check the correctness of the
+    // character, i.e the number of actual trailer bytes, vs. expected, on the
+    // lead-in, and save the result to control stepping on the trailers, and
+    // the character index, of course. This is of course also dependent on the
+    // correctness of the character, i.e. if the bytes count as themselves, or
+    // as one.
+    //
+    // Lastly, when checking do not forget to avoid reading past the end of
+    // the input stream.
+
+    if (LEAD2 (ch)) { len = 2; goto step; }
+    if (LEAD3 (ch)) { len = 3; goto step; }
+    if (LEAD4 (ch)) { len = 4; goto step; }
+
+    if (TRAIL (ch)) {
+	// Found a trailer byte. The counter (set up by the lead-ins) tells us
+	// if it is part of a character proper, or not. In case of the latter
+	// it counts as a stand-alone character.
+	TRACE_TAG (utf, "/trailer %d", IN.trailer);
+	if (IN.trailer) {
+	    // This is part of a group proper. Count the group size down.
+	    IN.trailer --;
+	    TRACE_RETURN ("=> %d", ch);
+	}
+	// This trailer is stand-alone. It counts as a character.
+	MOVE (1);
+	TRACE_RETURN ("=> %d", ch);
+    }
+
+    // Completely bogus, no UTF-8. Consider it as a stand-alone character.  No
+    // need to panic. Lexer or gate are likely to reject it as unacceptable
+    // input, making it a simple parse error. And for languages where such
+    // bytes are legal a panic breaks them.
+
+    MOVE (1);
     TRACE_RETURN ("=> %d", ch);
+
+ step:
+    // Found a lead-in for a (len)-byte character. We expect len-1 trailer
+    // bytes.
+
+    TRACE_TAG (utf, "/lead%d", len);
+    if (ok_char (p, len-1)) {
+	// We found all the trailer bytes, this and the next len-1 bytes count
+	// as a single group, i.e. one character.
+	MOVE (len);
+	TRACE_RETURN ("=> %d", ch);
+    }
+
+    // Bad. The lead-in byte is missing its trailer, all or in part. Count it
+    // as-is.
+
+    MOVE (1);
+    TRACE_RETURN ("=> %d", ch);
+}
+
+/*
+ * - - -- --- ----- -------- ------------- ---------------------
+ */
+
+static int
+ok_char (marpatcl_rtc_p p, int trailers)
+{
+    TRACE_FUNC ("((rtc*) %p, trailers %d)", p, trailers);
+    ASSERT (trailers, "Expected to expect > 0 trailer bytes");
+
+    // IN.location points to just before the first of the expected trailer
+    // bytes. I.e. it references the lead-in.
+
+    int k;
+    for (k = IN.location + 1; trailers; k++, trailers--) {
+	// Do not go beyond the end of the stream
+	if (k >= IN.size) { TRACE_RETURN ("FAIL EOF", 0); }
+
+	// Report an unexpected non-trailer.
+	unsigned char ch = IN.bytes [k];
+	if (!TRAIL (ch)) { TRACE_RETURN ("FAIL TRAILER", 0); }
+    }
+
+    TRACE_RETURN ("OK", 1);
 }
 
 /*

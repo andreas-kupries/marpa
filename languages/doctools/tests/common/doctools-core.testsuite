@@ -1,0 +1,208 @@
+# -*- tcl -*-
+## (c) 2018-present Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+## Execution core for testing the DOCTOOLS parser on top of different runtimes.
+## Configured by the caller with procedures.
+## - overall initialization and finalization
+## - parser creation and destruction
+## - AST result selection
+#
+## The procedures expected to exist are
+# * rt          :: Name of the runtime (`c` or `tcl`)
+# * coding      :: Encoding to use when reading files with `fgetc`.
+# * constraints :: Constraints for a particular test case id
+#
+## Derived from these are
+# * cl  :: Name of the parser class
+# * tnp :: Prefix for test case name
+
+# # ## ### ##### ######## ############# #####################
+## Local configuration (restrictions for debug)
+
+set skipfiles 1
+if 0 {
+    rename constraints constraints.rt
+    proc constraints {id} {
+	if 0 {if {![dict exists {
+	} $id]} {
+	    return knownBug
+	}}
+	constraints.rt $id
+    }
+}
+
+# # ## ### ##### ######## ############# #####################
+
+kt check Tcl     8.5
+kt check tcltest 2
+
+kt require support debug
+kt require support debug::caller
+kt require support oo::util
+kt require support TclOO
+kt require support fileutil ;# cat
+
+# # ## ### ##### ######## ############# #####################
+## Local shorthands
+
+proc tnp     {} { return lang-doctools-rt_[rt]  }
+proc cl      {} { return doctools::parser::[rt] }
+proc setup   {} { [cl] create PARSE }
+proc cleanup {} { PARSE destroy }
+
+# # ## ### ##### ######## ############# #####################
+## No method sequence checking for the parser.
+## Methods can be called in any order.
+
+# # ## ### ##### ######## ############# #####################
+
+kt source ../../../tests/support/ast.tcl
+kt source ../../../tests/support/dirs.tcl
+kt source ../../../tests/support/textutils.tcl
+
+# # ## ### ##### ######## ############# #####################
+
+kt local support [cl]
+
+# # ## ### ##### ######## ############# #####################
+##  1 constructor/0
+##  2 process/1		(string)
+##  3 process-file/1	(path-to-file)
+
+# # ## ### ##### ######## ############# #####################
+## constructor - wrong args, initial state, calls
+
+test [tnp]-constructor-1.0 "[cl] :: constructor, wrong args, too many" -body {
+    [cl] new X
+}   -returnCodes error \
+    -result "wrong # args: should be \"[cl] new\""
+
+# # ## ### ##### ######## ############# #####################
+## process - argument checking
+
+test [tnp]-process-1.0 "[cl] :: process, wrong args, not enough" -body {
+    PARSE process
+}   -setup   setup \
+    -cleanup cleanup \
+    -returnCodes error \
+    -result {wrong # args: should be "PARSE process string ..."}
+
+# # ## ### ##### ######## ############# #####################
+## process-file - argument checking
+
+test [tnp]-process-file-1.0 "[cl] :: process-file, wrong args, not enough" -body {
+    PARSE process-file
+}   -setup   setup \
+    -cleanup cleanup \
+    -returnCodes error \
+    -result {wrong # args: should be "PARSE process-file path ..."}
+
+# # ## ### ##### ######## ############# #####################
+## process, process-file - Actual processing - Id formatting prep
+
+# # ## ### ##### ######## ############# #####################
+## Will-accept inputs
+
+lappend will_accept {*}[lsort -uniq [glob -nocomplain -directory [td]/dt/input/ok *]]
+
+set max [llength $will_accept]
+set fmt %0[string length $max]d
+
+set k -1
+foreach infile $will_accept {
+    #continue
+    incr k
+    # - --   -----        -------------
+    set kd       [format $fmt $k]
+    set id       [file rootname [file tail $infile]]
+    set cat      [file tail [file dirname $infile]]
+    set input    [fgetc $infile [coding]]
+    set exfile   [td]/dt/result/$cat/$id
+    set expected {}
+    catch { set expected [string trim [fget $exfile]] }
+
+    # - --   -----        -------------
+    # For rt-c activate `TRACE` tag `enter` in `inbound.c` and use the
+    # rebuilt runtime.
+    
+    test [tnp]-process-2.${kd}---ok-${id} "[cl] :: ok process $id" -body {
+	catch {
+	    ast-format [PARSE process $input]
+	} msg
+	set msg
+    } -setup setup -cleanup {
+	cleanup
+	unset msg
+    } -result $expected -constraints [constraints $id]
+
+    if {$skipfiles} continue
+    
+    test [tnp]-process-file-3.${kd}---ok-${id} "[cl] :: ok process-file $id" -body {
+	catch {
+	    ast-format [PARSE process-file $infile]
+	} msg
+	set msg
+    } -setup setup -cleanup {
+	cleanup
+	unset msg
+    } -result $expected -constraints [constraints $id]
+}
+
+# # ## ### ##### ######## ############# #####################
+## Will reject inputs.
+## - must reject
+## - may reject
+
+lappend will_reject {*}[lsort -uniq [glob -nocomplain -directory [td]/input/dt/fail *]]
+
+set max [llength $will_reject]
+set fmt %0[string length $max]d
+
+set k -1
+foreach infile $will_reject {
+    #continue
+    incr k
+    # - --   -----        -------------
+    set kd       [format $fmt $k]
+    set id       [file rootname [file tail $infile]]
+    set cat      [file tail [file dirname $infile]]
+    set input    [fgetc $infile [coding]]
+    set expected {}
+    catch {
+	set exfile [locate [td]/dt/result/$cat [rt]/$id $id]
+	set expected [fget $exfile]
+    }
+
+    # - --   -----        -------------
+    # For rt-c activate `TRACE` tag `enter` in `inbound.c` and use the
+    # rebuilt runtime.
+    
+    test [tnp]-process-4.${kd}---fail-${id} "[cl] :: process fail $id ([coding])" -body {
+	PARSE process $input
+    } -setup setup -cleanup {
+	cleanup
+    } -returnCodes error -result $expected -constraints [constraints $id]
+
+    if {$skipfiles} continue
+    
+    test [tnp]-process-file-5.${kd}---fail-${id} "[cl] :: fail process-file $id" -body {
+	    PARSE process-file $infile
+    } -setup setup -cleanup {
+	cleanup
+    } -returnCodes error -result $expected -constraints [constraints $id]
+}
+
+# # ## ### ##### ######## ############# #####################
+unset -nocomplain will_accept will_reject max fmt k infile kd exfile input expected id
+rename setup   {}
+rename cleanup {}
+rename tnp     {}
+rename cl      {}
+
+# # ## ### ##### ######## ############# #####################
+rename rt          {}
+rename coding      {}
+rename constraints {}
+
+# # ## ### ##### ######## ############# #####################
+return

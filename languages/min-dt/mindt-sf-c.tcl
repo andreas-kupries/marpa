@@ -7,7 +7,7 @@
 # (c) 2018 Grammar mindt::parser::sf::c 0 By Andreas Kupries
 ##
 ##	`marpa::runtime::c`-derived Parser for grammar "mindt::parser::sf::c".
-##	Generated On Fri Sep 07 20:57:51 PDT 2018
+##	Generated On Sat Sep 08 15:32:15 PDT 2018
 ##		  By aku@hephaistos
 ##		 Via remeta
 ##
@@ -470,6 +470,23 @@ critcl::ccode {
     };
 
     /*
+    ** Map lexeme strings to parser symbol id (`match alternate` support).
+    */
+
+    static marpatcl_rtc_sym_lmap mindt_parser_sf_c_lmap [10] = {
+	{ 216, 0 }, // Braced
+	{ 263, 1 }, // Include
+	{ 289, 2 }, // Quote
+	{ 301, 3 }, // Simple
+	{ 304, 4 }, // Space
+	{ 308, 5 }, // Start
+	{ 309, 6 }, // Stop
+	{ 328, 7 }, // Vset
+	{ 333, 8 }, // White
+	{ 337, 9 }, // Word
+    };
+
+    /*
     ** L0 structures
     */
 
@@ -641,10 +658,12 @@ critcl::ccode {
     static marpatcl_rtc_rules mindt_parser_sf_c_l0 = { /* 48 */
 	/* .sname   */  &mindt_parser_sf_c_pool,
 	/* .symbols */  { 338, mindt_parser_sf_c_l0_sym_name },
+	/* .lmap    */  { 10, mindt_parser_sf_c_lmap },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
 	/* .rcode   */  mindt_parser_sf_c_l0_rule_definitions,
-	/* .events  */  0
+	/* .events  */  0,
+	/* .trigger */  0
     };
 
     static marpatcl_rtc_sym mindt_parser_sf_c_l0semantics [3] = { /* 6 bytes */
@@ -723,10 +742,12 @@ critcl::ccode {
     static marpatcl_rtc_rules mindt_parser_sf_c_g1 = { /* 48 */
 	/* .sname   */  &mindt_parser_sf_c_pool,
 	/* .symbols */  { 30, mindt_parser_sf_c_g1_sym_name },
+	/* .lmap    */  { 0, 0 },
 	/* .rules   */  { 37, mindt_parser_sf_c_g1_rule_name },
 	/* .lhs     */  { 37, mindt_parser_sf_c_g1_rule_lhs },
 	/* .rcode   */  mindt_parser_sf_c_g1_rule_definitions,
-	/* .events  */  0
+	/* .events  */  0,
+	/* .trigger */  0
     };
 
     static marpatcl_rtc_sym mindt_parser_sf_c_g1semantics [43] = { /* 86 bytes */
@@ -742,8 +763,8 @@ critcl::ccode {
 
 	/* --- (2) --- --- --- Semantics Data
 	 */
-	         /* 37 */ 1, MARPATCL_SV_A_FIRST,
-	           /* 39 */ 2, MARPATCL_SV_RULE_NAME,     MARPATCL_SV_VALUE
+	/* 37 */ 1, MARPATCL_SV_A_FIRST,
+	/* 39 */ 2, MARPATCL_SV_RULE_NAME, MARPATCL_SV_VALUE
     };
 
     static marpatcl_rtc_sym mindt_parser_sf_c_g1masking [93] = { /* 186 bytes */

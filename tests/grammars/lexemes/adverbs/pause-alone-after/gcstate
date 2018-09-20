@@ -1,4 +1,7 @@
 grammar {
+    event {
+        {} on
+    }
     global {
         start B
         inaccessible warn
@@ -18,13 +21,6 @@ grammar {
         action {array values}
     }
     l0 {
-        events {
-            A {
-                after {
-                    {} on
-                }
-            }
-        }
         latm {
             A 1
         }
@@ -33,6 +29,11 @@ grammar {
         }
         literal {
             @CHR:<a> { {character 97} }
+        }
+        trigger {
+            A {
+                after {{}}
+            }
         }
     }
 }

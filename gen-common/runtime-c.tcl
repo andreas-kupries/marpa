@@ -76,12 +76,13 @@ debug prefix marpa/gen/runtime/c {[debug caller] | }
 ## @cname@               -- C identifier, derived from @name@
 ## @discards-c@          -- #discarded symbols in the L0 level (i.e. whitespace)
 ## @event-names@         -- Literal pool for user-declared event names, or empty line
-## @event-table@         -- Array of all declared user events, L0 first, then G1, shared by the higher structures
+## @event-table@         -- Array of all declared user events, shared by the higher structures
+## @event-ref@           -- Reference to the event array
 ## @g1-code-c@           -- #entries to encode the structural (G1) rules
 ## @g1-code-sz@          -- Informational: #bytes for
 ## @g1-code@             -- VM instructions encoding the structural (G1) rules
-## @g1-event-struct-ref@ -- Address of the g1 event declaration structure, or 0.
-## @g1-event-struct@     -- G1 event declaration structure, or nothing
+## @g1-trigger-ref@      -- Address of the g1 trigger declaration structure, or 0.
+## @g1-trigger@          -- G1 triggger declaration structure, or nothing
 ## @g1-insn-c@           -- #instructions encoding the structural (G1) rules
 ## @g1-lhs-v@            -- Per G1 rule indices into the symbol map = lhs of rule
 ## @g1-masking-c@        -- #entries encoding the G1 masks (See spec.h for details)
@@ -96,12 +97,12 @@ debug prefix marpa/gen/runtime/c {[debug caller] | }
 ## @g1-symbols-c@        -- #symbols in the structural (G1) level of the engine
 ## @g1-symbols-indices@  -- Per G1 symbol indices into the string pool = symbol name
 ## @g1-symbols-sz@       -- Informational: #bytes for
-## @have-events@         -- number of user-declared events (L0 and G1 together)
+## @have-events@         -- number of user-declared events
 ## @l0-code-c@           -- #entries to encode the lexical (L0) rules
 ## @l0-code-sz@          -- Informational: #bytes for
 ## @l0-code@             -- VM instructions encoding the lexical (L0) rules
-## @l0-event-struct-ref@ -- Address of the l0 event declaration structure, or 0.
-## @l0-event-struct@     -- L0 event declaration structure, or nothing
+## @l0-trigger-ref@      -- Address of the l0 trigger declaration structure, or 0.
+## @l0-trigger@          -- L0 trigger declaration structure, or nothing
 ## @l0-insn-c@           -- #instructions encoding the lexical (L0) rules
 ## @l0-semantics-c@      -- #array descriptor codes of the L0 semantics
 ## @l0-semantics-sz@     -- Informational: #bytes for the lexical semantics
@@ -173,6 +174,11 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     set emode [dict get $config events]
     dict unset config events
 
+    if {$emode ni {l0 both}} {
+	return -code error \
+	    "Bad event mode $emode, expected one of l0, or both."
+    }
+
     set gc [gc $serial]
     # Types we can get out of the reduction:
     # - byte, brange
@@ -181,11 +187,12 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 
     set lit       [GetL0 $gc literal]
     set l0symbols [GetL0 $gc {}]
-    set l0events  [$gc l0 events]
+    set l0trigger [$gc l0 trigger]
     set discards  [GetL0 $gc discard]
     set lex       [GetL0 $gc lexeme]
     set g1symbols [$gc g1 symbols-of {}]
-    set g1events  [$gc g1 events]
+    set g1trigger [$gc g1 trigger]
+    set events    [$gc events]
 
     # Ignoring class 'terminal'. That is the same as the l0 lexemes,
     # and the semantics made sure, as did the container validation.
@@ -312,12 +319,12 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     GR start [$gc start?]
 
     set sem    [SemaCodeL [$gc lexeme-semantics? action]]
-    set always [lmap w [concat $acs_discards [LTM $lex $gc]] {
-	# Convert ACS down to terminal symbols and pseudo-terminals
-	# (latter are for the discards)
-	# NOTE: See (%%accept/always%%) in rtc/lexer.c
-	expr {[L 2id $w] - 256}
-    }]
+    set always {}
+    # Convert ACS down to terminal symbols and pseudo-terminals
+    # (latter are for the discards)
+    # NOTE: See (%%accept/always%%) in rtc/lexer.c
+    foreach w $acs_discards  { lappend always [expr {[L 2id      $w] - 256}] }
+    foreach w [LTM $lex $gc] { lappend always [expr {[L 2id @ACS:$w] - 256}] }
 
     $gc destroy
 
@@ -426,6 +433,7 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
     # Overarching spec info (various counts, always-on symbols)
     lappend map @lexemes-c@		[llength $lex]
     lappend map @discards-c@		[llength $discards]
+    lappend map @lexemes-map@           [LexemeMap $lex]
 
     incr dsz [* 2 [llength $always]]
     lappend map @always-sz@		[* 2 [llength $always]]
@@ -435,53 +443,31 @@ proc ::marpa::gen::runtime::c::config {serial {config {}}} {
 
     incr dsz 72 ; # sizeof(marpatcl_rtc_spec) = 72
 
-    # Event handling. 2 possible modes:
-    # (l0) L0 events only
-    # (both) L0 and G1 events combined (main table)
+    # Event and trigger handling. 2 possible modes:
+    # (l0)   L0 trigger only
+    # (both) L0 and G1 triggers.
 
-    switch -exact -- $emode {
-	l0 {
-	    set l0events [Events2Table $l0events L G]
-	    set name     [CName]_events
-	    set l0name   [CName]_l0events
-	    set l0map    [CName]_l0idmap
+    set enames [lsort -dict [dict keys $events]]
 
-	    lappend map @have-events@         [llength $l0events]
-	    lappend map @event-table@         [EventTable  $name $l0events]
-	    lappend map @event-names@         [EventNames  $l0events]
-	    lappend map @l0-event-struct-ref@ [EventRef    $l0name $l0events]
-	    lappend map @l0-event-struct@     [EventStruct $l0name $l0events $name $l0map $lex]
+    set counter -1
+    set eidmap {}
+    foreach e $enames { dict set eidmap $e [incr counter] }
 
-	    incr dsz 0 ;# TODO XXX size of the event structures
-	}
-	both {
-	    set l0events [Events2Table $l0events L G]
-	    set g1events [Events2Table $g1events G G]
-	    set events   [concat $l0events $g1events]
-	    set nl       [llength $l0events]
+    lappend map @have-events@ [dict size $events]
+    lappend map @event-names@ [EventPool $enames]
+    lappend map @event-table@ [EventTable $events $enames]
+    lappend map @event-ref@   [Ref [EStructName] $enames]
 
-	    set name     [CName]_events
-	    set l0name   [CName]_l0events
-	    set g1name   [CName]_g1events
-	    set l0map    [CName]_l0idmap
-	    set g1map    [CName]_g1idmap
+    lappend map @l0-trigger@     [TriggerC l0 $l0trigger $eidmap]
+    lappend map @l0-trigger-ref@ [Ref [TStructName l0] $l0trigger]
 
-	    lappend map @have-events@         [llength $events]
-	    lappend map @event-table@         [EventTable  $name $events]
-	    lappend map @event-names@         [EventNames  $events]
-	    lappend map @l0-event-struct-ref@ [EventRef    $l0name $l0events]
-	    lappend map @l0-event-struct@     [EventStruct $l0name $l0events $name $l0map $lex]
-	    lappend map @g1-event-struct-ref@ [EventRef    $g1name $g1events]
-	    lappend map @g1-event-struct@     [EventStruct $g1name $g1events $name $g1map \
-						   [concat $lex $g1symbols] $nl]
-
-	    incr dsz 0 ;# TODO XXX size of the event structures
-	}
-	default {
-	    return -code error \
-		"Bad event mode $emode, expected one of l0, or both."
-	}
+    # Already validated `emode in {l0 both}`
+    if {$emode eq "both"} {
+	lappend map @g1-trigger@     [TriggerC g1 $g1trigger $eidmap]
+	lappend map @g1-trigger-ref@ [Ref [TStructName g1] $g1trigger]
     }
+
+    #incr dsz 0 ;# TODO XXX size of the event structures
 
     lappend map @space@ $dsz
 
@@ -891,6 +877,8 @@ proc ::marpa::gen::runtime::c::TabularArray {words {config {}}} {
 	n         16
 	from      0
 	to        end
+	align     1
+	padright  0
     }
     dict with defaults {} ; # import defaults into scope
     dict with config   {} ; # and overide with caller's settings.
@@ -908,8 +896,14 @@ proc ::marpa::gen::runtime::c::TabularArray {words {config {}}} {
     # proper alignment from that. Note, alignment is right-justified,
     # space padding to the left of each word.
 
-    set max [Width [lrange $words $from $to]]
-    set sf %${max}s
+    if {$align} {
+	set max [Width [lrange $words $from $to]]
+	if {$padright} { set max -$max }
+	set sf %${max}s
+    } else {
+	# unaligned output
+	set sf %s
+    }
 
     append result $prefix
 
@@ -999,7 +993,7 @@ proc ::marpa::gen::runtime::c::RuleC {label data nr} {
 	incr n 1 ;# adjust for length entry
 	# NOTE: At this point n >= 1.
 	#       No chunk is zero-length
-	lappend chunks [list $label from 1] $n
+	lappend chunks [list $label from 1 align 0] $n
 	incr nr $n
 	set label {}
     }
@@ -1021,7 +1015,6 @@ proc ::marpa::gen::runtime::c::Width {words} {
     return [tcl::mathfunc::max {*}[lmap w $words { string length $w }]]
 }
 
-
 proc ::marpa::gen::runtime::c::dictsort {dict} {
     foreach k [lsort -dict [dict keys $dict]] {
 	lappend r $k [dict get $dict $k]
@@ -1029,148 +1022,190 @@ proc ::marpa::gen::runtime::c::dictsort {dict} {
     return $r
 }
 
-proc ::marpa::gen::runtime::c::Events2Table {dict lsym gsym} {
-    if {![dict size $dict]} { return {} }
+proc ::marpa::gen::runtime::c::Ref {name words} {
+    if {![llength $words]} { return 0 }
+    return "&${name}"
+}
+
+proc ::marpa::gen::runtime::c::LexemeMap {symbols} {
+    set symbols [lsort -dict $symbols]
+    set ids     [lmap s $symbols { G 2id $s }]
+    set qsym    [lmap s $symbols { set _ "\"$s\"" }]
+
+    set lids [lmap s $symbols { G 2id $s }] ;# parser symbol id
+    set sids [lmap s $symbols { P id  $s }] ;# string pool id
+
+    set lw [Width $lids] ; set lf %-${lw}s
+    set sw [Width $sids] ; set sf %-${sw}s
+
+    set fmt "\t\{ $sf, $lf \}, // %s"
+
+    return [join [lmap l $lids s $sids sym $symbols {
+	format $fmt $s $l $sym
+    }] \n]
+}
+
+proc ::marpa::gen::runtime::c::EventTable {events enames} {
+    # events = dict (name -> bool)
+    set n [dict size $events]
+    if {!$n} { return {} }
+
+    lappend table ""
+    lappend table "    /*"
+    lappend table "    ** Declared events, initial stati"
+    lappend table "    */"
+    lappend table ""
+    lappend table "    static unsigned char [ETableName] \[$n\] = \{"
+
+    foreach name $enames {
+	set active [StateCode [dict get $events $name]]
+	lappend table "\t$active, // $name = [expr {$active ? "on" : "off"}]"
+    }
+
+    lappend table "    \};"
+    lappend table ""
+    lappend table "    static marpatcl_rtc_event [EStructName] = \{"
+    lappend table "\t/* .size */ $n,"
+    lappend table "\t/* .data */ [ETableName]"
+    lappend table "    \};"
+    lappend table ""
+
+    return [join $table \n]
+}
+
+proc ::marpa::gen::runtime::c::EventPool {enames} {
+    set n [llength $enames]
+    if {!$n} { return {} }
+
+    set  max [string length [lindex $enames end]]
+    incr max
+    set fmt %-${max}s
+
+    set counter -1
+    lappend literals "\ncritcl::literals::def [EPoolName] \{"
+    foreach name $enames {
+	set k [format $fmt u[incr counter]]
+	lappend literals "    $k \"$name\""
+    }
+    lappend literals "\} +list"
+    lappend literals ""
+
+    return [join $literals \n]
+}
+
+proc ::marpa::gen::runtime::c::TriggerC {area trigger eidmap} {
+    # trigger = dict (symbol -> (when -> list (ename)))
+
+    lassign [TriggerTable $trigger $eidmap] tw sw ew snw enw table
+    # table = list (list (ename symbol symid cwhen evid))
+
+    set n [llength $table]
+    if {!$n} { return {} }
+
+    set fmt "\t\{ %${sw}s, %-${tw}s, %-${ew}s \}, // %-${snw}s => %s"
+
+    lappend decl ""
+    lappend decl "    marpatcl_rtc_trigger_entry [TTableName $area] \[$n\] = \{"
+
+    foreach item $table {
+	lassign $item ename symbol symid cwhen evid
+	lappend decl [format $fmt $symid $cwhen $evid $symbol $ename]
+    }
+
+    lappend decl "    \};"
+    lappend decl ""
+    lappend decl "    marpatcl_rtc_trigger [TStructName $area] = \{"
+    lappend decl "\t/* .size */ $n,"
+    lappend decl "\t/* .data */ [TTableName $area]"
+    lappend decl "    \};"
+    lappend decl ""
+
+    return [join $decl \n]
+}
+
+proc ::marpa::gen::runtime::c::TriggerTable {trigger eidmap} {
+    # trigger = dict (symbol -> (when -> list (ename)))
+    # eidmap  = dict (ename -> index)
+
+    if {![dict size $trigger]} { return {0 0 0 0 0 {}} }
     # Flatten
-    dict for {symbol spec} $dict {
-	dict for {type decl} $spec {
-	    dict for {event active} $decl {
-		# Attention: Type converter has to match
-		# marpa_runtime_c.h:marpatcl_rtc_event_code
-		set ctype [dict get {
-		    after     marpatcl_rtc_event_after
-		    before    marpatcl_rtc_event_before
-		    completed marpatcl_rtc_event_completed
-		    discard   marpatcl_rtc_event_discard
-		    nulled    marpatcl_rtc_event_nulled
-		    predicted marpatcl_rtc_event_predicted
-		} $type]
-		set active [dict get {
-		    on  1  true  1  1 1
-		    off 0  false 0  0 0
-		} $active]
-		# Note: On symbol encoding.
-		# For discarded symbols the RTC match state
-		# (.discards) contains their ACS tokens. For lexemes
-		# the RTC match state (.found) contains their G1
-		# terminal symbols instead. And G1 parse events use G1
-		# symbols as well.
-		switch -exact -- $type {
-		    discard { set sid [L 2id @ACS:$symbol] }
-		    default { set sid [G 2id $symbol] }
-		}
-		lappend table [list $event $symbol $sid $ctype $active]
+    dict for {symbol spec} $trigger {
+	lappend sn $symbol
+	dict for {type enames} $spec {
+	    foreach event $enames {
+		set ctype [TypeCode $type]
+		set sid   [SymId    $type $symbol]
+		set eid   [dict get $eidmap $event]
+		lappend table [list $event $symbol $sid $ctype $eid]
+		lappend t $ctype
+		lappend e $eid
+		lappend s $sid
+		lappend en $event
 	    }
 	}
     }
+
+    set tw  [Width $t]
+    set sw  [Width $s]
+    set ew  [Width $e]
+    set snw [Width $sn]
+    set enw [Width $en]
+
     # Sort (Event names, then symbol names)
-    return [lsort -dict -index 0 [lsort -dict -index 1 $table]]
+    set table [lsort -dict -index 0 [lsort -dict -index 1 $table]]
+    return [list $tw $sw $ew $snw $enw $table]
 }
 
-proc ::marpa::gen::runtime::c::EventRef {name table} {
-    if {[llength $table]} {
-	return &${name}
-    }
-    return 0
+proc ::marpa::gen::runtime::c::EStructName {} {
+    return [CName]_evspec
 }
 
-proc ::marpa::gen::runtime::c::EventNames {table} {
-    if {![llength $table]} { return "" }
-
-    lappend names "\ncritcl::literals::def [CName]_event \{"
-    set k 0
-    foreach item $table {
-	lassign $item event _ _ _ _
-	lappend names "    u$k \"$event\""
-	incr k
-    }
-    lappend names "\} +list\n"
-
-    return [join $names \n]
+proc ::marpa::gen::runtime::c::ETableName {} {
+    return [CName]_evstatus
 }
 
-proc ::marpa::gen::runtime::c::SymIdMap {name symbols config} {
-    set cname [CName]
-
-    set n [llength $symbols]
-    set symbols [lsort -dict $symbols]
-
-    lappend decl "\n    static const char* ${name}_sym \[$n\] = \{"
-    set last [lindex $symbols end]
-    foreach s $symbols {
-	lappend ids [G 2id $s]
-	set sep [expr {$s eq $last ? "" : ","}]
-
-	# XXX Find a way to reference the existing string pool
-	# directly, instead of making separate subset of the strings.
-	# The constructions below result in `initializer is not a
-	# constant` :(
-
-	#lappend decl "\t${cname}_pool.string + [P offset $s]$sep // $s"
-	#lappend decl "\t&${cname}_pool.string\[[P offset $s]\]$sep // $s"
-	lappend decl "\t\"$s\"$sep"
-    }
-    lappend decl "    \};"
-
-    lappend decl "\n    static marpatcl_rtc_sym ${name}_id \[$n\] = \{"
-    lappend decl [TabularArray $ids $config]
-    lappend decl "    \};"
-
-    lappend decl "\n    static marpatcl_rtc_symid $name = \{"
-    lappend decl "	/* .size   */ $n,"
-    lappend decl "	/* .symbol */ ${name}_sym,"
-    lappend decl "	/* .id     */ ${name}_id,"
-    lappend decl "    \};"
-    return [join $decl \n]
+proc ::marpa::gen::runtime::c::EPoolName {} {
+    return [CName]_event
 }
 
-proc ::marpa::gen::runtime::c::EventTable {name table} {
-    set n [llength $table]
-    if {!$n} { return "" }
-
-    set sn 0 ; set tn 0
-    foreach item $table {
-	lassign $item event sym sid type active
-	set sl [string length $sid]  ; set sn [expr {max($sn,$sl)}]
-	set tl [string length $type] ; set tn [expr {max($tn,$tl)}]
-    }
-
-    lappend decl "\n    static marpatcl_rtc_event_spec $name \[$n\] = \{"
-    lappend decl "    // sym, type, active"
-
-    foreach item $table {
-	lassign $item event sym sid type active
-	# TODO: left-pad / right-align the columns
-	lappend decl \
-	    [format \
-		 "\t\{ %${sn}d, %-${tn}s, $active \}, // ${sym}: $event" \
-		 $sid $type]
-    }
-    lappend decl "    \};\n"
-    # dsz + len(table)*(4+4+4)
-
-    return [join $decl \n]
+proc ::marpa::gen::runtime::c::TStructName {prefix} {
+    return [CName]_${prefix}trigger
 }
 
-proc ::marpa::gen::runtime::c::EventStruct {name table dname mname msym {offset 0}} {
-    set n [llength $table]
-    if {!$n} { return "" }
+proc ::marpa::gen::runtime::c::TTableName {prefix} {
+    return [CName]_${prefix}trigger_entry
+}
 
-    upvar 1 config config
-    lappend decl [SymIdMap $mname $msym $config]
-    #
-    lappend decl "\n    static marpatcl_rtc_events $name = \{"
-    lappend decl "\t/* .size  */ $n,"
-    if {$offset} {
-	lappend decl "\t/* .data  */ ${dname} + $offset,"
-    } else {
-	lappend decl "\t/* .data  */ ${dname},"
+proc ::marpa::gen::runtime::c::StateCode {active} {
+    return [dict get {
+	on  1  true  1  1 1
+	off 0  false 0  0 0
+    } $active]
+}
+
+proc ::marpa::gen::runtime::c::TypeCode {type} {
+    # Attention: Type converter has to match
+    # marpa_runtime_c.h:marpatcl_rtc_event_code
+    return [dict get {
+	after     marpatcl_rtc_event_after
+	before    marpatcl_rtc_event_before
+	completed marpatcl_rtc_event_completed
+	discard   marpatcl_rtc_event_discard
+	nulled    marpatcl_rtc_event_nulled
+	predicted marpatcl_rtc_event_predicted
+    } $type]
+}
+
+proc ::marpa::gen::runtime::c::SymId {type symbol} {
+    # Note: On symbol encoding.
+    # For discarded symbols the RTC match state (.discards) contains
+    # their ACS tokens. For lexemes the RTC match state (.found)
+    # contains their G1 terminal symbols instead. And G1 parse events
+    # use G1 symbols as well.
+    switch -exact -- $type {
+	discard { return [L 2id @ACS:$symbol] }
+	default { return [G 2id $symbol] }
     }
-    lappend decl "\t/* .idmap */ &$mname"
-    lappend decl "    \};\n"
-    # dsz + 8 (2+4+pad:2)
-
-    return [join $decl \n]
 }
 
 # # ## ### ##### ######## #############

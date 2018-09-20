@@ -373,6 +373,14 @@ critcl::ccode {
     };
 
     /*
+    ** Map lexeme strings to parser symbol id (`match alternate` support).
+    */
+
+    static marpatcl_rtc_sym_lmap <Name>_lmap [1] = {
+	{ 2, 0 }, // B
+    };
+
+    /*
     ** L0 structures
     */
 
@@ -419,10 +427,12 @@ critcl::ccode {
     static marpatcl_rtc_rules <Name>_l0 = { /* 48 */
 	/* .sname   */  &<Name>_pool,
 	/* .symbols */  { 259, <Name>_l0_sym_name },
+	/* .lmap    */  { 1, <Name>_lmap },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
 	/* .rcode   */  <Name>_l0_rule_definitions,
-	/* .events  */  0
+	/* .events  */  0,
+	/* .trigger */  0
     };
 
     static marpatcl_rtc_sym <Name>_l0semantics [1] = { /* 2 bytes */
@@ -461,10 +471,12 @@ critcl::ccode {
     static marpatcl_rtc_rules <Name>_g1 = { /* 48 */
 	/* .sname   */  &<Name>_pool,
 	/* .symbols */  { 3, <Name>_g1_sym_name },
+	/* .lmap    */  { 0, 0 },
 	/* .rules   */  { 2, <Name>_g1_rule_name },
 	/* .lhs     */  { 2, <Name>_g1_rule_lhs },
 	/* .rcode   */  <Name>_g1_rule_definitions,
-	/* .events  */  0
+	/* .events  */  0,
+	/* .trigger */  0
     };
 
     static marpatcl_rtc_sym <Name>_g1semantics [8] = { /* 16 bytes */
@@ -478,8 +490,8 @@ critcl::ccode {
 
 	/* --- (2) --- --- --- Semantics Data
 	 */
-	            /* 2 */ 1, MARPATCL_SV_RULE_NAME,
-	            /* 4 */ 2, MARPATCL_SV_RULE_NAME,     MARPATCL_SV_VALUE
+	/* 2 */ 1, MARPATCL_SV_RULE_NAME,
+	/* 4 */ 2, MARPATCL_SV_RULE_NAME, MARPATCL_SV_VALUE
     };
 
     static marpatcl_rtc_sym <Name>_g1masking [2] = { /* 4 bytes */

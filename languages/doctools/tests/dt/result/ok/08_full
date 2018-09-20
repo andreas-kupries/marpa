@@ -1,0 +1,472 @@
+manpage
+  m_manpage_begin
+    simple
+      @44 3 'ALL'
+    simple
+      @48 1 'a'
+    simple
+      @50 1 '5'
+  headers
+    m_copyright
+      simple
+        @64 13 '**Copyright**'
+    m_moddesc
+      simple
+        @88 14 '..THE_MODULE..'
+    m_titledesc
+      simple
+        @115 13 '..THE_TITLE..'
+    m_require
+      simple
+        @139 3 'AAA'
+    m_require
+      simple
+        @153 3 'BBB'
+      simple
+        @157 3 'VVV'
+    m_require
+      simple
+        @171 3 'CCC'
+      m_opt
+        simple
+          @180 3 'VVV'
+  body
+    paragraphs
+      paragraph
+        space
+          @199 1 {'\n'}
+        command_list
+          cmd_list_elem
+            m_cmd_def
+              simple
+                @231 4 'NAME'
+            paragraphs
+              paragraph
+                simplex
+                  @236 15 {' DESCRIPTION ::'}
+                m_cmd
+                  simple
+                    @256 7 'Command'
+                simple
+                  @264 2 '::'
+                space
+                  @266 1 {'\n'}
+          cmd_list_elem
+            m_cmd_def
+              simple
+                @276 4 'NAME'
+            paragraphs
+              paragraph
+                simplex
+                  @281 15 {' DESCRIPTION ::'}
+                simple
+                  @313 2 '::'
+                space
+                  @315 1 {'\n'}
+          cmd_list_elem
+            m_cmd_def
+              simple
+                @325 4 'NAME'
+            paragraphs
+              paragraph
+                simplex
+                  @330 15 {' DESCRIPTION ::'}
+                m_const
+                  simple
+                    @352 8 'Constant'
+                simple
+                  @361 2 '::'
+                space
+                  @363 1 {'\n'}
+        space
+          @374 1 {'\n'}
+    sections
+      section
+        m_section
+          simple
+            @384 3 'API'
+        paragraphs
+          paragraph
+            space
+              @388 1 {'\n'}
+            definition_list
+              def_list_elem
+                m_def
+                  simple
+                    @419 4 'TERM'
+                paragraphs
+                  paragraph
+                    simplex
+                      @424 15 {' DESCRIPTION ::'}
+                    m_emph
+                      simple
+                        @445 8 'Emphasis'
+                    simple
+                      @454 2 '::'
+                    space
+                      @456 1 {'\n'}
+              def_list_elem
+                m_def
+                  simple
+                    @462 4 'TERM'
+                paragraphs
+                  paragraph
+                    simplex
+                      @467 15 {' DESCRIPTION ::'}
+                    m_file
+                      simple
+                        @488 9 'File/Path'
+                    simple
+                      @498 2 '::'
+                    space
+                      @500 1 {'\n'}
+                    tkoption_list
+                      tko_list_elem
+                        m_tkoption_def
+                          simple
+                            @538 4 'NAME'
+                          simple
+                            @543 6 'DBNAME'
+                          simple
+                            @550 5 'CLASS'
+                        paragraphs
+                          paragraph
+                            space
+                              @556 1 {' '}
+                            simple
+                              @557 11 'DESCRIPTION'
+                            space
+                              @568 1 {' '}
+                            m_sectref
+                              simple
+                                @578 6 'NARGLE'
+                            space
+                              @585 1 {'\n'}
+                      tko_list_elem
+                        m_tkoption_def
+                          simple
+                            @600 4 'NAME'
+                          simple
+                            @605 6 'DBNAME'
+                          simple
+                            @612 5 'CLASS'
+                        paragraphs
+                          paragraph
+                            simplex
+                              @618 15 {' DESCRIPTION ::'}
+                            m_fun
+                              simple
+                                @638 8 'Function'
+                            simple
+                              @647 2 '::'
+                            space
+                              @649 1 {'\n'}
+                      tko_list_elem
+                        m_tkoption_def
+                          simple
+                            @664 4 'NAME'
+                          simple
+                            @669 6 'DBNAME'
+                          simple
+                            @676 5 'CLASS'
+                        paragraphs
+                          paragraph
+                            simplex
+                              @682 15 {' DESCRIPTION ::'}
+                            m_method
+                              simple
+                                @705 6 'Method'
+                            simple
+                              @712 2 '::'
+                            space
+                              @714 1 {'\n'}
+                    space
+                      @725 1 {'\n'}
+              def_list_elem
+                m_def
+                  simple
+                    @731 4 'TERM'
+                paragraphs
+                  paragraph
+                    space
+                      @736 1 {' '}
+                    simple
+                      @737 11 'DESCRIPTION'
+                    space
+                      @748 1 {'\n'}
+              def_list_elem
+                m_call
+                  tclwords
+                    simple
+                      @755 7 'CMDNAME'
+                    wspace
+                      @762 1 {' '}
+                    simple
+                      @763 3 '...'
+                paragraphs
+                  paragraph
+                    simplex
+                      @767 15 {' DESCRIPTION ::'}
+                    m_namespace
+                      simple
+                        @793 9 'Namespace'
+                    simple
+                      @803 2 '::'
+                    space
+                      @805 1 {'\n'}
+                    argument_list
+                      arg_list_elem
+                        m_arg_def
+                          simple
+                            @838 4 'TYPE'
+                          simple
+                            @843 4 'NAME'
+                        paragraphs
+                          paragraph
+                            simplex
+                              @848 15 {' DESCRIPTION ::'}
+                            m_arg
+                              simple
+                                @868 8 'Argument'
+                            simple
+                              @877 2 '::'
+                            space
+                              @879 1 {'\n'}
+                      arg_list_elem
+                        m_arg_def
+                          simple
+                            @889 4 'TYPE'
+                          simple
+                            @894 4 'NAME'
+                        paragraphs
+                          paragraph
+                            simplex
+                              @899 15 {' DESCRIPTION ::'}
+                            m_option
+                              simple
+                                @922 6 'Option'
+                            simple
+                              @929 2 '::'
+                            space
+                              @931 1 {'\n'}
+                      arg_list_elem
+                        m_arg_def
+                          simple
+                            @941 4 'TYPE'
+                          simple
+                            @946 4 'NAME'
+                          simple
+                            @951 4 'MODE'
+                        paragraphs
+                          paragraph
+                            simplex
+                              @956 15 {' DESCRIPTION ::'}
+                            m_opt
+                              simple
+                                @976 8 'Optional'
+                            simple
+                              @985 2 '::'
+                            space
+                              @987 1 {'\n'}
+                            m_example
+                              braced
+                                @997 59 {'\173\n    THE ARGUMENT IS USED IN THIS\n    AND/OR THAT MANNER\n\175'}
+                            space
+                              @1057 1 {'\n'}
+                    space
+                      @1068 1 {'\n'}
+              def_list_elem
+                m_call
+                  tclwords
+                    simple
+                      @1075 7 'CMDNAME'
+                    wspace
+                      @1082 1 {' '}
+                    simple
+                      @1083 3 '...'
+                paragraphs
+                  paragraph
+                    simplex
+                      @1087 15 {' DESCRIPTION ::'}
+                    m_package
+                      simple
+                        @1111 7 'Package'
+                    simple
+                      @1119 2 '::'
+                    space
+                      @1121 1 {'\n'}
+              def_list_elem
+                m_call
+                  tclwords
+                    simple
+                      @1128 7 'CMDNAME'
+                    wspace
+                      @1135 1 {' '}
+                    simple
+                      @1136 3 '...'
+                paragraphs
+                  paragraph
+                    simplex
+                      @1140 15 {' DESCRIPTION ::'}
+                    m_syscmd
+                      simple
+                        @1163 13 'SystemCommand'
+                    simple
+                      @1177 2 '::'
+                    space
+                      @1179 1 {'\n'}
+                    option_list
+                      opt_list_elem
+                        m_opt_def
+                          simple
+                            @1210 4 'NAME'
+                        paragraphs
+                          paragraph
+                            simplex
+                              @1215 15 {' DESCRIPTION ::'}
+                            m_term
+                              simple
+                                @1236 4 'Term'
+                            simple
+                              @1241 2 '::'
+                            space
+                              @1243 1 {'\n'}
+                      opt_list_elem
+                        m_opt_def
+                          simple
+                            @1253 4 'NAME'
+                        paragraphs
+                          paragraph
+                            simplex
+                              @1258 15 {' DESCRIPTION ::'}
+                            m_type
+                              simple
+                                @1279 4 'Type'
+                            simple
+                              @1284 2 '::'
+                            space
+                              @1286 1 {'\n'}
+                      opt_list_elem
+                        m_opt_def
+                          simple
+                            @1296 4 'NAME'
+                          simple
+                            @1301 8 'ARGUMENT'
+                        paragraphs
+                          paragraph
+                            simplex
+                              @1310 15 {' DESCRIPTION ::'}
+                            m_uri
+                              simple
+                                @1330 3 'Uri'
+                            simple
+                              @1334 2 '::'
+                            space
+                              @1336 1 {'\n'}
+                    space
+                      @1347 1 {'\n'}
+            space
+              @1358 1 {'\n'}
+        subsections
+          subsection
+            m_subsection
+              simple
+                @1371 6 'NARGLE'
+            paragraphs
+              paragraph
+                space
+                  @1378 1 {'\n'}
+                enum_list
+                  enum_list_elem
+                    paragraphs
+                      paragraph
+                        simplex
+                          @1409 13 {' PARAGRAPH ::'}
+                        m_uri
+                          simple
+                            @1427 3 'Uri'
+                          simple
+                            @1431 8 'UriLabel'
+                        simple
+                          @1440 2 '::'
+                        space
+                          @1442 1 {'\n'}
+                  enum_list_elem
+                    paragraphs
+                      paragraph
+                        simplex
+                          @1449 13 {' PARAGRAPH ::'}
+                        m_var
+                          simple
+                            @1467 8 'Variable'
+                        simple
+                          @1476 2 '::'
+                        space
+                          @1478 1 {'\n'}
+                  enum_list_elem
+                    paragraphs
+                      paragraph
+                        simplex
+                          @1485 13 {' PARAGRAPH ::'}
+                        m_widget
+                          simple
+                            @1506 6 'Widget'
+                        simple
+                          @1513 2 '::'
+                        space
+                          @1515 1 {'\n'}
+                        item_list
+                          item_list_elem
+                            paragraphs
+                              paragraph
+                                simplex
+                                  @1544 13 {' PARAGRAPH ::'}
+                                m_class
+                                  simple
+                                    @1564 5 'Class'
+                                simple
+                                  @1570 2 '::'
+                                space
+                                  @1572 1 {'\n'}
+                          item_list_elem
+                            paragraphs
+                              paragraph
+                                space
+                                  @1579 1 {' '}
+                                simple
+                                  @1580 9 'PARAGRAPH'
+                                space
+                                  @1589 1 {'\n'}
+                          item_list_elem
+                            paragraphs
+                              paragraph
+                                space
+                                  @1596 1 {' '}
+                                simple
+                                  @1597 9 'PARAGRAPH'
+                                space
+                                  @1606 1 {'\n'}
+                        space
+                          @1617 1 {'\n'}
+                space
+                  @1628 1 {'\n'}
+                m_keywords
+                  tclwords
+                    simple
+                      @1639 4 'KEYA'
+                    wspace
+                      @1643 1 {' '}
+                    simple
+                      @1644 4 'KEYZ'
+                space
+                  @1649 1 {'\n'}
+                m_see_also
+                  tclwords
+                    simple
+                      @1660 5 'OTHER'
+                    wspace
+                      @1665 1 {' '}
+                    simple
+                      @1666 4 'ELSE'
+                space
+                  @1671 1 {'\n'}

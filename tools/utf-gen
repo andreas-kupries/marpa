@@ -1,0 +1,13 @@
+#!/usr/bin/env tclsh
+package require Tcl 8.5
+
+# Take a numeric unicode codepoint sequence and write to stdout.
+# Stdout is configured to no translation of any kind.
+
+#fconfigure stdout -encoding utf-8 -translation binary
+
+foreach n $argv {
+    puts stderr $n
+    puts -nonewline [format %c $n]
+}
+exit

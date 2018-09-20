@@ -1,4 +1,8 @@
 grammar {
+    event {
+        fox on
+        snafu on
+    }
     global {
         start A
         inaccessible warn
@@ -10,15 +14,13 @@ grammar {
                     assoc left
                     mask 0} }
         }
-        events {
-            A {
-                completed {
-                    fox on
-                }
-            }
-        }
         terminal {
             B { terminal }
+        }
+        trigger {
+            A {
+                completed fox
+            }
         }
     }
     lexeme {
@@ -27,13 +29,6 @@ grammar {
     l0 {
         discard {
             C { {priority @CHR:<c> 0} }
-        }
-        events {
-            C {
-                discard {
-                    snafu on
-                }
-            }
         }
         latm {
             B 1
@@ -44,6 +39,11 @@ grammar {
         literal {
             @CHR:<a> { {character 97} }
             @CHR:<c> { {character 99} }
+        }
+        trigger {
+            C {
+                discard snafu
+            }
         }
     }
 }

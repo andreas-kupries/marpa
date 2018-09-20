@@ -1,0 +1,54 @@
+GC comment definition A 0 1
+GC comment g1-definition A undef --> {JMP brick}
+GC comment usage B 6 1
+GC comment g1-usage B undef --> {JMP floater}
+GC g1 priority-rule A B 0 action {array values} mask 0
+GC comment g1-definition A brick --> NOP
+GC comment usage D 10 1
+GC comment g1-usage D undef --> {JMP floater}
+GC g1 priority-rule A D 0 action {array values} mask 0
+GC comment usage B 23 1
+GC comment :lexeme B floater --> {JMP lexeme:u make-lexeme}
+GC l0 lexeme B
+GC g1 terminal B
+GC l0 configure B event {lex on before}
+GC comment usage D 64 1
+GC comment :lexeme D floater --> {JMP lexeme:u make-lexeme}
+GC l0 lexeme D
+GC g1 terminal D
+GC l0 configure D event {lex on after}
+GC comment definition B 95 1
+GC comment l0-definition B lexeme:u --> {JMP lexeme}
+GC comment usage @CHR:<a> 99 3
+GC comment definition @CHR:<a> 99 3
+GC comment <literal> @CHR:<a> undef --> {JMP literal}
+GC l0 literal @CHR:<a> character 97
+GC comment l0-usage @CHR:<a> literal --> NOP
+GC l0 priority-rule B @CHR:<a> 0
+GC comment definition D 103 1
+GC comment l0-definition D lexeme:u --> {JMP lexeme}
+GC comment usage @CHR:<d> 107 3
+GC comment definition @CHR:<d> 107 3
+GC comment <literal> @CHR:<d> undef --> {JMP literal}
+GC l0 literal @CHR:<d> character 100
+GC comment l0-usage @CHR:<d> literal --> NOP
+GC l0 priority-rule D @CHR:<d> 0
+GC comment usage C 123 1
+GC comment :discard C undef --> {JMP discard:u make-discard}
+GC l0 discard C
+GC l0 configure C event {snafu on discard}
+GC comment DDE skip C
+GC comment definition C 140 1
+GC comment l0-definition C discard:u --> {JMP discard}
+GC comment usage @CHR:<c> 144 3
+GC comment definition @CHR:<c> 144 3
+GC comment <literal> @CHR:<c> undef --> {JMP literal}
+GC l0 literal @CHR:<c> character 99
+GC comment l0-usage @CHR:<c> literal --> NOP
+GC l0 priority-rule C @CHR:<c> 0
+GC comment Semantics completion processing
+GC start! A
+GC comment LATM fix 1
+GC l0 configure B latm 1
+GC l0 configure D latm 1
+GC comment DDE fix {}

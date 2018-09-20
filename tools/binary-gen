@@ -1,0 +1,12 @@
+#!/usr/bin/env tclsh
+package require Tcl 8.5
+
+# Take a numeric byte sequence and write to stdout.
+# Stdout is configured to no translation of any kind.
+
+fconfigure stdout -encoding binary -translation binary
+
+foreach n $argv {
+    puts -nonewline [format %c $n]
+}
+exit

@@ -1,0 +1,8 @@
+# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0
+## (c) 2018-present Andreas Kupries
+# # ## ### ##### ######## ############# #####################
+
+kt in ../languages/doctools/tests { kt source doctools-rtc.test }
+
+# # ## ### ##### ######## ############# #####################\
+return

@@ -1,0 +1,106 @@
+manpage
+  m_manpage_begin
+    simple
+      @15 4 'TEST'
+    simple
+      @20 1 'z'
+    simple
+      @22 11 '3.14.15.926'
+  @{} {} ''
+  body
+    paragraphs
+      paragraph
+        space
+          @48 1 {'\n'}
+    sections
+      section
+        m_section
+          simple
+            @58 1 '1'
+        paragraphs
+          paragraph
+            space
+              @60 1 {'\n'}
+            simple
+              @61 1 'A'
+            space
+              @62 1 {'\n'}
+      section
+        m_section
+          simple
+            @72 1 '2'
+        paragraphs
+          paragraph
+            space
+              @74 1 {'\n'}
+            simple
+              @75 1 'B'
+            space
+              @76 1 {'\n'}
+        subsections
+          subsection
+            m_subsection
+              simple
+                @89 3 '2.1'
+            paragraphs
+              paragraph
+                space
+                  @93 1 {'\n'}
+                simple
+                  @94 3 'B-a'
+                space
+                  @97 1 {'\n'}
+          subsection
+            m_subsection
+              simple
+                @110 3 '2.2'
+            paragraphs
+              paragraph
+                space
+                  @114 1 {'\n'}
+                simple
+                  @115 3 'B-b'
+                space
+                  @118 1 {'\n'}
+      section
+        m_section
+          simple
+            @128 1 '3'
+        paragraphs
+          paragraph
+            space
+              @130 1 {'\n'}
+            simple
+              @131 1 'C'
+            space
+              @132 2 {'\n\n'}
+          p_separator
+          paragraph
+            space
+              @140 1 {'\n'}
+            simple
+              @141 2 'At'
+            space
+              @143 1 {' '}
+            m_sectref
+              simple
+                @153 1 '1'
+            simple
+              @155 1 '.'
+            space
+              @156 1 {'\n'}
+          p_separator
+          paragraph
+            space
+              @163 1 {'\n'}
+            simple
+              @164 2 'At'
+            space
+              @166 1 {' '}
+            m_sectref
+              simple
+                @176 13 '__undefined__'
+            simple
+              @190 1 '.'
+            space
+              @191 1 {'\n'}

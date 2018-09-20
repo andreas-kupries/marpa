@@ -46,7 +46,7 @@ oo::class create marpa::engine::tcl::parse {
 
 	marpa::semstore create STORE
 	marpa::semcore  create SEMA  STORE
-	marpa::parser   create PARSE STORE SEMA [self]
+	marpa::parser   create PARSE [self] STORE SEMA [self]
 	marpa::lexer    create LEX   [self] STORE PARSE
 	marpa::gate     create GATE  LEX
 	marpa::inbound  create IN    GATE
@@ -68,13 +68,22 @@ oo::class create marpa::engine::tcl::parse {
 	PARSE symbols [my G1.Symbols]
 	PARSE rules   [my G1.Rules]
 	PARSE parse   [my Start] [my Discards]
-	LEX   events  [my L0.Events]
-	PARSE events  [my G1.Events]
+	LEX   trigger [my L0.Trigger]
+	PARSE trigger [my G1.Trigger]
+
+	set myevent [my Events]
 
 	# TODO: Actual user semantics
 	# TODO: tracing/reporting/red-ruby-slippers
 	next
 	return
+    }
+
+    # # ## ### ##### ######## #############
+
+    method active {name} {
+	debug.marpa/engine/tcl/lex {}
+	return [dict get $myevent $name]
     }
 
     # # ## ### ##### ######## #############
@@ -101,7 +110,8 @@ oo::class create marpa::engine::tcl::parse {
     # # ## ### ##### ######## #############
     ## State
 
-    variable myresult mydone
+    variable myresult mydone myevent
+    # myevent :: dict (name -> bool) - Event names, activation status
 
     # # ## ### ##### ######## #############
     ## Public API

@@ -1,0 +1,53 @@
+# -*- tcl -*-
+package require marpa::gen::reformat
+
+proc grammar {serial} {
+    upvar 1 path path
+
+    foreach area {l0 g1} {
+	if {![dict exists $serial $area events]} continue
+	rw serial $area [dict get $serial $area events]
+	dict unset serial $area events
+    }
+
+    #puts $serial
+    puts -nonewline [gc-format $serial]
+    return
+
+    set c [open $path w]
+    puts -nonewline $c [gc-format $serial]
+    close $c
+}
+
+proc gc-format {serial {step {    }}} {
+    return "grammar \{\n[marpa::gen reformat $serial {} $step]\n\}"
+}
+
+proc rw {sv area events} {
+    upvar 1 $sv serial
+    # events = dict (symbol -> when -> name -> state)
+    foreach {symbol when} $events {
+	# when = dict (when -> name -> state)
+	foreach {type spec} $when {
+	    # spec = dict (name -> state)
+	    foreach {ename state} $spec {
+		# global decl
+		dict set serial event $ename $state
+		# per area trigger
+		if {[dict exists $serial $area trigger $symbol $type]} {
+		    set names [dict get $serial $area trigger $symbol $type]
+		} else {
+		    set names {}
+		}
+		lappend names $ename
+		dict set serial $area trigger $symbol $type $names
+	    }
+	}
+
+    }
+    return
+}
+
+foreach path $argv {
+    source $path
+}

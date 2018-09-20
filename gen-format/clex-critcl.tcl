@@ -166,6 +166,14 @@ critcl::ccode {
 	@cname@_pool_offset,
 @string-data-v@
     };
+
+    /*
+    ** Map lexeme strings to parser symbol id (`match alternate` support).
+    */
+
+    static marpatcl_rtc_sym_lmap @cname@_lmap [@lexemes-c@] = {
+@lexemes-map@
+    };
 @event-table@
     /*
     ** L0 structures
@@ -178,14 +186,16 @@ critcl::ccode {
     static marpatcl_rtc_sym @cname@_l0_rule_definitions [@l0-code-c@] = { /* @l0-code-sz@ bytes */
 @l0-code@
     };
-@l0-event-struct@
+@l0-trigger@
     static marpatcl_rtc_rules @cname@_l0 = { /* 48 */
 	/* .sname   */  &@cname@_pool,
 	/* .symbols */  { @l0-symbols-c@, @cname@_l0_sym_name },
+	/* .lmap    */  { @lexemes-c@, @cname@_lmap },
 	/* .rules   */  { 0, NULL },
 	/* .lhs     */  { 0, NULL },
 	/* .rcode   */  @cname@_l0_rule_definitions,
-	/* .events  */  @l0-event-struct-ref@
+	/* .events  */  @event-ref@,
+	/* .trigger */  @l0-trigger-ref@
     };
 
     static marpatcl_rtc_sym @cname@_l0semantics [@l0-semantics-c@] = { /* @l0-semantics-sz@ bytes */

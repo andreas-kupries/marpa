@@ -1,4 +1,7 @@
 grammar {
+    event {
+        foo on
+    }
     global {
         start A
         inaccessible warn
@@ -10,15 +13,13 @@ grammar {
                     assoc left
                     mask 0} }
         }
-        events {
-            A {
-                predicted {
-                    foo on
-                }
-            }
-        }
         terminal {
             @LEX:@CHR:<a> { terminal }
+        }
+        trigger {
+            A {
+                predicted foo
+            }
         }
     }
     lexeme {

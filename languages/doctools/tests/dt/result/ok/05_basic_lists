@@ -1,0 +1,278 @@
+manpage
+  m_manpage_begin
+    simple
+      @40 5 'BASIC'
+    simple
+      @46 1 'a'
+    simple
+      @48 1 '5'
+  @{} {} ''
+  body
+    paragraphs
+      paragraph
+        space
+          @64 1 {'\n'}
+        simple
+          @65 2 'OK'
+        space
+          @67 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @74 1 {'\n'}
+        argument_list
+          arg_list_elem
+            m_arg_def
+              simple
+                @107 7 'integer'
+              simple
+                @115 10 'argument-1'
+            paragraphs
+              paragraph
+                space
+                  @126 1 {'\n'}
+                simple
+                  @127 12 'verification'
+                space
+                  @139 1 {'\n'}
+          arg_list_elem
+            m_arg_def
+              simple
+                @149 6 'string'
+              simple
+                @156 10 'argument-2'
+              simple
+                @167 3 'out'
+            paragraphs
+              paragraph
+                space
+                  @171 1 {' '}
+                simple
+                  @172 13 'mogrification'
+                space
+                  @185 1 {'\n'}
+        space
+          @196 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @203 1 {'\n'}
+        command_list
+          cmd_list_elem
+            m_cmd_def
+              simple
+                @235 9 'command-a'
+            paragraphs
+              paragraph
+                space
+                  @245 1 {' '}
+                simple
+                  @246 11 'explanation'
+                space
+                  @257 1 {'\n'}
+          cmd_list_elem
+            m_cmd_def
+              simple
+                @267 9 'command-b'
+            paragraphs
+              paragraph
+                space
+                  @277 1 {'\n'}
+                simple
+                  @278 11 'elucidation'
+                space
+                  @289 1 {'\n'}
+        space
+          @300 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @307 1 {'\n'}
+        definition_list
+          def_list_elem
+            m_def
+              simple
+                @338 4 'term'
+            paragraphs
+              paragraph
+                space
+                  @343 1 {' '}
+                simple
+                  @344 10 'definition'
+                space
+                  @354 1 {'\n'}
+          def_list_elem
+            m_call
+              tclwords
+                simple
+                  @361 9 'a-command'
+            paragraphs
+              paragraph
+                space
+                  @371 1 {'\n'}
+                simple
+                  @372 8 'semantic'
+                space
+                  @380 1 {'\n'}
+        space
+          @391 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @398 1 {'\n'}
+        enum_list
+          enum_list_elem
+            paragraphs
+              paragraph
+                space
+                  @429 1 {'\n'}
+                simple
+                  @430 1 'A'
+                space
+                  @431 1 {'\n'}
+          enum_list_elem
+            paragraphs
+              paragraph
+                space
+                  @438 1 {' '}
+                simple
+                  @439 1 'B'
+                space
+                  @440 1 {'\n'}
+              p_separator
+              paragraph
+                space
+                  @447 1 {'\n'}
+                simple
+                  @448 1 'C'
+                space
+                  @449 1 {'\n'}
+              p_separator
+              paragraph
+                space
+                  @456 1 {'\n'}
+                simple
+                  @457 1 'D'
+                space
+                  @458 1 {'\n'}
+        space
+          @469 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @476 1 {'\n'}
+        item_list
+          item_list_elem
+            paragraphs
+              paragraph
+                space
+                  @505 1 {'\n'}
+                simple
+                  @506 1 '1'
+                space
+                  @507 1 {'\n'}
+          item_list_elem
+            paragraphs
+              paragraph
+                space
+                  @514 1 {' '}
+                simple
+                  @515 1 '2'
+                space
+                  @516 1 {'\n'}
+              p_separator
+              paragraph
+                space
+                  @523 1 {'\n'}
+                simple
+                  @524 2 '2a'
+                space
+                  @526 1 {'\n'}
+              p_separator
+              paragraph
+                space
+                  @533 1 {'\n'}
+                simple
+                  @534 2 '2b'
+                space
+                  @536 1 {'\n'}
+        space
+          @547 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @554 1 {'\n'}
+        option_list
+          opt_list_elem
+            m_opt_def
+              simple
+                @585 8 'option-1'
+            paragraphs
+              paragraph
+                space
+                  @594 1 {' '}
+                simple
+                  @595 7 'meaning'
+                space
+                  @602 1 {'\n'}
+          opt_list_elem
+            m_opt_def
+              simple
+                @612 8 'option-2'
+              simple
+                @621 5 'value'
+            paragraphs
+              paragraph
+                space
+                  @627 1 {'\n'}
+                simple
+                  @628 11 'elaboration'
+                space
+                  @639 1 {'\n'}
+        space
+          @650 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @657 1 {'\n'}
+        tkoption_list
+          tko_list_elem
+            m_tkoption_def
+              simple
+                @695 10 'background'
+              simple
+                @706 10 'Background'
+              simple
+                @717 5 'Color'
+            paragraphs
+              paragraph
+                space
+                  @723 1 {' '}
+                simple
+                  @724 5 'candy'
+                space
+                  @729 1 {'\n'}
+          tko_list_elem
+            m_tkoption_def
+              simple
+                @744 10 'foreground'
+              simple
+                @755 10 'Foreground'
+              simple
+                @766 5 'Color'
+            paragraphs
+              paragraph
+                space
+                  @772 1 {'\n'}
+                simple
+                  @773 7 'caramel'
+                space
+                  @780 1 {'\n'}
+        space
+          @791 1 {'\n'}
+      p_separator
+      paragraph
+        space
+          @798 1 {'\n'}
+        simple
+          @799 2 'KO'

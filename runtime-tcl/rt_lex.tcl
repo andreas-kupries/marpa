@@ -59,13 +59,22 @@ oo::class create marpa::engine::tcl::lex {
 	LEX symbols [my Symbols]
 	LEX rules   [my Rules]
 	LEX discard [my Discards]
-	LEX events  [my Events]
+	LEX trigger [my Trigger]
+
+	set myevent [my Events]
 
 	next
 
 	# Initial acceptability
 	LEX acceptable $mylex
 	return
+    }
+
+    # # ## ### ##### ######## #############
+
+    method active {name} {
+	debug.marpa/engine/tcl/lex {}
+	return [dict get $myevent $name]
     }
 
     # # ## ### ##### ######## #############
@@ -89,9 +98,10 @@ oo::class create marpa::engine::tcl::lex {
     # # ## ### ##### ######## #############
     ## State
 
-    variable myid mylex
-    # myid          :: map (id -> string) - Lexemes
-    # mylex         :: list (id) - dict keys of myid
+    variable myid mylex myevent
+    # myid    :: dict (id -> string) - Lexeme symbol id to name
+    # mylex   :: list (id)           - dict keys of myid
+    # myevent :: dict (name -> bool) - Event names, activation status
 
     # # ## ### ##### ######## #############
     ## Public API
