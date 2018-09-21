@@ -95,6 +95,27 @@ marpatcl_rtc_inbound_free (marpatcl_rtc_p p)
     TRACE_RETURN_VOID;
 }
 
+int
+marpatcl_rtc_inbound_num_streams (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE_RETURN ("(#streams) %d", 0);
+}
+
+int
+marpatcl_rtc_inbound_num_processed (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE_RETURN ("(#processed) %d", 0);
+}
+
+int
+marpatcl_rtc_inbound_size (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE_RETURN ("(#input) %d", 0);
+}
+
 void
 marpatcl_rtc_inbound_reset (marpatcl_rtc_p p)
 {

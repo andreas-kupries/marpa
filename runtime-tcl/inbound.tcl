@@ -67,6 +67,20 @@ oo::class create marpa::inbound {
     			      # (list! of characters)
     variable mymax          ; # Location triggering EOF
     variable mysentinel     ; # Location triggering overrun
+                              # == length of entire physical input stream less one
+                              # (including stream separators)
+
+    # Statistics
+    variable mynumprocessed ; # total number of characters processed
+                              # includes re-reading
+    variable mynumstreams   ; # total number of input. Min 1 (primary input)
+
+    # See also mysentinel under State.
+
+    # total number of input characters = (sentinel + 1) - (numstreams - 1) [discount separators]
+    #                                  = sentinel - numstreams + 2
+    #
+    # number of rereads = numprocessed - total input
 
     # API:
     #  1 cons       (postprocessor)    - Create, link
@@ -102,8 +116,10 @@ oo::class create marpa::inbound {
 				# before the first character (of
 				# nothing).
 	set mystoplocation -2 ; # Where to stop the engine, nowhere.
-	set mysentinel     -1
+	set mysentinel     -2
 	set mymax          -1
+	set mynumstreams    0
+	set mynumprocessed  0
 
 	# Attach ourselves to the postprocessor, as its input
 	Forward input: [self]
@@ -113,7 +129,26 @@ oo::class create marpa::inbound {
     }
 
     # # -- --- ----- -------- -------------
-    ## Public API
+    ## Public API 1 - Statistics
+
+    method streams {} {
+	debug.marpa/inbound {[debug caller] | ==> $mynumstreams}
+	return $mynumstreams
+    }
+
+    method processed {} {
+	debug.marpa/inbound {[debug caller] | ==> $mynumprocessed}
+	return $mynumprocessed
+    }
+
+    method size {} {
+	set size [expr {$mysentinel - $mynumstreams + 2}]
+	debug.marpa/inbound {[debug caller] | ==> $size}
+	return $size
+    }
+
+    # # -- --- ----- -------- -------------
+    ## Public API 2 - Control
 
     method last {} {
 	debug.marpa/inbound {[debug caller] | ==> $mymax}
@@ -185,6 +220,8 @@ oo::class create marpa::inbound {
     method enter {string {from -1} {to -2}} {
 	debug.marpa/inbound {[debug caller 1] | }
 
+	set mynumstreams   1
+	set mynumprocessed 0
 	set mytext         [split $string {}]
 	set mylocation     $from
 	set mystoplocation $to
@@ -270,6 +307,8 @@ oo::class create marpa::inbound {
 	    debug.marpa/inbound {[debug caller 1] | DO _______________________________________}
 
 	    Forward enter $ch $mylocation
+	    incr mynumprocessed
+
 	    # Note, the post-processor (gate, lexer) have access to the location, via methods
 	    # moveto, moveby, and rewind. Examples of use:
 	    # - Rewind after reading behind the current lexeme
@@ -288,6 +327,7 @@ oo::class create marpa::inbound {
 	lappend mytext \0 {*}[split $string {}]
 	set  mysentinel [llength $mytext]
 	incr mysentinel -1
+	incr mynumstreams
 	# Notes
 	# - The {*} will put the entire string on the Tcl stack before
 	#   it becomes part of the input buffer.

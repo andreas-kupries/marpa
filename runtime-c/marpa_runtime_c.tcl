@@ -111,6 +111,15 @@ critcl::api function int marpatcl_rtc_enter_more {
 critcl::api function int marpatcl_rtc_failed {
     marpatcl_rtc_p p
 }
+critcl::api function int marpatcl_rtc_num_streams {
+    marpatcl_rtc_p p
+}
+critcl::api function int marpatcl_rtc_num_processed {
+    marpatcl_rtc_p p
+}
+critcl::api function int marpatcl_rtc_size {
+    marpatcl_rtc_p p
+}
 critcl::api function int marpatcl_rtc_fget {
     Tcl_Interp*       ip
     marpatcl_rtc_p    p

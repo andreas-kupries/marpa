@@ -44,6 +44,10 @@ oo::class create marpa::engine::tcl::base {
 	return
     }
 
+    forward  streams	IN streams
+    forward  processed	IN processed
+    forward  size	IN size
+
     # # ## ### ##### ######## #############
     ## Internal method to signal events
     ## Called from components

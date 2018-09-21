@@ -49,16 +49,17 @@ initialize
 set kformat %0[string length [test-grammar-file-count slif]]d
 
 foreach {lexaction joiner} {
-    g1length { }
-    g1start  { }
-    length   \n
-    lhs      \n
-    name     \n
-    rule     \n
-    start    \n
-    symbol   \n
-    value    \n
-    values   \n
+    g1length   { }
+    g1start    { }
+    length     \n
+    lhs        \n
+    name       \n
+    rule       \n
+    start      \n
+    symbol     \n
+    value      \n
+    values     \n
+    statistics \n
 } {
     kt::sub sub-lc-[label]-$lexaction {
 	kt source support/dirs.tcl
@@ -68,19 +69,42 @@ foreach {lexaction joiner} {
 	kt source support/lc-ops.tcl
 
 	gen configure cl $cl ex $ex
-	lex-setup $lexaction
+
+	if {$lexaction eq "statistics"} {
+	    lex-setup name
+	} else {
+	    lex-setup $lexaction
+	}
 
 	test-grammar-map slif --> k id slif base {
 	    set result $base/lexaction_${lexaction}_${suffix}
 	    if {![file exists $result]} continue
 
-	    test marpa-lexer-${label}-1.0.[format $kformat $k]-${lexaction} \
-		"$label, action (($lexaction))" -body {
-		    LEX process [fget $slif] capture
-		    join $TRACE $joiner
-		} -setup setup   \
-		-cleanup cleanup \
-		-result [viewFile $result]
+	    if {$lexaction eq "statistics"} {
+		test marpa-lexer-${label}-1.0.[format $kformat $k]-${lexaction} \
+		    "$label, action (($lexaction))" -body {
+			LEX process [fget $slif] null-capture
+			# consider capture, count lexemes, mean rereads per lexeme.
+			# mean length of lexemes
+			join [list \
+				  [list streams__ [LEX streams]] \
+				  [list size_____ [LEX size]] \
+				  [list processed [LEX processed]] \
+				  [list rereads__ [expr {[LEX processed]-[LEX size]}]] \
+				  [list reread%__ [format %.2f [expr {(double([LEX processed])/[LEX size] - 1)*100}]]] \
+			     ] $joiner
+		    } -setup setup   \
+		    -cleanup cleanup \
+		    -result [viewFile $result]
+	    } else {
+		test marpa-lexer-${label}-1.0.[format $kformat $k]-${lexaction} \
+		    "$label, action (($lexaction))" -body {
+			LEX process [fget $slif] capture
+			join $TRACE $joiner
+		    } -setup setup   \
+		    -cleanup cleanup \
+		    -result [viewFile $result]
+	    }
 	}
 
 	lex-cleanup $lexaction

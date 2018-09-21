@@ -14,6 +14,8 @@ proc cleanup {} {
     unset TRACE
 }
 
+proc null-capture {args} {}
+
 proc capture {m args} {
     if {$m ne "enter"} return
     # args = list (list(symbol), list(value))

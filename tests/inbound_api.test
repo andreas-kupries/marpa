@@ -33,6 +33,9 @@ kt source support/common.tcl
 ## [ok] 11 rewind/1      (delta)
 ## [ok] 12 to/1          (pos)
 ## [ok] 13 limit/1       (delta)
+## [ok] 14 streams/0	 ()
+## [ok] 15 processed/0	 ()
+## [ok] 16 size/0	 ()
 
 # # ## ### ##### ######## ############# #####################
 ## constructor - wrong args
@@ -260,6 +263,43 @@ test marpa-inbound-api-10.1 {rewind, wrong args, too many} -setup {
     IN destroy
     logged
 } -returnCodes error -result {wrong # args: should be "IN rewind delta"}
+
+# # ## ### ##### ######## ############# #####################
+## streams - wrong args
+
+test marpa-inbound-api-11.1 {streams, wrong args, too many} -setup {
+    marpa::inbound create IN [log GATE]
+} -body {
+    IN streams X
+} -cleanup {
+    IN destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "IN streams"}
+
+# # ## ### ##### ######## ############# #####################
+## processed - wrong args
+
+test marpa-inbound-api-12.1 {processed, wrong args, too many} -setup {
+    marpa::inbound create IN [log GATE]
+} -body {
+    IN processed X
+} -cleanup {
+    IN destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "IN processed"}
+
+# # ## ### ##### ######## ############# #####################
+## size - wrong args
+
+test marpa-inbound-api-13.1 {size, wrong args, too many} -setup {
+    marpa::inbound create IN [log GATE]
+} -body {
+    IN size X
+} -cleanup {
+    IN destroy
+    logged
+} -returnCodes error -result {wrong # args: should be "IN size"}
+
 
 # # ## ### ##### ######## ############# #####################
 cleanupTests

@@ -94,6 +94,10 @@ int  marpatcl_rtc_inbound_stoploc   (marpatcl_rtc_p p);
 
 unsigned char marpatcl_rtc_inbound_step (marpatcl_rtc_p p);
 
+int  marpatcl_rtc_inbound_num_streams   (marpatcl_rtc_p p);
+int  marpatcl_rtc_inbound_num_processed (marpatcl_rtc_p p);
+int  marpatcl_rtc_inbound_size          (marpatcl_rtc_p p);
+
 #endif
 
 /*

@@ -39,9 +39,12 @@ kt source support/common.tcl
 ## [..] 11 rewind/1      (delta)
 ## [..] 12 to/1          (pos)
 ## [..] 13 limit/1       (delta)
+## [..] 14 streams/0	 ()
+## [..] 15 processed/0	 ()
+## [..] 16 size/0	 ()
 ##
-## Sequence = 1[23][45,8-13]*
-## Always   = [67]
+## Sequence = 1[2-3][4-5,8-13]*
+## Always   = [6-7,14-16]
 ## See runtime-tcl/inbound.tcl, mark <<s>> (multiple)
 ##
 #
@@ -79,8 +82,11 @@ testcases j {cmd code result} {
     {rewind 0}		error	{Unable to set current location before start}
     {to 0}		error	{Unable to set stop location before start}
     {limit 0}		error	{Unable to set stop location before start}
+    streams		ok	{0 ready}
+    processed		ok	{0 ready}
+    size		ok	{0 ready}
 } {
-    test marpa-inbound-sequencing-1.1.$j "constructor, after call, ${code}: $cmd" -setup {
+    test marpa-inbound-sequencing-1.1.${j}-$cmd "constructor, after call, ${code}: $cmd" -setup {
 	set chan [tcl::chan::string foo]
 	marpa::inbound create IN [log GATE]
     } -body {
@@ -165,8 +171,11 @@ testcases j {cmd code result} {
     {rewind 0}		ok	{{} running}
     {to -1}		ok	{{} running}
     {limit -1}		ok	{{} running}
+    streams		ok	{1 running}
+    processed		ok	{1 running}
+    size		ok	{3 running}
 } {
-    test marpa-inbound-sequencing-2.2.$j "constructor, after call, ${code}: $cmd" -setup {
+    test marpa-inbound-sequencing-2.2.${j}-$cmd "enter, after call, ${code}: $cmd" -setup {
 	set chan [tcl::chan::string foo]
 	marpa::inbound create IN [jack STOP signal-stop {args} {
 	    set ::res [list [IN {*}[string map [list @ $::chan] $::cmd]] [IN @]]
@@ -263,8 +272,11 @@ testcases j {cmd code result} {
     {rewind 0}		ok	{{} running}
     {to -1}		ok	{{} running}
     {limit -1}		ok	{{} running}
+    streams		ok	{1 running}
+    processed		ok	{1 running}
+    size		ok	{3 running}
 } {
-    test marpa-inbound-sequencing-3.2.$j "constructor, after call, ${code}: $cmd" -setup {
+    test marpa-inbound-sequencing-3.2.${j}-$cmd "constructor, after call, ${code}: $cmd" -setup {
 	set in [tcl::chan::string FOO]
 	set chan [tcl::chan::string foo]
 	marpa::inbound create IN [jack STOP signal-stop {args} {
@@ -298,8 +310,11 @@ testcases j {cmd code result} {
     {rewind 0}		error	{Unable to set current location after EOF}
     {to 0}		error	{Unable to set stop location after EOF}
     {limit 0}		error	{Unable to set stop location after EOF}
+    streams		ok	{1 done}
+    processed		ok	{3 done}
+    size		ok	{3 done}
 } {
-    test marpa-inbound-sequencing-4.$j "enter, after call, ${code}: $cmd" -setup {
+    test marpa-inbound-sequencing-4.${j}-$cmd "enter, after call, ${code}: $cmd" -setup {
 	set chan [tcl::chan::string foo]
 	marpa::inbound create IN [log GATE]
 	IN enter foo
@@ -329,8 +344,11 @@ testcases j {cmd code result} {
     {rewind 0}		error	{Unable to set current location after EOF}
     {to 0}		error	{Unable to set stop location after EOF}
     {limit 0}		error	{Unable to set stop location after EOF}
+    streams		ok	{1 done}
+    processed		ok	{3 done}
+    size		ok	{3 done}
 } {
-    test marpa-inbound-sequencing-5.$j "enter, after call, ${code}: $cmd" -setup {
+    test marpa-inbound-sequencing-5.${j}-$cmd "read, after call, ${code}: $cmd" -setup {
 	set in [tcl::chan::string bar]
 	set chan [tcl::chan::string foo]
 	marpa::inbound create IN [log GATE]

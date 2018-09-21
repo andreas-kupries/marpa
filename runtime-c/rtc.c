@@ -70,6 +70,27 @@ marpatcl_rtc_destroy (marpatcl_rtc_p p)
     TRACE_RETURN_VOID;
 }
 
+int
+marpatcl_rtc_num_streams (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE_RETURN ("(#streams) %d", marpatcl_rtc_inbound_num_streams (p));
+}
+
+int
+marpatcl_rtc_num_processed (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE_RETURN ("(#processed) %d", marpatcl_rtc_inbound_num_processed (p));
+}
+
+int
+marpatcl_rtc_size (marpatcl_rtc_p p)
+{
+    TRACE_FUNC ("((rtc*) %p)", p);
+    TRACE_RETURN ("(#input) %d", marpatcl_rtc_inbound_size (p));
+}
+
 void
 marpatcl_rtc_enter (marpatcl_rtc_p p, const unsigned char* bytes, int n, int from, int to)
 {
