@@ -5442,6 +5442,18 @@ critcl::class def <Name> {
         Tcl_IncrRefCount (instance->name);
     }
 
+    method streams proc {} int {
+	return marpatcl_rtc_num_streams (instance->state);
+    }
+
+    method processed proc {} int {
+	return marpatcl_rtc_num_processed (instance->state);
+    }
+
+    method size proc {} int {
+	return marpatcl_rtc_size_input (instance->state);
+    }
+
     method process-file proc {Tcl_Interp* ip object path object args} ok {
 	int from, to;
 	if (!marpatcl_rtc_pe_range (ip, args.c, args.v, &from, &to)) { return TCL_ERROR; }

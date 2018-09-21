@@ -49,7 +49,7 @@ void              marpatcl_rtc_destroy (marpatcl_rtc_p p);
 
 int               marpatcl_rtc_num_streams   (marpatcl_rtc_p p);
 int               marpatcl_rtc_num_processed (marpatcl_rtc_p p);
-int               marpatcl_rtc_size          (marpatcl_rtc_p p);
+int               marpatcl_rtc_size_input    (marpatcl_rtc_p p);
 
 void              marpatcl_rtc_enter   (marpatcl_rtc_p       p,
 					const unsigned char* bytes,

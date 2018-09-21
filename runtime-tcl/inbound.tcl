@@ -298,6 +298,7 @@ oo::class create marpa::inbound {
 	    }
 
 	    incr mylocation
+	    incr mynumprocessed
 
 	    set ch [lindex $mytext $mylocation]
 
@@ -307,7 +308,6 @@ oo::class create marpa::inbound {
 	    debug.marpa/inbound {[debug caller 1] | DO _______________________________________}
 
 	    Forward enter $ch $mylocation
-	    incr mynumprocessed
 
 	    # Note, the post-processor (gate, lexer) have access to the location, via methods
 	    # moveto, moveby, and rewind. Examples of use:

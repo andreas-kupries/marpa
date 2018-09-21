@@ -150,12 +150,14 @@ marpatcl_rtc_clindex_find_c (marpatcl_rtc_p p, int bloc)
 
 	TRACE ("jump to max %d ~b %d", IN.clocation, IN.location);
 	TRACE ("byte steps: %d", bloc - IN.location);
-
+	// Prevent changes to #processed. Internal stepping does not count.
+	int cp = IN.cprocessed;
 	while (IN.location < bloc) {
 	    TRACE ("%s", "byte step");
 	    marpatcl_rtc_inbound_step (p);
 	    TRACE ("to char %d ~b %d", IN.clocation, IN.location);
 	}
+	IN.cprocessed = cp;
 
 	TRACE ("%s", "at target");
 
@@ -267,11 +269,14 @@ marpatcl_rtc_clindex_find (marpatcl_rtc_p p, int cloc)
 
 	TRACE ("jump to max %d ~b %d", IN.clocation, IN.location);
 	TRACE ("char steps: %d", cloc - IN.clocation);
+	// Prevent changes to #processed. Internal stepping does not count.
+	int cp = IN.cprocessed;
 	while (IN.clocation < cloc) {
 	    TRACE ("%s", "byte step");
 	    marpatcl_rtc_inbound_step (p);
 	    TRACE ("to char %d ~b %d", IN.clocation, IN.location);
 	}
+	IN.cprocessed = cp;
 
 	TRACE ("%s", "at target");
 

@@ -32,6 +32,10 @@ typedef struct marpatcl_rtc_inbound {
     int            psize;     /* Length of the primary string, in bytes */
     unsigned char  owned;     /* true  -> .bytes is owned by this structure,
 			       * false -> .bytes belongs to the outside */
+
+    int            cstreams;   /* Number of streams */
+    int            cprocessed; /* Number of processsed __characters__ */
+
     /*
      * IO level events - user-specified engine stop
      */

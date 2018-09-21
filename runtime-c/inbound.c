@@ -69,15 +69,17 @@ marpatcl_rtc_inbound_init (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
 
-    IN.bytes     = 0;
-    IN.size      = 0;
-    IN.csize     = 0;
-    IN.owned     = 0;
-    IN.location  = -1;
-    IN.clocation = -1;
-    IN.cstop     = -2;
-    IN.trailer   = 0;
-    IN.clen      = 0;
+    IN.bytes      = 0;
+    IN.size       = 0;
+    IN.csize      = 0;
+    IN.owned      = 0;
+    IN.location   = -1;
+    IN.clocation  = -1;
+    IN.cstop      = -2;
+    IN.trailer    = 0;
+    IN.clen       = 0;
+    IN.cstreams   = -2;
+    IN.cprocessed = 0;
 
     TRACE_RETURN_VOID;
 }
@@ -99,21 +101,21 @@ int
 marpatcl_rtc_inbound_num_streams (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
-    TRACE_RETURN ("(#streams) %d", 0);
+    TRACE_RETURN ("(#streams) %d", IN.cstreams);
 }
 
 int
 marpatcl_rtc_inbound_num_processed (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
-    TRACE_RETURN ("(#processed) %d", 0);
+    TRACE_RETURN ("(#processed) %d", IN.cprocessed);
 }
 
 int
 marpatcl_rtc_inbound_size (marpatcl_rtc_p p)
 {
     TRACE_FUNC ("((rtc*) %p)", p);
-    TRACE_RETURN ("(#input) %d", 0);
+    TRACE_RETURN ("(#input) %d", marpatcl_rtc_inbound_last (p) - IN.cstreams + 1);
 }
 
 void
@@ -243,6 +245,9 @@ marpatcl_rtc_inbound_enter (marpatcl_rtc_p p, const unsigned char* bytes, int ma
 
     max --;
     TRACE ("max %d", max);
+
+    IN.cstreams   = 1;
+    IN.cprocessed = 0;
 
     // Initial processing range.
     marpatcl_rtc_inbound_moveto   (p, from);
@@ -377,6 +382,8 @@ marpatcl_rtc_inbound_enter_more (marpatcl_rtc_p p,
     IN.bytes = newbytes;
     IN.size  = newsize;
 
+    IN.cstreams ++;
+
     // Notes
     // - The change to `IN.bytes` does not affect the `max` used by `enter`
     //   above to detect the end of the primary input.
@@ -413,6 +420,7 @@ marpatcl_rtc_inbound_step (marpatcl_rtc_p p)
     IN.trailer = ((k)-1);				\
     IN.clen = k;					\
     IN.clocation ++;					\
+    IN.cprocessed ++;					\
     TRACE ("reached %d by %d", IN.clocation, k);	\
     marpatcl_rtc_clindex_update (p, k)
 

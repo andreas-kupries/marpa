@@ -360,7 +360,7 @@ critcl::class def @slif-name@ {
     }
 
     method size proc {} int {
-	return marpatcl_rtc_size (instance->state);
+	return marpatcl_rtc_size_input (instance->state);
     }
 
     method process-file proc {Tcl_Interp* ip object path object args} ok {

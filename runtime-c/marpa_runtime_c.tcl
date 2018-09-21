@@ -117,7 +117,7 @@ critcl::api function int marpatcl_rtc_num_streams {
 critcl::api function int marpatcl_rtc_num_processed {
     marpatcl_rtc_p p
 }
-critcl::api function int marpatcl_rtc_size {
+critcl::api function int marpatcl_rtc_size_input {
     marpatcl_rtc_p p
 }
 critcl::api function int marpatcl_rtc_fget {
