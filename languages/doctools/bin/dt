@@ -1,5 +1,5 @@
 #!/usr/bin/env tclsh
-# -*- tcl -*- tcl.tk//DSL tcltest//EN//2.0 tcl.tk//DSL tcltest//EN//2.0
+# -*- tcl -*-
 ## (c) 2018-present Andreas Kupries
 # # ## ### ##### ######## ############# #####################
 ## doctools utility - parse doctools into AST.
@@ -167,9 +167,9 @@ proc ingest {args} {
 	}
 
 	if {[catch {
-	    Time $label $sz {
-		set ast [PARSE process $doctools path $path]
-	    }
+	    TimeStart $label
+	    set ast [PARSE process $doctools path $path]
+	    TimeComplete $sz
 	    set result [ast-format $ast]
 	    note "OK:   $path"
 	} msg]} {
@@ -210,26 +210,33 @@ proc ingest {args} {
     return
 }
 
-proc Time {label sz script} {
-    global timing
+proc TimeStart {label} {
+    global start
     note "\nProcessing $label ($sz bytes) ..."
-    set start  [clock milliseconds]
-
+    set start [clock milliseconds]
+}
     # Look into time-limiting this to recognize inputs triggering
     # ambiguity or some such. Also, debugging, tracking of file
     # inclusion (sizes, returns).
     uplevel 1 $script
 
-    if {$timing} {
-	set done   [clock milliseconds]
-	set millis [expr {$done-$start}]
-	set sec    [expr {double($millis)/1000}]
-	set speed  [expr {$sz/$sec}]
+proc TimeComplete {sz} {
+    global timing start
+    if {!$timing} return
 
-	append msg "Processing done in [F $sec] seconds"
-	append msg " (@ [F $speed] bytes/sec): #$sz = $label"
-	note $msg
-    }
+    set done      [clock milliseconds]
+    set millis    [expr {$done-$start}]
+    set sec       [expr {double($millis)/1000}]
+    set total     [PARSE size]
+    set processed [PARSE processed]
+    set streams   [PARSE streams]
+    set speed     [expr {$processed/$sec}]
+    set sname     "stream[expr {$streams > 1 ? "s" : ""}]"
+
+    append msg "Processing done in [F $sec] seconds\n"
+    append msg "Handled   $sz bytes, total $total chars in $streams $sname\n"
+    append msg "Processed $processed chars @ [F $speed] chars/second\n"
+    note $msg
     return
 }
 
